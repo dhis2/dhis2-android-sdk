@@ -26,11 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.binders;
 
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-public interface StatementBinder {
-    void bindToStatement(@NonNull SQLiteStatement sqLiteStatement);
+import org.hisp.dhis.android.core.common.IdentifiableObject;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+public abstract class IdentifiableStatementBinder<O extends IdentifiableObject> implements StatementBinder<O> {
+
+    @Override
+    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.code());
+        sqLiteBind(sqLiteStatement, 3, o.name());
+        sqLiteBind(sqLiteStatement, 4, o.displayName());
+        sqLiteBind(sqLiteStatement, 5, o.created());
+        sqLiteBind(sqLiteStatement, 6, o.lastUpdated());
+    }
 }

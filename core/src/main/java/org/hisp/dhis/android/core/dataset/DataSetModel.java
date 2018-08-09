@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -41,8 +39,6 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataSetModel extends BaseNameableObjectModel {
@@ -149,27 +145,6 @@ public abstract class DataSetModel extends BaseNameableObjectModel {
     @Nullable
     @ColumnName(Columns.ACCESS_DATA_WRITE)
     public abstract Boolean accessDataWrite();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, periodType());
-        sqLiteBind(sqLiteStatement, 12, categoryCombo());
-        sqLiteBind(sqLiteStatement, 13, mobile());
-        sqLiteBind(sqLiteStatement, 14, version());
-        sqLiteBind(sqLiteStatement, 15, expiryDays());
-        sqLiteBind(sqLiteStatement, 16, timelyDays());
-        sqLiteBind(sqLiteStatement, 17, notifyCompletingUser());
-        sqLiteBind(sqLiteStatement, 18, openFuturePeriods());
-        sqLiteBind(sqLiteStatement, 19, fieldCombinationRequired());
-        sqLiteBind(sqLiteStatement, 20, validCompleteOnly());
-        sqLiteBind(sqLiteStatement, 21, noValueRequiresComment());
-        sqLiteBind(sqLiteStatement, 22, skipOffline());
-        sqLiteBind(sqLiteStatement, 23, dataElementDecoration());
-        sqLiteBind(sqLiteStatement, 24, renderAsTabs());
-        sqLiteBind(sqLiteStatement, 25, renderHorizontally());
-        sqLiteBind(sqLiteStatement, 26, accessDataWrite());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

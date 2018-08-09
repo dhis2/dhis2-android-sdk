@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -37,8 +35,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
@@ -51,11 +47,6 @@ public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{PROGRAM_SECTION, ATTRIBUTE};
         }
     }
 
@@ -74,18 +65,6 @@ public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.ATTRIBUTE)
     public abstract String attribute();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, programSection());
-        sqLiteBind(sqLiteStatement, 2, attribute());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 3, programSection());
-        sqLiteBind(sqLiteStatement, 4, attribute());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

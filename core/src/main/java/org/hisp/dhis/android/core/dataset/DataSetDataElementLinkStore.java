@@ -28,16 +28,43 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataSetDataElementLinkStore {
 
     private DataSetDataElementLinkStore() {}
 
+    static final StatementBinder<DataSetDataElementLinkModel> BINDER
+            = new StatementBinder<DataSetDataElementLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataSetDataElementLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.dataSet());
+            sqLiteBind(sqLiteStatement, 2, o.dataElement());
+            sqLiteBind(sqLiteStatement, 3, o.categoryCombo());
+        }
+    };
+
+    static final WhereStatementBinder<DataSetDataElementLinkModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<DataSetDataElementLinkModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull DataSetDataElementLinkModel o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 4, o.dataSet());
+            sqLiteBind(sqLiteStatement, 5, o.dataElement());
+        }
+    };
+
     public static ObjectWithoutUidStore<DataSetDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetDataElementLinkModel.TABLE,
-                new DataSetDataElementLinkModel.Columns());
+                new DataSetDataElementLinkModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
     }
 }

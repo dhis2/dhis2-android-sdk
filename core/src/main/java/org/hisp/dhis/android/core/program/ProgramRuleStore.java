@@ -28,16 +28,37 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramRuleStore {
 
     private ProgramRuleStore() {}
 
+    private static StatementBinder<ProgramRule> BINDER = new IdentifiableStatementBinder<ProgramRule>() {
+
+        @Override
+        public void bindToStatement(@NonNull ProgramRule o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.priority());
+            sqLiteBind(sqLiteStatement, 8, o.condition());
+            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.program()));
+            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.programStage()));
+        }
+    };
+
     public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, ProgramRuleModel.TABLE,
-                new ProgramRuleModel.Columns().all());
+                new ProgramRuleModel.Columns().all(), BINDER);
     }
 }

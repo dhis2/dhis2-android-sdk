@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.indicator;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -38,8 +36,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class IndicatorModel extends BaseNameableObjectModel {
@@ -98,18 +94,6 @@ public abstract class IndicatorModel extends BaseNameableObjectModel {
     @Nullable
     @ColumnName(Columns.URL)
     public abstract String url();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, annualized());
-        sqLiteBind(sqLiteStatement, 12, indicatorType());
-        sqLiteBind(sqLiteStatement, 13, numerator());
-        sqLiteBind(sqLiteStatement, 14, numeratorDescription());
-        sqLiteBind(sqLiteStatement, 15, denominator());
-        sqLiteBind(sqLiteStatement, 16, denominatorDescription());
-        sqLiteBind(sqLiteStatement, 17, url());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

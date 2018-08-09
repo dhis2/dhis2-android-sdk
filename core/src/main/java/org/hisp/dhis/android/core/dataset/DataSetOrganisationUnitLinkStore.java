@@ -28,16 +28,43 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataSetOrganisationUnitLinkStore {
 
     private DataSetOrganisationUnitLinkStore() {}
 
+    private static final StatementBinder<DataSetOrganisationUnitLinkModel> BINDER
+            = new StatementBinder<DataSetOrganisationUnitLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataSetOrganisationUnitLinkModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.dataSet());
+            sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+        }
+    };
+
+    private static final WhereStatementBinder<DataSetOrganisationUnitLinkModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<DataSetOrganisationUnitLinkModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull DataSetOrganisationUnitLinkModel o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 3, o.dataSet());
+            sqLiteBind(sqLiteStatement, 4, o.organisationUnit());
+        }
+    };
+
     public static ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetOrganisationUnitLinkModel.TABLE,
-                new DataSetOrganisationUnitLinkModel.Columns());
+                new DataSetOrganisationUnitLinkModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
     }
 }

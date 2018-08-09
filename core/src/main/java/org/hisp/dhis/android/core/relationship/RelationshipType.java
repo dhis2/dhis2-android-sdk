@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -46,8 +45,6 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationshipConstraintAdapter;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipType.Builder.class)
@@ -94,13 +91,6 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
 
     @NonNull
     public abstract ContentValues toContentValues();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, bIsToA());
-        sqLiteBind(sqLiteStatement, 8, aIsToB());
-    }
 
     public abstract Builder toBuilder();
 

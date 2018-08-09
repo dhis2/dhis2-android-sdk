@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -42,8 +40,6 @@ import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataElementModel extends BaseNameableObjectModel {
@@ -151,20 +147,5 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
 
         public abstract DataElementModel build();
 
-    }
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, valueType());
-        sqLiteBind(sqLiteStatement, 12, zeroIsSignificant());
-        sqLiteBind(sqLiteStatement, 13, aggregationType());
-        sqLiteBind(sqLiteStatement, 14, formName());
-        sqLiteBind(sqLiteStatement, 15, numberType());
-        sqLiteBind(sqLiteStatement, 16, domainType());
-        sqLiteBind(sqLiteStatement, 17, dimension());
-        sqLiteBind(sqLiteStatement, 18, displayFormName());
-        sqLiteBind(sqLiteStatement, 19, optionSet());
-        sqLiteBind(sqLiteStatement, 20, categoryCombo());
     }
 }

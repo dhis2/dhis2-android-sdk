@@ -28,20 +28,36 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 public final class SectionGreyedFieldsLinkStore {
 
     private SectionGreyedFieldsLinkStore() {}
+
+    private static final StatementBinder<SectionGreyedFieldsLinkModel> BINDER
+            = new StatementBinder<SectionGreyedFieldsLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull SectionGreyedFieldsLinkModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.section());
+            sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
+        }
+    };
 
     public static LinkModelStore<SectionGreyedFieldsLinkModel> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.linkModelStore(databaseAdapter,
                 SectionGreyedFieldsLinkModel.TABLE,
                 new SectionGreyedFieldsLinkModel.Columns(),
-                SectionGreyedFieldsLinkModel.Columns.SECTION);
+                SectionGreyedFieldsLinkModel.Columns.SECTION,
+                BINDER);
     }
-
 }

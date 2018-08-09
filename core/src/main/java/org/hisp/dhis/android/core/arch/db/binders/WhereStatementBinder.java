@@ -26,39 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.arch.db.binders;
 
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-public final class IndicatorStore {
-
-    private IndicatorStore() {}
-
-    private static StatementBinder<IndicatorModel> BINDER = new NameableStatementBinder<IndicatorModel>() {
-        @Override
-        public void bindToStatement(@NonNull IndicatorModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 11, o.annualized());
-            sqLiteBind(sqLiteStatement, 12, o.indicatorType());
-            sqLiteBind(sqLiteStatement, 13, o.numerator());
-            sqLiteBind(sqLiteStatement, 14, o.numeratorDescription());
-            sqLiteBind(sqLiteStatement, 15, o.denominator());
-            sqLiteBind(sqLiteStatement, 16, o.denominatorDescription());
-            sqLiteBind(sqLiteStatement, 17, o.url());
-        }
-    };
-
-    public static IdentifiableObjectStore<IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, IndicatorModel.TABLE,
-                new IndicatorModel.Columns().all(), BINDER);
-    }
+public interface WhereStatementBinder<M> {
+    void bindToUpdateWhereStatement(@NonNull M m, @NonNull SQLiteStatement sqLiteStatement);
 }

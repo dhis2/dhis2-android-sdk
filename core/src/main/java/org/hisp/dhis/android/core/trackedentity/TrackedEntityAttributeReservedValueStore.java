@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
@@ -41,6 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel.factory;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class TrackedEntityAttributeReservedValueStore
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValueModel>
@@ -49,8 +52,11 @@ public final class TrackedEntityAttributeReservedValueStore
     private TrackedEntityAttributeReservedValueStore(DatabaseAdapter databaseAdapter,
                                                      SQLiteStatement insertStatement,
                                                      SQLiteStatement updateWhereStatement,
-                                                     SQLStatementBuilder builder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+                                                     SQLStatementBuilder builder,
+                                                     StatementBinder<TrackedEntityAttributeReservedValueModel> binder,
+                                                     WhereStatementBinder<TrackedEntityAttributeReservedValueModel>
+                                                             whereBinder) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
     }
 
     @Override
@@ -78,6 +84,34 @@ public final class TrackedEntityAttributeReservedValueStore
                 Columns.ORGANISATION_UNIT + "='" + organisationUnitUid + "'";
     }
 
+    private static final StatementBinder<TrackedEntityAttributeReservedValueModel> BINDER
+            = new StatementBinder<TrackedEntityAttributeReservedValueModel>() {
+        @Override
+        public void bindToStatement(@NonNull TrackedEntityAttributeReservedValueModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.ownerObject());
+            sqLiteBind(sqLiteStatement, 2, o.ownerUid());
+            sqLiteBind(sqLiteStatement, 3, o.key());
+            sqLiteBind(sqLiteStatement, 4, o.value());
+            sqLiteBind(sqLiteStatement, 5, o.created());
+            sqLiteBind(sqLiteStatement, 6, o.expiryDate());
+            sqLiteBind(sqLiteStatement, 7, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 8, o.temporalValidityDate());
+        }
+    };
+
+    private static final WhereStatementBinder<TrackedEntityAttributeReservedValueModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<TrackedEntityAttributeReservedValueModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull TrackedEntityAttributeReservedValueModel o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 9, o.ownerUid());
+            sqLiteBind(sqLiteStatement, 10, o.value());
+            sqLiteBind(sqLiteStatement, 11, o.organisationUnit());
+        }
+    };
+
+
     public static TrackedEntityAttributeReservedValueStoreInterface
     create(DatabaseAdapter databaseAdapter) {
         BaseModel.Columns columns = new TrackedEntityAttributeReservedValueModel.Columns();
@@ -89,6 +123,8 @@ public final class TrackedEntityAttributeReservedValueStore
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder);
+                statementBuilder,
+                BINDER,
+                WHERE_UPDATE_BINDER);
     }
 }

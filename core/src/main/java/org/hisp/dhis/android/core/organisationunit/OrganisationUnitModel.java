@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -43,8 +41,6 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
@@ -110,17 +106,6 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     @Nullable
     @ColumnName(Columns.DISPLAY_NAME_PATH)
     public abstract String displayNamePath();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, path());
-        sqLiteBind(sqLiteStatement, 12, openingDate());
-        sqLiteBind(sqLiteStatement, 13, closedDate());
-        sqLiteBind(sqLiteStatement, 14, level());
-        sqLiteBind(sqLiteStatement, 15, parent());
-        sqLiteBind(sqLiteStatement, 16, displayNamePath());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

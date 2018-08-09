@@ -26,33 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.systeminfo;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import java.io.IOException;
 
-public final class LegendSetStore {
+import static com.google.common.truth.Truth.assertThat;
 
-    private LegendSetStore() {}
+@RunWith(AndroidJUnit4.class)
+public class SystemInfoStoreIntegrationShould extends AbsStoreTestCase {
 
-    private static StatementBinder<LegendSetModel> BINDER = new IdentifiableStatementBinder<LegendSetModel>() {
-        @Override
-        public void bindToStatement(@NonNull LegendSetModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.symbolizer());
-        }
-    };
+    private final SystemInfo systemInfo = SystemInfoSamples.get1();
 
-    public static IdentifiableObjectStore<LegendSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, LegendSetModel.TABLE,
-                new LegendSetModel.Columns().all(), BINDER);
+    @Before
+    @Override
+    public void setUp() throws IOException {
+        super.setUp();
+    }
+
+    @Test
+    public void get_inserted_object() {
+        ObjectWithoutUidStore<SystemInfo> store = SystemInfoStore.create(databaseAdapter());
+        store.insert(systemInfo);
+        SystemInfo systemInfoFromDb = store.selectFirst(SystemInfo.factory);
+        assertThat(systemInfoFromDb).isEqualTo(systemInfo);
     }
 }

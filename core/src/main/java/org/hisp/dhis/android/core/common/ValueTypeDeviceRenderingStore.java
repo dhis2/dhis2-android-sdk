@@ -28,14 +28,49 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ValueTypeDeviceRenderingStore {
 
     private ValueTypeDeviceRenderingStore() {}
 
+    private static final StatementBinder<ValueTypeDeviceRenderingModel> BINDER
+            = new StatementBinder<ValueTypeDeviceRenderingModel>() {
+
+        @Override
+        public void bindToStatement(@NonNull ValueTypeDeviceRenderingModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.uid());
+            sqLiteBind(sqLiteStatement, 2, o.objectTable());
+            sqLiteBind(sqLiteStatement, 3, o.deviceType());
+            sqLiteBind(sqLiteStatement, 4, o.type());
+            sqLiteBind(sqLiteStatement, 5, o.min());
+            sqLiteBind(sqLiteStatement, 6, o.max());
+            sqLiteBind(sqLiteStatement, 7, o.step());
+            sqLiteBind(sqLiteStatement, 8, o.decimalPoints());
+        }
+    };
+
+    private static final WhereStatementBinder<ValueTypeDeviceRenderingModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<ValueTypeDeviceRenderingModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull ValueTypeDeviceRenderingModel o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+
+            sqLiteBind(sqLiteStatement, 9, o.uid());
+            sqLiteBind(sqLiteStatement, 10, o.deviceType());
+        }
+    };
+
     public static ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ValueTypeDeviceRenderingModel.TABLE,
-                new ValueTypeDeviceRenderingModel.Columns());
+                new ValueTypeDeviceRenderingModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
     }
 }

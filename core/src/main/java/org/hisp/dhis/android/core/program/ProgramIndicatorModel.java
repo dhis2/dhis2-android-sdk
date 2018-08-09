@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -39,8 +38,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
@@ -126,16 +123,5 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
         public abstract Builder program(@Nullable String program);
 
         public abstract ProgramIndicatorModel build();
-    }
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, displayInForm());
-        sqLiteBind(sqLiteStatement, 12, expression());
-        sqLiteBind(sqLiteStatement, 13, dimensionItem());
-        sqLiteBind(sqLiteStatement, 14, filter());
-        sqLiteBind(sqLiteStatement, 15, decimals());
-        sqLiteBind(sqLiteStatement, 16, program());
     }
 }

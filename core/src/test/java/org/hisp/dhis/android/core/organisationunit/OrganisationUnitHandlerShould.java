@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
@@ -75,6 +77,12 @@ public class OrganisationUnitHandlerShould {
     private LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel> dataSetDataSetOrganisationUnitLinkHandler;
 
     @Mock
+    private CollectionCleaner<ObjectWithUid> programCollectionCleaner;
+
+    @Mock
+    private CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
+
+    @Mock
     private OrganisationUnit organisationUnit;
 
     @Mock
@@ -100,7 +108,8 @@ public class OrganisationUnitHandlerShould {
 
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkHandler,
-                dataSetDataSetOrganisationUnitLinkHandler, programUids, dataSetUids, scope, user);
+                dataSetDataSetOrganisationUnitLinkHandler, programCollectionCleaner, dataSetCollectionCleaner,
+                programUids, dataSetUids, scope, user);
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(user.uid()).thenReturn("test_user_uid");
@@ -132,7 +141,7 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
-                null, null, scope, user);
+                programCollectionCleaner, dataSetCollectionCleaner, null, null, scope, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);
     }

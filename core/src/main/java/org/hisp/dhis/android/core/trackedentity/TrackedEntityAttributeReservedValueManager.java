@@ -123,7 +123,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         if (organisationUnitModel == null) {
             throw D2CallException.builder()
                     .errorCode(D2ErrorCode.ORGANISATION_UNIT_NOT_FOUND)
-                    .errorDescription("Organisation unit not found in database")
+                    .errorDescription("Organisation unit " + organisationUnitUid + " not found in database")
                     .isHttpError(false)
                     .build();
         }

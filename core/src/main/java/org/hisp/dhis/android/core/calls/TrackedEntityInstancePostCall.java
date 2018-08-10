@@ -87,7 +87,13 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
         trackedEntityInstancePayload.trackedEntityInstances = trackedEntityInstancesToPost;
 
-        String strategy = "CREATE_AND_UPDATE";
+        String strategy;
+        if (versionManager.is2_29()) {
+            strategy = "CREATE_AND_UPDATE";
+        } else {
+            strategy = "SYNC";
+        }
+
         WebResponse webResponse = new APICallExecutor().executeObjectCall(
                 trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy));
         handleWebResponse(webResponse);

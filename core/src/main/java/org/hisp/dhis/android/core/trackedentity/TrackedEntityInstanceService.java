@@ -29,7 +29,7 @@ public interface TrackedEntityInstanceService {
     String PROGRAM = "program";
     String INCLUDE_DELETED = "includeDeleted";
     String FILTER = "filter";
-    String STRATEGY = "importStrategy";
+    String STRATEGY = "strategy";
 
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<WebResponse> postTrackedEntityInstances(

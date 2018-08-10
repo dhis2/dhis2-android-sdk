@@ -5,6 +5,8 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -20,9 +22,7 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipStore;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeStore;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -222,6 +222,38 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         List<TrackedEntityInstance> teiList =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
 
         assertThat(teiList.size() == 1).isTrue();
+    }
+
+    /* Set Dhis2 server to 2.30 or up*/
+    //@Test
+    public void post_one_tei_and_delete_it() throws Exception {
+        downloadMetadata();
+        d2.downloadTrackedEntityInstances(1, true).call();
+
+        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+
+        FeatureType featureType =
+                tei.featureType() == FeatureType.POLYGON ? FeatureType.POINT : FeatureType.POLYGON;
+
+        String newUid = codeGenerator.generate();
+
+        insertATei(newUid, tei, featureType);
+
+        d2.syncTrackedEntityInstances().call();
+        List<TrackedEntityInstance> response =
+                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
+        assertThat(response.size()).isEqualTo(1);
+
+        trackedEntityInstanceStore.setState(newUid, State.TO_DELETE);
+
+        d2.syncTrackedEntityInstances().call();
+
+        try {
+            d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
+        } catch (D2CallException e) {
+            assertThat(e.isHttpError()).isTrue();
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
+        }
     }
 
     //@Test

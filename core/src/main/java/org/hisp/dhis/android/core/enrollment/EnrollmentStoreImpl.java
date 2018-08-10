@@ -132,7 +132,8 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
 
             +
             ") " +
-            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' OR TrackedEntityInstance.state = 'TO_DELETE' "
+            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE'" +
+            " OR TrackedEntityInstance.state = 'TO_DELETE' "
             +
             " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Enrollment.state = 'TO_DELETE';";
 

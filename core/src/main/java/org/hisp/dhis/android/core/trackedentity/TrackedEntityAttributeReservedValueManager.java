@@ -128,6 +128,14 @@ public final class TrackedEntityAttributeReservedValueManager {
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
+        if (organisationUnitModel == null) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.ORGANISATION_UNIT_NOT_FOUND)
+                    .errorDescription("Organisation unit not found in database")
+                    .isHttpError(false)
+                    .build();
+        }
+
         String trackedEntityAttributePattern;
         try {
             trackedEntityAttributePattern = trackedEntityAttributeStore.getPattern(trackedEntityAttributeUid);

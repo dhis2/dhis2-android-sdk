@@ -132,29 +132,6 @@ public abstract class DataValueModel extends BaseDataModel {
     @ColumnName(Columns.FOLLOW_UP)
     public abstract Boolean followUp();
 
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, dataElement());
-        sqLiteBind(sqLiteStatement, 2, period());
-        sqLiteBind(sqLiteStatement, 3, organisationUnit());
-        sqLiteBind(sqLiteStatement, 4, categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 5, attributeOptionCombo());
-        sqLiteBind(sqLiteStatement, 6, value());
-        sqLiteBind(sqLiteStatement, 7, storedBy());
-        sqLiteBind(sqLiteStatement, 8, created());
-        sqLiteBind(sqLiteStatement, 9, lastUpdated());
-        sqLiteBind(sqLiteStatement, 10, comment());
-        sqLiteBind(sqLiteStatement, 11, followUp());
-        sqLiteBind(sqLiteStatement, 12, state());
-    }
-
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 13, dataElement());
-        sqLiteBind(sqLiteStatement, 14, period());
-        sqLiteBind(sqLiteStatement, 15, organisationUnit());
-        sqLiteBind(sqLiteStatement, 16, categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 17, attributeOptionCombo());
-    }
-
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder dataElement(String dataElement);

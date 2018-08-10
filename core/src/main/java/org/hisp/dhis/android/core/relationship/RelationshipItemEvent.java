@@ -32,24 +32,28 @@ import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipItemEvent.Builder.class)
 public abstract class RelationshipItemEvent {
 
-    private static final String EVENT = "event";
-
-    public static final Field<RelationshipItemEvent, String> event = Field.create(EVENT);
-
     @NonNull
-    @JsonProperty(EVENT)
     public abstract String event();
 
-    @JsonCreator
-    public static RelationshipItemEvent create(
-            @JsonProperty(EVENT) String event) {
-        return new AutoValue_RelationshipItemEvent(event);
+    public static Builder builder() {
+        return new AutoValue_RelationshipItemEvent.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder event(String event);
+
+        public abstract RelationshipItemEvent build();
     }
 }

@@ -260,7 +260,7 @@ public class TrackedEntityInstanceShould {
 
         assertThat(trackedEntityInstance.relationships().get(0).trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
         assertThat(trackedEntityInstance.relationships().get(0).trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
-        assertThat(trackedEntityInstance.relationships().get(0).relationship()).isEqualTo("V2kkHafqs8G");
+        assertThat(trackedEntityInstance.relationships().get(0).uid()).isEqualTo("V2kkHafqs8G");
 
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("ruQQnf6rswq");
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute()).isEqualTo("w75KJ2mc4zz");

@@ -28,28 +28,12 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.data.api.Field;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+final class RelationshipItemTrackedEntityInstanceFields {
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
-    @NonNull
-    public abstract String enrollment();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract RelationshipItemEnrollment build();
-    }
+    static final Field<RelationshipItemTrackedEntityInstance, String> trackedEntityInstance =
+            Field.create(TRACKED_ENTITY_INSTANCE);
 }

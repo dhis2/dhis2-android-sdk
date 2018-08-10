@@ -47,7 +47,7 @@ public class RelationshipItemModelBuilderShould {
     private RelationshipConstraintType CONSTRAINT_TYPE = RelationshipConstraintType.FROM;
 
     private Relationship relationship = Relationship.builder()
-            .relationship("relationship_uid")
+            .uid("relationship_uid")
             .relationshipType("type").build();
 
     @Before
@@ -60,11 +60,7 @@ public class RelationshipItemModelBuilderShould {
     }
 
     private RelationshipItem buildPojo() {
-        return RelationshipItem.create(
-                RelationshipItemTrackedEntityInstance.create(TEI_UID),
-                null,
-                null
-        );
+        return RelationshipItem.teiItem(TEI_UID);
     }
 
     private RelationshipItemModel buildModel() {
@@ -73,7 +69,7 @@ public class RelationshipItemModelBuilderShould {
 
     @Test
     public void copy_pojo_relationship_properties() {
-        assertThat(model.relationship()).isEqualTo(relationship.relationship());
+        assertThat(model.relationship()).isEqualTo(relationship.uid());
         assertThat(model.relationshipItemType()).isEqualTo(CONSTRAINT_TYPE);
         assertThat(model.trackedEntityInstance()).isEqualTo(TEI_UID);
         assertThat(model.enrollment()).isNull();

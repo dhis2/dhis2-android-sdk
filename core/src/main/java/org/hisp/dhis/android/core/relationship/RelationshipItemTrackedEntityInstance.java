@@ -32,25 +32,28 @@ import android.support.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.api.Field;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipItemTrackedEntityInstance.Builder.class)
 public abstract class RelationshipItemTrackedEntityInstance {
 
-    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-
-    public static final Field<RelationshipItemTrackedEntityInstance, String> trackedEntityInstance =
-            Field.create(TRACKED_ENTITY_INSTANCE);
-
     @NonNull
-    @JsonProperty(TRACKED_ENTITY_INSTANCE)
     public abstract String trackedEntityInstance();
 
-    @JsonCreator
-    public static RelationshipItemTrackedEntityInstance create(
-            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance) {
-        return new AutoValue_RelationshipItemTrackedEntityInstance(trackedEntityInstance);
+    public static Builder builder() {
+        return new AutoValue_RelationshipItemTrackedEntityInstance.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract RelationshipItemTrackedEntityInstance build();
     }
 }

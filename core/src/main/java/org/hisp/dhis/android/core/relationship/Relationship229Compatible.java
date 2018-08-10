@@ -28,28 +28,44 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-    @NonNull
-    public abstract String enrollment();
+@AutoValue
+@JsonInclude(Include.NON_NULL)
+@JsonDeserialize(builder = AutoValue_Relationship229Compatible.Builder.class)
+public abstract class Relationship229Compatible extends BaseRelationship {
+
+    @Nullable
+    public abstract String trackedEntityInstanceA();
+
+    @Nullable
+    public abstract String trackedEntityInstanceB();
+
+    @Nullable
+    public abstract TrackedEntityInstance relative();
+
 
     public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
+        return new AutoValue_Relationship229Compatible.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
+    public abstract static class Builder extends BaseRelationship.Builder<Relationship229Compatible.Builder> {
+        public abstract Builder trackedEntityInstanceA(String trackedEntityInstanceA);
 
-        public abstract RelationshipItemEnrollment build();
+        public abstract Builder trackedEntityInstanceB(String trackedEntityInstanceB);
+
+        public abstract Builder relative(TrackedEntityInstance relative);
+
+        public abstract Relationship229Compatible build();
     }
 }

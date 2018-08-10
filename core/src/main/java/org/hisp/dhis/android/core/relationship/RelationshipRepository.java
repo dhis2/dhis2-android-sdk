@@ -140,21 +140,11 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
                     toModel = relationshipItemModel;
                 }
 
-                RelationshipItem fromItem =  RelationshipItem.create(
-                        RelationshipItemTrackedEntityInstance.create(fromModel.trackedEntityInstance()),
-                        null,
-                        null);
-
-                RelationshipItem toItem = RelationshipItem.create(
-                        RelationshipItemTrackedEntityInstance.create(toModel.trackedEntityInstance()),
-                        null,
-                        null);
-
                 Relationship relationship = Relationship.builder()
-                        .relationship(relationshipModel.uid())
+                        .uid(relationshipModel.uid())
                         .relationshipType(relationshipModel.relationshipType())
-                        .from(fromItem)
-                        .to(toItem)
+                        .from(RelationshipItem.teiItem(fromModel.trackedEntityInstance()))
+                        .to(RelationshipItem.teiItem(toModel.trackedEntityInstance()))
                         .build();
 
                 relationships.add(relationship);

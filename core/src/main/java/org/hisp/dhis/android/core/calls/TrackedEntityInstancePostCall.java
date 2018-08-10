@@ -18,8 +18,9 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
-import org.hisp.dhis.android.core.relationship.RelationshipVersionTransformer;
+import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -53,7 +54,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
-    private final RelationshipVersionTransformer relationshipVersionTransformer;
+    private final RelationshipDHISVersionManager relationshipDHISVersionManager;
 
     private TrackedEntityInstancePostCall(@NonNull RelationshipRepositoryInterface relationshipRepository,
                                           @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
@@ -62,7 +63,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                           @NonNull EventStore eventStore,
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                           @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
-                                          @NonNull RelationshipVersionTransformer relationshipVersionTransformer) {
+                                          @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager) {
         this.relationshipRepository = relationshipRepository;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
@@ -70,7 +71,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
-        this.relationshipVersionTransformer = relationshipVersionTransformer;
+        this.relationshipDHISVersionManager = relationshipDHISVersionManager;
     }
 
     @Override
@@ -169,7 +170,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
             // Building relationships for TEI
             List<Relationship> dbRelationships =
                     relationshipRepository.getRelationshipsByTEI(trackedEntityInstance.uid());
-            List<Relationship> versionAwareRelationships = relationshipVersionTransformer.toServer(dbRelationships);
+            List<Relationship229Compatible> versionAwareRelationships =
+                    relationshipDHISVersionManager.toServer(dbRelationships);
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
@@ -212,7 +214,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 new EventStoreImpl(databaseAdapter),
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
-                new RelationshipVersionTransformer(internalModules.systemInfo.publicModule.versionManager)
+                new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager)
         );
     }
 }

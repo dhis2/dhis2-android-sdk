@@ -28,43 +28,13 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-
 @AutoValue
-@JsonInclude(Include.NON_NULL)
 @JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
-public abstract class Relationship {
-
-    @Nullable
-    public abstract String trackedEntityInstanceA();
-
-    @Nullable
-    public abstract String trackedEntityInstanceB();
-
-    public abstract String relationship();
-
-    @Nullable
-    public abstract String relationshipType();
-
-    @Nullable
-    public abstract String displayName();
-
-    @Nullable
-    public abstract TrackedEntityInstance relative();
-
-    @Nullable
-    public abstract RelationshipItem from();
-
-    @Nullable
-    public abstract RelationshipItem to();
+public abstract class Relationship extends BaseRelationship {
 
     public static Builder builder() {
         return new AutoValue_Relationship.Builder();
@@ -72,22 +42,7 @@ public abstract class Relationship {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder trackedEntityInstanceA(String trackedEntityInstanceA);
-
-        public abstract Builder trackedEntityInstanceB(String trackedEntityInstanceB);
-
-        public abstract Builder relationship(String relationship);
-
-        public abstract Builder relationshipType(String relationshipType);
-
-        public abstract Builder displayName(String displayName);
-
-        public abstract Builder relative(TrackedEntityInstance relative);
-
-        public abstract Builder from(RelationshipItem from);
-
-        public abstract Builder to(RelationshipItem to);
+    public abstract static class Builder extends BaseRelationship.Builder<Builder> {
 
         public abstract Relationship build();
     }

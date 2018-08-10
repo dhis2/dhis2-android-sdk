@@ -8,12 +8,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -25,19 +25,19 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
         "PMD.NPathComplexity"
 })
 public class TrackedEntityInstanceHandler {
-    private final DHISVersionManager versionManager;
+    private final RelationshipDHISVersionManager relationshipVersionManager;
     private final RelationshipRepositoryInterface relationshipRepository;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
 
     public TrackedEntityInstanceHandler(
-            @NonNull DHISVersionManager versionManager,
+            @NonNull RelationshipDHISVersionManager relationshipVersionManager,
             @NonNull RelationshipRepositoryInterface relationshipRepository,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
             @NonNull EnrollmentHandler enrollmentHandler) {
-        this.versionManager = versionManager;
+        this.relationshipVersionManager = relationshipVersionManager;
         this.relationshipRepository = relationshipRepository;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
@@ -74,49 +74,23 @@ public class TrackedEntityInstanceHandler {
 
             enrollmentHandler.handle(enrollments);
 
-            for (Relationship relationship : trackedEntityInstance.relationships()) {
+            for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
 
-                String relationshipType;
-                String fromTEIUid;
-                String toTEIUid;
-                String teiUid = trackedEntityInstance.uid();
-                TrackedEntityInstance relatedTEI;
+                Relationship relationship = relationshipVersionManager.fromServer(relationship229);
+                TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
+                        trackedEntityInstance.uid());
 
-                if (versionManager.is2_29()) {
-                    relationshipType = relationship.relationship();
-                    fromTEIUid = relationship.trackedEntityInstanceA();
-                    toTEIUid = relationship.trackedEntityInstanceB();
-                    relatedTEI = relationship.relative();
-                } else {
-                    relationshipType = relationship.relationshipType();
+                if (relativeTEI != null) {
+                    this.handle(relativeTEI, true);
 
-                    fromTEIUid = getTEIUidFromRelationshipItem(relationship.from());
-                    toTEIUid = getTEIUidFromRelationshipItem(relationship.to());
-
-                    if (fromTEIUid == null || toTEIUid == null) {
-                        continue;
-                    }
-
-                    String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
-
-                    relatedTEI = TrackedEntityInstance.create(relatedTEIUid, null, null,
-                            null, null, null, null, null,
-                            null, false, null, Collections.<Relationship>emptyList(), null);
-                }
-
-                if (relatedTEI != null && fromTEIUid != null && toTEIUid != null) {
-                    this.handle(relatedTEI, true);
-                    relationshipRepository.createTEIRelationship(relationshipType, fromTEIUid, toTEIUid);
+                    // TODO use handler!
+                    relationshipRepository.createTEIRelationship(
+                            relationship.relationshipType(),
+                            relationship.from().trackedEntityInstance().trackedEntityInstance(),
+                            relationship.to().trackedEntityInstance().trackedEntityInstance());
                 }
             }
         }
-    }
-
-    private String getTEIUidFromRelationshipItem(RelationshipItem item) {
-        if (item != null && item.trackedEntityInstance() != null) {
-            return item.trackedEntityInstance().trackedEntityInstance();
-        }
-        return null;
     }
 
     private void updateOrInsert(@NonNull TrackedEntityInstance trackedEntityInstance, State state) {
@@ -149,7 +123,7 @@ public class TrackedEntityInstanceHandler {
     public static TrackedEntityInstanceHandler create(DatabaseAdapter databaseAdapter,
                                                       D2InternalModules internalModules) {
         return new TrackedEntityInstanceHandler(
-                internalModules.systemInfo.publicModule.versionManager,
+                new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
                 internalModules.relationshipModule.publicModule.relationship,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityAttributeValueHandler.create(databaseAdapter),

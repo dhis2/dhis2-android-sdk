@@ -36,7 +36,7 @@ public class RelationshipItemModelBuilder extends ModelBuilder<RelationshipItem,
 
     RelationshipItemModelBuilder(Relationship relationship, RelationshipConstraintType type) {
         this.builder = RelationshipItemModel.builder()
-                .relationship(relationship.relationship())
+                .relationship(relationship.uid())
                 .relationshipItemType(type);
     }
 

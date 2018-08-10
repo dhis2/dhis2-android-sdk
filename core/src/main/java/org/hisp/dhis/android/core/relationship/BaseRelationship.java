@@ -28,36 +28,40 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RelationshipVersionTransformer {
+public abstract class BaseRelationship {
 
-    private final DHISVersionManager versionManager;
+    @NonNull
+    @JsonProperty(RelationshipFields.RELATIONSHIP)
+    public abstract String uid();
 
-    public RelationshipVersionTransformer(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
-    }
+    @Nullable
+    public abstract String relationshipType();
 
-    public List<Relationship> toServer(List<Relationship> storedRelationships) {
-        if (versionManager.is2_29()) {
-            List<Relationship> relationships29 = new ArrayList<>();
-            for (Relationship relationship : storedRelationships) {
-                RelationshipItemTrackedEntityInstance fromInstance = relationship.from().trackedEntityInstance();
-                RelationshipItemTrackedEntityInstance toInstance = relationship.to().trackedEntityInstance();
-                relationships29.add(
-                        Relationship.builder()
-                                .trackedEntityInstanceA(fromInstance.trackedEntityInstance())
-                                .trackedEntityInstanceB(toInstance.trackedEntityInstance())
-                                .relationship(relationship.relationshipType())
-                                .build()
-                );
-            }
-            return relationships29;
-        } else {
-            return storedRelationships;
-        }
+    @Nullable
+    public abstract String displayName();
+
+    @Nullable
+    public abstract RelationshipItem from();
+
+    @Nullable
+    public abstract RelationshipItem to();
+
+    public abstract static class Builder<T extends Builder> {
+
+        @JsonProperty(RelationshipFields.RELATIONSHIP)
+        public abstract T uid(String uid);
+
+        public abstract T relationshipType(String relationshipType);
+
+        public abstract T displayName(String displayName);
+
+        public abstract T from(RelationshipItem from);
+
+        public abstract T to(RelationshipItem to);
     }
 }

@@ -28,28 +28,23 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+final class RelationshipItemFields {
+    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    private static final String ENROLLMENT = "enrollment";
+    private static final String EVENT = "event";
 
-@AutoValue
-@JsonDeserialize(builder = AutoValue_RelationshipItemEnrollment.Builder.class)
-public abstract class RelationshipItemEnrollment {
+    private static final NestedField<RelationshipItem, RelationshipItemTrackedEntityInstance> trackedEntityInstance =
+            NestedField.create(TRACKED_ENTITY_INSTANCE);
+    private static final NestedField<RelationshipItem, RelationshipItemEnrollment> enrollment
+            = NestedField.create(ENROLLMENT);
+    private static final NestedField<RelationshipItem, RelationshipItemEvent> event = NestedField.create(EVENT);
 
-    @NonNull
-    public abstract String enrollment();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
-    }
-
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract RelationshipItemEnrollment build();
-    }
+    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder().fields(
+            trackedEntityInstance.with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+            enrollment.with(RelationshipItemEnrollmentFields.enrollment),
+            event.with(RelationshipItemEventFields.event)
+    ).build();
 }

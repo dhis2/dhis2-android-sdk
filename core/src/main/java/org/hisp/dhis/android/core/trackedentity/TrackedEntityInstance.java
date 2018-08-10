@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
 import java.util.Date;
@@ -77,7 +78,7 @@ public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface
             = NestedField.create(ENROLLMENTS);
     private static final NestedField<TrackedEntityInstance, TrackedEntityAttributeValue> trackedEntityAttributeValues
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE_VALUES);
-    private static final NestedField<TrackedEntityInstance, Relationship> relationships
+    private static final NestedField<TrackedEntityInstance, Relationship229Compatible> relationships
             = NestedField.create(RELATIONSHIPS);
 
     public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
@@ -132,7 +133,7 @@ public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface
 
     @Nullable
     @JsonProperty(RELATIONSHIPS)
-    public abstract List<Relationship> relationships();
+    public abstract List<Relationship229Compatible> relationships();
 
     @Nullable
     @JsonProperty(ENROLLMENTS)
@@ -152,7 +153,7 @@ public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                     List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-            @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
+            @JsonProperty(RELATIONSHIPS) List<Relationship229Compatible> relationships,
             @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
         return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 organisationUnit, trackedEntityType, coordinates, featureType, deleted,

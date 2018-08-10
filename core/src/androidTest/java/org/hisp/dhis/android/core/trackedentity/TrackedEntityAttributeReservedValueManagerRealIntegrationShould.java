@@ -163,6 +163,11 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         assertThat(selectAll().size(), is(203));
     }
 
+    //@Test (expected = D2CallException.class)
+    public void return_d2_call_exception_if_no_valid_org_unit() throws D2CallException {
+        d2.popTrackedEntityAttributeReservedValue(ownerUid, "not_stored_organisation_unit_uid");
+    }
+
     private Set<TrackedEntityAttributeReservedValueModel> selectAll() {
         return store.selectAll(TrackedEntityAttributeReservedValueModel.factory);
     }

@@ -117,14 +117,6 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void fillReservedValues(String trackedEntityAttributeUid, String organisationUnitUid,
                                     Integer remainingValues) throws D2CallException {
 
-        D2CallExecutor executor = new D2CallExecutor();
-
-        SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
-
-        GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                systemInfo.serverDate(), versionManager);
-
-        Integer numberToReserve = FILL_UP_TO - remainingValues;
         OrganisationUnitModel organisationUnitModel =
                 this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
@@ -135,6 +127,15 @@ public final class TrackedEntityAttributeReservedValueManager {
                     .isHttpError(false)
                     .build();
         }
+
+        D2CallExecutor executor = new D2CallExecutor();
+
+        SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
+
+        GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
+                systemInfo.serverDate(), versionManager);
+
+        Integer numberToReserve = FILL_UP_TO - remainingValues;
 
         String trackedEntityAttributePattern;
         try {

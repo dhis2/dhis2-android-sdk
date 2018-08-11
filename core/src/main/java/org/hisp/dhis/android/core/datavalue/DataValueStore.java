@@ -93,31 +93,33 @@ public final class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueMod
 
     private static final StatementBinder<DataValueModel> BINDER = new StatementBinder<DataValueModel>() {
         @Override
-        public void bindToStatement(@NonNull DataValueModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.dataElement());
-            sqLiteBind(sqLiteStatement, 2, o.period());
-            sqLiteBind(sqLiteStatement, 3, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 4, o.categoryOptionCombo());
-            sqLiteBind(sqLiteStatement, 5, o.attributeOptionCombo());
-            sqLiteBind(sqLiteStatement, 6, o.value());
-            sqLiteBind(sqLiteStatement, 7, o.storedBy());
-            sqLiteBind(sqLiteStatement, 8, o.created());
-            sqLiteBind(sqLiteStatement, 9, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 10, o.comment());
-            sqLiteBind(sqLiteStatement, 11, o.followUp());
-            sqLiteBind(sqLiteStatement, 12, o.state());
+        public void bindToStatement(@NonNull DataValueModel dataValueModel,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, dataValueModel.dataElement());
+            sqLiteBind(sqLiteStatement, 2, dataValueModel.period());
+            sqLiteBind(sqLiteStatement, 3, dataValueModel.organisationUnit());
+            sqLiteBind(sqLiteStatement, 4, dataValueModel.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 5, dataValueModel.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 6, dataValueModel.value());
+            sqLiteBind(sqLiteStatement, 7, dataValueModel.storedBy());
+            sqLiteBind(sqLiteStatement, 8, dataValueModel.created());
+            sqLiteBind(sqLiteStatement, 9, dataValueModel.lastUpdated());
+            sqLiteBind(sqLiteStatement, 10, dataValueModel.comment());
+            sqLiteBind(sqLiteStatement, 11, dataValueModel.followUp());
+            sqLiteBind(sqLiteStatement, 12, dataValueModel.state());
         }
     };
 
     private static final WhereStatementBinder<DataValueModel> WHERE_UPDATE_BINDER
             = new WhereStatementBinder<DataValueModel>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull DataValueModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 13, o.dataElement());
-            sqLiteBind(sqLiteStatement, 14, o.period());
-            sqLiteBind(sqLiteStatement, 15, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 16, o.categoryOptionCombo());
-            sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
+        public void bindToUpdateWhereStatement(@NonNull DataValueModel dataValueModel,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 13, dataValueModel.dataElement());
+            sqLiteBind(sqLiteStatement, 14, dataValueModel.period());
+            sqLiteBind(sqLiteStatement, 15, dataValueModel.organisationUnit());
+            sqLiteBind(sqLiteStatement, 16, dataValueModel.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 17, dataValueModel.attributeOptionCombo());
         }
     };
 

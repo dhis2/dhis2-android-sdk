@@ -105,6 +105,7 @@ public final class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueMod
             sqLiteBind(sqLiteStatement, 9, o.lastUpdated());
             sqLiteBind(sqLiteStatement, 10, o.comment());
             sqLiteBind(sqLiteStatement, 11, o.followUp());
+            sqLiteBind(sqLiteStatement, 12, o.state());
         }
     };
 
@@ -112,11 +113,11 @@ public final class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueMod
             = new WhereStatementBinder<DataValueModel>() {
         @Override
         public void bindToUpdateWhereStatement(@NonNull DataValueModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 12, o.dataElement());
-            sqLiteBind(sqLiteStatement, 13, o.period());
-            sqLiteBind(sqLiteStatement, 14, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 15, o.categoryOptionCombo());
-            sqLiteBind(sqLiteStatement, 16, o.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 13, o.dataElement());
+            sqLiteBind(sqLiteStatement, 14, o.period());
+            sqLiteBind(sqLiteStatement, 15, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 16, o.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
         }
     };
 

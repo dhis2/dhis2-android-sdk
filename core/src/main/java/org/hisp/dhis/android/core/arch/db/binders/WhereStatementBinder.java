@@ -26,11 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.binders;
 
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-public interface StatementBinder {
-    void bindToStatement(@NonNull SQLiteStatement sqLiteStatement);
+public interface WhereStatementBinder<M> {
+    void bindToUpdateWhereStatement(@NonNull M m, @NonNull SQLiteStatement sqLiteStatement);
 }

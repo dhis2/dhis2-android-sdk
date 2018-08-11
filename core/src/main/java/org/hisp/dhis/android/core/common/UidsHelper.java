@@ -41,7 +41,7 @@ public final class UidsHelper {
         return addUids(new HashSet<String>(), objects);
     }
 
-    public static String getUidOrNull(IdentifiableObject object) {
+    public static String getUidOrNull(ObjectWithUidInterface object) {
         return object == null ? null : object.uid();
     }
 

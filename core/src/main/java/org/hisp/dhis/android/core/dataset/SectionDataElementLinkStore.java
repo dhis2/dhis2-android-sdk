@@ -28,18 +28,34 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class SectionDataElementLinkStore {
 
     private SectionDataElementLinkStore() {}
 
+    private static final StatementBinder<SectionDataElementLinkModel> BINDER
+            = new StatementBinder<SectionDataElementLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull SectionDataElementLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.section());
+            sqLiteBind(sqLiteStatement, 2, o.dataElement());
+        }
+    };
+
     public static LinkModelStore<SectionDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
                 SectionDataElementLinkModel.TABLE,
                 new SectionDataElementLinkModel.Columns(),
-                SectionDataElementLinkModel.Columns.SECTION);
+                SectionDataElementLinkModel.Columns.SECTION,
+                BINDER);
     }
 }

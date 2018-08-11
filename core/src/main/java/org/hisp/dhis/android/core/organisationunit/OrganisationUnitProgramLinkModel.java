@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -37,8 +36,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class OrganisationUnitProgramLinkModel extends BaseModel {
@@ -51,11 +48,6 @@ public abstract class OrganisationUnitProgramLinkModel extends BaseModel {
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(), PROGRAM, ORGANISATION_UNIT);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
         }
     }
 
@@ -70,18 +62,6 @@ public abstract class OrganisationUnitProgramLinkModel extends BaseModel {
     @NonNull
     public static OrganisationUnitProgramLinkModel create(Cursor cursor) {
         return AutoValue_OrganisationUnitProgramLinkModel.createFromCursor(cursor);
-    }
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, program());
-        sqLiteBind(sqLiteStatement, 2, organisationUnit());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 3, program());
-        sqLiteBind(sqLiteStatement, 4, organisationUnit());
     }
 
     @NonNull

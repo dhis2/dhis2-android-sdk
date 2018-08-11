@@ -78,6 +78,7 @@ public class DataSetShould extends BaseObjectShould implements ObjectShould {
         assertThat(dataSet.openFuturePeriods()).isEqualTo(0);
         assertThat(dataSet.expiryDays()).isEqualTo(0);
         assertThat(dataSet.categoryComboUid()).isEqualTo("O4VaNks6tta");
+        assertThat(dataSet.dataSetElements().size()).isEqualTo(3);
         assertThat(dataSet.dataInputPeriods().size()).isEqualTo(1);
         assertThat(dataSet.dataInputPeriods().get(0).period()).isEqualTo(ObjectWithUid.create("201801"));
         assertThat(dataSet.indicators().get(0)).isEqualTo(ObjectWithUid.create("OEWO2PpiUKx"));

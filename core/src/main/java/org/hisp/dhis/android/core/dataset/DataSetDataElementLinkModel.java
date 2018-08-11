@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -38,8 +36,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
 @AutoValue
 public abstract class DataSetDataElementLinkModel extends BaseModel {
     public static final String TABLE = "DataSetDataElementLink";
@@ -47,11 +43,12 @@ public abstract class DataSetDataElementLinkModel extends BaseModel {
     public static class Columns extends BaseModel.Columns {
         public static final String DATA_SET = "dataSet";
         public static final String DATA_ELEMENT = "dataElement";
+        public static final String CATEGORY_COMBO = "categoryCombo";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    DATA_SET, DATA_ELEMENT);
+                    DATA_SET, DATA_ELEMENT, CATEGORY_COMBO);
         }
 
         @Override
@@ -76,23 +73,17 @@ public abstract class DataSetDataElementLinkModel extends BaseModel {
     @ColumnName(Columns.DATA_ELEMENT)
     public abstract String dataElement();
 
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, dataSet());
-        sqLiteBind(sqLiteStatement, 2, dataElement());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 3, dataSet());
-        sqLiteBind(sqLiteStatement, 4, dataElement());
-    }
+    @Nullable
+    @ColumnName(Columns.CATEGORY_COMBO)
+    public abstract String categoryCombo();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder dataSet(String dataSet);
 
         public abstract Builder dataElement(String dataElement);
+
+        public abstract Builder categoryCombo(String categoryCombo);
 
         public abstract DataSetDataElementLinkModel build();
     }

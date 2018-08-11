@@ -28,13 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
     public static final String SHORT_NAME = "shortName";
@@ -57,15 +53,6 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     @Nullable
     @Override
     public abstract String displayDescription();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 7, shortName());
-        sqLiteBind(sqLiteStatement, 8, displayShortName());
-        sqLiteBind(sqLiteStatement, 9, description());
-        sqLiteBind(sqLiteStatement, 10, displayDescription());
-    }
 
     @JsonPOJOBuilder(withPrefix = "")
     protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {

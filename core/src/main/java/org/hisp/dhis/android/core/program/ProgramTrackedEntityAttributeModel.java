@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -38,8 +37,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObjectModel {
@@ -99,18 +96,6 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
     @Nullable
     @ColumnName(Columns.SEARCHABLE)
     public abstract Boolean searchable();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        super.bindToStatement(sqLiteStatement);
-        sqLiteBind(sqLiteStatement, 11, mandatory());
-        sqLiteBind(sqLiteStatement, 12, trackedEntityAttribute());
-        sqLiteBind(sqLiteStatement, 13, allowFutureDate());
-        sqLiteBind(sqLiteStatement, 14, displayInList());
-        sqLiteBind(sqLiteStatement, 15, program());
-        sqLiteBind(sqLiteStatement, 16, sortOrder());
-        sqLiteBind(sqLiteStatement, 17, searchable());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {

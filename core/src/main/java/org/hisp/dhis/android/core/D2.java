@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
-import org.hisp.dhis.android.core.calls.TrackerDataCall;
+import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.calls.WipeDBCallable;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallException;
@@ -137,8 +137,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<List<TrackedEntityInstance>> syncTrackerData() {
-        return TrackerDataCall.create(databaseAdapter, retrofit, internalModules);
+    public Callable<List<TrackedEntityInstance>> syncDownSyncedTrackedEntityInstances() {
+        return TrackedEntityInstanceSyncDownCall.create(databaseAdapter, retrofit, internalModules);
     }
 
     @NonNull

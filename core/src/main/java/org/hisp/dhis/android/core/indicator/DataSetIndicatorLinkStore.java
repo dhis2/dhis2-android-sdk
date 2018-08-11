@@ -28,16 +28,34 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataSetIndicatorLinkStore {
 
     private DataSetIndicatorLinkStore() {}
 
-    public static ObjectWithoutUidStore<DataSetIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetIndicatorLinkModel.TABLE,
-                new DataSetIndicatorLinkModel.Columns());
+    private static final StatementBinder<DataSetIndicatorLinkModel> BINDER
+            = new StatementBinder<DataSetIndicatorLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataSetIndicatorLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.dataSet());
+            sqLiteBind(sqLiteStatement, 2, o.indicator());
+        }
+    };
+
+    public static LinkModelStore<DataSetIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
+                DataSetIndicatorLinkModel.TABLE,
+                new DataSetIndicatorLinkModel.Columns(),
+                DataSetIndicatorLinkModel.Columns.DATA_SET,
+                BINDER);
     }
 }

@@ -28,16 +28,31 @@
 
 package org.hisp.dhis.android.core.legendset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class LegendSetStore {
 
     private LegendSetStore() {}
 
+    private static StatementBinder<LegendSetModel> BINDER = new IdentifiableStatementBinder<LegendSetModel>() {
+        @Override
+        public void bindToStatement(@NonNull LegendSetModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.symbolizer());
+        }
+    };
+
     public static IdentifiableObjectStore<LegendSetModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, LegendSetModel.TABLE,
-                new LegendSetModel.Columns().all());
+                new LegendSetModel.Columns().all(), BINDER);
     }
 }

@@ -31,19 +31,20 @@ package org.hisp.dhis.android.core.common;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class LinkModelStoreImpl<M extends BaseModel>
-        extends ObjectWithoutUidStoreImpl<M> implements LinkModelStore<M> {
+        extends ObjectStoreImpl<M> implements LinkModelStore<M> {
 
     private final String masterColumn;
 
     LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
-                              SQLiteStatement insertStatement,
-                              SQLiteStatement updateWhereStatement,
-                              SQLStatementBuilder builder,
-                              String masterColumn) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder);
+                       SQLiteStatement insertStatement,
+                       SQLStatementBuilder builder,
+                       String masterColumn,
+                       StatementBinder<M> binder) {
+        super(databaseAdapter, insertStatement, builder, binder);
         this.masterColumn = masterColumn;
     }
 

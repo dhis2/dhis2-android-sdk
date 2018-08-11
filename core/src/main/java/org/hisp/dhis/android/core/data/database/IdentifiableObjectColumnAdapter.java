@@ -32,13 +32,14 @@ import android.content.ContentValues;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.UidsHelper;
 
-public abstract class IdentifiableObjectColumnAdapter<O extends BaseIdentifiableObject>
+public abstract class IdentifiableObjectColumnAdapter<O extends ObjectWithUidInterface>
         implements ColumnTypeAdapter<O> {
 
     @Override
     public final void toContentValues(ContentValues values, String columnName, O value) {
-        values.put(columnName, value.uid());
+        values.put(columnName, UidsHelper.getUidOrNull(value));
     }
 }

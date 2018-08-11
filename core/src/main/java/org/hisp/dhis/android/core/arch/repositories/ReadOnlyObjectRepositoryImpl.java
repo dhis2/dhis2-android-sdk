@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.repositories;
 
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-public final class ReadOnlyObjectRepositoryImpl<M extends BaseModel> implements ReadOnlyObjectRepository<M> {
+public final class ReadOnlyObjectRepositoryImpl<M extends Model> implements ReadOnlyObjectRepository<M> {
 
     private final ObjectStore<M> store;
     private final CursorModelFactory<M> modelFactory;

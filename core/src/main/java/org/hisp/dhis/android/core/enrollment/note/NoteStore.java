@@ -28,15 +28,45 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class NoteStore {
 
     private NoteStore() {}
 
+    private static final StatementBinder<NoteModel> BINDER = new StatementBinder<NoteModel>() {
+        @Override
+        public void bindToStatement(@NonNull NoteModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.enrollment());
+            sqLiteBind(sqLiteStatement, 2, o.value());
+            sqLiteBind(sqLiteStatement, 3, o.storedBy());
+            sqLiteBind(sqLiteStatement, 4, o.storedDate());
+        }
+    };
+
+    private static final WhereStatementBinder<NoteModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<NoteModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull NoteModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 5, o.enrollment());
+            sqLiteBind(sqLiteStatement, 6, o.value());
+            sqLiteBind(sqLiteStatement, 7, o.storedBy());
+            sqLiteBind(sqLiteStatement, 8, o.storedDate());
+        }
+    };
+
+
     public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE, new NoteModel.Columns());
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE, new NoteModel.Columns(),
+                BINDER, WHERE_UPDATE_BINDER);
     }
 }

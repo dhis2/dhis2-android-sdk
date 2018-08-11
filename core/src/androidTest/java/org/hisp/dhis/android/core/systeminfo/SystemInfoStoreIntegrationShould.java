@@ -26,59 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
-public class RelationshipConstraintModelBuilderShould {
+@RunWith(AndroidJUnit4.class)
+public class SystemInfoStoreIntegrationShould extends AbsStoreTestCase {
 
-    private RelationshipConstraint pojo;
-
-    private RelationshipConstraintModel model;
-
-    private String TEI_TYPE_UID = "tei_type_uid";
-
-    private RelationshipConstraintType CONSTRAINT_TYPE = RelationshipConstraintType.FROM;
-
-    private RelationshipType relationshipType = RelationshipType.create("uid", null, null, null, null, null,
-            null, null, null, null, null);
+    private final SystemInfo systemInfo = SystemInfoSamples.get1();
 
     @Before
-    @SuppressWarnings("unchecked")
+    @Override
     public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        pojo = buildPojo();
-        model = buildModel();
-    }
-
-    private RelationshipConstraint buildPojo() {
-        return RelationshipConstraint.create(
-                RelationshipEntityType.TRACKED_ENTITY_INSTANCE,
-                ObjectWithUid.create(TEI_TYPE_UID),
-                null,
-                null
-        );
-    }
-
-    private RelationshipConstraintModel buildModel() {
-        return new RelationshipConstraintModelBuilder(relationshipType, CONSTRAINT_TYPE).buildModel(pojo);
+        super.setUp();
     }
 
     @Test
-    public void copy_pojo_relationship_properties() {
-        assertThat(model.relationshipType()).isEqualTo(relationshipType.uid());
-        assertThat(model.constraintType()).isEqualTo(CONSTRAINT_TYPE);
-        assertThat(model.relationshipEntity()).isEqualTo(RelationshipEntityType.TRACKED_ENTITY_INSTANCE);
-        assertThat(model.trackedEntityType()).isEqualTo(TEI_TYPE_UID);
-        assertThat(model.program()).isNull();
-        assertThat(model.programStage()).isNull();
+    public void get_inserted_object() {
+        ObjectWithoutUidStore<SystemInfo> store = SystemInfoStore.create(databaseAdapter());
+        store.insert(systemInfo);
+        SystemInfo systemInfoFromDb = store.selectFirst(SystemInfo.factory);
+        assertThat(systemInfoFromDb).isEqualTo(systemInfo);
     }
 }

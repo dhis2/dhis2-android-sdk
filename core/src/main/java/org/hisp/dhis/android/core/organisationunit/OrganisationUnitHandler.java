@@ -30,39 +30,70 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModelBuilder;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class OrganisationUnitHandler extends IdentifiableHandlerImpl<OrganisationUnit, OrganisationUnitModel> {
     private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
-    private final ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
+    private final LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
+    private final LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitLinkHandler;
+    private final CollectionCleaner<ObjectWithUid> programCollectionCleaner;
+    private final CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
     private final Set<String> programUids;
+    private final Set<String> dataSetUids;
+    private final Set<ObjectWithUid> orgUnitLinkedProgramUids;
+    private final Set<ObjectWithUid> orgUnitLinkedDataSetUids;
     private final OrganisationUnitModel.Scope scope;
     private final User user;
 
     public OrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                    @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
                                            userOrganisationUnitLinkStore,
-                                   @NonNull ObjectWithoutUidStore<OrganisationUnitProgramLinkModel>
-                                           organisationUnitProgramLinkStore,
+                                   @NonNull LinkModelHandler<Program, OrganisationUnitProgramLinkModel>
+                                           organisationUnitProgramLinkHandler,
+                                   @NonNull LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel>
+                                           dataSetOrganisationUnitLinkHandler,
+                                   @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
+                                   @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
                                    @Nullable Set<String> programUids,
+                                   @Nullable Set<String> dataSetUids,
                                    @Nullable OrganisationUnitModel.Scope scope,
                                    @Nullable User user) {
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.organisationUnitProgramLinkStore = organisationUnitProgramLinkStore;
+        this.organisationUnitProgramLinkHandler = organisationUnitProgramLinkHandler;
+        this.dataSetOrganisationUnitLinkHandler = dataSetOrganisationUnitLinkHandler;
+        this.programCollectionCleaner = programCollectionCleaner;
+        this.dataSetCollectionCleaner = dataSetCollectionCleaner;
         this.programUids = programUids;
+        this.dataSetUids = dataSetUids;
+        this.orgUnitLinkedProgramUids = new HashSet<>();
+        this.orgUnitLinkedDataSetUids = new HashSet<>();
         this.scope = scope;
         this.user = user;
     }
@@ -73,29 +104,65 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
         userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
 
         addOrganisationUnitProgramLink(organisationUnit);
+        addOrganisationUnitDataSetLink(organisationUnit);
     }
 
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
         List<Program> orgUnitPrograms = organisationUnit.programs();
         if (orgUnitPrograms != null && programUids != null) {
-            OrganisationUnitProgramLinkModelBuilder modelBuilder
-                    = new OrganisationUnitProgramLinkModelBuilder(organisationUnit);
+            List<Program> programsToAdd = new ArrayList<>();
             for (Program program : orgUnitPrograms) {
                 if (programUids.contains(program.uid())) {
-                    organisationUnitProgramLinkStore.updateOrInsertWhere(modelBuilder.buildModel(program));
+                    programsToAdd.add(program);
+
+                    orgUnitLinkedProgramUids.add(ObjectWithUid.create(program.uid()));
                 }
             }
+
+            OrganisationUnitProgramLinkModelBuilder modelBuilder
+                    = new OrganisationUnitProgramLinkModelBuilder(organisationUnit);
+            organisationUnitProgramLinkHandler.handleMany(organisationUnit.uid(), programsToAdd, modelBuilder);
         }
+    }
+
+    private void addOrganisationUnitDataSetLink(@NonNull OrganisationUnit organisationUnit) {
+        List<DataSet> orgUnitDataSets = organisationUnit.dataSets();
+        if (orgUnitDataSets != null && dataSetUids != null) {
+            List<DataSet> dataSetsToAdd = new ArrayList<>();
+            for (DataSet dataSet : orgUnitDataSets) {
+                if (dataSetUids.contains(dataSet.uid())) {
+                    dataSetsToAdd.add(dataSet);
+
+                    orgUnitLinkedDataSetUids.add(ObjectWithUid.create(dataSet.uid()));
+                }
+            }
+
+            DataSetOrganisationUnitLinkModelBuilder modelBuilder
+                    = new DataSetOrganisationUnitLinkModelBuilder(organisationUnit);
+            dataSetOrganisationUnitLinkHandler.handleMany(organisationUnit.uid(), dataSetsToAdd, modelBuilder);
+        }
+    }
+
+    @Override
+    protected void afterCollectionHandled(Collection<OrganisationUnit> organisationUnits) {
+        programCollectionCleaner.deleteNotPresent(orgUnitLinkedProgramUids);
+        dataSetCollectionCleaner.deleteNotPresent(orgUnitLinkedDataSetUids);
     }
 
     public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter,
                                                  Set<String> programUids,
+                                                 Set<String> dataSetUids,
                                                  OrganisationUnitModel.Scope scope,
                                                  User user) {
         return new OrganisationUnitHandler(
                 OrganisationUnitStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
-                OrganisationUnitProgramLinkStore.create(databaseAdapter),
-                programUids, scope, user);
+                new LinkModelHandlerImpl<Program, OrganisationUnitProgramLinkModel>(
+                        OrganisationUnitProgramLinkStore.create(databaseAdapter)),
+                new LinkModelHandlerImpl<DataSet, DataSetOrganisationUnitLinkModel>(
+                        DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
+                new CollectionCleanerImpl<ObjectWithUid>(ProgramModel.TABLE, databaseAdapter),
+                new CollectionCleanerImpl<ObjectWithUid>(DataSetModel.TABLE, databaseAdapter),
+                programUids, dataSetUids, scope, user);
     }
 }

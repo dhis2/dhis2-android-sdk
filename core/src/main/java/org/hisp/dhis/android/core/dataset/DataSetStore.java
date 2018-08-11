@@ -28,16 +28,46 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataSetStore {
 
     private DataSetStore() {}
 
+    private static StatementBinder<DataSetModel> BINDER = new NameableStatementBinder<DataSetModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataSetModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.periodType());
+            sqLiteBind(sqLiteStatement, 12, o.categoryCombo());
+            sqLiteBind(sqLiteStatement, 13, o.mobile());
+            sqLiteBind(sqLiteStatement, 14, o.version());
+            sqLiteBind(sqLiteStatement, 15, o.expiryDays());
+            sqLiteBind(sqLiteStatement, 16, o.timelyDays());
+            sqLiteBind(sqLiteStatement, 17, o.notifyCompletingUser());
+            sqLiteBind(sqLiteStatement, 18, o.openFuturePeriods());
+            sqLiteBind(sqLiteStatement, 19, o.fieldCombinationRequired());
+            sqLiteBind(sqLiteStatement, 20, o.validCompleteOnly());
+            sqLiteBind(sqLiteStatement, 21, o.noValueRequiresComment());
+            sqLiteBind(sqLiteStatement, 22, o.skipOffline());
+            sqLiteBind(sqLiteStatement, 23, o.dataElementDecoration());
+            sqLiteBind(sqLiteStatement, 24, o.renderAsTabs());
+            sqLiteBind(sqLiteStatement, 25, o.renderHorizontally());
+            sqLiteBind(sqLiteStatement, 26, o.accessDataWrite());
+        }
+    };
+    
     public static IdentifiableObjectStore<DataSetModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter, DataSetModel.TABLE,
-                new DataSetModel.Columns().all());
+                new DataSetModel.Columns().all(), BINDER);
     }
 }

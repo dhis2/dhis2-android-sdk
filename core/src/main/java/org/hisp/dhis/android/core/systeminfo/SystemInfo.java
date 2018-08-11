@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -43,8 +42,6 @@ import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
@@ -62,19 +59,6 @@ public abstract class SystemInfo extends BaseModel {
 
     @Nullable
     public abstract String contextPath();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, serverDate());
-        sqLiteBind(sqLiteStatement, 2, dateFormat());
-        sqLiteBind(sqLiteStatement, 3, version());
-        sqLiteBind(sqLiteStatement, 4, contextPath());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 5, contextPath());
-    }
 
     @NonNull
     public static SystemInfo create(Cursor cursor) {

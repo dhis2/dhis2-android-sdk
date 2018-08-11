@@ -26,24 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.db.binders;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.PojoBuilder;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
-public class RelationshipConstraintBuilder extends PojoBuilder<RelationshipConstraint, RelationshipConstraintModel> {
+import org.hisp.dhis.android.core.common.NameableObject;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+public abstract class NameableStatementBinder<O extends NameableObject> extends IdentifiableStatementBinder<O> {
 
     @Override
-    public RelationshipConstraint buildPojo(RelationshipConstraintModel model) {
-        return RelationshipConstraint.create(
-                model.relationshipEntity(),
-                createObjectWithUid(model.trackedEntityType()),
-                createObjectWithUid(model.program()),
-                createObjectWithUid(model.programStage())
-        );
-    }
-
-    private ObjectWithUid createObjectWithUid(String uid) {
-        return uid == null ? null : ObjectWithUid.create(uid);
+    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
+        super.bindToStatement(o, sqLiteStatement);
+        sqLiteBind(sqLiteStatement, 7, o.shortName());
+        sqLiteBind(sqLiteStatement, 8, o.displayShortName());
+        sqLiteBind(sqLiteStatement, 9, o.description());
+        sqLiteBind(sqLiteStatement, 10, o.displayDescription());
     }
 }

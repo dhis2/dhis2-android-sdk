@@ -25,12 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import java.util.Set;
 
-public interface WhereStatementBinder extends StatementBinder {
-    void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement);
+public final class ReadOnlyListRepositoryImpl<M extends Model> implements ReadOnlyListRepository<M> {
+
+    private final ObjectStore<M> store;
+    private final CursorModelFactory<M> modelFactory;
+
+    public ReadOnlyListRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
+        this.store = store;
+        this.modelFactory = modelFactory;
+    }
+
+    @Override
+    public Set<M> getAll() {
+        return this.store.selectAll(this.modelFactory);
+    }
 }

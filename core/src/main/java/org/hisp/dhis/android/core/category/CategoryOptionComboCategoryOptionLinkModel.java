@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -38,8 +37,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 
 @AutoValue
@@ -54,11 +51,6 @@ public abstract class CategoryOptionComboCategoryOptionLinkModel extends BaseMod
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     CATEGORY_OPTION_COMBO, CATEGORY_OPTION);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
         }
     }
 
@@ -78,20 +70,6 @@ public abstract class CategoryOptionComboCategoryOptionLinkModel extends BaseMod
     @NonNull
     public static CategoryOptionComboCategoryOptionLinkModel create(Cursor cursor) {
         return AutoValue_CategoryOptionComboCategoryOptionLinkModel.createFromCursor(cursor);
-    }
-
-
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 2, categoryOption());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 3, categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 4, categoryOption());
     }
 
     @AutoValue.Builder

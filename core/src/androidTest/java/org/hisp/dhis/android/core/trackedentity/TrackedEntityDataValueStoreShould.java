@@ -28,13 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -55,7 +48,7 @@ import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns;
 import org.junit.Assert;
 import org.junit.Before;
@@ -67,6 +60,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.AndroidTestUtils.toInteger;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
@@ -139,7 +138,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, null);
 
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
-        database().insert(RelationshipTypeModel.TABLE, null,
+        database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
                 relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);

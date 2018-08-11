@@ -28,15 +28,32 @@
 
 package org.hisp.dhis.android.core.constant;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ConstantStore {
 
     private ConstantStore() {}
 
+    private static StatementBinder<ConstantModel> BINDER = new IdentifiableStatementBinder<ConstantModel>() {
+        @Override
+        public void bindToStatement(@NonNull ConstantModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.value());
+
+        }
+    };
+
     public static IdentifiableObjectStore<ConstantModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ConstantModel.TABLE, new ConstantModel.Columns().all());
+        return StoreFactory.identifiableStore(databaseAdapter, ConstantModel.TABLE,
+                new ConstantModel.Columns().all(), BINDER);
     }
 }

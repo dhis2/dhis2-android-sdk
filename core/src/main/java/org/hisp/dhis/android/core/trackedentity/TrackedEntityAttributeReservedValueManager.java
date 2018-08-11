@@ -117,6 +117,17 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void fillReservedValues(String trackedEntityAttributeUid, String organisationUnitUid,
                                     Integer remainingValues) throws D2CallException {
 
+        OrganisationUnitModel organisationUnitModel =
+                this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
+
+        if (organisationUnitModel == null) {
+            throw D2CallException.builder()
+                    .errorCode(D2ErrorCode.ORGANISATION_UNIT_NOT_FOUND)
+                    .errorDescription("Organisation unit " + organisationUnitUid + " not found in database")
+                    .isHttpError(false)
+                    .build();
+        }
+
         D2CallExecutor executor = new D2CallExecutor();
 
         SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
@@ -125,8 +136,6 @@ public final class TrackedEntityAttributeReservedValueManager {
                 systemInfo.serverDate(), versionManager);
 
         Integer numberToReserve = FILL_UP_TO - remainingValues;
-        OrganisationUnitModel organisationUnitModel =
-                this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
 
         String trackedEntityAttributePattern;
         try {

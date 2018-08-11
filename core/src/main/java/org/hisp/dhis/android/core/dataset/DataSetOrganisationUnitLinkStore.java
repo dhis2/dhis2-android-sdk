@@ -28,16 +28,36 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataSetOrganisationUnitLinkStore {
 
     private DataSetOrganisationUnitLinkStore() {}
 
-    public static ObjectWithoutUidStore<DataSetOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetOrganisationUnitLinkModel.TABLE,
-                new DataSetOrganisationUnitLinkModel.Columns());
+    private static final StatementBinder<DataSetOrganisationUnitLinkModel> BINDER
+            = new StatementBinder<DataSetOrganisationUnitLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataSetOrganisationUnitLinkModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.dataSet());
+            sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+        }
+    };
+
+    public static LinkModelStore<DataSetOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
+                DataSetOrganisationUnitLinkModel.TABLE,
+                new DataSetOrganisationUnitLinkModel.Columns(),
+                OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT,
+                BINDER);
     }
 }

@@ -28,60 +28,87 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbRelationshipEntityTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
-public abstract class RelationshipConstraint {
-    private static final String RELATIONSHIP_ENTITY = "relationshipEntity";
-    private static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
-
-    private static final Field<RelationshipConstraint, RelationshipEntityType> relationshipEntity =
-            Field.create(RELATIONSHIP_ENTITY);
-    private static final Field<RelationshipConstraint, ObjectWithUid> trackedEntityType =
-            Field.create(TRACKED_ENTITY_TYPE);
-    private static final Field<RelationshipConstraint, ObjectWithUid> program = Field.create(PROGRAM);
-    private static final Field<RelationshipConstraint, ObjectWithUid> programStage = Field.create(PROGRAM_STAGE);
-
-    static final Fields<RelationshipConstraint> allFields = Fields.<RelationshipConstraint>builder().fields(
-            relationshipEntity, trackedEntityType, program, programStage).build();
+@JsonDeserialize(builder = AutoValue_RelationshipConstraint.Builder.class)
+public abstract class RelationshipConstraint extends BaseModel {
 
     @Nullable
-    @JsonProperty(RELATIONSHIP_ENTITY)
+    @JsonIgnore()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid relationshipType();
+
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    public abstract RelationshipConstraintType constraintType();
+
+    @Nullable
+    @ColumnAdapter(DbRelationshipEntityTypeColumnAdapter.class)
     public abstract RelationshipEntityType relationshipEntity();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_TYPE)
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityType();
 
     @Nullable
-    @JsonProperty(PROGRAM)
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty(PROGRAM_STAGE)
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
-    @JsonCreator
-    public static RelationshipConstraint create(
-            @JsonProperty(RELATIONSHIP_ENTITY) RelationshipEntityType relationshipEntity,
-            @JsonProperty(TRACKED_ENTITY_TYPE) ObjectWithUid trackedEntityType,
-            @JsonProperty(PROGRAM) ObjectWithUid program,
-            @JsonProperty(PROGRAM_STAGE) ObjectWithUid programStage) {
+    static RelationshipConstraint create(Cursor cursor) {
+        return AutoValue_RelationshipConstraint.createFromCursor(cursor);
+    }
 
-        return new AutoValue_RelationshipConstraint(
-                relationshipEntity,
-                trackedEntityType,
-                program,
-                programStage);
+    public static final CursorModelFactory<RelationshipConstraint> factory
+            = new CursorModelFactory<RelationshipConstraint>() {
+        @Override
+        public RelationshipConstraint fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+
+    public static Builder builder() {
+        return new AutoValue_RelationshipConstraint.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder relationshipType(ObjectWithUid relationshipType);
+
+        public abstract Builder constraintType(RelationshipConstraintType constraintType);
+
+        public abstract Builder relationshipEntity(RelationshipEntityType relationshipEntity);
+
+        public abstract Builder trackedEntityType(ObjectWithUid trackedEntityType);
+
+        public abstract Builder program(ObjectWithUid program);
+
+        public abstract Builder programStage(ObjectWithUid programStage);
+
+        public abstract RelationshipConstraint build();
     }
 }

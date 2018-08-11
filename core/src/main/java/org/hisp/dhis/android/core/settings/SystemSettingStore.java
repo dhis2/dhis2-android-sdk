@@ -28,16 +28,40 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class SystemSettingStore {
 
     private SystemSettingStore() {}
 
+    private static final StatementBinder<SystemSettingModel> BINDER = new StatementBinder<SystemSettingModel>() {
+        @Override
+        public void bindToStatement(@NonNull SystemSettingModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.key());
+            sqLiteBind(sqLiteStatement, 2, o.value());
+        }
+    };
+
+    private static final WhereStatementBinder<SystemSettingModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<SystemSettingModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull SystemSettingModel o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 3, o.key());
+        }
+    };
+
     public static ObjectWithoutUidStore<SystemSettingModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingModel.TABLE,
-                new SystemSettingModel.Columns());
+                new SystemSettingModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
     }
 }

@@ -22,6 +22,17 @@ public class RuleExpressionShould {
     }
 
     @Test
+    public void return_expression_with_blank_spaces_in_variable_name() {
+        String expression = "#{test_variable one} <0 && #{test variable two} == ''";
+
+        RuleExpression ruleExpression = RuleExpression.from(expression);
+        assertThat(ruleExpression.variables().size()).isEqualTo(2);
+        assertThat(ruleExpression.variables()).contains("#{test_variable one}");
+        assertThat(ruleExpression.variables()).contains("#{test variable two}");
+        assertThat(ruleExpression.functions().size()).isEqualTo(0);
+    }
+
+    @Test
     public void return_expression_with_attribute_variables() {
         String expression = "A{test_variable_one} <0 && A{test_variable_two} == ''";
 

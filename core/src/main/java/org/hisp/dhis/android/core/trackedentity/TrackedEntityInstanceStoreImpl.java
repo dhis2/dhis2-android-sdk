@@ -97,12 +97,13 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             "  TrackedEntityInstance.organisationUnit, " +
             "  TrackedEntityInstance.trackedEntityType," +
             "  TrackedEntityInstance.coordinates," +
-            "  TrackedEntityInstance.featureType " +
+            "  TrackedEntityInstance.featureType, " +
+            "  TrackedEntityInstance.state " +
             "FROM TrackedEntityInstance ";
 
     private static final String QUERY_STATEMENT_TO_POST =
             QUERY_STATEMENT +
-                    " WHERE state = 'TO_POST' OR state = 'TO_UPDATE'";
+                    " WHERE state = 'TO_POST' OR state = 'TO_UPDATE' OR state = 'TO_DELETE'";
 
     private static final String QUERY_STATEMENT_SYNCED =
             QUERY_STATEMENT +
@@ -268,10 +269,13 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
                     String coordinates = cursor.getString(7);
                     FeatureType featureType = cursor.getString(8) == null ? null :
                             FeatureType.valueOf(FeatureType.class, cursor.getString(8));
+                    String stateStr = cursor.getString(9);
+
+                    Boolean deleted = stateStr != null && stateStr.equals(State.TO_DELETE.toString());
 
                     trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            organisationUnit, trackedEntityType, coordinates, featureType, false,
+                            organisationUnit, trackedEntityType, coordinates, featureType, deleted,
                             null, null, null));
 
                 } while (cursor.moveToNext());

@@ -26,36 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.arch.db.binders;
 
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@AutoValue
-public abstract class DataElementUids {
-    private final static String DATA_ELEMENT = "dataElement";
+public abstract class IdentifiableStatementBinder<O extends IdentifiableObject> implements StatementBinder<O> {
 
-    public static final NestedField<DataElementUids, ObjectWithUid> dataElement =
-            NestedField.create(DATA_ELEMENT);
-
-    public static final Fields<DataElementUids> allFields =
-            Fields.<DataElementUids>builder().fields(dataElement.with(ObjectWithUid.uid)).build();
-
-    @NonNull
-    @JsonProperty(DATA_ELEMENT)
-    public abstract ObjectWithUid dataElement();
-
-    @JsonCreator
-    public static DataElementUids create(
-            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement) {
-
-        return new AutoValue_DataElementUids(dataElement);
+    @Override
+    public void bindToStatement(@NonNull O o, @NonNull SQLiteStatement sqLiteStatement) {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.code());
+        sqLiteBind(sqLiteStatement, 3, o.name());
+        sqLiteBind(sqLiteStatement, 4, o.displayName());
+        sqLiteBind(sqLiteStatement, 5, o.created());
+        sqLiteBind(sqLiteStatement, 6, o.lastUpdated());
     }
 }

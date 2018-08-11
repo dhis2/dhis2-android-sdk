@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
@@ -100,7 +101,6 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     public void setUp() throws IOException {
         super.setUp();
 
-
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
@@ -121,32 +121,12 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         database().insert(UserModel.TABLE, null, userContentValues);
 
         // inserting programs for creating OrgUnitProgramLinks
-
-        String programUid = "uy2gU8kT1jF";
-        String programUid1 = "q04UBOqq3rp";
-        String programUid2 = "VBqh0ynB2wv";
-        String programUid3 = "eBAyeGv0exc";
-        String programUid4 = "kla3mAPgvCH";
-        String programUid5 = "lxAQ7Zs9VYR";
-        String programUid6 = "IpHINAT79UW";
-        String programUid7 = "WSGAb5XwJ3Y";
-        String programUid8 = "ur1Edk5Oe2n";
-
+        String programUid = "lxAQ7Zs9VYR";
         insertProgramWithUid(programUid);
-        insertProgramWithUid(programUid1);
-        insertProgramWithUid(programUid2);
-        insertProgramWithUid(programUid3);
-        insertProgramWithUid(programUid4);
-        insertProgramWithUid(programUid5);
-        insertProgramWithUid(programUid6);
-        insertProgramWithUid(programUid7);
-        insertProgramWithUid(programUid8);
-
-        Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid, programUid1, programUid2,
-                programUid3, programUid4, programUid5, programUid6, programUid7, programUid8));
+        Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid));
 
         GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler =
-                OrganisationUnitHandler.create(databaseAdapter(), programUids,
+                OrganisationUnitHandler.create(databaseAdapter(), programUids, null,
                         OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
 
         genericCallData = getGenericCallData(d2);

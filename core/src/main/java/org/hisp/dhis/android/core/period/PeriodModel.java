@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.period;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -44,8 +42,6 @@ import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class PeriodModel extends BaseModel {
@@ -104,19 +100,6 @@ public abstract class PeriodModel extends BaseModel {
     @ColumnName(Columns.END_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, periodId());
-        sqLiteBind(sqLiteStatement, 2, periodType());
-        sqLiteBind(sqLiteStatement, 3, startDate());
-        sqLiteBind(sqLiteStatement, 4, endDate());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 5, periodId());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

@@ -28,16 +28,52 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataValueStore {
 
     private DataValueStore() {}
 
+    private static final StatementBinder<DataValueModel> BINDER = new StatementBinder<DataValueModel>() {
+        @Override
+        public void bindToStatement(@NonNull DataValueModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.dataElement());
+            sqLiteBind(sqLiteStatement, 2, o.period());
+            sqLiteBind(sqLiteStatement, 3, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 4, o.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 5, o.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 6, o.value());
+            sqLiteBind(sqLiteStatement, 7, o.storedBy());
+            sqLiteBind(sqLiteStatement, 8, o.created());
+            sqLiteBind(sqLiteStatement, 9, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 10, o.comment());
+            sqLiteBind(sqLiteStatement, 11, o.followUp());
+        }
+    };
+
+    private static final WhereStatementBinder<DataValueModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<DataValueModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull DataValueModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 12, o.dataElement());
+            sqLiteBind(sqLiteStatement, 13, o.period());
+            sqLiteBind(sqLiteStatement, 14, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 15, o.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 16, o.attributeOptionCombo());
+        }
+    };
+
     public static ObjectWithoutUidStore<DataValueModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, DataValueModel.TABLE,
-                new DataValueModel.Columns());
+                new DataValueModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
     }
 }

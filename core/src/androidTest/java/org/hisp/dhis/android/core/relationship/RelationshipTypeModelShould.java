@@ -33,7 +33,8 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeModel.Columns;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,59 +53,38 @@ public class RelationshipTypeModelShould {
     //RelationshipTypeModel attributes:
     private static final String A_IS_TO_B = "cat of";
     private static final String B_IS_TO_A = "owner of";
+    private final Date date = new Date();
+    private final String dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
 
-    private final Date date;
-    private final String dateString;
-
-    public RelationshipTypeModelShould() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
-    }
+    private RelationshipType expectedType = RelationshipType.builder()
+            .id(ID)
+            .uid(UID)
+            .code(CODE)
+            .name(NAME)
+            .displayName(DISPLAY_NAME)
+            .created(date)
+            .lastUpdated(date)
+            .aIsToB(A_IS_TO_B)
+            .bIsToA(B_IS_TO_A)
+            .build();
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.A_IS_TO_B,
-                Columns.B_IS_TO_A,
-        });
-        cursor.addRow(new Object[]{ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, A_IS_TO_B, B_IS_TO_A});
+        String[] columnsWithId = Utils.appendInNewArray(new RelationshipTypeTableInfo.Columns().all(),
+                RelationshipTypeTableInfo.Columns.ID);
+        MatrixCursor cursor = new MatrixCursor(columnsWithId);
+        cursor.addRow(new Object[]{UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, B_IS_TO_A, A_IS_TO_B, ID});
 
         cursor.moveToFirst();
-        RelationshipTypeModel model = RelationshipTypeModel.create(cursor);
+        RelationshipType typeFromDb = RelationshipType.create(cursor);
         cursor.close();
 
-        assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.uid()).isEqualTo(UID);
-        assertThat(model.code()).isEqualTo(CODE);
-        assertThat(model.name()).isEqualTo(NAME);
-        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(model.created()).isEqualTo(date);
-        assertThat(model.lastUpdated()).isEqualTo(date);
-        assertThat(model.aIsToB()).isEqualTo(A_IS_TO_B);
-        assertThat(model.bIsToA()).isEqualTo(B_IS_TO_A);
+        assertThat(typeFromDb).isEqualTo(expectedType);
     }
 
     @Test
     public void create_content_values_when_created_from_builder() {
-        RelationshipTypeModel model = RelationshipTypeModel.builder()
-                .id(ID)
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(date)
-                .lastUpdated(date)
-                .aIsToB(A_IS_TO_B)
-                .bIsToA(B_IS_TO_A)
-                .build();
-        ContentValues contentValues = model.toContentValues();
+        ContentValues contentValues = expectedType.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
@@ -112,8 +92,8 @@ public class RelationshipTypeModelShould {
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.A_IS_TO_B)).isEqualTo(A_IS_TO_B);
-        assertThat(contentValues.getAsString(Columns.B_IS_TO_A)).isEqualTo(B_IS_TO_A);
+        assertThat(contentValues.getAsString(Columns.A_IS_TO_B_WITH_UPPER_CASE_A)).isEqualTo(A_IS_TO_B);
+        assertThat(contentValues.getAsString(RelationshipTypeFields.B_IS_TO_A)).isEqualTo(B_IS_TO_A);
     }
 }
 

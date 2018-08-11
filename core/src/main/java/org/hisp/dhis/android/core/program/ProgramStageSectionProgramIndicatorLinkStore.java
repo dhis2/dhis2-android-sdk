@@ -28,17 +28,34 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramStageSectionProgramIndicatorLinkStore {
 
     private ProgramStageSectionProgramIndicatorLinkStore() {}
 
+    private static final StatementBinder<ProgramStageSectionProgramIndicatorLinkModel> BINDER
+            = new StatementBinder<ProgramStageSectionProgramIndicatorLinkModel>() {
+        @Override
+        public void bindToStatement(@NonNull ProgramStageSectionProgramIndicatorLinkModel o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.programStageSection());
+            sqLiteBind(sqLiteStatement, 2, o.programIndicator());
+        }
+    };
+
     public static LinkModelStore<ProgramStageSectionProgramIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, ProgramStageSectionProgramIndicatorLinkModel.TABLE,
                 new ProgramStageSectionProgramIndicatorLinkModel.Columns(),
-                ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION);
+                ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION,
+                BINDER);
     }
 }

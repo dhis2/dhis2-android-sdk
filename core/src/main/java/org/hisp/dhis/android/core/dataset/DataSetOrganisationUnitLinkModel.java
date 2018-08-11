@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -37,8 +35,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataSetOrganisationUnitLinkModel extends BaseModel {
@@ -74,18 +70,6 @@ public abstract class DataSetOrganisationUnitLinkModel extends BaseModel {
     @Nullable
     @ColumnName(Columns.ORGANISATION_UNIT)
     public abstract String organisationUnit();
-
-    @Override
-    public void bindToStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 1, dataSet());
-        sqLiteBind(sqLiteStatement, 2, organisationUnit());
-    }
-
-    @Override
-    public void bindToUpdateWhereStatement(@NonNull SQLiteStatement sqLiteStatement) {
-        sqLiteBind(sqLiteStatement, 3, dataSet());
-        sqLiteBind(sqLiteStatement, 4, organisationUnit());
-    }
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

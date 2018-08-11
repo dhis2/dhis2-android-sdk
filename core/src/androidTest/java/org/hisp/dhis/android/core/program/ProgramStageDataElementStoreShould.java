@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.option.CreateOptionSetUtils;
 import org.hisp.dhis.android.core.option.OptionSetModel;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementModel.Columns;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeModel;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.Before;
@@ -190,7 +190,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
@@ -365,7 +365,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
 
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
-        database().insert(RelationshipTypeModel.TABLE, null, relationshipType);
+        database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
 
         ContentValues programStage = CreateProgramStageUtils.create(ID, programStageUid, PROGRAM);

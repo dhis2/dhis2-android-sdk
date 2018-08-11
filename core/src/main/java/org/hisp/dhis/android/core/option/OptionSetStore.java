@@ -28,16 +28,32 @@
 
 package org.hisp.dhis.android.core.option;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class OptionSetStore {
 
     private OptionSetStore() {}
 
+    private static StatementBinder<OptionSetModel> BINDER = new IdentifiableStatementBinder<OptionSetModel>() {
+        @Override
+        public void bindToStatement(@NonNull OptionSetModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.version());
+            sqLiteBind(sqLiteStatement, 8, o.valueType());
+        }
+    };
+
     public static IdentifiableObjectStore<OptionSetModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.identifiableStore(databaseAdapter,
-                OptionSetModel.TABLE, new OptionSetModel.Columns().all());
+                OptionSetModel.TABLE, new OptionSetModel.Columns().all(), BINDER);
     }
 }

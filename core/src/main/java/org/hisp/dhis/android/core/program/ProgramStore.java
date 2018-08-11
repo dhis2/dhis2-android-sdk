@@ -28,6 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
@@ -35,13 +40,49 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Set;
 
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
 public final class ProgramStore extends IdentifiableObjectStoreImpl<ProgramModel> implements ProgramStoreInterface {
 
     private ProgramStore(DatabaseAdapter databaseAdapter,
                          SQLStatementWrapper statementWrapper,
                          SQLStatementBuilder statementBuilder) {
-        super(databaseAdapter, statementWrapper, statementBuilder);
+        super(databaseAdapter, statementWrapper, statementBuilder, BINDER);
     }
+    
+    private static StatementBinder<ProgramModel> BINDER = new NameableStatementBinder<ProgramModel>() {
+        
+        @Override
+        public void bindToStatement(@NonNull ProgramModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.version());
+            sqLiteBind(sqLiteStatement, 12, o.onlyEnrollOnce());
+            sqLiteBind(sqLiteStatement, 13, o.enrollmentDateLabel());
+            sqLiteBind(sqLiteStatement, 14, o.displayIncidentDate());
+            sqLiteBind(sqLiteStatement, 15, o.incidentDateLabel());
+            sqLiteBind(sqLiteStatement, 16, o.registration());
+            sqLiteBind(sqLiteStatement, 17, o.selectEnrollmentDatesInFuture());
+            sqLiteBind(sqLiteStatement, 18, o.dataEntryMethod());
+            sqLiteBind(sqLiteStatement, 19, o.ignoreOverdueEvents());
+            sqLiteBind(sqLiteStatement, 20, o.relationshipFromA());
+            sqLiteBind(sqLiteStatement, 21, o.selectIncidentDatesInFuture());
+            sqLiteBind(sqLiteStatement, 22, o.captureCoordinates());
+            sqLiteBind(sqLiteStatement, 23, o.useFirstStageDuringRegistration());
+            sqLiteBind(sqLiteStatement, 24, o.displayFrontPageList());
+            sqLiteBind(sqLiteStatement, 25, o.programType());
+            sqLiteBind(sqLiteStatement, 26, o.relationshipType());
+            sqLiteBind(sqLiteStatement, 27, o.relationshipText());
+            sqLiteBind(sqLiteStatement, 28, o.relatedProgram());
+            sqLiteBind(sqLiteStatement, 29, o.trackedEntityType());
+            sqLiteBind(sqLiteStatement, 30, o.categoryCombo());
+            sqLiteBind(sqLiteStatement, 31, o.accessDataWrite());
+            sqLiteBind(sqLiteStatement, 32, o.expiryDays());
+            sqLiteBind(sqLiteStatement, 33, o.completeEventsExpiryDays());
+            sqLiteBind(sqLiteStatement, 34, o.expiryPeriodType());
+            sqLiteBind(sqLiteStatement, 35, o.minAttributesRequiredToSearch());
+            sqLiteBind(sqLiteStatement, 36, o.maxTeiCountToReturn());
+        }
+    };
 
     public static ProgramStoreInterface create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ProgramModel.TABLE, new ProgramModel.Columns());

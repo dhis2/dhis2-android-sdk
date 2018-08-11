@@ -28,15 +28,41 @@
 
 package org.hisp.dhis.android.core.period;
 
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class PeriodStore {
 
     private PeriodStore() {}
 
+    private static final StatementBinder<PeriodModel> BINDER = new StatementBinder<PeriodModel>() {
+        @Override
+        public void bindToStatement(@NonNull PeriodModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.periodId());
+            sqLiteBind(sqLiteStatement, 2, o.periodType());
+            sqLiteBind(sqLiteStatement, 3, o.startDate());
+            sqLiteBind(sqLiteStatement, 4, o.endDate());
+        }
+    };
+
+    private static final WhereStatementBinder<PeriodModel> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<PeriodModel>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull PeriodModel o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 5, o.periodId());
+        }
+    };
+
     public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE, new PeriodModel.Columns());
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE, new PeriodModel.Columns(),
+                BINDER, WHERE_UPDATE_BINDER);
     }
 }

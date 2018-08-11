@@ -53,6 +53,10 @@ public class FieldsHelper<O> {
         return Field.create(BaseIdentifiableObject.UID);
     }
 
+    public Field<O, String> lastUpdated() {
+        return Field.create(BaseIdentifiableObject.LAST_UPDATED);
+    }
+
     public NestedField<O, ?> nestedFieldWithUid(String fieldName) {
         NestedField<O, ObjectWithUid> nested = this.nestedField(fieldName);
         return nested.with(ObjectWithUid.uid);
@@ -70,7 +74,7 @@ public class FieldsHelper<O> {
         list.add(this.<String>field(BaseIdentifiableObject.NAME));
         list.add(this.<String>field(BaseIdentifiableObject.DISPLAY_NAME));
         list.add(this.<String>field(BaseIdentifiableObject.CREATED));
-        list.add(this.<String>field(BaseIdentifiableObject.LAST_UPDATED));
+        list.add(this.lastUpdated());
         list.add(this.<String>field(BaseIdentifiableObject.DELETED));
     }
 

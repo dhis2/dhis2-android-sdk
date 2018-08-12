@@ -45,7 +45,7 @@ import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
+public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
 
     private static final String QUERY_WITH_STATE = "SELECT " +
             DataValueModel.Columns.DATA_ELEMENT + "," +

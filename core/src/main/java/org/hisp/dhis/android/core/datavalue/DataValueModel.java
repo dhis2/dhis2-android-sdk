@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -42,8 +40,6 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @AutoValue
 public abstract class DataValueModel extends BaseDataModel {

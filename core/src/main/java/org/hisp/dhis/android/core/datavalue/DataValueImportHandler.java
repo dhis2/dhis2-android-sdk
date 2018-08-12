@@ -31,11 +31,8 @@ package org.hisp.dhis.android.core.datavalue;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportConflict;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.ImportSummary;
-
-import java.util.List;
 
 public class DataValueImportHandler {
 
@@ -48,7 +45,7 @@ public class DataValueImportHandler {
     public void handleImportSummary(@NonNull DataValueSet dataValueSet,
                                     @NonNull ImportSummary importSummary) {
 
-        if (importSummary == null) {
+        if (importSummary == null || dataValueSet == null) {
             return;
         }
 

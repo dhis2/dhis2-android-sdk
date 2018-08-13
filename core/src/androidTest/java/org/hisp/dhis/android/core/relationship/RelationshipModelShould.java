@@ -40,6 +40,8 @@ import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Date;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -47,8 +49,16 @@ public class RelationshipModelShould {
     //BaseIdentifiableModel attributes:
     private static final long ID = 11L;
     private static final String UID = "test_uid";
-    private static final String DISPLAY_NAME = "test_display_name";
+    private static final String NAME = "test_display_name";
     private static final String RELATIONSHIP_TYPE = "RelationshipType uid";
+
+    private final Date date;
+    private final String dateString;
+
+    public RelationshipModelShould() {
+        this.date = new Date();
+        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
 
     @Test
     public void create_model_when_created_from_database_cursor() {
@@ -58,7 +68,9 @@ public class RelationshipModelShould {
 
         cursor.addRow(new Object[]{
                 UID,
-                DISPLAY_NAME,
+                NAME,
+                dateString,
+                dateString,
                 RELATIONSHIP_TYPE,
                 ID
         });
@@ -69,7 +81,9 @@ public class RelationshipModelShould {
 
         assertThat(relationship.id()).isEqualTo(ID);
         assertThat(relationship.uid()).isEqualTo(UID);
-        assertThat(relationship.displayName()).isEqualTo(DISPLAY_NAME);
+        assertThat(relationship.name()).isEqualTo(NAME);
+        assertThat(relationship.created()).isEqualTo(date);
+        assertThat(relationship.lastUpdated()).isEqualTo(date);
         assertThat(relationship.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
     }
 
@@ -78,14 +92,18 @@ public class RelationshipModelShould {
         Relationship relationship = Relationship.builder()
                 .id(ID)
                 .uid(UID)
-                .displayName(DISPLAY_NAME)
+                .name(NAME)
+                .created(date)
+                .lastUpdated(date)
                 .relationshipType(RELATIONSHIP_TYPE)
                 .build();
         ContentValues contentValues = relationship.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
         assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
     }
 }

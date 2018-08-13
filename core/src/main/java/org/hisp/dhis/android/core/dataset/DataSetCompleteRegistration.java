@@ -30,7 +30,10 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
@@ -42,6 +45,7 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import java.util.Date;
 
 @AutoValue
+@JsonDeserialize(builder = $$AutoValue_DataSetCompleteRegistration.Builder.class)
 public abstract class DataSetCompleteRegistration extends BaseModel {
 
     public abstract String period();
@@ -62,7 +66,8 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
         return AutoValue_DataSetCompleteRegistration.createFromCursor(cursor);
     }
 
-    public static final CursorModelFactory<DataSetCompleteRegistration> factory = new CursorModelFactory<DataSetCompleteRegistration>() {
+    public static final CursorModelFactory<DataSetCompleteRegistration> factory =
+            new CursorModelFactory<DataSetCompleteRegistration>() {
         @Override
         public DataSetCompleteRegistration fromCursor(Cursor cursor) {
             return create(cursor);
@@ -77,17 +82,18 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseModel.Builder<DataSetCompleteRegistration.Builder> {
-        public abstract Builder period(String period);
+        public abstract Builder period(@NonNull String period);
 
-        public abstract Builder dataSet(String dataSet);
+        public abstract Builder dataSet(@NonNull String dataSet);
 
-        public abstract Builder organisationUnit(String organisationUnit);
+        public abstract Builder organisationUnit(@NonNull String organisationUnit);
 
-        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+        public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
 
-        public abstract Builder date(Date date);
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        public abstract Builder date(@NonNull Date date);
 
-        public abstract Builder storedBy(String storedBy);
+        public abstract Builder storedBy(@Nullable String storedBy);
 
         public abstract DataSetCompleteRegistration build();
     }

@@ -146,6 +146,12 @@ public final class D2 {
         return DataSetCompleteRegistrationPostCall.create(databaseAdapter, retrofit);
     }
 
+    /**
+     * Allows uploading to DHIS2 server all DataValues with TO_POST or TO_UPDATE state
+     *
+     * @return A Callable instace ready to perform the data upload and retrieve the results
+     *         in form of {@link ImportSummary}
+     */
     @NonNull
     public Callable<ImportSummary> syncDataValues() {
         return DataValuePostCall.create(databaseAdapter, retrofit);

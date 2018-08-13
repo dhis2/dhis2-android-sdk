@@ -36,7 +36,10 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
+
+import java.util.Date;
 
 public abstract class BaseRelationship extends BaseModel implements ObjectWithUidInterface {
 
@@ -45,10 +48,19 @@ public abstract class BaseRelationship extends BaseModel implements ObjectWithUi
     public abstract String uid();
 
     @Nullable
-    public abstract String relationshipType();
+    @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
+    public abstract String name();
 
     @Nullable
-    public abstract String displayName();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    @Nullable
+    public abstract String relationshipType();
 
     @Nullable
     @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
@@ -63,9 +75,14 @@ public abstract class BaseRelationship extends BaseModel implements ObjectWithUi
         @JsonProperty(RelationshipFields.RELATIONSHIP)
         public abstract T uid(String uid);
 
-        public abstract T relationshipType(String relationshipType);
+        @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
+        public abstract T name(String name);
 
-        public abstract T displayName(String displayName);
+        public abstract T created(Date created);
+
+        public abstract T lastUpdated(Date lastUpdated);
+
+        public abstract T relationshipType(String relationshipType);
 
         public abstract T from(RelationshipItem from);
 

@@ -37,6 +37,7 @@ public final class RelationshipFields {
     private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
     private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
     static final String RELATIONSHIP = "relationship";
+    static final String RELATIONSHIP_NAME = "relationshipName";
     private static final String RELATIONSHIP_TYPE = "relationshipType";
     private static final String DISPLAY_NAME = "displayName";
     private static final String RELATIVE = "relative";
@@ -48,6 +49,7 @@ public final class RelationshipFields {
     private static final Field<Relationship229Compatible, String> trackedEntityInstanceB
             = Field.create(TRACKED_ENTITY_INSTANCE_B);
     private static final Field<Relationship229Compatible, String> relationship = Field.create(RELATIONSHIP);
+    private static final Field<Relationship229Compatible, String> relationshipName = Field.create(RELATIONSHIP_NAME);
     private static final Field<Relationship229Compatible, String> relationshipType = Field.create(RELATIONSHIP_TYPE);
     private static final Field<Relationship229Compatible, String> displayName = Field.create(DISPLAY_NAME);
     private static final NestedField<Relationship229Compatible, TrackedEntityInstance> relative = NestedField.create(RELATIVE);
@@ -55,6 +57,6 @@ public final class RelationshipFields {
     private static final NestedField<Relationship229Compatible, RelationshipItem> to = NestedField.create(TO);
 
     public static final Fields<Relationship229Compatible> allFields = Fields.<Relationship229Compatible>builder().fields(
-            trackedEntityInstanceA, trackedEntityInstanceB, relationship, relationshipType, displayName,
+            trackedEntityInstanceA, trackedEntityInstanceB, relationship, relationshipName, relationshipType, displayName,
             from.with(RelationshipItemFields.allFields), to.with(RelationshipItemFields.allFields), relative).build();
 }

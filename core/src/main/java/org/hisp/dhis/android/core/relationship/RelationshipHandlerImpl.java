@@ -69,20 +69,20 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
 
         String existingRelationshipUid = getExistingRelationshipUid(fromUid, toUid, o.relationshipType());
 
-        if (!existingRelationshipUid.equals(o.uid())) {
+        if (existingRelationshipUid != null && !existingRelationshipUid.equals(o.uid())) {
             this.relationshipStore.delete(existingRelationshipUid);
         }
 
         this.relationshipStore.updateOrInsert(o);
 
         RelationshipItemModel fromItemModel = RelationshipItemModel.builder()
-                .relationship(existingRelationshipUid)
+                .relationship(o.uid())
                 .relationshipItemType(FROM)
                 .trackedEntityInstance(fromUid)
                 .build();
 
         RelationshipItemModel toItemModel = RelationshipItemModel.builder()
-                .relationship(existingRelationshipUid)
+                .relationship(o.uid())
                 .relationshipItemType(TO)
                 .trackedEntityInstance(toUid)
                 .build();

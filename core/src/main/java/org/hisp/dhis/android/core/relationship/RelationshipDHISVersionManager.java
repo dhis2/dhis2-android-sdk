@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +54,9 @@ public class RelationshipDHISVersionManager {
 
     private Relationship229Compatible to229Compatible(Relationship relationship) {
         Relationship229Compatible.Builder builder = Relationship229Compatible.builder()
-                .displayName(relationship.displayName());
+                .name(relationship.name())
+                .created(relationship.created())
+                .lastUpdated(relationship.lastUpdated());
 
         if (versionManager.is2_29()) {
             return builder
@@ -72,16 +75,20 @@ public class RelationshipDHISVersionManager {
 
     public Relationship from229Compatible(Relationship229Compatible relationship229Compatible) {
         Relationship.Builder builder = Relationship.builder()
-                .displayName(relationship229Compatible.displayName());
+                .name(relationship229Compatible.name())
+                .created(relationship229Compatible.created())
+                .lastUpdated(relationship229Compatible.lastUpdated());
 
         if (versionManager.is2_29()) {
             return builder
+                    .uid(new CodeGeneratorImpl().generate())
                     .relationshipType(relationship229Compatible.uid())
                     .from(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceA()))
                     .to(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceB()))
                     .build();
         } else {
             return builder
+                    .uid(relationship229Compatible.uid())
                     .relationshipType(relationship229Compatible.relationshipType())
                     .from(relationship229Compatible.from())
                     .to(relationship229Compatible.to())

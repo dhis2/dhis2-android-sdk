@@ -47,8 +47,10 @@ public final class RelationshipStore {
         @Override
         public void bindToStatement(@NonNull Relationship o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.displayName());
-            sqLiteBind(sqLiteStatement, 3, o.relationshipType());
+            sqLiteBind(sqLiteStatement, 2, o.name());
+            sqLiteBind(sqLiteStatement, 3, o.created());
+            sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 5, o.relationshipType());
         }
     };
 

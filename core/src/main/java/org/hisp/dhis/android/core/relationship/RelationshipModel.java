@@ -49,7 +49,9 @@ public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
         public String[] all() {
             return new String[] {
                     BaseIdentifiableObjectModel.Columns.UID,
-                    BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                    BaseIdentifiableObjectModel.Columns.NAME,
+                    BaseIdentifiableObjectModel.Columns.CREATED,
+                    BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
                     RELATIONSHIP_TYPE
             };
         }

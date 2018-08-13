@@ -1,8 +1,10 @@
 {
-  "trackedEntityInstanceB": "G1afLIEKt8A",
-  "displayName": "Mother-Child",
-  "trackedEntityInstanceA": "Ea0rRdBPAIp",
   "relationship": "V2kkHafqs8G",
+  "relationshipName": "Mother-Child",
+  "created": "2014-06-06T20:44:21.375",
+  "lastUpdated": "2015-10-15T11:32:27.242",
+  "trackedEntityInstanceB": "G1afLIEKt8A",
+  "trackedEntityInstanceA": "Ea0rRdBPAIp",
   "relative": {
     "created": "2013-09-08T21:40:28.000",
     "orgUnit": "DiszpKrYNg8",
@@ -15,4 +17,3 @@
     "attributes": []
   }
 }
-

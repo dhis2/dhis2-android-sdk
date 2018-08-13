@@ -28,35 +28,35 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 public final class RelationshipFields {
+    // 2.29 only //
     private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
     private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
+    private static final String RELATIVE = "relative";
+
     static final String RELATIONSHIP = "relationship";
     static final String RELATIONSHIP_NAME = "relationshipName";
     private static final String RELATIONSHIP_TYPE = "relationshipType";
-    private static final String DISPLAY_NAME = "displayName";
-    private static final String RELATIVE = "relative";
     private static final String FROM = "from";
     private static final String TO = "to";
 
-    private static final Field<Relationship229Compatible, String> trackedEntityInstanceA
-            = Field.create(TRACKED_ENTITY_INSTANCE_A);
-    private static final Field<Relationship229Compatible, String> trackedEntityInstanceB
-            = Field.create(TRACKED_ENTITY_INSTANCE_B);
-    private static final Field<Relationship229Compatible, String> relationship = Field.create(RELATIONSHIP);
-    private static final Field<Relationship229Compatible, String> relationshipName = Field.create(RELATIONSHIP_NAME);
-    private static final Field<Relationship229Compatible, String> relationshipType = Field.create(RELATIONSHIP_TYPE);
-    private static final Field<Relationship229Compatible, String> displayName = Field.create(DISPLAY_NAME);
-    private static final NestedField<Relationship229Compatible, TrackedEntityInstance> relative = NestedField.create(RELATIVE);
-    private static final NestedField<Relationship229Compatible, RelationshipItem> from = NestedField.create(FROM);
-    private static final NestedField<Relationship229Compatible, RelationshipItem> to = NestedField.create(TO);
+    private static FieldsHelper<Relationship229Compatible> fh = new FieldsHelper<>();
 
     public static final Fields<Relationship229Compatible> allFields = Fields.<Relationship229Compatible>builder().fields(
-            trackedEntityInstanceA, trackedEntityInstanceB, relationship, relationshipName, relationshipType, displayName,
-            from.with(RelationshipItemFields.allFields), to.with(RelationshipItemFields.allFields), relative).build();
+            fh.<String>field(TRACKED_ENTITY_INSTANCE_A),
+            fh.<String>field(TRACKED_ENTITY_INSTANCE_B),
+            fh.<String>field(RELATIONSHIP),
+            fh.<String>field(RELATIONSHIP_NAME),
+            fh.<String>field(RELATIONSHIP_TYPE),
+            fh.<String>field(BaseIdentifiableObject.CREATED),
+            fh.<String>field(BaseIdentifiableObject.LAST_UPDATED),
+            fh.<RelationshipItem>nestedField(FROM).with(RelationshipItemFields.allFields),
+            fh.<RelationshipItem>nestedField(TO).with(RelationshipItemFields.allFields),
+            fh.<TrackedEntityInstance>nestedField(RELATIVE)
+    ).build();
 }

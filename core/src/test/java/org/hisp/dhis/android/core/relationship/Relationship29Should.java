@@ -51,5 +51,6 @@ public class Relationship29Should extends BaseObjectShould implements ObjectShou
         assertThat(relationship.trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
         assertThat(relationship.trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
         assertThat(relationship.uid()).isEqualTo("V2kkHafqs8G");
+        assertThat(relationship.name()).isEqualTo("Mother-Child");
     }
 }

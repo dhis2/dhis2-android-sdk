@@ -50,10 +50,14 @@ public class Relationship30Should extends BaseObjectShould implements ObjectShou
 
         assertThat(relationship.uid()).isEqualTo("nEenWmSyUEp");
         assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G");
+        assertThat(relationship.name()).isEqualTo("Mother-Child");
 
         assertThat(relationship.from()).isNotNull();
         assertThat(relationship.from().trackedEntityInstance()).isNotNull();
         assertThat(relationship.from().trackedEntityInstance().trackedEntityInstance()).isEqualTo("o51cUNONthg");
 
+        assertThat(relationship.to()).isNotNull();
+        assertThat(relationship.to().enrollment()).isNotNull();
+        assertThat(relationship.to().enrollment().enrollment()).isEqualTo("lxAQ7Zs9VYR");
     }
 }

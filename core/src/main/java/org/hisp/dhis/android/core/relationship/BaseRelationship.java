@@ -32,8 +32,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-public abstract class BaseRelationship {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
+
+public abstract class BaseRelationship extends BaseModel implements ObjectWithUidInterface {
 
     @NonNull
     @JsonProperty(RelationshipFields.RELATIONSHIP)
@@ -46,12 +51,14 @@ public abstract class BaseRelationship {
     public abstract String displayName();
 
     @Nullable
+    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem from();
 
     @Nullable
+    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem to();
 
-    public abstract static class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder> extends BaseModel.Builder<T> {
 
         @JsonProperty(RelationshipFields.RELATIONSHIP)
         public abstract T uid(String uid);

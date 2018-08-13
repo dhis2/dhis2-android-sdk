@@ -26,7 +26,7 @@ public final class CategoryOptionStore {
     };
 
     public static IdentifiableObjectStore<CategoryOptionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, CategoryOptionModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, CategoryOptionModel.TABLE,
                 new CategoryOptionModel.Columns().all(), BINDER);
     }
 }

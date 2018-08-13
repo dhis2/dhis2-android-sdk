@@ -60,7 +60,7 @@ public class RelationshipItemModelBuilderShould {
     }
 
     private RelationshipItem buildPojo() {
-        return RelationshipItem.teiItem(TEI_UID);
+        return RelationshipHelper.teiItem(TEI_UID);
     }
 
     private RelationshipItemModel buildModel() {

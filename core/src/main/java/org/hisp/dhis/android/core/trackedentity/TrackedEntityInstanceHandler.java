@@ -10,8 +10,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
+import org.hisp.dhis.android.core.relationship.RelationshipHandler;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,19 +25,19 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 })
 public class TrackedEntityInstanceHandler {
     private final RelationshipDHISVersionManager relationshipVersionManager;
-    private final RelationshipRepositoryInterface relationshipRepository;
+    private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
 
     public TrackedEntityInstanceHandler(
             @NonNull RelationshipDHISVersionManager relationshipVersionManager,
-            @NonNull RelationshipRepositoryInterface relationshipRepository,
+            @NonNull RelationshipHandler relationshipHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
             @NonNull EnrollmentHandler enrollmentHandler) {
         this.relationshipVersionManager = relationshipVersionManager;
-        this.relationshipRepository = relationshipRepository;
+        this.relationshipHandler = relationshipHandler;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
@@ -76,18 +75,13 @@ public class TrackedEntityInstanceHandler {
 
             for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
 
-                Relationship relationship = relationshipVersionManager.fromServer(relationship229);
+                Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
                 TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
                         trackedEntityInstance.uid());
 
                 if (relativeTEI != null) {
                     this.handle(relativeTEI, true);
-
-                    // TODO use handler!
-                    relationshipRepository.createTEIRelationship(
-                            relationship.relationshipType(),
-                            relationship.from().trackedEntityInstance().trackedEntityInstance(),
-                            relationship.to().trackedEntityInstance().trackedEntityInstance());
+                    relationshipHandler.handle(relationship);
                 }
             }
         }
@@ -124,7 +118,7 @@ public class TrackedEntityInstanceHandler {
                                                       D2InternalModules internalModules) {
         return new TrackedEntityInstanceHandler(
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationshipModule.publicModule.relationship,
+                internalModules.relationshipModule.relationshipHandler,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityAttributeValueHandler.create(databaseAdapter),
                 EnrollmentHandler.create(databaseAdapter)

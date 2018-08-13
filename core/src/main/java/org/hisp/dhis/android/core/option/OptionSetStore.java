@@ -53,7 +53,7 @@ public final class OptionSetStore {
     };
 
     public static IdentifiableObjectStore<OptionSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter,
+        return StoreFactory.objectWithUidStore(databaseAdapter,
                 OptionSetModel.TABLE, new OptionSetModel.Columns().all(), BINDER);
     }
 }

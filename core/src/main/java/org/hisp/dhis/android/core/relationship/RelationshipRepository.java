@@ -29,10 +29,11 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.ArrayList;
@@ -44,62 +45,36 @@ import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 
 final class RelationshipRepository implements RelationshipRepositoryInterface {
 
-    private final IdentifiableObjectStore<RelationshipModel> relationshipStore;
+    private final IdentifiableObjectStore<Relationship> relationshipStore;
+    private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStoreInterface relationshipItemStore;
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
-    RelationshipRepository(IdentifiableObjectStore<RelationshipModel> relationshipStore,
-                           RelationshipItemStoreInterface relationshipItemStore,
-                           TrackedEntityInstanceStore trackedEntityInstanceStore) {
+    private RelationshipRepository(IdentifiableObjectStore<Relationship> relationshipStore,
+                           RelationshipHandler relationshipHandler,
+                           RelationshipItemStoreInterface relationshipItemStore) {
         this.relationshipStore = relationshipStore;
+        this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
     }
 
     @Override
-    public void createTEIRelationship(String relationshipType, String fromUid, String toUid) {
-        if (!this.trackedEntityInstanceStore.exists(fromUid) || !this.trackedEntityInstanceStore.exists(toUid)) {
-            return;
+    public void createTEIRelationship(String relationshipType, String fromUid, String toUid) throws D2CallException {
+        if (!relationshipHandler.doesTEIRelationshipExist(fromUid, toUid, relationshipType)) {
+            Relationship relationship = Relationship.builder()
+                    .uid(new CodeGeneratorImpl().generate())
+                    .from(RelationshipHelper.teiItem(fromUid))
+                    .to(RelationshipHelper.teiItem(toUid))
+                    .relationshipType(relationshipType)
+                    .build();
+            relationshipHandler.handle(relationship);
+        } else {
+            throw D2CallException
+                    .builder()
+                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                    .errorDescription("Tried to create existing Relationship: ( " + fromUid + ", "
+                            + toUid + ", " + relationshipType)
+                    .build();
         }
-
-        List<String> existingRelationshipsForPair =
-                this.relationshipItemStore.getRelationshipsFromAndToTEI(fromUid, toUid);
-
-        String relationshipUid = null;
-        for (String relationship : existingRelationshipsForPair) {
-            RelationshipModel relationshipModel =
-                    this.relationshipStore.selectByUid(relationship, RelationshipModel.factory);
-
-            if (relationshipModel != null && relationshipType.equals(relationshipModel.relationshipType())) {
-                relationshipUid = relationshipModel.uid();
-            }
-        }
-
-        if (relationshipUid == null) {
-            relationshipUid = new CodeGeneratorImpl().generate();
-        }
-
-        RelationshipModel newRelationship = RelationshipModel.builder()
-                .uid(relationshipUid)
-                .relationshipType(relationshipType)
-                .build();
-
-        this.relationshipStore.updateOrInsert(newRelationship);
-
-        RelationshipItemModel fromItemModel = RelationshipItemModel.builder()
-                .relationship(relationshipUid)
-                .relationshipItemType(FROM)
-                .trackedEntityInstance(fromUid)
-                .build();
-
-        RelationshipItemModel toItemModel = RelationshipItemModel.builder()
-                .relationship(relationshipUid)
-                .relationshipItemType(TO)
-                .trackedEntityInstance(toUid)
-                .build();
-
-        this.relationshipItemStore.updateOrInsertWhere(fromItemModel);
-        this.relationshipItemStore.updateOrInsertWhere(toItemModel);
     }
 
     @Override
@@ -109,16 +84,16 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
         Set<RelationshipItemModel> relationshipItemModels =
                 this.relationshipItemStore.selectAll(RelationshipItemModel.factory);
 
-        Set<RelationshipModel> relationshipModels = this.relationshipStore.selectAll(RelationshipModel.factory);
+        Set<Relationship> relationshipModels = this.relationshipStore.selectAll(Relationship.factory);
 
         List<Relationship> relationships = new ArrayList<>();
 
         for (RelationshipItemModel relationshipItemModel : relationshipItemModels) {
             if (trackedEntityInstanceUid.equals(relationshipItemModel.trackedEntityInstance())) {
-                RelationshipModel relationshipModel =
-                        findRelationshipByUid(relationshipModels, relationshipItemModel.relationship());
+                Relationship relationshipFromDb =
+                        UidsHelper.findByUid(relationshipModels, relationshipItemModel.relationship());
 
-                if (relationshipModel == null) {
+                if (relationshipFromDb == null) {
                     continue;
                 }
 
@@ -141,10 +116,10 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
                 }
 
                 Relationship relationship = Relationship.builder()
-                        .uid(relationshipModel.uid())
-                        .relationshipType(relationshipModel.relationshipType())
-                        .from(RelationshipItem.teiItem(fromModel.trackedEntityInstance()))
-                        .to(RelationshipItem.teiItem(toModel.trackedEntityInstance()))
+                        .uid(relationshipFromDb.uid())
+                        .relationshipType(relationshipFromDb.relationshipType())
+                        .from(RelationshipHelper.teiItem(fromModel.trackedEntityInstance()))
+                        .to(RelationshipHelper.teiItem(toModel.trackedEntityInstance()))
                         .build();
 
                 relationships.add(relationship);
@@ -152,15 +127,6 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
         }
 
         return relationships;
-    }
-
-    private RelationshipModel findRelationshipByUid(Set<RelationshipModel> relationshipModels, String uid) {
-        for (RelationshipModel relationshipModel : relationshipModels) {
-            if (uid.equals(relationshipModel.uid())) {
-                return relationshipModel;
-            }
-        }
-        return null;
     }
 
     private RelationshipItemModel findRelatedTEI(Set<RelationshipItemModel> items, String relationshipUid,
@@ -173,11 +139,11 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
         return null;
     }
 
-    static RelationshipRepository create(DatabaseAdapter databaseAdapter) {
+    static RelationshipRepository create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
         return new RelationshipRepository(
                 RelationshipStore.create(databaseAdapter),
-                RelationshipItemStore.create(databaseAdapter),
-                new TrackedEntityInstanceStoreImpl(databaseAdapter)
+                relationshipHandler,
+                RelationshipItemStore.create(databaseAdapter)
         );
     }
 }

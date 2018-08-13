@@ -43,15 +43,15 @@ public class RelationshipDHISVersionManager {
         this.versionManager = versionManager;
     }
 
-    public List<Relationship229Compatible> toServer(List<Relationship> storedRelationships) {
+    public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships) {
         List<Relationship229Compatible> transformedRelationships = new ArrayList<>();
         for (Relationship relationship : storedRelationships) {
-            transformedRelationships.add(toServer(relationship));
+            transformedRelationships.add(to229Compatible(relationship));
         }
         return transformedRelationships;
     }
 
-    private Relationship229Compatible toServer(Relationship relationship) {
+    private Relationship229Compatible to229Compatible(Relationship relationship) {
         Relationship229Compatible.Builder builder = Relationship229Compatible.builder()
                 .displayName(relationship.displayName());
 
@@ -70,15 +70,15 @@ public class RelationshipDHISVersionManager {
         }
     }
 
-    public Relationship fromServer(Relationship229Compatible relationship229Compatible) {
+    public Relationship from229Compatible(Relationship229Compatible relationship229Compatible) {
         Relationship.Builder builder = Relationship.builder()
                 .displayName(relationship229Compatible.displayName());
 
         if (versionManager.is2_29()) {
             return builder
                     .relationshipType(relationship229Compatible.uid())
-                    .from(RelationshipItem.teiItem(relationship229Compatible.trackedEntityInstanceA()))
-                    .to(RelationshipItem.teiItem(relationship229Compatible.trackedEntityInstanceB()))
+                    .from(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceA()))
+                    .to(RelationshipHelper.teiItem(relationship229Compatible.trackedEntityInstanceB()))
                     .build();
         } else {
             return builder
@@ -93,8 +93,8 @@ public class RelationshipDHISVersionManager {
         if (versionManager.is2_29()) {
             return relationship229Compatible.relative();
         } else {
-            String fromTEIUid = getTEIUidFromRelationshipItem(relationship229Compatible.from());
-            String toTEIUid = getTEIUidFromRelationshipItem(relationship229Compatible.to());
+            String fromTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.from());
+            String toTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.to());
 
             if (fromTEIUid == null || toTEIUid == null) {
                 return null;
@@ -106,12 +106,5 @@ public class RelationshipDHISVersionManager {
                     null, null, null, null, null,
                     null, false, null, Collections.<Relationship229Compatible>emptyList(), null);
         }
-    }
-
-    private String getTEIUidFromRelationshipItem(RelationshipItem item) {
-        if (item != null && item.trackedEntityInstance() != null) {
-            return item.trackedEntityInstance().trackedEntityInstance();
-        }
-        return null;
     }
 }

@@ -7,8 +7,8 @@ import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
+import org.hisp.dhis.android.core.relationship.RelationshipHandler;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ public class TrackedEntityInstanceHandlerShould {
     private RelationshipDHISVersionManager relationshipVersionManager;
 
     @Mock
-    private RelationshipRepositoryInterface relationshipRepository;
+    private RelationshipHandler relationshipHandler;
 
     @Mock
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -74,15 +74,15 @@ public class TrackedEntityInstanceHandlerShould {
         when(trackedEntityInstance.uid()).thenReturn(TEI_UID);
         when(trackedEntityInstance.enrollments()).thenReturn(Collections.singletonList(enrollment));
         when(trackedEntityInstance.relationships()).thenReturn(Collections.singletonList(relationship229Compatible));
-        when(relationshipVersionManager.fromServer(relationship229Compatible)).thenReturn(relationship);
+        when(relationshipVersionManager.from229Compatible(relationship229Compatible)).thenReturn(relationship);
 
         when(relationship.relationshipType()).thenReturn(RELATIONSHIP_TYPE);
-        when(relationship.from()).thenReturn(RelationshipItem.teiItem(TEI_UID));
-        when(relationship.to()).thenReturn(RelationshipItem.teiItem(RELATIVE_UID));
+        when(relationship.from()).thenReturn(RelationshipHelper.teiItem(TEI_UID));
+        when(relationship.to()).thenReturn(RelationshipHelper.teiItem(RELATIVE_UID));
         when(relative.uid()).thenReturn(RELATIVE_UID);
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
-                relationshipVersionManager, relationshipRepository, trackedEntityInstanceStore,
+                relationshipVersionManager, relationshipHandler, trackedEntityInstanceStore,
                 trackedEntityAttributeValueHandler, enrollmentHandler
         );
 
@@ -185,16 +185,16 @@ public class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    public void invoke_relationship_repository_with_relationship_from_version_manager() {
+    public void invoke_relationship_handler_with_relationship_from_version_manager() {
         when(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).thenReturn(relative);
         trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
-        verify(relationshipRepository).createTEIRelationship(RELATIONSHIP_TYPE, TEI_UID, RELATIVE_UID);
+        verify(relationshipHandler).handle(relationship);
     }
 
     @Test
     public void do_not_invoke_relationship_repository_when_no_relative() {
         when(relationshipVersionManager.getRelativeTei(relationship229Compatible, TEI_UID)).thenReturn(null);
         trackedEntityInstanceHandler.handle(trackedEntityInstance, false);
-        verify(relationshipRepository, never()).createTEIRelationship(RELATIONSHIP_TYPE, TEI_UID, RELATIVE_UID);
+        verify(relationshipHandler, never()).handle(any(Relationship.class));
     }
 }

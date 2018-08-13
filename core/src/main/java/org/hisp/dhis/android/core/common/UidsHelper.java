@@ -61,6 +61,16 @@ public final class UidsHelper {
         return uids;
     }
 
+
+    public static <O extends ObjectWithUidInterface> O findByUid(Collection<O> objects, String uid) {
+        for (O o: objects) {
+            if (uid.equals(o.uid())) {
+                return o;
+            }
+        }
+        return null;
+    }
+
     public static <O extends ObjectWithUidInterface> String commaSeparatedUidsWithSingleQuotationMarks(
             Collection<O> objects) {
         return Utils.commaAndSpaceSeparatedArrayValues(uidsArray(objects));

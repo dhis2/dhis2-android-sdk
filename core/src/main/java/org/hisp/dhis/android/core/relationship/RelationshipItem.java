@@ -62,13 +62,4 @@ public abstract class RelationshipItem {
 
         public abstract RelationshipItem build();
     }
-
-    public static RelationshipItem teiItem(String uid) {
-        return RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance
-                        .builder()
-                        .trackedEntityInstance(uid)
-                        .build()
-        ).build();
-    }
 }

@@ -34,8 +34,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
+import org.hisp.dhis.android.core.data.database.TrackedEntityInstanceWithUidColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 @AutoValue
@@ -50,6 +53,7 @@ public abstract class Relationship229Compatible extends BaseRelationship {
     public abstract String trackedEntityInstanceB();
 
     @Nullable
+    @ColumnAdapter(TrackedEntityInstanceWithUidColumnAdapter.class)
     public abstract TrackedEntityInstance relative();
 
 

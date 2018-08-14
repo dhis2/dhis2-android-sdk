@@ -35,11 +35,10 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.Model;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
-public abstract class Relationship extends BaseRelationship implements Model {
+public abstract class Relationship extends BaseRelationship {
 
     public static Builder builder() {
         return new AutoValue_Relationship.Builder();

@@ -302,6 +302,28 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     //@Test
+    public void create_relationship_does_not_duplicate() throws Exception {
+        downloadMetadata();
+
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.downloadTrackedEntityInstances(5,  false).call();
+        assertThat(trackedEntityInstances.size() == 5).isTrue();
+
+        TrackedEntityInstance t0 = trackedEntityInstances.get(0);
+        TrackedEntityInstance t1 = trackedEntityInstances.get(1);
+
+        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getAll().iterator().next();
+
+        d2.relationshipModule().relationship.createTEIRelationship(relationshipType.uid(), t0.uid(), t1.uid());
+
+        d2.syncTrackedEntityInstances().call();
+
+        d2.syncDownSyncedTrackedEntityInstances().call();
+
+        d2.logout();
+    }
+
+    //@Test
     public void post_a_tei_and_delete_one_event() throws Exception {
         downloadMetadata();
         d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();

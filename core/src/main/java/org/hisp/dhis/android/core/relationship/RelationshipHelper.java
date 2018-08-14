@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-public class RelationshipHelper {
+public final class RelationshipHelper {
 
     public static String getTeiUid(RelationshipItem item) {
         if (item != null && item.trackedEntityInstance() != null) {

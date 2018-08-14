@@ -59,7 +59,14 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
 
     @Override
     public void createTEIRelationship(String relationshipType, String fromUid, String toUid) throws D2CallException {
-        if (!relationshipHandler.doesTEIRelationshipExist(fromUid, toUid, relationshipType)) {
+        if (relationshipHandler.doesTEIRelationshipExist(fromUid, toUid, relationshipType)) {
+            throw D2CallException
+                    .builder()
+                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                    .errorDescription("Tried to create existing Relationship: ( " + fromUid + ", "
+                            + toUid + ", " + relationshipType)
+                    .build();
+        } else {
             Relationship relationship = Relationship.builder()
                     .uid(new CodeGeneratorImpl().generate())
                     .from(RelationshipHelper.teiItem(fromUid))
@@ -67,13 +74,6 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
                     .relationshipType(relationshipType)
                     .build();
             relationshipHandler.handle(relationship);
-        } else {
-            throw D2CallException
-                    .builder()
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Tried to create existing Relationship: ( " + fromUid + ", "
-                            + toUid + ", " + relationshipType)
-                    .build();
         }
     }
 

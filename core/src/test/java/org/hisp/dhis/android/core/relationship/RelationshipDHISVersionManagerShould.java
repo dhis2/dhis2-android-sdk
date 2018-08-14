@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,68 +42,18 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME
 import static org.mockito.Mockito.when;
 
 
-public class RelationshipDHISVersionManagerShould {
+public class RelationshipDHISVersionManagerShould extends RelationshipSamples {
 
     @Mock
     private DHISVersionManager versionManager;
 
     private RelationshipDHISVersionManager relationshipDHISVersionManager;
 
-    private String UID = "uid";
-
-    private String FROM_UID = "fromUid";
-
-    private String TO_UID = "toUid";
-
-    private String TYPE = "type";
-
-    private RelationshipItem fromItem = RelationshipHelper.teiItem(FROM_UID);
-
-    private RelationshipItem toItem = RelationshipHelper.teiItem(TO_UID);
-
-    private Relationship229Compatible.Builder commonCompatibleBuilder = Relationship229Compatible
-            .builder()
-            .created(CREATED)
-            .lastUpdated(LAST_UPDATED)
-            .name(NAME);
-
-    private Relationship.Builder commonBuilder = Relationship
-            .builder()
-            .created(CREATED)
-            .lastUpdated(LAST_UPDATED)
-            .name(NAME);
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         relationshipDHISVersionManager = new RelationshipDHISVersionManager(versionManager);
-    }
-
-    private Relationship229Compatible get229Compatible() {
-        return commonCompatibleBuilder
-                .uid(TYPE)
-                .trackedEntityInstanceA(FROM_UID)
-                .trackedEntityInstanceB(TO_UID)
-                .build();
-    }
-
-    private Relationship229Compatible get230Compatible() {
-        return commonCompatibleBuilder
-                .uid(UID)
-                .relationshipType(TYPE)
-                .from(fromItem)
-                .to(toItem)
-                .build();
-    }
-
-    private Relationship get230() {
-        return commonBuilder
-                .uid(UID)
-                .relationshipType(TYPE)
-                .from(fromItem)
-                .to(toItem)
-                .build();
     }
 
     private void assertCommonFields(BaseRelationship relationship) {

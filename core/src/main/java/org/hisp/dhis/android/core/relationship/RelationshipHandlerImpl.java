@@ -56,7 +56,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
     @Override
     public void handle(Relationship o) {
         String fromUid = RelationshipHelper.getTeiUid(o.from());
-        String toUid = RelationshipHelper.getTeiUid(o.from());
+        String toUid = RelationshipHelper.getTeiUid(o.to());
 
         if (fromUid == null || toUid == null) {
             // TODO support events and enrollments

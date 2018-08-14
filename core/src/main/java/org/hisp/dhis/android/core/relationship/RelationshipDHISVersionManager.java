@@ -44,15 +44,15 @@ public class RelationshipDHISVersionManager {
         this.versionManager = versionManager;
     }
 
-    public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships) {
+    public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
         List<Relationship229Compatible> transformedRelationships = new ArrayList<>();
         for (Relationship relationship : storedRelationships) {
-            transformedRelationships.add(to229Compatible(relationship));
+            transformedRelationships.add(to229Compatible(relationship, teiUid));
         }
         return transformedRelationships;
     }
 
-    private Relationship229Compatible to229Compatible(Relationship relationship) {
+    Relationship229Compatible to229Compatible(Relationship relationship, String teiUid) {
         Relationship229Compatible.Builder builder = Relationship229Compatible.builder()
                 .name(relationship.name())
                 .created(relationship.created())
@@ -63,9 +63,11 @@ public class RelationshipDHISVersionManager {
                     .uid(relationship.relationshipType())
                     .trackedEntityInstanceA(relationship.from().trackedEntityInstance().trackedEntityInstance())
                     .trackedEntityInstanceB(relationship.to().trackedEntityInstance().trackedEntityInstance())
+                    .relative(getRelative230(relationship, teiUid))
                     .build();
         } else {
             return builder
+                    .uid(relationship.uid())
                     .relationshipType(relationship.relationshipType())
                     .from(relationship.from())
                     .to(relationship.to())
@@ -100,18 +102,23 @@ public class RelationshipDHISVersionManager {
         if (versionManager.is2_29()) {
             return relationship229Compatible.relative();
         } else {
-            String fromTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.from());
-            String toTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.to());
-
-            if (fromTEIUid == null || toTEIUid == null) {
-                return null;
-            }
-
-            String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
-
-            return TrackedEntityInstance.create(relatedTEIUid, null, null,
-                    null, null, null, null, null,
-                    null, false, null, Collections.<Relationship229Compatible>emptyList(), null);
+            return getRelative230(relationship229Compatible, teiUid);
         }
+    }
+
+    private TrackedEntityInstance getRelative230(BaseRelationship relationship229Compatible, String teiUid) {
+        String fromTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.from());
+        String toTEIUid = RelationshipHelper.getTeiUid(relationship229Compatible.to());
+
+        if (fromTEIUid == null || toTEIUid == null) {
+            return null;
+        }
+
+        String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
+
+        return TrackedEntityInstance.create(relatedTEIUid, null, null,
+                null, null, null, null, null,
+                null, false, null,
+                Collections.<Relationship229Compatible>emptyList(), null);
     }
 }

@@ -175,7 +175,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
             List<Relationship> dbRelationships =
                     relationshipRepository.getRelationshipsByTEI(trackedEntityInstance.uid());
             List<Relationship229Compatible> versionAwareRelationships =
-                    relationshipDHISVersionManager.to229Compatible(dbRelationships);
+                    relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),

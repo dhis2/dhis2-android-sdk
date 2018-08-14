@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.program.ProgramStage;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
@@ -55,6 +56,8 @@ public abstract class Relationship extends BaseRelationship implements Model {
     public static Relationship create(Cursor cursor) {
         return AutoValue_Relationship.createFromCursor(cursor);
     }
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")

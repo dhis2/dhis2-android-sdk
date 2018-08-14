@@ -43,7 +43,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
     private final RelationshipItemStoreInterface relationshipItemStore;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
-    private RelationshipHandlerImpl(
+    RelationshipHandlerImpl(
             IdentifiableObjectStore<Relationship> relationshipStore,
             RelationshipItemStoreInterface relationshipItemStore,
             TrackedEntityInstanceStore trackedEntityInstanceStore) {
@@ -104,7 +104,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
                     Relationship.factory);
 
             if (existingRelationship != null && relationshipType.equals(existingRelationship.relationshipType())) {
-                existingRelationship.uid();
+                return existingRelationship.uid();
             }
         }
         return null;

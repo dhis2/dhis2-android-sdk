@@ -52,13 +52,15 @@ public class RelationshipSamples {
 
     protected RelationshipItem toItem = RelationshipHelper.teiItem(TO_UID);
 
+    protected RelationshipItem eventItem = RelationshipHelper.eventItem(TO_UID);
+
     private Relationship229Compatible.Builder commonCompatibleBuilder = Relationship229Compatible
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
             .name(NAME);
 
-    private Relationship.Builder commonBuilder = Relationship
+    protected Relationship.Builder commonBuilder = Relationship
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
@@ -87,6 +89,15 @@ public class RelationshipSamples {
                 .relationshipType(TYPE)
                 .from(fromItem)
                 .to(toItem)
+                .build();
+    }
+
+    protected Relationship get230(String uid, String fromUid, String toUid) {
+        return commonBuilder
+                .uid(uid)
+                .relationshipType(TYPE)
+                .from(RelationshipHelper.teiItem(fromUid))
+                .to(RelationshipHelper.teiItem(toUid))
                 .build();
     }
 }

@@ -45,4 +45,13 @@ public class RelationshipHelper {
                         .build()
         ).build();
     }
+
+    public static RelationshipItem eventItem(String uid) {
+        return RelationshipItem.builder().event(
+                RelationshipItemEvent
+                        .builder()
+                        .event(uid)
+                        .build()
+        ).build();
+    }
 }

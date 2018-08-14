@@ -35,4 +35,7 @@ final class RelationshipItemEventFields {
     private static final String EVENT = "event";
 
     public static final Field<RelationshipItemEvent, String> event = Field.create(EVENT);
+
+    private RelationshipItemEventFields() {
+    }
 }

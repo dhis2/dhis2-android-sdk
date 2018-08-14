@@ -35,4 +35,7 @@ final class RelationshipItemEnrollmentFields {
     private static final String ENROLLMENT = "enrollment";
 
     static final Field<RelationshipItemEnrollment, String> enrollment = Field.create(ENROLLMENT);
+
+    private RelationshipItemEnrollmentFields() {
+    }
 }

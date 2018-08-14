@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityInstanceWithUidColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 

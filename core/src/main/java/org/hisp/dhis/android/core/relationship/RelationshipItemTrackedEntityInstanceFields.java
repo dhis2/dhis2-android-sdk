@@ -36,4 +36,7 @@ final class RelationshipItemTrackedEntityInstanceFields {
 
     static final Field<RelationshipItemTrackedEntityInstance, String> trackedEntityInstance =
             Field.create(TRACKED_ENTITY_INSTANCE);
+
+    private RelationshipItemTrackedEntityInstanceFields() {
+    }
 }

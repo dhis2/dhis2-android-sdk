@@ -54,4 +54,7 @@ public class RelationshipHelper {
                         .build()
         ).build();
     }
+
+    private RelationshipHelper() {
+    }
 }

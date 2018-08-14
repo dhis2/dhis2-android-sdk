@@ -30,13 +30,9 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.data.api.Field;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipItemTrackedEntityInstance.Builder.class)

@@ -47,4 +47,7 @@ final class RelationshipItemFields {
             enrollment.with(RelationshipItemEnrollmentFields.enrollment),
             event.with(RelationshipItemEventFields.event)
     ).build();
+
+    private RelationshipItemFields() {
+    }
 }

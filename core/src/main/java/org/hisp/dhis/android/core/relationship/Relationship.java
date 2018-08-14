@@ -36,7 +36,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.program.ProgramStage;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Relationship.Builder.class)

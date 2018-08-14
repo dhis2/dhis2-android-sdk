@@ -47,7 +47,8 @@ public final class RelationshipFields {
 
     private static FieldsHelper<Relationship229Compatible> fh = new FieldsHelper<>();
 
-    public static final Fields<Relationship229Compatible> allFields = Fields.<Relationship229Compatible>builder().fields(
+    public static final Fields<Relationship229Compatible> allFields
+            = Fields.<Relationship229Compatible>builder().fields(
             fh.<String>field(TRACKED_ENTITY_INSTANCE_A),
             fh.<String>field(TRACKED_ENTITY_INSTANCE_B),
             fh.<String>field(RELATIONSHIP),
@@ -59,4 +60,7 @@ public final class RelationshipFields {
             fh.<RelationshipItem>nestedField(TO).with(RelationshipItemFields.allFields),
             fh.<TrackedEntityInstance>nestedField(RELATIVE)
     ).build();
+
+    private RelationshipFields() {
+    }
 }

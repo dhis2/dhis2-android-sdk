@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.utils.StoreUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,31 +53,25 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
             DataValueModel.Columns.DATA_ELEMENT + "," +
             DataValueModel.Columns.PERIOD + "," +
             DataValueModel.Columns.ORGANISATION_UNIT + "," +
-            DataValueModel.Columns.VALUE +
+            DataValueModel.Columns.CATEGORY_OPTION_COMBO + "," +
+            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + "," +
+            DataValueModel.Columns.VALUE + "," +
+            DataValueModel.Columns.STORED_BY + "," +
+            DataValueModel.Columns.CREATED + "," +
+            DataValueModel.Columns.LAST_UPDATED + "," +
+            DataValueModel.Columns.COMMENT + "," +
+            DataValueModel.Columns.FOLLOW_UP +
             " FROM " +
             DataValueModel.TABLE +
             " WHERE " +
             DataValueModel.Columns.STATE +
             " = ':state'";
 
-    private static final String UPDATE_STATE = "UPDATE "
-            + DataValueModel.TABLE +
-            " SET " +
-            DataValueModel.Columns.STATE + " = ? " +
-            " WHERE " +
-            DataValueModel.Columns.DATA_ELEMENT + " = ?;";
-
-    private final SQLiteStatement updateStateStatement;
-
-
-
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
 
         super(databaseAdapter, insertStatement, updateWhereStatement,
                 builder, BINDER, WHERE_UPDATE_BINDER);
-
-        this.updateStateStatement = databaseAdapter.compileStatement(UPDATE_STATE);
     }
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
@@ -146,19 +141,18 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
         if (cursor.getCount() > 0) {
 
             do {
-
                 DataValue dataValue = DataValue.create(
                         cursor.getString(0),
                         cursor.getString(1),
                         cursor.getString(2),
-                        null,
-                        null,
                         cursor.getString(3),
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        cursor.getString(6),
+                        StoreUtils.parse(cursor.getString(7)),
+                        StoreUtils.parse(cursor.getString(8)),
+                        cursor.getString(9),
+                        cursor.getInt(10) == 1,
                         null
                 );
 
@@ -171,21 +165,14 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
     }
 
     /**
-     * @param dataElementUid UID from the DataElement related to the DataValue you want to set
+     * @param dataValue DataValue element you want to update
      * @param newState The new state to be set for the DataValue
-     *
-     * @return True if any DataValue has been updated
      */
-    @SuppressWarnings("PMD.UselessParentheses")
-    public boolean setState(String dataElementUid, State newState) {
+    public void setState(DataValue dataValue, State newState) {
 
-        sqLiteBind(updateStateStatement, 1, newState.name());
-        sqLiteBind(updateStateStatement, 2, dataElementUid);
+        DataValueModel dataValueModel = new DataValueModelBuilder(newState).buildModel(dataValue);
 
-        int updatedRows = databaseAdapter.executeUpdateDelete(DataValueModel.TABLE, updateStateStatement);
-        updateStateStatement.clearBindings();
-
-        return (updatedRows > 0);
+        updateWhere(dataValueModel);
     }
 
 }

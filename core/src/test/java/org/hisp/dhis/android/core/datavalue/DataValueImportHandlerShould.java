@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,7 +48,7 @@ public class DataValueImportHandlerShould {
 
         dataValueImportHandler.handleImportSummary(null, importSummary);
 
-        verify(dataValueStore, never()).setState(anyString(), any(State.class));
+        verify(dataValueStore, never()).setState(any(DataValue.class), any(State.class));
     }
 
     @Test
@@ -57,7 +56,7 @@ public class DataValueImportHandlerShould {
 
         dataValueImportHandler.handleImportSummary(dataValueSet, null);
 
-        verify(dataValueStore, never()).setState(anyString(), any(State.class));
+        verify(dataValueStore, never()).setState(any(DataValue.class), any(State.class));
     }
 
     @Test
@@ -68,12 +67,11 @@ public class DataValueImportHandlerShould {
 
         dataValueSet.dataValues = dataValueCollection;
 
-        when(dataValue.dataElement()).thenReturn("test_data_value_uid");
         when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
 
-        verify(dataValueStore, times(1)).setState("test_data_value_uid", State.SYNCED);
+        verify(dataValueStore, times(1)).setState(dataValue, State.SYNCED);
     }
 
     @Test
@@ -84,12 +82,11 @@ public class DataValueImportHandlerShould {
 
         dataValueSet.dataValues = dataValueCollection;
 
-        when(dataValue.dataElement()).thenReturn("test_data_value_uid");
         when(importSummary.importStatus()).thenReturn(ImportStatus.ERROR);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
 
-        verify(dataValueStore, times(1)).setState("test_data_value_uid", State.ERROR);
+        verify(dataValueStore, times(1)).setState(dataValue, State.ERROR);
     }
 
 }

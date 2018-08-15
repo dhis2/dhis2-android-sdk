@@ -53,7 +53,7 @@ public class DataValueImportHandler {
                 (importSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
 
         for (DataValue dataValue : dataValueSet.dataValues) {
-            dataValueStore.setState(dataValue.dataElement(), newState);
+            dataValueStore.setState(dataValue, newState);
         }
     }
 }

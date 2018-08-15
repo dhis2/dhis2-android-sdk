@@ -33,20 +33,20 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseQuery;
 
-import java.util.Collection;
+import java.util.Set;
 
 @AutoValue
 public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
 
-    public abstract Collection<String> dataSetUids();
+    public abstract Set<String> dataSetUids();
 
-    public abstract Collection<String> periodIds();
+    public abstract Set<String> periodIds();
 
-    public abstract Collection<String> rootOrgUnitUids();
+    public abstract Set<String> rootOrgUnitUids();
 
-    public static DataSetCompleteRegistrationQuery create(Collection<String> dataSetUids,
-                                                          Collection<String> periodIds,
-                                                          Collection<String> rootOrgUnitUids) {
+    public static DataSetCompleteRegistrationQuery create(Set<String> dataSetUids,
+                                                          Set<String> periodIds,
+                                                          Set<String> rootOrgUnitUids) {
 
         return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
                 false, dataSetUids, periodIds, rootOrgUnitUids);

@@ -30,9 +30,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -43,9 +42,9 @@ public interface DataSetCompleteRegistrationService {
     @GET("completeDataSetRegistrations")
     Call<DataSetCompleteRegistrationPayload> getDataSetCompleteRegistrations(
             @Query("fields") @Which Fields<DataSetCompleteRegistration> fields,
-            @Query("dataSet") List<String> dataSets,
-            @Query("period") List<String> periods,
-            @Query("orgUnit") List<String> orgUnit,
+            @Query("dataSet") @Where String dataSetUids,
+            @Query("period") @Where String periodIds,
+            @Query("orgUnit") @Where String organisationUnitIds,
             @Query("children") Boolean children,
             @Query("paging") Boolean paging
     );

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataSetCompleteRegistrationHandler {
+public final class DataSetCompleteRegistrationHandler {
 
     private DataSetCompleteRegistrationHandler() {}
 

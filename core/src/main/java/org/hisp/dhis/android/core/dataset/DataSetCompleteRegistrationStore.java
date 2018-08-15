@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class DataSetCompleteRegistrationStore {
+public final class DataSetCompleteRegistrationStore {
 
     private DataSetCompleteRegistrationStore() {}
 

@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
@@ -42,14 +43,15 @@ import java.util.Set;
 
 public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<DataSetCompleteRegistration> {
 
-    private final static int MAX_ALLOWED_QUERY_LENGTH = 2000;
+    private final static int MAX_ALLOWED_QUERY_LENGTH = 2500;
     private final static int SERVER_URL_LENGTH = 200;
 
     /*
-    completeDataSetRegistrations.json?dataSet=&period=&orgUnit=&children=true&
-    fields=period,dataSet,organisationUnit,attributeOptionCombo,date,storedBy
+    completeDataSetRegistrations?fields=period,dataSet,organisationUnit,
+    attributeOptionCombo,date,storedBy&dataSet=&period=&orgUnit&children=
+    true&paging=false
      */
-    private final static int QUERY_WITHOUT_UIDS_LENGTH = 148;
+    private final static int QUERY_WITHOUT_UIDS_LENGTH = 154;
     private final static int SERVER_URL_AND_QUERY_WITHOUT_UIDS_LENGTH
             = SERVER_URL_LENGTH + QUERY_WITHOUT_UIDS_LENGTH;
     private final static int QUERY_LENTGH_AVAILABLE_FOR_UIDS
@@ -88,32 +90,43 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
     @Override
     public List<DataSetCompleteRegistration> fetch() throws D2CallException {
 
-        if (totalDataSetUids.isEmpty() || totalPeriodIds.isEmpty() || totalRootOrganisationUnitsUids.isEmpty()) {
+        checkTooManyPeriodIds();
+
+        if (!checkRequiredUidsArePresent()) {
             return Collections.emptyList();
         }
 
-        splitUidsCollections();
+        splitUidCollections();
 
-        List<DataSetCompleteRegistration> dataSetCompleteRegistrations= new ArrayList<>();
-
-        for (Set<String> organisationUnitUids : splitRootOrganisationUnitsUids) {
-
-            for (Set<String> dataSetUids : splitDataSetUids) {
-
-                List<DataSetCompleteRegistration> fetchedDataSetCompleteRegistrations =
-                        fetchDataSetCompleteRegistrations(dataSetUids, totalPeriodIds, organisationUnitUids);
-
-                dataSetCompleteRegistrations.addAll(fetchedDataSetCompleteRegistrations);
-            }
-        }
-        
-        return dataSetCompleteRegistrations;
+        return downloadAllDataSetCompleteRegistrations();
     }
 
-    private void splitUidsCollections() {
+    private void checkTooManyPeriodIds() throws D2CallException {
+
+        if (queryLengthAvailableAfterIncludingPeriodIds < 2 * UID_WITH_COMMA_LENGTH) {
+            throw D2CallException.builder()
+                    .isHttpError(false)
+                    .errorCode(D2ErrorCode.TOO_MANY_PERIODS)
+                    .errorDescription("Too many period ids attached: "
+                            + totalPeriodIds.size()
+                    + ". Please, consider decreasing the ammout of " +
+                            "periods you are requesting data for.")
+                    .build();
+        }
+    }
+
+    private boolean checkRequiredUidsArePresent() {
+        return !totalDataSetUids.isEmpty() &&
+                !totalPeriodIds.isEmpty() &&
+                !totalRootOrganisationUnitsUids.isEmpty();
+    }
+
+    private void splitUidCollections() {
 
         int organisationUnitUidsPerSplit =
                 getHowMuchUidsFitInStringWithLength(queryLengthAvailableAfterIncludingPeriodIds) - 1;
+
+        organisationUnitUidsPerSplit = Math.min(organisationUnitUidsPerSplit, totalRootOrganisationUnitsUids.size());
 
         int dataSetUidsPerSplit = getHowMuchUidsFitInStringWithLength(
                 queryLengthAvailableAfterIncludingPeriodIds - getUidsLength(organisationUnitUidsPerSplit));
@@ -126,7 +139,26 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
         return Utils.setPartition(allUids, maxUidsPerSplit);
     }
 
-    private List<DataSetCompleteRegistration> fetchDataSetCompleteRegistrations(
+    @NonNull
+    private List<DataSetCompleteRegistration> downloadAllDataSetCompleteRegistrations() throws D2CallException {
+
+        List<DataSetCompleteRegistration> dataSetCompleteRegistrations = new ArrayList<>();
+
+        for (Set<String> organisationUnitUids : splitRootOrganisationUnitsUids) {
+
+            for (Set<String> dataSetUids : splitDataSetUids) {
+
+                List<DataSetCompleteRegistration> fetchedDataSetCompleteRegistrations =
+                        downloadDataSetCompleteRegistrationsFor(dataSetUids, totalPeriodIds, organisationUnitUids);
+
+                dataSetCompleteRegistrations.addAll(fetchedDataSetCompleteRegistrations);
+            }
+        }
+
+        return dataSetCompleteRegistrations;
+    }
+
+    private List<DataSetCompleteRegistration> downloadDataSetCompleteRegistrationsFor(
             Set<String> dataSetUids,
             Set<String> periodUids,
             Set<String> organisationUnitUids) throws D2CallException {

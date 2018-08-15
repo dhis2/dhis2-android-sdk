@@ -95,6 +95,7 @@ public final class APICallExecutor {
         return message != null && message.length() > 0;
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private String getServerMessage(Response<?> response) {
         if (nonEmptyMessage(response.message())) {
             return response.message();

@@ -29,14 +29,16 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings(value = {"URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
-        "UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"})
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public class DataSetCompleteRegistrationPayload {
 
+    @JsonProperty("completeDataSetRegistrations")
     public List<DataSetCompleteRegistration> dataSetCompleteRegistrations;
 
 }

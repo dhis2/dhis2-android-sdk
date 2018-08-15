@@ -47,5 +47,6 @@ public enum D2ErrorCode {
     SEARCH_GRID_PARSE,
     SOCKET_TIMEOUT,
     TOO_MANY_ORG_UNITS,
+    TOO_MANY_PERIODS,
     UNEXPECTED
 }

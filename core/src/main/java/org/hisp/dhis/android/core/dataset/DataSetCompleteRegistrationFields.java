@@ -33,16 +33,15 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 public final class DataSetCompleteRegistrationFields {
 
-    private DataSetCompleteRegistrationFields() {}
-
-    static String PERIOD = "period";
-    static String DATA_SET = "dataSet";
-    static String ORGANISATION_UNIT = "organisationUnit";
-    static String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    static String DATE = "date";
-    static String STORED_BY = "storedBy";
+    static final String PERIOD = "period";
+    static final String DATA_SET = "dataSet";
+    static final String ORGANISATION_UNIT = "organisationUnit";
+    static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    static final String DATE = "date";
+    static final String STORED_BY = "storedBy";
 
     private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
+
     static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
             fieldsHelper.<String>field(PERIOD),
             fieldsHelper.<String>field(DATA_SET),
@@ -51,5 +50,7 @@ public final class DataSetCompleteRegistrationFields {
             fieldsHelper.<String>field(DATE),
             fieldsHelper.<String>field(STORED_BY)
     ).build();
+
+    private DataSetCompleteRegistrationFields() {}
 
 }

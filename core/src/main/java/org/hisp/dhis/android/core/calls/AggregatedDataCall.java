@@ -72,7 +72,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
     private final DHISVersionManager versionManager;
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
-            DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationQueryFactory;
+            DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
     private final IdentifiableObjectStore<DataSetModel> dataSetStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
@@ -83,7 +83,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
                                @NonNull DHISVersionManager versionManager,
                                @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                                @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-                                       dataSetCompleteRegistrationQueryFactory,
+                                       dataSetCompleteRegistrationCallFactory,
                                @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
                                @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
                                @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
@@ -92,7 +92,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
         this.systemInfoCallFactory = systemInfoCallFactory;
         this.versionManager = versionManager;
         this.dataValueCallFactory = dataValueCallFactory;
-        this.dataSetCompleteRegistrationQueryFactory = dataSetCompleteRegistrationQueryFactory;
+        this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
         this.dataSetStore = dataSetStore;
         this.periodStore = periodStore;
         this.organisationUnitStore = organisationUnitStore;
@@ -127,7 +127,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
                         DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
                 Call<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
-                        dataSetCompleteRegistrationQueryFactory.create(genericCallData,
+                        dataSetCompleteRegistrationCallFactory.create(genericCallData,
                                 dataSetCompleteRegistrationQuery);
 
                 executor.executeD2Call(dataSetCompleteRegistrationCall);

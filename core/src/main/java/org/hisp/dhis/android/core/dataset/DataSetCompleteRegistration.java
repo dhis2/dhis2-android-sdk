@@ -56,9 +56,11 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
 
     public abstract String attributeOptionCombo();
 
+    @Nullable
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date date();
 
+    @Nullable
     public abstract String storedBy();
 
     @NonNull
@@ -91,7 +93,7 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
         public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
 
         @JsonFormat(pattern = "yyyy-MM-dd")
-        public abstract Builder date(@NonNull Date date);
+        public abstract Builder date(@Nullable Date date);
 
         public abstract Builder storedBy(@Nullable String storedBy);
 

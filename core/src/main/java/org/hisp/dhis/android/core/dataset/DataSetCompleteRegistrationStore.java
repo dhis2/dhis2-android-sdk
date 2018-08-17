@@ -28,20 +28,58 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.utils.StoreUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataSetCompleteRegistrationStore {
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
+public class DataSetCompleteRegistrationStore extends
+        ObjectWithoutUidStoreImpl<DataSetCompleteRegistration> {
 
-    private DataSetCompleteRegistrationStore() {}
+    private static final String QUERY_WITH_STATE = "SELECT " +
+            DataSetCompleteRegistrationFields.PERIOD + "," +
+            DataSetCompleteRegistrationFields.DATA_SET + "," +
+            DataSetCompleteRegistrationFields.ORGANISATION_UNIT + "," +
+            DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO + "," +
+            DataSetCompleteRegistrationFields.DATE + "," +
+            DataSetCompleteRegistrationFields.STORED_BY +
+            " FROM " +
+            DataSetCompleteRegistrationTableInfo.TABLE_INFO.name() +
+            " WHERE " +
+            DataSetCompleteRegistrationTableInfo.Columns.STATE +
+            " = ':state'";
+
+    private DataSetCompleteRegistrationStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
+                                             SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
+
+        super(databaseAdapter, insertStatement, updateWhereStatement,
+                builder, BINDER, WHERE_UPDATE_BINDER);
+    }
+
+    public static DataSetCompleteRegistrationStore create(DatabaseAdapter databaseAdapter) {
+
+        SQLStatementBuilder sqlStatementBuilder =
+                new SQLStatementBuilder(DataSetCompleteRegistrationTableInfo.TABLE_INFO.name(),
+                        DataSetCompleteRegistrationTableInfo.TABLE_INFO.columns());
+
+        return new DataSetCompleteRegistrationStore(databaseAdapter, databaseAdapter.compileStatement(
+                sqlStatementBuilder.insert()),
+                databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
+                sqlStatementBuilder);
+    }
 
     static final StatementBinder<DataSetCompleteRegistration> BINDER =
             new StatementBinder<DataSetCompleteRegistration>() {
@@ -54,6 +92,7 @@ public final class DataSetCompleteRegistrationStore {
             sqLiteBind(sqLiteStatement, 4, dataSetCompleteRegistration.attributeOptionCombo());
             sqLiteBind(sqLiteStatement, 5, dataSetCompleteRegistration.date());
             sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.storedBy());
+            sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.state());
         }
     };
 
@@ -62,15 +101,72 @@ public final class DataSetCompleteRegistrationStore {
         @Override
         public void bindToUpdateWhereStatement(@NonNull DataSetCompleteRegistration dataSetCompleteRegistration,
                                                @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.period());
-            sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.dataSet());
-            sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.organisationUnit());
-            sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.period());
+            sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.dataSet());
+            sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.organisationUnit());
+            sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.attributeOptionCombo());
         }
     };
 
-    public static ObjectWithoutUidStore<DataSetCompleteRegistration> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataSetCompleteRegistrationTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER);
+    public Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state) {
+        return queryDataSetCompleteRegistrationsWithState(state);
     }
+
+    private Collection<DataSetCompleteRegistration> queryDataSetCompleteRegistrationsWithState(State state) {
+
+        String query = QUERY_WITH_STATE.replace(":state", state.name());
+
+        Cursor cursor = databaseAdapter.query(query);
+
+        return map(cursor);
+    }
+
+    private Collection<DataSetCompleteRegistration> map(Cursor cursor) {
+
+        Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations = new ArrayList<>();
+
+        cursor.moveToFirst();
+
+        if (cursor.getCount() > 0) {
+
+            do {
+
+                DataSetCompleteRegistration dataSetCompleteRegistration
+                        = DataSetCompleteRegistration.builder()
+                        .period(cursor.getString(0))
+                        .dataSet(cursor.getString(1))
+                        .organisationUnit(cursor.getString(2))
+                        .attributeOptionCombo(cursor.getString(3))
+                        .date(StoreUtils.parse(cursor.getString(4)))
+                        .storedBy(cursor.getString(5))
+                        .state(null)
+                        .build();
+
+                dataSetCompleteRegistrations.add(dataSetCompleteRegistration);
+
+            } while(cursor.moveToNext());
+        }
+
+        return dataSetCompleteRegistrations;
+    }
+
+    /**
+     * @param dataSetCompleteRegistration DataSetCompleteRegistration element you want to update
+     * @param newState The new state to be set for the DataValue
+     */
+    public void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState) {
+
+        DataSetCompleteRegistration updatedDataSetCompleteRegistration = DataSetCompleteRegistration.builder()
+                .period(dataSetCompleteRegistration.period())
+                .dataSet(dataSetCompleteRegistration.dataSet())
+                .organisationUnit(dataSetCompleteRegistration.organisationUnit())
+                .attributeOptionCombo(dataSetCompleteRegistration.attributeOptionCombo())
+                .date(dataSetCompleteRegistration.date())
+                .storedBy(dataSetCompleteRegistration.storedBy())
+                .state(newState)
+                .build();
+
+        updateWhere(updatedDataSetCompleteRegistration);
+    }
+
 }

@@ -41,4 +41,11 @@ public class DataSetCompleteRegistrationPayload {
     @JsonProperty("completeDataSetRegistrations")
     public List<DataSetCompleteRegistration> dataSetCompleteRegistrations;
 
+    public DataSetCompleteRegistrationPayload(
+            @JsonProperty("completeDataSetRegistrations")
+                    List<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
+
+        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
+    }
+
 }

@@ -33,34 +33,42 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataSetCompleteRegistration.Builder.class)
-public abstract class DataSetCompleteRegistration extends BaseModel {
+public abstract class DataSetCompleteRegistration extends BaseDataModel {
 
+    @JsonProperty(DataSetCompleteRegistrationFields.PERIOD)
     public abstract String period();
 
+    @JsonProperty(DataSetCompleteRegistrationFields.DATA_SET)
     public abstract String dataSet();
 
+    @JsonProperty(DataSetCompleteRegistrationFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
+    @JsonProperty(DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO)
     public abstract String attributeOptionCombo();
 
     @Nullable
+    @JsonProperty(DataSetCompleteRegistrationFields.DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date date();
 
     @Nullable
+    @JsonProperty(DataSetCompleteRegistrationFields.STORED_BY)
     public abstract String storedBy();
 
     @NonNull
@@ -83,7 +91,12 @@ public abstract class DataSetCompleteRegistration extends BaseModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseModel.Builder<DataSetCompleteRegistration.Builder> {
+    public abstract static class Builder extends BaseDataModel.Builder<DataSetCompleteRegistration.Builder> {
+
+        public Builder() {
+            state(State.SYNCED);
+        }
+
         public abstract Builder period(@NonNull String period);
 
         public abstract Builder dataSet(@NonNull String dataSet);

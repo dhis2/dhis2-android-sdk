@@ -581,6 +581,7 @@ public class VariableService {
      */
     private static void populateDataElementOrAttributeVariable(ProgramRuleVariable programRuleVariable) {
         String value = null;
+        String valueName = null;
         String defaultValue = "";
         List<String> allValues = new ArrayList<>();
         if (programRuleVariable.getSourceType() == null) {
@@ -603,6 +604,7 @@ public class VariableService {
                         if (value == null) {
                             value = dataValue.getValue();
                         }
+                        valueName = value;
                         value = getDataElementValue(programRuleVariable, value);
                         allValues.add(dataValue.getValue());
                     }
@@ -624,12 +626,14 @@ public class VariableService {
                                 if (value == null) {
                                     value = dataValue.getValue();
                                 }
+                                valueName = value;
                                 value = getDataElementValue(programRuleVariable, value);
                                 allValues.add(dataValue.getValue());
                             }
                         }
                         if (dataValue != null) {
                             value = dataValue.getValue();
+                            valueName = value;
                             value = getDataElementValue(programRuleVariable, value);
                         } else {
                             DataElement dataElement = getInstance().getDataElementMap().get(programRuleVariable.getDataElement());
@@ -661,6 +665,7 @@ public class VariableService {
                                 if (value == null) {
                                     value = dataValue.getValue();
                                 }
+                                valueName = value;
                                 value = getDataElementValue(programRuleVariable, value);
                                 allValues.add(dataValue.getValue());
                             }
@@ -683,6 +688,7 @@ public class VariableService {
                     }
                     TrackedEntityAttributeValue trackedEntityAttributeValue = getInstance().getTrackedEntityAttributeValueMap().get(programRuleVariable.getTrackedEntityAttribute());
                     if (trackedEntityAttributeValue != null) {
+                        valueName = trackedEntityAttributeValue.getValue();
                         value = getTrackedEntityAttributeValue(trackedEntityAttributeValue.getTrackedEntityAttributeId(), trackedEntityAttributeValue.getValue());
                         allValues.add(value);
                     }
@@ -695,6 +701,7 @@ public class VariableService {
                     DataValue dataValue = getInstance().getEventDataValueMaps().get(getInstance().getCurrentEvent()).get(programRuleVariable.getDataElement());
                     if (dataValue != null) {
                         value = dataValue.getValue();
+                        valueName = value;
                         value = getDataElementValue(programRuleVariable, value);
                         allValues.add(value);
                     }
@@ -716,6 +723,7 @@ public class VariableService {
             programRuleVariable.setHasValue(true);
         }
         programRuleVariable.setVariableValue(value);
+        programRuleVariable.setVariableValueName(valueName);
         programRuleVariable.setAllValues(allValues);
     }
 
@@ -962,6 +970,19 @@ public class VariableService {
     }
 
     /**
+     * Returns the name of a {@link ProgramRuleVariable}
+     *
+     * @param variableName
+     * @return
+     */
+    public static String getReplacementForProgramRuleVariableName(String variableName) {
+        String value;
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
+        value = retrieveVariableValueName(programRuleVariable);
+        return value;
+    }
+
+    /**
      * Returns the value of a {@link ProgramRuleVariable}
      *
      * @param programRuleVariable
@@ -978,7 +999,23 @@ public class VariableService {
         }
         return value;
     }
-
+    /**
+     * Returns the name of a {@link ProgramRuleVariable}
+     *
+     * @param programRuleVariable
+     * @return
+     */
+    public static String retrieveVariableValueName(ProgramRuleVariable programRuleVariable) {
+        String defaultValue = "";
+        if (programRuleVariable == null) {
+            return defaultValue;
+        }
+        String value = programRuleVariable.getVariableValueName();
+        if (isEmpty(value)) {
+            value = defaultValue;
+        }
+        return value;
+    }
     /**
      * Returns a valid default value for a given {@link ValueType}
      *

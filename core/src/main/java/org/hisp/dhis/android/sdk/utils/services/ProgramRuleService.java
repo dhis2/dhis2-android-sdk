@@ -89,10 +89,14 @@ public class ProgramRuleService {
      * @return
      */
     public static boolean evaluate(final String condition) {
-        String conditionReplaced = getReplacedCondition(condition);
+        String conditionReplaced = getReplacedCondition(condition, false);
         boolean isTrue = false;
         try {
             isTrue = ExpressionUtils.isTrue(conditionReplaced, null);
+            if(!isTrue){
+                conditionReplaced = getReplacedCondition(condition, true);
+                isTrue = ExpressionUtils.isTrue(conditionReplaced, null);
+            }
         } catch (JexlException jxlException) {
             jxlException.printStackTrace();
         }
@@ -107,7 +111,7 @@ public class ProgramRuleService {
      * @param condition
      * @return
      */
-    public static String getReplacedCondition(String condition) {
+    public static String getReplacedCondition(String condition, boolean isName) {
         if (condition == null) {
             return "";
         }
@@ -119,7 +123,11 @@ public class ProgramRuleService {
             String value;
             String variablePrefix = matcher.group(1);
             String variableName = matcher.group(2);
-            value = VariableService.getReplacementForProgramRuleVariable(variableName);
+            if(!isName){
+                value = VariableService.getReplacementForProgramRuleVariable(variableName);
+            }else{
+                value = VariableService.getReplacementForProgramRuleVariableName(variableName);
+            }
 
             if (isNumericAndStartsWithDecimalSeparator(value)) {
                 value = String.format("0%s", value);
@@ -154,7 +162,7 @@ public class ProgramRuleService {
      * @return
      */
     public static String getCalculatedConditionValue(String condition) {
-        String conditionReplaced = getReplacedCondition(condition);
+        String conditionReplaced = getReplacedCondition(condition, false);
         Object result = ExpressionUtils.evaluate(conditionReplaced, null);
         String stringResult = String.valueOf(result);
         return stringResult;

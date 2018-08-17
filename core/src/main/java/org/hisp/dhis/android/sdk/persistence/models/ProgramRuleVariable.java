@@ -71,6 +71,9 @@ public class ProgramRuleVariable extends BaseMetaDataObject {
     String variableValue;
 
     @JsonIgnore
+    String variableValueName;
+
+    @JsonIgnore
     ValueType variableType;
 
     @JsonIgnore
@@ -156,6 +159,14 @@ public class ProgramRuleVariable extends BaseMetaDataObject {
 
     public void setVariableValue(String variableValue) {
         this.variableValue = variableValue;
+    }
+
+    public String getVariableValueName() {
+        return variableValueName;
+    }
+
+    public void setVariableValueName(String variableValueName) {
+        this.variableValueName = variableValueName;
     }
 
     public ValueType getVariableType() {

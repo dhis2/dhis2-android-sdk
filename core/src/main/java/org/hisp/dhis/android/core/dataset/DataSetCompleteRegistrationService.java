@@ -32,9 +32,12 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
+import org.hisp.dhis.android.core.imports.ImportSummary;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface DataSetCompleteRegistrationService {
@@ -48,4 +51,8 @@ public interface DataSetCompleteRegistrationService {
             @Query("children") Boolean children,
             @Query("paging") Boolean paging
     );
+
+    @POST("completeDataSetRegistrations")
+    Call<ImportSummary> postDataSetCompleteRegistrations(
+            @Body DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload);
 }

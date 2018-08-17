@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -49,7 +50,7 @@ public final class DataSetCompleteRegistrationTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    static class Columns extends BaseDataModel.Columns {
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
@@ -58,7 +59,8 @@ public final class DataSetCompleteRegistrationTableInfo {
                     DataSetCompleteRegistrationFields.ORGANISATION_UNIT,
                     DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO,
                     DataSetCompleteRegistrationFields.DATE,
-                    DataSetCompleteRegistrationFields.STORED_BY);
+                    DataSetCompleteRegistrationFields.STORED_BY,
+                    STATE);
         }
 
         @Override

@@ -33,14 +33,14 @@ public final class EventEndpointCall extends SyncCall<List<Event>> {
 
         if (eventQuery.getCategoryCombo() == null || eventQuery.getCategoryOption() == null) {
             call = eventService.getEvents(eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                    eventQuery.getTrackedEntityInstance(), Event.allFields, Event.uid.in(eventQuery.getUIds()),
+                    eventQuery.getTrackedEntityInstance(), Event.allFields,
                     Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize());
         } else {
             CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
             CategoryOption categoryOption =  eventQuery.getCategoryOption();
 
             call = eventService.getEvents(eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                    eventQuery.getTrackedEntityInstance(), Event.allFields, Event.uid.in(eventQuery.getUIds()),
+                    eventQuery.getTrackedEntityInstance(), Event.allFields,
                     Boolean.TRUE, eventQuery.getPage(), eventQuery.getPageSize(), categoryCombo.uid(),
                     categoryOption.uid());
         }

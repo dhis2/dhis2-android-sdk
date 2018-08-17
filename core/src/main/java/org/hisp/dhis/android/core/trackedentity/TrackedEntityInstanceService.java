@@ -28,6 +28,7 @@ public interface TrackedEntityInstanceService {
     String PAGE_SIZE = "pageSize";
     String PROGRAM = "program";
     String INCLUDE_DELETED = "includeDeleted";
+    String INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes";
     String FILTER = "filter";
     String STRATEGY = "strategy";
 
@@ -49,7 +50,8 @@ public interface TrackedEntityInstanceService {
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
-            @Query(PAGE_SIZE) int pageSize);
+            @Query(PAGE_SIZE) int pageSize,
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/query")
     Call<SearchGrid> query(

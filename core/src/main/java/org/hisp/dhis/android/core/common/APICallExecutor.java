@@ -82,11 +82,37 @@ public final class APICallExecutor {
     }
 
     private D2CallException responseException(Response<?> response) {
+        String serverMessage = getServerMessage(response);
+        Log.e(this.getClass().getSimpleName(), serverMessage);
         return exceptionBuilder
                 .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
                 .httpErrorCode(response.code())
-                .errorDescription("API call failed, response: " + response.toString())
+                .errorDescription("API call failed, response: " + serverMessage)
                 .build();
+    }
+
+    private boolean nonEmptyMessage(String message) {
+        return message != null && message.length() > 0;
+    }
+
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    private String getServerMessage(Response<?> response) {
+        if (nonEmptyMessage(response.message())) {
+            return response.message();
+        }
+
+        try {
+            String errorBodyString = response.errorBody().string();
+            if (nonEmptyMessage(errorBodyString)) {
+                return errorBodyString;
+            }
+            if (nonEmptyMessage(response.errorBody().toString())) {
+                return response.errorBody().toString();
+            }
+        } catch (IOException e) {
+            // IGNORE
+        }
+        return "No server message";
     }
 
     private D2CallException socketTimeoutException(SocketTimeoutException e) {

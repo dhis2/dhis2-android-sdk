@@ -28,7 +28,7 @@ public interface TrackedEntityInstanceService {
     String PAGE_SIZE = "pageSize";
     String PROGRAM = "program";
     String INCLUDE_DELETED = "includeDeleted";
-    String INCLUDE_ALL_ATTRIBUTES = "inlcudeAllAttributes";
+    String INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes";
     String FILTER = "filter";
     String STRATEGY = "strategy";
 

@@ -50,25 +50,25 @@ import java.util.Date;
 @JsonDeserialize(builder = $$AutoValue_DataSetCompleteRegistration.Builder.class)
 public abstract class DataSetCompleteRegistration extends BaseDataModel {
 
-    @JsonProperty(DataSetCompleteRegistrationFields.PERIOD)
+    @JsonProperty
     public abstract String period();
 
-    @JsonProperty(DataSetCompleteRegistrationFields.DATA_SET)
+    @JsonProperty
     public abstract String dataSet();
 
-    @JsonProperty(DataSetCompleteRegistrationFields.ORGANISATION_UNIT)
+    @JsonProperty
     public abstract String organisationUnit();
 
-    @JsonProperty(DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO)
+    @JsonProperty
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty(DataSetCompleteRegistrationFields.DATE)
+    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date date();
 
     @Nullable
-    @JsonProperty(DataSetCompleteRegistrationFields.STORED_BY)
+    @JsonProperty
     public abstract String storedBy();
 
     @NonNull

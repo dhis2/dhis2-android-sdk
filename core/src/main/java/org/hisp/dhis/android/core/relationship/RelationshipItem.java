@@ -30,46 +30,36 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
 @AutoValue
+@JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
 public abstract class RelationshipItem {
-    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    private static final String ENROLLMENT = "enrollment";
-    private static final String EVENT = "event";
-
-    public static final Field<RelationshipItem, RelationshipItemTrackedEntityInstance> trackedEntityInstance =
-            Field.create(TRACKED_ENTITY_INSTANCE);
-    public static final Field<RelationshipItem, RelationshipItemEnrollment> enrollment = Field.create(ENROLLMENT);
-    public static final Field<RelationshipItem, RelationshipItemEvent> event = Field.create(EVENT);
-
-    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder().fields(
-            trackedEntityInstance, enrollment, event).build();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_INSTANCE)
     public abstract RelationshipItemTrackedEntityInstance trackedEntityInstance();
 
     @Nullable
-    @JsonProperty(ENROLLMENT)
     public abstract RelationshipItemEnrollment enrollment();
 
     @Nullable
-    @JsonProperty(EVENT)
     public abstract RelationshipItemEvent event();
 
-    @Nullable
-    @JsonCreator
-    public static RelationshipItem create(
-            @JsonProperty(TRACKED_ENTITY_INSTANCE) RelationshipItemTrackedEntityInstance trackedEntityInstance,
-            @JsonProperty(ENROLLMENT) RelationshipItemEnrollment enrollment,
-            @JsonProperty(EVENT) RelationshipItemEvent event) {
+    public static Builder builder() {
+        return new AutoValue_RelationshipItem.Builder();
+    }
 
-        return new AutoValue_RelationshipItem(trackedEntityInstance, enrollment, event);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder trackedEntityInstance(RelationshipItemTrackedEntityInstance trackedEntityInstance);
+
+        public abstract Builder enrollment(RelationshipItemEnrollment enrollment);
+
+        public abstract Builder event(RelationshipItemEvent event);
+
+        public abstract RelationshipItem build();
     }
 }

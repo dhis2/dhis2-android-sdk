@@ -52,7 +52,7 @@ public final class LegendSetStore {
     };
 
     public static IdentifiableObjectStore<LegendSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, LegendSetModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, LegendSetModel.TABLE,
                 new LegendSetModel.Columns().all(), BINDER);
     }
 }

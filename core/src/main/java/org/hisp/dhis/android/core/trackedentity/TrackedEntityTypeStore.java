@@ -41,7 +41,7 @@ public final class TrackedEntityTypeStore{
             = new NameableStatementBinder<TrackedEntityTypeModel>() {};
 
     public static IdentifiableObjectStore<TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, TrackedEntityTypeModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeModel.TABLE,
                 new TrackedEntityTypeModel.Columns().all(), BINDER);
     }
 

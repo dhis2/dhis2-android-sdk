@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.relationship;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -43,17 +42,20 @@ public final class RelationshipStore {
 
     private RelationshipStore() {}
 
-    private static StatementBinder<RelationshipModel> BINDER = new IdentifiableStatementBinder<RelationshipModel>() {
+    private static StatementBinder<Relationship> BINDER = new StatementBinder<Relationship>() {
 
         @Override
-        public void bindToStatement(@NonNull RelationshipModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.relationshipType());
+        public void bindToStatement(@NonNull Relationship o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.uid());
+            sqLiteBind(sqLiteStatement, 2, o.name());
+            sqLiteBind(sqLiteStatement, 3, o.created());
+            sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 5, o.relationshipType());
         }
     };
 
-    public static IdentifiableObjectStore<RelationshipModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, RelationshipModel.TABLE,
+    public static IdentifiableObjectStore<Relationship> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipModel.TABLE,
                 new RelationshipModel.Columns().all(), BINDER);
     }
 }

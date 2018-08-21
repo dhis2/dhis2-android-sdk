@@ -59,7 +59,7 @@ public final class DataElementOperandStore {
     };
 
     public static IdentifiableObjectStore<DataElementOperandModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, DataElementOperandModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, DataElementOperandModel.TABLE,
                 new DataElementOperandModel.Columns().all(), BINDER);
     }
 }

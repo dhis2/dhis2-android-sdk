@@ -29,11 +29,13 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.D2CallException;
+
 import java.util.List;
 
 public interface RelationshipRepositoryInterface {
 
-    void createTEIRelationship(String relationshipType, String fromUid, String toUid);
+    void createTEIRelationship(String relationshipType, String fromUid, String toUid) throws D2CallException;
 
     List<Relationship> getRelationshipsByTEI(@NonNull String trackedEntityInstanceUid);
 

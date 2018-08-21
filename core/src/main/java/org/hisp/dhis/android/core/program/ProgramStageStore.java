@@ -75,7 +75,7 @@ public final class ProgramStageStore {
     };
 
     public static IdentifiableObjectStore<ProgramStageModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramStageModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageModel.TABLE,
                 new ProgramStageModel.Columns().all(), BINDER);
     }
 }

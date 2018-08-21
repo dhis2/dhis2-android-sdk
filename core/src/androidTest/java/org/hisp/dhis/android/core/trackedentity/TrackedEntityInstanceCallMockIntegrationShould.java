@@ -16,7 +16,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -248,7 +248,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             downloadedEnrollments.add(enrollment);
         }
 
-        List<Relationship> relationships = new ArrayList<>();
+        List<Relationship229Compatible> relationships = new ArrayList<>();
 
         if (downloadedTei.relationships() != null) {
             relationships = downloadedTei.relationships();

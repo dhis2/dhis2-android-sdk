@@ -61,7 +61,7 @@ public final class ProgramTrackedEntityAttributeStore {
     };
 
     public static IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ProgramTrackedEntityAttributeModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramTrackedEntityAttributeModel.TABLE,
                 new ProgramTrackedEntityAttributeModel.Columns().all(), BINDER);
     }
 }

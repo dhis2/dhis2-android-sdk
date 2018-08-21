@@ -62,7 +62,7 @@ public final class ProgramIndicatorStore {
 
 
     public static IdentifiableObjectStore<ProgramIndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter,
+        return StoreFactory.objectWithUidStore(databaseAdapter,
                 ProgramIndicatorModel.TABLE, new ProgramIndicatorModel.Columns().all(), BINDER);
     }
 }

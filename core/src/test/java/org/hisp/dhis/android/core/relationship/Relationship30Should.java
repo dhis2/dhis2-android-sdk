@@ -46,10 +46,11 @@ public class Relationship30Should extends BaseObjectShould implements ObjectShou
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Relationship relationship = objectMapper.readValue(jsonStream, Relationship.class);
+        Relationship229Compatible relationship = objectMapper.readValue(jsonStream, Relationship229Compatible.class);
 
-        assertThat(relationship.relationship()).isEqualTo("nEenWmSyUEp");
+        assertThat(relationship.uid()).isEqualTo("nEenWmSyUEp");
         assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G");
+        assertThat(relationship.name()).isEqualTo("Mother-Child");
 
         assertThat(relationship.from()).isNotNull();
         assertThat(relationship.from().trackedEntityInstance()).isNotNull();

@@ -28,22 +28,14 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.PojoBuilder;
+import org.hisp.dhis.android.core.data.api.Field;
 
-public class RelationshipBuilder extends PojoBuilder<Relationship, RelationshipModel> {
+final class RelationshipItemEventFields {
 
-    @Override
-    public Relationship buildPojo(RelationshipModel model) {
+    private static final String EVENT = "event";
 
-        return Relationship.create(
-                null,
-                null,
-                model.uid(),
-                model.relationshipType(),
-                null,
-                null,
-                null,
-                null
-        );
+    public static final Field<RelationshipItemEvent, String> event = Field.create(EVENT);
+
+    private RelationshipItemEventFields() {
     }
 }

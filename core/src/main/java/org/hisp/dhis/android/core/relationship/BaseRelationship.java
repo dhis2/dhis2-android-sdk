@@ -28,60 +28,64 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
 
-@AutoValue
-public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
-    public static final String TABLE = "Relationship";
+import java.util.Date;
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String RELATIONSHIP_TYPE = "relationshipType";
+public abstract class BaseRelationship extends BaseModel implements ObjectWithUidInterface {
 
-        @Override
-        public String[] all() {
-            return new String[] {
-                    BaseIdentifiableObjectModel.Columns.UID,
-                    BaseIdentifiableObjectModel.Columns.NAME,
-                    BaseIdentifiableObjectModel.Columns.CREATED,
-                    BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
-                    RELATIONSHIP_TYPE
-            };
-        }
-    }
-
-    public static RelationshipModel create(Cursor cursor) {
-        return AutoValue_RelationshipModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_RelationshipModel.Builder();
-    }
-
-    public static final CursorModelFactory<RelationshipModel> factory
-            = new CursorModelFactory<RelationshipModel>() {
-        @Override
-        public RelationshipModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
+    @NonNull
+    @JsonProperty(RelationshipFields.RELATIONSHIP)
+    public abstract String uid();
 
     @Nullable
-    @ColumnName(Columns.RELATIONSHIP_TYPE)
+    @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
+    public abstract String name();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    @Nullable
     public abstract String relationshipType();
 
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
+    @Nullable
+    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
+    public abstract RelationshipItem from();
 
-        public abstract Builder relationshipType(@Nullable String relationshipType);
+    @Nullable
+    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
+    public abstract RelationshipItem to();
 
-        public abstract RelationshipModel build();
+    public abstract static class Builder<T extends Builder> extends BaseModel.Builder<T> {
+
+        @JsonProperty(RelationshipFields.RELATIONSHIP)
+        public abstract T uid(String uid);
+
+        @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
+        public abstract T name(String name);
+
+        public abstract T created(Date created);
+
+        public abstract T lastUpdated(Date lastUpdated);
+
+        public abstract T relationshipType(String relationshipType);
+
+        public abstract T from(RelationshipItem from);
+
+        public abstract T to(RelationshipItem to);
     }
 }

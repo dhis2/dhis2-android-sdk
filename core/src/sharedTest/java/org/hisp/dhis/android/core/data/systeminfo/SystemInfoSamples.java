@@ -42,6 +42,7 @@ public class SystemInfoSamples {
                 .dateFormat("yyyy-mm-dd")
                 .version("2.29")
                 .contextPath("https://play.dhis2.org/android-current")
+                .systemName("DHIS 2 Demo - Sierra Leone")
                 .build();
     }
 
@@ -51,6 +52,7 @@ public class SystemInfoSamples {
                 .dateFormat("yyyy-DD-mm")
                 .version("2.29")
                 .contextPath("https://play.dhis2.org/android-current")
+                .systemName("DHIS 2 Demo - Sierra Leone")
                 .build();
     }
 

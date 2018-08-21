@@ -58,7 +58,7 @@ public class SystemInfoDatabaseMappingShould {
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
 
         cursor.addRow(new Object[]{dateString, systemInfo.dateFormat(),
-                systemInfo.version(), systemInfo.contextPath(), systemInfo.id()});
+                systemInfo.version(), systemInfo.contextPath(), systemInfo.systemName(), systemInfo.id()});
         cursor.moveToFirst();
 
         SystemInfo dbSystemInfo = SystemInfo.create(cursor);
@@ -75,5 +75,6 @@ public class SystemInfoDatabaseMappingShould {
         assertThat(contentValues.getAsString(SystemInfoFields.DATE_FORMAT)).isEqualTo(systemInfo.dateFormat());
         assertThat(contentValues.getAsString(SystemInfoFields.CONTEXT_PATH)).isEqualTo(systemInfo.contextPath());
         assertThat(contentValues.getAsString(SystemInfoFields.VERSION)).isEqualTo(systemInfo.version());
+        assertThat(contentValues.getAsString(SystemInfoFields.SYSTEM_NAME)).isEqualTo(systemInfo.systemName());
     }
 }

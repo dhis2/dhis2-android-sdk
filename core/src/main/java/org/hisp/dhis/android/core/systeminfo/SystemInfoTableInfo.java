@@ -57,7 +57,8 @@ public final class SystemInfoTableInfo {
                     SystemInfoFields.SERVER_DATE,
                     SystemInfoFields.DATE_FORMAT,
                     SystemInfoFields.VERSION,
-                    SystemInfoFields.CONTEXT_PATH);
+                    SystemInfoFields.CONTEXT_PATH,
+                    SystemInfoFields.SYSTEM_NAME);
         }
 
         @Override

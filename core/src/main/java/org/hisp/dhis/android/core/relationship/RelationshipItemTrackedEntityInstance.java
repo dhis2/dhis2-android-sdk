@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
@@ -39,6 +40,7 @@ import com.google.auto.value.AutoValue;
 public abstract class RelationshipItemTrackedEntityInstance {
 
     @NonNull
+    @JsonProperty()
     public abstract String trackedEntityInstance();
 
     public static Builder builder() {

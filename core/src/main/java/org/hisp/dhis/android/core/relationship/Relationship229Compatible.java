@@ -32,6 +32,7 @@ import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -46,12 +47,15 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 public abstract class Relationship229Compatible extends BaseRelationship {
 
     @Nullable
+    @JsonProperty()
     public abstract String trackedEntityInstanceA();
 
     @Nullable
+    @JsonProperty()
     public abstract String trackedEntityInstanceB();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(TrackedEntityInstanceWithUidColumnAdapter.class)
     public abstract TrackedEntityInstance relative();
 

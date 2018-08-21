@@ -66,7 +66,7 @@ public class RelationshipSamples {
             .lastUpdated(LAST_UPDATED)
             .name(NAME);
 
-    protected Relationship229Compatible get229Compatible() {
+    public Relationship229Compatible get229Compatible() {
         return commonCompatibleBuilder
                 .uid(TYPE)
                 .trackedEntityInstanceA(FROM_UID)
@@ -74,7 +74,7 @@ public class RelationshipSamples {
                 .build();
     }
 
-    protected Relationship229Compatible get230Compatible() {
+    public Relationship229Compatible get230Compatible() {
         return commonCompatibleBuilder
                 .uid(UID)
                 .relationshipType(TYPE)

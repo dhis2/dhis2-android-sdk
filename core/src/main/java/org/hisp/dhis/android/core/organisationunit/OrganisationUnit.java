@@ -58,6 +58,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     private static final String PROGRAMS = "programs";
     private static final String DATA_SETS = "dataSets";
     private static final String ANCESTORS = "ancestors";
+    private static final String ORGANISATION_UNIT_GROUPS = "organisationUnitGroups";
 
     public static final Field<OrganisationUnit, String> uid = Field.create(BaseIdentifiableObject.UID);
     public static final Field<OrganisationUnit, String> code = Field.create(BaseIdentifiableObject.CODE);
@@ -78,13 +79,16 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     public static final NestedField<OrganisationUnit, ObjectWithUid> programs = NestedField.create(PROGRAMS);
     public static final NestedField<OrganisationUnit, DataSet> dataSets = NestedField.create(DATA_SETS);
     public static final NestedField<OrganisationUnit, OrganisationUnit> ancestors = NestedField.create(ANCESTORS);
+    private static final NestedField<OrganisationUnit, OrganisationUnitGroup> organisationUnitGroups
+            = NestedField.create(ORGANISATION_UNIT_GROUPS);
 
     static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, displayDescription, path, openingDate,
             closedDate, level, deleted, parent.with(uid), programs.with(ObjectWithUid.uid),
             dataSets.with(DataSet.uid),
-            ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName)).build();
+            ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName),
+            organisationUnitGroups.with(OrganisationUnitGroup.allFields)).build();
     
     @Nullable
     @JsonProperty(PARENT)
@@ -118,6 +122,10 @@ public abstract class OrganisationUnit extends BaseNameableObject {
     @JsonProperty(ANCESTORS)
     public abstract List<OrganisationUnit> ancestors();
 
+    @Nullable
+    @JsonProperty(ORGANISATION_UNIT_GROUPS)
+    public abstract List<OrganisationUnitGroup> organisationUnitGroups();
+
     @JsonCreator
     public static OrganisationUnit create(
             @JsonProperty(UID) String uid,
@@ -138,10 +146,11 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             @JsonProperty(PROGRAMS) List<Program> programs,
             @JsonProperty(DATA_SETS) List<DataSet> dataSets,
             @JsonProperty(ANCESTORS) List<OrganisationUnit> ancestors,
+            @JsonProperty(ORGANISATION_UNIT_GROUPS) List<OrganisationUnitGroup> organisationUnitGroups,
             @JsonProperty(DELETED) Boolean deleted) {
         return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated, deleted,
                 shortName, displayShortName, description, displayDescription, parent, path, openingDate,
                 closedDate, level, safeUnmodifiableList(programs), safeUnmodifiableList(dataSets),
-                ancestors);
+                ancestors, organisationUnitGroups);
     }
 }

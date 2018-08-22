@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.organisationunit;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.dataset.Section;
 import org.junit.Test;
 
 import java.io.IOException;

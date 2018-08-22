@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -65,6 +66,8 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
     private final OrganisationUnitModel.Scope scope;
     private final User user;
 
+    private final GenericHandler<OrganisationUnitGroup, OrganisationUnitGroupModel> organisationUnitGroupHandler;
+
     public OrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                    @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
                                            userOrganisationUnitLinkStore,
@@ -77,7 +80,9 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
                                    @Nullable Set<String> programUids,
                                    @Nullable Set<String> dataSetUids,
                                    @Nullable OrganisationUnitModel.Scope scope,
-                                   @Nullable User user) {
+                                   @Nullable User user,
+                                   @Nullable GenericHandler<OrganisationUnitGroup,
+                                           OrganisationUnitGroupModel> organisationUnitGroupHandler) {
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.organisationUnitProgramLinkHandler = organisationUnitProgramLinkHandler;
@@ -90,6 +95,7 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
 //        this.orgUnitLinkedDataSetUids = new HashSet<>();
         this.scope = scope;
         this.user = user;
+        this.organisationUnitGroupHandler = organisationUnitGroupHandler;
     }
 
     @Override
@@ -99,6 +105,9 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
 
         addOrganisationUnitProgramLink(organisationUnit);
         addOrganisationUnitDataSetLink(organisationUnit);
+
+        organisationUnitGroupHandler.handleMany(organisationUnit.organisationUnitGroups(),
+                new OrganisationUnitGroupModelBuilder());
     }
 
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
@@ -155,8 +164,6 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
                         OrganisationUnitProgramLinkStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<DataSet, DataSetOrganisationUnitLinkModel>(
                         DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-                //new CollectionCleanerImpl<ObjectWithUid>(ProgramModel.TABLE, databaseAdapter),
-                //new CollectionCleanerImpl<ObjectWithUid>(DataSetModel.TABLE, databaseAdapter),
-                programUids, dataSetUids, scope, user);
+                programUids, dataSetUids, scope, user, OrganisationUnitGroupHandler.create(databaseAdapter));
     }
 }

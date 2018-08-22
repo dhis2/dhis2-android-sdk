@@ -30,21 +30,27 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
 public abstract class RelationshipItem {
 
     @Nullable
+    @JsonProperty()
     public abstract RelationshipItemTrackedEntityInstance trackedEntityInstance();
 
     @Nullable
+    @JsonProperty()
     public abstract RelationshipItemEnrollment enrollment();
 
     @Nullable
+    @JsonProperty()
     public abstract RelationshipItemEvent event();
 
     public static Builder builder() {

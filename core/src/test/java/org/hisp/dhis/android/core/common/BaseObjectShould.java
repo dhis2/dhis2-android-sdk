@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class BaseObjectShould {
@@ -42,5 +43,15 @@ public abstract class BaseObjectShould {
     public BaseObjectShould(String jsonPath) {
         this.objectMapper = Inject.objectMapper();
         this.jsonStream = this.getClass().getClassLoader().getResourceAsStream(jsonPath);
+    }
+
+    public <O> O deserialize(Class<O> oClass) throws IOException {
+        return objectMapper.readValue(jsonStream, oClass);
+    }
+    public <O> O deserialize(String jsonString, Class<O> oClass) throws IOException {
+        return objectMapper.readValue(jsonString, oClass);
+    }
+    public <O> String serialize(O object) throws IOException {
+        return objectMapper.writeValueAsString(object);
     }
 }

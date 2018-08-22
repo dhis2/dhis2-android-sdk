@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class Relationship30Should extends BaseObjectShould implements ObjectShould {
 
+    private RelationshipSamples samples = new RelationshipSamples();
+
     public Relationship30Should() {
         super("relationship/relationship30.json");
     }
@@ -46,7 +49,7 @@ public class Relationship30Should extends BaseObjectShould implements ObjectShou
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Relationship229Compatible relationship = objectMapper.readValue(jsonStream, Relationship229Compatible.class);
+        Relationship229Compatible relationship = deserialize(Relationship229Compatible.class);
 
         assertThat(relationship.uid()).isEqualTo("nEenWmSyUEp");
         assertThat(relationship.relationshipType()).isEqualTo("V2kkHafqs8G");
@@ -59,5 +62,12 @@ public class Relationship30Should extends BaseObjectShould implements ObjectShou
         assertThat(relationship.to()).isNotNull();
         assertThat(relationship.to().enrollment()).isNotNull();
         assertThat(relationship.to().enrollment().enrollment()).isEqualTo("lxAQ7Zs9VYR");
+    }
+
+    @Test
+    public void serialize_and_deserialize_to_same_object() throws IOException {
+        Relationship229Compatible initialRelationship = samples.get230Compatible();
+        Relationship229Compatible newRelationship = deserialize(serialize(initialRelationship), Relationship229Compatible.class);
+        assertThat(newRelationship).isEqualTo(initialRelationship);
     }
 }

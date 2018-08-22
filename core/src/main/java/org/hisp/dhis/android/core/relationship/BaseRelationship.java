@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,7 +42,7 @@ import java.util.Date;
 
 public abstract class BaseRelationship extends BaseModel implements ObjectWithUidInterface {
 
-    @NonNull
+    @Nullable
     @JsonProperty(RelationshipFields.RELATIONSHIP)
     public abstract String uid();
 
@@ -52,21 +51,26 @@ public abstract class BaseRelationship extends BaseModel implements ObjectWithUi
     public abstract String name();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
+    @JsonProperty()
     public abstract String relationshipType();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem from();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem to();
 

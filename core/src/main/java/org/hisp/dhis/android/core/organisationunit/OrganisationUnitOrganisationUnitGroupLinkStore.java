@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class OrganisationUnitOrganisationUnitGroupLinkStore {
 
     private OrganisationUnitOrganisationUnitGroupLinkStore() {}

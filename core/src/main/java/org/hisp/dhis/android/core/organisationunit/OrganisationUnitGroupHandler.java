@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+@SuppressWarnings("PMD.UseUtilityClass")
 public class OrganisationUnitGroupHandler
         extends IdentifiableHandlerImpl<OrganisationUnitGroup, OrganisationUnitGroupModel> {
 

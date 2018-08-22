@@ -36,10 +36,10 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataset.SectionModel;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class OrganisationUnitGroupStore {
 
     private OrganisationUnitGroupStore() {}

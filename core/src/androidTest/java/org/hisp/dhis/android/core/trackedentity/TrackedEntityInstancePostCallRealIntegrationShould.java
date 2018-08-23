@@ -97,8 +97,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         coordinates = "[9,9]";
         featureType = FeatureType.POINT;
 
-        categoryOptionUid = "as6ygGvUGNg";
-        categoryComboOptionUid = "bRowv6yZOF2";
+        categoryOptionUid = "xYerKDKCefk";
+        categoryComboOptionUid = "HllvX50cXC0";
         eventUid = codeGenerator.generate();
         enrollmentUid = codeGenerator.generate();
         trackedEntityInstanceUid = codeGenerator.generate();
@@ -366,7 +366,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                                        String eventUid, String enrollmentUid, String trackedEntityInstanceUid,
                                        String trackedEntityAttributeUid, String dataElementUid) {
         
-        Date refDate = getCurrentDateMinusTenMinutes();
+        Date refDate = getCurrentDateMinusTwoHoursTenMinutes();
 
         trackedEntityInstanceStore.insert(trackedEntityInstanceUid, refDate, refDate, null,
                 null, orgUnitUid, trackedEntityUid, coordinates, featureType, State.TO_POST);
@@ -457,8 +457,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         return false;
     }
 
-    private Date getCurrentDateMinusTenMinutes() {
-        Long newTime = (new Date()).getTime() - (10 * 60 * 1000);
+    private Date getCurrentDateMinusTwoHoursTenMinutes() {
+        Long newTime = (new Date()).getTime() - (130 * 60 * 1000);
         return new Date(newTime);
     }
 

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
@@ -50,6 +51,7 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TrackedEntityInstance implements ObjectWithUidInterface, ObjectWithDeleteInterface {
     private static final String UID = "trackedEntityInstance";
     private static final String CREATED_AT_CLIENT = "createdAtClient";

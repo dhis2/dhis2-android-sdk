@@ -26,38 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.relationship;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.NestedField;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+final class RelationshipItemFields {
+    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    private static final String ENROLLMENT = "enrollment";
+    private static final String EVENT = "event";
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+    private static final NestedField<RelationshipItem, RelationshipItemTrackedEntityInstance> trackedEntityInstance =
+            NestedField.create(TRACKED_ENTITY_INSTANCE);
+    private static final NestedField<RelationshipItem, RelationshipItemEnrollment> enrollment
+            = NestedField.create(ENROLLMENT);
+    private static final NestedField<RelationshipItem, RelationshipItemEvent> event = NestedField.create(EVENT);
 
-public final class ProgramSectionStore {
+    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder().fields(
+            trackedEntityInstance.with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+            enrollment.with(RelationshipItemEnrollmentFields.enrollment),
+            event.with(RelationshipItemEventFields.event)
+    ).build();
 
-    private ProgramSectionStore() {}
-
-    private static StatementBinder<ProgramSectionModel> BINDER
-            = new IdentifiableStatementBinder<ProgramSectionModel>() {
-
-        @Override
-        public void bindToStatement(@NonNull ProgramSectionModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, o.program());
-            sqLiteBind(sqLiteStatement, 9, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 10, o.formName());
-        }
-    };
-
-    public static IdentifiableObjectStore<ProgramSectionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionModel.TABLE,
-                new ProgramSectionModel.Columns().all(), BINDER);
+    private RelationshipItemFields() {
     }
 }

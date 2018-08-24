@@ -31,16 +31,19 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
 import java.util.Date;
 import java.util.List;
@@ -48,7 +51,8 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
-public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public abstract class TrackedEntityInstance implements ObjectWithUidInterface, ObjectWithDeleteInterface {
     private static final String UID = "trackedEntityInstance";
     private static final String CREATED_AT_CLIENT = "createdAtClient";
     private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
@@ -76,12 +80,12 @@ public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface
             = NestedField.create(ENROLLMENTS);
     private static final NestedField<TrackedEntityInstance, TrackedEntityAttributeValue> trackedEntityAttributeValues
             = NestedField.create(TRACKED_ENTITY_ATTRIBUTE_VALUES);
-    private static final NestedField<TrackedEntityInstance, Relationship> relationships
+    private static final NestedField<TrackedEntityInstance, Relationship229Compatible> relationships
             = NestedField.create(RELATIONSHIPS);
 
     public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
-            relationships.with(Relationship.allFields),
+            relationships.with(RelationshipFields.allFields),
             trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
             enrollment.with(Enrollment.allFields), coordinates, featureType
     ).build();
@@ -131,7 +135,7 @@ public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface
 
     @Nullable
     @JsonProperty(RELATIONSHIPS)
-    public abstract List<Relationship> relationships();
+    public abstract List<Relationship229Compatible> relationships();
 
     @Nullable
     @JsonProperty(ENROLLMENTS)
@@ -151,7 +155,7 @@ public abstract class TrackedEntityInstance implements ObjectWithDeleteInterface
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
                     List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-            @JsonProperty(RELATIONSHIPS) List<Relationship> relationships,
+            @JsonProperty(RELATIONSHIPS) List<Relationship229Compatible> relationships,
             @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
         return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 organisationUnit, trackedEntityType, coordinates, featureType, deleted,

@@ -67,7 +67,7 @@ public final class DataSetStore {
     };
     
     public static IdentifiableObjectStore<DataSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, DataSetModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, DataSetModel.TABLE,
                 new DataSetModel.Columns().all(), BINDER);
     }
 }

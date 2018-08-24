@@ -56,7 +56,7 @@ public final class SectionStore {
     };
 
     public static IdentifiableObjectStore<SectionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, SectionModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, SectionModel.TABLE,
                 new SectionModel.Columns().all(), BINDER);
     }
 }

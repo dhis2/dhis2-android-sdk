@@ -25,39 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship;
 
-package org.hisp.dhis.android.core.program;
+public interface RelationshipHandler {
+    void handle(Relationship o);
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-public final class ProgramSectionStore {
-
-    private ProgramSectionStore() {}
-
-    private static StatementBinder<ProgramSectionModel> BINDER
-            = new IdentifiableStatementBinder<ProgramSectionModel>() {
-
-        @Override
-        public void bindToStatement(@NonNull ProgramSectionModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, o.program());
-            sqLiteBind(sqLiteStatement, 9, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 10, o.formName());
-        }
-    };
-
-    public static IdentifiableObjectStore<ProgramSectionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionModel.TABLE,
-                new ProgramSectionModel.Columns().all(), BINDER);
-    }
+    boolean doesTEIRelationshipExist(String fromUid, String toUid, String relationshipType);
 }

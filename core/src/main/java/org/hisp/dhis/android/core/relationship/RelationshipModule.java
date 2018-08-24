@@ -45,10 +45,10 @@ public final class RelationshipModule {
         this.relationship = relationshipRepository;
     }
 
-    public static RelationshipModule create(DatabaseAdapter databaseAdapter) {
+    public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
         return new RelationshipModule(
                 RelationshipTypeRepository.create(databaseAdapter),
-                RelationshipRepository.create(databaseAdapter));
+                RelationshipRepository.create(databaseAdapter, relationshipHandler));
     }
 
 }

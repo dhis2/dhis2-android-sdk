@@ -38,17 +38,17 @@ public final class StoreFactory {
 
     private StoreFactory() {}
 
-    public static <I extends Model & IdentifiableObject> IdentifiableObjectStore<I>
-    identifiableStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
-                      StatementBinder<I> binder) {
+    public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
+    objectWithUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
+                       StatementBinder<I> binder) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
         return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder);
     }
 
-    public static <I extends Model & IdentifiableObject> IdentifiableObjectStore<I>
-    identifiableStore(DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder) {
-        return identifiableStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder);
+    public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
+    objectWithUidStore(DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder) {
+        return objectWithUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder);
     }
 
     static <I extends BaseModel> ObjectStore<I>

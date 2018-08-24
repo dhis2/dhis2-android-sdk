@@ -59,7 +59,7 @@ public final class OrganisationUnitStore {
     };
 
     public static IdentifiableObjectStore<OrganisationUnitModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, OrganisationUnitModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitModel.TABLE,
                 new OrganisationUnitModel.Columns().all(), BINDER);
     }
 }

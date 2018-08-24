@@ -53,7 +53,7 @@ public final class IndicatorTypeStore {
     };
 
     public static IdentifiableObjectStore<IndicatorTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, IndicatorTypeModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTypeModel.TABLE,
                 new IndicatorTypeModel.Columns().all(), BINDER);
     }
 }

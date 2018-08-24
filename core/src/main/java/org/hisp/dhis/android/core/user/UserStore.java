@@ -64,7 +64,7 @@ public final class UserStore {
     };
 
     public static IdentifiableObjectStore<User> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, UserModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, UserModel.TABLE,
                 new UserModel.Columns().all(), BINDER);
     }
 }

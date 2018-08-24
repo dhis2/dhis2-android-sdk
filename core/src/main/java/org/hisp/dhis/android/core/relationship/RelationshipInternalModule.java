@@ -34,11 +34,14 @@ public final class RelationshipInternalModule implements WipeableModule {
 
     private final DatabaseAdapter databaseAdapter;
     public final RelationshipModule publicModule;
+    public final RelationshipHandler relationshipHandler;
 
     private RelationshipInternalModule(DatabaseAdapter databaseAdapter,
-                                       RelationshipModule publicModule) {
+                                       RelationshipModule publicModule,
+                                       RelationshipHandler relationshipHandler) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
+        this.relationshipHandler = relationshipHandler;
     }
 
     // TODO Include call RelationshipTypeEndpointCall
@@ -54,7 +57,11 @@ public final class RelationshipInternalModule implements WipeableModule {
     public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter) {
         return new RelationshipInternalModule(
                 databaseAdapter,
-                RelationshipModule.create(databaseAdapter)
+                RelationshipModule.create(
+                        databaseAdapter,
+                        RelationshipHandlerImpl.create(databaseAdapter)
+                ),
+                RelationshipHandlerImpl.create(databaseAdapter)
         );
     }
 }

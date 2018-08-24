@@ -28,90 +28,41 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.Nullable;
+import android.database.Cursor;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 
-// TODO: Tests when relationship is fixed to be queried.
 @AutoValue
-@JsonInclude(Include.NON_NULL)
-public abstract class Relationship {
-    private static final String TRACKED_ENTITY_INSTANCE_A = "trackedEntityInstanceA";
-    private static final String TRACKED_ENTITY_INSTANCE_B = "trackedEntityInstanceB";
-    private static final String RELATIONSHIP = "relationship";
-    private static final String RELATIONSHIP_TYPE = "relationshipType";
-    private static final String DISPLAY_NAME = "displayName";
-    private static final String RELATIVE = "relative";
-    private static final String FROM = "from";
-    private static final String TO = "to";
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
+public abstract class Relationship extends BaseRelationship {
 
-    public static final Field<Relationship, String> trackedEntityInstanceA
-            = Field.create(TRACKED_ENTITY_INSTANCE_A);
-    public static final Field<Relationship, String> trackedEntityInstanceB
-            = Field.create(TRACKED_ENTITY_INSTANCE_B);
-    public static final Field<Relationship, String> relationship = Field.create(RELATIONSHIP);
-    public static final Field<Relationship, String> relationshipType = Field.create(RELATIONSHIP_TYPE);
-    public static final Field<Relationship, String> displayName = Field.create(DISPLAY_NAME);
-    public static final NestedField<Relationship, TrackedEntityInstance> relative = NestedField.create(RELATIVE);
-    public static final NestedField<Relationship, RelationshipItem> from = NestedField.create(FROM);
-    public static final NestedField<Relationship, RelationshipItem> to = NestedField.create(TO);
+    public static Builder builder() {
+        return new AutoValue_Relationship.Builder();
+    }
 
-    public static final Fields<Relationship> allFields = Fields.<Relationship>builder().fields(
-            trackedEntityInstanceA, trackedEntityInstanceB, relationship, relationshipType, displayName,
-            from.with(RelationshipItem.allFields), to.with(RelationshipItem.allFields), relative).build();
+    public static final CursorModelFactory<Relationship> factory = new CursorModelFactory<Relationship>() {
+        @Override
+        public Relationship fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
 
-    @Nullable
-    @JsonProperty(TRACKED_ENTITY_INSTANCE_A)
-    public abstract String trackedEntityInstanceA();
+    public static Relationship create(Cursor cursor) {
+        return AutoValue_Relationship.createFromCursor(cursor);
+    }
 
-    @Nullable
-    @JsonProperty(TRACKED_ENTITY_INSTANCE_B)
-    public abstract String trackedEntityInstanceB();
+    public abstract Builder toBuilder();
 
-    @JsonProperty(RELATIONSHIP)
-    public abstract String relationship();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseRelationship.Builder<Builder> {
 
-    @Nullable
-    @JsonProperty(RELATIONSHIP_TYPE)
-    public abstract String relationshipType();
-
-    @Nullable
-    @JsonProperty(DISPLAY_NAME)
-    public abstract String displayName();
-
-    @Nullable
-    @JsonProperty(RELATIVE)
-    public abstract TrackedEntityInstance relative();
-
-    @Nullable
-    @JsonProperty(FROM)
-    public abstract RelationshipItem from();
-
-    @Nullable
-    @JsonProperty(TO)
-    public abstract RelationshipItem to();
-
-    @JsonCreator
-    public static Relationship create(
-            @JsonProperty(TRACKED_ENTITY_INSTANCE_A) String trackedEntityInstanceA,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE_B) String trackedEntityInstanceB,
-            @JsonProperty(RELATIONSHIP) String relationship,
-            @JsonProperty(RELATIONSHIP_TYPE) String relationshipType,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(RELATIVE) TrackedEntityInstance relative,
-            @JsonProperty(FROM) RelationshipItem from,
-            @JsonProperty(TO) RelationshipItem to) {
-
-        return new AutoValue_Relationship(trackedEntityInstanceA, trackedEntityInstanceB, relationship,
-                relationshipType, displayName, relative, from, to);
+        public abstract Relationship build();
     }
 }

@@ -1,7 +1,9 @@
 {
   "relationship": "nEenWmSyUEp",
+  "relationshipName": "Mother-Child",
+  "created": "2014-06-06T20:44:21.375",
+  "lastUpdated": "2015-10-15T11:32:27.242",
   "relationshipType": "V2kkHafqs8G",
-  "displayName": "Mother-Child",
   "from": {
     "trackedEntityInstance": {
       "trackedEntityInstance": "o51cUNONthg"

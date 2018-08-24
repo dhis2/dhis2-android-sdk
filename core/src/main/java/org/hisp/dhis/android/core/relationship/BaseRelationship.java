@@ -30,42 +30,66 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-@AutoValue
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
-public abstract class RelationshipItem {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreRelationshipItemAdapter;
+
+import java.util.Date;
+
+public abstract class BaseRelationship extends BaseModel implements ObjectWithUidInterface {
+
+    @Nullable
+    @JsonProperty(RelationshipFields.RELATIONSHIP)
+    public abstract String uid();
+
+    @Nullable
+    @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
+    public abstract String name();
 
     @Nullable
     @JsonProperty()
-    public abstract RelationshipItemTrackedEntityInstance trackedEntityInstance();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
 
     @Nullable
     @JsonProperty()
-    public abstract RelationshipItemEnrollment enrollment();
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
 
     @Nullable
     @JsonProperty()
-    public abstract RelationshipItemEvent event();
+    public abstract String relationshipType();
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipItem.Builder();
-    }
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
+    public abstract RelationshipItem from();
 
-    @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
-        public abstract Builder trackedEntityInstance(RelationshipItemTrackedEntityInstance trackedEntityInstance);
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
+    public abstract RelationshipItem to();
 
-        public abstract Builder enrollment(RelationshipItemEnrollment enrollment);
+    public abstract static class Builder<T extends Builder> extends BaseModel.Builder<T> {
 
-        public abstract Builder event(RelationshipItemEvent event);
+        @JsonProperty(RelationshipFields.RELATIONSHIP)
+        public abstract T uid(String uid);
 
-        public abstract RelationshipItem build();
+        @JsonProperty(RelationshipFields.RELATIONSHIP_NAME)
+        public abstract T name(String name);
+
+        public abstract T created(Date created);
+
+        public abstract T lastUpdated(Date lastUpdated);
+
+        public abstract T relationshipType(String relationshipType);
+
+        public abstract T from(RelationshipItem from);
+
+        public abstract T to(RelationshipItem to);
     }
 }

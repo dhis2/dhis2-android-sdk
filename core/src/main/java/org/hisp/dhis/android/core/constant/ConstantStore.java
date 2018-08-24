@@ -53,7 +53,7 @@ public final class ConstantStore {
     };
 
     public static IdentifiableObjectStore<ConstantModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, ConstantModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantModel.TABLE,
                 new ConstantModel.Columns().all(), BINDER);
     }
 }

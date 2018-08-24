@@ -35,19 +35,25 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.utils.Utils;
 
 @AutoValue
 public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "Relationship";
 
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String RELATIONSHIP_TYPE = "relationshipType";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), RELATIONSHIP_TYPE);
+            return new String[] {
+                    BaseIdentifiableObjectModel.Columns.UID,
+                    BaseIdentifiableObjectModel.Columns.NAME,
+                    BaseIdentifiableObjectModel.Columns.CREATED,
+                    BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                    RELATIONSHIP_TYPE
+            };
         }
     }
 

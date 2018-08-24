@@ -26,38 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.relationship;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+public final class RelationshipHelper {
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-public final class ProgramSectionStore {
-
-    private ProgramSectionStore() {}
-
-    private static StatementBinder<ProgramSectionModel> BINDER
-            = new IdentifiableStatementBinder<ProgramSectionModel>() {
-
-        @Override
-        public void bindToStatement(@NonNull ProgramSectionModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, o.program());
-            sqLiteBind(sqLiteStatement, 9, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 10, o.formName());
+    public static String getTeiUid(RelationshipItem item) {
+        if (item != null && item.trackedEntityInstance() != null) {
+            return item.trackedEntityInstance().trackedEntityInstance();
         }
-    };
+        return null;
+    }
 
-    public static IdentifiableObjectStore<ProgramSectionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionModel.TABLE,
-                new ProgramSectionModel.Columns().all(), BINDER);
+    public static RelationshipItem teiItem(String uid) {
+        return RelationshipItem.builder().trackedEntityInstance(
+                RelationshipItemTrackedEntityInstance
+                        .builder()
+                        .trackedEntityInstance(uid)
+                        .build()
+        ).build();
+    }
+
+    public static RelationshipItem eventItem(String uid) {
+        return RelationshipItem.builder().event(
+                RelationshipItemEvent
+                        .builder()
+                        .event(uid)
+                        .build()
+        ).build();
+    }
+
+    private RelationshipHelper() {
     }
 }

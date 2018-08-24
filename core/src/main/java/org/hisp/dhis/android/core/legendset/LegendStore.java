@@ -55,7 +55,7 @@ public final class LegendStore {
     };
 
     public static IdentifiableObjectStore<LegendModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.identifiableStore(databaseAdapter, LegendModel.TABLE,
+        return StoreFactory.objectWithUidStore(databaseAdapter, LegendModel.TABLE,
                 new LegendModel.Columns().all(), BINDER);
     }
 }

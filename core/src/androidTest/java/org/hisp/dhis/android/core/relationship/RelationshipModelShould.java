@@ -33,7 +33,10 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.relationship.RelationshipModel.Columns;
+import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,10 +49,7 @@ public class RelationshipModelShould {
     //BaseIdentifiableModel attributes:
     private static final long ID = 11L;
     private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    // RelationshipModel attributes:
+    private static final String NAME = "test_display_name";
     private static final String RELATIONSHIP_TYPE = "RelationshipType uid";
 
     private final Date date;
@@ -62,62 +62,48 @@ public class RelationshipModelShould {
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        MatrixCursor cursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.RELATIONSHIP_TYPE
-        });
+        String[] columnsWithId = Utils.appendInNewArray(new RelationshipModel.Columns().all(),
+                BaseModel.Columns.ID);
+        MatrixCursor cursor = new MatrixCursor(columnsWithId);
+
         cursor.addRow(new Object[]{
-                ID,
                 UID,
-                CODE,
                 NAME,
-                DISPLAY_NAME,
                 dateString,
                 dateString,
-                RELATIONSHIP_TYPE
+                RELATIONSHIP_TYPE,
+                ID
         });
         cursor.moveToFirst();
 
-        RelationshipModel model = RelationshipModel.create(cursor);
+        Relationship relationship = Relationship.create(cursor);
         cursor.close();
 
-        assertThat(model.id()).isEqualTo(ID);
-        assertThat(model.uid()).isEqualTo(UID);
-        assertThat(model.code()).isEqualTo(CODE);
-        assertThat(model.name()).isEqualTo(NAME);
-        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(model.created()).isEqualTo(date);
-        assertThat(model.lastUpdated()).isEqualTo(date);
-        assertThat(model.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
+        assertThat(relationship.id()).isEqualTo(ID);
+        assertThat(relationship.uid()).isEqualTo(UID);
+        assertThat(relationship.name()).isEqualTo(NAME);
+        assertThat(relationship.created()).isEqualTo(date);
+        assertThat(relationship.lastUpdated()).isEqualTo(date);
+        assertThat(relationship.relationshipType()).isEqualTo(RELATIONSHIP_TYPE);
     }
 
     @Test
     public void create_content_values_when_created_from_builder() {
-        RelationshipModel model = RelationshipModel.builder()
+        Relationship relationship = Relationship.builder()
                 .id(ID)
                 .uid(UID)
-                .code(CODE)
                 .name(NAME)
-                .displayName(DISPLAY_NAME)
                 .created(date)
                 .lastUpdated(date)
                 .relationshipType(RELATIONSHIP_TYPE)
                 .build();
-        ContentValues contentValues = model.toContentValues();
+        ContentValues contentValues = relationship.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.RELATIONSHIP_TYPE)).isEqualTo(RELATIONSHIP_TYPE);
     }
 }

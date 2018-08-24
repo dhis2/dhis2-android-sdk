@@ -18,6 +18,8 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -43,6 +45,7 @@ import retrofit2.Retrofit;
 public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     // internal modules
     private final DHISVersionManager versionManager;
+    private final RelationshipDHISVersionManager relationshipDHISVersionManager;
     private final RelationshipRepositoryInterface relationshipRepository;
 
     // service
@@ -56,6 +59,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
+                                          @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
                                           @NonNull RelationshipRepositoryInterface relationshipRepository,
                                           @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                           @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
@@ -64,6 +68,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                           @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         this.versionManager = versionManager;
+        this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
@@ -167,21 +172,10 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
             TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
 
             // Building relationships for TEI
-            List<Relationship> relationshipRecreated =
+            List<Relationship> dbRelationships =
                     relationshipRepository.getRelationshipsByTEI(trackedEntityInstance.uid());
-
-            if (versionManager.is2_29()) {
-                List<Relationship> relationships29 = new ArrayList<>();
-                for (Relationship relationship : relationshipRecreated) {
-                    relationships29.add(
-                            Relationship.create(
-                                    relationship.from().trackedEntityInstance().trackedEntityInstance(),
-                                    relationship.to().trackedEntityInstance().trackedEntityInstance(),
-                                    relationship.relationshipType(), null, null, null, null, null)
-                    );
-                }
-                relationshipRecreated = relationships29;
-            }
+            List<Relationship229Compatible> versionAwareRelationships =
+                    relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 
             trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
                     trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
@@ -189,7 +183,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                     trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntityType(),
                     trackedEntityInstance.coordinates(), trackedEntityInstance.featureType(),
                     trackedEntityInstance.deleted(), attributeValues,
-                    relationshipRecreated, enrollmentsRecreated));
+                    versionAwareRelationships, enrollmentsRecreated));
 
         }
 
@@ -218,6 +212,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                                        D2InternalModules internalModules) {
         return new TrackedEntityInstancePostCall(
                 internalModules.systemInfo.publicModule.versionManager,
+                new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
                 internalModules.relationshipModule.publicModule.relationship,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),

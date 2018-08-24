@@ -107,8 +107,12 @@ public class OrganisationUnitHandlerShould {
         Set<String> dataSetUids = Sets.newHashSet(Lists.newArrayList(dataSetUid));
 
         organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkHandler,
-                dataSetDataSetOrganisationUnitLinkHandler, programCollectionCleaner, dataSetCollectionCleaner,
+                organisationUnitStore,
+                userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkHandler,
+                dataSetDataSetOrganisationUnitLinkHandler,
+                //programCollectionCleaner,
+                //dataSetCollectionCleaner,
                 programUids, dataSetUids, scope, user);
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
@@ -139,9 +143,13 @@ public class OrganisationUnitHandlerShould {
     @Test
     public void persist_program_organisation_unit_link_when_no_programs_uids() throws Exception {
         organisationUnitHandler = new OrganisationUnitHandler(
-                organisationUnitStore, userOrganisationUnitLinkStore,
-                organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
-                programCollectionCleaner, dataSetCollectionCleaner, null, null, scope, user);
+                organisationUnitStore,
+                userOrganisationUnitLinkStore,
+                organisationUnitProgramLinkHandler,
+                dataSetDataSetOrganisationUnitLinkHandler,
+                //programCollectionCleaner,
+                //dataSetCollectionCleaner,
+                null, null, scope, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);
     }

@@ -145,8 +145,8 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
 
     @Override
     protected void afterCollectionHandled(Collection<OrganisationUnit> organisationUnits) {
-        programCollectionCleaner.deleteNotPresent(orgUnitLinkedProgramUids);
-        dataSetCollectionCleaner.deleteNotPresent(orgUnitLinkedDataSetUids);
+        //programCollectionCleaner.deleteNotPresent(orgUnitLinkedProgramUids);
+        //dataSetCollectionCleaner.deleteNotPresent(orgUnitLinkedDataSetUids);
     }
 
     public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter,

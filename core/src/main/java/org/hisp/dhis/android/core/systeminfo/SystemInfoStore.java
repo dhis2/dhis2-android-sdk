@@ -51,13 +51,14 @@ final class SystemInfoStore {
             sqLiteBind(sqLiteStatement, 2, o.dateFormat());
             sqLiteBind(sqLiteStatement, 3, o.version());
             sqLiteBind(sqLiteStatement, 4, o.contextPath());
+            sqLiteBind(sqLiteStatement, 5, o.systemName());
         }
     };
 
     static final WhereStatementBinder<SystemInfo> WHERE_UPDATE_BINDER = new WhereStatementBinder<SystemInfo>() {
         @Override
         public void bindToUpdateWhereStatement(@NonNull SystemInfo o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 5, o.contextPath());
+            sqLiteBind(sqLiteStatement, 6, o.contextPath());
         }
     };
 

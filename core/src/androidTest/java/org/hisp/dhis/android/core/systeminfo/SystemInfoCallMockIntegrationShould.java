@@ -124,7 +124,8 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 BaseIdentifiableObject.DATE_FORMAT.format(systemInfo.serverDate()),
                 systemInfo.dateFormat(),
                 systemInfo.version(),
-                systemInfo.contextPath()
+                systemInfo.contextPath(),
+                systemInfo.systemName()
         ).isExhausted();
     }
 

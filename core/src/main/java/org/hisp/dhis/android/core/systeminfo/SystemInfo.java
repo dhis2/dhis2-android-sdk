@@ -60,6 +60,9 @@ public abstract class SystemInfo extends BaseModel {
     @Nullable
     public abstract String contextPath();
 
+    @Nullable
+    public abstract String systemName();
+
     @NonNull
     public static SystemInfo create(Cursor cursor) {
         return AutoValue_SystemInfo.createFromCursor(cursor);
@@ -86,6 +89,8 @@ public abstract class SystemInfo extends BaseModel {
         public abstract Builder version(String version);
 
         public abstract Builder contextPath(String contextPath);
+
+        public abstract Builder systemName(String systemName);
 
         public abstract SystemInfo build();
     }

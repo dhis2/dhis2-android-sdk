@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,100 +28,59 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.assertj.core.util.Lists;
+import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.program.Program;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DELETED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DESCRIPTION;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_SHORT_NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbstractShould<OrganisationUnit,
-        OrganisationUnitModel> {
+public class OrganisationUnitGroupModelBuilderShould extends
+        IdentifiableModelBuilderAbstractShould<OrganisationUnitGroup, OrganisationUnitGroupModel> {
 
-    @Mock
-    private OrganisationUnit parent;
-
-    @Mock
-    private OrganisationUnit grandparent;
-
-    @Before
     @Override
+    @Before
     public void setUp() throws IOException {
         super.setUp();
-
-        when(parent.uid()).thenReturn("parentUid");
-        when(parent.displayName()).thenReturn("parentDisplayName");
-        when(grandparent.displayName()).thenReturn("grandparentDisplayName");
-
-        MockitoAnnotations.initMocks(this);
     }
 
     @Override
-    protected OrganisationUnit buildPojo() {
-        return OrganisationUnit.create(
+    protected OrganisationUnitGroup buildPojo() {
+        return OrganisationUnitGroup.create(
                 UID,
                 CODE,
                 NAME,
                 DISPLAY_NAME,
                 CREATED,
                 LAST_UPDATED,
-                "shortName",
-                "displayShortName",
-                "description",
-                "displayDescription",
-                parent,
-                "path",
-                CREATED,
-                CREATED,
-                3,
-                new ArrayList<Program>(),
-                new ArrayList<DataSet>(),
-                Lists.newArrayList(grandparent, parent),
-                new ArrayList<OrganisationUnitGroup>(),
-                false
-        );
+                DESCRIPTION,
+                DISPLAY_SHORT_NAME,
+                DELETED);
     }
 
     @Override
-    protected ModelBuilder<OrganisationUnit, OrganisationUnitModel> modelBuilder() {
-        return new OrganisationUnitModelBuilder();
+    protected ModelBuilder<OrganisationUnitGroup, OrganisationUnitGroupModel> modelBuilder() {
+        return new OrganisationUnitGroupModelBuilder();
     }
 
     @Test
-    public void copy_pojo_organisation_unit_properties() {
-        assertThat(model.path()).isEqualTo(pojo.path());
-        assertThat(model.openingDate()).isEqualTo(pojo.openingDate());
-        assertThat(model.closedDate()).isEqualTo(pojo.closedDate());
-        assertThat(model.level()).isEqualTo(pojo.level());
+    public void copy_pojo_section_properties() {
+        assertThat(model.shortName()).isEqualTo(pojo.shortName());
+        assertThat(model.displayShortName()).isEqualTo(pojo.displayShortName());
     }
 
-    @Test
-    public void copy_pojo_organisation_parent_uid() {
-        assertThat(model.parent()).isEqualTo(parent.uid());
-    }
-
-    @Test
-    public void build_display_name_path_from_ancestors() {
-        String expectedDisplayNamePath = "/" + grandparent.displayName() + "/" + parent.displayName() + "/" +
-                pojo.displayName();
-        assertThat(model.displayNamePath()).isEqualTo(expectedDisplayNamePath);
-    }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,49 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.organisationunit;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-    public static final int VERSION = 18;
+@RunWith(JUnit4.class)
+public class OrganisationUnitOrganisationUnitGroupLinkModelBuilderShould {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    @Mock
+    private OrganisationUnit organisationUnit;
+
+    @Mock
+    private ObjectWithUid organisationUnitGroup;
+
+    private OrganisationUnitOrganisationUnitGroupLinkModel model;
+
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setUp() throws IOException {
+        MockitoAnnotations.initMocks(this);
+
+        when(organisationUnit.uid()).thenReturn("organisation_unit_uid");
+        when(organisationUnitGroup.uid()).thenReturn("organisation_unit_group_uid");
+
+        model = buildModel();
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    private OrganisationUnitOrganisationUnitGroupLinkModel buildModel() {
+        return new OrganisationUnitOrganisationUnitGroupLinkModelBuilder(organisationUnit).buildModel(organisationUnitGroup);
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+    @Test
+    public void copy_link_properties() {
+        assertThat(model.organisationUnit()).isEqualTo(organisationUnit.uid());
+        assertThat(model.organisationUnitGroup()).isEqualTo(organisationUnitGroup.uid());
     }
 }

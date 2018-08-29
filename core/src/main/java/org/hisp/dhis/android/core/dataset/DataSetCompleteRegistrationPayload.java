@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -45,7 +46,8 @@ public class DataSetCompleteRegistrationPayload {
             @JsonProperty("completeDataSetRegistrations")
                     List<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
 
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
+        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations == null ?
+                new ArrayList<DataSetCompleteRegistration>() :
+                dataSetCompleteRegistrations;
     }
-
 }

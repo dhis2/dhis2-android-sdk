@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
@@ -66,12 +64,12 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
             OrganisationUnitOrganisationUnitGroupLinkModel> organisationUnitGroupLinkHandler;
 //    private final CollectionCleaner<ObjectWithUid> programCollectionCleaner;
 //    private final CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
-    private final CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
+//    private final CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
     private final Set<String> programUids;
     private final Set<String> dataSetUids;
 //    private final Set<ObjectWithUid> orgUnitLinkedProgramUids;
 //    private final Set<ObjectWithUid> orgUnitLinkedDataSetUids;
-    private final Set<ObjectWithUid> organisationUnitGroupUids;
+//    private final Set<ObjectWithUid> organisationUnitGroupUids;
     private final OrganisationUnitModel.Scope scope;
     private final User user;
 
@@ -93,8 +91,9 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
                                            OrganisationUnitGroupModel> organisationUnitGroupHandler,
                                    @NonNull LinkModelHandler<ObjectWithUid,
                                            OrganisationUnitOrganisationUnitGroupLinkModel>
-                                           organisationUnitGroupLinkHandler,
-                                   @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner) {
+                                           organisationUnitGroupLinkHandler
+//                                   @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner
+    ) {
 
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
@@ -104,12 +103,12 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
         this.dataSetOrganisationUnitLinkHandler = dataSetOrganisationUnitLinkHandler;
 //        this.programCollectionCleaner = programCollectionCleaner;
 //        this.dataSetCollectionCleaner = dataSetCollectionCleaner;
-        this.organisationUnitGroupCollectionCleaner = organisationUnitGroupCollectionCleaner;
+//        this.organisationUnitGroupCollectionCleaner = organisationUnitGroupCollectionCleaner;
         this.programUids = programUids;
         this.dataSetUids = dataSetUids;
 //        this.orgUnitLinkedProgramUids = new HashSet<>();
 //        this.orgUnitLinkedDataSetUids = new HashSet<>();
-        this.organisationUnitGroupUids = new HashSet<>();
+//        this.organisationUnitGroupUids = new HashSet<>();
         this.scope = scope;
         this.user = user;
     }
@@ -178,7 +177,7 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
             linkedOrganisationUnitGroupUids.add(ObjectWithUid.create(organisationUnitGroup.uid()));
         }
 
-        organisationUnitGroupUids.addAll(linkedOrganisationUnitGroupUids);
+//        organisationUnitGroupUids.addAll(linkedOrganisationUnitGroupUids);
 
         organisationUnitGroupLinkHandler.handleMany(organisationUnit.uid(), linkedOrganisationUnitGroupUids,
                 new OrganisationUnitOrganisationUnitGroupLinkModelBuilder(organisationUnit));
@@ -188,7 +187,7 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
     protected void afterCollectionHandled(Collection<OrganisationUnit> organisationUnits) {
         //programCollectionCleaner.deleteNotPresent(orgUnitLinkedProgramUids);
         //dataSetCollectionCleaner.deleteNotPresent(orgUnitLinkedDataSetUids);
-        organisationUnitGroupCollectionCleaner.deleteNotPresent(organisationUnitGroupUids);
+//        organisationUnitGroupCollectionCleaner.deleteNotPresent(organisationUnitGroupUids);
     }
 
     public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter,
@@ -205,7 +204,6 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
                         DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
                 programUids, dataSetUids, scope, user, OrganisationUnitGroupHandler.create(databaseAdapter),
                 new LinkModelHandlerImpl<ObjectWithUid, OrganisationUnitOrganisationUnitGroupLinkModel>(
-                        OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)),
-                new CollectionCleanerImpl<ObjectWithUid>(OrganisationUnitGroupModel.TABLE, databaseAdapter));
+                        OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)));
     }
 }

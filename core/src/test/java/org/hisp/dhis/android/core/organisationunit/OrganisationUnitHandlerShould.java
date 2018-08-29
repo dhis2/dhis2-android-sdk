@@ -125,8 +125,9 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkHandler,
                 dataSetDataSetOrganisationUnitLinkHandler, //programCollectionCleaner, dataSetCollectionCleaner,
-                programUids, dataSetUids, scope, user, organisationUnitGroupHandler, organisationUnitGroupLinkHandler,
-                organisationUnitGroupCollectionCleaner);
+                programUids, dataSetUids, scope, user, organisationUnitGroupHandler, organisationUnitGroupLinkHandler
+//                organisationUnitGroupCollectionCleaner
+                );
 
         when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(user.uid()).thenReturn("test_user_uid");
@@ -160,7 +161,9 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
 //                programCollectionCleaner, dataSetCollectionCleaner,
                         null, null, scope, user,
-                organisationUnitGroupHandler, organisationUnitGroupLinkHandler, organisationUnitGroupCollectionCleaner);
+                organisationUnitGroupHandler, organisationUnitGroupLinkHandler
+//                organisationUnitGroupCollectionCleaner
+        );
 
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);
@@ -174,7 +177,9 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
 //                programCollectionCleaner, dataSetCollectionCleaner,
                 null, null, scope, user,
-                organisationUnitGroupHandler, organisationUnitGroupLinkHandler, organisationUnitGroupCollectionCleaner);
+                organisationUnitGroupHandler, organisationUnitGroupLinkHandler
+//                organisationUnitGroupCollectionCleaner
+        );
 
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
 
@@ -195,7 +200,9 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
 //                programCollectionCleaner, dataSetCollectionCleaner,
                 null, null, scope, user,
-                organisationUnitGroupHandler, organisationUnitGroupLinkHandler, organisationUnitGroupCollectionCleaner);
+                organisationUnitGroupHandler, organisationUnitGroupLinkHandler
+//                organisationUnitGroupCollectionCleaner
+        );
 
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
 
@@ -211,7 +218,9 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
 //                programCollectionCleaner, dataSetCollectionCleaner,
                 null, null, scope, user,
-                organisationUnitGroupHandler, organisationUnitGroupLinkHandler, organisationUnitGroupCollectionCleaner);
+                organisationUnitGroupHandler, organisationUnitGroupLinkHandler
+//                organisationUnitGroupCollectionCleaner
+        );
 
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
 

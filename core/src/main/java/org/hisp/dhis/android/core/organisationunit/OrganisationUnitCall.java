@@ -78,14 +78,12 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
                 OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
                 Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
                 for (String uid : rootOrgUnitUids) {
-                    List<OrganisationUnit> orgUnitWithDescendants = apiExecutor.executePayloadCall(
-                            getOrganisationUnitAndDescendants(uid));
-                    organisationUnits.addAll(orgUnitWithDescendants);
-                    organisationUnitHandler.handleMany(orgUnitWithDescendants, modelBuilder);
+                    organisationUnits.addAll(apiExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
                 }
 
-                data.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT,
-                        data.serverDate());
+                organisationUnitHandler.handleMany(organisationUnits, modelBuilder);
+
+                data.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT, data.serverDate());
 
                 return organisationUnits;
             }

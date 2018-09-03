@@ -36,9 +36,9 @@ import org.hisp.dhis.android.core.imports.ImportSummary;
 
 public class DataSetCompleteRegistrationImportHandler {
 
-    DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
-    public DataSetCompleteRegistrationImportHandler(
+    DataSetCompleteRegistrationImportHandler(
             DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
     }

@@ -51,10 +51,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -106,7 +106,7 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private OrganisationUnit organisationUnit;
 
-    private List<OrganisationUnit> organisationUnits;
+    private Set<OrganisationUnit> organisationUnits;
 
     @Mock
     private Payload<OrganisationUnit> payload;
@@ -183,15 +183,15 @@ public class OrganisationUnitCallUnitShould {
                 genericCallData, organisationUnitHandler);
 
         //Return only one organisationUnit.
-        organisationUnits = Collections.singletonList(organisationUnit);
-        when(user.organisationUnits()).thenReturn(organisationUnits);
+        organisationUnits = Collections.singleton(organisationUnit);
+        when(user.organisationUnits()).thenReturn(new ArrayList<>(organisationUnits));
 
         when(organisationUnitService.getOrganisationUnitWithDescendants(
                 uidCaptor.capture(), fieldsCaptor.capture(), descendantsCaptor.capture(), pagingCaptor.capture()
         )).thenReturn(retrofitCall);
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
-        when(payload.items()).thenReturn(organisationUnits);
+        when(payload.items()).thenReturn(new ArrayList<>(organisationUnits));
 
         when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
         when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);

@@ -84,6 +84,8 @@ public abstract class DataSetCompleteRegistration extends BaseDataModel {
         }
     };
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new $$AutoValue_DataSetCompleteRegistration.Builder();
     }

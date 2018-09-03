@@ -156,15 +156,8 @@ public class DataSetCompleteRegistrationStore extends
      */
     public void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState) {
 
-        DataSetCompleteRegistration updatedDataSetCompleteRegistration = DataSetCompleteRegistration.builder()
-                .period(dataSetCompleteRegistration.period())
-                .dataSet(dataSetCompleteRegistration.dataSet())
-                .organisationUnit(dataSetCompleteRegistration.organisationUnit())
-                .attributeOptionCombo(dataSetCompleteRegistration.attributeOptionCombo())
-                .date(dataSetCompleteRegistration.date())
-                .storedBy(dataSetCompleteRegistration.storedBy())
-                .state(newState)
-                .build();
+        DataSetCompleteRegistration updatedDataSetCompleteRegistration
+                = dataSetCompleteRegistration.toBuilder().state(newState).build();
 
         updateWhere(updatedDataSetCompleteRegistration);
     }

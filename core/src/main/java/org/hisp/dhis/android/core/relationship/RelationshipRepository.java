@@ -68,15 +68,15 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
         if (relationshipHandler.doesTEIRelationshipExist(fromUid, toUid, relationshipType)) {
             throw D2CallException
                     .builder()
+                    .isHttpError(false)
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                     .errorDescription("Tried to create existing Relationship: ( " + fromUid + ", "
                             + toUid + ", " + relationshipType)
                     .build();
         } else {
             State fromState = trackedEntityInstanceStore.getState(fromUid);
-            State toState = trackedEntityInstanceStore.getState(toUid);
 
-            if (isUpdatableState(fromState) && isUpdatableState(toState)) {
+            if (isUpdatableState(fromState)) {
                 Relationship relationship = Relationship.builder()
                         .uid(new CodeGeneratorImpl().generate())
                         .from(RelationshipHelper.teiItem(fromUid))
@@ -85,16 +85,14 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
                         .build();
                 relationshipHandler.handle(relationship);
                 setToUpdate(fromState, fromUid);
-                setToUpdate(toState, toUid);
             } else {
                 throw D2CallException
                         .builder()
                         .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
                         .errorDescription(
-                                "Object pair doesn't have updatable state: " +
-                                "(" + fromUid + ": " + fromState +  "), " +
-                                "(" + toUid + ": " + toState +  ")"
-                        ).build();
+                                "TEI doesn't have updatable state: " +
+                                "(" + fromUid + ": " + fromState +  ")")
+                        .build();
             }
         }
     }

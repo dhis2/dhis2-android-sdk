@@ -32,6 +32,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -262,7 +263,8 @@ public final class D2 {
 
             ObjectMapper objectMapper = new ObjectMapper()
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())

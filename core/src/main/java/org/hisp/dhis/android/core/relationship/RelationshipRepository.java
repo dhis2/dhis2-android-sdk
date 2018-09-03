@@ -32,8 +32,11 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 
 import java.util.ArrayList;
@@ -48,13 +51,16 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
     private final IdentifiableObjectStore<Relationship> relationshipStore;
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStoreInterface relationshipItemStore;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     private RelationshipRepository(IdentifiableObjectStore<Relationship> relationshipStore,
-                           RelationshipHandler relationshipHandler,
-                           RelationshipItemStoreInterface relationshipItemStore) {
+                                   RelationshipHandler relationshipHandler,
+                                   RelationshipItemStoreInterface relationshipItemStore,
+                                   TrackedEntityInstanceStore trackedEntityInstanceStore) {
         this.relationshipStore = relationshipStore;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
+        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
     }
 
     @Override
@@ -67,13 +73,39 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
                             + toUid + ", " + relationshipType)
                     .build();
         } else {
-            Relationship relationship = Relationship.builder()
-                    .uid(new CodeGeneratorImpl().generate())
-                    .from(RelationshipHelper.teiItem(fromUid))
-                    .to(RelationshipHelper.teiItem(toUid))
-                    .relationshipType(relationshipType)
-                    .build();
-            relationshipHandler.handle(relationship);
+            State fromState = trackedEntityInstanceStore.getState(fromUid);
+            State toState = trackedEntityInstanceStore.getState(toUid);
+
+            if (isUpdatableState(fromState) && isUpdatableState(toState)) {
+                Relationship relationship = Relationship.builder()
+                        .uid(new CodeGeneratorImpl().generate())
+                        .from(RelationshipHelper.teiItem(fromUid))
+                        .to(RelationshipHelper.teiItem(toUid))
+                        .relationshipType(relationshipType)
+                        .build();
+                relationshipHandler.handle(relationship);
+                setToUpdate(fromState, fromUid);
+                setToUpdate(toState, toUid);
+            } else {
+                throw D2CallException
+                        .builder()
+                        .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
+                        .errorDescription(
+                                "Object pair doesn't have updatable state: " +
+                                "(" + fromUid + ": " + fromState +  "), " +
+                                "(" + toUid + ": " + toState +  ")"
+                        ).build();
+            }
+        }
+    }
+
+    private boolean isUpdatableState(State state) {
+        return state == State.SYNCED || state == State.TO_POST || state == State.TO_UPDATE;
+    }
+
+    private void setToUpdate(State state, String teiUid) {
+        if (state == State.SYNCED) {
+            trackedEntityInstanceStore.setState(teiUid, State.TO_UPDATE);
         }
     }
 
@@ -143,7 +175,8 @@ final class RelationshipRepository implements RelationshipRepositoryInterface {
         return new RelationshipRepository(
                 RelationshipStore.create(databaseAdapter),
                 relationshipHandler,
-                RelationshipItemStore.create(databaseAdapter)
+                RelationshipItemStore.create(databaseAdapter),
+                new TrackedEntityInstanceStoreImpl(databaseAdapter)
         );
     }
 }

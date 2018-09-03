@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -68,7 +69,7 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
     public List<OrganisationUnit> call() throws Exception {
         setExecuted();
 
-        final List<OrganisationUnit> organisationUnits = new ArrayList<>();
+        final Set<OrganisationUnit> organisationUnits = new HashSet<>();
         final APICallExecutor apiExecutor = new APICallExecutor();
 
         return new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(),
@@ -78,16 +79,14 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
                 OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
                 Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
                 for (String uid : rootOrgUnitUids) {
-                    List<OrganisationUnit> orgUnitWithDescendants = apiExecutor.executePayloadCall(
-                            getOrganisationUnitAndDescendants(uid));
-                    organisationUnits.addAll(orgUnitWithDescendants);
-                    organisationUnitHandler.handleMany(orgUnitWithDescendants, modelBuilder);
+                    organisationUnits.addAll(apiExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
                 }
 
-                data.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT,
-                        data.serverDate());
+                organisationUnitHandler.handleMany(organisationUnits, modelBuilder);
 
-                return organisationUnits;
+                data.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT, data.serverDate());
+
+                return new ArrayList<>(organisationUnits);
             }
         });
     }

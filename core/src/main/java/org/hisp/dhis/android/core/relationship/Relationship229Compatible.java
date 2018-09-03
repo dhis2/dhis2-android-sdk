@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -42,7 +40,6 @@ import org.hisp.dhis.android.core.data.database.TrackedEntityInstanceWithUidColu
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 @AutoValue
-@JsonInclude(Include.NON_NULL)
 @JsonDeserialize(builder = AutoValue_Relationship229Compatible.Builder.class)
 public abstract class Relationship229Compatible extends BaseRelationship {
 

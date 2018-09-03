@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,27 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    CANT_CREATE_EXISTING_OBJECT,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_SERVER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    ORGANISATION_UNIT_NOT_FOUND,
-    SEARCH_GRID_PARSE,
-    SOCKET_TIMEOUT,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    UNEXPECTED
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
+
+public final class DataSetCompleteRegistrationFields {
+
+    static final String PERIOD = "period";
+    static final String DATA_SET = "dataSet";
+    static final String ORGANISATION_UNIT = "organisationUnit";
+    static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    static final String DATE = "date";
+    static final String STORED_BY = "storedBy";
+
+    private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
+
+    static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
+            fieldsHelper.<String>field(PERIOD),
+            fieldsHelper.<String>field(DATA_SET),
+            fieldsHelper.<String>field(ORGANISATION_UNIT),
+            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.<String>field(DATE),
+            fieldsHelper.<String>field(STORED_BY)
+    ).build();
+
+    private DataSetCompleteRegistrationFields() {}
+
 }

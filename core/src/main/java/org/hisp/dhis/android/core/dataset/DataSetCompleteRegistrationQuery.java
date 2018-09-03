@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -24,29 +24,31 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    CANT_CREATE_EXISTING_OBJECT,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_SERVER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    ORGANISATION_UNIT_NOT_FOUND,
-    SEARCH_GRID_PARSE,
-    SOCKET_TIMEOUT,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    UNEXPECTED
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseQuery;
+
+import java.util.Set;
+
+@AutoValue
+public abstract class DataSetCompleteRegistrationQuery extends BaseQuery {
+
+    public abstract Set<String> dataSetUids();
+
+    public abstract Set<String> periodIds();
+
+    public abstract Set<String> rootOrgUnitUids();
+
+    public static DataSetCompleteRegistrationQuery create(Set<String> dataSetUids,
+                                                          Set<String> periodIds,
+                                                          Set<String> rootOrgUnitUids) {
+
+        return new AutoValue_DataSetCompleteRegistrationQuery(1, BaseQuery.DEFAULT_PAGE_SIZE,
+                false, dataSetUids, periodIds, rootOrgUnitUids);
+    }
 }

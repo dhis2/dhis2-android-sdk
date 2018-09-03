@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -24,51 +24,28 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.dataset;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    public static final int VERSION = 19;
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public class DataSetCompleteRegistrationPayload {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    @JsonProperty("completeDataSetRegistrations")
+    public List<DataSetCompleteRegistration> dataSetCompleteRegistrations;
+
+    DataSetCompleteRegistrationPayload(
+            @JsonProperty("completeDataSetRegistrations")
+                    List<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
+
+        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
-    }
-
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
-    }
 }

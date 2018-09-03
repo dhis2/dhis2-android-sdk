@@ -21,6 +21,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataInputPeriodStore;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
@@ -179,7 +180,8 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
                 DataInputPeriodStore.create(databaseAdapter),
                 OrganisationUnitGroupStore.create(databaseAdapter),
-                OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
+                OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter),
+                DataSetCompleteRegistrationStore.create(databaseAdapter)
         );
 
         return new WipeDBCallable(databaseAdapter, deletableStores,

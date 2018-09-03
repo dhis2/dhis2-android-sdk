@@ -42,11 +42,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends AbsStoreTestCase {
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private D2 d2;
 
@@ -112,7 +115,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
         return (dataSetCompleteRegistrationStore.insert(dataSetCompleteRegistration) > 0);
     }
 
-    private DataSetCompleteRegistration getTestDataSetCompleteRegistrationWith(State state) {
+    private DataSetCompleteRegistration getTestDataSetCompleteRegistrationWith(State state) throws Exception {
 
         DataSetCompleteRegistration dataSetCompleteRegistration =
                 DataSetCompleteRegistration.builder()
@@ -120,7 +123,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
                         .dataSet("BfMAe6Itzgt")
                         .attributeOptionCombo("HllvX50cXC0")
                         .organisationUnit("DiszpKrYNg8")
-                        .date(StoreUtils.parse("2010-03-02"))
+                        .date(dateFormat.parse("2010-03-02"))
                         .storedBy("android")
                         .state(state)
                         .build();

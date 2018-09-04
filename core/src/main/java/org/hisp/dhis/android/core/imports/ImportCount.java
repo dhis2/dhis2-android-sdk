@@ -37,4 +37,6 @@ public abstract class ImportCount {
             @JsonProperty(IGNORED) Integer ignored) {
         return new AutoValue_ImportCount(imported, updated, deleted, ignored);
     }
+
+    static ImportCount EMTPY = ImportCount.create(0, 0, 0, 0);
 }

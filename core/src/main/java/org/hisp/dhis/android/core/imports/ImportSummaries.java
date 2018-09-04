@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
@@ -73,4 +75,12 @@ public abstract class ImportSummaries {
                 updated, deleted, ignored, safeUnmodifiableList(importSummaries)
         );
     }
+
+    static ImportSummaries EMPTY = ImportSummaries.create(
+            ImportStatus.SUCCESS,
+            ImportCount.EMTPY,
+            "ImportSummaries",
+            0, 0, 0, 0,
+            Collections.<ImportSummary>emptyList()
+    );
 }

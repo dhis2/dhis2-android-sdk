@@ -65,4 +65,11 @@ public abstract class ImportSummary {
                 safeUnmodifiableList(importConflicts));
     }
 
+    public static ImportSummary EMPTY = ImportSummary.create(
+            ImportCount.EMTPY,
+            ImportStatus.SUCCESS,
+            "ImportSummary",
+            null, null, null, null
+    );
+
 }

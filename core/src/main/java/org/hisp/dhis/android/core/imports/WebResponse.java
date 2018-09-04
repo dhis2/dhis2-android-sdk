@@ -25,4 +25,9 @@ public abstract class WebResponse {
             @JsonProperty(IMPORT_SUMMARIES) ImportSummaries importSummaries) {
         return new AutoValue_WebResponse(message, importSummaries);
     }
+
+    public static WebResponse EMPTY = WebResponse.create(
+            "Nothing to update",
+            ImportSummaries.EMPTY
+    );
 }

@@ -86,7 +86,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
         // if size is 0, then no need to do network request
         if (trackedEntityInstancesToPost.isEmpty()) {
-            return null;
+            return WebResponse.EMPTY;
         }
 
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();

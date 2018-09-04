@@ -57,7 +57,7 @@ public final class DataValuePostCall extends SyncCall<ImportSummary> {
         appendUpdatableDataValues(toPostDataValues);
 
         if (toPostDataValues.isEmpty()) {
-            return null;
+            return ImportSummary.EMPTY;
         }
 
         DataValueSet dataValueSet = new DataValueSet(toPostDataValues);

@@ -58,7 +58,7 @@ public final class DataSetCompleteRegistrationPostCall extends SyncCall<ImportSu
         appendUpdatableDataValues(toPostDataSetCompleteRegistrations);
 
         if (toPostDataSetCompleteRegistrations.isEmpty()) {
-            return null;
+            return ImportSummary.EMPTY;
         }
 
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload

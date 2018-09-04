@@ -47,7 +47,11 @@ public class RelationshipDHISVersionManager {
     public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
         List<Relationship229Compatible> transformedRelationships = new ArrayList<>();
         for (Relationship relationship : storedRelationships) {
-            transformedRelationships.add(to229Compatible(relationship, teiUid));
+            RelationshipItem fromTei = relationship.from();
+            if (versionManager.is2_29() || fromTei != null && fromTei.trackedEntityInstance() != null &&
+                    fromTei.trackedEntityInstance().trackedEntityInstance().equals(teiUid)) {
+                transformedRelationships.add(to229Compatible(relationship, teiUid));
+            }
         }
         return transformedRelationships;
     }

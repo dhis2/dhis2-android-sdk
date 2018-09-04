@@ -131,7 +131,7 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Void> syncAggregatedData() {
+    public Callable<Unit> syncAggregatedData() {
         return AggregatedDataCall.create(databaseAdapter, retrofit, internalModules);
     }
 

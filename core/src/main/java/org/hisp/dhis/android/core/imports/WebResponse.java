@@ -11,6 +11,11 @@ public abstract class WebResponse {
     private static final String MESSAGE = "message";
     private static final String IMPORT_SUMMARIES = "response"; // is called response from api
 
+    public static final WebResponse EMPTY = WebResponse.create(
+            "Nothing to update",
+            ImportSummaries.EMPTY
+    );
+
     @NonNull
     @JsonProperty(MESSAGE)
     public abstract String message();
@@ -25,9 +30,4 @@ public abstract class WebResponse {
             @JsonProperty(IMPORT_SUMMARIES) ImportSummaries importSummaries) {
         return new AutoValue_WebResponse(message, importSummaries);
     }
-
-    public static WebResponse EMPTY = WebResponse.create(
-            "Nothing to update",
-            ImportSummaries.EMPTY
-    );
 }

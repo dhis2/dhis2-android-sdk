@@ -13,6 +13,8 @@ public abstract class ImportCount {
     private static final String DELETED = "deleted";
     private static final String IGNORED = "ignored";
 
+    static final ImportCount EMPTY = ImportCount.create(0, 0, 0, 0);
+
     @NonNull
     @JsonProperty(IMPORTED)
     public abstract Integer imported();
@@ -37,6 +39,4 @@ public abstract class ImportCount {
             @JsonProperty(IGNORED) Integer ignored) {
         return new AutoValue_ImportCount(imported, updated, deleted, ignored);
     }
-
-    static ImportCount EMTPY = ImportCount.create(0, 0, 0, 0);
 }

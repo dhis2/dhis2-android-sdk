@@ -25,6 +25,14 @@ public abstract class ImportSummaries {
     private static final String DELETED = "deleted";
     private static final String IGNORED = "ignored";
 
+    static final ImportSummaries EMPTY = ImportSummaries.create(
+            ImportStatus.SUCCESS,
+            ImportCount.EMPTY,
+            "ImportSummaries",
+            0, 0, 0, 0,
+            Collections.<ImportSummary>emptyList()
+    );
+
     @NonNull
     @JsonProperty(IMPORT_STATUS)
     public abstract ImportStatus importStatus();
@@ -74,12 +82,4 @@ public abstract class ImportSummaries {
                 updated, deleted, ignored, safeUnmodifiableList(importSummaries)
         );
     }
-
-    static ImportSummaries EMPTY = ImportSummaries.create(
-            ImportStatus.SUCCESS,
-            ImportCount.EMTPY,
-            "ImportSummaries",
-            0, 0, 0, 0,
-            Collections.<ImportSummary>emptyList()
-    );
 }

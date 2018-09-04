@@ -22,6 +22,13 @@ public abstract class ImportSummary {
     private static final String IMPORT_EVENT = "events";
     private static final String IMPORT_CONFLICT = "conflicts";
 
+    public static final ImportSummary EMPTY = ImportSummary.create(
+            ImportCount.EMPTY,
+            ImportStatus.SUCCESS,
+            "ImportSummary",
+            null, null, null, null
+    );
+
     @NonNull
     @JsonProperty(IMPORT_COUNT)
     public abstract ImportCount importCount();
@@ -64,12 +71,4 @@ public abstract class ImportSummary {
                 responseType, reference, importEnrollment, importEvent,
                 safeUnmodifiableList(importConflicts));
     }
-
-    public static ImportSummary EMPTY = ImportSummary.create(
-            ImportCount.EMTPY,
-            ImportStatus.SUCCESS,
-            "ImportSummary",
-            null, null, null, null
-    );
-
 }

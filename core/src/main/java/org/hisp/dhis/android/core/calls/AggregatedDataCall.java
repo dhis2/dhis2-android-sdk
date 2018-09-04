@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCall;
@@ -63,7 +64,7 @@ import java.util.concurrent.Callable;
 import retrofit2.Retrofit;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public final class AggregatedDataCall extends SyncCall<Void> {
+public final class AggregatedDataCall extends SyncCall<Unit> {
 
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
@@ -99,15 +100,15 @@ public final class AggregatedDataCall extends SyncCall<Void> {
     }
 
     @Override
-    public Void call() throws Exception {
+    public Unit call() throws Exception {
         setExecuted();
 
         final D2CallExecutor executor = new D2CallExecutor();
 
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
 
             @Override
-            public Void call() throws D2CallException {
+            public Unit call() throws D2CallException {
                 SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         systemInfo.serverDate(), versionManager);
@@ -132,7 +133,7 @@ public final class AggregatedDataCall extends SyncCall<Void> {
 
                 executor.executeD2Call(dataSetCompleteRegistrationCall);
 
-                return null;
+                return new Unit();
             }
         });
 

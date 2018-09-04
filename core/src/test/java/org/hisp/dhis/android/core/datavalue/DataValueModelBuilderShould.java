@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ModelBuilderAbstractShould;
+import org.hisp.dhis.android.core.common.State;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,7 +82,7 @@ public class DataValueModelBuilderShould extends ModelBuilderAbstractShould<Data
 
     @Override
     protected ModelBuilder<DataValue, DataValueModel> modelBuilder() {
-        return new DataValueModelBuilder();
+        return new DataValueModelBuilder(State.SYNCED);
     }
 
     @Test

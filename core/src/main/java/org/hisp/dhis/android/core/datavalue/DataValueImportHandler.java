@@ -28,31 +28,32 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.ImportStatus;
+import org.hisp.dhis.android.core.imports.ImportSummary;
 
-public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueModel> {
+public class DataValueImportHandler {
 
-    private final DataValueModel.Builder builder;
+    DataValueStore dataValueStore;
 
-    public DataValueModelBuilder(State state) {
-        builder = DataValueModel.builder().state(state);
+    public DataValueImportHandler(DataValueStore dataValueStore) {
+        this.dataValueStore = dataValueStore;
     }
 
-    @Override
-    public DataValueModel buildModel(DataValue dataValue) {
-        return builder
-                .dataElement(dataValue.dataElement())
-                .period(dataValue.period())
-                .organisationUnit(dataValue.organisationUnit())
-                .categoryOptionCombo(dataValue.categoryOptionCombo())
-                .attributeOptionCombo(dataValue.attributeOptionCombo())
-                .value(dataValue.value())
-                .storedBy(dataValue.storedBy())
-                .created(dataValue.created())
-                .lastUpdated(dataValue.lastUpdated())
-                .comment(dataValue.comment())
-                .followUp(dataValue.followUp())
-                .build();
+    public void handleImportSummary(@NonNull DataValueSet dataValueSet,
+                                    @NonNull ImportSummary importSummary) {
+
+        if (importSummary == null || dataValueSet == null) {
+            return;
+        }
+
+        State newState =
+                (importSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
+
+        for (DataValue dataValue : dataValueSet.dataValues) {
+            dataValueStore.setState(dataValue, newState);
+        }
     }
 }

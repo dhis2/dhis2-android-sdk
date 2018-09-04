@@ -1,6 +1,7 @@
-/* * Copyright (c) 2017, University of Oslo
- *
+/*
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -22,7 +23,8 @@
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 package org.hisp.dhis.android.core.datavalue;
 
@@ -34,6 +36,7 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
@@ -73,7 +76,7 @@ public final class DataValueEndpointCall {
                     data,
                     DataValueHandler.create(data.databaseAdapter()),
                     resourceType,
-                    new DataValueModelBuilder()
+                    new DataValueModelBuilder(State.SYNCED)
             );
         }
     };

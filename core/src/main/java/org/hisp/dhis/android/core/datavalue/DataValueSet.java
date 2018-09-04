@@ -28,31 +28,16 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.State;
+import java.util.Collection;
 
-public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueModel> {
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    private final DataValueModel.Builder builder;
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public class DataValueSet {
 
-    public DataValueModelBuilder(State state) {
-        builder = DataValueModel.builder().state(state);
-    }
+    public Collection<DataValue> dataValues;
 
-    @Override
-    public DataValueModel buildModel(DataValue dataValue) {
-        return builder
-                .dataElement(dataValue.dataElement())
-                .period(dataValue.period())
-                .organisationUnit(dataValue.organisationUnit())
-                .categoryOptionCombo(dataValue.categoryOptionCombo())
-                .attributeOptionCombo(dataValue.attributeOptionCombo())
-                .value(dataValue.value())
-                .storedBy(dataValue.storedBy())
-                .created(dataValue.created())
-                .lastUpdated(dataValue.lastUpdated())
-                .comment(dataValue.comment())
-                .followUp(dataValue.followUp())
-                .build();
+    public DataValueSet(Collection<DataValue> dataValues) {
+        this.dataValues = dataValues;
     }
 }

@@ -44,7 +44,7 @@ public final class ReadOnlyCollectionRepositoryImpl<M extends Model> implements 
     }
 
     @Override
-    public Set<M> getAll() {
+    public Set<M> getSet() {
         return this.store.selectAll(this.modelFactory);
     }
 }

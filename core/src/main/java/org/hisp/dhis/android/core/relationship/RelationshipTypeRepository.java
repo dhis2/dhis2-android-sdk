@@ -45,9 +45,9 @@ public final class RelationshipTypeRepository implements ReadOnlyCollectionRepos
         this.rawTypeRepository = rawTypeRepository;
     }
 
-    public Set<RelationshipType> getAll() {
-        Set<RelationshipConstraint> constraintsSet = constraintRepository.getAll();
-        Set<RelationshipType> rawTypesSet = this.rawTypeRepository.getAll();
+    public Set<RelationshipType> getSet() {
+        Set<RelationshipConstraint> constraintsSet = constraintRepository.getSet();
+        Set<RelationshipType> rawTypesSet = this.rawTypeRepository.getSet();
 
         RelationshipTypeBuilder typeBuilder = new RelationshipTypeBuilder(constraintsSet);
         Set<RelationshipType> typesWithConstraintsSet = new HashSet<>(rawTypesSet.size());

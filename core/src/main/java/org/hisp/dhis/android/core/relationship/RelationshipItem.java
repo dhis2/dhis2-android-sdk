@@ -64,6 +64,18 @@ public abstract class RelationshipItem {
 
         public abstract Builder event(RelationshipItemEvent event);
 
-        public abstract RelationshipItem build();
+        protected abstract RelationshipItem autoBuild();
+
+        public RelationshipItem build() {
+            RelationshipItem item = autoBuild();
+            int teiCount = item.trackedEntityInstance() == null ? 0 : 1;
+            int enrollmentCount = item.enrollment() == null ? 0 : 1;
+            int eventCount = item.event() == null ? 0 : 1;
+            if (teiCount + enrollmentCount + eventCount == 1) {
+                return item;
+            } else {
+                throw new IllegalArgumentException("Item must have either a TEI, enrollment or event");
+            }
+        }
     }
 }

@@ -27,10 +27,24 @@
  */
 package org.hisp.dhis.android.core.arch.repositories;
 
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Set;
 
-public interface ReadOnlyListRepository<M extends Model> {
-    Set<M> getAll();
+public final class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
+
+    private final ObjectStore<M> store;
+    private final CursorModelFactory<M> modelFactory;
+
+    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
+        this.store = store;
+        this.modelFactory = modelFactory;
+    }
+
+    @Override
+    public Set<M> getAll() {
+        return this.store.selectAll(this.modelFactory);
+    }
 }

@@ -33,18 +33,18 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Set;
 
-public final class ReadOnlyListRepositoryImpl<M extends Model> implements ReadOnlyListRepository<M> {
+public final class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
 
     private final ObjectStore<M> store;
     private final CursorModelFactory<M> modelFactory;
 
-    public ReadOnlyListRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
+    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
         this.store = store;
         this.modelFactory = modelFactory;
     }
 
     @Override
-    public Set<M> getAll() {
+    public Set<M> getSet() {
         return this.store.selectAll(this.modelFactory);
     }
 }

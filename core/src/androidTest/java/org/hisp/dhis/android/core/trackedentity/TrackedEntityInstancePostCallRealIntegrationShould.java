@@ -262,7 +262,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.downloadTrackedEntityInstances(5, true).call();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
-        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getAll().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getSet().iterator().next();
 
         // Create a TEI by copying an existing one
         String teiBUid = codeGenerator.generate();
@@ -312,7 +312,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         TrackedEntityInstance t0 = trackedEntityInstances.get(0);
         TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
-        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getAll().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getSet().iterator().next();
 
         d2.relationshipModule().relationship.createTEIRelationship(relationshipType.uid(), t0.uid(), t1.uid());
 

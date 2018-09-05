@@ -31,6 +31,6 @@ import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Set;
 
-public interface ReadOnlyListRepository<M extends Model> {
-    Set<M> getAll();
+public interface ReadOnlyCollectionRepository<M extends Model> {
+    Set<M> getSet();
 }

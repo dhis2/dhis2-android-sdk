@@ -27,27 +27,27 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.ReadOnlyListRepository;
-import org.hisp.dhis.android.core.arch.repositories.ReadOnlyListRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public final class RelationshipTypeRepository implements ReadOnlyListRepository<RelationshipType> {
+public final class RelationshipTypeRepository implements ReadOnlyCollectionRepository<RelationshipType> {
 
-    private final ReadOnlyListRepository<RelationshipConstraint> constraintRepository;
-    private final ReadOnlyListRepository<RelationshipType> rawTypeRepository;
+    private final ReadOnlyCollectionRepository<RelationshipConstraint> constraintRepository;
+    private final ReadOnlyCollectionRepository<RelationshipType> rawTypeRepository;
 
-    private RelationshipTypeRepository(ReadOnlyListRepository<RelationshipConstraint> constraintRepository,
-                               ReadOnlyListRepository<RelationshipType> rawTypeRepository) {
+    private RelationshipTypeRepository(ReadOnlyCollectionRepository<RelationshipConstraint> constraintRepository,
+                               ReadOnlyCollectionRepository<RelationshipType> rawTypeRepository) {
         this.constraintRepository = constraintRepository;
         this.rawTypeRepository = rawTypeRepository;
     }
 
-    public Set<RelationshipType> getAll() {
-        Set<RelationshipConstraint> constraintsSet = constraintRepository.getAll();
-        Set<RelationshipType> rawTypesSet = this.rawTypeRepository.getAll();
+    public Set<RelationshipType> getSet() {
+        Set<RelationshipConstraint> constraintsSet = constraintRepository.getSet();
+        Set<RelationshipType> rawTypesSet = this.rawTypeRepository.getSet();
 
         RelationshipTypeBuilder typeBuilder = new RelationshipTypeBuilder(constraintsSet);
         Set<RelationshipType> typesWithConstraintsSet = new HashSet<>(rawTypesSet.size());
@@ -61,11 +61,11 @@ public final class RelationshipTypeRepository implements ReadOnlyListRepository<
 
     static RelationshipTypeRepository create(DatabaseAdapter databaseAdapter) {
         return new RelationshipTypeRepository(
-                new ReadOnlyListRepositoryImpl<>(
+                new ReadOnlyCollectionRepositoryImpl<>(
                         RelationshipConstraintStore.create(databaseAdapter),
                         RelationshipConstraint.factory
                 ),
-                new ReadOnlyListRepositoryImpl<>(
+                new ReadOnlyCollectionRepositoryImpl<>(
                         RelationshipTypeStore.create(databaseAdapter),
                         RelationshipType.factory
                 )

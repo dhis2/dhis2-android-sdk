@@ -66,6 +66,7 @@ public abstract class RelationshipItem {
 
         protected abstract RelationshipItem autoBuild();
 
+        @SuppressWarnings("PMD.NPathComplexity")
         public RelationshipItem build() {
             RelationshipItem item = autoBuild();
             int teiCount = item.trackedEntityInstance() == null ? 0 : 1;

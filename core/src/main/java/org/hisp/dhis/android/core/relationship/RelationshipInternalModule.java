@@ -55,7 +55,8 @@ public final class RelationshipInternalModule implements WipeableModule {
         RelationshipConstraintStore.create(databaseAdapter).delete();
     }
 
-    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter,
+                                                    DHISVersionManager versionManager) {
         return new RelationshipInternalModule(
                 databaseAdapter,
                 RelationshipModule.create(

@@ -33,6 +33,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class RelationshipItemHandler {
 
+    private RelationshipItemHandler() {
+    }
+
     public static GenericHandler<RelationshipItem, RelationshipItemModel> create(DatabaseAdapter databaseAdapter) {
         return new ObjectWithoutUidHandlerImpl<>(RelationshipItemStoreImpl.create(databaseAdapter));
     }

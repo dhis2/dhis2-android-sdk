@@ -47,7 +47,8 @@ import java.util.Set;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
-final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<Relationship> implements RelationshipRepository {
+final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<Relationship>
+        implements RelationshipRepository {
 
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStore relationshipItemStore;
@@ -59,7 +60,8 @@ final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<
                                        RelationshipHandler relationshipHandler,
                                        RelationshipItemStore relationshipItemStore,
                                        RelationshipItemElementStoreSelector storeSelector,
-                                       PojoBuilder<RelationshipItem, RelationshipItemModel> relationshipItemPojoBuilder) {
+                                       PojoBuilder<RelationshipItem, RelationshipItemModel>
+                                               relationshipItemPojoBuilder) {
         super(store, modelFactory);
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;

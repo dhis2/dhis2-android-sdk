@@ -57,7 +57,7 @@ public abstract class DataValueModel extends BaseDataModel {
         public static final String CREATED = "created";
         public static final String LAST_UPDATED = "lastUpdated";
         public static final String COMMENT = "comment";
-        public static final String FOLLOW_UP = "followUp";
+        public static final String FOLLOW_UP = "followup";
 
         @Override
         public String[] all() {

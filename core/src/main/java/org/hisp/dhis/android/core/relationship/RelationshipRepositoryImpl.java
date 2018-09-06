@@ -178,7 +178,7 @@ final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<
                 Relationship.factory,
                 relationshipHandler,
                 RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemElementStoreSelector.create(databaseAdapter),
+                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
                 new RelationshipItemPojoBuilder()
         );
     }

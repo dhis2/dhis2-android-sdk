@@ -116,7 +116,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
                 RelationshipStore.create(databaseAdapter),
                 RelationshipItemStoreImpl.create(databaseAdapter),
                 RelationshipItemHandler.create(databaseAdapter),
-                RelationshipItemElementStoreSelector.create(databaseAdapter),
+                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
                 new RelationshipDHISVersionManager(versionManager)
         );
     }

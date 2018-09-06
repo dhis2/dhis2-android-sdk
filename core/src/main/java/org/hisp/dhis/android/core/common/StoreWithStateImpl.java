@@ -40,8 +40,8 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class StoreWithStateImpl implements StoreWithState {
 
-    private String selectStateQuery;
-    private String existsQuery;
+    private final String selectStateQuery;
+    private final String existsQuery;
     private final SQLiteStatement setStateStatement;
     protected final DatabaseAdapter databaseAdapter;
 

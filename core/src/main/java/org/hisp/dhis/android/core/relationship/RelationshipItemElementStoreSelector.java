@@ -28,45 +28,7 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.common.StoreWithState;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
-import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
-class RelationshipItemElementStoreSelector {
-
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final EnrollmentStore enrollmentStore;
-    private final EventStore eventStore;
-
-    private RelationshipItemElementStoreSelector(
-            TrackedEntityInstanceStore trackedEntityInstanceStore,
-            EnrollmentStore enrollmentStore,
-            EventStore eventStore) {
-
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
-        this.enrollmentStore = enrollmentStore;
-        this.eventStore = eventStore;
-    }
-
-    public StoreWithState getElementStore(RelationshipItem item) {
-        if (item.hasTrackedEntityInstance()) {
-            return trackedEntityInstanceStore;
-        } else if (item.hasEnrollment()) {
-            return enrollmentStore;
-        } else {
-            return eventStore;
-        }
-    }
-
-    public static RelationshipItemElementStoreSelector create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipItemElementStoreSelector(
-                new TrackedEntityInstanceStoreImpl(databaseAdapter),
-                new EnrollmentStoreImpl(databaseAdapter),
-                new EventStoreImpl(databaseAdapter)
-        );
-    }
+interface RelationshipItemElementStoreSelector {
+    StoreWithState getElementStore(RelationshipItem item);
 }

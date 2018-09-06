@@ -305,7 +305,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     //@Test
-    public void create_relationship_does_not_duplicate() throws Exception {
+    public void create_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
         List<TrackedEntityInstance> trackedEntityInstances =
@@ -323,8 +323,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.syncTrackedEntityInstances().call();
 
         d2.syncDownSyncedTrackedEntityInstances().call();
-
-        d2.logout();
     }
 
     //@Test

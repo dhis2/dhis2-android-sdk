@@ -37,10 +37,10 @@ public final class RelationshipModule {
 
     public final ReadOnlyCollectionRepository<RelationshipType> relationshipType;
 
-    public final RelationshipRepositoryInterface relationship;
+    public final RelationshipRepository relationship;
 
     private RelationshipModule(ReadOnlyCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipRepositoryInterface relationshipRepository) {
+                               RelationshipRepository relationshipRepository) {
         this.relationshipType = relationshipTypeRepository;
         this.relationship = relationshipRepository;
     }
@@ -48,7 +48,7 @@ public final class RelationshipModule {
     public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
         return new RelationshipModule(
                 RelationshipTypeRepository.create(databaseAdapter),
-                RelationshipRepository.create(databaseAdapter, relationshipHandler));
+                RelationshipRepositoryImpl.create(databaseAdapter, relationshipHandler));
     }
 
 }

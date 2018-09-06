@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +40,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 
-import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
-import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,15 +54,27 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     private IdentifiableObjectStore<Relationship> relationshipStore;
 
     @Mock
-    private RelationshipItemStoreInterface relationshipItemStore;
+    private RelationshipItemStore relationshipItemStore;
 
     @Mock
-    private TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private GenericHandler<RelationshipItem, RelationshipItemModel> relationshipItemHandler;
+
+    @Mock
+    private RelationshipItemElementStoreSelector storeSelector;
+
+    @Mock
+    private RelationshipDHISVersionManager versionManager;
+
+    @Mock
+    private StoreWithState itemElementStore;
 
     private final String NEW_UID = "new-uid";
 
     private final String TEI_3_UID = "tei3";
     private final String TEI_4_UID = "tei4";
+
+    private final RelationshipItem tei3Item = RelationshipHelper.teiItem(TEI_3_UID);
+    private final RelationshipItem tei4Item = RelationshipHelper.teiItem(TEI_4_UID);
 
     private Relationship existingRelationship = get230();
 
@@ -76,52 +90,42 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        relationshipHandler = new RelationshipHandlerImpl(relationshipStore, relationshipItemStore, trackedEntityInstanceStore);
-        when(trackedEntityInstanceStore.exists(FROM_UID)).thenReturn(true);
-        when(trackedEntityInstanceStore.exists(TO_UID)).thenReturn(true);
-        when(trackedEntityInstanceStore.exists(TEI_3_UID)).thenReturn(true);
-        when(trackedEntityInstanceStore.exists(TEI_4_UID)).thenReturn(true);
-        when(relationshipItemStore.getRelationshipsFromAndToTEI(FROM_UID, TO_UID)).thenReturn(Collections.singletonList(UID));
-        when(relationshipItemStore.getRelationshipsFromAndToTEI(TEI_3_UID, TEI_4_UID)).thenReturn(Collections.<String>emptyList());
+        relationshipHandler = new RelationshipHandlerImpl(relationshipStore, relationshipItemStore,
+                relationshipItemHandler, storeSelector, versionManager);
+
+        when(storeSelector.getElementStore(any(RelationshipItem.class))).thenReturn(itemElementStore);
+        when(itemElementStore.exists(FROM_UID)).thenReturn(true);
+        when(itemElementStore.exists(TO_UID)).thenReturn(true);
+        when(itemElementStore.exists(TEI_3_UID)).thenReturn(true);
+        when(itemElementStore.exists(TEI_4_UID)).thenReturn(true);
+        when(relationshipItemStore.getRelationshipUidsForItems(fromItem, toItem)).thenReturn(Collections.singletonList(UID));
+        when(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(Collections.<String>emptyList());
         when(relationshipStore.selectByUid(UID, Relationship.factory)).thenReturn(get230());
-    }
-
-    private RelationshipItemModel getItem(String uid, RelationshipConstraintType constraint, String teiUid) {
-        return RelationshipItemModel.builder()
-                .relationship(uid)
-                .relationshipItemType(constraint)
-                .trackedEntityInstance(teiUid)
-                .build();
+        when(versionManager.isRelationshipSupported(any(Relationship.class))).thenReturn(true);
     }
 
     @Test(expected = RuntimeException.class)
-    public void throw_exception_when_from_is_no_tei() {
-        Relationship relationship = existingRelationship.toBuilder().from(eventItem).build();
-        relationshipHandler.handle(relationship);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_when_to_is_no_tei() {
-        Relationship relationship = existingRelationship.toBuilder().to(eventItem).build();
-        relationshipHandler.handle(relationship);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_when_from_tei_not_in_db() {
-        when(trackedEntityInstanceStore.exists(FROM_UID)).thenReturn(false);
+    public void throw_exception_when_relationship_is_no_compatible() {
+        when(versionManager.isRelationshipSupported(existingRelationship)).thenReturn(false);
         relationshipHandler.handle(existingRelationship);
     }
 
     @Test(expected = RuntimeException.class)
-    public void throw_exception_when_to_tei_not_in_db() {
-        when(trackedEntityInstanceStore.exists(TO_UID)).thenReturn(false);
+    public void throw_exception_when_from_item_element_not_in_db() {
+        when(itemElementStore.exists(FROM_UID)).thenReturn(false);
+        relationshipHandler.handle(existingRelationship);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void throw_exception_when_to_item_element_not_in_db() {
+        when(itemElementStore.exists(TO_UID)).thenReturn(false);
         relationshipHandler.handle(existingRelationship);
     }
 
     @Test()
     public void call_relationship_item_store_for_existing_relationship() {
         relationshipHandler.handle(existingRelationship);
-        verify(relationshipItemStore).getRelationshipsFromAndToTEI(FROM_UID, TO_UID);
+        verify(relationshipItemStore).getRelationshipUidsForItems(fromItem, toItem);
     }
 
     @Test()
@@ -167,23 +171,23 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     }
 
     @Test()
-    public void update_relationship_item_store_for_existing_relationship() {
+    public void update_relationship_handler_store_for_existing_relationship() {
         relationshipHandler.handle(existingRelationship);
-        verify(relationshipItemStore).updateOrInsertWhere(getItem(UID, FROM, FROM_UID));
-        verify(relationshipItemStore).updateOrInsertWhere(getItem(UID, TO, TO_UID));
+        verify(relationshipItemHandler).handle(same(fromItem), any(RelationshipItemModelBuilder.class));
+        verify(relationshipItemHandler).handle(same(toItem), any(RelationshipItemModelBuilder.class));
     }
 
     @Test()
-    public void update_relationship_item_store_for_existing_relationship_with_new_uid() {
+    public void update_relationship_item_handler_for_existing_relationship_with_new_uid() {
         relationshipHandler.handle(existingRelationshipWithNewUid);
-        verify(relationshipItemStore).updateOrInsertWhere(getItem(NEW_UID, FROM, FROM_UID));
-        verify(relationshipItemStore).updateOrInsertWhere(getItem(NEW_UID, TO, TO_UID));
+        verify(relationshipItemHandler).handle(same(fromItem), any(RelationshipItemModelBuilder.class));
+        verify(relationshipItemHandler).handle(same(toItem), any(RelationshipItemModelBuilder.class));
     }
 
     @Test()
-    public void update_relationship_item_store_for_new_relationship() {
+    public void update_relationship_item_handler_for_new_relationship() {
         relationshipHandler.handle(newRelationship);
-        verify(relationshipItemStore).updateOrInsertWhere(getItem(NEW_UID, FROM, TEI_3_UID));
-        verify(relationshipItemStore).updateOrInsertWhere(getItem(NEW_UID, TO, TEI_4_UID));
+        verify(relationshipItemHandler).handle(eq(tei3Item), any(RelationshipItemModelBuilder.class));
+        verify(relationshipItemHandler).handle(eq(tei4Item), any(RelationshipItemModelBuilder.class));
     }
 }

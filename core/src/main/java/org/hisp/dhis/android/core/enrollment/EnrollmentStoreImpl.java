@@ -35,6 +35,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
 import org.hisp.dhis.android.core.enrollment.note.Note;
@@ -59,7 +60,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
         "PMD.StdCyclomaticComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class EnrollmentStoreImpl implements EnrollmentStore {
+public class EnrollmentStoreImpl extends StoreWithStateImpl implements EnrollmentStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EnrollmentModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -97,12 +98,6 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
             Columns.STATE + " =? " +
             " WHERE " +
             Columns.UID + " =?;";
-
-    private static final String UPADTE_STATE_STATEMENT =
-            "UPDATE " + EnrollmentModel.TABLE + " SET " +
-                    Columns.STATE + " =? " +
-                    " WHERE " +
-                    Columns.UID + " =?;";
 
     private static final String DELETE_STATEMENT = "DELETE FROM " +
             EnrollmentModel.TABLE + " WHERE " +
@@ -148,15 +143,12 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
-    private final SQLiteStatement setStateStatement;
-    private final DatabaseAdapter databaseAdapter;
 
     public EnrollmentStoreImpl(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
+        super(databaseAdapter, EnrollmentModel.TABLE);
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
-        this.setStateStatement = databaseAdapter.compileStatement(UPADTE_STATE_STATEMENT);
     }
 
     @Override
@@ -231,19 +223,6 @@ public class EnrollmentStoreImpl implements EnrollmentStore {
         updateStatement.clearBindings();
 
         return rowId;
-    }
-
-    @Override
-    public int setState(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateStatement, 1, state);
-
-        // bind the where clause
-        sqLiteBind(setStateStatement, 2, uid);
-
-        int update = databaseAdapter.executeUpdateDelete(EnrollmentModel.TABLE, setStateStatement);
-        setStateStatement.clearBindings();
-
-        return update;
     }
 
     @Override

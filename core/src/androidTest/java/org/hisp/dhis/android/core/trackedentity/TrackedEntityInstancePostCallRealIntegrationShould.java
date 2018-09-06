@@ -21,6 +21,7 @@ import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
@@ -283,7 +284,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         List<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).call();
         assertThat(responseTeiB.size() == 1).isTrue();
 
-        List<Relationship> relationships = d2.relationshipModule().relationship.getRelationshipsByTEI(teiA.uid());
+        List<Relationship> relationships = d2.relationshipModule().relationship.getByItem(RelationshipHelper.teiItem(teiA.uid()));
         assertThat(relationships.size() > 0).isTrue();
 
         Boolean relationshipFound = false;

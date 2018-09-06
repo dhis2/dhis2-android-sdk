@@ -25,15 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+final class RelationshipItemHandler {
 
-import java.util.List;
-
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+    public static GenericHandler<RelationshipItem, RelationshipItemModel> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidHandlerImpl<>(RelationshipItemStoreImpl.create(databaseAdapter));
+    }
 }

@@ -25,18 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
-
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.arch.repositories;
 
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Model;
 
-import java.util.List;
-
-public interface RelationshipRepositoryInterface {
-
-    void createTEIRelationship(String relationshipType, String fromUid, String toUid) throws D2CallException;
-
-    List<Relationship> getRelationshipsByTEI(@NonNull String trackedEntityInstanceUid);
-
+public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    void add(M m) throws D2CallException;
 }

@@ -26,14 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+public interface StoreWithState {
 
-import java.util.List;
+    int setState(@NonNull String uid, @NonNull State state);
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+    State getState(@NonNull String uid);
+
+    Boolean exists(@NonNull String uid);
 }

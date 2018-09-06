@@ -25,15 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-import android.support.annotation.NonNull;
+public class ReadWriteCollectionRepositoryImpl<M extends Model> extends ReadOnlyCollectionRepositoryImpl<M>
+        implements ReadWriteCollectionRepository<M> {
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+    private final SyncHandler<M> handler;
 
-import java.util.List;
+    public ReadWriteCollectionRepositoryImpl(ObjectStore<M> store,
+                                             CursorModelFactory<M> modelFactory,
+                                             SyncHandler<M> handler) {
+        super(store, modelFactory);
+        this.handler = handler;
+    }
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+    @Override
+    public void add(M m) {
+        handler.handle(m);
+    }
 }

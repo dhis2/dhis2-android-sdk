@@ -28,14 +28,51 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.PojoBuilder;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+public class RelationshipItemPojoBuilder extends PojoBuilder<RelationshipItem, RelationshipItemModel> {
 
-import java.util.List;
+    @Override
+    public RelationshipItem buildPojo(RelationshipItemModel model) {
 
-interface RelationshipItemStoreInterface extends ObjectWithoutUidStore<RelationshipItemModel> {
+        return RelationshipItem
+                .builder()
+                .trackedEntityInstance(trackedEntityInstance(model.trackedEntityInstance()))
+                .enrollment(enrollment(model.enrollment()))
+                .event(event(model.event()))
+                .build();
+    }
 
-    List<String> getRelationshipsFromAndToTEI(@NonNull String fromTEI, @NonNull String toTEI);
+    private RelationshipItemTrackedEntityInstance trackedEntityInstance(String uid) {
+        if (uid == null) {
+            return null;
+        } else {
+            return RelationshipItemTrackedEntityInstance
+                    .builder()
+                    .trackedEntityInstance(uid)
+                    .build();
+        }
+    }
 
+    private RelationshipItemEnrollment enrollment(String uid) {
+        if (uid == null) {
+            return null;
+        } else {
+            return RelationshipItemEnrollment
+                    .builder()
+                    .enrollment(uid)
+                    .build();
+        }
+    }
+
+    private RelationshipItemEvent event(String uid) {
+        if (uid == null) {
+            return null;
+        } else {
+            return RelationshipItemEvent
+                    .builder()
+                    .event(uid)
+                    .build();
+        }
+    }
 }

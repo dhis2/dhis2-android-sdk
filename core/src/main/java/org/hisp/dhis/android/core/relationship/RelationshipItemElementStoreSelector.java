@@ -27,42 +27,46 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
-public final class RelationshipInternalModule implements WipeableModule {
+class RelationshipItemElementStoreSelector {
 
-    private final DatabaseAdapter databaseAdapter;
-    public final RelationshipModule publicModule;
-    public final RelationshipHandler relationshipHandler;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final EnrollmentStore enrollmentStore;
+    private final EventStore eventStore;
 
-    private RelationshipInternalModule(DatabaseAdapter databaseAdapter,
-                                       RelationshipModule publicModule,
-                                       RelationshipHandler relationshipHandler) {
-        this.databaseAdapter = databaseAdapter;
-        this.publicModule = publicModule;
-        this.relationshipHandler = relationshipHandler;
+    private RelationshipItemElementStoreSelector(
+            TrackedEntityInstanceStore trackedEntityInstanceStore,
+            EnrollmentStore enrollmentStore,
+            EventStore eventStore) {
+
+        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.enrollmentStore = enrollmentStore;
+        this.eventStore = eventStore;
     }
 
-    // TODO Include call RelationshipTypeEndpointCall
-
-    @Override
-    public void wipeModuleTables() {
-        RelationshipStore.create(databaseAdapter).delete();
-        RelationshipItemStoreImpl.create(databaseAdapter).delete();
-        RelationshipTypeStore.create(databaseAdapter).delete();
-        RelationshipConstraintStore.create(databaseAdapter).delete();
+    public StoreWithState getElementStore(RelationshipItem item) {
+        if (item.hasTrackedEntityInstance()) {
+            return trackedEntityInstanceStore;
+        } else if (item.hasEnrollment()) {
+            return enrollmentStore;
+        } else {
+            return eventStore;
+        }
     }
 
-    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
-        return new RelationshipInternalModule(
-                databaseAdapter,
-                RelationshipModule.create(
-                        databaseAdapter,
-                        RelationshipHandlerImpl.create(databaseAdapter, versionManager)
-                ),
-                RelationshipHandlerImpl.create(databaseAdapter, versionManager)
+    public static RelationshipItemElementStoreSelector create(DatabaseAdapter databaseAdapter) {
+        return new RelationshipItemElementStoreSelector(
+                new TrackedEntityInstanceStoreImpl(databaseAdapter),
+                new EnrollmentStoreImpl(databaseAdapter),
+                new EventStoreImpl(databaseAdapter)
         );
     }
 }

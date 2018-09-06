@@ -51,7 +51,7 @@ public abstract class DataValue {
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
     private static final String COMMENT = "comment";
-    private static final String FOLLOW_UP = "followUp";
+    private static final String FOLLOW_UP = "followup";
     private static final String DELETED = "deleted";
 
     private static final Field<DataValue, String> dataElement = Field.create(DATA_ELEMENT);

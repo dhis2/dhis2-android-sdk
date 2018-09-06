@@ -29,27 +29,39 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
+
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+public class DbOpenHelper extends SQLiteOpenHelper {
 
     public static final int VERSION = 20;
+    private final AssetManager assetManager;
+    private Integer testVersion = null;
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);
+        SQLiteDatabase.loadLibs(context);
+        this.assetManager = context.getAssets();
     }
 
     public DbOpenHelper(Context context, String databaseName, int testVersion) {
         super(context, databaseName, null, testVersion);
+        SQLiteDatabase.loadLibs(context);
+        this.testVersion = testVersion;
+        this.assetManager = context.getAssets();
     }
 
     @Override
@@ -58,17 +70,87 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
 
         // enable foreign key support in database
         db.execSQL("PRAGMA foreign_keys = ON;");
-        db.enableWriteAheadLogging();
+        db.rawExecSQL("PRAGMA journal_mode = WAL;");
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
     @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
+    public void onCreate(SQLiteDatabase db) {
+        try {
+            int version = db.getVersion();
+            if (testVersion == null) {
+                version = version > VERSION ? version : VERSION;
+            } else {
+                version = version > testVersion ? version : testVersion;
+            }
+            List<Map<String, List<String>>> parsed = parseList(0, version);
+            upList(db, parsed);
+        } catch (IOException e) {
+            Log.e("Database Error:", e.getMessage());
         }
-        return versionMigrations;
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        try {
+            List<Map<String, List<String>>> parsed = parseList(oldVersion, newVersion);
+            upList(db, parsed);
+        } catch (IOException e) {
+            Log.e("Database Error:", e.getMessage());
+        }
+    }
+
+    private synchronized List<Map<String, List<String>>> parseList(int oldVersion, int newVersion) throws IOException {
+
+        List<Map<String, List<String>>> scripts = new ArrayList<Map<String, List<String>>>();
+
+        int startVersion = oldVersion + 1;
+        for (int i = startVersion; i <= newVersion; i++) {
+            Map<String, List<String>> script = this.parse(i);
+            scripts.add(script);
+        }
+
+        return scripts;
+    }
+
+    public synchronized Map<String, List<String>> parse(int newVersion) throws IOException {
+
+        InputStream inputStream;
+        String migrationDir = "migrations";
+        String migrationPath = migrationDir + "/" + newVersion + ".yaml";
+
+        inputStream = assetManager.open(migrationPath);
+
+        Yaml yaml = new Yaml();
+        Map<String, List<String>> parsed = (Map) yaml.load(inputStream);
+
+        return parsed;
+    }
+
+    private synchronized void upList(SQLiteDatabase database, List<Map<String, List<String>>> scripts) {
+        database.beginTransaction();
+        try {
+            for (Map<String, List<String>> script : scripts) {
+                up(database, script);
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+    }
+
+    private synchronized void up(SQLiteDatabase database, Map<String, List<String>> scripts) {
+        database.beginTransaction();
+        try {
+            List<String> ups = scripts.get("up");
+            if (ups != null) {
+                for (String script : ups) {
+                    database.execSQL(script);
+                }
+            }
+
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
     }
 }

@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteStatement;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,8 +30,8 @@ public class SqLiteDatabaseAdapterShould {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        Mockito.when(dbOpenHelper.getWritableDatabase()).thenReturn(writableDatabase);
-        Mockito.when(dbOpenHelper.getReadableDatabase()).thenReturn(readableDatabase);
+        Mockito.when(dbOpenHelper.getWritableDatabase("fafa")).thenReturn(writableDatabase);
+        Mockito.when(dbOpenHelper.getReadableDatabase("fafa")).thenReturn(readableDatabase);
         sqLiteDatabaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
     }
 

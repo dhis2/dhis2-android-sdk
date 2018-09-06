@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.user;
 
 
-import android.database.sqlite.SQLiteConstraintException;
+import net.sqlcipher.database.SQLiteConstraintException;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;

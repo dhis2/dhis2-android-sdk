@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
@@ -53,7 +53,7 @@ public abstract class AbsStoreTestCase {
     public void setUp() throws IOException {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+        sqLiteDatabase = dbOpenHelper.getWritableDatabase("fafa");
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }

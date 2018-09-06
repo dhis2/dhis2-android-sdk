@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.sqlite.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class SqLiteTransactionShould {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        when(dbOpenHelper.getWritableDatabase()).thenReturn(database);
+        when(dbOpenHelper.getWritableDatabase("fafa")).thenReturn(database);
 
         transaction = new SqLiteTransaction(dbOpenHelper);
     }

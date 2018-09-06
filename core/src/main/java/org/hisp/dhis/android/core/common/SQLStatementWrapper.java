@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteStatement;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 

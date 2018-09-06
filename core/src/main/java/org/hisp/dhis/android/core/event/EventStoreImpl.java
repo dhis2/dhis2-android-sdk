@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 

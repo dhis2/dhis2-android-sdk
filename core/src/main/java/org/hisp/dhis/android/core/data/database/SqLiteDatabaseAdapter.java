@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 public class SqLiteDatabaseAdapter implements DatabaseAdapter {
@@ -41,7 +41,7 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
         if (dbOpenHelper == null) {
             throw new IllegalArgumentException("dbOpenHelper == null");
         }
-        dbOpenHelper.getWritableDatabase();
+        dbOpenHelper.getWritableDatabase("fefe");
         this.dbOpenHelper = dbOpenHelper;
     }
 
@@ -82,11 +82,12 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
         return delete(table, "1", null);
     }
 
+    @Override
     public SQLiteDatabase database() {
-        return dbOpenHelper.getWritableDatabase();
+        return dbOpenHelper.getWritableDatabase("fafa");
     }
 
     private SQLiteDatabase readableDatabase() {
-        return dbOpenHelper.getReadableDatabase();
+        return dbOpenHelper.getReadableDatabase("fafa");
     }
 }

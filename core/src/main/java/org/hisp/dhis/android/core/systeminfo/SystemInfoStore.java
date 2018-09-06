@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;

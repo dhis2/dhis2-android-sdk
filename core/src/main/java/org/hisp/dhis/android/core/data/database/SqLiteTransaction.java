@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.sqlite.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteDatabase;
+
 import android.support.annotation.NonNull;
 
 public class SqLiteTransaction implements Transaction {
@@ -92,7 +93,7 @@ public class SqLiteTransaction implements Transaction {
     }
 
     private SQLiteDatabase database() {
-        return dbOpenHelper.getWritableDatabase();
+        return dbOpenHelper.getWritableDatabase("fafa");
     }
 }
 

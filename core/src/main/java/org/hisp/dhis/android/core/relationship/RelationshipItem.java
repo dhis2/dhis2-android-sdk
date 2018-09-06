@@ -51,6 +51,28 @@ public abstract class RelationshipItem {
     @JsonProperty()
     public abstract RelationshipItemEvent event();
 
+    public boolean hasTrackedEntityInstance() {
+        return trackedEntityInstance() != null;
+    }
+
+    public boolean hasEnrollment() {
+        return enrollment() != null;
+    }
+
+    public boolean hasEvent() {
+        return event() != null;
+    }
+
+    public String elementUid() {
+        if (hasTrackedEntityInstance()) {
+            return trackedEntityInstance().trackedEntityInstance();
+        } else if (hasEnrollment()) {
+            return enrollment().enrollment();
+        } else {
+            return event().event();
+        }
+    }
+
     public static Builder builder() {
         return new AutoValue_RelationshipItem.Builder();
     }

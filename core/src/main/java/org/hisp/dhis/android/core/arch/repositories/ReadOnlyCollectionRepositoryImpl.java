@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Set;
 
-public final class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
+public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
 
-    private final ObjectStore<M> store;
-    private final CursorModelFactory<M> modelFactory;
+    protected final ObjectStore<M> store;
+    protected final CursorModelFactory<M> modelFactory;
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
         this.store = store;

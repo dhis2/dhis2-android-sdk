@@ -35,6 +35,7 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 
@@ -55,7 +56,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
         "PMD.StdCyclomaticComplexity",
         "PMD.AvoidInstantiatingObjectsInLoops"
 })
-public class EventStoreImpl implements EventStore {
+public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -99,11 +100,6 @@ public class EventStoreImpl implements EventStore {
             Columns.ATTRIBUTE_CATEGORY_OPTIONS + " =?, " +
             Columns.ATTRIBUTE_OPTION_COMBO + " =?, " +
             Columns.TRACKED_ENTITY_INSTANCE + " =? " +
-            " WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String UPDATE_STATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
-            Columns.STATE + " =? " +
             " WHERE " +
             Columns.UID + " =?;";
 
@@ -161,15 +157,12 @@ public class EventStoreImpl implements EventStore {
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
-    private final SQLiteStatement setStateStatement;
-    private final DatabaseAdapter databaseAdapter;
 
     public EventStoreImpl(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
+        super(databaseAdapter, EventModel.TABLE);
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
-        this.setStateStatement = databaseAdapter.compileStatement(UPDATE_STATE_STATEMENT);
     }
 
     @Override
@@ -258,17 +251,6 @@ public class EventStoreImpl implements EventStore {
         deleteStatement.clearBindings();
 
         return rowId;
-    }
-
-    @Override
-    public int setState(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateStatement, 1, state);
-        sqLiteBind(setStateStatement, 2, uid);
-
-        int update = databaseAdapter.executeUpdateDelete(EventModel.TABLE, setStateStatement);
-        setStateStatement.clearBindings();
-
-        return update;
     }
 
     @Override

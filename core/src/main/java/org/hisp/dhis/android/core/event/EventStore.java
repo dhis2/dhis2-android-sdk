@@ -33,12 +33,13 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.StoreWithState;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface EventStore extends DeletableStore {
+public interface EventStore extends DeletableStore, StoreWithState {
     long insert(@NonNull String uid,
                 @Nullable String enrollmentUid,
                 @NonNull Date created,
@@ -83,8 +84,6 @@ public interface EventStore extends DeletableStore {
     );
 
     int delete(@NonNull String uid);
-
-    int setState(@NonNull String uid, @NonNull State state);
 
     Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
 

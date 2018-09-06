@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
@@ -49,7 +50,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
         "PMD.AvoidDuplicateLiterals",
         "PMD.NPathComplexity"
 })
-public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStore {
+public class TrackedEntityInstanceStoreImpl extends StoreWithStateImpl implements TrackedEntityInstanceStore {
     private static final String INSERT_STATEMENT = "INSERT INTO " +
             TrackedEntityInstanceModel.TABLE + " (" +
             Columns.UID + ", " +
@@ -75,11 +76,6 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             Columns.COORDINATES + " =?, " +
             Columns.FEATURE_TYPE + " =?, " +
             Columns.STATE + " =? " +
-            " WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String SET_STATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
-            Columns.STATE + " =?" +
             " WHERE " +
             Columns.UID + " =?;";
 
@@ -109,25 +105,15 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             QUERY_STATEMENT +
                     " WHERE state = 'SYNCED'";
 
-    private static final String SELECT_STATE = "SELECT state FROM TrackedEntityInstance WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String QUERY_EXISTS = "SELECT 1 FROM TrackedEntityInstance WHERE " +
-            Columns.UID + " =?;";
-
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
-    private final SQLiteStatement setStateStatement;
 
     private final SQLiteStatement insertStatement;
 
-    private final DatabaseAdapter databaseAdapter;
-
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
+        super(databaseAdapter, TrackedEntityInstanceModel.TABLE);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
-        this.setStateStatement = databaseAdapter.compileStatement(SET_STATE_STATEMENT);
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
     }
 
@@ -193,37 +179,6 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
         deleteStatement.clearBindings();
 
         return rowId;
-    }
-
-    @Override
-    public int setState(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateStatement, 1, state);
-
-        // bind the where argument
-        sqLiteBind(setStateStatement, 2, uid);
-
-        int updatedRow = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, setStateStatement);
-        setStateStatement.clearBindings();
-
-        return updatedRow;
-    }
-
-    @Override
-    public State getState(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(SELECT_STATE, uid);
-        State state = null;
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            state = cursor.getString(0) == null ? null :
-                    State.valueOf(State.class, cursor.getString(0));
-        }
-        return state;
-    }
-
-    @Override
-    public Boolean exists(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(QUERY_EXISTS, uid);
-        return cursor.getCount() > 0;
     }
 
     @Override

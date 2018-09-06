@@ -28,44 +28,51 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import org.hisp.dhis.android.core.common.PojoBuilder;
 
-public final class RelationshipHelper {
+public class RelationshipItemPojoBuilder extends PojoBuilder<RelationshipItem, RelationshipItemModel> {
 
-    public static String getTeiUid(RelationshipItem item) {
-        if (item != null && item.trackedEntityInstance() != null) {
-            return item.trackedEntityInstance().trackedEntityInstance();
-        }
-        return null;
-    }
+    @Override
+    public RelationshipItem buildPojo(RelationshipItemModel model) {
 
-    public static RelationshipItem teiItem(String uid) {
-        return RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance
-                        .builder()
-                        .trackedEntityInstance(uid)
-                        .build()
-        ).build();
-    }
-
-    public static RelationshipItem eventItem(String uid) {
-        return RelationshipItem.builder().event(
-                RelationshipItemEvent
-                        .builder()
-                        .event(uid)
-                        .build()
-        ).build();
-    }
-
-    public static Relationship teiToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return Relationship.builder()
-                .uid(new CodeGeneratorImpl().generate())
-                .from(RelationshipHelper.teiItem(fromUid))
-                .to(RelationshipHelper.teiItem(toUid))
-                .relationshipType(relationshipTypeUid)
+        return RelationshipItem
+                .builder()
+                .trackedEntityInstance(trackedEntityInstance(model.trackedEntityInstance()))
+                .enrollment(enrollment(model.enrollment()))
+                .event(event(model.event()))
                 .build();
     }
 
-    private RelationshipHelper() {
+    private RelationshipItemTrackedEntityInstance trackedEntityInstance(String uid) {
+        if (uid == null) {
+            return null;
+        } else {
+            return RelationshipItemTrackedEntityInstance
+                    .builder()
+                    .trackedEntityInstance(uid)
+                    .build();
+        }
+    }
+
+    private RelationshipItemEnrollment enrollment(String uid) {
+        if (uid == null) {
+            return null;
+        } else {
+            return RelationshipItemEnrollment
+                    .builder()
+                    .enrollment(uid)
+                    .build();
+        }
+    }
+
+    private RelationshipItemEvent event(String uid) {
+        if (uid == null) {
+            return null;
+        } else {
+            return RelationshipItemEvent
+                    .builder()
+                    .event(uid)
+                    .build();
+        }
     }
 }

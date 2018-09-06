@@ -26,46 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+import android.support.annotation.NonNull;
 
-public final class RelationshipHelper {
+public interface StoreWithState {
 
-    public static String getTeiUid(RelationshipItem item) {
-        if (item != null && item.trackedEntityInstance() != null) {
-            return item.trackedEntityInstance().trackedEntityInstance();
-        }
-        return null;
-    }
+    int setState(@NonNull String uid, @NonNull State state);
 
-    public static RelationshipItem teiItem(String uid) {
-        return RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance
-                        .builder()
-                        .trackedEntityInstance(uid)
-                        .build()
-        ).build();
-    }
+    State getState(@NonNull String uid);
 
-    public static RelationshipItem eventItem(String uid) {
-        return RelationshipItem.builder().event(
-                RelationshipItemEvent
-                        .builder()
-                        .event(uid)
-                        .build()
-        ).build();
-    }
-
-    public static Relationship teiToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return Relationship.builder()
-                .uid(new CodeGeneratorImpl().generate())
-                .from(RelationshipHelper.teiItem(fromUid))
-                .to(RelationshipHelper.teiItem(toUid))
-                .relationshipType(relationshipTypeUid)
-                .build();
-    }
-
-    private RelationshipHelper() {
-    }
+    Boolean exists(@NonNull String uid);
 }

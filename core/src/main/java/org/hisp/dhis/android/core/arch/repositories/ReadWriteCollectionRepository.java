@@ -25,47 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Model;
 
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
-
-public final class RelationshipHelper {
-
-    public static String getTeiUid(RelationshipItem item) {
-        if (item != null && item.trackedEntityInstance() != null) {
-            return item.trackedEntityInstance().trackedEntityInstance();
-        }
-        return null;
-    }
-
-    public static RelationshipItem teiItem(String uid) {
-        return RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance
-                        .builder()
-                        .trackedEntityInstance(uid)
-                        .build()
-        ).build();
-    }
-
-    public static RelationshipItem eventItem(String uid) {
-        return RelationshipItem.builder().event(
-                RelationshipItemEvent
-                        .builder()
-                        .event(uid)
-                        .build()
-        ).build();
-    }
-
-    public static Relationship teiToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return Relationship.builder()
-                .uid(new CodeGeneratorImpl().generate())
-                .from(RelationshipHelper.teiItem(fromUid))
-                .to(RelationshipHelper.teiItem(toUid))
-                .relationshipType(relationshipTypeUid)
-                .build();
-    }
-
-    private RelationshipHelper() {
-    }
+public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    void add(M m) throws D2CallException;
 }

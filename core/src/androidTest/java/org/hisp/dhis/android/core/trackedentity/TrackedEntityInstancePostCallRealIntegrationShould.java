@@ -271,7 +271,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         trackedEntityInstanceStore.setState(teiA.uid(), State.TO_POST);
 
-        d2.relationshipModule().relationship.createTEIRelationship(relationshipType.uid(), teiA.uid(), teiBUid);
+        Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(teiA.uid(),
+                teiBUid, relationshipType.uid());
+        d2.relationshipModule().relationship.add(newRelationship);
 
         d2.syncTrackedEntityInstances().call();
 
@@ -315,7 +317,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         RelationshipType relationshipType = d2.relationshipModule().relationshipType.getSet().iterator().next();
 
-        d2.relationshipModule().relationship.createTEIRelationship(relationshipType.uid(), t0.uid(), t1.uid());
+        d2.relationshipModule().relationship.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
+                relationshipType.uid()));
 
         d2.syncTrackedEntityInstances().call();
 

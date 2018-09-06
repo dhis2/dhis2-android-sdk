@@ -40,34 +40,32 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class StoreWithStateImpl implements StoreWithState {
 
-    private static final String SET_STATE_STATEMENT = "UPDATE ? SET " +
-            Columns.STATE + " =?" +
-            " WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String SELECT_STATE = "SELECT state FROM ? WHERE " + Columns.UID + " =?;";
-
-    private static final String QUERY_EXISTS = "SELECT 1 FROM ? WHERE " + Columns.UID + " =?;";
-
+    private String selectStateQuery;
+    private String existsQuery;
     private final SQLiteStatement setStateStatement;
-
-
     protected final DatabaseAdapter databaseAdapter;
-    private final String tableName;
 
     public StoreWithStateImpl(DatabaseAdapter databaseAdapter, String tableName) {
         this.databaseAdapter = databaseAdapter;
-        this.setStateStatement = databaseAdapter.compileStatement(SET_STATE_STATEMENT);
-        this.tableName = tableName;
+
+        String setStateUpdate = "UPDATE " + tableName + " SET " +
+                Columns.STATE + " =?" +
+                " WHERE " +
+                Columns.UID + " =?;";
+        this.setStateStatement = databaseAdapter.compileStatement(setStateUpdate);
+
+
+        this.selectStateQuery = "SELECT state FROM " + tableName + " WHERE " + Columns.UID + " =?;";
+        this.existsQuery = "SELECT 1 FROM " + tableName + " WHERE " + Columns.UID + " =?;";
+
     }
 
     @Override
     public int setState(@NonNull String uid, @NonNull State state) {
-        sqLiteBind(setStateStatement, 1, tableName);
-        sqLiteBind(setStateStatement, 2, state);
+        sqLiteBind(setStateStatement, 1, state);
 
         // bind the where argument
-        sqLiteBind(setStateStatement, 3, uid);
+        sqLiteBind(setStateStatement, 2, uid);
 
         int updatedRow = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, setStateStatement);
         setStateStatement.clearBindings();
@@ -77,7 +75,7 @@ public class StoreWithStateImpl implements StoreWithState {
 
     @Override
     public State getState(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(SELECT_STATE, tableName, uid);
+        Cursor cursor = databaseAdapter.query(selectStateQuery, uid);
         State state = null;
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -89,7 +87,7 @@ public class StoreWithStateImpl implements StoreWithState {
 
     @Override
     public Boolean exists(@NonNull String uid) {
-        Cursor cursor = databaseAdapter.query(QUERY_EXISTS, tableName, uid);
+        Cursor cursor = databaseAdapter.query(existsQuery, uid);
         return cursor.getCount() > 0;
     }
 }

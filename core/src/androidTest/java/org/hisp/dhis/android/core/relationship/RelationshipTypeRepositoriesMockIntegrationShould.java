@@ -32,65 +32,26 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_1;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_2;
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipTypeRepositoriesMockIntegrationShould extends AbsStoreTestCase {
 
-    private final String type1 = "type1";
-    private final String type2 = "type2";
-    
-    private final RelationshipConstraint from1 = RelationshipConstraint
-            .builder()
-            .constraintType(RelationshipConstraintType.FROM)
-            .relationshipType(ObjectWithUid.create(type1))
-            .build();
-
-    private final RelationshipConstraint to1 = RelationshipConstraint
-            .builder()
-            .constraintType(RelationshipConstraintType.TO)
-            .relationshipType(ObjectWithUid.create(type1))
-            .build();
-
-    private final RelationshipConstraint from2 = RelationshipConstraint
-            .builder()
-            .constraintType(RelationshipConstraintType.FROM)
-            .relationshipType(ObjectWithUid.create(type2))
-            .build();
-
-    private final RelationshipConstraint to2 = RelationshipConstraint
-            .builder()
-            .constraintType(RelationshipConstraintType.TO)
-            .relationshipType(ObjectWithUid.create(type2))
-            .build();
-
-    private final RelationshipType relationshipType1 = RelationshipType
-            .builder()
-            .uid(type1)
-            .fromConstraint(from1)
-            .toConstraint(to1)
-            .build();
-
-    private final RelationshipType relationshipType2 = RelationshipType
-            .builder()
-            .uid(type2)
-            .fromConstraint(from2)
-            .toConstraint(to2)
-            .build();
-
     private Map<String, RelationshipType> typeMap;
-
     private ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeCollectionRepository;
 
     @Override
@@ -98,14 +59,12 @@ public class RelationshipTypeRepositoriesMockIntegrationShould extends AbsStoreT
     public void setUp() throws IOException {
         super.setUp();
 
-        typeMap = new HashMap<>();
-        typeMap.put(type1, relationshipType1);
-        typeMap.put(type2, relationshipType2);
-
         SyncHandler<RelationshipType> handler = RelationshipTypeHandler.create(databaseAdapter());
 
-        handler.handle(relationshipType1);
-        handler.handle(relationshipType2);
+        handler.handle(RELATIONSHIP_TYPE_1);
+        handler.handle(RELATIONSHIP_TYPE_2);
+
+        typeMap = RelationshipTypeSamples.typeMap();
 
         this.relationshipTypeCollectionRepository = RelationshipTypeCollectionRepository.create(databaseAdapter());
     }
@@ -134,30 +93,34 @@ public class RelationshipTypeRepositoriesMockIntegrationShould extends AbsStoreT
 
     @Test
     public void get_relationship_1_from_object_repository_without_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository = relationshipTypeCollectionRepository.uid(type1);
+        ReadOnlyObjectRepository<RelationshipType> type1Repository
+                = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
         RelationshipType typeFromRepository = type1Repository.get();
-        assertTypesWithoutConstraints(typeFromRepository, relationshipType1);
+        assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
     }
 
     @Test
     public void get_relationship_2_from_object_repository_without_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository = relationshipTypeCollectionRepository.uid(type2);
+        ReadOnlyObjectRepository<RelationshipType> type1Repository
+                = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
         RelationshipType typeFromRepository = type1Repository.get();
-        assertTypesWithoutConstraints(typeFromRepository, relationshipType2);
+        assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);
     }
 
     @Test
     public void get_relationship_1_from_object_repository_with_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository = relationshipTypeCollectionRepository.uid(type1);
+        ReadOnlyObjectRepository<RelationshipType> type1Repository
+                = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
         RelationshipType typeFromRepository = type1Repository.getWithAllChildren();
-        assertTypesWithConstraints(typeFromRepository, relationshipType1);
+        assertTypesWithConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
     }
 
     @Test
     public void get_relationship_2_from_object_repository_with_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository = relationshipTypeCollectionRepository.uid(type2);
+        ReadOnlyObjectRepository<RelationshipType> type1Repository
+                = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
         RelationshipType typeFromRepository = type1Repository.getWithAllChildren();
-        assertTypesWithConstraints(typeFromRepository, relationshipType2);
+        assertTypesWithConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);
     }
 
     private void assertTypesWithoutConstraints(RelationshipType target, RelationshipType reference) {

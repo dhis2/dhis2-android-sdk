@@ -43,6 +43,6 @@ public class DbOpenHelperShould {
     public void have_tests_on_database_versions() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , null);
-        assertThat(dbOpenHelper.getWritableDatabase("fafa").getVersion()).isEqualTo(DbOpenHelper.VERSION);
+        assertThat(dbOpenHelper.getWritableDatabase("password").getVersion()).isEqualTo(DbOpenHelper.VERSION);
     }
 }

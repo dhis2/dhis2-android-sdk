@@ -52,7 +52,7 @@ public class SqLiteTransactionShould {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        when(dbOpenHelper.getWritableDatabase("fafa")).thenReturn(database);
+        when(dbOpenHelper.getWritableDatabase("password")).thenReturn(database);
 
         transaction = new SqLiteTransaction(dbOpenHelper);
     }

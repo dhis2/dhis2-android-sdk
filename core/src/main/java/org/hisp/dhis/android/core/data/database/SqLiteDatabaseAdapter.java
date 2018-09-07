@@ -41,7 +41,7 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
         if (dbOpenHelper == null) {
             throw new IllegalArgumentException("dbOpenHelper == null");
         }
-        dbOpenHelper.getWritableDatabase("fafa");
+        dbOpenHelper.getWritableDatabase("password");
         this.dbOpenHelper = dbOpenHelper;
     }
 
@@ -84,10 +84,10 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
 
     @Override
     public SQLiteDatabase database() {
-        return dbOpenHelper.getWritableDatabase("fafa");
+        return dbOpenHelper.getWritableDatabase("password");
     }
 
     private SQLiteDatabase readableDatabase() {
-        return dbOpenHelper.getReadableDatabase("fafa");
+        return dbOpenHelper.getReadableDatabase("password");
     }
 }

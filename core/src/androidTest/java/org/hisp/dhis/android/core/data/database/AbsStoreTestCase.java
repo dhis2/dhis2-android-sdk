@@ -53,7 +53,7 @@ public abstract class AbsStoreTestCase {
     public void setUp() throws IOException {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase("fafa");
+        sqLiteDatabase = dbOpenHelper.getWritableDatabase("password");
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }

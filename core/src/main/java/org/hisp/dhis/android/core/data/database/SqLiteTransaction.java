@@ -93,7 +93,7 @@ public class SqLiteTransaction implements Transaction {
     }
 
     private SQLiteDatabase database() {
-        return dbOpenHelper.getWritableDatabase("fafa");
+        return dbOpenHelper.getWritableDatabase("password");
     }
 }
 

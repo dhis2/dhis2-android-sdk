@@ -30,8 +30,8 @@ public class SqLiteDatabaseAdapterShould {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        Mockito.when(dbOpenHelper.getWritableDatabase("fafa")).thenReturn(writableDatabase);
-        Mockito.when(dbOpenHelper.getReadableDatabase("fafa")).thenReturn(readableDatabase);
+        Mockito.when(dbOpenHelper.getWritableDatabase("password")).thenReturn(writableDatabase);
+        Mockito.when(dbOpenHelper.getReadableDatabase("password")).thenReturn(readableDatabase);
         sqLiteDatabaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
     }
 

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;

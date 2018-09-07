@@ -27,48 +27,28 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collections;
 
-public final class RelationshipTypeRepository implements ReadOnlyCollectionRepository<RelationshipType> {
+final class RelationshipTypeRepository {
 
-    private final ReadOnlyCollectionRepository<RelationshipConstraint> constraintRepository;
-    private final ReadOnlyCollectionRepository<RelationshipType> rawTypeRepository;
-
-    private RelationshipTypeRepository(ReadOnlyCollectionRepository<RelationshipConstraint> constraintRepository,
-                               ReadOnlyCollectionRepository<RelationshipType> rawTypeRepository) {
-        this.constraintRepository = constraintRepository;
-        this.rawTypeRepository = rawTypeRepository;
+    private RelationshipTypeRepository() {
     }
 
-    public Set<RelationshipType> getSet() {
-        Set<RelationshipConstraint> constraintsSet = constraintRepository.getSet();
-        Set<RelationshipType> rawTypesSet = this.rawTypeRepository.getSet();
+    static ReadOnlyIdentifiableCollectionRepository<RelationshipType> create(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
+                RelationshipConstraintStore.create(databaseAdapter),
+                RelationshipConstraint.factory
+        );
 
-        RelationshipTypeBuilder typeBuilder = new RelationshipTypeBuilder(constraintsSet);
-        Set<RelationshipType> typesWithConstraintsSet = new HashSet<>(rawTypesSet.size());
-
-        for (RelationshipType rawType : rawTypesSet) {
-            typesWithConstraintsSet.add(typeBuilder.typeWithConstraints(rawType));
-        }
-
-        return typesWithConstraintsSet;
-    }
-
-    static RelationshipTypeRepository create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipTypeRepository(
-                new ReadOnlyCollectionRepositoryImpl<>(
-                        RelationshipConstraintStore.create(databaseAdapter),
-                        RelationshipConstraint.factory
-                ),
-                new ReadOnlyCollectionRepositoryImpl<>(
-                        RelationshipTypeStore.create(databaseAdapter),
-                        RelationshipType.factory
-                )
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                RelationshipTypeStore.create(databaseAdapter),
+                RelationshipType.factory,
+                Collections.singletonList(childrenAppender)
         );
     }
 }

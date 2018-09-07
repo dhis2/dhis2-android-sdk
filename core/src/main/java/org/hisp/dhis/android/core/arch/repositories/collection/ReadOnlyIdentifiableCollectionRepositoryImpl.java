@@ -25,14 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import org.hisp.dhis.android.core.arch.repositories.ReadWriteCollectionRepository;
+import java.util.Collection;
 
-import java.util.List;
+public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyCollectionRepositoryImpl<M>
+        implements ReadOnlyIdentifiableCollectionRepository<M> {
 
-public interface RelationshipRepository extends ReadWriteCollectionRepository<Relationship> {
-    List<Relationship> getByItem(@NonNull RelationshipItem item);
+    private final IdentifiableObjectStore<M> store;
+
+    public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                        CursorModelFactory<M> modelFactory,
+                                                        Collection<ChildrenAppender<M>> childrenAppenders) {
+        super(store, modelFactory, childrenAppenders);
+        this.store = store;
+    }
+
+    @Override
+    public ReadOnlyObjectRepository<M> uid(String uid) {
+        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, modelFactory, uid, childrenAppenders);
+    }
 }

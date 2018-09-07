@@ -25,29 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.common.Model;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Collection;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+public abstract class ReadOnlyObjectRepositoryImpl<M extends Model>
+        implements ReadOnlyObjectRepository<M> {
 
-    public final ReadOnlyCollectionRepository<RelationshipType> relationshipType;
+    private final Collection<ChildrenAppender<M>> childrenAppenders;
 
-    public final RelationshipCollectionRepository relationship;
-
-    private RelationshipModule(ReadOnlyCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipType = relationshipTypeRepository;
-        this.relationship = relationshipRepository;
+    ReadOnlyObjectRepositoryImpl(Collection<ChildrenAppender<M>> childrenAppenders) {
+        this.childrenAppenders = childrenAppenders;
     }
 
-    public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
+    @Override
+    public M getWithAllChildren() {
+        return ChildrenAppenderExecutor.appendInObject(get(), childrenAppenders);
+    }
+
+    @Override
+    public boolean exists() {
+        return get() != null;
     }
 }

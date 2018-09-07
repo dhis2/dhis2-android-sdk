@@ -30,10 +30,15 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.List;
 
 interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
     List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+
+    RelationshipItemModel getForRelationshipUidAndConstraintType(@NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
+                                                                 @NonNull String uid,
+                                                                 @NonNull RelationshipConstraintType constraintType);
 }

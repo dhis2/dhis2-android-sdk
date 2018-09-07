@@ -25,29 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Model;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
-
-    public final ReadOnlyCollectionRepository<RelationshipType> relationshipType;
-
-    public final RelationshipCollectionRepository relationship;
-
-    private RelationshipModule(ReadOnlyCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipType = relationshipTypeRepository;
-        this.relationship = relationshipRepository;
-    }
-
-    public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
-    }
+public interface ReadWriteObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
+    void delete() throws D2CallException;
 }

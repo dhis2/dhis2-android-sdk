@@ -27,27 +27,36 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.PojoBuilder;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Collection;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+final class RelationshipItemChildrenAppender implements ChildrenAppender<Relationship> {
 
-    public final ReadOnlyCollectionRepository<RelationshipType> relationshipType;
+    private final RelationshipItemStore store;
+    private final PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder;
 
-    public final RelationshipCollectionRepository relationship;
-
-    private RelationshipModule(ReadOnlyCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipType = relationshipTypeRepository;
-        this.relationship = relationshipRepository;
+    RelationshipItemChildrenAppender(RelationshipItemStore store,
+                                     PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder) {
+        this.store = store;
+        this.pojoBuilder = pojoBuilder;
     }
 
-    public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
+    @Override
+    public void prepareChildren(Collection<Relationship> collection) {
+        // no previous set call is needed
+    }
+
+    @Override
+    public Relationship appendChildren(Relationship relationship) {
+        RelationshipItemModel fromItemModel = store.getForRelationshipUidAndConstraintType(RelationshipItemModel.factory,
+                relationship.uid(), RelationshipConstraintType.FROM);
+        RelationshipItemModel toItemModel = store.getForRelationshipUidAndConstraintType(RelationshipItemModel.factory,
+                relationship.uid(), RelationshipConstraintType.TO);
+        return relationship.toBuilder()
+                .from(pojoBuilder.buildPojo(fromItemModel))
+                .to(pojoBuilder.buildPojo(toItemModel))
+                .build();
     }
 }

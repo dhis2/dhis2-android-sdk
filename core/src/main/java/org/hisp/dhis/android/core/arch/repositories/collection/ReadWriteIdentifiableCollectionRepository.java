@@ -25,12 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import java.util.Set;
-
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    Set<M> getSet();
+public interface ReadWriteIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
+        extends ReadWriteCollectionRepository<M> {
+    ReadWriteObjectRepository<M> uid(String uid);
 }

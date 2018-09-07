@@ -25,29 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.repositories.children;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.Model;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+public final class ChildrenAppenderExecutor {
 
-    public final ReadOnlyCollectionRepository<RelationshipType> relationshipType;
-
-    public final RelationshipCollectionRepository relationship;
-
-    private RelationshipModule(ReadOnlyCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipType = relationshipTypeRepository;
-        this.relationship = relationshipRepository;
+    public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
+        for (ChildrenAppender<M> appender: childrenAppenders) {
+            m = appender.appendChildren(m);
+        }
+        return m;
     }
 
-    public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
+    public static <M extends Model> Set<M> appendInObjectSet(Set<M> set,
+                                                             Collection<ChildrenAppender<M>> childrenAppenders) {
+
+        for (ChildrenAppender<M> appender: childrenAppenders) {
+            appender.prepareChildren(set);
+        }
+
+        Set<M> setWithChildren = new HashSet<>(set.size());
+        for (M m: set) {
+            M mWithChildren = m;
+            for (ChildrenAppender<M> appender: childrenAppenders) {
+                mWithChildren = appender.appendChildren(mWithChildren);
+            }
+            setWithChildren.add(mWithChildren);
+        }
+        return setWithChildren;
     }
 }

@@ -25,26 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
-public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
+final class RelationshipConstraintChildrenAppender implements ChildrenAppender<RelationshipType> {
 
-    protected final ObjectStore<M> store;
-    protected final CursorModelFactory<M> modelFactory;
+    private final ObjectWithoutUidStore<RelationshipConstraint> constraintStore;
+    private final CursorModelFactory<RelationshipConstraint> modelFactory;
+    private Set<RelationshipConstraint> constraintsSet;
 
-    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
-        this.store = store;
+
+    RelationshipConstraintChildrenAppender(ObjectWithoutUidStore<RelationshipConstraint> constraintStore,
+                                           CursorModelFactory<RelationshipConstraint> modelFactory) {
+        this.constraintStore = constraintStore;
         this.modelFactory = modelFactory;
     }
 
     @Override
-    public Set<M> getSet() {
-        return this.store.selectAll(this.modelFactory);
+    public void prepareChildren(Collection<RelationshipType> collection) {
+        this.constraintsSet = this.constraintStore.selectAll(modelFactory);
+    }
+
+    @Override
+    public RelationshipType appendChildren(RelationshipType relationshipType) {
+        RelationshipType.Builder builder = relationshipType.toBuilder();
+        for (RelationshipConstraint constraint : this.constraintsSet) {
+            if (constraint.relationshipType().uid().equals(relationshipType.uid())) {
+                if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
+                    builder.fromConstraint(constraint);
+                } else if (constraint.constraintType().equals(RelationshipConstraintType.TO)) {
+                    builder.toConstraint(constraint);
+                }
+            }
+        }
+        return builder.build();
     }
 }

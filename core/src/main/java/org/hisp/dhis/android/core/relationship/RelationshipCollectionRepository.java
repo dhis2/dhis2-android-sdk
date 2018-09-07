@@ -25,23 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import android.support.annotation.NonNull;
 
-public final class ReadOnlyObjectRepositoryImpl<M extends Model> implements ReadOnlyObjectRepository<M> {
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteIdentifiableCollectionRepository;
 
-    private final ObjectStore<M> store;
-    private final CursorModelFactory<M> modelFactory;
+import java.util.List;
 
-    public ReadOnlyObjectRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
-        this.store = store;
-        this.modelFactory = modelFactory;
-    }
-
-    public M get() {
-        return this.store.selectFirst(this.modelFactory);
-    }
+public interface RelationshipCollectionRepository extends ReadWriteIdentifiableCollectionRepository<Relationship> {
+    List<Relationship> getByItem(@NonNull RelationshipItem item);
 }

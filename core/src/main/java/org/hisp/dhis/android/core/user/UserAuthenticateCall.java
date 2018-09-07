@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.WipeDBCallable;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;

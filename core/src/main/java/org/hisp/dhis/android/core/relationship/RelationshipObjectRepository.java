@@ -64,7 +64,7 @@ final class RelationshipObjectRepository extends ReadOnlyIdentifiableObjectRepos
                     .builder()
                     .isHttpError(false)
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Tried to create already existing Relationship: " + relationship)
+                    .errorDescription("Tried to delete non existing relationship")
                     .build();
         } else {
             RelationshipItem fromItem = relationship.from();

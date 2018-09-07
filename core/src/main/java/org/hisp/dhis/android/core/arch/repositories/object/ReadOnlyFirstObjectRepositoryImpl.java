@@ -36,8 +36,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public final class ReadOnlyFirstObjectRepositoryImpl<M extends Model>
-        extends ReadOnlyObjectRepositoryImpl<M>
-        implements ReadOnlyObjectRepository<M> {
+        extends ReadOnlyObjectRepositoryImpl<M> {
 
     private final ObjectStore<M> store;
     private final CursorModelFactory<M> modelFactory;

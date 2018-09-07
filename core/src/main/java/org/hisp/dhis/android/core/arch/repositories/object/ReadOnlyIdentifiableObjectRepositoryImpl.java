@@ -36,8 +36,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import java.util.Collection;
 
 public class ReadOnlyIdentifiableObjectRepositoryImpl<M extends ObjectWithUidInterface & Model>
-        extends ReadOnlyObjectRepositoryImpl<M>
-        implements ReadOnlyObjectRepository<M> {
+        extends ReadOnlyObjectRepositoryImpl<M> {
 
     protected final IdentifiableObjectStore<M> store;
     protected final CursorModelFactory<M> modelFactory;

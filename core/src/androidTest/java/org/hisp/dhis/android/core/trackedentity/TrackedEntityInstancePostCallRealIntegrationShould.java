@@ -263,7 +263,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.downloadTrackedEntityInstances(5, true).call();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
-        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getSet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.getSet().iterator().next();
 
         // Create a TEI by copying an existing one
         String teiBUid = codeGenerator.generate();
@@ -273,7 +273,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(teiA.uid(),
                 teiBUid, relationshipType.uid());
-        d2.relationshipModule().relationship.add(newRelationship);
+        d2.relationshipModule().relationships.add(newRelationship);
 
         d2.syncTrackedEntityInstances().call();
 
@@ -286,7 +286,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         List<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).call();
         assertThat(responseTeiB.size() == 1).isTrue();
 
-        List<Relationship> relationships = d2.relationshipModule().relationship.getByItem(RelationshipHelper.teiItem(teiA.uid()));
+        List<Relationship> relationships = d2.relationshipModule().relationships.getByItem(RelationshipHelper.teiItem(teiA.uid()));
         assertThat(relationships.size() > 0).isTrue();
 
         Boolean relationshipFound = false;
@@ -315,9 +315,9 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         TrackedEntityInstance t0 = trackedEntityInstances.get(0);
         TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
-        RelationshipType relationshipType = d2.relationshipModule().relationshipType.getSet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.getSet().iterator().next();
 
-        d2.relationshipModule().relationship.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
+        d2.relationshipModule().relationships.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
 
         d2.syncTrackedEntityInstances().call();

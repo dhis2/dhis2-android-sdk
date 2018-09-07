@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -35,14 +35,14 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class RelationshipModule {
 
-    public final ReadOnlyCollectionRepository<RelationshipType> relationshipType;
+    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
 
-    public final RelationshipCollectionRepository relationship;
+    public final RelationshipCollectionRepository relationships;
 
-    private RelationshipModule(ReadOnlyCollectionRepository<RelationshipType> relationshipTypeRepository,
+    private RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
                                RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipType = relationshipTypeRepository;
-        this.relationship = relationshipRepository;
+        this.relationshipTypes = relationshipTypeRepository;
+        this.relationships = relationshipRepository;
     }
 
     public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {

@@ -25,33 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithConstraints;
+import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_2;
 
 @RunWith(AndroidJUnit4.class)
-public class RelationshipTypeRepositoriesMockIntegrationShould extends AbsStoreTestCase {
+public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
 
-    private Map<String, RelationshipType> typeMap;
     private ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeCollectionRepository;
 
     @Override
@@ -64,31 +65,9 @@ public class RelationshipTypeRepositoriesMockIntegrationShould extends AbsStoreT
         handler.handle(RELATIONSHIP_TYPE_1);
         handler.handle(RELATIONSHIP_TYPE_2);
 
-        typeMap = RelationshipTypeSamples.typeMap();
+        D2 d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
 
-        this.relationshipTypeCollectionRepository = RelationshipTypeCollectionRepository.create(databaseAdapter());
-    }
-
-    @Test
-    public void get_all_relationship_types_without_children_when_calling_get_set() {
-        Set<RelationshipType> types = relationshipTypeCollectionRepository.getSet();
-        assertThat(types.size()).isEqualTo(2);
-
-        for (RelationshipType targetType: types) {
-            RelationshipType referenceType = typeMap.get(targetType.uid());
-            assertTypesWithoutConstraints(targetType, referenceType);
-        }
-    }
-
-    @Test
-    public void get_all_relationship_types_with_children_when_calling_get_set_with_children() {
-        Set<RelationshipType> types = relationshipTypeCollectionRepository.getSetWithAllChildren();
-        assertThat(types.size()).isEqualTo(2);
-
-        for (RelationshipType targetType: types) {
-            RelationshipType referenceType = typeMap.get(targetType.uid());
-            assertTypesWithConstraints(targetType, referenceType);
-        }
+        this.relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes;
     }
 
     @Test
@@ -121,16 +100,5 @@ public class RelationshipTypeRepositoriesMockIntegrationShould extends AbsStoreT
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
         RelationshipType typeFromRepository = type1Repository.getWithAllChildren();
         assertTypesWithConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);
-    }
-
-    private void assertTypesWithoutConstraints(RelationshipType target, RelationshipType reference) {
-        assertThat(target.uid()).isEqualTo(reference.uid());
-        assertThat(target.fromConstraint()).isNull();
-        assertThat(target.toConstraint()).isNull();
-    }
-
-    private void assertTypesWithConstraints(RelationshipType targetWithId, RelationshipType reference) {
-        RelationshipType targetWithoutId = targetWithId.toBuilder().id(null).build();
-        assertThat(targetWithoutId).isEqualTo(reference);
     }
 }

@@ -25,28 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 
-import java.util.Collection;
+import static com.google.common.truth.Truth.assertThat;
 
-public final class ReadWriteIdentifiableObjectRepositoryImpl<M extends ObjectWithUidInterface & Model>
-        extends ReadOnlyIdentifiableObjectRepositoryImpl<M> implements ReadWriteObjectRepository<M> {
+class RelationshipTypeAsserts extends AbsStoreTestCase {
 
-    public ReadWriteIdentifiableObjectRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                     CursorModelFactory<M> modelFactory,
-                                                     String uid,
-                                                     Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(store, modelFactory, uid, childrenAppenders);
+    static void assertTypesWithoutConstraints(RelationshipType target, RelationshipType reference) {
+        assertThat(target.uid()).isEqualTo(reference.uid());
+        assertThat(target.fromConstraint()).isNull();
+        assertThat(target.toConstraint()).isNull();
     }
 
-    @Override
-    public void delete() {
-        store.delete(uid);
+    static void assertTypesWithConstraints(RelationshipType targetWithId, RelationshipType reference) {
+        RelationshipType targetWithoutId = targetWithId.toBuilder().id(null).build();
+        assertThat(targetWithoutId).isEqualTo(reference);
     }
 }

@@ -214,7 +214,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         return new TrackedEntityInstancePostCall(
                 internalModules.systemInfo.publicModule.versionManager,
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationshipModule.publicModule.relationship,
+                internalModules.relationshipModule.publicModule.relationships,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),

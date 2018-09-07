@@ -97,6 +97,14 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
+    public Set<M> selectWhereClause(CursorModelFactory<M> modelFactory, String whereClause) {
+        Set<M> set = new HashSet<>();
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
+        addObjectsToCollection(cursor, modelFactory, set);
+        return set;
+    }
+
+    @Override
     public M selectFirst(@NonNull CursorModelFactory<M> modelFactory) {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
         return getFirstFromCursor(cursor, modelFactory);

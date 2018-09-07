@@ -41,7 +41,7 @@ public class SqLiteDatabaseAdapter implements DatabaseAdapter {
         if (dbOpenHelper == null) {
             throw new IllegalArgumentException("dbOpenHelper == null");
         }
-        dbOpenHelper.getWritableDatabase("fefe");
+        dbOpenHelper.getWritableDatabase("fafa");
         this.dbOpenHelper = dbOpenHelper;
     }
 

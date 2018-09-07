@@ -217,13 +217,16 @@ public class TrackedEntityInstanceStoreImpl implements TrackedEntityInstanceStor
             state = cursor.getString(0) == null ? null :
                     State.valueOf(State.class, cursor.getString(0));
         }
+        cursor.close();
         return state;
     }
 
     @Override
     public Boolean exists(@NonNull String uid) {
         Cursor cursor = databaseAdapter.query(QUERY_EXISTS, uid);
-        return cursor.getCount() > 0;
+        boolean exists = cursor.getCount() > 0;
+        cursor.close();
+        return exists;
     }
 
     @Override

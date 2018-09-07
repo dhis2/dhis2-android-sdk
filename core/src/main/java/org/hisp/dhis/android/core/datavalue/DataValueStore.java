@@ -161,6 +161,8 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
             } while(cursor.moveToNext());
         }
 
+        cursor.close();
+
         return dataValues;
     }
 

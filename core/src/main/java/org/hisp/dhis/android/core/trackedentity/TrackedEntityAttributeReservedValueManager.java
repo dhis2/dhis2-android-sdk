@@ -161,6 +161,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                 forceSyncReservedValues(ownerUid, orgUnitUid);
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
     private static String generateAllTrackedEntityAttributeReservedValuesSelectStatement() {

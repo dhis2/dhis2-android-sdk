@@ -323,6 +323,8 @@ public class TrackedEntityDataValueStoreImpl implements TrackedEntityDataValueSt
         String queryStatement = QUERY_TRACKED_ENTITY_DATA_VALUES;
 
         Cursor cursor = databaseAdapter.query(queryStatement);
-        return cursor.getCount();
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 }

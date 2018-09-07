@@ -146,6 +146,7 @@ public class DataSetCompleteRegistrationStore extends
 
             } while(cursor.moveToNext());
         }
+        cursor.close();
 
         return dataSetCompleteRegistrations;
     }

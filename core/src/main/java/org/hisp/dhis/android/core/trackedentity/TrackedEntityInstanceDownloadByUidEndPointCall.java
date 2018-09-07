@@ -27,7 +27,7 @@ final class TrackedEntityInstanceDownloadByUidEndPointCall extends SyncCall<Trac
         setExecuted();
 
         if (uid == null) {
-            throw D2CallException.builder().isHttpError(false).errorDescription("UID null").build();
+            throw new IllegalArgumentException("UID null");
         }
 
         retrofit2.Call<TrackedEntityInstance> call =

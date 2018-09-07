@@ -89,6 +89,7 @@ final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<
             } else {
                 throw D2CallException
                         .builder()
+                        .isHttpError(false)
                         .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
                         .errorDescription(
                                 "RelationshipItem from doesn't have updatable state: " +

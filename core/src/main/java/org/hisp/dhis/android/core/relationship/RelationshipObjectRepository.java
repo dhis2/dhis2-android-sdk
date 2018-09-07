@@ -67,9 +67,10 @@ final class RelationshipObjectRepository extends ReadOnlyIdentifiableObjectRepos
                     .errorDescription("Tried to create already existing Relationship: " + relationship)
                     .build();
         } else {
-            StoreWithState elementStore = storeSelector.getElementStore(relationship.from());
+            RelationshipItem fromItem = relationship.from();
+            StoreWithState elementStore = storeSelector.getElementStore(fromItem);
             relationshipStore.delete(uid);
-            elementStore.setState(relationship.uid(), State.TO_UPDATE);
+            elementStore.setState(fromItem.elementUid(), State.TO_UPDATE);
         }
     }
 }

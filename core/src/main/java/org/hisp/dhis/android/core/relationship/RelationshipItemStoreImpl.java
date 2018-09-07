@@ -88,8 +88,8 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
             @NonNull String uid,
             @NonNull RelationshipConstraintType constraintType) {
         return selectOneWhere(modelFactory,
-                RelationshipItemModel.Columns.RELATIONSHIP + "=" + uid + " AND " +
-                        RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + "=" + constraintType);
+                RelationshipItemModel.Columns.RELATIONSHIP + "='" + uid + "' AND " +
+                        RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + "='" + constraintType + "'");
     }
 
     private Cursor getAllItemsOfSameType(@NonNull RelationshipItem from, @NonNull RelationshipItem to) {

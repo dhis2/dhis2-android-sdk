@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -21,8 +22,10 @@ import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
@@ -323,6 +326,34 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.syncTrackedEntityInstances().call();
 
         d2.syncDownSyncedTrackedEntityInstances().call();
+    }
+
+    //@Test
+    public void create_and_delete_tei_to_tei_relationship() throws Exception {
+        downloadMetadata();
+
+        List<TrackedEntityInstance> trackedEntityInstances =
+                d2.downloadTrackedEntityInstances(10,  false).call();
+        assertThat(trackedEntityInstances.size() == 10).isTrue();
+
+        TrackedEntityInstance t0 = trackedEntityInstances.get(5);
+        TrackedEntityInstance t1 = trackedEntityInstances.get(6);
+
+        RelationshipModule relationshipModule = d2.relationshipModule();
+        ReadOnlyIdentifiableCollectionRepository<RelationshipType> typesRepository = relationshipModule.relationshipTypes;
+        RelationshipCollectionRepository relationshipsRepository = relationshipModule.relationships;
+
+        RelationshipType relationshipType = typesRepository.getSet().iterator().next();
+
+        Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
+                relationshipType.uid());
+        relationshipsRepository.add(newRelationship);
+
+        d2.syncTrackedEntityInstances().call();
+
+        relationshipsRepository.uid(newRelationship.uid()).delete();
+
+        d2.syncTrackedEntityInstances().call();
     }
 
     //@Test

@@ -50,10 +50,10 @@ final class RelationshipItemChildrenAppender implements ChildrenAppender<Relatio
 
     @Override
     public Relationship appendChildren(Relationship relationship) {
-        RelationshipItemModel fromItemModel = store.getForRelationshipUidAndConstraintType(RelationshipItemModel.factory,
-                relationship.uid(), RelationshipConstraintType.FROM);
-        RelationshipItemModel toItemModel = store.getForRelationshipUidAndConstraintType(RelationshipItemModel.factory,
-                relationship.uid(), RelationshipConstraintType.TO);
+        RelationshipItemModel fromItemModel = store.getForRelationshipUidAndConstraintType(
+                RelationshipItemModel.factory, relationship.uid(), RelationshipConstraintType.FROM);
+        RelationshipItemModel toItemModel = store.getForRelationshipUidAndConstraintType(
+                RelationshipItemModel.factory, relationship.uid(), RelationshipConstraintType.TO);
         return relationship.toBuilder()
                 .from(pojoBuilder.buildPojo(fromItemModel))
                 .to(pojoBuilder.buildPojo(toItemModel))

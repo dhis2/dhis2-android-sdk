@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 final class RelationshipConstraintChildrenAppender implements ChildrenAppender<RelationshipType> {

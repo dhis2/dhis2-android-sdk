@@ -36,6 +36,9 @@ import java.util.Set;
 
 public final class ChildrenAppenderExecutor {
 
+    private ChildrenAppenderExecutor() {
+    }
+
     public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
         for (ChildrenAppender<M> appender: childrenAppenders) {
             appender.prepareChildren(Collections.singleton(m));

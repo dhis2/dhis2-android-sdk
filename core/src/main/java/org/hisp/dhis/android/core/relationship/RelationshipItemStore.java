@@ -38,7 +38,8 @@ import java.util.List;
 interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
     List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
 
-    RelationshipItemModel getForRelationshipUidAndConstraintType(@NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
-                                                                 @NonNull String uid,
-                                                                 @NonNull RelationshipConstraintType constraintType);
+    RelationshipItemModel getForRelationshipUidAndConstraintType(
+            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
+            @NonNull String uid,
+            @NonNull RelationshipConstraintType constraintType);
 }

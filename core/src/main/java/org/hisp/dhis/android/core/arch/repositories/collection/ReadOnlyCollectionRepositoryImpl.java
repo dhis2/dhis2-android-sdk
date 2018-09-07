@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {

@@ -34,9 +34,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
 
-final class RelationshipTypeRepository {
+final class RelationshipTypeCollectionRepository {
 
-    private RelationshipTypeRepository() {
+    private RelationshipTypeCollectionRepository() {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<RelationshipType> create(DatabaseAdapter databaseAdapter) {

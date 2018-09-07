@@ -47,7 +47,7 @@ public final class RelationshipModule {
 
     public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
         return new RelationshipModule(
-                RelationshipTypeRepository.create(databaseAdapter),
+                RelationshipTypeCollectionRepository.create(databaseAdapter),
                 RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
     }
 }

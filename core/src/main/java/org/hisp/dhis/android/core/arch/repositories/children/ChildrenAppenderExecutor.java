@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.children;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,6 +38,7 @@ public final class ChildrenAppenderExecutor {
 
     public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
         for (ChildrenAppender<M> appender: childrenAppenders) {
+            appender.prepareChildren(Collections.singleton(m));
             m = appender.appendChildren(m);
         }
         return m;

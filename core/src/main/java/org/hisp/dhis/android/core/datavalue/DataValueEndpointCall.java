@@ -65,6 +65,7 @@ public final class DataValueEndpointCall {
                             commaSeparatedCollectionValues(query.dataSetUids()),
                             commaSeparatedCollectionValues(query.periodIds()),
                             commaSeparatedCollectionValues(query.orgUnitUids()),
+                            Boolean.TRUE,
                             Boolean.FALSE);
                 }
             };

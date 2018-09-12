@@ -48,6 +48,7 @@ public interface DataValueService {
                                            @Query("dataSet") @Where String dataSetUids,
                                            @Query("period") @Where String periodIds,
                                            @Query("orgUnit") @Where String orgUnitUids,
+                                           @Query("children") Boolean children,
                                            @Query("paging") Boolean paging);
 
     @POST("dataValueSets")

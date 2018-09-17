@@ -59,5 +59,7 @@ public interface TrackedEntityInstanceStore extends DeletableStore, StoreWithSta
 
     Map<String, TrackedEntityInstance> querySynced();
 
+    Map<String, TrackedEntityInstance> queryRelationships();
+
     Map<String, TrackedEntityInstance> queryAll();
 }

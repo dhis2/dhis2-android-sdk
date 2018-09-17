@@ -25,11 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
-    void add(M m) throws D2CallException;
+import java.util.Collection;
+
+public class ReadOnlyIdentifiableObjectRepositoryImpl<M extends ObjectWithUidInterface & Model>
+        extends ReadOnlyObjectRepositoryImpl<M> {
+
+    protected final IdentifiableObjectStore<M> store;
+    protected final CursorModelFactory<M> modelFactory;
+    protected final String uid;
+
+    public ReadOnlyIdentifiableObjectRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                    CursorModelFactory<M> modelFactory,
+                                                    String uid,
+                                                    Collection<ChildrenAppender<M>> childrenAppenders) {
+        super(childrenAppenders);
+        this.store = store;
+        this.modelFactory = modelFactory;
+        this.uid = uid;
+    }
+
+    public M get() {
+        return store.selectByUid(uid, modelFactory);
+    }
 }

@@ -25,21 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 
-import android.support.annotation.NonNull;
+import static com.google.common.truth.Truth.assertThat;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+class RelationshipTypeAsserts extends AbsStoreTestCase {
 
-import java.util.List;
+    static void assertTypesWithoutConstraints(RelationshipType target, RelationshipType reference) {
+        assertThat(target.uid()).isEqualTo(reference.uid());
+        assertThat(target.fromConstraint()).isNull();
+        assertThat(target.toConstraint()).isNull();
+    }
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
-
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
-            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
+    static void assertTypesWithConstraints(RelationshipType targetWithId, RelationshipType reference) {
+        RelationshipType targetWithoutId = targetWithId.toBuilder().id(null).build();
+        assertThat(targetWithoutId).isEqualTo(reference);
+    }
 }

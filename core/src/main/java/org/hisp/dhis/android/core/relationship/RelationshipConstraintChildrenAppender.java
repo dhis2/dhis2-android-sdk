@@ -25,21 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+final class RelationshipConstraintChildrenAppender implements ChildrenAppender<RelationshipType> {
 
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
-            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
+    private final ObjectWithoutUidStore<RelationshipConstraint> constraintStore;
+    private final CursorModelFactory<RelationshipConstraint> modelFactory;
+    private Set<RelationshipConstraint> constraintsSet;
+
+
+    RelationshipConstraintChildrenAppender(ObjectWithoutUidStore<RelationshipConstraint> constraintStore,
+                                           CursorModelFactory<RelationshipConstraint> modelFactory) {
+        this.constraintStore = constraintStore;
+        this.modelFactory = modelFactory;
+    }
+
+    @Override
+    public void prepareChildren(Collection<RelationshipType> collection) {
+        this.constraintsSet = this.constraintStore.selectAll(modelFactory);
+    }
+
+    @Override
+    public RelationshipType appendChildren(RelationshipType relationshipType) {
+        RelationshipType.Builder builder = relationshipType.toBuilder();
+        for (RelationshipConstraint constraint : this.constraintsSet) {
+            if (constraint.relationshipType().uid().equals(relationshipType.uid())) {
+                if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
+                    builder.fromConstraint(constraint);
+                } else if (constraint.constraintType().equals(RelationshipConstraintType.TO)) {
+                    builder.toConstraint(constraint);
+                }
+            }
+        }
+        return builder.build();
+    }
 }

@@ -25,12 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.repositories.children;
 
-import java.util.List;
+import org.hisp.dhis.android.core.common.Model;
 
-public interface RelationshipTypeRepositoryInterface {
+import java.util.Collection;
 
-    List<RelationshipType> getAll();
-
+public interface ChildrenAppender<M extends Model> {
+    void prepareChildren(Collection<M> collection);
+    M appendChildren(M m);
 }

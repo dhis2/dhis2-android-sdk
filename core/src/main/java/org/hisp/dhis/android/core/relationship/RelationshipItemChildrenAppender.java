@@ -25,21 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.PojoBuilder;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.util.Collection;
 
-import java.util.List;
+final class RelationshipItemChildrenAppender implements ChildrenAppender<Relationship> {
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+    private final RelationshipItemStore store;
+    private final PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder;
 
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
-            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
+    RelationshipItemChildrenAppender(RelationshipItemStore store,
+                                     PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder) {
+        this.store = store;
+        this.pojoBuilder = pojoBuilder;
+    }
+
+    @Override
+    public void prepareChildren(Collection<Relationship> collection) {
+        // no previous set call is needed
+    }
+
+    @Override
+    public Relationship appendChildren(Relationship relationship) {
+        RelationshipItemModel fromItemModel = store.getForRelationshipUidAndConstraintType(
+                RelationshipItemModel.factory, relationship.uid(), RelationshipConstraintType.FROM);
+        RelationshipItemModel toItemModel = store.getForRelationshipUidAndConstraintType(
+                RelationshipItemModel.factory, relationship.uid(), RelationshipConstraintType.TO);
+        return relationship.toBuilder()
+                .from(pojoBuilder.buildPojo(fromItemModel))
+                .to(pojoBuilder.buildPojo(toItemModel))
+                .build();
+    }
 }

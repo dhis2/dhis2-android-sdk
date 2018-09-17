@@ -25,10 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-public interface ReadOnlyObjectRepository<M extends Model> {
-    M get();
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
+
+public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
+
+    private final ObjectStore<M> store;
+    protected final CursorModelFactory<M> modelFactory;
+    protected final Collection<ChildrenAppender<M>> childrenAppenders;
+
+    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
+                                            CursorModelFactory<M> modelFactory,
+                                            Collection<ChildrenAppender<M>> childrenAppenders) {
+        this.store = store;
+        this.modelFactory = modelFactory;
+        this.childrenAppenders = childrenAppenders;
+    }
+
+    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
+                                            CursorModelFactory<M> modelFactory) {
+        this(store, modelFactory, Collections.<ChildrenAppender<M>>emptyList());
+    }
+
+    @Override
+    public Set<M> getSet() {
+        return store.selectAll(modelFactory);
+    }
+
+    @Override
+    public Set<M> getSetWithAllChildren() {
+        return ChildrenAppenderExecutor.appendInObjectSet(getSet(), childrenAppenders);
+    }
 }

@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.repositories.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
@@ -41,28 +43,32 @@ import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
-final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<Relationship>
-        implements RelationshipRepository {
+final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<Relationship>
+        implements RelationshipCollectionRepository {
 
+    private final IdentifiableObjectStore<Relationship> store;
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
     private final PojoBuilder<RelationshipItem, RelationshipItemModel> relationshipItemPojoBuilder;
 
-    private RelationshipRepositoryImpl(IdentifiableObjectStore<Relationship> store,
-                                       CursorModelFactory<Relationship> modelFactory,
-                                       RelationshipHandler relationshipHandler,
-                                       RelationshipItemStore relationshipItemStore,
-                                       RelationshipItemElementStoreSelector storeSelector,
-                                       PojoBuilder<RelationshipItem, RelationshipItemModel>
-                                               relationshipItemPojoBuilder) {
-        super(store, modelFactory);
+    private RelationshipCollectionRepositoryImpl(IdentifiableObjectStore<Relationship> store,
+                                                 CursorModelFactory<Relationship> modelFactory,
+                                                 RelationshipHandler relationshipHandler,
+                                                 RelationshipItemStore relationshipItemStore,
+                                                 RelationshipItemElementStoreSelector storeSelector,
+                                                 PojoBuilder<RelationshipItem, RelationshipItemModel>
+                                               relationshipItemPojoBuilder,
+                                                 Collection<ChildrenAppender<Relationship>> childrenAppenders) {
+        super(store, modelFactory, childrenAppenders);
+        this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
         this.storeSelector = storeSelector;
@@ -97,6 +103,11 @@ final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<
                         .build();
             }
         }
+    }
+
+    @Override
+    public ReadWriteObjectRepository<Relationship> uid(String uid) {
+        return new RelationshipObjectRepository(store, modelFactory, uid, childrenAppenders, storeSelector);
     }
 
     private boolean isUpdatableState(State state) {
@@ -173,14 +184,22 @@ final class RelationshipRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<
         return null;
     }
 
-    static RelationshipRepositoryImpl create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
-        return new RelationshipRepositoryImpl(
+    static RelationshipCollectionRepositoryImpl create(DatabaseAdapter databaseAdapter,
+                                                       RelationshipHandler relationshipHandler) {
+        RelationshipItemStore itemStore = RelationshipItemStoreImpl.create(databaseAdapter);
+        PojoBuilder<RelationshipItem, RelationshipItemModel> itemPojoBuilder = new RelationshipItemPojoBuilder();
+
+        List<ChildrenAppender<Relationship>> appenders = new ArrayList<>(1);
+        appenders.add(new RelationshipItemChildrenAppender(itemStore, itemPojoBuilder));
+
+        return new RelationshipCollectionRepositoryImpl(
                 RelationshipStore.create(databaseAdapter),
                 Relationship.factory,
                 relationshipHandler,
                 RelationshipItemStoreImpl.create(databaseAdapter),
                 RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                new RelationshipItemPojoBuilder()
+                itemPojoBuilder,
+                appenders
         );
     }
 }

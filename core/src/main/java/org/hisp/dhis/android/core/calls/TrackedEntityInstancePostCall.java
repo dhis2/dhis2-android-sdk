@@ -21,7 +21,7 @@ import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipRepository;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
@@ -47,7 +47,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     // internal modules
     private final DHISVersionManager versionManager;
     private final RelationshipDHISVersionManager relationshipDHISVersionManager;
-    private final RelationshipRepository relationshipRepository;
+    private final RelationshipCollectionRepository relationshipRepository;
 
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
@@ -61,7 +61,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
     private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
                                           @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
-                                          @NonNull RelationshipRepository relationshipRepository,
+                                          @NonNull RelationshipCollectionRepository relationshipRepository,
                                           @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                           @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                           @NonNull EnrollmentStore enrollmentStore,
@@ -214,7 +214,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         return new TrackedEntityInstancePostCall(
                 internalModules.systemInfo.publicModule.versionManager,
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationshipModule.publicModule.relationship,
+                internalModules.relationshipModule.publicModule.relationships,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),

@@ -25,21 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.common.Model;
 
-import android.support.annotation.NonNull;
+import java.util.Collection;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+public abstract class ReadOnlyObjectRepositoryImpl<M extends Model>
+        implements ReadOnlyObjectRepository<M> {
 
-import java.util.List;
+    private final Collection<ChildrenAppender<M>> childrenAppenders;
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+    ReadOnlyObjectRepositoryImpl(Collection<ChildrenAppender<M>> childrenAppenders) {
+        this.childrenAppenders = childrenAppenders;
+    }
 
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
-            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
+    @Override
+    public M getWithAllChildren() {
+        return ChildrenAppenderExecutor.appendInObject(get(), childrenAppenders);
+    }
+
+    @Override
+    public boolean exists() {
+        return get() != null;
+    }
 }

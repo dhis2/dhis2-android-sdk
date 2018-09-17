@@ -25,21 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-package org.hisp.dhis.android.core.relationship;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.Model;
 
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-
-import java.util.List;
-
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
-
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
-            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
+public interface ReadWriteObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
+    void delete() throws D2CallException;
 }

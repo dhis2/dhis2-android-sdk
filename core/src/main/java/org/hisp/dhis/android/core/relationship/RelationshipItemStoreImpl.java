@@ -35,6 +35,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -79,6 +80,16 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
         }
 
         return relationships;
+    }
+
+    @Override
+    public RelationshipItemModel getForRelationshipUidAndConstraintType(
+            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
+            @NonNull String uid,
+            @NonNull RelationshipConstraintType constraintType) {
+        return selectOneWhere(modelFactory,
+                RelationshipItemModel.Columns.RELATIONSHIP + "='" + uid + "' AND " +
+                        RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + "='" + constraintType + "'");
     }
 
     private Cursor getAllItemsOfSameType(@NonNull RelationshipItem from, @NonNull RelationshipItem to) {

@@ -25,12 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.Collections;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    Set<M> getSet();
+public final class ReadOnlyFirstObjectRepositoryImpl<M extends Model>
+        extends ReadOnlyObjectRepositoryImpl<M> {
+
+    private final ObjectStore<M> store;
+    private final CursorModelFactory<M> modelFactory;
+
+    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store,
+                                             CursorModelFactory<M> modelFactory,
+                                             Collection<ChildrenAppender<M>> childrenAppenders) {
+        super(childrenAppenders);
+        this.store = store;
+        this.modelFactory = modelFactory;
+    }
+
+    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store,
+                                             CursorModelFactory<M> modelFactory) {
+        this(store, modelFactory, Collections.<ChildrenAppender<M>>emptyList());
+    }
+
+    public M get() {
+        return this.store.selectFirst(this.modelFactory);
+    }
 }

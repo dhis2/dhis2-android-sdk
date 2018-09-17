@@ -25,21 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.util.Collections;
 
-import java.util.List;
+final class RelationshipTypeCollectionRepository {
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
-    List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
+    private RelationshipTypeCollectionRepository() {
+    }
 
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
-            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
-            @NonNull String uid,
-            @NonNull RelationshipConstraintType constraintType);
+    static ReadOnlyIdentifiableCollectionRepository<RelationshipType> create(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
+                RelationshipConstraintStore.create(databaseAdapter),
+                RelationshipConstraint.factory
+        );
+
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                RelationshipTypeStore.create(databaseAdapter),
+                RelationshipType.factory,
+                Collections.singletonList(childrenAppender)
+        );
+    }
 }

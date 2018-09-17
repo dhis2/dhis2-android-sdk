@@ -25,23 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.arch.repositories.children;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
 
-public final class ReadOnlyObjectRepositoryImpl<M extends Model> implements ReadOnlyObjectRepository<M> {
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-    private final ObjectStore<M> store;
-    private final CursorModelFactory<M> modelFactory;
+public final class ChildrenAppenderExecutor {
 
-    public ReadOnlyObjectRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
-        this.store = store;
-        this.modelFactory = modelFactory;
+    private ChildrenAppenderExecutor() {
     }
 
-    public M get() {
-        return this.store.selectFirst(this.modelFactory);
+    public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
+        M mWithChildren = m;
+        for (ChildrenAppender<M> appender: childrenAppenders) {
+            appender.prepareChildren(Collections.singleton(m));
+            mWithChildren = appender.appendChildren(m);
+        }
+        return mWithChildren;
+    }
+
+    public static <M extends Model> Set<M> appendInObjectSet(Set<M> set,
+                                                             Collection<ChildrenAppender<M>> childrenAppenders) {
+
+        for (ChildrenAppender<M> appender: childrenAppenders) {
+            appender.prepareChildren(set);
+        }
+
+        Set<M> setWithChildren = new HashSet<>(set.size());
+        for (M m: set) {
+            M mWithChildren = m;
+            for (ChildrenAppender<M> appender: childrenAppenders) {
+                mWithChildren = appender.appendChildren(mWithChildren);
+            }
+            setWithChildren.add(mWithChildren);
+        }
+        return setWithChildren;
     }
 }

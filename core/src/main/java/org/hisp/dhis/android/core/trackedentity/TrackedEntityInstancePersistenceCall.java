@@ -17,7 +17,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 

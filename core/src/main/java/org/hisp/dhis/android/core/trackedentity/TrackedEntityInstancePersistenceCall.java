@@ -74,11 +74,17 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                     executor.executeD2Call(organisationUnitCall);
                 }
 
+                downloadRelatedTeiAttributes();
+
                 foreignKeyCleaner.cleanForeignKeyErrors();
 
                 return null;
             }
         });
+    }
+
+    private void downloadRelatedTeiAttributes() {
+
     }
 
     public static TrackedEntityInstancePersistenceCall create(DatabaseAdapter databaseAdapter,

@@ -81,11 +81,16 @@ public abstract class TrackedEntityInstance implements ObjectWithUidInterface, O
     private static final NestedField<TrackedEntityInstance, Relationship229Compatible> relationships
             = NestedField.create(RELATIONSHIPS);
 
-    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
+    static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
             relationships.with(RelationshipFields.allFields),
             trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
             enrollment.with(Enrollment.allFields), coordinates, featureType
+    ).build();
+
+    static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()
+            .fields(uid, created, lastUpdated, organisationUnit, trackedEntityType, coordinates, featureType,
+                    trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields), deleted
     ).build();
 
     @JsonProperty(UID)

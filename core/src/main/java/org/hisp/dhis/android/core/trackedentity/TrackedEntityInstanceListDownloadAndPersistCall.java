@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -22,16 +23,19 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
     private final D2InternalModules internalModules;
 
     private final Collection<String> trackedEntityInstanceUids;
+    private final Fields<TrackedEntityInstance> fields;
 
     private TrackedEntityInstanceListDownloadAndPersistCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull D2InternalModules internalModules,
-            @NonNull Collection<String> trackedEntityInstanceUids) {
+            @NonNull Collection<String> trackedEntityInstanceUids,
+            @NonNull Fields<TrackedEntityInstance> fields) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
         this.trackedEntityInstanceUids = trackedEntityInstanceUids;
+        this.fields = fields;
     }
 
     @Override
@@ -46,7 +50,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
         D2CallExecutor executor = new D2CallExecutor();
         for (String uid: trackedEntityInstanceUids) {
             Call<TrackedEntityInstance> teiCall =
-                    TrackedEntityInstanceDownloadByUidEndPointCall.create(retrofit, uid);
+                    TrackedEntityInstanceDownloadByUidEndPointCall.create(retrofit, uid, fields);
             teis.add(executor.executeD2Call(teiCall));
         }
 
@@ -64,7 +68,22 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
                 databaseAdapter,
                 retrofit,
                 internalModules,
-                trackedEntityInstanceUids
+                trackedEntityInstanceUids,
+                TrackedEntityInstance.allFields
+        );
+    }
+
+    public static Call<List<TrackedEntityInstance>> createForRelationships(
+            @NonNull DatabaseAdapter databaseAdapter,
+            @NonNull Retrofit retrofit,
+            @NonNull D2InternalModules internalModules,
+            @NonNull Collection<String> trackedEntityInstanceUids) {
+        return new TrackedEntityInstanceListDownloadAndPersistCall(
+                databaseAdapter,
+                retrofit,
+                internalModules,
+                trackedEntityInstanceUids,
+                TrackedEntityInstance.asRelationshipFields
         );
     }
 }

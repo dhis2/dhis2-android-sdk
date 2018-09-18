@@ -57,7 +57,7 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
         super.onOpen(db);
 
         // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
+        db.setForeignKeyConstraintsEnabled(true);
         db.enableWriteAheadLogging();
     }
 

@@ -105,6 +105,10 @@ public class TrackedEntityInstanceStoreImpl extends StoreWithStateImpl implement
             QUERY_STATEMENT +
                     " WHERE state = 'SYNCED'";
 
+    private static final String QUERY_STATEMENT_RELATIONSHIPS =
+            QUERY_STATEMENT +
+                    " WHERE state = 'RELATIONSHIP'";
+
     private final SQLiteStatement updateStatement;
     private final SQLiteStatement deleteStatement;
 
@@ -197,6 +201,11 @@ public class TrackedEntityInstanceStoreImpl extends StoreWithStateImpl implement
         return trackedEntityInstanceMap;
     }
 
+    @Override
+    public Map<String, TrackedEntityInstance> queryRelationships() {
+        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_RELATIONSHIPS);
+        return mapFromCursor(cursor);
+    }
 
     @Override
     public Map<String, TrackedEntityInstance> queryAll() {

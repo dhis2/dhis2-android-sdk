@@ -15,7 +15,8 @@ import java.util.List;
 
 import retrofit2.Retrofit;
 
-public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncCall<List<TrackedEntityInstance>> {
+public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
+        extends SyncCall<List<TrackedEntityInstance>> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
@@ -23,7 +24,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
 
     private final Collection<String> trackedEntityInstanceUids;
 
-    private TrackedEntityInstanceListDownloadAndPersistCall(
+    private TrackedEntityInstanceRelationshipDownloadAndPersistCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull D2InternalModules internalModules,
@@ -46,11 +47,11 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
         D2CallExecutor executor = new D2CallExecutor();
         for (String uid: trackedEntityInstanceUids) {
             Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                    .create(retrofit, uid, TrackedEntityInstance.allFields);
+                    .create(retrofit, uid, TrackedEntityInstance.asRelationshipFields);
             teis.add(executor.executeD2Call(teiCall));
         }
 
-        executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
+        executor.executeD2Call(TrackedEntityInstanceRelationshipPersistenceCall.create(databaseAdapter, retrofit,
                 internalModules, teis));
 
         return teis;
@@ -60,7 +61,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
                                                            @NonNull Retrofit retrofit,
                                                            @NonNull D2InternalModules internalModules,
                                                            @NonNull Collection<String> trackedEntityInstanceUids) {
-        return new TrackedEntityInstanceListDownloadAndPersistCall(
+        return new TrackedEntityInstanceRelationshipDownloadAndPersistCall(
                 databaseAdapter,
                 retrofit,
                 internalModules,

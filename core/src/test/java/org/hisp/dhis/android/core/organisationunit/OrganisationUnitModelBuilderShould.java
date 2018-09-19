@@ -95,6 +95,7 @@ public class OrganisationUnitModelBuilderShould extends NameableModelBuilderAbst
                 new ArrayList<Program>(),
                 new ArrayList<DataSet>(),
                 Lists.newArrayList(grandparent, parent),
+                new ArrayList<OrganisationUnitGroup>(),
                 false
         );
     }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,18 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+@SuppressWarnings("PMD.UseUtilityClass")
+public class OrganisationUnitGroupHandler
+        extends IdentifiableHandlerImpl<OrganisationUnitGroup, OrganisationUnitGroupModel> {
 
-public interface RelationshipRepositoryInterface {
 
-    void createTEIRelationship(String relationshipType, String fromUid, String toUid) throws D2CallException;
+    OrganisationUnitGroupHandler(IdentifiableObjectStore<OrganisationUnitGroupModel> organisationUnitGroupStore) {
+        super(organisationUnitGroupStore);
+    }
 
-    List<Relationship> getRelationshipsByTEI(@NonNull String trackedEntityInstanceUid);
+    public static OrganisationUnitGroupHandler create(DatabaseAdapter databaseAdapter) {
+
+        return new OrganisationUnitGroupHandler(OrganisationUnitGroupStore.create(databaseAdapter));
+    }
 
 }

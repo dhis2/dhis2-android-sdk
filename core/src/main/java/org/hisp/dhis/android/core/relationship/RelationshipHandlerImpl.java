@@ -27,11 +27,12 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
@@ -40,81 +41,83 @@ import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 final class RelationshipHandlerImpl implements RelationshipHandler {
 
     private final IdentifiableObjectStore<Relationship> relationshipStore;
-    private final RelationshipItemStoreInterface relationshipItemStore;
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final RelationshipItemStore relationshipItemStore;
+    private final GenericHandler<RelationshipItem, RelationshipItemModel> relationshipItemHandler;
+    private final RelationshipItemElementStoreSelector storeSelector;
+    private final RelationshipDHISVersionManager versionManager;
 
     RelationshipHandlerImpl(
             IdentifiableObjectStore<Relationship> relationshipStore,
-            RelationshipItemStoreInterface relationshipItemStore,
-            TrackedEntityInstanceStore trackedEntityInstanceStore) {
+            RelationshipItemStore relationshipItemStore,
+            GenericHandler<RelationshipItem, RelationshipItemModel> relationshipItemHandler,
+            RelationshipItemElementStoreSelector storeSelector,
+            RelationshipDHISVersionManager versionManager) {
         this.relationshipStore = relationshipStore;
         this.relationshipItemStore = relationshipItemStore;
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.relationshipItemHandler = relationshipItemHandler;
+        this.storeSelector = storeSelector;
+        this.versionManager = versionManager;
     }
-
 
     @Override
-    public void handle(Relationship o) {
-        String fromUid = RelationshipHelper.getTeiUid(o.from());
-        String toUid = RelationshipHelper.getTeiUid(o.to());
-
-        if (fromUid == null || toUid == null) {
-            // TODO support events and enrollments
-            throw new RuntimeException("Only TEI to TEI relationships are supported");
+    public void handleMany(Collection<Relationship> relationships) {
+        for (Relationship r: relationships) {
+            handle(r);
         }
-
-        if (!this.trackedEntityInstanceStore.exists(fromUid) || !this.trackedEntityInstanceStore.exists(toUid)) {
-            throw new RuntimeException("Trying to persist relationship for TEI not present in database");
-        }
-
-        String existingRelationshipUid = getExistingRelationshipUid(fromUid, toUid, o.relationshipType());
-
-        if (existingRelationshipUid != null && !existingRelationshipUid.equals(o.uid())) {
-            this.relationshipStore.delete(existingRelationshipUid);
-        }
-
-        this.relationshipStore.updateOrInsert(o);
-
-        RelationshipItemModel fromItemModel = RelationshipItemModel.builder()
-                .relationship(o.uid())
-                .relationshipItemType(FROM)
-                .trackedEntityInstance(fromUid)
-                .build();
-
-        RelationshipItemModel toItemModel = RelationshipItemModel.builder()
-                .relationship(o.uid())
-                .relationshipItemType(TO)
-                .trackedEntityInstance(toUid)
-                .build();
-
-        this.relationshipItemStore.updateOrInsertWhere(fromItemModel);
-        this.relationshipItemStore.updateOrInsertWhere(toItemModel);
     }
 
-    public boolean doesTEIRelationshipExist(String fromUid, String toUid, String relationshipType) {
-        return getExistingRelationshipUid(fromUid, toUid, relationshipType) != null;
+    @Override
+    public void handle(Relationship relationship) {
+        if (!versionManager.isRelationshipSupported(relationship)) {
+            throw new RuntimeException("Only TEI to TEI relationships are supported in 2.29");
+        }
+
+        if (!itemExists(relationship.from()) || !itemExists(relationship.to())) {
+            throw new RuntimeException("Trying to persist relationship for at least one item not present in database");
+        }
+
+        String existingRelationshipUid = getExistingRelationshipUid(relationship);
+
+        if (existingRelationshipUid != null && !existingRelationshipUid.equals(relationship.uid())) {
+            relationshipStore.delete(existingRelationshipUid);
+        }
+
+        relationshipStore.updateOrInsert(relationship);
+        relationshipItemHandler.handle(relationship.from(), new RelationshipItemModelBuilder(relationship, FROM));
+        relationshipItemHandler.handle(relationship.to(), new RelationshipItemModelBuilder(relationship, TO));
     }
 
-    private String getExistingRelationshipUid(String fromUid, String toUid, String relationshipType) {
+    public boolean doesRelationshipExist(Relationship relationship) {
+        return getExistingRelationshipUid(relationship) != null;
+    }
+
+    private boolean itemExists(RelationshipItem item) {
+        return storeSelector.getElementStore(item).exists(item.elementUid());
+    }
+
+    private String getExistingRelationshipUid(Relationship relationship) {
         List<String> existingRelationshipUidsForPair =
-                this.relationshipItemStore.getRelationshipsFromAndToTEI(fromUid, toUid);
+                this.relationshipItemStore.getRelationshipUidsForItems(relationship.from(), relationship.to());
 
         for (String existingRelationshipUid : existingRelationshipUidsForPair) {
             Relationship existingRelationship = this.relationshipStore.selectByUid(existingRelationshipUid,
                     Relationship.factory);
 
-            if (existingRelationship != null && relationshipType.equals(existingRelationship.relationshipType())) {
+            if (existingRelationship != null &&
+                    relationship.relationshipType().equals(existingRelationship.relationshipType())) {
                 return existingRelationship.uid();
             }
         }
         return null;
     }
 
-    public static RelationshipHandler create(DatabaseAdapter databaseAdapter) {
+    public static RelationshipHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
         return new RelationshipHandlerImpl(
                 RelationshipStore.create(databaseAdapter),
-                RelationshipItemStore.create(databaseAdapter),
-                new TrackedEntityInstanceStoreImpl(databaseAdapter)
+                RelationshipItemStoreImpl.create(databaseAdapter),
+                RelationshipItemHandler.create(databaseAdapter),
+                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
+                new RelationshipDHISVersionManager(versionManager)
         );
     }
 }

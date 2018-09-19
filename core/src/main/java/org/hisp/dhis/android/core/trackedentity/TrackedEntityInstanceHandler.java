@@ -70,18 +70,22 @@ public class TrackedEntityInstanceHandler {
                     trackedEntityInstance.trackedEntityAttributeValues());
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
+            if (enrollments != null) {
+                enrollmentHandler.handle(enrollments);
+            }
 
-            enrollmentHandler.handle(enrollments);
+            List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
+            if (relationships != null) {
+                for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
 
-            for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
+                    Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
+                    TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
+                            trackedEntityInstance.uid());
 
-                Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
-                TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
-                        trackedEntityInstance.uid());
-
-                if (relativeTEI != null) {
-                    this.handle(relativeTEI, true);
-                    relationshipHandler.handle(relationship);
+                    if (relativeTEI != null) {
+                        this.handle(relativeTEI, true);
+                        relationshipHandler.handle(relationship);
+                    }
                 }
             }
         }
@@ -108,9 +112,9 @@ public class TrackedEntityInstanceHandler {
                 trackedEntityInstance.featureType(), state);
     }
 
-    public void handleMany(@NonNull Collection<TrackedEntityInstance> trackedEntityInstances) {
+    public void handleMany(@NonNull Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship) {
         for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
-            handle(trackedEntityInstance, false);
+            handle(trackedEntityInstance, asRelationship);
         }
     }
 

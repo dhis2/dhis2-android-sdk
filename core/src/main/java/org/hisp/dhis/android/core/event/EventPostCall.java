@@ -40,7 +40,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
         // if there is nothing to send, return null
         if (eventsToPost.isEmpty()) {
-            return null;
+            return WebResponse.EMPTY;
         }
 
         EventPayload eventPayload = new EventPayload();

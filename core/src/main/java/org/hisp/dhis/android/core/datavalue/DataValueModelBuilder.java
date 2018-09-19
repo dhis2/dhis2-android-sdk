@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,12 +29,19 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.State;
 
 public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueModel> {
 
+    private final DataValueModel.Builder builder;
+
+    public DataValueModelBuilder(State state) {
+        builder = DataValueModel.builder().state(state);
+    }
+
     @Override
     public DataValueModel buildModel(DataValue dataValue) {
-        return DataValueModel.builder()
+        return builder
                 .dataElement(dataValue.dataElement())
                 .period(dataValue.period())
                 .organisationUnit(dataValue.organisationUnit())

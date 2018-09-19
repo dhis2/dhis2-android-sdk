@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -51,7 +51,7 @@ public abstract class DataValue {
     private static final String CREATED = "created";
     private static final String LAST_UPDATED = "lastUpdated";
     private static final String COMMENT = "comment";
-    private static final String FOLLOW_UP = "followUp";
+    private static final String FOLLOW_UP = "followup";
     private static final String DELETED = "deleted";
 
     private static final Field<DataValue, String> dataElement = Field.create(DATA_ELEMENT);

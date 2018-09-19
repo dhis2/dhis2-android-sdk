@@ -1,0 +1,40 @@
+{
+  "code": "CHC",
+  "lastUpdated": "2014-09-29T20:28:01.093",
+  "id": "CXw2yu5fodb",
+  "created": "2012-11-13T14:35:22.574",
+  "name": "CHC",
+  "shortName": "CHC",
+  "symbol": "16.png",
+  "displayName": "CHC",
+  "publicAccess": "rw------",
+  "displayShortName": "CHC",
+  "externalAccess": false,
+  "featureType": "NONE",
+  "dimensionItem": "CXw2yu5fodb",
+  "favorite": false,
+  "dimensionItemType": "ORGANISATION_UNIT_GROUP",
+  "access": {
+    "read": true,
+    "update": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": true
+  },
+  "user": {
+    "id": "GOLswS44mh8"
+  },
+  "favorites": [],
+  "translations": [],
+  "organisationUnits": [],
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "groupSets": [
+    {
+      "id": "J5jldMd8OHv"
+    }
+  ],
+  "userAccesses": [],
+  "legendSets": []
+}

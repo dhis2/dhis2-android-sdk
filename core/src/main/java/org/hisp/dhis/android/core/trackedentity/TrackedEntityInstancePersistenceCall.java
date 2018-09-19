@@ -26,7 +26,9 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final D2InternalModules internalModules;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityInstanceUidHelper uidsHelper;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final SearchOrganisationUnitCall.Factory organisationUnitCallFactory;
@@ -37,7 +39,9 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
     private TrackedEntityInstancePersistenceCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull D2InternalModules internalModules,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
+            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityInstanceUidHelper uidsHelper,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull SearchOrganisationUnitCall.Factory organisationUnitCallFactory,
@@ -45,7 +49,9 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.internalModules = internalModules;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
+        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.uidsHelper = uidsHelper;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
@@ -62,7 +68,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
             @Override
             public Void call() throws D2CallException {
-                trackedEntityInstanceHandler.handleMany(trackedEntityInstances);
+                trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false);
                 Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
                 if (!searchOrgUnitUids.isEmpty()) {
@@ -72,6 +78,19 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                     Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
                             databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
                     executor.executeD2Call(organisationUnitCall);
+                }
+
+                if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
+                    // TODO Replace by method 'selectUidsWhere' from IdentifiableObjectStore once migrated
+                    Set<String> relationships = trackedEntityInstanceStore.queryRelationships().keySet();
+
+                    if (!relationships.isEmpty()) {
+                        Call<List<TrackedEntityInstance>> relationshipsCall =
+                                TrackedEntityInstanceRelationshipDownloadAndPersistCall.create(
+                                        databaseAdapter, retrofit, internalModules, relationships
+                                );
+                        executor.executeD2Call(relationshipsCall);
+                    }
                 }
 
                 foreignKeyCleaner.cleanForeignKeyErrors();
@@ -89,7 +108,9 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         return new TrackedEntityInstancePersistenceCall(
                 databaseAdapter,
                 retrofit,
+                internalModules,
                 TrackedEntityInstanceHandler.create(databaseAdapter, internalModules),
+                new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
                 SearchOrganisationUnitCall.FACTORY,

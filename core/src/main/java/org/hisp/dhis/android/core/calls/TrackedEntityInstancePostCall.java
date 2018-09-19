@@ -20,7 +20,8 @@ import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
-import org.hisp.dhis.android.core.relationship.RelationshipRepositoryInterface;
+import org.hisp.dhis.android.core.relationship.RelationshipHelper;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
@@ -46,7 +47,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     // internal modules
     private final DHISVersionManager versionManager;
     private final RelationshipDHISVersionManager relationshipDHISVersionManager;
-    private final RelationshipRepositoryInterface relationshipRepository;
+    private final RelationshipCollectionRepository relationshipRepository;
 
     // service
     private final TrackedEntityInstanceService trackedEntityInstanceService;
@@ -60,7 +61,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
     private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
                                           @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
-                                          @NonNull RelationshipRepositoryInterface relationshipRepository,
+                                          @NonNull RelationshipCollectionRepository relationshipRepository,
                                           @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
                                           @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
                                           @NonNull EnrollmentStore enrollmentStore,
@@ -86,7 +87,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
         // if size is 0, then no need to do network request
         if (trackedEntityInstancesToPost.isEmpty()) {
-            return null;
+            return WebResponse.EMPTY;
         }
 
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
@@ -173,7 +174,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
             // Building relationships for TEI
             List<Relationship> dbRelationships =
-                    relationshipRepository.getRelationshipsByTEI(trackedEntityInstance.uid());
+                    relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()));
             List<Relationship229Compatible> versionAwareRelationships =
                     relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 
@@ -213,7 +214,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         return new TrackedEntityInstancePostCall(
                 internalModules.systemInfo.publicModule.versionManager,
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationshipModule.publicModule.relationship,
+                internalModules.relationshipModule.publicModule.relationships,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),

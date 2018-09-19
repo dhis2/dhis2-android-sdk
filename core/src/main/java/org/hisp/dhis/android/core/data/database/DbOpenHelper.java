@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class DbOpenHelper extends SQLBriteOpenHelper {
 
-    public static final int VERSION = 16;
+    public static final int VERSION = 20;
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);
@@ -57,7 +57,7 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
         super.onOpen(db);
 
         // enable foreign key support in database
-        db.execSQL("PRAGMA foreign_keys = ON;");
+        db.setForeignKeyConstraintsEnabled(true);
         db.enableWriteAheadLogging();
     }
 

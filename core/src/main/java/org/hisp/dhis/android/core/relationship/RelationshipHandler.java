@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-public interface RelationshipHandler {
-    void handle(Relationship o);
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 
-    boolean doesTEIRelationshipExist(String fromUid, String toUid, String relationshipType);
+public interface RelationshipHandler extends SyncHandler<Relationship> {
+    boolean doesRelationshipExist(Relationship relationship);
 }

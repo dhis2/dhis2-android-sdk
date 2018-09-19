@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,16 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.dataset;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+public final class DataSetCompleteRegistrationFields {
 
-import java.util.List;
+    static final String PERIOD = "period";
+    static final String DATA_SET = "dataSet";
+    static final String ORGANISATION_UNIT = "organisationUnit";
+    static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    static final String DATE = "date";
+    static final String STORED_BY = "storedBy";
 
-interface RelationshipItemStoreInterface extends ObjectWithoutUidStore<RelationshipItemModel> {
+    private static FieldsHelper<DataSetCompleteRegistration> fieldsHelper = new FieldsHelper<>();
 
-    List<String> getRelationshipsFromAndToTEI(@NonNull String fromTEI, @NonNull String toTEI);
+    static final Fields<DataSetCompleteRegistration> allFields = Fields.<DataSetCompleteRegistration>builder().fields(
+            fieldsHelper.<String>field(PERIOD),
+            fieldsHelper.<String>field(DATA_SET),
+            fieldsHelper.<String>field(ORGANISATION_UNIT),
+            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.<String>field(DATE),
+            fieldsHelper.<String>field(STORED_BY)
+    ).build();
+
+    private DataSetCompleteRegistrationFields() {}
 
 }

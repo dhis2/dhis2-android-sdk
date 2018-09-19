@@ -25,12 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.arch.repositories.children;
 
 import org.hisp.dhis.android.core.common.Model;
 
-import java.util.Set;
+import java.util.Collection;
 
-public interface ReadOnlyListRepository<M extends Model> {
-    Set<M> getAll();
+public interface ChildrenAppender<M extends Model> {
+    void prepareChildren(Collection<M> collection);
+    M appendChildren(M m);
 }

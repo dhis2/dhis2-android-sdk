@@ -25,26 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import java.util.Set;
+import java.util.Collection;
 
-public final class ReadOnlyListRepositoryImpl<M extends Model> implements ReadOnlyListRepository<M> {
+public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyCollectionRepositoryImpl<M>
+        implements ReadOnlyIdentifiableCollectionRepository<M> {
 
-    private final ObjectStore<M> store;
-    private final CursorModelFactory<M> modelFactory;
+    private final IdentifiableObjectStore<M> store;
 
-    public ReadOnlyListRepositoryImpl(ObjectStore<M> store, CursorModelFactory<M> modelFactory) {
+    public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                        CursorModelFactory<M> modelFactory,
+                                                        Collection<ChildrenAppender<M>> childrenAppenders) {
+        super(store, modelFactory, childrenAppenders);
         this.store = store;
-        this.modelFactory = modelFactory;
     }
 
     @Override
-    public Set<M> getAll() {
-        return this.store.selectAll(this.modelFactory);
+    public ReadOnlyObjectRepository<M> uid(String uid) {
+        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, modelFactory, uid, childrenAppenders);
     }
 }

@@ -47,7 +47,11 @@ public class RelationshipDHISVersionManager {
     public List<Relationship229Compatible> to229Compatible(List<Relationship> storedRelationships, String teiUid) {
         List<Relationship229Compatible> transformedRelationships = new ArrayList<>();
         for (Relationship relationship : storedRelationships) {
-            transformedRelationships.add(to229Compatible(relationship, teiUid));
+            RelationshipItem fromTei = relationship.from();
+            if (versionManager.is2_29() || fromTei != null && fromTei.trackedEntityInstance() != null &&
+                    fromTei.trackedEntityInstance().trackedEntityInstance().equals(teiUid)) {
+                transformedRelationships.add(to229Compatible(relationship, teiUid));
+            }
         }
         return transformedRelationships;
     }
@@ -103,6 +107,18 @@ public class RelationshipDHISVersionManager {
             return relationship229Compatible.relative();
         } else {
             return getRelative230(relationship229Compatible, teiUid);
+        }
+    }
+
+    boolean isRelationshipSupported(BaseRelationship relationship) {
+        return isItemSupported(relationship.from()) && isItemSupported(relationship.to());
+    }
+
+    private boolean isItemSupported(RelationshipItem item) {
+        if (versionManager.is2_29()) {
+            return item.hasTrackedEntityInstance();
+        } else {
+            return true;
         }
     }
 

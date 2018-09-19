@@ -33,12 +33,13 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.Date;
 import java.util.Map;
 
-public interface TrackedEntityInstanceStore extends DeletableStore {
+public interface TrackedEntityInstanceStore extends DeletableStore, StoreWithState {
 
     long insert(
             @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
@@ -54,15 +55,11 @@ public interface TrackedEntityInstanceStore extends DeletableStore {
 
     int delete(@NonNull String uid);
 
-    int setState(@NonNull String uid, @NonNull State state);
-
-    State getState(@NonNull String uid);
-
-    Boolean exists(@NonNull String uid);
-
     Map<String, TrackedEntityInstance> queryToPost();
 
     Map<String, TrackedEntityInstance> querySynced();
+
+    Map<String, TrackedEntityInstance> queryRelationships();
 
     Map<String, TrackedEntityInstance> queryAll();
 }

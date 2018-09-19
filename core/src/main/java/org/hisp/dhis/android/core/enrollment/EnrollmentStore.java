@@ -33,12 +33,13 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.StoreWithState;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface EnrollmentStore extends DeletableStore {
+public interface EnrollmentStore extends DeletableStore, StoreWithState {
     long insert(@NonNull String uid,
                 @Nullable Date created,
                 @Nullable Date lastUpdated,
@@ -74,8 +75,6 @@ public interface EnrollmentStore extends DeletableStore {
                @Nullable String longitude,
                @NonNull State state,
                @NonNull String whereEnrollmentUid);
-
-    int setState(@NonNull String uid, @NonNull State state);
 
     Map<String, List<Enrollment>> query();
 

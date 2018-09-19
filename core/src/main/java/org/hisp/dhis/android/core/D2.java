@@ -32,6 +32,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,9 +49,12 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
+import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
@@ -127,8 +131,30 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Void> syncAggregatedData() {
+    public Callable<Unit> syncAggregatedData() {
         return AggregatedDataCall.create(databaseAdapter, retrofit, internalModules);
+    }
+
+    /**
+     * Allows uploading to DHIS2 server all DataSetCompleteRegistration with TO_POST or TO_UPDATE state
+     *
+     * @return A Callable instace ready to perform the data upload and retrieve the results
+     *         in form of {@link ImportSummary}
+     */
+    @NonNull
+    public Callable<ImportSummary> syncDataSetCompleteRegistrations() {
+        return DataSetCompleteRegistrationPostCall.create(databaseAdapter, retrofit);
+    }
+
+    /**
+     * Allows uploading to DHIS2 server all DataValues with TO_POST or TO_UPDATE state
+     *
+     * @return A Callable instace ready to perform the data upload and retrieve the results
+     *         in form of {@link ImportSummary}
+     */
+    @NonNull
+    public Callable<ImportSummary> syncDataValues() {
+        return DataValuePostCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
@@ -249,7 +275,8 @@ public final class D2 {
 
             ObjectMapper objectMapper = new ObjectMapper()
                     .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())

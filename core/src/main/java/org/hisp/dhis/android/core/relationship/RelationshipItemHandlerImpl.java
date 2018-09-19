@@ -25,10 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories;
+package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public interface ReadOnlyObjectRepository<M extends Model> {
-    M get();
+final class RelationshipItemHandler {
+
+    private RelationshipItemHandler() {
+    }
+
+    public static GenericHandler<RelationshipItem, RelationshipItemModel> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidHandlerImpl<>(RelationshipItemStoreImpl.create(databaseAdapter));
+    }
 }

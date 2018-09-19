@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
+
 public final class RelationshipHelper {
 
     public static String getTeiUid(RelationshipItem item) {
@@ -53,6 +55,15 @@ public final class RelationshipHelper {
                         .event(uid)
                         .build()
         ).build();
+    }
+
+    public static Relationship teiToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
+        return Relationship.builder()
+                .uid(new CodeGeneratorImpl().generate())
+                .from(RelationshipHelper.teiItem(fromUid))
+                .to(RelationshipHelper.teiItem(toUid))
+                .relationshipType(relationshipTypeUid)
+                .build();
     }
 
     private RelationshipHelper() {

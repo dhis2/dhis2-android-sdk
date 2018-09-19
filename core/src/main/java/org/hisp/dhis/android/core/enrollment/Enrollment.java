@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.enrollment;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
@@ -50,7 +49,6 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWithUidInterface {
     private static final String UID = "enrollment";
     private static final String CREATED = "created";

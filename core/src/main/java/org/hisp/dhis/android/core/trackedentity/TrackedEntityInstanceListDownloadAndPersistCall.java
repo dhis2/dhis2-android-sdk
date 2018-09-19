@@ -39,14 +39,14 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
         setExecuted();
 
         if (trackedEntityInstanceUids == null) {
-            throw D2CallException.builder().isHttpError(false).errorDescription("UID list null").build();
+            throw new IllegalArgumentException("UID list is null");
         }
 
         List<TrackedEntityInstance> teis = new ArrayList<>();
         D2CallExecutor executor = new D2CallExecutor();
         for (String uid: trackedEntityInstanceUids) {
-            Call<TrackedEntityInstance> teiCall =
-                    TrackedEntityInstanceDownloadByUidEndPointCall.create(retrofit, uid);
+            Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
+                    .create(retrofit, uid, TrackedEntityInstance.allFields);
             teis.add(executor.executeD2Call(teiCall));
         }
 
@@ -56,10 +56,10 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
         return teis;
     }
 
-    public static Call<List<TrackedEntityInstance>> create(DatabaseAdapter databaseAdapter,
-                                                           Retrofit retrofit,
-                                                           D2InternalModules internalModules,
-                                                           Collection<String> trackedEntityInstanceUids) {
+    public static Call<List<TrackedEntityInstance>> create(@NonNull DatabaseAdapter databaseAdapter,
+                                                           @NonNull Retrofit retrofit,
+                                                           @NonNull D2InternalModules internalModules,
+                                                           @NonNull Collection<String> trackedEntityInstanceUids) {
         return new TrackedEntityInstanceListDownloadAndPersistCall(
                 databaseAdapter,
                 retrofit,

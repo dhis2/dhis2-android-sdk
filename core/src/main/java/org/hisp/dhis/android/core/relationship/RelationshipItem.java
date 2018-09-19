@@ -30,14 +30,12 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
 public abstract class RelationshipItem {
 
@@ -53,6 +51,28 @@ public abstract class RelationshipItem {
     @JsonProperty()
     public abstract RelationshipItemEvent event();
 
+    public boolean hasTrackedEntityInstance() {
+        return trackedEntityInstance() != null;
+    }
+
+    public boolean hasEnrollment() {
+        return enrollment() != null;
+    }
+
+    public boolean hasEvent() {
+        return event() != null;
+    }
+
+    public String elementUid() {
+        if (hasTrackedEntityInstance()) {
+            return trackedEntityInstance().trackedEntityInstance();
+        } else if (hasEnrollment()) {
+            return enrollment().enrollment();
+        } else {
+            return event().event();
+        }
+    }
+
     public static Builder builder() {
         return new AutoValue_RelationshipItem.Builder();
     }
@@ -66,6 +86,19 @@ public abstract class RelationshipItem {
 
         public abstract Builder event(RelationshipItemEvent event);
 
-        public abstract RelationshipItem build();
+        protected abstract RelationshipItem autoBuild();
+
+        @SuppressWarnings("PMD.NPathComplexity")
+        public RelationshipItem build() {
+            RelationshipItem item = autoBuild();
+            int teiCount = item.trackedEntityInstance() == null ? 0 : 1;
+            int enrollmentCount = item.enrollment() == null ? 0 : 1;
+            int eventCount = item.event() == null ? 0 : 1;
+            if (teiCount + enrollmentCount + eventCount == 1) {
+                return item;
+            } else {
+                throw new IllegalArgumentException("Item must have either a TEI, enrollment or event");
+            }
+        }
     }
 }

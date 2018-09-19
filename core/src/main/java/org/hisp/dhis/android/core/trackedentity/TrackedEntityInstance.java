@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
@@ -51,7 +50,6 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class TrackedEntityInstance implements ObjectWithUidInterface, ObjectWithDeleteInterface {
     private static final String UID = "trackedEntityInstance";
     private static final String CREATED_AT_CLIENT = "createdAtClient";
@@ -83,11 +81,16 @@ public abstract class TrackedEntityInstance implements ObjectWithUidInterface, O
     private static final NestedField<TrackedEntityInstance, Relationship229Compatible> relationships
             = NestedField.create(RELATIONSHIPS);
 
-    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
+    static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
             relationships.with(RelationshipFields.allFields),
             trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
             enrollment.with(Enrollment.allFields), coordinates, featureType
+    ).build();
+
+    static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()
+            .fields(uid, created, lastUpdated, organisationUnit, trackedEntityType, coordinates, featureType,
+                    trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields), deleted
     ).build();
 
     @JsonProperty(UID)

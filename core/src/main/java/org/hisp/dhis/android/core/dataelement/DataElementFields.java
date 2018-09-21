@@ -76,9 +76,9 @@ public final class DataElementFields {
                             .with(ObjectWithUid.uid),
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyle.allFields),
-                    fh.<ValueTypeRendering>nestedField(RENDER_TYPE),
                     fh.<Access>nestedField(ACCESS)
-                            .with(Access.read)
+                            .with(Access.read),
+                    fh.<ValueTypeRendering>nestedField(RENDER_TYPE)
             ).build();
 
     private DataElementFields() {

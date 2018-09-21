@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementFields;
 
 import java.util.Date;
 
@@ -84,7 +85,8 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
 
     static final Fields<ProgramStageDataElement> allFields = Fields.<ProgramStageDataElement>builder().fields(
             uid, code, created, lastUpdated, allowFutureDate, allowProvidedElsewhere, compulsory, deleted,
-            displayInReports, sortOrder, programStage.with(ObjectWithUid.uid), dataElement.with(DataElement.allFields)
+            displayInReports, sortOrder, programStage.with(ObjectWithUid.uid),
+            dataElement.with(DataElementFields.allFields)
     ).build();
 
     @Nullable

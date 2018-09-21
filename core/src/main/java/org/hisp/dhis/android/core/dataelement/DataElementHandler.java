@@ -39,22 +39,15 @@ import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetHandler;
-import org.hisp.dhis.android.core.option.OptionSetModel;
-import org.hisp.dhis.android.core.option.OptionSetModelBuilder;
 
 public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, DataElementModel> {
-    private final GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     DataElementHandler(IdentifiableObjectStore<DataElementModel> dataElementStore,
-                       GenericHandler<OptionSet, OptionSetModel> optionSetHandler,
                        GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(dataElementStore);
-        this.optionSetHandler = optionSetHandler;
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;
     }
@@ -62,14 +55,12 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
     public static DataElementHandler create(DatabaseAdapter databaseAdapter) {
         return new DataElementHandler(
                 DataElementStore.create(databaseAdapter),
-                OptionSetHandler.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter),
                 ValueTypeRenderingHandler.create(databaseAdapter));
     }
 
     @Override
     protected void afterObjectHandled(DataElement dateElement, HandleAction action) {
-        optionSetHandler.handle(dateElement.optionSet(), new OptionSetModelBuilder());
         styleHandler.handle(dateElement.style(),
                 new ObjectStyleModelBuilder(dateElement.uid(), DataElementModel.TABLE));
         renderTypeHandler.handle(dateElement.renderType(), dateElement.uid(), DataElementModel.TABLE);

@@ -28,122 +28,72 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
 
-import java.util.Date;
-
 @AutoValue
-public abstract class DataElement extends BaseNameableObject {
-    private final static String VALUE_TYPE = "valueType";
-    private final static String ZERO_IS_SIGNIFICANT = "zeroIsSignificant";
-    private final static String AGGREGATION_TYPE = "aggregationType";
-    private final static String FORM_NAME = "formName";
-    private final static String NUMBER_TYPE = "numberType";
-    private final static String DOMAIN_TYPE = "domainType";
-    private final static String DIMENSION = "dimension";
-    private final static String DISPLAY_FORM_NAME = "displayFormName";
-    private final static String OPTION_SET = "optionSet";
-    private final static String CATEGORY_COMBO = "categoryCombo";
-    private final static String STYLE = "style";
-    private final static String RENDER_TYPE = "renderType";
-    private final static String ACCESS = "access";
-
-    public static final Field<DataElement, String> uid = Field.create(UID);
-    private static final Field<DataElement, String> code = Field.create(CODE);
-    private static final Field<DataElement, String> name = Field.create(NAME);
-    private static final Field<DataElement, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<DataElement, String> created = Field.create(CREATED);
-    static final Field<DataElement, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<DataElement, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<DataElement, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<DataElement, String> description = Field.create(DESCRIPTION);
-    private static final Field<DataElement, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<DataElement, Boolean> deleted = Field.create(DELETED);
-
-    private static final Field<DataElement, ValueType> valueType = Field.create(VALUE_TYPE);
-    private static final Field<DataElement, Boolean> zeroIsSignificant = Field.create(ZERO_IS_SIGNIFICANT);
-    private static final Field<DataElement, String> aggregationType = Field.create(AGGREGATION_TYPE);
-    private static final Field<DataElement, String> formName = Field.create(FORM_NAME);
-    private static final Field<DataElement, String> numberType = Field.create(NUMBER_TYPE);
-    private static final Field<DataElement, String> domainType = Field.create(DOMAIN_TYPE);
-    private static final Field<DataElement, String> dimension = Field.create(DIMENSION);
-    private static final Field<DataElement, String> displayFormName = Field.create(DISPLAY_FORM_NAME);
-    private static final NestedField<DataElement, OptionSet> optionSet = NestedField.create(OPTION_SET);
-    private static final NestedField<DataElement, ObjectWithUid> categoryCombo =
-            NestedField.create(CATEGORY_COMBO);
-    private static final NestedField<DataElement, ObjectStyle> style =
-            NestedField.create(STYLE);
-    private static final NestedField<DataElement, ValueTypeRendering> renderType =
-            NestedField.create(RENDER_TYPE);
-    private static final NestedField<DataElement, Access> access = NestedField.create(ACCESS);
-
-    public static final Fields<DataElement> allFields = Fields.<DataElement>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
-            description, displayDescription, deleted,
-            valueType, zeroIsSignificant, aggregationType, formName, numberType, domainType, dimension, displayFormName,
-            optionSet.with(OptionSet.uid, OptionSet.version), access.with(Access.read),
-            categoryCombo.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields),
-            renderType).build();
+@JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
+public abstract class DataElement extends BaseNameableObject implements Model {
 
     @Nullable
-    @JsonProperty(VALUE_TYPE)
+    @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @JsonProperty(ZERO_IS_SIGNIFICANT)
     public abstract Boolean zeroIsSignificant();
 
     @Nullable
-    @JsonProperty(AGGREGATION_TYPE)
     public abstract String aggregationType();
 
     @Nullable
-    @JsonProperty(FORM_NAME)
     public abstract String formName();
 
     @Nullable
-    @JsonProperty(NUMBER_TYPE)
     public abstract String numberType();
 
     @Nullable
-    @JsonProperty(DOMAIN_TYPE)
     public abstract String domainType();
 
     @Nullable
-    @JsonProperty(DIMENSION)
     public abstract String dimension();
 
     @Nullable
-    @JsonProperty(DISPLAY_FORM_NAME)
     public abstract String displayFormName();
 
     @Nullable
-    @JsonProperty(OPTION_SET)
-    public abstract OptionSet optionSet();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid optionSet();
 
     String optionSetUid() {
-        OptionSet optionSet = optionSet();
+        ObjectWithUid optionSet = optionSet();
         return optionSet == null ? null : optionSet.uid();
     }
 
     @Nullable
-    @JsonProperty(CATEGORY_COMBO)
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
     String categoryComboUid() {
@@ -152,50 +102,67 @@ public abstract class DataElement extends BaseNameableObject {
     }
     
     @Nullable
-    @JsonProperty(STYLE)
+    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
     public abstract ObjectStyle style();
 
     @Nullable
-    @JsonProperty(RENDER_TYPE)
+    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
     public abstract ValueTypeRendering renderType();
 
     @Nullable
-    @JsonProperty(ACCESS)
+    @ColumnAdapter(IgnoreAccessAdapter.class)
     public abstract Access access();
 
-    @JsonCreator
-    public static DataElement create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(VALUE_TYPE) ValueType valueType,
-            @JsonProperty(ZERO_IS_SIGNIFICANT) Boolean zeroIsSignificant,
-            @JsonProperty(AGGREGATION_TYPE) String aggregationType,
-            @JsonProperty(FORM_NAME) String formName,
-            @JsonProperty(NUMBER_TYPE) String numberType,
-            @JsonProperty(DOMAIN_TYPE) String domainType,
-            @JsonProperty(DIMENSION) String dimension,
-            @JsonProperty(DISPLAY_FORM_NAME) String displayFormName,
-            @JsonProperty(OPTION_SET) OptionSet optionSet,
-            @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo,
-            @JsonProperty(STYLE) ObjectStyle style,
-            @JsonProperty(RENDER_TYPE) ValueTypeRendering renderType,
-            @JsonProperty(ACCESS) Access access,
-            @JsonProperty(DELETED) Boolean deleted) {
+    public static Builder builder() {
+        return new AutoValue_DataElement.Builder();
+    }
 
-        return new AutoValue_DataElement(uid, code, name,
-                displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription, valueType,
-                zeroIsSignificant, aggregationType, formName, numberType,
-                domainType, dimension, displayFormName, optionSet, categoryCombo, style,
-                renderType, access);
+    static DataElement create(Cursor cursor) {
+        return AutoValue_DataElement.createFromCursor(cursor);
+    }
 
+    public static final CursorModelFactory<DataElement> factory = new CursorModelFactory<DataElement>() {
+        @Override
+        public DataElement fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseNameableObject.Builder<DataElement.Builder> {
+        public abstract DataElement.Builder id(Long id);
+
+        public abstract DataElement.Builder valueType(ValueType valueType);
+
+        public abstract DataElement.Builder zeroIsSignificant(Boolean zeroIsSignificant);
+
+        public abstract DataElement.Builder aggregationType(String aggregationType);
+
+        public abstract DataElement.Builder formName(String formName);
+
+        public abstract DataElement.Builder numberType(String numberType);
+
+        public abstract DataElement.Builder domainType(String domainType);
+
+        public abstract DataElement.Builder dimension(String dimension);
+
+        public abstract DataElement.Builder displayFormName(String displayFormName);
+
+        public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
+
+        public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
+
+        public abstract DataElement.Builder style(ObjectStyle style);
+
+        public abstract DataElement.Builder renderType(ValueTypeRendering renderType);
+
+        public abstract DataElement.Builder access(Access access);
+
+        public abstract DataElement build();
     }
 }

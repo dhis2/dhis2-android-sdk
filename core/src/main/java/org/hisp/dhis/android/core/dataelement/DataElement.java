@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -52,7 +51,6 @@ import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.option.OptionSet;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
@@ -114,7 +112,7 @@ public abstract class DataElement extends BaseNameableObject implements Model {
     public abstract Access access();
 
     public static Builder builder() {
-        return new AutoValue_DataElement.Builder();
+        return new $$AutoValue_DataElement.Builder();
     }
 
     static DataElement create(Cursor cursor) {

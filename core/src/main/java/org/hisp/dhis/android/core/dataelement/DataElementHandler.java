@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
@@ -40,11 +40,11 @@ import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, DataElementModel> {
+public class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
-    DataElementHandler(IdentifiableObjectStore<DataElementModel> dataElementStore,
+    DataElementHandler(IdentifiableObjectStore<DataElement> dataElementStore,
                        GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(dataElementStore);
@@ -62,7 +62,7 @@ public class DataElementHandler extends IdentifiableHandlerImpl<DataElement, Dat
     @Override
     protected void afterObjectHandled(DataElement dateElement, HandleAction action) {
         styleHandler.handle(dateElement.style(),
-                new ObjectStyleModelBuilder(dateElement.uid(), DataElementModel.TABLE));
-        renderTypeHandler.handle(dateElement.renderType(), dateElement.uid(), DataElementModel.TABLE);
+                new ObjectStyleModelBuilder(dateElement.uid(), DataElementTableInfo.TABLE_INFO.name()));
+        renderTypeHandler.handle(dateElement.renderType(), dateElement.uid(), DataElementTableInfo.TABLE_INFO.name());
     }
 }

@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.option.OptionSet;
 
 public final class DataElementFields {
 

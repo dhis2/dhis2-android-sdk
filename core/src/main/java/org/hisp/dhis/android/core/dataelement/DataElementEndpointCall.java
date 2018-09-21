@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -66,10 +66,9 @@ public final class DataElementEndpointCall {
 
         @Override
         protected CallProcessor<DataElement> processor(GenericCallData data) {
-            return new TransactionalNoResourceCallProcessor<>(
+            return new TransactionalNoResourceSyncCallProcessor<>(
                     data.databaseAdapter(),
-                    DataElementHandler.create(data.databaseAdapter()),
-                    new DataElementModelBuilder()
+                    DataElementHandler.create(data.databaseAdapter())
             );
         }
     };

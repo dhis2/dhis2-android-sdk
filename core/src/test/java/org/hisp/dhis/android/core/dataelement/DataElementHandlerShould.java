@@ -27,18 +27,15 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetModel;
-import org.hisp.dhis.android.core.option.OptionSetModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,10 +52,7 @@ import static org.mockito.Mockito.when;
 public class DataElementHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<DataElementModel> dataSetStore;
-
-    @Mock
-    private GenericHandler<OptionSet, OptionSetModel> optionSetHandler;
+    private IdentifiableObjectStore<DataElement> dataElementStore;
 
     @Mock
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
@@ -76,9 +70,6 @@ public class DataElementHandlerShould {
     private ObjectWithUid categoryCombo;
 
     @Mock
-    private OptionSet optionSet;
-
-    @Mock
     private DataElementModelBuilder modelBuilder;
 
     // object to test
@@ -87,34 +78,27 @@ public class DataElementHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataSetStore, optionSetHandler, styleHandler, renderTypeHandler);
+        dataElementHandler = new DataElementHandler(dataElementStore, styleHandler, renderTypeHandler);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
-        when(dataElement.optionSet()).thenReturn(optionSet);
         when(dataElement.categoryCombo()).thenReturn(categoryCombo);
         when(modelBuilder.buildModel(dataElement)).thenReturn(dataElementModel);
     }
 
     @Test
-    public void call_option_set_handler() throws Exception {
-        dataElementHandler.handle(dataElement, modelBuilder);
-        verify(optionSetHandler).handle(eq(optionSet), any(OptionSetModelBuilder.class));
-    }
-
-    @Test
     public void call_style_handler() throws Exception {
-        dataElementHandler.handle(dataElement, modelBuilder);
+        dataElementHandler.handle(dataElement);
         verify(styleHandler).handle(eq(dataElement.style()), any(ObjectStyleModelBuilder.class));
     }
 
     @Test
     public void call_render_type_handler() throws Exception {
-        dataElementHandler.handle(dataElement, modelBuilder);
+        dataElementHandler.handle(dataElement);
         verify(renderTypeHandler).handle(dataElement.renderType(), dataElement.uid(), DataElementModel.TABLE);
     }
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<DataElement, DataElementModel> genericHandler = new DataElementHandler(
-                null,null, null, renderTypeHandler);
+        IdentifiableSyncHandlerImpl<DataElement> genericHandler =
+                new DataElementHandler(null, null, renderTypeHandler);
     }
 }

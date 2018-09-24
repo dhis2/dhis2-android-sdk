@@ -126,7 +126,7 @@ public abstract class DataElement extends BaseNameableObject implements Model {
     }
 
     static DataElement create(Cursor cursor) {
-        return AutoValue_DataElement.createFromCursor(cursor);
+        return $AutoValue_DataElement.createFromCursor(cursor);
     }
 
     public static final CursorModelFactory<DataElement> factory = new CursorModelFactory<DataElement>() {

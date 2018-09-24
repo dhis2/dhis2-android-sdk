@@ -64,13 +64,7 @@ public class DataElementHandlerShould {
     private DataElement dataElement;
 
     @Mock
-    private DataElementModel dataElementModel;
-
-    @Mock
     private ObjectWithUid categoryCombo;
-
-    @Mock
-    private DataElementModelBuilder modelBuilder;
 
     // object to test
     private DataElementHandler dataElementHandler;
@@ -81,7 +75,6 @@ public class DataElementHandlerShould {
         dataElementHandler = new DataElementHandler(dataElementStore, styleHandler, renderTypeHandler);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElement.categoryCombo()).thenReturn(categoryCombo);
-        when(modelBuilder.buildModel(dataElement)).thenReturn(dataElementModel);
     }
 
     @Test

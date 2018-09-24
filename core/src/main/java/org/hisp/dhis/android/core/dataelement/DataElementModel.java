@@ -41,7 +41,11 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
+/**
+ * @deprecated replaced by {@link org.hisp.dhis.android.core.dataelement.DataElement}
+ */
 @AutoValue
+@Deprecated
 public abstract class DataElementModel extends BaseNameableObjectModel {
 
     public static final String TABLE = "DataElement";

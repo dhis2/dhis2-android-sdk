@@ -25,37 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement;
 
-package org.hisp.dhis.android.core;
-
+import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 
-import retrofit2.Retrofit;
+public final class DataElementInternalModule implements WipeableModule {
 
-public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final RelationshipInternalModule relationshipModule;
-    public final DataElementInternalModule dataElementModule;
+    private final DatabaseAdapter databaseAdapter;
+    public final DataElementModule publicModule;
 
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationshipModule,
-                             DataElementInternalModule dataElementModule) {
-        this.systemInfo = systemInfo;
-        this.relationshipModule = relationshipModule;
-        this.dataElementModule = dataElementModule;
+    private DataElementInternalModule(DatabaseAdapter databaseAdapter,
+                                      DataElementModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.publicModule = publicModule;
     }
 
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter, retrofit);
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                RelationshipInternalModule.create(
-                        databaseAdapter,
-                        systemInfoInternalModule.publicModule.versionManager),
-                DataElementInternalModule.create(databaseAdapter)
+    @Override
+    public void wipeModuleTables() {
+        DataElementStore.create(databaseAdapter).delete();
+        DataElementOperandStore.create(databaseAdapter).delete();
+    }
+
+    public static DataElementInternalModule create(DatabaseAdapter databaseAdapter) {
+        return new DataElementInternalModule(
+                databaseAdapter,
+                DataElementModule.create(databaseAdapter)
         );
     }
 }

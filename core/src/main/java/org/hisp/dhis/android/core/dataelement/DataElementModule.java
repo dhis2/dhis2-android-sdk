@@ -25,37 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement;
 
-package org.hisp.dhis.android.core;
-
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 
-import retrofit2.Retrofit;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final RelationshipInternalModule relationshipModule;
-    public final DataElementInternalModule dataElementModule;
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public final class DataElementModule {
 
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationshipModule,
-                             DataElementInternalModule dataElementModule) {
-        this.systemInfo = systemInfo;
-        this.relationshipModule = relationshipModule;
-        this.dataElementModule = dataElementModule;
+    public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
+
+    private DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
+        this.dataElements = dataElementsRepository;
     }
 
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter, retrofit);
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                RelationshipInternalModule.create(
-                        databaseAdapter,
-                        systemInfoInternalModule.publicModule.versionManager),
-                DataElementInternalModule.create(databaseAdapter)
-        );
+    public static DataElementModule create(DatabaseAdapter databaseAdapter) {
+        return new DataElementModule(
+                DataElementCollectionRepository.create(databaseAdapter));
     }
 }

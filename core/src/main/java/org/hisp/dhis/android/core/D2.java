@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
 import org.hisp.dhis.android.core.event.Event;
@@ -220,6 +221,10 @@ public final class D2 {
 
     public RelationshipModule relationshipModule() {
         return this.internalModules.relationshipModule.publicModule;
+    }
+
+    public DataElementModule dataElementModule() {
+        return this.internalModules.dataElementModule.publicModule;
     }
 
     public static class Builder {

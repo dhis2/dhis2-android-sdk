@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -102,7 +102,7 @@ public class ProgramIndicatorEngine {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
-    private final IdentifiableObjectStore<DataElementModel> dataElementStore;
+    private final IdentifiableObjectStore<DataElement> dataElementStore;
     private final IdentifiableObjectStore<ConstantModel> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
@@ -110,7 +110,7 @@ public class ProgramIndicatorEngine {
                            TrackedEntityDataValueStore trackedEntityDataValueStore,
                            EnrollmentStore enrollmentStore,
                            EventStore eventStore,
-                           IdentifiableObjectStore<DataElementModel> dataElementStore,
+                           IdentifiableObjectStore<DataElement> dataElementStore,
                            IdentifiableObjectStore<ConstantModel> constantStore,
                            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         this.programIndicatorStore = programIndicatorStore;
@@ -323,7 +323,7 @@ public class ProgramIndicatorEngine {
     }
 
     private String formatDataValue(TrackedEntityDataValue dataValue) {
-        if(dataElementStore.selectByUid(dataValue.dataElement(), DataElementModel.factory)
+        if(dataElementStore.selectByUid(dataValue.dataElement(), DataElement.factory)
                 .valueType() == ValueType.BOOLEAN) {
             if(dataValue.value().equals("true")) {
                 return "1";
@@ -348,7 +348,8 @@ public class ProgramIndicatorEngine {
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
-                DataElementStore.create(databaseAdapter), ConstantStore.create(databaseAdapter),
+                DataElementStore.create(databaseAdapter),
+                ConstantStore.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter));
     }
 }

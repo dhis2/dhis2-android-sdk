@@ -58,9 +58,8 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
             ProgramStageDataElementModel.Columns.SORT_ORDER + ", " +
             ProgramStageDataElementModel.Columns.ALLOW_FUTURE_DATE + ", " +
             ProgramStageDataElementModel.Columns.DATA_ELEMENT + ", " +
-            ProgramStageDataElementModel.Columns.PROGRAM_STAGE + ", " +
-            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + ") " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            ProgramStageDataElementModel.Columns.PROGRAM_STAGE + ") " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_WITHOUT_SECTION_STATEMENT = "UPDATE " +
             ProgramStageDataElementModel.TABLE + " SET " +
@@ -83,17 +82,8 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
     private static final String DELETE_STATEMENT = "DELETE FROM " + ProgramStageDataElementModel.TABLE + " WHERE " +
             ProgramStageDataElementModel.Columns.UID + " =?;";
 
-    private static final String UPDATE_WITH_PROGRAM_STAGE_SECTION_STATEMENT = "UPDATE " +
-            ProgramStageDataElementModel.TABLE + " SET " +
-            ProgramStageDataElementModel.Columns.PROGRAM_STAGE_SECTION + " =? " +
-            " WHERE " +
-            ProgramStageDataElementModel.Columns.DATA_ELEMENT + " =?" +
-            "AND " + ProgramStageDataElementModel.Columns.PROGRAM_STAGE + "=?;";
-
-
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateWithoutSectionStatement;
-    private final SQLiteStatement updateWithProgramStageSectionLinkStatement;
     private final SQLiteStatement deleteStatement;
 
     private final DatabaseAdapter databaseAdapter;
@@ -102,8 +92,6 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateWithoutSectionStatement = databaseAdapter.compileStatement(UPDATE_WITHOUT_SECTION_STATEMENT);
-        this.updateWithProgramStageSectionLinkStatement =
-                databaseAdapter.compileStatement(UPDATE_WITH_PROGRAM_STAGE_SECTION_STATEMENT);
         this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
     }
 
@@ -113,16 +101,12 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
                        @NonNull Date lastUpdated, @NonNull Boolean displayInReports,
                        @NonNull Boolean compulsory, @NonNull Boolean allowProvidedElsewhere,
                        @Nullable Integer sortOrder, @NonNull Boolean allowFutureDate,
-                       @NonNull String dataElement, @Nullable String programStageUid,
-                       @Nullable String programStageSection) {
+                       @NonNull String dataElement, @Nullable String programStageUid) {
         isNull(uid);
         isNull(dataElement);
         isNull(programStageUid);
         bindArguments(insertStatement, uid, code, name, displayName, created, lastUpdated, displayInReports, compulsory,
                 allowProvidedElsewhere, sortOrder, allowFutureDate, dataElement, programStageUid);
-
-        // bind the optional argument program stage section
-        sqLiteBind(insertStatement, 14, programStageSection);
 
         Long insert = databaseAdapter.executeInsert(ProgramStageDataElementModel.TABLE, insertStatement);
         insertStatement.clearBindings();
@@ -170,24 +154,6 @@ public class ProgramStageDataElementStoreImpl implements ProgramStageDataElement
         deleteStatement.clearBindings();
 
         return delete;
-    }
-
-    @Override
-    public int updateWithProgramStageSectionLink(@NonNull String programStageUid,
-                                                 @NonNull String programStageSectionUid,
-                                                 @NonNull String dataElementUid
-                                                 ) {
-        sqLiteBind(updateWithProgramStageSectionLinkStatement, 1, programStageSectionUid);
-        sqLiteBind(updateWithProgramStageSectionLinkStatement, 2, dataElementUid);
-        sqLiteBind(updateWithProgramStageSectionLinkStatement, 3, programStageUid);
-
-        int update = databaseAdapter.executeUpdateDelete(
-                ProgramStageDataElementModel.TABLE, updateWithProgramStageSectionLinkStatement
-        );
-
-        updateWithProgramStageSectionLinkStatement.clearBindings();
-
-        return update;
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid,

@@ -48,7 +48,6 @@ public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjec
         public static final String SORT_ORDER = "sortOrder";
         public static final String ALLOW_FUTURE_DATE = "allowFutureDate";
         public static final String DATA_ELEMENT = "dataElement";
-        public static final String PROGRAM_STAGE_SECTION = "programStageSection";
         public static final String PROGRAM_STAGE = "programStage";
     }
 
@@ -80,10 +79,6 @@ public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjec
     @ColumnName(Columns.PROGRAM_STAGE)
     public abstract String programStage();
 
-    @Nullable
-    @ColumnName(Columns.PROGRAM_STAGE_SECTION)
-    public abstract String programStageSection();
-
     public static ProgramStageDataElementModel create(Cursor cursor) {
         return AutoValue_ProgramStageDataElementModel.createFromCursor(cursor);
     }
@@ -108,8 +103,6 @@ public abstract class ProgramStageDataElementModel extends BaseIdentifiableObjec
         public abstract Builder dataElement(@Nullable String dataElement);
 
         public abstract Builder programStage(@Nullable String programStage);
-
-        public abstract Builder programStageSection(@Nullable String programStageSection);
 
         public abstract ProgramStageDataElementModel build();
     }

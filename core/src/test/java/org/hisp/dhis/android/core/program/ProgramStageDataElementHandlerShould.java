@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -58,7 +58,7 @@ public class ProgramStageDataElementHandlerShould {
     private ProgramStageDataElementStore programStageDataElementStore;
 
     @Mock
-    private IdentifiableSyncHandlerImpl<DataElement> dataElementHandler;
+    private SyncHandler<DataElement> dataElementHandler;
 
     @Mock
     private ProgramStageDataElement programStageDataElement;

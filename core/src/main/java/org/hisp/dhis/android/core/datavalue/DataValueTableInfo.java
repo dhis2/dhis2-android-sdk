@@ -50,13 +50,15 @@ public class DataValueTableInfo {
         }
     };
 
+    private static final String ORGANISATION_UNIT =  "organisationUnit";
+
     static class Columns extends BaseDataModel.Columns {
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     DataValueFields.DATA_ELEMENT,
                     DataValueFields.PERIOD,
-                    DataValueFields.ORGANISATION_UNIT,
+                    DataValueTableInfo.ORGANISATION_UNIT,
                     DataValueFields.CATEGORY_OPTION_COMBO,
                     DataValueFields.ATTRIBUTE_OPTION_COMBO,
                     DataValueFields.VALUE,
@@ -74,7 +76,7 @@ public class DataValueTableInfo {
             return new String[]{
                     DataValueFields.DATA_ELEMENT,
                     DataValueFields.PERIOD,
-                    DataValueFields.ORGANISATION_UNIT,
+                    DataValueTableInfo.ORGANISATION_UNIT,
                     DataValueFields.CATEGORY_OPTION_COMBO,
                     DataValueFields.ATTRIBUTE_OPTION_COMBO
             };

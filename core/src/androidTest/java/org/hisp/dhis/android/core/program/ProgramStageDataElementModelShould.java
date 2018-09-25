@@ -55,7 +55,6 @@ public class ProgramStageDataElementModelShould {
     private static final Integer SORT_ORDER = 7;
     private static final Integer ALLOW_FUTURE_DATE = 1;
     private static final String DATA_ELEMENT = "test_dataElement";
-    private static final String PROGRAM_STAGE_SECTION = "test_program_stage_section";
     private static final String PROGRAM_STAGE = "test_program_stage";
 
     private final Date date;
@@ -82,14 +81,12 @@ public class ProgramStageDataElementModelShould {
                 Columns.SORT_ORDER,
                 Columns.ALLOW_FUTURE_DATE,
                 Columns.DATA_ELEMENT,
-                Columns.PROGRAM_STAGE_SECTION,
                 Columns.PROGRAM_STAGE
         });
         cursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 DISPLAY_IN_REPORTS, COMPULSORY, ALLOW_PROVIDED_ELSEWHERE,
-                SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE_SECTION,
-                PROGRAM_STAGE
+                SORT_ORDER, ALLOW_FUTURE_DATE, DATA_ELEMENT, PROGRAM_STAGE
         });
         cursor.moveToFirst();
 
@@ -109,7 +106,6 @@ public class ProgramStageDataElementModelShould {
         assertThat(model.sortOrder()).isEqualTo(SORT_ORDER);
         assertThat(model.allowFutureDate()).isTrue();
         assertThat(model.dataElement()).isEqualTo(DATA_ELEMENT);
-        assertThat(model.programStageSection()).isEqualTo(PROGRAM_STAGE_SECTION);
         assertThat(model.programStage()).isEqualTo(PROGRAM_STAGE);
 
     }
@@ -130,7 +126,6 @@ public class ProgramStageDataElementModelShould {
                 .sortOrder(SORT_ORDER)
                 .allowFutureDate(toBoolean(ALLOW_FUTURE_DATE))
                 .dataElement(DATA_ELEMENT)
-                .programStageSection(PROGRAM_STAGE_SECTION)
                 .programStage(PROGRAM_STAGE)
                 .build();
         ContentValues contentValues = model.toContentValues();
@@ -148,7 +143,6 @@ public class ProgramStageDataElementModelShould {
         assertThat(contentValues.getAsInteger(Columns.SORT_ORDER)).isEqualTo(SORT_ORDER);
         assertThat(contentValues.getAsBoolean(Columns.ALLOW_FUTURE_DATE)).isTrue();
         assertThat(contentValues.getAsString(Columns.DATA_ELEMENT)).isEqualTo(DATA_ELEMENT);
-        assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE_SECTION)).isEqualTo(PROGRAM_STAGE_SECTION);
         assertThat(contentValues.getAsString(Columns.PROGRAM_STAGE)).isEqualTo(PROGRAM_STAGE);
     }
 

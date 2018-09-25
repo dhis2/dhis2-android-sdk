@@ -29,11 +29,14 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -52,15 +55,12 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramStageSectionHandlerShould {
-    public static final String PROGRAM_STAGE_UID = "test_program_stage_uid";
-    public static final String PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid";
-    public static final String DATA_ELEMENT_UID = "test_data_uid";
+    private static final String PROGRAM_STAGE_UID = "test_program_stage_uid";
+    private static final String PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid";
+    private static final String DATA_ELEMENT_UID = "test_data_uid";
 
     @Mock
     private ProgramStageSectionStore programStageSectionStore;
-
-    @Mock
-    private ProgramStageDataElementHandler programStageDataElementHandler;
 
     @Mock
     private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
@@ -68,6 +68,10 @@ public class ProgramStageSectionHandlerShould {
     @Mock
     private LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
             programStageSectionProgramIndicatorLinkHandler;
+
+    @Mock
+    private OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel>
+            programStageSectionDataElementLinkHandler;
 
     @Mock
     private ProgramStageSection programStageSection;
@@ -85,8 +89,8 @@ public class ProgramStageSectionHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore, programStageDataElementHandler, programIndicatorHandler,
-                programStageSectionProgramIndicatorLinkHandler);
+                programStageSectionStore, programIndicatorHandler,
+                programStageSectionProgramIndicatorLinkHandler, programStageSectionDataElementLinkHandler);
 
         when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
         programStageSections = new ArrayList<>();
@@ -116,8 +120,8 @@ public class ProgramStageSectionHandlerShould {
                 anyString());
 
         // verify that handlers is called once
-        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString(), anyString()
+        verify(programStageSectionDataElementLinkHandler, times(1)).handleMany(
+                anyString(), anyListOf(DataElement.class), any(OrderedLinkModelBuilder.class)
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
@@ -153,8 +157,10 @@ public class ProgramStageSectionHandlerShould {
         verify(programStageSectionStore, never()).delete(anyString());
 
 
-        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString(), anyString()
+        verify(programStageSectionDataElementLinkHandler, times(1)).handleMany(
+                anyString(),
+                anyListOf(DataElement.class),
+                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
@@ -190,8 +196,10 @@ public class ProgramStageSectionHandlerShould {
         verify(programStageSectionStore, never()).delete(anyString());
 
         // verify that handlers is called once
-        verify(programStageDataElementHandler, times(1)).updateProgramStageDataElementWithProgramStageSectionLink(
-               anyString(), anyString(), anyString()
+        verify(programStageSectionDataElementLinkHandler, times(1)).handleMany(
+                anyString(),
+                anyListOf(DataElement.class),
+                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
@@ -215,8 +223,10 @@ public class ProgramStageSectionHandlerShould {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString(), anyString()
+        verify(programStageSectionDataElementLinkHandler, never()).handleMany(
+                anyString(),
+                anyListOf(DataElement.class),
+                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
         );
 
         verify(programIndicatorHandler, never()).handleMany(
@@ -240,8 +250,10 @@ public class ProgramStageSectionHandlerShould {
         verify(programStageSectionStore, never()).delete(anyString());
 
 
-        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString(), anyString()
+        verify(programStageSectionDataElementLinkHandler, never()).handleMany(
+                anyString(),
+                anyListOf(DataElement.class),
+                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
         );
 
         verify(programIndicatorHandler, never()).handleMany(
@@ -264,8 +276,10 @@ public class ProgramStageSectionHandlerShould {
 
         verify(programStageSectionStore, never()).delete(anyString());
 
-        verify(programStageDataElementHandler, never()).updateProgramStageDataElementWithProgramStageSectionLink(
-                anyString(), anyString(), anyString()
+        verify(programStageSectionDataElementLinkHandler, never()).handleMany(
+                anyString(),
+                anyListOf(DataElement.class),
+                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
         );
 
         verify(programIndicatorHandler, never()).handleMany(

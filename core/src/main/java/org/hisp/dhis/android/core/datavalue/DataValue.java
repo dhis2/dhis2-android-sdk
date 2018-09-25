@@ -91,7 +91,7 @@ public abstract class DataValue extends BaseDataModel {
     public abstract String comment();
 
     @Nullable
-    @JsonProperty(DataValueFields.FOLLOW_UP)
+    @JsonProperty()
     public abstract Boolean followUp();
 
     @Nullable

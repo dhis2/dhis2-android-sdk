@@ -28,113 +28,126 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataValue {
-    private static final String DATA_ELEMENT = "dataElement";
-    private static final String PERIOD = "period";
-    private static final String ORGANISATION_UNIT = "orgUnit";
-    private static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
-    private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    private static final String VALUE = "value";
-    private static final String STORED_BY = "storedBy";
-    private static final String CREATED = "created";
-    private static final String LAST_UPDATED = "lastUpdated";
-    private static final String COMMENT = "comment";
-    private static final String FOLLOW_UP = "followup";
-    private static final String DELETED = "deleted";
-
-    private static final Field<DataValue, String> dataElement = Field.create(DATA_ELEMENT);
-    private static final Field<DataValue, String> period = Field.create(PERIOD);
-    private static final Field<DataValue, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    private static final Field<DataValue, String> categoryOptionCombo = Field.create(CATEGORY_OPTION_COMBO);
-    private static final Field<DataValue, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
-    private static final Field<DataValue, String> value = Field.create(VALUE);
-    private static final Field<DataValue, String> storedBy = Field.create(STORED_BY);
-    private static final Field<DataValue, String> created = Field.create(CREATED);
-    static final Field<DataValue, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<DataValue, String> comment = Field.create(COMMENT);
-    private static final Field<DataValue, String> followUp = Field.create(FOLLOW_UP);
-    private static final Field<DataValue, Boolean> deleted = Field.create(DELETED);
-
-    static final Fields<DataValue> allFields = Fields.<DataValue>builder().fields(
-            dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo,
-            value, storedBy, created, lastUpdated, comment, followUp, deleted).build();
+@JsonDeserialize(builder = $$AutoValue_DataValue.Builder.class)
+public abstract class DataValue extends BaseDataModel {
 
     @Nullable
-    @JsonProperty(DATA_ELEMENT)
+    @JsonProperty
     public abstract String dataElement();
 
     @Nullable
-    @JsonProperty(PERIOD)
+    @JsonProperty
     public abstract String period();
 
     @Nullable
-    @JsonProperty(ORGANISATION_UNIT)
+    @JsonProperty(DataValueFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty(CATEGORY_OPTION_COMBO)
+    @JsonProperty
     public abstract String categoryOptionCombo();
 
     @Nullable
-    @JsonProperty(ATTRIBUTE_OPTION_COMBO)
+    @JsonProperty
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty(VALUE)
+    @JsonProperty
     public abstract String value();
 
     @Nullable
-    @JsonProperty(STORED_BY)
+    @JsonProperty
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty(CREATED)
+    @JsonProperty
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED)
+    @JsonProperty
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(COMMENT)
+    @JsonProperty
     public abstract String comment();
 
     @Nullable
-    @JsonProperty(FOLLOW_UP)
+    @JsonProperty(DataValueFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
-    @JsonProperty(DELETED)
+    @JsonProperty
     public abstract Boolean deleted();
 
-    @JsonCreator
-    public static DataValue create(
-            @JsonProperty(DATA_ELEMENT) String dataElement,
-            @JsonProperty(PERIOD) String period,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(CATEGORY_OPTION_COMBO) String categoryOptionCombo,
-            @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo,
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(STORED_BY) String storedBy,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(COMMENT) String comment,
-            @JsonProperty(FOLLOW_UP) Boolean followUp,
-            @JsonProperty(DELETED) Boolean deleted) {
+    @NonNull
+    public static DataValue create(Cursor cursor) {
+        return AutoValue_DataValue.createFromCursor(cursor);
+    }
 
-        return new AutoValue_DataValue(dataElement, period, organisationUnit, categoryOptionCombo,
-                attributeOptionCombo, value, storedBy, created, lastUpdated, comment, followUp, deleted);
+    public static final CursorModelFactory<DataValue> factory =
+            new CursorModelFactory<DataValue>() {
+                @Override
+                public DataValue fromCursor(Cursor cursor) {
+                    return create(cursor);
+                }
+            };
+
+    public abstract DataValue.Builder toBuilder();
+
+    public static DataValue.Builder builder() {
+        return new $$AutoValue_DataValue.Builder();
+    }
+
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseDataModel.Builder<DataValue.Builder> {
+
+        public abstract DataValue.Builder dataElement(@NonNull String dataElement);
+
+        public abstract DataValue.Builder period(@NonNull String period);
+
+        @JsonProperty(DataValueFields.ORGANISATION_UNIT)
+        public abstract DataValue.Builder organisationUnit(@NonNull String organisationUnit);
+
+        public abstract DataValue.Builder categoryOptionCombo(@NonNull String categoryOptionCombo);
+
+        public abstract DataValue.Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
+
+        public abstract DataValue.Builder value(@NonNull String value);
+
+        public abstract DataValue.Builder storedBy(@Nullable String storedBy);
+
+        public abstract DataValue.Builder created(@NonNull Date created);
+
+        public abstract DataValue.Builder lastUpdated(@NonNull Date lastUpdated);
+
+        public abstract DataValue.Builder comment(@NonNull String comment);
+
+        @JsonProperty(DataValueFields.FOLLOW_UP)
+        public abstract DataValue.Builder followUp(@NonNull Boolean followUp);
+
+        public abstract DataValue.Builder deleted(@NonNull Boolean deleted);
+
+        public abstract DataValue build();
     }
 }

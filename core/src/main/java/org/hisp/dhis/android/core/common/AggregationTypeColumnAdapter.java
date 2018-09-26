@@ -26,32 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.support.annotation.NonNull;
 
-public class ProgramIndicatorModelBuilder extends ModelBuilder<ProgramIndicator, ProgramIndicatorModel> {
+import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
+
+public class AggregationTypeColumnAdapter extends EnumColumnAdapter<AggregationType> {
 
     @Override
-    public ProgramIndicatorModel buildModel(ProgramIndicator programIndicator) {
-        return ProgramIndicatorModel.builder()
-                .uid(programIndicator.uid())
-                .code(programIndicator.code())
-                .name(programIndicator.name())
-                .displayName(programIndicator.displayName())
-                .created(programIndicator.created())
-                .lastUpdated(programIndicator.lastUpdated())
-                .shortName(programIndicator.shortName())
-                .displayShortName(programIndicator.displayShortName())
-                .description(programIndicator.description())
-                .displayDescription(programIndicator.displayDescription())
-                .displayInForm(programIndicator.displayInForm())
-                .expression(programIndicator.expression())
-                .dimensionItem(programIndicator.dimensionItem())
-                .filter(programIndicator.filter())
-                .decimals(programIndicator.decimals())
-                .aggregationType(programIndicator.aggregationType())
-                .program(programIndicator.program().uid())
-                .build();
+    @NonNull
+    protected Class<AggregationType> getEnumClass() {
+        return AggregationType.class;
     }
 }

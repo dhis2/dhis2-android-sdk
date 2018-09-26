@@ -95,5 +95,5 @@ public interface EventStore extends DeletableStore, StoreWithState {
 
     Event queryByUid(String eventUid);
 
-    List<Event> queryByEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
+    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
 }

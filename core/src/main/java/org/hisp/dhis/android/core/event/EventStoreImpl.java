@@ -152,7 +152,8 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
 
     private static final String QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE = "SELECT " +
             FIELDS +
-            " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'";
+            " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'" +
+            " ORDER BY Event." + Columns.EVENT_DATE;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -321,7 +322,7 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
     }
 
     @Override
-    public List<Event> queryByEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
+    public List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
         String queryStatement = QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE;
         queryStatement = queryStatement.replace("_enrollment", enrollmentUid);
         queryStatement = queryStatement.replace("_programStage", programStageUid);

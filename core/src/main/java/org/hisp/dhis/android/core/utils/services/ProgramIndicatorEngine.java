@@ -174,7 +174,6 @@ public class ProgramIndicatorEngine {
         int zeroPosValueCount = 0;
 
         Map<String, List<Event>> cachedEvents = new HashMap<>();
-        Map<String, TrackedEntityDataValue> dataElementToDataValues = new HashMap<>();
         EnrollmentModel cachedEnrollment = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
@@ -311,7 +310,7 @@ public class ProgramIndicatorEngine {
         if (enrollmentUid == null) {
             events = Collections.singletonList(eventStore.queryByUid(eventUid));
         } else {
-            events = eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid);
+            events = eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid);
         }
 
         List<Event> eventsWithValues = new ArrayList<>();

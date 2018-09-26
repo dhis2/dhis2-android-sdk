@@ -162,7 +162,7 @@ public class ProgramIndicatorEngineShould {
         when(event1.uid()).thenReturn(eventUid1);
         when(event1.programStage()).thenReturn(programStageUid1);
         when(eventStore.queryByUid(eventUid1)).thenReturn(event1);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid1))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid1))
                 .thenReturn(Collections.singletonList(event1));
 
         when(event2.uid()).thenReturn(eventUid2_1);
@@ -171,7 +171,7 @@ public class ProgramIndicatorEngineShould {
         when(event3.programStage()).thenReturn(programStageUid2);
         when(eventStore.queryByUid(eventUid2_1)).thenReturn(event2);
         when(eventStore.queryByUid(eventUid2_2)).thenReturn(event3);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Arrays.asList(event2, event3));
 
         when(enrollmentModel.uid()).thenReturn(enrollmentUid);
@@ -354,7 +354,7 @@ public class ProgramIndicatorEngineShould {
 
         // Event2 does not exist
         when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.<Event>emptyList());
 
         String resultWithoutEvent = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
@@ -373,7 +373,7 @@ public class ProgramIndicatorEngineShould {
 
         // Event2 does not exist
         when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.<Event>emptyList());
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,

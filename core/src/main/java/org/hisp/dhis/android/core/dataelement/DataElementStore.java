@@ -43,9 +43,9 @@ public final class DataElementStore {
 
     private DataElementStore() {}
 
-    private static StatementBinder<DataElementModel> BINDER = new NameableStatementBinder<DataElementModel>() {
+    private static StatementBinder<DataElement> BINDER = new NameableStatementBinder<DataElement>() {
         @Override
-        public void bindToStatement(@NonNull DataElementModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull DataElement o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.valueType());
             sqLiteBind(sqLiteStatement, 12, o.zeroIsSignificant());
@@ -55,13 +55,13 @@ public final class DataElementStore {
             sqLiteBind(sqLiteStatement, 16, o.domainType());
             sqLiteBind(sqLiteStatement, 17, o.dimension());
             sqLiteBind(sqLiteStatement, 18, o.displayFormName());
-            sqLiteBind(sqLiteStatement, 19, o.optionSet());
-            sqLiteBind(sqLiteStatement, 20, o.categoryCombo());
+            sqLiteBind(sqLiteStatement, 19, o.optionSetUid());
+            sqLiteBind(sqLiteStatement, 20, o.categoryComboUid());
         }
     };
 
-    public static IdentifiableObjectStore<DataElementModel> create(DatabaseAdapter databaseAdapter) {
+    public static IdentifiableObjectStore<DataElement> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter,
-                DataElementModel.TABLE, new DataElementModel.Columns().all(), BINDER);
+                DataElementTableInfo.TABLE_INFO, BINDER);
     }
 }

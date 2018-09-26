@@ -26,36 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 
-import retrofit2.Retrofit;
-
-public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final RelationshipInternalModule relationshipModule;
-    public final DataElementInternalModule dataElementModule;
-
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationshipModule,
-                             DataElementInternalModule dataElementModule) {
-        this.systemInfo = systemInfo;
-        this.relationshipModule = relationshipModule;
-        this.dataElementModule = dataElementModule;
-    }
-
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter, retrofit);
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                RelationshipInternalModule.create(
-                        databaseAdapter,
-                        systemInfoInternalModule.publicModule.versionManager),
-                DataElementInternalModule.create(databaseAdapter)
-        );
-    }
+public final class IgnoreObjectStyleAdapter extends IgnoreColumnAdapter<ObjectStyle> {
 }

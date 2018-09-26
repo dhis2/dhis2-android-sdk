@@ -26,36 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import retrofit2.Retrofit;
+public final class DataElementTableInfo {
 
-public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final RelationshipInternalModule relationshipModule;
-    public final DataElementInternalModule dataElementModule;
-
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationshipModule,
-                             DataElementInternalModule dataElementModule) {
-        this.systemInfo = systemInfo;
-        this.relationshipModule = relationshipModule;
-        this.dataElementModule = dataElementModule;
+    private DataElementTableInfo() {
     }
 
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter, retrofit);
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                RelationshipInternalModule.create(
-                        databaseAdapter,
-                        systemInfoInternalModule.publicModule.versionManager),
-                DataElementInternalModule.create(databaseAdapter)
-        );
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "DataElement";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseNameableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DataElementFields.VALUE_TYPE,
+                    DataElementFields.ZERO_IS_SIGNIFICANT,
+                    DataElementFields.AGGREGATION_TYPE,
+                    DataElementFields.FORM_NAME,
+                    DataElementFields.NUMBER_TYPE,
+                    DataElementFields.DOMAIN_TYPE,
+                    DataElementFields.DIMENSION,
+                    DataElementFields.DISPLAY_FORM_NAME,
+                    DataElementFields.OPTION_SET,
+                    DataElementFields.CATEGORY_COMBO
+            );
+        }
     }
 }

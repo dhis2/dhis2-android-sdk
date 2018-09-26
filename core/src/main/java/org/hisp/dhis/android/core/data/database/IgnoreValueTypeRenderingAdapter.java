@@ -26,35 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 
-public class DataElementModelBuilder extends ModelBuilder<DataElement, DataElementModel> {
-
-    @Override
-    public DataElementModel buildModel(DataElement dataElement) {
-        return DataElementModel.builder()
-                .uid(dataElement.uid())
-                .code(dataElement.code())
-                .name(dataElement.name())
-                .displayName(dataElement.displayName())
-                .created(dataElement.created())
-                .lastUpdated(dataElement.lastUpdated())
-                .shortName(dataElement.shortName())
-                .displayShortName(dataElement.displayShortName())
-                .description(dataElement.description())
-                .displayDescription(dataElement.displayDescription())
-                .valueType(dataElement.valueType())
-                .zeroIsSignificant(dataElement.zeroIsSignificant())
-                .aggregationType(dataElement.aggregationType())
-                .formName(dataElement.formName())
-                .numberType(dataElement.numberType())
-                .domainType(dataElement.domainType())
-                .dimension(dataElement.dimension())
-                .displayFormName(dataElement.displayFormName())
-                .optionSet(dataElement.optionSetUid())
-                .categoryCombo(dataElement.categoryComboUid())
-                .build();
-    }
+public final class IgnoreValueTypeRenderingAdapter extends IgnoreColumnAdapter<ValueTypeRendering> {
 }

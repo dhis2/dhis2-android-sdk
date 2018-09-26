@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.utils.services;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.EventModel;
@@ -92,7 +92,7 @@ public class ProgramIndicatorEngineShould {
     private TrackedEntityAttributeValue attributeValue;
 
     @Mock
-    private DataElementModel dataElementModel;
+    private DataElement dataElement;
 
     private String dataElementUid1 = "HhyfnvrrKpN";
     private String dataElementUid2 = "nM4RZkpgMcP";
@@ -118,7 +118,7 @@ public class ProgramIndicatorEngineShould {
     @Mock
     private EventStore eventStore;
     @Mock
-    private IdentifiableObjectStore<DataElementModel> dataElementStore;
+    private IdentifiableObjectStore<DataElement> dataElementStore;
     @Mock
     private IdentifiableObjectStore<ConstantModel> constantStore;
     @Mock
@@ -161,11 +161,11 @@ public class ProgramIndicatorEngineShould {
         when(programIndicatorStore.selectByUid(programIndicatorUid, ProgramIndicatorModel.factory)).thenReturn
                 (programIndicator);
 
-        when(dataElementModel.valueType()).thenReturn(ValueType.NUMBER);
-        when(dataElementStore.selectByUid(dataElementUid1, DataElementModel.factory)).thenReturn(dataElementModel);
-        when(dataElementStore.selectByUid(dataElementUid2, DataElementModel.factory)).thenReturn(dataElementModel);
-        when(dataElementStore.selectByUid(dataElementUid3, DataElementModel.factory)).thenReturn(dataElementModel);
-        when(dataElementStore.selectByUid(dataElementUid4, DataElementModel.factory)).thenReturn(dataElementModel);
+        when(dataElement.valueType()).thenReturn(ValueType.NUMBER);
+        when(dataElementStore.selectByUid(dataElementUid1, DataElement.factory)).thenReturn(dataElement);
+        when(dataElementStore.selectByUid(dataElementUid2, DataElement.factory)).thenReturn(dataElement);
+        when(dataElementStore.selectByUid(dataElementUid3, DataElement.factory)).thenReturn(dataElement);
+        when(dataElementStore.selectByUid(dataElementUid4, DataElement.factory)).thenReturn(dataElement);
 
         when(trackedEntityAttributeValueStore.queryByTrackedEntityInstance(trackedEntityInstanceUid))
                 .thenReturn(Collections.singletonList(attributeValue));

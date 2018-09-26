@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementFields;
 
 import java.util.Date;
 import java.util.List;
@@ -71,7 +72,8 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
             = NestedField.create(RENDER_TYPE);
 
     static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, sortOrder, deleted, dataElements.with(DataElement.uid),
+            uid, code, name, displayName, created, lastUpdated, sortOrder, deleted,
+            dataElements.with(DataElementFields.uid),
             programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(ObjectWithUid.uid)),
             renderType).build();
 

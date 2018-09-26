@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -115,9 +115,9 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         programStageStore.insert(stage1);
         programStageStore.insert(stage2);
 
-        DataElementModel de1 = DataElementModel.builder().uid(dataElement1).valueType(ValueType.NUMBER).build();
-        DataElementModel de2 = DataElementModel.builder().uid(dataElement2).valueType(ValueType.NUMBER).build();
-        IdentifiableObjectStore<DataElementModel> dataElementStore = DataElementStore.create(databaseAdapter());
+        DataElement de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build();
+        DataElement de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build();
+        IdentifiableObjectStore<DataElement> dataElementStore = DataElementStore.create(databaseAdapter());
         dataElementStore.insert(de1);
         dataElementStore.insert(de2);
 

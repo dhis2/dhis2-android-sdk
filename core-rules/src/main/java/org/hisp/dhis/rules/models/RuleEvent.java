@@ -46,7 +46,7 @@ public abstract class RuleEvent {
     }
 
     public enum Status {
-        ACTIVE, COMPLETED, SCHEDULE, SKIPPED
+        ACTIVE, COMPLETED, SCHEDULE, SKIPPED, VISITED, OVERDUE
     }
 
     private static class EventDateComparator implements Comparator<RuleEvent>, Serializable {

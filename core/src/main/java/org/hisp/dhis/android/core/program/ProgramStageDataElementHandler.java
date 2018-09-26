@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;

@@ -40,6 +40,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
@@ -121,6 +122,10 @@ public abstract class DataValue extends BaseDataModel {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataModel.Builder<DataValue.Builder> {
+
+        public Builder() {
+            state(State.SYNCED);
+        }
 
         public abstract DataValue.Builder dataElement(@NonNull String dataElement);
 

@@ -32,6 +32,8 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -41,21 +43,22 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class ProgramStageSectionHandler {
     private final ProgramStageSectionStore programStageSectionStore;
-    private final ProgramStageDataElementHandler programStageDataElementHandler;
     private final GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
     private final LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
             programStageSectionProgramIndicatorLinkHandler;
+    private final OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel>
+            programStageSectionDataElementLinkHandler;
 
-    public ProgramStageSectionHandler(@NonNull ProgramStageSectionStore programStageSectionStore,
-                                      @NonNull ProgramStageDataElementHandler programStageDataElementHandler,
-                                      @NonNull GenericHandler<ProgramIndicator, ProgramIndicatorModel>
-                                              programIndicatorHandler,
-                                      LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
-                                              programStageSectionProgramIndicatorLinkHandler) {
+    ProgramStageSectionHandler(@NonNull ProgramStageSectionStore programStageSectionStore,
+                               @NonNull GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler,
+                               LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
+                                       programStageSectionProgramIndicatorLinkHandler,
+                               OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel>
+                                       programStageSectionDataElementLinkHandler) {
         this.programStageSectionStore = programStageSectionStore;
-        this.programStageDataElementHandler = programStageDataElementHandler;
         this.programIndicatorHandler = programIndicatorHandler;
         this.programStageSectionProgramIndicatorLinkHandler = programStageSectionProgramIndicatorLinkHandler;
+        this.programStageSectionDataElementLinkHandler = programStageSectionDataElementLinkHandler;
     }
 
     private ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering renderType) {
@@ -66,7 +69,7 @@ public class ProgramStageSectionHandler {
         return renderType == null || renderType.mobile() == null ? null : renderType.mobile().type();
     }
 
-    public void handleProgramStageSection(String programStageUid, List<ProgramStageSection> programStageSections) {
+    void handleProgramStageSection(String programStageUid, List<ProgramStageSection> programStageSections) {
         if (programStageUid == null || programStageSections == null) {
             return;
         }
@@ -105,19 +108,18 @@ public class ProgramStageSectionHandler {
                 }
             }
 
-            afterObjectPersisted(programStageUid, programStageSection, programIndicatorModelBuilder);
+            afterObjectPersisted(programStageSection, programIndicatorModelBuilder);
         }
     }
 
-    private void afterObjectPersisted(String programStageUid,
-                                      ProgramStageSection programStageSection,
+    private void afterObjectPersisted(ProgramStageSection programStageSection,
                                       ProgramIndicatorModelBuilder programIndicatorModelBuilder) {
         List<DataElement> dataElements = programStageSection.dataElements();
         if (dataElements != null) {
-            for (DataElement dataElement : dataElements) {
-                programStageDataElementHandler.updateProgramStageDataElementWithProgramStageSectionLink(
-                        programStageUid, programStageSection.uid(), dataElement.uid());
-            }
+            ProgramStageSectionDataElementLinkModelBuilder programStageSectionDataElementLinkModelBuilder =
+                    new ProgramStageSectionDataElementLinkModelBuilder(programStageSection);
+            programStageSectionDataElementLinkHandler.handleMany(programStageSection.uid(),
+                    programStageSection.dataElements(), programStageSectionDataElementLinkModelBuilder);
         }
 
         ProgramStageSectionProgramIndicatorLinkModelBuilder programStageSectionProgramIndicatorLinkModelBuilder =
@@ -131,10 +133,12 @@ public class ProgramStageSectionHandler {
     public static ProgramStageSectionHandler create(DatabaseAdapter databaseAdapter) {
         return new ProgramStageSectionHandler(
                 new ProgramStageSectionStoreImpl(databaseAdapter),
-                ProgramStageDataElementHandler.create(databaseAdapter),
                 ProgramIndicatorHandler.create(databaseAdapter),
                 new LinkModelHandlerImpl<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>(
-                        ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter))
+                        ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter)),
+                new OrderedLinkModelHandlerImpl<DataElement, ProgramStageSectionDataElementLinkModel>(
+                        ProgramStageSectionDataElementLinkStore.create(databaseAdapter)
+                )
         );
     }
 }

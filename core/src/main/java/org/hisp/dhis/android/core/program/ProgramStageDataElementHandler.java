@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -100,21 +98,12 @@ public class ProgramStageDataElementHandler {
                             programStageDataElement.displayInReports(), programStageDataElement.compulsory(),
                             programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
                             programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
-                            programStageDataElement.programStage().uid(), null
+                            programStageDataElement.programStage().uid()
                     );
                 }
                 dataElementHandler.handle(programStageDataElement.dataElement());
             }
         }
-    }
-
-    void updateProgramStageDataElementWithProgramStageSectionLink(@NonNull String programStageUid,
-                                                                  @NonNull String programStageSectionUid,
-                                                                  @NonNull String dataElementUid) {
-        programStageDataElementStore.updateWithProgramStageSectionLink(programStageUid,
-                programStageSectionUid,
-                dataElementUid
-                );
     }
 
     public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {

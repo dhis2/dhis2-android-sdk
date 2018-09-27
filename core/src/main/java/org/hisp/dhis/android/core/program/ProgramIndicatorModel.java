@@ -32,9 +32,12 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -49,12 +52,13 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
         public static final String DIMENSION_ITEM = "dimensionItem";
         public static final String FILTER = "filter";
         public static final String DECIMALS = "decimals";
+        public static final String AGGREGATION_TYPE = "aggregationType";
         public static final String PROGRAM = "program";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS, PROGRAM);
+                    DISPLAY_IN_FORM, EXPRESSION, DIMENSION_ITEM, FILTER, DECIMALS, AGGREGATION_TYPE, PROGRAM);
         }
     }
 
@@ -98,6 +102,11 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
     public abstract Integer decimals();
 
     @Nullable
+    @ColumnName(Columns.AGGREGATION_TYPE)
+    @ColumnAdapter(AggregationTypeColumnAdapter.class)
+    public abstract AggregationType aggregationType();
+
+    @Nullable
     @ColumnName(Columns.PROGRAM)
     public abstract String program();
 
@@ -118,6 +127,9 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
 
         @ColumnName(Columns.DECIMALS)
         public abstract Builder decimals(@Nullable Integer decimals);
+
+        @ColumnName(Columns.AGGREGATION_TYPE)
+        public abstract Builder aggregationType(@Nullable AggregationType aggregationType);
 
         @ColumnName(Columns.PROGRAM)
         public abstract Builder program(@Nullable String program);

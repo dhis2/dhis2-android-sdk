@@ -56,7 +56,8 @@ public final class ProgramIndicatorStore {
                     sqLiteBind(sqLiteStatement, 13, o.dimensionItem());
                     sqLiteBind(sqLiteStatement, 14, o.filter());
                     sqLiteBind(sqLiteStatement, 15, o.decimals());
-                    sqLiteBind(sqLiteStatement, 16, o.program());
+                    sqLiteBind(sqLiteStatement, 16, o.aggregationType());
+                    sqLiteBind(sqLiteStatement, 17, o.program());
                 }
             };
 

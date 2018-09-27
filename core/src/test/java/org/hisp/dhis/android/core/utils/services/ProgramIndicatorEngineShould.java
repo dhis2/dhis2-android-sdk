@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.core.utils.services;
 
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -60,15 +61,19 @@ public class ProgramIndicatorEngineShould {
 
     private String enrollmentUid = "enrollment-uid";
     private String eventUid1 = "qCUMGmMZAhz";
-    private String eventUid2 = "QApcv9Je3bp";
+    private String eventUid2_1 = "QApcv9Je3bp";
+    private String eventUid2_2 = "fvTdau868YO";
     private String programIndicatorUid = "program-indicator-uid";
     private String trackedEntityInstanceUid = "tei-uid";
 
     @Mock
-    private EventModel event1;
+    private Event event1;
 
     @Mock
-    private EventModel event2;
+    private Event event2;
+
+    @Mock
+    private Event event3;
 
     @Mock
     private EnrollmentModel enrollmentModel;
@@ -87,6 +92,9 @@ public class ProgramIndicatorEngineShould {
 
     @Mock
     private TrackedEntityDataValue value4;
+
+    @Mock
+    private TrackedEntityDataValue value5;
 
     @Mock
     private TrackedEntityAttributeValue attributeValue;
@@ -133,33 +141,42 @@ public class ProgramIndicatorEngineShould {
         programIndicatorEngine = new ProgramIndicatorEngine(programIndicatorStore, trackedEntityDataValueStore,
                 enrollmentStore, eventStore, dataElementStore, constantStore, trackedEntityAttributeValueStore);
 
+        when(programIndicatorStore.selectByUid(programIndicatorUid, ProgramIndicatorModel.factory)).thenReturn
+                (programIndicator);
+        when(programIndicator.aggregationType()).thenReturn(AggregationType.SUM);
+
         when(value1.dataElement()).thenReturn(dataElementUid1);
         when(value2.dataElement()).thenReturn(dataElementUid2);
         when(value3.dataElement()).thenReturn(dataElementUid3);
         when(value4.dataElement()).thenReturn(dataElementUid4);
+        when(value5.dataElement()).thenReturn(dataElementUid4); //To test repeatable stages
         when(attributeValue.trackedEntityAttribute()).thenReturn(attributeUid);
 
         when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid1))
                 .thenReturn(Arrays.asList(value1, value2, value3));
-        when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid2))
+        when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid2_1))
                 .thenReturn(Collections.singletonList(value4));
+        when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid2_2))
+                .thenReturn(Collections.singletonList(value5));
 
         when(event1.uid()).thenReturn(eventUid1);
         when(event1.programStage()).thenReturn(programStageUid1);
         when(eventStore.queryByUid(eventUid1)).thenReturn(event1);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid1)).thenReturn(event1);
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid1))
+                .thenReturn(Collections.singletonList(event1));
 
-        when(event2.uid()).thenReturn(eventUid2);
+        when(event2.uid()).thenReturn(eventUid2_1);
         when(event2.programStage()).thenReturn(programStageUid2);
-        when(eventStore.queryByUid(eventUid2)).thenReturn(event2);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2)).thenReturn(event2);
+        when(event3.uid()).thenReturn(eventUid2_2);
+        when(event3.programStage()).thenReturn(programStageUid2);
+        when(eventStore.queryByUid(eventUid2_1)).thenReturn(event2);
+        when(eventStore.queryByUid(eventUid2_2)).thenReturn(event3);
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+                .thenReturn(Arrays.asList(event2, event3));
 
         when(enrollmentModel.uid()).thenReturn(enrollmentUid);
         when(enrollmentModel.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
         when(enrollmentStore.queryByUid(enrollmentUid)).thenReturn(enrollmentModel);
-
-        when(programIndicatorStore.selectByUid(programIndicatorUid, ProgramIndicatorModel.factory)).thenReturn
-                (programIndicator);
 
         when(dataElement.valueType()).thenReturn(ValueType.NUMBER);
         when(dataElementStore.selectByUid(dataElementUid1, DataElement.factory)).thenReturn(dataElement);
@@ -320,7 +337,7 @@ public class ProgramIndicatorEngineShould {
                 programIndicatorUid);
         String resultWithEvent1 = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1,
                 programIndicatorUid);
-        String resultWithEvent2 = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid2,
+        String resultWithEvent2 = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid2_1,
                 programIndicatorUid);
 
         assertThat(resultWithoutEvent).isEqualTo("3.5 + 2.0");
@@ -336,8 +353,9 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
 
         // Event2 does not exist
-        when(eventStore.queryByUid(eventUid2)).thenReturn(null);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2)).thenReturn(null);
+        when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+                .thenReturn(Collections.<Event>emptyList());
 
         String resultWithoutEvent = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
@@ -354,13 +372,35 @@ public class ProgramIndicatorEngineShould {
                 de(programStageUid2, dataElementUid2) + " * 10");
 
         // Event2 does not exist
-        when(eventStore.queryByUid(eventUid2)).thenReturn(null);
-        when(eventStore.queryByEnrollmentAndProgramStage(enrollmentUid, programStageUid2)).thenReturn(null);
+        when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
+        when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
+                .thenReturn(Collections.<Event>emptyList());
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
         assertThat(result).isEqualTo("0 * 10");
+    }
+
+    @Test
+    public void parse_last_aggregation_type() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid2, dataElementUid4) + " * 10");
+
+        when(value4.value()).thenReturn("2"); // First event
+        when(value5.value()).thenReturn("4"); // Second event
+
+        when(programIndicator.aggregationType()).thenReturn(AggregationType.SUM);
+        String sumResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(sumResult).isEqualTo("2.0 * 10");
+
+        when(programIndicator.aggregationType()).thenReturn(AggregationType.LAST);
+        String lastResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(lastResult).isEqualTo("4.0 * 10");
     }
 
     // -------------------------------------------------------------------------

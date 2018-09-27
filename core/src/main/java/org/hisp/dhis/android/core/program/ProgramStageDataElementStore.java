@@ -41,8 +41,7 @@ public interface ProgramStageDataElementStore extends DeletableStore {
             @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
             @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
             @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStageSection,
-            @Nullable String programStageUid
+            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStageUid
     );
 
     int update(@NonNull String uid, @Nullable String code, @Nullable String name,
@@ -54,9 +53,4 @@ public interface ProgramStageDataElementStore extends DeletableStore {
     );
 
     int delete(@NonNull String uid);
-
-    int updateWithProgramStageSectionLink(@NonNull String programStageUid,
-                                          @NonNull String programStageSectionUid,
-                                          @NonNull String dataElementUid
-    );
 }

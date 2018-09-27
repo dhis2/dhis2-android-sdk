@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
@@ -51,6 +52,7 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     private static final String DIMENSION_ITEM = "dimensionItem";
     private static final String FILTER = "filter";
     private static final String DECIMALS = "decimals";
+    private static final String AGGREGATION_TYPE = "aggregationType";
     private static final String PROGRAM = "program";
     private static final String LEGEND_SETS = "legendSets";
 
@@ -70,13 +72,14 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     private static final Field<ProgramIndicator, String> dimensionItem = Field.create(DIMENSION_ITEM);
     private static final Field<ProgramIndicator, String> filter = Field.create(FILTER);
     private static final Field<ProgramIndicator, Integer> decimals = Field.create(DECIMALS);
+    private static final Field<ProgramIndicator, AggregationType> aggregationType = Field.create(AGGREGATION_TYPE);
     public static final NestedField<ProgramIndicator, ObjectWithUid> program = NestedField.create(PROGRAM);
     private static final NestedField<ProgramIndicator, LegendSet> legendSets = NestedField.create(LEGEND_SETS);
 
     static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted, decimals, dimensionItem, displayInForm, expression, filter,
-            program.with(ObjectWithUid.uid), legendSets.with(LegendSet.allFields)
+            aggregationType, program.with(ObjectWithUid.uid), legendSets.with(LegendSet.allFields)
     ).build();
 
     @Nullable
@@ -98,6 +101,10 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     @Nullable
     @JsonProperty(DECIMALS)
     public abstract Integer decimals();
+
+    @Nullable
+    @JsonProperty(AGGREGATION_TYPE)
+    public abstract AggregationType aggregationType();
 
     @Nullable
     @JsonProperty(PROGRAM)
@@ -124,14 +131,15 @@ public abstract class ProgramIndicator extends BaseNameableObject {
             @JsonProperty(DIMENSION_ITEM) String dimensionItem,
             @JsonProperty(FILTER) String filter,
             @JsonProperty(DECIMALS) Integer decimals,
+            @JsonProperty(AGGREGATION_TYPE) AggregationType aggregationType,
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(PROGRAM) ObjectWithUid program,
             @JsonProperty(LEGEND_SETS) List<LegendSet> legendSets
     ) {
         return new AutoValue_ProgramIndicator(
-                uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription,
-                displayInForm, expression, dimensionItem, filter, decimals, program, legendSets);
+                uid, code, name, displayName, created, lastUpdated, deleted, shortName, displayShortName,
+                description, displayDescription, displayInForm, expression, dimensionItem, filter, decimals,
+                aggregationType, program, legendSets);
     }
 
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 
@@ -37,11 +38,14 @@ import retrofit2.Retrofit;
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
     public final RelationshipInternalModule relationshipModule;
+    public final DataElementInternalModule dataElementModule;
 
     public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationshipModule) {
+                             RelationshipInternalModule relationshipModule,
+                             DataElementInternalModule dataElementModule) {
         this.systemInfo = systemInfo;
         this.relationshipModule = relationshipModule;
+        this.dataElementModule = dataElementModule;
     }
 
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
@@ -50,7 +54,8 @@ public final class D2InternalModules {
                 systemInfoInternalModule,
                 RelationshipInternalModule.create(
                         databaseAdapter,
-                        systemInfoInternalModule.publicModule.versionManager)
+                        systemInfoInternalModule.publicModule.versionManager),
+                DataElementInternalModule.create(databaseAdapter)
         );
     }
 }

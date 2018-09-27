@@ -26,32 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyle;
 
-public class ProgramIndicatorModelBuilder extends ModelBuilder<ProgramIndicator, ProgramIndicatorModel> {
-
-    @Override
-    public ProgramIndicatorModel buildModel(ProgramIndicator programIndicator) {
-        return ProgramIndicatorModel.builder()
-                .uid(programIndicator.uid())
-                .code(programIndicator.code())
-                .name(programIndicator.name())
-                .displayName(programIndicator.displayName())
-                .created(programIndicator.created())
-                .lastUpdated(programIndicator.lastUpdated())
-                .shortName(programIndicator.shortName())
-                .displayShortName(programIndicator.displayShortName())
-                .description(programIndicator.description())
-                .displayDescription(programIndicator.displayDescription())
-                .displayInForm(programIndicator.displayInForm())
-                .expression(programIndicator.expression())
-                .dimensionItem(programIndicator.dimensionItem())
-                .filter(programIndicator.filter())
-                .decimals(programIndicator.decimals())
-                .aggregationType(programIndicator.aggregationType())
-                .program(programIndicator.program().uid())
-                .build();
-    }
+public final class IgnoreObjectStyleAdapter extends IgnoreColumnAdapter<ObjectStyle> {
 }

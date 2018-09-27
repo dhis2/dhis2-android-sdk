@@ -30,17 +30,18 @@ package org.hisp.dhis.android.core.utils.services;
 
 
 import org.apache.commons.jexl2.JexlException;
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
@@ -56,6 +57,8 @@ import org.hisp.dhis.android.core.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.core.utils.support.MathUtils;
 import org.hisp.dhis.android.core.utils.support.TextUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +105,7 @@ public class ProgramIndicatorEngine {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
-    private final IdentifiableObjectStore<DataElementModel> dataElementStore;
+    private final IdentifiableObjectStore<DataElement> dataElementStore;
     private final IdentifiableObjectStore<ConstantModel> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
@@ -110,7 +113,7 @@ public class ProgramIndicatorEngine {
                            TrackedEntityDataValueStore trackedEntityDataValueStore,
                            EnrollmentStore enrollmentStore,
                            EventStore eventStore,
-                           IdentifiableObjectStore<DataElementModel> dataElementStore,
+                           IdentifiableObjectStore<DataElement> dataElementStore,
                            IdentifiableObjectStore<ConstantModel> constantStore,
                            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         this.programIndicatorStore = programIndicatorStore;
@@ -170,8 +173,7 @@ public class ProgramIndicatorEngine {
         int valueCount = 0;
         int zeroPosValueCount = 0;
 
-        EventModel cachedEventModel = null;
-        Map<String, TrackedEntityDataValue> dataElementToDataValues = new HashMap<>();
+        Map<String, List<Event>> cachedEvents = new HashMap<>();
         EnrollmentModel cachedEnrollment = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
@@ -189,24 +191,13 @@ public class ProgramIndicatorEngine {
                     continue;
                 }
 
-                if (enrollment == null) {
-                    // Single event without registration
-                    dataElementToDataValues = getTrackedEntityDataValues(event);
-                } else {
-                    if (cachedEventModel == null ||
-                            !cachedEventModel.programStage().equals(programStageUid)) {
-                        cachedEventModel = eventStore.queryByEnrollmentAndProgramStage(enrollment,
-                                programStageUid);
-
-                        dataElementToDataValues.clear();
-                        if (cachedEventModel != null) {
-                            dataElementToDataValues = getTrackedEntityDataValues(cachedEventModel.uid());
-                        }
-                    }
+                if (!cachedEvents.containsKey(programStageUid)) {
+                    List<Event> events = getEventsInStage(enrollment, event, programStageUid);
+                    cachedEvents.put(programStageUid, events);
                 }
 
-                TrackedEntityDataValue dataValue;
-                dataValue = dataElementToDataValues.get(de);
+                TrackedEntityDataValue dataValue = evaluateDataElementInStage(de, cachedEvents.get(programStageUid),
+                        programIndicator.aggregationType());
 
                 String value;
                 if (dataValue == null || dataValue.value() == null || dataValue.value().isEmpty()) {
@@ -265,8 +256,8 @@ public class ProgramIndicatorEngine {
                 }
 
                 if (EVENT_DATE.equals(uid) && event != null) {
-                    cachedEventModel = eventStore.queryByUid(event);
-                    date = cachedEventModel.eventDate();
+                    Event targetEvent = eventStore.queryByUid(event);
+                    date = targetEvent.eventDate();
                 }
 
                 if (CURRENT_DATE.equals(uid)) {
@@ -310,20 +301,60 @@ public class ProgramIndicatorEngine {
         return attributeToAttributeValues;
     }
 
-    private Map<String, TrackedEntityDataValue> getTrackedEntityDataValues(String eventUid) {
-        Map<String, TrackedEntityDataValue> dataElementToDataValues = new HashMap<>();
-        List<TrackedEntityDataValue> trackedEntityDataValues =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid);
-        if (trackedEntityDataValues != null) {
-            for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
-                dataElementToDataValues.put(dataValue.dataElement(), dataValue);
+    private List<TrackedEntityDataValue> getTrackedEntityDataValues(String eventUid) {
+        return trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid);
+    }
+
+    private List<Event> getEventsInStage(String enrollmentUid, String eventUid, String programStageUid) {
+        List<Event> events;
+        if (enrollmentUid == null) {
+            events = Collections.singletonList(eventStore.queryByUid(eventUid));
+        } else {
+            events = eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid);
+        }
+
+        List<Event> eventsWithValues = new ArrayList<>();
+        for (Event event : events) {
+            eventsWithValues.add(getEventWithValues(event));
+        }
+        return eventsWithValues;
+    }
+
+    private Event getEventWithValues(Event e) {
+        List<TrackedEntityDataValue> dataValues = getTrackedEntityDataValues(e.uid());
+
+        return Event.create(e.uid(), e.enrollmentUid(), e.created(), e.lastUpdated(), e.createdAtClient(),
+                e.lastUpdatedAtClient(), e.program(), e.programStage(), e.organisationUnit(), e.eventDate(),
+                e.status(), e.coordinates(), e.completedDate(), e.dueDate(), e.deleted(), dataValues,
+                e.attributeCategoryOptions(), e.attributeOptionCombo(), e.trackedEntityInstance());
+    }
+
+    private TrackedEntityDataValue evaluateDataElementInStage(String deId,
+                                                              List<Event> events,
+                                                              AggregationType aggregationType) {
+        List<TrackedEntityDataValue> candidates = new ArrayList<>();
+        for (Event event : events) {
+            if (event.trackedEntityDataValues() != null) {
+                for (TrackedEntityDataValue dataValue : event.trackedEntityDataValues()) {
+                    if (deId.equals(dataValue.dataElement())) {
+                        candidates.add(dataValue);
+                    }
+                }
             }
         }
-        return dataElementToDataValues;
+
+        if (candidates.isEmpty()) {
+            return null;
+        } else if (aggregationType.equals(AggregationType.LAST) ||
+                aggregationType.equals(AggregationType.LAST_AVERAGE_ORG_UNIT)) {
+            return candidates.get(candidates.size() - 1);
+        } else {
+            return candidates.get(0);
+        }
     }
 
     private String formatDataValue(TrackedEntityDataValue dataValue) {
-        if(dataElementStore.selectByUid(dataValue.dataElement(), DataElementModel.factory)
+        if(dataElementStore.selectByUid(dataValue.dataElement(), DataElement.factory)
                 .valueType() == ValueType.BOOLEAN) {
             if(dataValue.value().equals("true")) {
                 return "1";
@@ -348,7 +379,8 @@ public class ProgramIndicatorEngine {
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
-                DataElementStore.create(databaseAdapter), ConstantStore.create(databaseAdapter),
+                DataElementStore.create(databaseAdapter),
+                ConstantStore.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter));
     }
 }

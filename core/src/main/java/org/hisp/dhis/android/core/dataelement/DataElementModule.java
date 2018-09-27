@@ -25,33 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement;
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public class ProgramIndicatorModelBuilder extends ModelBuilder<ProgramIndicator, ProgramIndicatorModel> {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public final class DataElementModule {
 
-    @Override
-    public ProgramIndicatorModel buildModel(ProgramIndicator programIndicator) {
-        return ProgramIndicatorModel.builder()
-                .uid(programIndicator.uid())
-                .code(programIndicator.code())
-                .name(programIndicator.name())
-                .displayName(programIndicator.displayName())
-                .created(programIndicator.created())
-                .lastUpdated(programIndicator.lastUpdated())
-                .shortName(programIndicator.shortName())
-                .displayShortName(programIndicator.displayShortName())
-                .description(programIndicator.description())
-                .displayDescription(programIndicator.displayDescription())
-                .displayInForm(programIndicator.displayInForm())
-                .expression(programIndicator.expression())
-                .dimensionItem(programIndicator.dimensionItem())
-                .filter(programIndicator.filter())
-                .decimals(programIndicator.decimals())
-                .aggregationType(programIndicator.aggregationType())
-                .program(programIndicator.program().uid())
-                .build();
+    public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
+
+    private DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
+        this.dataElements = dataElementsRepository;
+    }
+
+    public static DataElementModule create(DatabaseAdapter databaseAdapter) {
+        return new DataElementModule(
+                DataElementCollectionRepository.create(databaseAdapter));
     }
 }

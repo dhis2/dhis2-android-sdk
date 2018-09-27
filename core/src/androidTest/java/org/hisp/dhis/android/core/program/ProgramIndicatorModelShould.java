@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
 import org.hisp.dhis.android.core.program.ProgramIndicatorModel.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
@@ -52,10 +53,11 @@ public class ProgramIndicatorModelShould extends NameableModelAbstractShould<Pro
     private static final String DIMENSION_ITEM = "test_dimension_item";
     private static final String FILTER = "test_filter";
     private static final Integer DECIMALS = 3;
+    private static final AggregationType AGGREGATION_TYPE = AggregationType.AVERAGE;
     private static final String PROGRAM = "program_uid";
 
     public ProgramIndicatorModelShould() {
-        super(new ProgramIndicatorModel.Columns().all(), 16);
+        super(new ProgramIndicatorModel.Columns().all(), 17);
     }
 
     @Override
@@ -68,6 +70,7 @@ public class ProgramIndicatorModelShould extends NameableModelAbstractShould<Pro
                 .dimensionItem(DIMENSION_ITEM)
                 .filter(FILTER)
                 .decimals(DECIMALS)
+                .aggregationType(AGGREGATION_TYPE)
                 .program(PROGRAM);
         return programIndicatorModelBuilder.build();
     }
@@ -85,6 +88,7 @@ public class ProgramIndicatorModelShould extends NameableModelAbstractShould<Pro
                 model.dimensionItem(),
                 model.filter(),
                 model.decimals(),
+                model.aggregationType(),
                 model.program());
     }
 
@@ -97,6 +101,7 @@ public class ProgramIndicatorModelShould extends NameableModelAbstractShould<Pro
         assertThat(columnsList.contains(Columns.DIMENSION_ITEM)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.FILTER)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.DECIMALS)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.AGGREGATION_TYPE)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.PROGRAM)).isEqualTo(true);
     }
 }

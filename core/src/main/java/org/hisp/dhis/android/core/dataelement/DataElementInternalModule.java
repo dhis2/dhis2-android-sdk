@@ -25,33 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement;
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+public final class DataElementInternalModule implements WipeableModule {
 
-public class ProgramIndicatorModelBuilder extends ModelBuilder<ProgramIndicator, ProgramIndicatorModel> {
+    private final DatabaseAdapter databaseAdapter;
+    public final DataElementModule publicModule;
+
+    private DataElementInternalModule(DatabaseAdapter databaseAdapter,
+                                      DataElementModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.publicModule = publicModule;
+    }
 
     @Override
-    public ProgramIndicatorModel buildModel(ProgramIndicator programIndicator) {
-        return ProgramIndicatorModel.builder()
-                .uid(programIndicator.uid())
-                .code(programIndicator.code())
-                .name(programIndicator.name())
-                .displayName(programIndicator.displayName())
-                .created(programIndicator.created())
-                .lastUpdated(programIndicator.lastUpdated())
-                .shortName(programIndicator.shortName())
-                .displayShortName(programIndicator.displayShortName())
-                .description(programIndicator.description())
-                .displayDescription(programIndicator.displayDescription())
-                .displayInForm(programIndicator.displayInForm())
-                .expression(programIndicator.expression())
-                .dimensionItem(programIndicator.dimensionItem())
-                .filter(programIndicator.filter())
-                .decimals(programIndicator.decimals())
-                .aggregationType(programIndicator.aggregationType())
-                .program(programIndicator.program().uid())
-                .build();
+    public void wipeModuleTables() {
+        DataElementStore.create(databaseAdapter).delete();
+        DataElementOperandStore.create(databaseAdapter).delete();
+    }
+
+    public static DataElementInternalModule create(DatabaseAdapter databaseAdapter) {
+        return new DataElementInternalModule(
+                databaseAdapter,
+                DataElementModule.create(databaseAdapter)
+        );
     }
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.NameableModelBuilderAbstractShould;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -62,6 +63,7 @@ public class ProgramIndicatorModelBuilderShould extends NameableModelBuilderAbst
     private static final String DIMENSION_ITEM = "test_dimension_item";
     private static final String FILTER = "test_filter";
     private static final Integer DECIMALS = 3;
+    private static final AggregationType AGGREGATION_TYPE = AggregationType.AVERAGE;
     private static final String PROGRAM = "program_uid";
 
     @Override
@@ -88,6 +90,7 @@ public class ProgramIndicatorModelBuilderShould extends NameableModelBuilderAbst
                 DIMENSION_ITEM,
                 FILTER,
                 DECIMALS,
+                AGGREGATION_TYPE,
                 DELETED,
                 ObjectWithUid.create(PROGRAM),
                 new ArrayList<LegendSet>());
@@ -105,6 +108,7 @@ public class ProgramIndicatorModelBuilderShould extends NameableModelBuilderAbst
         assertThat(model.dimensionItem()).isEqualTo(pojo.dimensionItem());
         assertThat(model.filter()).isEqualTo(pojo.filter());
         assertThat(model.decimals()).isEqualTo(pojo.decimals());
+        assertThat(model.aggregationType()).isEqualTo(pojo.aggregationType());
         assertThat(model.program()).isEqualTo(pojo.program().uid());
     }
 }

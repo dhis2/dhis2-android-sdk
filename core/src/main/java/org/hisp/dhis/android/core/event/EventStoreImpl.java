@@ -152,7 +152,8 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
 
     private static final String QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE = "SELECT " +
             FIELDS +
-            " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'";
+            " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'" +
+            " ORDER BY Event." + Columns.EVENT_DATE;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;
@@ -302,16 +303,16 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
     }
 
     @Override
-    public EventModel queryByUid(String eventUid) {
+    public Event queryByUid(String eventUid) {
         String queryStatement = QUERY_BY_UID.replace("?", eventUid);
 
         Cursor cursor = databaseAdapter.query(queryStatement);
 
-        EventModel object = null;
+        Event object = null;
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                object = EventModel.create(cursor);
+                object = mapEventFromCursor(cursor);
             }
         } finally {
             cursor.close();
@@ -321,24 +322,14 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
     }
 
     @Override
-    public EventModel queryByEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
+    public List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
         String queryStatement = QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE;
         queryStatement = queryStatement.replace("_enrollment", enrollmentUid);
         queryStatement = queryStatement.replace("_programStage", programStageUid);
 
         Cursor cursor = databaseAdapter.query(queryStatement);
 
-        EventModel object = null;
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                object = EventModel.create(cursor);
-            }
-        } finally {
-            cursor.close();
-        }
-
-        return object;
+        return mapEventsFromCursor(cursor);
     }
 
     private List<Event> mapEventsFromCursor(Cursor cursor) {

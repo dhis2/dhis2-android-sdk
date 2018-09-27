@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.utils.services;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -132,7 +133,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         createEvent(event1, programStage1, new Date());
         insertTrackedEntityDataValue(event1, dataElement1, "4");
 
-        setProgramIndicatorExpression(de(programStage1,dataElement1));
+        setProgramIndicatorExpressionAsAverage(de(programStage1,dataElement1));
 
         String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
 
@@ -146,11 +147,26 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         insertTrackedEntityDataValue(event1, dataElement1, "5");
         insertTrackedEntityDataValue(event1, dataElement2, "3");
 
-        setProgramIndicatorExpression(de(programStage1,dataElement1) + " * " + de(programStage1,dataElement2));
+        setProgramIndicatorExpressionAsAverage(de(programStage1,dataElement1) + " * " + de(programStage1,dataElement2));
 
         String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
 
         assertThat(result).isEqualTo("15");
+    }
+
+    @Test
+    public void evaluate_last_value_indicators() {
+        createEnrollment(null, null);
+        createEvent(event1, programStage1, today());
+        createEvent(event2, programStage1, twoDaysBefore());
+        insertTrackedEntityDataValue(event1, dataElement1, "5"); // Expected as last value
+        insertTrackedEntityDataValue(event2, dataElement1, "3");
+
+        setProgramIndicatorExpressionAsLast(de(programStage1,dataElement1));
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event2, programIndicatorUid);
+
+        assertThat(result).isEqualTo("5");
     }
 
     @Test
@@ -163,7 +179,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         insertTrackedEntityDataValue(event2, dataElement2, "1.5");
         insertTrackedEntityAttributeValue(attribute1, "2");
 
-        setProgramIndicatorExpression("(" + de(programStage1,dataElement1) + " + " + de(programStage2,dataElement2) +
+        setProgramIndicatorExpressionAsAverage("(" + de(programStage1,dataElement1) + " + " + de(programStage2,dataElement2) +
                 ") / " + att(attribute1));
 
         String resultWithoutEvent = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, null,
@@ -182,7 +198,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         insertTrackedEntityDataValue(event1, dataElement1, "4.8");
         insertTrackedEntityDataValue(event1, dataElement2, "3");
 
-        setProgramIndicatorExpression("d2:round(" + de(programStage1,dataElement1) + ") * " +
+        setProgramIndicatorExpressionAsAverage("d2:round(" + de(programStage1,dataElement1) + ") * " +
                 de(programStage1, dataElement2));
 
         String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
@@ -198,7 +214,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         createEnrollment(enrollmentDate, null);
         createEvent(event1, programStage1, eventDate);
 
-        setProgramIndicatorExpression("d2:daysBetween(V{enrollment_date}, V{event_date})");
+        setProgramIndicatorExpressionAsAverage("d2:daysBetween(V{enrollment_date}, V{event_date})");
 
         String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
 
@@ -215,9 +231,17 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
                 programUid,programStageUid,orgunitUid,eventDate,null,null,null,null,null,null);
     }
 
-    private void setProgramIndicatorExpression(String expression) {
+    private void setProgramIndicatorExpressionAsAverage(String expression) {
+        insertProgramIndicator(expression, AggregationType.AVERAGE);
+    }
+
+    private void setProgramIndicatorExpressionAsLast(String expression) {
+        insertProgramIndicator(expression, AggregationType.LAST);
+    }
+
+    private void insertProgramIndicator(String expression, AggregationType aggregationType) {
         ProgramIndicatorModel programIndicator = ProgramIndicatorModel.builder().uid(programIndicatorUid)
-                .program(programUid).expression(expression).build();
+                .program(programUid).expression(expression).aggregationType(aggregationType).build();
         ProgramIndicatorStore.create(databaseAdapter()).insert(programIndicator);
     }
 
@@ -236,5 +260,14 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
 
     private String att(String attributeUid) {
         return "A{" + attributeUid + "}";
+    }
+
+    private Date today() {
+        return new Date();
+    }
+
+    private Date twoDaysBefore() {
+        Long newTime = (new Date()).getTime() - (2 * 24 * 60 * 60 * 1000);
+        return new Date(newTime);
     }
 }

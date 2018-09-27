@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.junit.Test;
 
@@ -95,5 +96,6 @@ public class ProgramIndicatorShould {
         assertThat(programIndicator.dimensionItem()).isEqualTo("GSae40Fyppf");
         assertThat(programIndicator.filter()).isNull();
         assertThat(programIndicator.decimals()).isNull();
+        assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE);
     }
 }

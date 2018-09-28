@@ -45,6 +45,8 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_DataValue.Builder.class)
 public abstract class DataValue extends BaseDataModel {
@@ -93,6 +95,7 @@ public abstract class DataValue extends BaseDataModel {
 
     @Nullable
     @JsonProperty()
+    @SuppressFBWarnings("NM_CONFUSING")
     public abstract Boolean followup();
 
     @Nullable

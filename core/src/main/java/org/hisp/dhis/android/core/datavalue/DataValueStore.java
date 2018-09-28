@@ -55,7 +55,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
 
-        BaseModel.Columns columns = new DataValueModel.Columns();
+        BaseModel.Columns columns = new DataValue.Columns();
 
         SQLStatementBuilder sqlStatementBuilder =
                 new SQLStatementBuilder(DataValueTableInfo.TABLE_INFO.name(), columns);

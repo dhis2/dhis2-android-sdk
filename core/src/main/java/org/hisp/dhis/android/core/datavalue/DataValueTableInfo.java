@@ -35,8 +35,9 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 public class DataValueTableInfo {
 
-    // Different BD column name than API field.
+    // Different BD column names than API fields.
     private static final String ORGANISATION_UNIT =  "organisationUnit";
+    private static final String FOLLOW_UP = "followUp";
 
     private DataValueTableInfo() {}
 
@@ -67,7 +68,7 @@ public class DataValueTableInfo {
                     DataValueFields.CREATED,
                     DataValueFields.LAST_UPDATED,
                     DataValueFields.COMMENT,
-                    DataValueFields.FOLLOW_UP,
+                    DataValueTableInfo.FOLLOW_UP,
                     STATE);
         }
 

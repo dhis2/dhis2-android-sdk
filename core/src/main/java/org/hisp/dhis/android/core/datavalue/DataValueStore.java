@@ -78,7 +78,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
             sqLiteBind(sqLiteStatement, 8, dataValue.created());
             sqLiteBind(sqLiteStatement, 9, dataValue.lastUpdated());
             sqLiteBind(sqLiteStatement, 10, dataValue.comment());
-            sqLiteBind(sqLiteStatement, 11, dataValue.followup());
+            sqLiteBind(sqLiteStatement, 11, dataValue.followUp());
             sqLiteBind(sqLiteStatement, 12, dataValue.state());
         }
     };

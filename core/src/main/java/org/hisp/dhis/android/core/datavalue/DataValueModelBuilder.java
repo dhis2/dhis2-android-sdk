@@ -52,7 +52,7 @@ public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueMode
                 .created(dataValue.created())
                 .lastUpdated(dataValue.lastUpdated())
                 .comment(dataValue.comment())
-                .followUp(dataValue.followUp())
+                .followup(dataValue.followup())
                 .build();
     }
 }

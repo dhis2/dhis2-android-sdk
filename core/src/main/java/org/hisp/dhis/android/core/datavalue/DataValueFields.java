@@ -44,7 +44,7 @@ final class DataValueFields {
     static final String CREATED = "created";
     static final String LAST_UPDATED = "lastUpdated";
     static final String COMMENT = "comment";
-    static final String FOLLOW_UP = "followUp";
+    static final String FOLLOW_UP = "followup";
     static final String DELETED = "deleted";
 
     private static FieldsHelper<DataValue> fieldsHelper = new FieldsHelper<>();

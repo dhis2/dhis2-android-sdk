@@ -93,7 +93,7 @@ public abstract class DataValue extends BaseDataModel {
 
     @Nullable
     @JsonProperty()
-    public abstract Boolean followUp();
+    public abstract Boolean followup();
 
     @Nullable
     @JsonProperty
@@ -148,8 +148,7 @@ public abstract class DataValue extends BaseDataModel {
 
         public abstract DataValue.Builder comment(@NonNull String comment);
 
-        @JsonProperty(DataValueFields.FOLLOW_UP)
-        public abstract DataValue.Builder followUp(@NonNull Boolean followUp);
+        public abstract DataValue.Builder followup(@NonNull Boolean followUp);
 
         public abstract DataValue.Builder deleted(@NonNull Boolean deleted);
 

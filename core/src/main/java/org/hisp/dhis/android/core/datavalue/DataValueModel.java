@@ -126,7 +126,7 @@ public abstract class DataValueModel extends BaseDataModel {
 
     @Nullable
     @ColumnName(Columns.FOLLOW_UP)
-    public abstract Boolean followUp();
+    public abstract Boolean followup();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
@@ -150,7 +150,7 @@ public abstract class DataValueModel extends BaseDataModel {
 
         public abstract Builder comment(String comment);
 
-        public abstract Builder followUp(Boolean followUp);
+        public abstract Builder followup(Boolean followUp);
 
         public abstract DataValueModel build();
     }

@@ -85,7 +85,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel> {
                 .created(CREATED)
                 .lastUpdated(LAST_UPDATED)
                 .comment(COMMENT)
-                .followUp(FOLLOW_UP)
+                .followup(FOLLOW_UP)
                 .state(STATE);
         return dataValueModelBuilder.build();
     }
@@ -103,7 +103,7 @@ public class DataValueModelShould extends ModelAbstractShould<DataValueModel> {
                 CREATED_STR,
                 LAST_UPDATED_STR,
                 model.comment(),
-                toInteger(model.followUp()),
+                toInteger(model.followup()),
                 model.state());
     }
 

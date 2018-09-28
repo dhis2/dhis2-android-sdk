@@ -61,6 +61,6 @@ public class DataValueShould extends BaseObjectShould implements ObjectShould {
         assertThat(dataValue.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.parseDate("2011-01-11T00:00:00.000+0000"));
         assertThat(dataValue.comment()).isEqualTo("");
-        assertThat(dataValue.followUp()).isEqualTo(false);
+        assertThat(dataValue.followup()).isEqualTo(false);
     }
 }

@@ -68,7 +68,6 @@ public class DataValueTableInfo {
                     DataValueFields.LAST_UPDATED,
                     DataValueFields.COMMENT,
                     DataValueFields.FOLLOW_UP,
-                    DataValueFields.DELETED,
                     STATE);
         }
 

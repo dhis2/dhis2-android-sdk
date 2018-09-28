@@ -33,7 +33,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
@@ -55,10 +54,9 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
 
-        BaseModel.Columns columns = new DataValue.Columns();
-
         SQLStatementBuilder sqlStatementBuilder =
-                new SQLStatementBuilder(DataValueTableInfo.TABLE_INFO.name(), columns);
+                new SQLStatementBuilder(DataValueTableInfo.TABLE_INFO.name(),
+                        DataValueTableInfo.TABLE_INFO.columns());
 
         return new DataValueStore(databaseAdapter, databaseAdapter.compileStatement(
                 sqlStatementBuilder.insert()),

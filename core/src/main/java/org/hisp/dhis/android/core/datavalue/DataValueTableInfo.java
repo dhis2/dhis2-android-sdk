@@ -35,6 +35,9 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 public class DataValueTableInfo {
 
+    // Different BD column name than API field.
+    private static final String ORGANISATION_UNIT =  "organisationUnit";
+
     private DataValueTableInfo() {}
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
@@ -49,8 +52,6 @@ public class DataValueTableInfo {
             return new DataValueTableInfo.Columns();
         }
     };
-
-    private static final String ORGANISATION_UNIT =  "organisationUnit";
 
     static class Columns extends BaseDataModel.Columns {
         @Override

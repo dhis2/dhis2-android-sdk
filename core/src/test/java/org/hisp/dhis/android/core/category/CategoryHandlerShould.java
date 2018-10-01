@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class CategoryHandlerShould {
             categoryCategoryOptionLinkHandler;
 
     @Mock
-    private GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler;
+    private SyncHandler<CategoryOption> categoryOptionHandler;
 
     private CategoryHandler mCategoryHandler;
 

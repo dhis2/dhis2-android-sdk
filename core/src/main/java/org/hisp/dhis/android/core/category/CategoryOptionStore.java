@@ -16,17 +16,17 @@ public final class CategoryOptionStore {
     private CategoryOptionStore() {
     }
 
-    private static StatementBinder<CategoryOptionModel> BINDER = new NameableStatementBinder<CategoryOptionModel>() {
+    private static StatementBinder<CategoryOption> BINDER = new NameableStatementBinder<CategoryOption>() {
         @Override
-        public void bindToStatement(@NonNull CategoryOptionModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull CategoryOption o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.startDate());
             sqLiteBind(sqLiteStatement, 12, o.endDate());
         }
     };
 
-    public static IdentifiableObjectStore<CategoryOptionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, CategoryOptionModel.TABLE,
-                new CategoryOptionModel.Columns().all(), BINDER);
+    public static IdentifiableObjectStore<CategoryOption> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter,
+                CategoryOptionTableInfo.TABLE_INFO, BINDER);
     }
 }

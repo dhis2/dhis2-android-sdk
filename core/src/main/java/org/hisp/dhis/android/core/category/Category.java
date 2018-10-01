@@ -65,7 +65,7 @@ public abstract class Category extends BaseNameableObject {
 
     static final Fields<Category> allFields = Fields.<Category>builder().fields(
             uid, code, name, displayName, created, lastUpdated, deleted, shortName, displayShortName,
-            dataDimensionType, categoryOptions.with(CategoryOption.allFields)).build();
+            dataDimensionType, categoryOptions.with(CategoryOptionFields.allFields)).build();
 
     @Nullable
     @JsonProperty(DATA_DIMENSION_TYPE)

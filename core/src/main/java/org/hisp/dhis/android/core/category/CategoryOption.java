@@ -45,12 +45,8 @@ import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.Date;
-
-import static org.hisp.dhis.android.core.category.CategoryOptionFields.END_DATE;
-import static org.hisp.dhis.android.core.category.CategoryOptionFields.START_DATE;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)

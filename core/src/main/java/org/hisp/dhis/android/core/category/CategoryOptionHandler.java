@@ -7,6 +7,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class CategoryOptionHandler  {
 
+    private CategoryOptionHandler() {
+    }
+
     public static SyncHandler<CategoryOption> create(DatabaseAdapter databaseAdapter) {
         return new IdentifiableSyncHandlerImpl<>(CategoryOptionStore.create(databaseAdapter));
     }

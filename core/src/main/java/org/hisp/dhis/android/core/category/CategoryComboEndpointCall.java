@@ -75,7 +75,7 @@ public final class CategoryComboEndpointCall extends SyncCall<List<CategoryCombo
                         CategoryOptionCombo.categoryCombo.with(CategoryCombo.uid),
                         CategoryOptionCombo.displayName,
                         CategoryOptionCombo.categoryOptions.with(
-                                CategoryOption.uid
+                                CategoryOptionFields.uid
                         )))
                 .build();
     }

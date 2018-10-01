@@ -28,83 +28,74 @@
 
 package org.hisp.dhis.android.core.category;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOption.Builder.class)
-public abstract class CategoryOption extends BaseNameableObject {
-    private static final String START_DATE = "startDate";
-    private static final String END_DATE = "endDate";
+public abstract class CategoryOption extends BaseNameableObject implements Model {
 
-    public static final Field<CategoryOption, String> uid = Field.create(UID);
-    private static final Field<CategoryOption, String> code = Field.create(CODE);
-    private static final Field<CategoryOption, String> name = Field.create(NAME);
-    private static final Field<CategoryOption, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<CategoryOption, String> created = Field.create(CREATED);
-    private static final Field<CategoryOption, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<CategoryOption, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<CategoryOption, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<CategoryOption, String> description = Field.create(DESCRIPTION);
-    private static final Field<CategoryOption, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<CategoryOption, String> startDate = Field.create(START_DATE);
-    private static final Field<CategoryOption, String> endDate = Field.create(END_DATE);
-    private static final Field<CategoryOption, Boolean> deleted = Field.create(DELETED);
-
-    static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
-            displayDescription, startDate, endDate, deleted).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(START_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date startDate();
 
     @Nullable
-    @JsonProperty(END_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
+
+
+    public abstract ContentValues toContentValues();
+
+    static CategoryOption create(Cursor cursor) {
+        return $AutoValue_CategoryOption.createFromCursor(cursor);
+    }
+
+    public static final CursorModelFactory<CategoryOption> factory = new CursorModelFactory<CategoryOption>() {
+        @Override
+        public CategoryOption fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_CategoryOption.Builder();
     }
 
-    @JsonCreator
-    public static CategoryOption create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(START_DATE) Date startDate,
-            @JsonProperty(END_DATE) Date endDate) {
-
-        return builder().uid(uid).code(code).name(name).displayName(displayName).created(created)
-                .lastUpdated(lastUpdated).shortName(shortName).displayShortName(displayShortName)
-                .description(description).displayDescription(displayDescription).startDate(startDate)
-                .endDate(endDate).build();
-    }
-
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-        @JsonProperty(START_DATE)
         public abstract Builder startDate(@Nullable Date startDate);
 
-        @JsonProperty(END_DATE)
         public abstract Builder endDate(@Nullable Date endDate);
 
         abstract CategoryOption autoBuild();

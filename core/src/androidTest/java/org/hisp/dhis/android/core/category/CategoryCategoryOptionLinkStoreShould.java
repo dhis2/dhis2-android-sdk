@@ -89,8 +89,8 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewOption() {
-        IdentifiableObjectStore<CategoryOptionModel> optionStore = CategoryOptionStore.create(databaseAdapter());
-        optionStore.insert(new CategoryOptionModelBuilder().buildModel(newCategoryOption));
+        IdentifiableObjectStore<CategoryOption> optionStore = CategoryOptionStore.create(databaseAdapter());
+        optionStore.insert(newCategoryOption);
     }
 
     private void thenAssertLastInsertedIDIsOne(){

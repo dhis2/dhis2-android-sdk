@@ -28,25 +28,26 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public class CategoryOptionModelBuilder extends ModelBuilder<CategoryOption, CategoryOptionModel> {
+public final class CategoryOptionFields {
 
-    @Override
-    public CategoryOptionModel buildModel(CategoryOption categoryOption) {
-        return CategoryOptionModel.builder()
-                .uid(categoryOption.uid())
-                .code(categoryOption.code())
-                .name(categoryOption.name())
-                .displayName(categoryOption.displayName())
-                .created(categoryOption.created())
-                .lastUpdated(categoryOption.lastUpdated())
-                .shortName(categoryOption.shortName())
-                .displayShortName(categoryOption.displayShortName())
-                .description(categoryOption.description())
-                .displayDescription(categoryOption.displayDescription())
-                .startDate(categoryOption.startDate())
-                .endDate(categoryOption.endDate())
-                .build();
+    static final String START_DATE = "startDate";
+    static final String END_DATE = "endDate";
+
+    private static final FieldsHelper<CategoryOption> fh = new FieldsHelper<>();
+
+    public static final Field<CategoryOption, String> uid = fh.uid();
+
+    public static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder()
+            .fields(fh.getNameableFields())
+            .fields(
+                    fh.<String>field(START_DATE),
+                    fh.<String>field(END_DATE)
+            ).build();
+
+    private CategoryOptionFields() {
     }
 }

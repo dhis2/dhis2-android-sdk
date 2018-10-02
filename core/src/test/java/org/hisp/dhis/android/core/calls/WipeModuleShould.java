@@ -32,10 +32,12 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserModel;
@@ -49,13 +51,13 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class WipeDBCallableShould {
+public class WipeModuleShould {
 
     @Mock
     private Transaction transaction;
@@ -78,30 +80,71 @@ public class WipeDBCallableShould {
     @Mock
     private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
-    private Callable<Unit> WipeDBCallable;
+    @Mock
+    private ObjectWithoutUidStoreImpl<DataValue> dataValueStore;
+
+    @Mock
+    private IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> trackedEntityAttributeStore;
+
+    private WipeModule wipeModule;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
-        List<DeletableStore> deletableStoreList = new ArrayList<>();
-        deletableStoreList.add(userStore);
-        deletableStoreList.add(userCredentialsStore);
-        deletableStoreList.add(userOrganisationUnitLinkStore);
-        deletableStoreList.add(authenticatedUserStore);
-        deletableStoreList.add(organisationUnitStore);
-        WipeDBCallable = new WipeDBCallable(databaseAdapter, deletableStoreList);
+        List<DeletableStore> metadataStoreList = new ArrayList<>();
+        metadataStoreList.add(userStore);
+        metadataStoreList.add(userCredentialsStore);
+        metadataStoreList.add(userOrganisationUnitLinkStore);
+        metadataStoreList.add(authenticatedUserStore);
+        metadataStoreList.add(organisationUnitStore);
+
+        List<DeletableStore> dataStoreList = new ArrayList<>();
+        dataStoreList.add(dataValueStore);
+        dataStoreList.add(trackedEntityAttributeStore);
+        wipeModule = new WipeModule(databaseAdapter, metadataStoreList, dataStoreList);
     }
 
     @Test
-    public void clear_tables() throws Exception {
-        WipeDBCallable.call();
+    public void wipe_all_tables() throws Exception {
+        wipeModule.wipeEverything();
 
         verify(userStore).delete();
         verify(userCredentialsStore).delete();
         verify(userOrganisationUnitLinkStore).delete();
         verify(authenticatedUserStore).delete();
         verify(organisationUnitStore).delete();
+
+        verify(dataValueStore).delete();
+        verify(trackedEntityAttributeStore).delete();
+    }
+
+    @Test
+    public void wipe_metadata_tables() throws Exception {
+        wipeModule.wipeMetadata();
+
+        verify(userStore).delete();
+        verify(userCredentialsStore).delete();
+        verify(userOrganisationUnitLinkStore).delete();
+        verify(authenticatedUserStore).delete();
+        verify(organisationUnitStore).delete();
+
+        verify(dataValueStore, never()).delete();
+        verify(trackedEntityAttributeStore, never()).delete();
+    }
+
+    @Test
+    public void wipe_data_tables() throws Exception {
+        wipeModule.wipeData();
+
+        verify(userStore, never()).delete();
+        verify(userCredentialsStore, never()).delete();
+        verify(userOrganisationUnitLinkStore, never()).delete();
+        verify(authenticatedUserStore, never()).delete();
+        verify(organisationUnitStore, never()).delete();
+
+        verify(dataValueStore).delete();
+        verify(trackedEntityAttributeStore).delete();
     }
 }

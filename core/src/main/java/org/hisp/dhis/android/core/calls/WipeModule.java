@@ -10,10 +10,10 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
 import org.hisp.dhis.android.core.category.CategoryStore;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.common.WipeableModule;
@@ -75,47 +75,82 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public final class WipeDBCallable extends SyncCall<Unit> {
+public final class WipeModule {
     private final DatabaseAdapter databaseAdapter;
 
     @NonNull
-    private final List<DeletableStore> deletableStores;
+    private final List<DeletableStore> metadataStores;
+    private final List<DeletableStore> dataStores;
     private final WipeableModule[] wipeableModules;
+    private final D2CallExecutor executor = new D2CallExecutor();
 
-    WipeDBCallable(@NonNull DatabaseAdapter databaseAdapter,
-                   @NonNull List<DeletableStore> deletableStores, WipeableModule... wipeableModules) {
+    WipeModule(@NonNull DatabaseAdapter databaseAdapter,
+               @NonNull List<DeletableStore> metadataStores,
+               @NonNull List<DeletableStore> dataStores,
+               WipeableModule... wipeableModules) {
         this.databaseAdapter = databaseAdapter;
-        this.deletableStores = deletableStores;
+        this.metadataStores = metadataStores;
+        this.dataStores = dataStores;
         this.wipeableModules = wipeableModules;
     }
 
-    @Override
-    public Unit call() throws Exception {
-        setExecuted();
-
-        final D2CallExecutor executor = new D2CallExecutor();
-
+    public Unit wipeEverything() throws D2CallException {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
             public Unit call() {
-
-                // clear out all tables
-                for (DeletableStore deletableStore : deletableStores) {
-                    deletableStore.delete();
-                }
-
-                for (WipeableModule wipeableModule : wipeableModules) {
-                    wipeableModule.wipeModuleTables();
-                }
+                wipeMetadataInternal();
+                wipeDataInternal();
 
                 return new Unit();
             }
         });
     }
 
-    public static WipeDBCallable create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
+    public Unit wipeMetadata() throws D2CallException {
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+            @Override
+            public Unit call() {
+                wipeMetadataInternal();
 
-        List<DeletableStore> deletableStores = Arrays.asList(
+                return new Unit();
+            }
+        });
+    }
+
+    public Unit wipeData() throws D2CallException {
+        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+            @Override
+            public Unit call() {
+                wipeDataInternal();
+
+                return new Unit();
+            }
+        });
+    }
+
+    private void wipeMetadataInternal() {
+        for (DeletableStore deletableStore : metadataStores) {
+            deletableStore.delete();
+        }
+
+        for (WipeableModule wipeableModule : wipeableModules) {
+            wipeableModule.wipeMetadata();
+        }
+    }
+
+    private void wipeDataInternal() {
+        for (DeletableStore deletableStore : dataStores) {
+            deletableStore.delete();
+        }
+
+        for (WipeableModule wipeableModule : wipeableModules) {
+            wipeableModule.wipeData();
+        }
+    }
+
+    public static WipeModule create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
+
+        List<DeletableStore> metadataStores = Arrays.asList(
                 UserStore.create(databaseAdapter),
                 new UserCredentialsStoreImpl(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
@@ -124,9 +159,7 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 new ResourceStoreImpl(databaseAdapter),
                 new UserRoleStoreImpl(databaseAdapter),
                 ProgramStore.create(databaseAdapter),
-                new TrackedEntityAttributeStoreImpl(databaseAdapter),
 
-                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
                 new ProgramRuleVariableStoreImpl(databaseAdapter),
                 ProgramIndicatorStore.create(databaseAdapter),
                 ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter),
@@ -140,12 +173,7 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 new ProgramStageSectionStoreImpl(databaseAdapter),
                 ProgramStageStore.create(databaseAdapter),
                 TrackedEntityTypeStore.create(databaseAdapter),
-                new TrackedEntityInstanceStoreImpl(databaseAdapter),
-                new EnrollmentStoreImpl(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
                 OrganisationUnitProgramLinkStore.create(databaseAdapter),
-                new EventStoreImpl(databaseAdapter),
 
                 CategoryStore.create(databaseAdapter),
                 CategoryOptionStore.create(databaseAdapter),
@@ -161,17 +189,14 @@ public final class WipeDBCallable extends SyncCall<Unit> {
 
                 IndicatorTypeStore.create(databaseAdapter),
                 DataSetIndicatorLinkStore.create(databaseAdapter),
-                DataValueStore.create(databaseAdapter),
                 PeriodStore.create(databaseAdapter),
                 ObjectStyleStore.create(databaseAdapter),
                 ValueTypeDeviceRenderingStore.create(databaseAdapter),
-                NoteStore.create(databaseAdapter),
                 LegendStore.create(databaseAdapter),
                 LegendSetStore.create(databaseAdapter),
 
                 ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
                 SystemSettingStore.create(databaseAdapter),
-                TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 SectionStore.create(databaseAdapter),
                 SectionDataElementLinkStore.create(databaseAdapter),
                 SectionGreyedFieldsLinkStore.create(databaseAdapter),
@@ -184,7 +209,20 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 DataSetCompleteRegistrationStore.create(databaseAdapter)
         );
 
-        return new WipeDBCallable(databaseAdapter, deletableStores,
+        List<DeletableStore> dataStores = Arrays.asList(
+                new TrackedEntityAttributeStoreImpl(databaseAdapter),
+                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
+                new TrackedEntityInstanceStoreImpl(databaseAdapter),
+                new EnrollmentStoreImpl(databaseAdapter),
+                new TrackedEntityDataValueStoreImpl(databaseAdapter),
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
+                new EventStoreImpl(databaseAdapter),
+                DataValueStore.create(databaseAdapter),
+                NoteStore.create(databaseAdapter),
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter)
+        );
+
+        return new WipeModule(databaseAdapter, metadataStores, dataStores,
                 internalModules.systemInfo, internalModules.relationshipModule);
     }
 }

@@ -12,6 +12,9 @@ import org.hisp.dhis.android.core.common.Payload;
 
 public class CategoryEndpointCall {
 
+    private CategoryEndpointCall() {
+    }
+
     public static ListCallFactory<Category> factory(final CategoryService service) {
         return new ListCallFactoryImpl<Category>() {
 

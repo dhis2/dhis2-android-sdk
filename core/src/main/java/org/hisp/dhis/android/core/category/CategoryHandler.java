@@ -13,7 +13,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-public class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
+class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
 
     private final SyncHandler<CategoryOption> categoryOptionHandler;
     private final LinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>

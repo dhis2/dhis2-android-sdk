@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class CategoryOptionFields {
+final class CategoryOptionFields {
 
     static final String START_DATE = "startDate";
     static final String END_DATE = "endDate";

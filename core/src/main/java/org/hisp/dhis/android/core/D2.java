@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
-import org.hisp.dhis.android.core.calls.WipeDBCallable;
+import org.hisp.dhis.android.core.calls.WipeModule;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
@@ -86,6 +86,7 @@ public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
     private final D2InternalModules internalModules;
+    private final WipeModule wipeModule;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -93,6 +94,7 @@ public final class D2 {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
         this.internalModules = D2InternalModules.create(databaseAdapter, retrofit);
+        this.wipeModule = WipeModule.create(databaseAdapter, internalModules);
         SSLContextInitializer.initializeSSLContext(context);
     }
 
@@ -119,11 +121,6 @@ public final class D2 {
     @NonNull
     public Callable<Unit> logout() {
         return LogOutUserCallable.create(databaseAdapter);
-    }
-
-    @NonNull
-    public Callable<Unit> wipeDB() {
-        return WipeDBCallable.create(databaseAdapter, internalModules);
     }
 
     @NonNull
@@ -225,6 +222,10 @@ public final class D2 {
 
     public DataElementModule dataElementModule() {
         return this.internalModules.dataElementModule.publicModule;
+    }
+
+    public WipeModule wipeModule() {
+        return wipeModule;
     }
 
     public static class Builder {

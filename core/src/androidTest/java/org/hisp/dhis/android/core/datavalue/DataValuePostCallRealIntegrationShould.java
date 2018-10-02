@@ -72,9 +72,9 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
         d2.syncMetaData().call();
         d2.syncAggregatedData().call();
 
-        DataValueModel dataValueModel = getTestDataValueModelWith(State.TO_POST, 1);
+        DataValue dataValue = getTestDataValueWith(State.TO_POST, 1);
 
-        assertThat(insertToPostDataValue(dataValueModel)).isTrue();
+        assertThat(insertToPostDataValue(dataValue)).isTrue();
 
         ImportSummary importSummary = d2.syncDataValues().call();
 
@@ -92,9 +92,9 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
         d2.syncMetaData().call();
         d2.syncAggregatedData().call();
 
-        DataValueModel dataValueModel = getTestDataValueModelWith(State.TO_UPDATE,2);
+        DataValue dataValue = getTestDataValueWith(State.TO_UPDATE,2);
 
-        assertThat(insertToPostDataValue(dataValueModel)).isTrue();
+        assertThat(insertToPostDataValue(dataValue)).isTrue();
 
         ImportSummary importSummary = d2.syncDataValues().call();
 
@@ -105,15 +105,15 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
 
-    private boolean insertToPostDataValue(DataValueModel dataValueModel){
+    private boolean insertToPostDataValue(DataValue dataValue){
 
-        return (dataValueStore.insert(dataValueModel) > 0);
+        return (dataValueStore.insert(dataValue) > 0);
     }
 
-    private DataValueModel getTestDataValueModelWith(State state, int value) {
+    private DataValue getTestDataValueWith(State state, int value) {
 
-        DataValueModel dataValueModel =
-                DataValueModel.builder()
+        DataValue dataValue =
+                DataValue.builder()
                         .dataElement("WUg3MYWQ7pt")
                         .categoryOptionCombo("bjDvmb4bfuf")
                         .attributeOptionCombo("nvLjum6Xbv5")
@@ -123,6 +123,6 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
                         .state(state)
                         .build();
 
-        return dataValueModel;
+        return dataValue;
     }
 }

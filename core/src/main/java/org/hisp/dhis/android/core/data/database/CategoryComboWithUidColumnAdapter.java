@@ -26,28 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import android.database.Cursor;
 
-final class CategoryFields {
+import org.hisp.dhis.android.core.category.CategoryCombo;
 
-    private static final String CATEGORY_OPTIONS = "categoryOptions";
-    static final String DATA_DIMENSION_TYPE = "dataDimensionType";
+public class CategoryComboWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<CategoryCombo> {
 
-    private static final FieldsHelper<Category> fh = new FieldsHelper<>();
-
-    public static final Field<Category, String> uid = fh.uid();
-
-    public static final Fields<Category> allFields = Fields.<Category>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<CategoryOption>nestedField(CATEGORY_OPTIONS).with(CategoryOptionFields.allFields),
-                    fh.<String>field(DATA_DIMENSION_TYPE)
-            ).build();
-
-    private CategoryFields() {
+    @Override
+    public CategoryCombo fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return CategoryCombo.builder().uid(uid).build();
     }
 }

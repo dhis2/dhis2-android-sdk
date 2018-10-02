@@ -28,24 +28,36 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-final class CategoryOptionComboFields {
+public final class CategoryOptionComboTableInfo {
 
-    static final String CATEGORY_COMBO = "categoryCombo";
-    private static final String CATEGORY_OPTIONS = "categoryOptions";
+    private CategoryOptionComboTableInfo() {
+    }
 
-    private static final FieldsHelper<CategoryOptionCombo> fh = new FieldsHelper<>();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
+        @Override
+        public String name() {
+            return "CategoryOptionCombo";
+        }
 
-    public static final Fields<CategoryOptionCombo> allFields = Fields.<CategoryOptionCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_COMBO),
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS)
-            ).build();
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-    private CategoryOptionComboFields() {
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CategoryOptionComboFields.CATEGORY_COMBO
+            );
+        }
     }
 }

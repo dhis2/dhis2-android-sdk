@@ -26,26 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-final class CategoryOptionComboFields {
+import java.util.List;
 
-    static final String CATEGORY_COMBO = "categoryCombo";
-    private static final String CATEGORY_OPTIONS = "categoryOptions";
-
-    private static final FieldsHelper<CategoryOptionCombo> fh = new FieldsHelper<>();
-
-
-    public static final Fields<CategoryOptionCombo> allFields = Fields.<CategoryOptionCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_COMBO),
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS)
-            ).build();
-
-    private CategoryOptionComboFields() {
-    }
+public final class IgnoreCategoryOptionListAdapter extends IgnoreColumnAdapter<List<CategoryOption>> {
 }

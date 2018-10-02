@@ -65,19 +65,9 @@ public final class CategoryComboEndpointCall extends SyncCall<List<CategoryCombo
                 CategoryCombo.name, CategoryCombo.displayName,
                 CategoryCombo.created, CategoryCombo.lastUpdated, CategoryCombo.deleted,
                 CategoryCombo.displayName, CategoryCombo.isDefault, CategoryCombo.categories,
-                CategoryCombo.categoryOptionCombos.with(CategoryOptionCombo.uid,
-                        CategoryOptionCombo.code,
-                        CategoryOptionCombo.name,
-                        CategoryOptionCombo.displayName,
-                        CategoryOptionCombo.created,
-                        CategoryOptionCombo.lastUpdated,
-                        CategoryOptionCombo.deleted,
-                        CategoryOptionCombo.categoryCombo.with(CategoryCombo.uid),
-                        CategoryOptionCombo.displayName,
-                        CategoryOptionCombo.categoryOptions.with(
-                                CategoryOptionFields.uid
-                        )))
-                .build();
+                CategoryCombo.categoryOptionCombos.with(
+                        CategoryOptionComboFields.allFields)
+        ).build();
     }
 
     public static final GenericCallFactory<List<CategoryCombo>> FACTORY

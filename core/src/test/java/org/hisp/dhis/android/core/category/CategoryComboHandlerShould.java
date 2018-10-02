@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class CategoryComboHandlerShould {
     private LinkModelHandler<Category, CategoryCategoryComboLinkModel> mockComboLinkStore;
 
     @Mock
-    private CategoryOptionComboHandler mockOptionComboHandler;
+    private SyncHandler<CategoryOptionCombo> mockOptionComboHandler;
 
     @Mock
     private CategoryComboStore mockComboStore;

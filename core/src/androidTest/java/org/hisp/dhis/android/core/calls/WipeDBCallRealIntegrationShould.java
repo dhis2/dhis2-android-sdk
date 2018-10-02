@@ -30,7 +30,7 @@ public class WipeDBCallRealIntegrationShould extends AbsStoreTestCase {
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
@@ -47,7 +47,7 @@ public class WipeDBCallRealIntegrationShould extends AbsStoreTestCase {
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }

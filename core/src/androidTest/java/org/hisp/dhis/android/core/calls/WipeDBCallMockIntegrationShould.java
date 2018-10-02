@@ -51,7 +51,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
@@ -66,7 +66,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }

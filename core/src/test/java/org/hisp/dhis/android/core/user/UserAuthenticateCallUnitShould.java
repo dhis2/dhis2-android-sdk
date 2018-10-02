@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.WipeModule;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
@@ -131,7 +132,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private Call<SystemInfo> systemInfoEndpointCall;
 
     @Mock
-    private Callable<Unit> dbWipeCall;
+    private WipeModule wipeModule;
 
     private String baseEndpoint;
 
@@ -181,7 +182,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private UserAuthenticateCall instantiateCall(String username, String password) {
         return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory, versionManager,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
-                systemInfoRepository, userStore, dbWipeCall,
+                systemInfoRepository, userStore, wipeModule,
                 username, password, baseEndpoint + "/api/");
     }
 
@@ -256,14 +257,14 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
         userAuthenticateCall.call();
-        verify(dbWipeCall, never()).call();
+        verify(wipeModule, never()).wipeEverything();
         verifySuccess();
     }
 
     @Test
     public void wipe_db_when_previously_another_user() throws Exception {
         userAuthenticateCall.call();
-        verify(dbWipeCall, never()).call();
+        verify(wipeModule, never()).wipeEverything();
         verifySuccess();
     }
 
@@ -273,7 +274,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         userAuthenticateCall.call();
 
-        verify(dbWipeCall).call();
+        verify(wipeModule).wipeEverything();
         verifySuccess();
     }
 
@@ -282,7 +283,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         userAuthenticateCall.call();
 
-        verify(dbWipeCall, never()).call();
+        verify(wipeModule, never()).wipeEverything();
         verifySuccess();
     }
 
@@ -292,7 +293,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         userAuthenticateCall.call();
 
-        verify(dbWipeCall).call();
+        verify(wipeModule).wipeEverything();
         verifySuccess();
     }
 

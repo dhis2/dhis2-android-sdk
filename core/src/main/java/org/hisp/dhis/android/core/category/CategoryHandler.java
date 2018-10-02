@@ -7,8 +7,8 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.List;
 class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
 
     private final SyncHandler<CategoryOption> categoryOptionHandler;
-    private final LinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
+    private final OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
             categoryCategoryOptionLinkHandler;
 
     CategoryHandler(
             @NonNull IdentifiableObjectStore<Category> categoryStore,
             @NonNull SyncHandler<CategoryOption> categoryOptionHandler,
-            @NonNull LinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
+            @NonNull OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
                     categoryCategoryOptionLinkHandler) {
         super(categoryStore);
         this.categoryOptionHandler = categoryOptionHandler;
@@ -43,7 +43,7 @@ class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
         return new CategoryHandler(
                 CategoryStore.create(databaseAdapter),
                 CategoryOptionHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<CategoryOption, CategoryCategoryOptionLinkModel>(
+                new OrderedLinkModelHandlerImpl<CategoryOption, CategoryCategoryOptionLinkModel>(
                         CategoryCategoryOptionLinkStore.create(databaseAdapter)
                 )
         );

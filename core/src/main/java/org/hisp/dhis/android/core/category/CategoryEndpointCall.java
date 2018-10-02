@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCa
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 
-public class CategoryEndpointCall {
+public final class CategoryEndpointCall {
 
     private CategoryEndpointCall() {
     }

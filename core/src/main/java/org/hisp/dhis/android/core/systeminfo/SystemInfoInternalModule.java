@@ -55,8 +55,12 @@ public final class SystemInfoInternalModule implements WipeableModule {
     };
 
     @Override
-    public void wipeModuleTables() {
+    public void wipeMetadata() {
         SystemInfoStore.create(databaseAdapter).delete();
+    }
+
+    @Override
+    public void wipeData() {
     }
 
     public static SystemInfoInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

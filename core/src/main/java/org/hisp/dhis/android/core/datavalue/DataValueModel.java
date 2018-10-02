@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 import java.util.Date;
 
 @AutoValue
+@Deprecated
 public abstract class DataValueModel extends BaseDataModel {
 
     public static final String TABLE = "DataValue";

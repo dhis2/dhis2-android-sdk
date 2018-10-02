@@ -48,11 +48,15 @@ public final class RelationshipInternalModule implements WipeableModule {
     // TODO Include call RelationshipTypeEndpointCall
 
     @Override
-    public void wipeModuleTables() {
-        RelationshipStore.create(databaseAdapter).delete();
-        RelationshipItemStoreImpl.create(databaseAdapter).delete();
+    public void wipeMetadata() {
         RelationshipTypeStore.create(databaseAdapter).delete();
         RelationshipConstraintStore.create(databaseAdapter).delete();
+    }
+
+    @Override
+    public void wipeData() {
+        RelationshipStore.create(databaseAdapter).delete();
+        RelationshipItemStoreImpl.create(databaseAdapter).delete();
     }
 
     public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter,

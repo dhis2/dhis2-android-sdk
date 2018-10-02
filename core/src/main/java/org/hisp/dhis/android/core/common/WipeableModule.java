@@ -29,5 +29,6 @@
 package org.hisp.dhis.android.core.common;
 
 public interface WipeableModule {
-   void wipeModuleTables();
+   void wipeMetadata();
+   void wipeData();
 }

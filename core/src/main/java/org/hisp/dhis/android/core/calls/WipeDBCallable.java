@@ -9,7 +9,7 @@ import org.hisp.dhis.android.core.category.CategoryComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkStore;
 import org.hisp.dhis.android.core.category.CategoryOptionComboStoreImpl;
 import org.hisp.dhis.android.core.category.CategoryOptionStore;
-import org.hisp.dhis.android.core.category.CategoryStoreImpl;
+import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
@@ -147,7 +147,7 @@ public final class WipeDBCallable extends SyncCall<Unit> {
                 OrganisationUnitProgramLinkStore.create(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
 
-                new CategoryStoreImpl(databaseAdapter),
+                CategoryStore.create(databaseAdapter),
                 CategoryOptionStore.create(databaseAdapter),
                 new CategoryOptionComboStoreImpl(databaseAdapter),
                 CategoryCategoryOptionLinkStore.create(databaseAdapter),

@@ -31,6 +31,7 @@ import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -55,8 +56,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import retrofit2.Response;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
@@ -136,7 +135,7 @@ public class MetadataCallShould extends BaseCallShould {
     private GenericCallFactory<User> userCallFactory;
 
     @Mock
-    private GenericCallFactory<List<Category>> categoryCallFactory;
+    private ListCallFactory<Category> categoryCallFactory;
 
     @Mock
     private GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;

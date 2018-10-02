@@ -84,7 +84,7 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategory() {
-        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
+        IdentifiableObjectStore<Category> categoryStore = CategoryStore.create(databaseAdapter());
         categoryStore.insert(newCategory);
     }
 

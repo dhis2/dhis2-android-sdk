@@ -31,11 +31,13 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
+import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
@@ -71,7 +73,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final DHISVersionManager versionManager;
     private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
-    private final GenericCallFactory<List<Category>> categoryCallFactory;
+    private final ListCallFactory<Category> categoryCallFactory;
     private final GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
     private final GenericCallFactory<List<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
@@ -84,7 +86,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull DHISVersionManager versionManager,
                         @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
-                        @NonNull GenericCallFactory<List<Category>> categoryCallFactory,
+                        @NonNull ListCallFactory<Category> categoryCallFactory,
                         @NonNull GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory,
                         @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
@@ -149,7 +151,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 internalModules.systemInfo.publicModule.versionManager,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
-                CategoryEndpointCall.FACTORY,
+                CategoryEndpointCall.factory(retrofit.create(CategoryService.class)),
                 CategoryComboEndpointCall.FACTORY,
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,

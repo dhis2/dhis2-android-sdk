@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -82,7 +83,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategory() {
-        CategoryStoreImpl categoryStore = new CategoryStoreImpl(databaseAdapter());
+        IdentifiableObjectStore<Category> categoryStore = CategoryStore.create(databaseAdapter());
         categoryStore.insert(newCategory);
     }
 

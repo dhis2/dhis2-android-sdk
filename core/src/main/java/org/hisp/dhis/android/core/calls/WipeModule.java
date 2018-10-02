@@ -160,6 +160,8 @@ public final class WipeModule {
                 new UserRoleStoreImpl(databaseAdapter),
                 ProgramStore.create(databaseAdapter),
 
+                new TrackedEntityAttributeStoreImpl(databaseAdapter),
+                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
                 new ProgramRuleVariableStoreImpl(databaseAdapter),
                 ProgramIndicatorStore.create(databaseAdapter),
                 ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter),
@@ -205,13 +207,10 @@ public final class WipeModule {
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
                 DataInputPeriodStore.create(databaseAdapter),
                 OrganisationUnitGroupStore.create(databaseAdapter),
-                OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter),
-                DataSetCompleteRegistrationStore.create(databaseAdapter)
+                OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
         );
 
         List<DeletableStore> dataStores = Arrays.asList(
-                new TrackedEntityAttributeStoreImpl(databaseAdapter),
-                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),
@@ -219,7 +218,8 @@ public final class WipeModule {
                 new EventStoreImpl(databaseAdapter),
                 DataValueStore.create(databaseAdapter),
                 NoteStore.create(databaseAdapter),
-                TrackedEntityAttributeReservedValueStore.create(databaseAdapter)
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
+                DataSetCompleteRegistrationStore.create(databaseAdapter)
         );
 
         return new WipeModule(databaseAdapter, metadataStores, dataStores,

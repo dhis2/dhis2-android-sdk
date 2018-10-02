@@ -32,22 +32,22 @@ import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-final class CategoryOptionFields {
+final class CategoryFields {
 
-    static final String START_DATE = "startDate";
-    static final String END_DATE = "endDate";
+    private static final String CATEGORY_OPTIONS = "categoryOptions";
+    static final String DATA_DIMENSION_TYPE = "dataDimensionType";
 
-    private static final FieldsHelper<CategoryOption> fh = new FieldsHelper<>();
+    private static final FieldsHelper<Category> fh = new FieldsHelper<>();
 
-    public static final Field<CategoryOption, String> uid = fh.uid();
+    public static final Field<Category, String> uid = fh.uid();
 
-    public static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder()
-            .fields(fh.getNameableFields())
+    public static final Fields<Category> allFields = Fields.<Category>builder()
+            .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(START_DATE),
-                    fh.<String>field(END_DATE)
+                    fh.<CategoryOption>nestedField(CATEGORY_OPTIONS).with(CategoryOptionFields.allFields),
+                    fh.<String>field(DATA_DIMENSION_TYPE)
             ).build();
 
-    private CategoryOptionFields() {
+    private CategoryFields() {
     }
 }

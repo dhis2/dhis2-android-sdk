@@ -35,7 +35,9 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
     @Test
     public void parse_category_successful() throws Exception {
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-        Call<List<Category>> callEndpoint = CategoryEndpointCall.FACTORY.create(getGenericCallData(d2));
+        Call<List<Category>> callEndpoint = CategoryEndpointCall
+                .factory(d2.retrofit().create(CategoryService.class))
+                .create(getGenericCallData(d2));
         dhis2MockServer.enqueueMockResponse("categories.json");
 
         List<Category> categories = callEndpoint.call();

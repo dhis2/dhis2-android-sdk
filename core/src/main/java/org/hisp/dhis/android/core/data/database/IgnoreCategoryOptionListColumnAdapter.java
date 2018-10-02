@@ -26,28 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.category.CategoryOption;
 
-final class CategoryOptionFields {
+import java.util.List;
 
-    static final String START_DATE = "startDate";
-    static final String END_DATE = "endDate";
-
-    private static final FieldsHelper<CategoryOption> fh = new FieldsHelper<>();
-
-    public static final Field<CategoryOption, String> uid = fh.uid();
-
-    public static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<String>field(START_DATE),
-                    fh.<String>field(END_DATE)
-            ).build();
-
-    private CategoryOptionFields() {
-    }
+public final class IgnoreCategoryOptionListColumnAdapter extends IgnoreColumnAdapter<List<CategoryOption>> {
 }

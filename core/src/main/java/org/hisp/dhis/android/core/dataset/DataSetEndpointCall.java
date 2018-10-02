@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import retrofit2.Call;
 
-public final class DataSetEndpointCall {
+final class DataSetEndpointCall {
 
     private DataSetEndpointCall() {}
 

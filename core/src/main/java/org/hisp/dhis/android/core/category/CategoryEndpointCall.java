@@ -1,71 +1,40 @@
 package org.hisp.dhis.android.core.category;
 
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
+public final class CategoryEndpointCall {
 
-public class CategoryEndpointCall extends SyncCall<List<Category>> {
-
-    private final GenericCallData data;
-    private final CategoryQuery query;
-    private final CategoryService service;
-    private final CategoryHandler handler;
-
-    CategoryEndpointCall(
-            GenericCallData data,
-            CategoryQuery query,
-            CategoryService service,
-            CategoryHandler handler) {
-        this.data = data;
-        this.query = query;
-        this.service = service;
-        this.handler = handler;
+    private CategoryEndpointCall() {
     }
 
-    @Override
-    public List<Category> call() throws Exception {
-        setExecuted();
+    public static ListCallFactory<Category> factory(final CategoryService service) {
+        return new ListCallFactoryImpl<Category>() {
 
-        retrofit2.Call<Payload<Category>> call = service.getCategory(Category.allFields, query.paging(),
-                query.page(), query.pageSize());
-        List<Category> categories = new APICallExecutor().executePayloadCall(call);
-        handle(categories);
-        return categories;
-    }
+            @Override
+            protected CallFetcher<Category> fetcher(GenericCallData data) {
+                return new PayloadNoResourceCallFetcher<Category>() {
 
-    private void handle(List<Category> categories) {
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
-
-        try {
-            for (Category category : categories) {
-                handler.handle(category);
+                    @Override
+                    protected retrofit2.Call<Payload<Category>> getCall() {
+                        return service.getCategory(CategoryFields.allFields, Boolean.FALSE);
+                    }
+                };
             }
-            data.handleResource(ResourceModel.Type.CATEGORY);
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
+
+            @Override
+            protected CallProcessor<Category> processor(GenericCallData data) {
+                return new TransactionalNoResourceSyncCallProcessor<>(
+                        data.databaseAdapter(),
+                        CategoryHandler.create(data.databaseAdapter()));
+            }
+        };
     }
-
-    public static final GenericCallFactory<List<Category>> FACTORY
-            = new GenericCallFactory<List<Category>>() {
-
-        @Override
-        public Call<List<Category>> create(GenericCallData genericCallData) {
-            return new CategoryEndpointCall(
-                    genericCallData,
-                    CategoryQuery.defaultQuery(),
-                    genericCallData.retrofit().create(CategoryService.class),
-                    CategoryHandler.create(genericCallData.databaseAdapter())
-            );
-        }
-    };
 }

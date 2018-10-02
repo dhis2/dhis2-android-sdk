@@ -28,26 +28,36 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-final class CategoryOptionFields {
+public final class CategoryTableInfo {
 
-    static final String START_DATE = "startDate";
-    static final String END_DATE = "endDate";
+    private CategoryTableInfo() {
+    }
 
-    private static final FieldsHelper<CategoryOption> fh = new FieldsHelper<>();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public static final Field<CategoryOption, String> uid = fh.uid();
+        @Override
+        public String name() {
+            return "Category";
+        }
 
-    public static final Fields<CategoryOption> allFields = Fields.<CategoryOption>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<String>field(START_DATE),
-                    fh.<String>field(END_DATE)
-            ).build();
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-    private CategoryOptionFields() {
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CategoryFields.DATA_DIMENSION_TYPE
+            );
+        }
     }
 }

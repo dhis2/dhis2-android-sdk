@@ -55,7 +55,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        CategoryEndpointCall.FACTORY.create(getGenericCallData(d2)).call();
+        CategoryService service = d2.retrofit().create(CategoryService.class);
+        CategoryEndpointCall.factory(service).create(getGenericCallData(d2)).call();
     }
 
     private void assertNotCombosInDB() {

@@ -42,9 +42,13 @@ public final class DataElementInternalModule implements WipeableModule {
     }
 
     @Override
-    public void wipeModuleTables() {
+    public void wipeMetadata() {
         DataElementStore.create(databaseAdapter).delete();
         DataElementOperandStore.create(databaseAdapter).delete();
+    }
+
+    @Override
+    public void wipeData() {
     }
 
     public static DataElementInternalModule create(DatabaseAdapter databaseAdapter) {

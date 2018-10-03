@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.calls;
+package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;

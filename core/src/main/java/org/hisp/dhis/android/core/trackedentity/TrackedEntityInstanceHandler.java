@@ -3,10 +3,13 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
@@ -29,18 +32,21 @@ public class TrackedEntityInstanceHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
+    private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
 
     public TrackedEntityInstanceHandler(
             @NonNull RelationshipDHISVersionManager relationshipVersionManager,
             @NonNull RelationshipHandler relationshipHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
-            @NonNull EnrollmentHandler enrollmentHandler) {
+            @NonNull EnrollmentHandler enrollmentHandler,
+            @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
         this.relationshipVersionManager = relationshipVersionManager;
         this.relationshipHandler = relationshipHandler;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.trackedEntityAttributeValueHandler = trackedEntityAttributeValueHandler;
         this.enrollmentHandler = enrollmentHandler;
+        this.enrollmentOrphanCleaner = enrollmentOrphanCleaner;
     }
 
     public void handle(@NonNull TrackedEntityInstance trackedEntityInstance, boolean asRelationship) {
@@ -89,6 +95,7 @@ public class TrackedEntityInstanceHandler {
                 }
             }
         }
+        enrollmentOrphanCleaner.deleteOrphan(trackedEntityInstance, trackedEntityInstance.enrollments());
     }
 
     private void updateOrInsert(@NonNull TrackedEntityInstance trackedEntityInstance, State state) {
@@ -125,7 +132,9 @@ public class TrackedEntityInstanceHandler {
                 internalModules.relationshipModule.relationshipHandler,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityAttributeValueHandler.create(databaseAdapter),
-                EnrollmentHandler.create(databaseAdapter)
+                EnrollmentHandler.create(databaseAdapter),
+                new DataOrphanCleanerImpl<TrackedEntityInstance, Enrollment>(EnrollmentModel.TABLE,
+                        EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, EnrollmentModel.Columns.STATE, databaseAdapter)
         );
     }
 }

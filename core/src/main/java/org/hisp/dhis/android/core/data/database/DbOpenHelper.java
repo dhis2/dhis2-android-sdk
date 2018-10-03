@@ -57,7 +57,9 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
         super.onOpen(db);
 
         // enable foreign key support in database
-        db.setForeignKeyConstraintsEnabled(true);
+        // TODO Only enable FK constraints if android version > 4.4
+        //db.setForeignKeyConstraintsEnabled(true);
+        db.execSQL("PRAGMA foreign_keys = ON;");
         db.enableWriteAheadLogging();
     }
 

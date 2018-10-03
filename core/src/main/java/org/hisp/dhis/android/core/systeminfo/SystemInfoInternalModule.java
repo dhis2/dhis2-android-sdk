@@ -61,6 +61,7 @@ public final class SystemInfoInternalModule implements WipeableModule {
 
     @Override
     public void wipeData() {
+        // Without data to wipe
     }
 
     public static SystemInfoInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

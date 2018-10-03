@@ -49,6 +49,7 @@ public final class DataElementInternalModule implements WipeableModule {
 
     @Override
     public void wipeData() {
+        // Without data to wipe
     }
 
     public static DataElementInternalModule create(DatabaseAdapter databaseAdapter) {

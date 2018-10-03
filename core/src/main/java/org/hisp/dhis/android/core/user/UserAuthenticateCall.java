@@ -33,7 +33,8 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.calls.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
@@ -269,7 +270,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 AuthenticatedUserStore.create(databaseAdapter),
                 internalModules.systemInfo.publicModule.systemInfo,
                 UserStore.create(databaseAdapter),
-                WipeModule.create(databaseAdapter, internalModules),
+                WipeModuleImpl.create(databaseAdapter, internalModules),
                 username,
                 password,
                 retrofit.baseUrl().toString()

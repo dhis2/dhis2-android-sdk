@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
@@ -24,7 +25,7 @@ public class CategoryComboHandler {
     private final LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
 
     @NonNull
-    private final CategoryOptionComboHandler optionComboHandler;
+    private final SyncHandler<CategoryOptionCombo> optionComboHandler;
 
     @NonNull
     private final CategoryComboStore store;
@@ -35,7 +36,7 @@ public class CategoryComboHandler {
             @NonNull LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
                     categoryOptionComboCategoryOptionLinkHandler,
             @NonNull LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler,
-            @NonNull CategoryOptionComboHandler optionComboHandler,
+            @NonNull SyncHandler<CategoryOptionCombo> optionComboHandler,
             OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         this.store = store;
         this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;

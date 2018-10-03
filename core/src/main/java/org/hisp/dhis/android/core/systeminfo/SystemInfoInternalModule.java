@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
-import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import retrofit2.Retrofit;
@@ -55,8 +55,13 @@ public final class SystemInfoInternalModule implements WipeableModule {
     };
 
     @Override
-    public void wipeModuleTables() {
+    public void wipeMetadata() {
         SystemInfoStore.create(databaseAdapter).delete();
+    }
+
+    @Override
+    public void wipeData() {
+        // Without data to wipe
     }
 
     public static SystemInfoInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

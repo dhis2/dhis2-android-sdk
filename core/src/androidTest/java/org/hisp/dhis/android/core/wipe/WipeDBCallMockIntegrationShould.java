@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.calls;
+package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -51,7 +51,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }
@@ -66,7 +66,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isNotEmpty();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DatabaseAssert.assertThatDatabase(databaseAdapter()).isEmpty();
     }

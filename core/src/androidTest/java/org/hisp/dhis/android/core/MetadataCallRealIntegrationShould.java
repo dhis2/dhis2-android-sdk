@@ -71,7 +71,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     public void response_successful_on_login_wipe_db_and_login() throws Exception {
         d2.logIn("android", "Android123").call();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         d2.logIn("android", "Android123").call();
     }

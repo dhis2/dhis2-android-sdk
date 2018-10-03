@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.wipe;
 
 public interface WipeableModule {
-   void wipeModuleTables();
+   void wipeMetadata();
+   void wipeData();
 }

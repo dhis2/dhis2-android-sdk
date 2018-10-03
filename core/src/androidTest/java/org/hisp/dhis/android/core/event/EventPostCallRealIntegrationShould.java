@@ -95,7 +95,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         Event pushedEvent = getEventFromDB();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         downloadMetadata();
 
@@ -119,7 +119,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         Event pushedEvent = getEventFromDB();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         downloadMetadata();
 

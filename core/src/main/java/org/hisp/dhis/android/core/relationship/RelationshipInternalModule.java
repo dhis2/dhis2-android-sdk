@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
@@ -48,11 +48,15 @@ public final class RelationshipInternalModule implements WipeableModule {
     // TODO Include call RelationshipTypeEndpointCall
 
     @Override
-    public void wipeModuleTables() {
-        RelationshipStore.create(databaseAdapter).delete();
-        RelationshipItemStoreImpl.create(databaseAdapter).delete();
+    public void wipeMetadata() {
         RelationshipTypeStore.create(databaseAdapter).delete();
         RelationshipConstraintStore.create(databaseAdapter).delete();
+    }
+
+    @Override
+    public void wipeData() {
+        RelationshipStore.create(databaseAdapter).delete();
+        RelationshipItemStoreImpl.create(databaseAdapter).delete();
     }
 
     public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter,

@@ -160,7 +160,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         Enrollment pushedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
         Event pushedEvent = getEventsFromDb(eventUid);
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         downloadMetadata();
 
@@ -195,7 +195,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2.syncTrackedEntityInstances().call();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
         downloadMetadata();
 
         List<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
@@ -220,7 +220,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2.syncTrackedEntityInstances().call();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
         downloadMetadata();
 
         List<TrackedEntityInstance> teiList =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
@@ -280,7 +280,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2.syncTrackedEntityInstances().call();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
         downloadMetadata();
 
         List<TrackedEntityInstance> responseTeiA =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiA.uid())).call();
@@ -374,7 +374,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2.syncTrackedEntityInstances().call();
 
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
         downloadMetadata();
         d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
 

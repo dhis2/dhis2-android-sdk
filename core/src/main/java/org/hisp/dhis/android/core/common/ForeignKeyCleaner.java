@@ -65,6 +65,7 @@ public class ForeignKeyCleaner {
                 deleteForeignKeyReferencedObject(errorsCursor);
                 rowsCount++;
             } while (errorsCursor.moveToNext());
+            errorsCursor.close();
         }
 
         return rowsCount;
@@ -86,6 +87,7 @@ public class ForeignKeyCleaner {
                 uid = objectCursor.getString(uidColumnIndex);
             }
         }
+        objectCursor.close();
 
         List<String> argumentValues = new ArrayList<>();
         argumentValues.add(rowId);
@@ -113,6 +115,7 @@ public class ForeignKeyCleaner {
             return cursor;
         }
 
+        cursor.close();
         return null;
     }
 }

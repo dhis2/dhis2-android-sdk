@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,7 +22,7 @@ public class CategoryHandlerShould {
     private IdentifiableObjectStore<Category> categoryStore;
 
     @Mock
-    private LinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
+    private OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
             categoryCategoryOptionLinkHandler;
 
     @Mock

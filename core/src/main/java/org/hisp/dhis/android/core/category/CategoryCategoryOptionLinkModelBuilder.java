@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
 
 public class CategoryCategoryOptionLinkModelBuilder
-        extends ModelBuilder<CategoryOption, CategoryCategoryOptionLinkModel> {
+        extends OrderedLinkModelBuilder<CategoryOption, CategoryCategoryOptionLinkModel> {
 
     private final CategoryCategoryOptionLinkModel.Builder builder;
 
@@ -41,9 +41,10 @@ public class CategoryCategoryOptionLinkModelBuilder
     }
 
     @Override
-    public CategoryCategoryOptionLinkModel buildModel(CategoryOption categoryOption) {
+    public CategoryCategoryOptionLinkModel buildModel(CategoryOption categoryOption, Integer sortOrder) {
         return builder
                 .option(categoryOption.uid())
+                .sortOrder(sortOrder)
                 .build();
     }
 }

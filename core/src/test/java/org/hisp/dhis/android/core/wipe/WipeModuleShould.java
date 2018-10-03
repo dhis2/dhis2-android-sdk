@@ -42,6 +42,8 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,7 +105,7 @@ public class WipeModuleShould {
         List<DeletableStore> dataStoreList = new ArrayList<>();
         dataStoreList.add(dataValueStore);
         dataStoreList.add(trackedEntityAttributeStore);
-        wipeModule = new WipeModule(databaseAdapter, metadataStoreList, dataStoreList);
+        wipeModule = new WipeModuleImpl(databaseAdapter, metadataStoreList, dataStoreList);
     }
 
     @Test

@@ -75,7 +75,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public final class WipeModule {
+public final class WipeModuleImpl implements WipeModule {
     private final DatabaseAdapter databaseAdapter;
 
     @NonNull
@@ -84,10 +84,10 @@ public final class WipeModule {
     private final WipeableModule[] wipeableModules;
     private final D2CallExecutor executor = new D2CallExecutor();
 
-    WipeModule(@NonNull DatabaseAdapter databaseAdapter,
-               @NonNull List<DeletableStore> metadataStores,
-               @NonNull List<DeletableStore> dataStores,
-               WipeableModule... wipeableModules) {
+    WipeModuleImpl(@NonNull DatabaseAdapter databaseAdapter,
+                   @NonNull List<DeletableStore> metadataStores,
+                   @NonNull List<DeletableStore> dataStores,
+                   WipeableModule... wipeableModules) {
         this.databaseAdapter = databaseAdapter;
         this.metadataStores = metadataStores;
         this.dataStores = dataStores;
@@ -148,7 +148,7 @@ public final class WipeModule {
         }
     }
 
-    public static WipeModule create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
+    public static WipeModuleImpl create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
 
         List<DeletableStore> metadataStores = Arrays.asList(
                 UserStore.create(databaseAdapter),
@@ -222,7 +222,7 @@ public final class WipeModule {
                 DataSetCompleteRegistrationStore.create(databaseAdapter)
         );
 
-        return new WipeModule(databaseAdapter, metadataStores, dataStores,
+        return new WipeModuleImpl(databaseAdapter, metadataStores, dataStores,
                 internalModules.systemInfo, internalModules.relationshipModule);
     }
 }

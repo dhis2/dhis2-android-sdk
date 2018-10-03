@@ -53,7 +53,7 @@ subprojects { project ->
 ext {
     configuration = [
             buildToolsVersion: "25.0.2",
-            minSdkVersion    : 15,
+            minSdkVersion    : 19,
             targetSdkVersion : 25,
             versionCode      : 108,
             versionName      : "0.11.9-SNAPSHOT"

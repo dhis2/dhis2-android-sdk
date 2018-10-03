@@ -181,7 +181,9 @@ public class TrackedEntityAttributeStoreImpl implements TrackedEntityAttributeSt
         isNull(uid);
         Cursor cursor = databaseAdapter.query(SELECT_PATTERN_STATEMENT, uid);
         cursor.moveToFirst();
-        return cursor.getString(0);
+        String pattern = cursor.getString(0);
+        cursor.close();
+        return pattern;
     }
 
     private void bindArguments(@NonNull SQLiteStatement sqLiteStatement, @NonNull String uid, @Nullable String code,

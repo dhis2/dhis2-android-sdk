@@ -88,7 +88,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryCombo() {
-        CategoryComboStoreImpl comboStore = new CategoryComboStoreImpl(databaseAdapter());
+        IdentifiableObjectStore<CategoryCombo> comboStore = CategoryComboStore.create(databaseAdapter());
         comboStore.insert(newCategoryCombo);
     }
 

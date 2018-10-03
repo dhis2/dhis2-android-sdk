@@ -1,86 +1,45 @@
 package org.hisp.dhis.android.core.category;
 
 
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
+import retrofit2.Retrofit;
 
-public final class CategoryComboEndpointCall extends SyncCall<List<CategoryCombo>> {
+public final class CategoryComboEndpointCall {
 
-    private final GenericCallData data;
-    private final CategoryComboQuery query;
-    private final CategoryComboService service;
-    private final CategoryComboHandler handler;
-
-    private CategoryComboEndpointCall(
-            GenericCallData data,
-            CategoryComboQuery query,
-            CategoryComboService service,
-            CategoryComboHandler handler) {
-        this.data = data;
-        this.query = query;
-        this.service = service;
-        this.handler = handler;
+    private CategoryComboEndpointCall() {
     }
 
-    @Override
-    public List<CategoryCombo> call() throws Exception {
-        setExecuted();
+    public static ListCallFactory<CategoryCombo> factory(Retrofit retrofit) {
 
-        retrofit2.Call<Payload<CategoryCombo>> call = service.getCategoryCombos(getFields(),
-                query.paging(), query.page(), query.pageSize());
-        List<CategoryCombo> categoryCombos = new APICallExecutor().executePayloadCall(call);
-        handle(categoryCombos);
-        return categoryCombos;
-    }
+        final CategoryComboService service = retrofit.create(CategoryComboService.class);
 
-    private void handle(List<CategoryCombo> categoryCombos) {
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
+        return new ListCallFactoryImpl<CategoryCombo>() {
 
-        try {
-            for (CategoryCombo categoryCombo : categoryCombos) {
-                handler.handle(categoryCombo);
+            @Override
+            protected CallFetcher<CategoryCombo> fetcher(GenericCallData data) {
+                return new PayloadNoResourceCallFetcher<CategoryCombo>() {
+
+                    @Override
+                    protected retrofit2.Call<Payload<CategoryCombo>> getCall() {
+                        return service.getCategoryCombos(CategoryComboFields.allFields, Boolean.FALSE);
+                    }
+                };
             }
-            data.handleResource(ResourceModel.Type.CATEGORY_COMBO);
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
+
+            @Override
+            protected CallProcessor<CategoryCombo> processor(GenericCallData data) {
+                return new TransactionalNoResourceSyncCallProcessor<>(
+                        data.databaseAdapter(),
+                        CategoryComboHandler.create(data.databaseAdapter()));
+            }
+        };
     }
-
-    @NonNull
-    private Fields<CategoryCombo> getFields() {
-
-        return Fields.<CategoryCombo>builder().fields(CategoryCombo.uid, CategoryCombo.code,
-                CategoryCombo.name, CategoryCombo.displayName,
-                CategoryCombo.created, CategoryCombo.lastUpdated, CategoryCombo.deleted,
-                CategoryCombo.displayName, CategoryCombo.isDefault, CategoryCombo.categories,
-                CategoryCombo.categoryOptionCombos.with(
-                        CategoryOptionComboFields.allFields)
-        ).build();
-    }
-
-    public static final GenericCallFactory<List<CategoryCombo>> FACTORY
-            = new GenericCallFactory<List<CategoryCombo>>() {
-
-        @Override
-        public Call<List<CategoryCombo>> create(GenericCallData genericCallData) {
-            return new CategoryComboEndpointCall(
-                    genericCallData,
-                    CategoryComboQuery.defaultQuery(),
-                    genericCallData.retrofit().create(CategoryComboService.class),
-                    CategoryComboHandler.create(genericCallData.databaseAdapter())
-            );
-        }
-    };
 }

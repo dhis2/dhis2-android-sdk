@@ -39,7 +39,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
 
         Call<List<CategoryCombo>> categoryComboEndpointCall =
-                CategoryComboEndpointCall.FACTORY.create(getGenericCallData(d2));
+                CategoryComboEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2));
         List<CategoryCombo> categoryCombos = categoryComboEndpointCall.call();
 
         assertFalse(categoryCombos.isEmpty());
@@ -55,19 +55,18 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        CategoryService service = d2.retrofit().create(CategoryService.class);
-        CategoryEndpointCall.factory(service).create(getGenericCallData(d2)).call();
+        CategoryEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2)).call();
     }
 
     private void assertNotCombosInDB() {
-        CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
-        List<CategoryCombo> categoryCombos = categoryComboStore.queryAll();
+        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
+        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll(CategoryCombo.factory);
         assertTrue(categoryCombos.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
-        CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
-        List<CategoryCombo> categoryCombos = categoryComboStore.queryAll();
+        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
+        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll(CategoryCombo.factory);
         assertTrue(categoryCombos.size() > 0);
     }
 

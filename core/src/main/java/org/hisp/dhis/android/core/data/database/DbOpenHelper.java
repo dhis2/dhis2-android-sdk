@@ -57,11 +57,9 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
 
-        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // enable foreign key support in database only for lollipop and newer versions
             db.setForeignKeyConstraintsEnabled(true);
-        } else {
-            db.execSQL("PRAGMA foreign_keys = ON;");
         }
 
         db.enableWriteAheadLogging();

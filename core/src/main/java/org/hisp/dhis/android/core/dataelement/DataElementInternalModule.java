@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class DataElementInternalModule implements WipeableModule {

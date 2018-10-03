@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.calls;
+package org.hisp.dhis.android.core.wipe;
 
 import android.support.annotation.NonNull;
 
@@ -16,7 +16,6 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
-import org.hisp.dhis.android.core.common.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
@@ -94,6 +93,7 @@ public final class WipeModuleImpl implements WipeModule {
         this.wipeableModules = wipeableModules;
     }
 
+    @Override
     public Unit wipeEverything() throws D2CallException {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
@@ -106,6 +106,7 @@ public final class WipeModuleImpl implements WipeModule {
         });
     }
 
+    @Override
     public Unit wipeMetadata() throws D2CallException {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
@@ -117,6 +118,7 @@ public final class WipeModuleImpl implements WipeModule {
         });
     }
 
+    @Override
     public Unit wipeData() throws D2CallException {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
@@ -148,7 +150,7 @@ public final class WipeModuleImpl implements WipeModule {
         }
     }
 
-    public static WipeModuleImpl create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
+    public static WipeModule create(DatabaseAdapter databaseAdapter, D2InternalModules internalModules) {
 
         List<DeletableStore> metadataStores = Arrays.asList(
                 UserStore.create(databaseAdapter),

@@ -28,44 +28,22 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.utils.StoreUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
-
-    private static final String QUERY_WITH_STATE = "SELECT " +
-            DataValueModel.Columns.DATA_ELEMENT + "," +
-            DataValueModel.Columns.PERIOD + "," +
-            DataValueModel.Columns.ORGANISATION_UNIT + "," +
-            DataValueModel.Columns.CATEGORY_OPTION_COMBO + "," +
-            DataValueModel.Columns.ATTRIBUTE_OPTION_COMBO + "," +
-            DataValueModel.Columns.VALUE + "," +
-            DataValueModel.Columns.STORED_BY + "," +
-            DataValueModel.Columns.CREATED + "," +
-            DataValueModel.Columns.LAST_UPDATED + "," +
-            DataValueModel.Columns.COMMENT + "," +
-            DataValueModel.Columns.FOLLOW_UP +
-            " FROM " +
-            DataValueModel.TABLE +
-            " WHERE " +
-            DataValueModel.Columns.STATE +
-            " = ':state'";
+public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
@@ -76,10 +54,9 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
 
-        BaseModel.Columns columns = new DataValueModel.Columns();
-
         SQLStatementBuilder sqlStatementBuilder =
-                new SQLStatementBuilder(DataValueModel.TABLE, columns);
+                new SQLStatementBuilder(DataValueTableInfo.TABLE_INFO.name(),
+                        DataValueTableInfo.TABLE_INFO.columns());
 
         return new DataValueStore(databaseAdapter, databaseAdapter.compileStatement(
                 sqlStatementBuilder.insert()),
@@ -87,81 +64,42 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
                 sqlStatementBuilder);
     }
 
-    private static final StatementBinder<DataValueModel> BINDER = new StatementBinder<DataValueModel>() {
+    private static final StatementBinder<DataValue> BINDER = new StatementBinder<DataValue>() {
         @Override
-        public void bindToStatement(@NonNull DataValueModel dataValueModel,
+        public void bindToStatement(@NonNull DataValue dataValue,
                                     @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, dataValueModel.dataElement());
-            sqLiteBind(sqLiteStatement, 2, dataValueModel.period());
-            sqLiteBind(sqLiteStatement, 3, dataValueModel.organisationUnit());
-            sqLiteBind(sqLiteStatement, 4, dataValueModel.categoryOptionCombo());
-            sqLiteBind(sqLiteStatement, 5, dataValueModel.attributeOptionCombo());
-            sqLiteBind(sqLiteStatement, 6, dataValueModel.value());
-            sqLiteBind(sqLiteStatement, 7, dataValueModel.storedBy());
-            sqLiteBind(sqLiteStatement, 8, dataValueModel.created());
-            sqLiteBind(sqLiteStatement, 9, dataValueModel.lastUpdated());
-            sqLiteBind(sqLiteStatement, 10, dataValueModel.comment());
-            sqLiteBind(sqLiteStatement, 11, dataValueModel.followUp());
-            sqLiteBind(sqLiteStatement, 12, dataValueModel.state());
+            sqLiteBind(sqLiteStatement, 1, dataValue.dataElement());
+            sqLiteBind(sqLiteStatement, 2, dataValue.period());
+            sqLiteBind(sqLiteStatement, 3, dataValue.organisationUnit());
+            sqLiteBind(sqLiteStatement, 4, dataValue.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 5, dataValue.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 6, dataValue.value());
+            sqLiteBind(sqLiteStatement, 7, dataValue.storedBy());
+            sqLiteBind(sqLiteStatement, 8, dataValue.created());
+            sqLiteBind(sqLiteStatement, 9, dataValue.lastUpdated());
+            sqLiteBind(sqLiteStatement, 10, dataValue.comment());
+            sqLiteBind(sqLiteStatement, 11, dataValue.followUp());
+            sqLiteBind(sqLiteStatement, 12, dataValue.state());
         }
     };
 
-    private static final WhereStatementBinder<DataValueModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<DataValueModel>() {
+    private static final WhereStatementBinder<DataValue> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<DataValue>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull DataValueModel dataValueModel,
+        public void bindToUpdateWhereStatement(@NonNull DataValue dataValue,
                                                @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 13, dataValueModel.dataElement());
-            sqLiteBind(sqLiteStatement, 14, dataValueModel.period());
-            sqLiteBind(sqLiteStatement, 15, dataValueModel.organisationUnit());
-            sqLiteBind(sqLiteStatement, 16, dataValueModel.categoryOptionCombo());
-            sqLiteBind(sqLiteStatement, 17, dataValueModel.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 13, dataValue.dataElement());
+            sqLiteBind(sqLiteStatement, 14, dataValue.period());
+            sqLiteBind(sqLiteStatement, 15, dataValue.organisationUnit());
+            sqLiteBind(sqLiteStatement, 16, dataValue.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 17, dataValue.attributeOptionCombo());
         }
     };
 
     public Collection<DataValue> getDataValuesWithState(State state) {
-        return queryDataValuesWithState(state);
-    }
 
-    private Collection<DataValue> queryDataValuesWithState(State state) {
-
-        String query = QUERY_WITH_STATE.replace(":state", state.name());
-
-        Cursor cursor = databaseAdapter.query(query);
-
-        return map(cursor);
-    }
-
-    private Collection<DataValue> map(Cursor cursor) {
-
-        Collection<DataValue> dataValues = new ArrayList<>();
-
-        cursor.moveToFirst();
-
-        if (cursor.getCount() > 0) {
-
-            do {
-                DataValue dataValue = DataValue.create(
-                        cursor.getString(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getString(5),
-                        cursor.getString(6),
-                        StoreUtils.parse(cursor.getString(7)),
-                        StoreUtils.parse(cursor.getString(8)),
-                        cursor.getString(9),
-                        cursor.getInt(10) == 1,
-                        null
-                );
-
-                dataValues.add(dataValue);
-
-            } while(cursor.moveToNext());
-        }
-
-        return dataValues;
+        String whereClause = DataValue.Columns.STATE + " = '" + state.name() + "'";
+        return selectWhereClause(DataValue.factory, whereClause);
     }
 
     /**
@@ -170,9 +108,9 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValueModel> {
      */
     public void setState(DataValue dataValue, State newState) {
 
-        DataValueModel dataValueModel = new DataValueModelBuilder(newState).buildModel(dataValue);
+        DataValue updatedDataValue = dataValue.toBuilder().state(newState).build();
 
-        updateWhere(dataValueModel);
+        updateWhere(updatedDataValue);
     }
 
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,33 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.State;
+import android.database.Cursor;
 
-public class DataValueModelBuilder extends ModelBuilder<DataValue, DataValueModel> {
+import org.hisp.dhis.android.core.category.CategoryCombo;
 
-    private final DataValueModel.Builder builder;
-
-    public DataValueModelBuilder(State state) {
-        builder = DataValueModel.builder().state(state);
-    }
+public class CategoryComboWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<CategoryCombo> {
 
     @Override
-    public DataValueModel buildModel(DataValue dataValue) {
-        return builder
-                .dataElement(dataValue.dataElement())
-                .period(dataValue.period())
-                .organisationUnit(dataValue.organisationUnit())
-                .categoryOptionCombo(dataValue.categoryOptionCombo())
-                .attributeOptionCombo(dataValue.attributeOptionCombo())
-                .value(dataValue.value())
-                .storedBy(dataValue.storedBy())
-                .created(dataValue.created())
-                .lastUpdated(dataValue.lastUpdated())
-                .comment(dataValue.comment())
-                .followUp(dataValue.followUp())
-                .build();
+    public CategoryCombo fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return CategoryCombo.builder().uid(uid).build();
     }
 }

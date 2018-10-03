@@ -33,10 +33,9 @@ import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
@@ -60,8 +59,8 @@ public final class DataValueEndpointCall {
                 @Override
                 protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
                     return dataValueService.getDataValues(
-                            DataValue.allFields,
-                            DataValue.lastUpdated.gt(lastUpdated),
+                            DataValueFields.allFields,
+                            DataValueFields.lastUpdated.gt(lastUpdated),
                             commaSeparatedCollectionValues(query.dataSetUids()),
                             commaSeparatedCollectionValues(query.periodIds()),
                             commaSeparatedCollectionValues(query.orgUnitUids()),
@@ -73,12 +72,9 @@ public final class DataValueEndpointCall {
 
         @Override
         protected CallProcessor<DataValue> processor(GenericCallData data, DataValueQuery query) {
-            return new TransactionalResourceCallProcessor<>(
-                    data,
-                    DataValueHandler.create(data.databaseAdapter()),
-                    resourceType,
-                    new DataValueModelBuilder(State.SYNCED)
-            );
+
+            return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
+                    DataValueHandler.create(data.databaseAdapter()));
         }
     };
 }

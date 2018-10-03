@@ -22,7 +22,7 @@ public class DHISVersionsManagerRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void return_2_29_version_when_connecting_to_2_29_server() throws Exception {
         d2 = D2Factory.create(RealServerMother.url2_29, databaseAdapter());
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
@@ -35,7 +35,7 @@ public class DHISVersionsManagerRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void return_2_30_version_when_connecting_to_2_30_server() throws Exception {
         d2 = D2Factory.create(RealServerMother.url_dev, databaseAdapter());
-        d2.wipeDB().call();
+        d2.wipeModule().wipeEverything();
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 

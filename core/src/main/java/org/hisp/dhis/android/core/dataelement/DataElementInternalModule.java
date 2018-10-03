@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.WipeableModule;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class DataElementInternalModule implements WipeableModule {
@@ -42,9 +42,14 @@ public final class DataElementInternalModule implements WipeableModule {
     }
 
     @Override
-    public void wipeModuleTables() {
+    public void wipeMetadata() {
         DataElementStore.create(databaseAdapter).delete();
         DataElementOperandStore.create(databaseAdapter).delete();
+    }
+
+    @Override
+    public void wipeData() {
+        // Without data to wipe
     }
 
     public static DataElementInternalModule create(DatabaseAdapter databaseAdapter) {

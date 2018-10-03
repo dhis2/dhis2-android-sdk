@@ -39,7 +39,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
 
         Call<List<CategoryCombo>> categoryComboEndpointCall =
-                CategoryComboEndpointCall.FACTORY.create(getGenericCallData(d2));
+                CategoryComboEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2));
         List<CategoryCombo> categoryCombos = categoryComboEndpointCall.call();
 
         assertFalse(categoryCombos.isEmpty());
@@ -55,18 +55,18 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        CategoryEndpointCall.FACTORY.create(getGenericCallData(d2)).call();
+        CategoryEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2)).call();
     }
 
     private void assertNotCombosInDB() {
-        CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
-        List<CategoryCombo> categoryCombos = categoryComboStore.queryAll();
+        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
+        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll(CategoryCombo.factory);
         assertTrue(categoryCombos.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
-        CategoryComboStore categoryComboStore = new CategoryComboStoreImpl(databaseAdapter());
-        List<CategoryCombo> categoryCombos = categoryComboStore.queryAll();
+        IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
+        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll(CategoryCombo.factory);
         assertTrue(categoryCombos.size() > 0);
     }
 
@@ -79,13 +79,13 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {
-        CategoryOptionComboStore categoryOptionComboStore = new CategoryOptionComboStoreImpl(databaseAdapter());
-        List<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.queryAll();
+        IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStore.create(databaseAdapter());
+        Set<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll(CategoryOptionCombo.factory);
         assertTrue(categoryOptionCombos.size() > 0);
     }
 
     private void assertThereAreCategoriesInDB() {
-        IdentifiableObjectStore<CategoryOptionModel> categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
+        IdentifiableObjectStore<CategoryOption> categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
         Set<String> categoryOptionUids = categoryOptionStore.selectUids();
         assertTrue(categoryOptionUids.size() > 0);
     }

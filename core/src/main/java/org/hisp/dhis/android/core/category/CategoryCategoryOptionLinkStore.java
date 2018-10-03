@@ -22,6 +22,7 @@ public final class CategoryCategoryOptionLinkStore {
                                     @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.category());
             sqLiteBind(sqLiteStatement, 2, o.option());
+            sqLiteBind(sqLiteStatement, 3, o.sortOrder());
         }
     };
 

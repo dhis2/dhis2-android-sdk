@@ -33,7 +33,8 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.calls.WipeDBCallable;
+import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
@@ -43,15 +44,12 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-
-import java.util.concurrent.Callable;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -76,7 +74,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final ReadOnlyObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
-    private final Callable<Unit> dbWipe;
+    private final WipeModule wipeModule;
 
     // username and password of candidate
     private final String username;
@@ -94,7 +92,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull ReadOnlyObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
-            @NonNull Callable<Unit> dbWipe,
+            @NonNull WipeModule wipeModule,
             @NonNull String username,
             @NonNull String password,
             @NonNull String apiURL) {
@@ -110,7 +108,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.authenticatedUserStore = authenticatedUserStore;
         this.systemInfoRepository = systemInfoRepository;
         this.userStore = userStore;
-        this.dbWipe = dbWipe;
+        this.wipeModule = wipeModule;
 
         this.username = username;
         this.password = password;
@@ -143,7 +141,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
 
     private User loginOnline(User authenticatedUser) throws D2CallException {
         if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew()) {
-            new D2CallExecutor().executeD2Call(dbWipe);
+            wipeModule.wipeEverything();
         }
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
@@ -272,7 +270,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 AuthenticatedUserStore.create(databaseAdapter),
                 internalModules.systemInfo.publicModule.systemInfo,
                 UserStore.create(databaseAdapter),
-                WipeDBCallable.create(databaseAdapter, internalModules),
+                WipeModuleImpl.create(databaseAdapter, internalModules),
                 username,
                 password,
                 retrofit.baseUrl().toString()

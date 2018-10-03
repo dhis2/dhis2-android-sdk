@@ -26,8 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.category;
 
-public interface WipeableModule {
-   void wipeModuleTables();
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
+
+final class CategoryOptionComboFields {
+
+    static final String CATEGORY_COMBO = "categoryCombo";
+    private static final String CATEGORY_OPTIONS = "categoryOptions";
+
+    private static final FieldsHelper<CategoryOptionCombo> fh = new FieldsHelper<>();
+
+
+    public static final Fields<CategoryOptionCombo> allFields = Fields.<CategoryOptionCombo>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.nestedFieldWithUid(CATEGORY_COMBO),
+                    fh.nestedFieldWithUid(CATEGORY_OPTIONS)
+            ).build();
+
+    private CategoryOptionComboFields() {
+    }
 }

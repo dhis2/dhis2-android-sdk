@@ -28,25 +28,36 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class CategoryOptionModelBuilder extends ModelBuilder<CategoryOption, CategoryOptionModel> {
+public final class CategoryComboTableInfo {
 
-    @Override
-    public CategoryOptionModel buildModel(CategoryOption categoryOption) {
-        return CategoryOptionModel.builder()
-                .uid(categoryOption.uid())
-                .code(categoryOption.code())
-                .name(categoryOption.name())
-                .displayName(categoryOption.displayName())
-                .created(categoryOption.created())
-                .lastUpdated(categoryOption.lastUpdated())
-                .shortName(categoryOption.shortName())
-                .displayShortName(categoryOption.displayShortName())
-                .description(categoryOption.description())
-                .displayDescription(categoryOption.displayDescription())
-                .startDate(categoryOption.startDate())
-                .endDate(categoryOption.endDate())
-                .build();
+    private CategoryComboTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "CategoryCombo";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CategoryComboFields.IS_DEFAULT
+            );
+        }
     }
 }

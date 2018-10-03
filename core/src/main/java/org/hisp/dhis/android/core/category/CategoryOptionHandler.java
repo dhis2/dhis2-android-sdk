@@ -1,18 +1,16 @@
 package org.hisp.dhis.android.core.category;
 
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class CategoryOptionHandler extends IdentifiableHandlerImpl<CategoryOption, CategoryOptionModel> {
+final class CategoryOptionHandler {
 
-    private CategoryOptionHandler(IdentifiableObjectStore<CategoryOptionModel> categoryOptionStore) {
-        super(categoryOptionStore);
+    private CategoryOptionHandler() {
     }
 
-    public static GenericHandler<CategoryOption, CategoryOptionModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(CategoryOptionStore.create(databaseAdapter));
+    public static SyncHandler<CategoryOption> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableSyncHandlerImpl<>(CategoryOptionStore.create(databaseAdapter));
     }
 }

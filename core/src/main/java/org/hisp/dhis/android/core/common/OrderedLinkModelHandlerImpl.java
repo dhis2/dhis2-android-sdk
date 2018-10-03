@@ -42,7 +42,7 @@ public final class OrderedLinkModelHandlerImpl<S, M extends BaseModel> implement
         store.deleteLinksForMasterUid(masterUid);
         if (slaves != null) {
             for (int i = 0; i < slaves.size(); i++) {
-                store.insert(modelBuilder.buildModel(slaves.get(i), i));
+                store.insert(modelBuilder.buildModel(slaves.get(i), i + 1));
             }
         }
     }

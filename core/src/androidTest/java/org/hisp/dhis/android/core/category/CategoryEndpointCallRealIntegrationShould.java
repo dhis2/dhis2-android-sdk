@@ -28,7 +28,7 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
     public void call_categories_endpoint() throws Exception {
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-        Call<List<Category>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(getGenericCallData(d2));
+        Call<List<Category>> categoryEndpointCall = CategoryEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2));
         List<Category> categories = categoryEndpointCall.call();
 
         assertFalse(categories.isEmpty());

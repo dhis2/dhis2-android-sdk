@@ -1,127 +1,79 @@
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public class CategoryHandlerShould {
 
     @Mock
-    private CategoryStore mockCategoryStore;
+    private IdentifiableObjectStore<Category> categoryStore;
 
     @Mock
-    private LinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
+    private OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
             categoryCategoryOptionLinkHandler;
 
     @Mock
-    private GenericHandler<CategoryOption, CategoryOptionModel> categoryOptionHandler;
+    private SyncHandler<CategoryOption> categoryOptionHandler;
 
-    private CategoryHandler mCategoryHandler;
+    private final String categoryUid = "cId";
+
+    @Mock
+    private Category category;
+
+    @Mock
+    private List<CategoryOption> categoryOptions;
+
+    private SyncHandler<Category> categoryHandler;
 
     @Before
     public void setUp() throws Exception {
-
-
         MockitoAnnotations.initMocks(this);
 
-        mCategoryHandler = new CategoryHandler(mockCategoryStore, categoryOptionHandler,
+        when(category.categoryOptions()).thenReturn(categoryOptions);
+        when(category.uid()).thenReturn(categoryUid);
+
+        categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
                 categoryCategoryOptionLinkHandler);
     }
 
     @Test
-    public void handle_deleted_category() {
-        Category deletedCategory = givenADeletedCategory();
-
-        mCategoryHandler.handle(deletedCategory);
-        verify(mockCategoryStore).delete(deletedCategory);
+    public void handle_category_options() {
+        categoryHandler.handle(category);
+        verify(categoryOptionHandler).handleMany(categoryOptions);
     }
 
     @Test
-    public void handle_new_category() {
-        Category newCategory = givenACategory();
-
-        when(mockCategoryStore.update(any(Category.class))).thenReturn(false);
-
-        mCategoryHandler.handle(newCategory);
-
-        verify(mockCategoryStore).update(newCategory);
-        verify(mockCategoryStore).insert(newCategory);
-
+    public void not_handle_category_options_for_empty_category_options() {
+        when(category.categoryOptions()).thenReturn(null);
+        categoryHandler.handle(category);
+        verify(categoryOptionHandler, never()).handleMany(categoryOptions);
     }
 
     @Test
-    public void handle_updated_category() {
-        Category updatedCategory = givenACategory();
-
-        when(mockCategoryStore.update(any(Category.class))).thenReturn(true);
-
-        mCategoryHandler.handle(updatedCategory);
-
-        verify(mockCategoryStore).update(updatedCategory);
-        verifyZeroInteractions(mockCategoryStore);
-
+    public void handle_category_option_links() {
+        categoryHandler.handle(category);
+        verify(categoryCategoryOptionLinkHandler).handleMany(same(categoryUid), same(categoryOptions),
+                any(CategoryCategoryOptionLinkModelBuilder.class));
     }
 
-    private Category givenADeletedCategory() {
-        Date today = new Date();
-
-        return Category.builder()
-                .uid("KfdsGBcoiCa")
-                .code("BIRTHS_ATTENDED")
-                .created(today)
-                .deleted(true)
-                .name("Births attended by")
-                .shortName("Births attended by")
-                .displayName("Births attended by")
-                .categoryOptions(new ArrayList<CategoryOption>())
-                .dataDimensionType("DISAGGREGATION").build();
-    }
-
-    private Category givenACategory() {
-        Date today = new Date();
-
-        return Category.builder()
-                .uid("KfdsGBcoiCa")
-                .code("BIRTHS_ATTENDED")
-                .created(today)
-                .name("Births attended by")
-                .shortName("Births attended by")
-                .displayName("Births attended by")
-                .categoryOptions(givenAListOfCategoryOptions())
-                .dataDimensionType("DISAGGREGATION").build();
-    }
-
-    private List<CategoryOption> givenAListOfCategoryOptions() {
-        List<CategoryOption> list = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++)
-            list.add(givenAOption());
-
-        return list;
-    }
-
-    private CategoryOption givenAOption() {
-        Date today = new Date();
-
-        return CategoryOption.builder()
-                .uid("TNYQzTHdoxL")
-                .code("MCH_AIDES")
-                .created(today)
-                .name("MCH Aides")
-                .shortName("MCH Aides")
-                .displayName("MCH Aides")
-                .build();
+    @Test
+    public void not_handle_category_option_links_for_empty_category_options() {
+        when(category.categoryOptions()).thenReturn(null);
+        categoryHandler.handle(category);
+        verify(categoryCategoryOptionLinkHandler, never()).handleMany(same(categoryUid), same(categoryOptions),
+                any(CategoryCategoryOptionLinkModelBuilder.class));
     }
 }

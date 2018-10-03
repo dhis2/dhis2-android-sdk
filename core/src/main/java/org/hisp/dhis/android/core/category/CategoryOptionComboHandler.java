@@ -1,36 +1,40 @@
 package org.hisp.dhis.android.core.category;
 
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-import android.support.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class CategoryOptionComboHandler {
-    @NonNull
-    private final CategoryOptionComboStore store;
+final class CategoryOptionComboHandler extends IdentifiableSyncHandlerImpl<CategoryOptionCombo> {
 
-    CategoryOptionComboHandler(
-            @NonNull CategoryOptionComboStore store) {
-        this.store = store;
+
+    private final LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
+            categoryOptionComboCategoryOptionLinkHandler;
+
+    private CategoryOptionComboHandler(IdentifiableObjectStore<CategoryOptionCombo> store,
+                                       LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
+                                               categoryOptionComboCategoryOptionLinkHandler) {
+        super(store);
+        this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;
     }
 
-    public void handle(@NonNull CategoryOptionCombo entity) {
-
-        if (isDeleted(entity)) {
-            store.delete(entity);
-        } else {
-
-            boolean updated = store.update(entity, entity);
-
-            if (!updated) {
-                store.insert(entity);
-            }
-        }
+    @Override
+    protected void afterObjectHandled(CategoryOptionCombo optionCombo, HandleAction action) {
+        categoryOptionComboCategoryOptionLinkHandler.handleMany(optionCombo.uid(),
+                optionCombo.categoryOptions(),
+                new CategoryOptionComboCategoryOptionLinkModelBuilder(optionCombo));
     }
 
-    public static CategoryOptionComboHandler create(DatabaseAdapter databaseAdapter) {
-        return new CategoryOptionComboHandler(new CategoryOptionComboStoreImpl(databaseAdapter));
+    public static SyncHandler<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
+        return new CategoryOptionComboHandler(
+                CategoryOptionComboStore.create(databaseAdapter),
+                new LinkModelHandlerImpl<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>(
+                        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter)
+                )
+        );
     }
 }

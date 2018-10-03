@@ -1,20 +1,33 @@
 package org.hisp.dhis.android.core.category;
 
 
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public interface CategoryOptionComboStore extends DeletableStore {
+public final class CategoryOptionComboStore {
 
-    long insert(@NonNull CategoryOptionCombo element);
+    private CategoryOptionComboStore() {}
 
-    boolean delete(@NonNull CategoryOptionCombo element);
+    private static StatementBinder<CategoryOptionCombo> BINDER
+            = new IdentifiableStatementBinder<CategoryOptionCombo>() {
 
-    boolean update(@NonNull CategoryOptionCombo oldElement,
-            @NonNull CategoryOptionCombo newElement);
+        @Override
+        public void bindToStatement(@NonNull CategoryOptionCombo o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.categoryCombo()));
+        }
+    };
 
-    List<CategoryOptionCombo> queryAll();
+    public static IdentifiableObjectStore<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, CategoryOptionComboTableInfo.TABLE_INFO, BINDER);
+    }
 }

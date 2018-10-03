@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
@@ -59,6 +60,9 @@ public class TrackedEntityInstanceHandlerShould {
     @Mock
     private TrackedEntityInstance relative;
 
+    @Mock
+    private OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentCleaner;
+
     // Constants
     private String TEI_UID = "test_tei_uid";
     private String RELATIVE_UID = "relative_uid";
@@ -83,7 +87,7 @@ public class TrackedEntityInstanceHandlerShould {
 
         trackedEntityInstanceHandler = new TrackedEntityInstanceHandler(
                 relationshipVersionManager, relationshipHandler, trackedEntityInstanceStore,
-                trackedEntityAttributeValueHandler, enrollmentHandler
+                trackedEntityAttributeValueHandler, enrollmentHandler, enrollmentCleaner
         );
 
     }
@@ -102,6 +106,7 @@ public class TrackedEntityInstanceHandlerShould {
                 any(State.class));
         verify(trackedEntityAttributeValueHandler, never()).handle(any(String.class), any(ArrayList.class));
         verify(enrollmentHandler, never()).handle(any(ArrayList.class));
+        verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
     }
 
     @Test
@@ -125,6 +130,9 @@ public class TrackedEntityInstanceHandlerShould {
 
         // verify that enrollment handler is never called
         verify(enrollmentHandler, never()).handle(any(ArrayList.class));
+
+        verify(enrollmentCleaner, times(1))
+                .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
     }
 
     @Test
@@ -152,6 +160,9 @@ public class TrackedEntityInstanceHandlerShould {
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
+
+        verify(enrollmentCleaner, times(1))
+                .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
 
     }
 
@@ -182,6 +193,9 @@ public class TrackedEntityInstanceHandlerShould {
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
+
+        verify(enrollmentCleaner, times(1))
+                .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
     }
 
     @Test

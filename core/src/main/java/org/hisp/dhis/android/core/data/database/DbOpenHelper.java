@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -56,10 +57,11 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
 
-        // enable foreign key support in database
-        // TODO Only enable FK constraints if android version > 4.4
-        //db.setForeignKeyConstraintsEnabled(true);
-        db.execSQL("PRAGMA foreign_keys = ON;");
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // enable foreign key support in database only for lollipop and newer versions
+            db.setForeignKeyConstraintsEnabled(true);
+        }
+
         db.enableWriteAheadLogging();
     }
 

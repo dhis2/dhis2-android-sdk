@@ -28,101 +28,89 @@
 
 package org.hisp.dhis.android.core.category;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.IgnoreCategoryListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreCategoryOptionComboListColumnAdapter;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
-public abstract class CategoryCombo extends BaseIdentifiableObject {
-    private static final String IS_DEFAULT = "isDefault";
-    private static final String CATEGORIES = "categories";
-    private static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
+public abstract class CategoryCombo extends BaseIdentifiableObject implements Model {
 
-    public static final Field<CategoryCombo, String> uid = Field.create(UID);
-    public static final Field<CategoryCombo, String> code = Field.create(CODE);
-    public static final Field<CategoryCombo, String> name = Field.create(NAME);
-    public static final Field<CategoryCombo, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<CategoryCombo, String> created = Field.create(CREATED);
-    public static final Field<CategoryCombo, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<CategoryCombo, Boolean> deleted = Field.create(DELETED);
-    public static final Field<CategoryCombo, Boolean> isDefault = Field.create(
-            IS_DEFAULT);
-    public static final Field<CategoryCombo, List<Category>> categories = Field.create(
-            CATEGORIES);
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
-    public static final NestedField<CategoryCombo, CategoryOptionCombo> categoryOptionCombos =
-            NestedField.create(CATEGORY_OPTION_COMBOS);
 
     @Nullable
-    @JsonProperty(IS_DEFAULT)
+    @JsonProperty()
     public abstract Boolean isDefault();
 
     @Nullable
-    @JsonProperty(CATEGORIES)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreCategoryListColumnAdapter.class)
     public abstract List<Category> categories();
 
     @Nullable
-    @JsonProperty(CATEGORY_OPTION_COMBOS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreCategoryOptionComboListColumnAdapter.class)
     public abstract List<CategoryOptionCombo> categoryOptionCombos();
+
+    public abstract ContentValues toContentValues();
+
+    static CategoryCombo create(Cursor cursor) {
+        return $AutoValue_CategoryCombo.createFromCursor(cursor);
+    }
+
+    public static final CursorModelFactory<CategoryCombo> factory = new CursorModelFactory<CategoryCombo>() {
+        @Override
+        public CategoryCombo fromCursor(Cursor cursor) {
+            return create(cursor);
+        }
+    };
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_CategoryCombo.Builder();
     }
 
-    @JsonCreator
-    public static CategoryCombo create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(IS_DEFAULT) Boolean isDefault,
-            @JsonProperty(CATEGORIES) List<Category> categories,
-            @JsonProperty(CATEGORY_OPTION_COMBOS) List<CategoryOptionCombo> categoryOptionCombos) {
-        return builder().uid(uid).code(code).name(name).displayName(displayName).created(
-                created).lastUpdated(lastUpdated).isDefault(isDefault).categories(
-                safeUnmodifiableList(categories)).categoryOptionCombos(
-                safeUnmodifiableList(categoryOptionCombos)).build();
-    }
-
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        @JsonProperty(IS_DEFAULT)
-        public abstract Builder isDefault(@Nullable Boolean isDefault);
+        public abstract Builder id(Long id);
 
-        @JsonProperty(CATEGORIES)
-        public abstract Builder categories(@Nullable List<Category> categories);
+        public abstract Builder isDefault(Boolean isDefault);
 
-        @JsonProperty(CATEGORY_OPTION_COMBOS)
-        public abstract Builder categoryOptionCombos(
-                @Nullable List<CategoryOptionCombo> categoryOptionCombos);
+        public abstract Builder categories(List<Category> categories);
 
-        // internal, not exposed
-        abstract List<Category> categories();
+        public abstract Builder categoryOptionCombos(List<CategoryOptionCombo> categoryOptionCombos);
 
-        abstract List<CategoryOptionCombo> categoryOptionCombos();
+        public abstract List<Category> categories();
 
-        abstract CategoryCombo autoBuild();
+        public abstract List<CategoryOptionCombo> categoryOptionCombos();
 
-        public CategoryCombo build() {
-            categories(safeUnmodifiableList(categories()));
-            categoryOptionCombos(safeUnmodifiableList(categoryOptionCombos()));
-            return autoBuild();
-        }
+
+        public abstract CategoryCombo build();
     }
 }

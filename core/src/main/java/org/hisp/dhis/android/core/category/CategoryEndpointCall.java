@@ -10,12 +10,17 @@ import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCa
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 
+import retrofit2.Retrofit;
+
 public final class CategoryEndpointCall {
 
     private CategoryEndpointCall() {
     }
 
-    public static ListCallFactory<Category> factory(final CategoryService service) {
+    public static ListCallFactory<Category> factory(Retrofit retrofit) {
+
+        final CategoryService service = retrofit.create(CategoryService.class);
+
         return new ListCallFactoryImpl<Category>() {
 
             @Override

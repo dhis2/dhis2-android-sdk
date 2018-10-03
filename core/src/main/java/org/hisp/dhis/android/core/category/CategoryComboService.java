@@ -9,11 +9,10 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface CategoryComboService {
+interface CategoryComboService {
 
     @GET("categoryCombos")
     Call<Payload<CategoryCombo>> getCategoryCombos(
             @Query("fields") @Which Fields<CategoryCombo> fields,
-            @Query("paging") Boolean paging, @Query("page") int page,
-            @Query("pageSize") int pageSize);
+            @Query("paging") Boolean paging);
 }

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
-import org.hisp.dhis.android.core.category.CategoryService;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
@@ -74,7 +73,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
     private final ListCallFactory<Category> categoryCallFactory;
-    private final GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
+    private final ListCallFactory<CategoryCombo> categoryComboCallFactory;
     private final GenericCallFactory<List<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final GenericCallFactory<List<DataSet>> dataSetParentCallFactory;
@@ -87,7 +86,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull ListCallFactory<Category> categoryCallFactory,
-                        @NonNull GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory,
+                        @NonNull ListCallFactory<CategoryCombo> categoryComboCallFactory,
                         @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull GenericCallFactory<List<DataSet>> dataSetParentCallFactory,
@@ -151,8 +150,8 @@ public class MetadataCall extends SyncCall<Unit> {
                 internalModules.systemInfo.publicModule.versionManager,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
-                CategoryEndpointCall.factory(retrofit.create(CategoryService.class)),
-                CategoryComboEndpointCall.FACTORY,
+                CategoryEndpointCall.factory(retrofit),
+                CategoryComboEndpointCall.factory(retrofit),
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
                 DataSetParentCall.FACTORY,

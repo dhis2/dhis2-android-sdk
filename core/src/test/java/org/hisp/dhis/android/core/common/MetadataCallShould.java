@@ -138,7 +138,7 @@ public class MetadataCallShould extends BaseCallShould {
     private ListCallFactory<Category> categoryCallFactory;
 
     @Mock
-    private GenericCallFactory<List<CategoryCombo>> categoryComboCallFactory;
+    private ListCallFactory<CategoryCombo> categoryComboCallFactory;
 
     @Mock
     private GenericCallFactory<List<Program>> programParentCallFactory;

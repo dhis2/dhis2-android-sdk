@@ -26,13 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls;
+package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.datavalue.DataValue;
@@ -42,8 +41,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.wipe.WipeModule;
-import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -83,7 +80,7 @@ public class WipeModuleShould {
     private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
 
     @Mock
-    private ObjectWithoutUidStoreImpl<DataValue> dataValueStore;
+    private ObjectWithoutUidStore<DataValue> dataValueStore;
 
     @Mock
     private IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> trackedEntityAttributeStore;

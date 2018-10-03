@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -58,7 +57,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.concurrent.Callable;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;

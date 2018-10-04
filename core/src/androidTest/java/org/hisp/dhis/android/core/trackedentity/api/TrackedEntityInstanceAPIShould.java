@@ -16,7 +16,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -41,7 +40,7 @@ import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstance
 import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent;
 import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithFutureEnrollment;
 
-public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
+public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
 
     // API version dependant parameters
     private String serverUrl;
@@ -62,17 +61,11 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        d2= D2Factory.create(this.serverUrl, databaseAdapter());
+        d2 = D2Factory.create(this.serverUrl, databaseAdapter());
 
         executor = new APICallExecutor();
 
         trackedEntityInstanceService = d2.retrofit().create(TrackedEntityInstanceService.class);
-    }
-
-
-    @Test
-    public void stub() throws Exception {
-
     }
 
     //@Test

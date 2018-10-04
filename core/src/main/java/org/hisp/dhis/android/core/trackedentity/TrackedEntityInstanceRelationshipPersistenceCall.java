@@ -66,8 +66,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
                 Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
                 if (!searchOrgUnitUids.isEmpty()) {
-                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore
-                            .selectFirst(AuthenticatedUserModel.factory);
+                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
                     Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
                             databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());

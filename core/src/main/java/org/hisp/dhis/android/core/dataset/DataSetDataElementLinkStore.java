@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -52,11 +54,20 @@ public final class DataSetDataElementLinkStore {
         }
     };
 
+    private static final CursorModelFactory<DataSetDataElementLinkModel> FACTORY
+            = new CursorModelFactory<DataSetDataElementLinkModel>() {
+        @Override
+        public DataSetDataElementLinkModel fromCursor(Cursor cursor) {
+            return DataSetDataElementLinkModel.create(cursor);
+        }
+    };
+
     public static LinkModelStore<DataSetDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
                 DataSetDataElementLinkModel.TABLE,
                 new DataSetDataElementLinkModel.Columns(),
                 DataSetDataElementLinkModel.Columns.DATA_SET,
-                BINDER);
+                BINDER,
+                FACTORY);
     }
 }

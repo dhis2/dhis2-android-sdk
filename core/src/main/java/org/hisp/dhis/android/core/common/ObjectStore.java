@@ -36,11 +36,11 @@ public interface ObjectStore<M> extends DeletableStore {
 
     long insert(@NonNull M m) throws RuntimeException;
 
-    Set<M> selectAll(CursorModelFactory<M> modelFactory);
+    Set<M> selectAll();
 
-    Set<M> selectWhereClause(CursorModelFactory<M> modelFactory, String whereClause);
+    Set<M> selectWhereClause(String whereClause);
 
-    M selectFirst(CursorModelFactory<M> modelFactory);
+    M selectFirst();
 
     Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
 

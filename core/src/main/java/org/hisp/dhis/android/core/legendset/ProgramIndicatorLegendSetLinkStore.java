@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.legendset;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -52,10 +54,19 @@ public final class ProgramIndicatorLegendSetLinkStore {
         }
     };
 
+    private static final CursorModelFactory<ProgramIndicatorLegendSetLinkModel> FACTORY
+            = new CursorModelFactory<ProgramIndicatorLegendSetLinkModel>() {
+        @Override
+        public ProgramIndicatorLegendSetLinkModel fromCursor(Cursor cursor) {
+            return ProgramIndicatorLegendSetLinkModel.create(cursor);
+        }
+    };
+
     public static LinkModelStore<ProgramIndicatorLegendSetLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkModel.TABLE,
                 new ProgramIndicatorLegendSetLinkModel.Columns(),
                 ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR,
-                BINDER);
+                BINDER,
+                FACTORY);
     }
 }

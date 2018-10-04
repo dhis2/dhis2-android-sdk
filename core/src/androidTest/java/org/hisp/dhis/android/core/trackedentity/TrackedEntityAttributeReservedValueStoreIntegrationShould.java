@@ -139,8 +139,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
     }
 
     private void storeContains(TrackedEntityAttributeReservedValueModel value, Boolean contains) {
-        Set<TrackedEntityAttributeReservedValueModel> values
-                = store.selectAll(TrackedEntityAttributeReservedValueModel.factory);
+        Set<TrackedEntityAttributeReservedValueModel> values = store.selectAll();
         assertThat(values.contains(value), is(contains));
     }
 }

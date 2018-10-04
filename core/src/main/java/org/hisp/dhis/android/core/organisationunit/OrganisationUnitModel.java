@@ -36,7 +36,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -72,14 +71,6 @@ public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     public static Builder builder() {
         return new $$AutoValue_OrganisationUnitModel.Builder();
     }
-
-    public static final CursorModelFactory<OrganisationUnitModel> factory
-            = new CursorModelFactory<OrganisationUnitModel>() {
-        @Override
-        public OrganisationUnitModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @Nullable
     @ColumnName(Columns.PATH)

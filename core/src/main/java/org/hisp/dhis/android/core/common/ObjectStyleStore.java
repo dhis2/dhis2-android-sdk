@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -59,8 +60,15 @@ public final class ObjectStyleStore {
         }
     };
 
+    private static final CursorModelFactory<ObjectStyleModel> FACTORY = new CursorModelFactory<ObjectStyleModel>() {
+        @Override
+        public ObjectStyleModel fromCursor(Cursor cursor) {
+            return ObjectStyleModel.create(cursor);
+        }
+    };
+
     public static ObjectWithoutUidStore<ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ObjectStyleModel.TABLE,
-                new ObjectStyleModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
+                new ObjectStyleModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

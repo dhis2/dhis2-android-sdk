@@ -41,13 +41,11 @@ final class RelationshipTypeCollectionRepository {
 
     static ReadOnlyIdentifiableCollectionRepository<RelationshipType> create(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
-                RelationshipConstraintStore.create(databaseAdapter),
-                RelationshipConstraint.factory
+                RelationshipConstraintStore.create(databaseAdapter)
         );
 
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 RelationshipTypeStore.create(databaseAdapter),
-                RelationshipType.factory,
                 Collections.singletonList(childrenAppender)
         );
     }

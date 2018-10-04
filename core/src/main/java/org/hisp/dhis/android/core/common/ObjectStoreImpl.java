@@ -46,13 +46,15 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     protected final SQLiteStatement insertStatement;
     protected final SQLStatementBuilder builder;
     final StatementBinder<M> binder;
+    final CursorModelFactory<M> modelFactory;
 
     ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement, SQLStatementBuilder builder,
-                    StatementBinder<M> binder) {
+                    StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = insertStatement;
         this.builder = builder;
         this.binder = binder;
+        this.modelFactory = modelFactory;
     }
 
     @Override
@@ -83,32 +85,31 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    private void addAll(@NonNull CursorModelFactory<M> modelFactory,
-                       @NonNull Collection<M> collection) {
+    private void addAll(@NonNull Collection<M> collection) {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
-        addObjectsToCollection(cursor, modelFactory, collection);
+        addObjectsToCollection(cursor, collection);
         cursor.close();
     }
 
     @Override
-    public Set<M> selectAll(@NonNull CursorModelFactory<M> modelFactory) {
+    public Set<M> selectAll() {
         Set<M> set = new HashSet<>();
-        addAll(modelFactory, set);
+        addAll(set);
         return set;
     }
 
     @Override
-    public Set<M> selectWhereClause(CursorModelFactory<M> modelFactory, String whereClause) {
+    public Set<M> selectWhereClause(String whereClause) {
         Set<M> set = new HashSet<>();
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
-        addObjectsToCollection(cursor, modelFactory, set);
+        addObjectsToCollection(cursor, set);
         return set;
     }
 
     @Override
-    public M selectFirst(@NonNull CursorModelFactory<M> modelFactory) {
+    public M selectFirst() {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
-        return getFirstFromCursor(cursor, modelFactory);
+        return getFirstFromCursor(cursor);
     }
 
     @Override
@@ -116,13 +117,12 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         return deleteWhereClause(BaseModel.Columns.ID + "='" + m.id() + "';");
     }
 
-    protected M selectOneWhere(@NonNull CursorModelFactory<M> modelFactory,
-                               @NonNull String whereClause) {
+    protected M selectOneWhere(@NonNull String whereClause) {
         Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
-        return getFirstFromCursor(cursor, modelFactory);
+        return getFirstFromCursor(cursor);
     }
 
-    private M getFirstFromCursor(@NonNull Cursor cursor, @NonNull CursorModelFactory<M> modelFactory) {
+    private M getFirstFromCursor(@NonNull Cursor cursor) {
         try {
             if (cursor.getCount() >= 1) {
                 cursor.moveToFirst();
@@ -135,9 +135,8 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    protected M popOneWhere(@NonNull CursorModelFactory<M> modelFactory,
-                            @NonNull String whereClause) {
-        M m = selectOneWhere(modelFactory, whereClause);
+    protected M popOneWhere(@NonNull String whereClause) {
+        M m = selectOneWhere(whereClause);
         if (m != null) {
             deleteById(m);
         }
@@ -154,8 +153,7 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    private void addObjectsToCollection(Cursor cursor, CursorModelFactory<M> modelFactory,
-                                            Collection<M> collection) {
+    private void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();

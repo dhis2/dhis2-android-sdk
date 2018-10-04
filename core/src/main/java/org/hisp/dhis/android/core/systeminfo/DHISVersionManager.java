@@ -36,7 +36,7 @@ public class DHISVersionManager {
     private DHISVersion version;
 
     private DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst(SystemInfo.factory);
+        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
 
         if (systemInfoModel != null && systemInfoModel.version() != null) {
             version = DHISVersion.getValue(systemInfoModel.version());

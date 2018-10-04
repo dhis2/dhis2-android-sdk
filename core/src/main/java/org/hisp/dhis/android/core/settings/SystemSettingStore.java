@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -60,8 +62,15 @@ public final class SystemSettingStore {
         }
     };
 
+    private static final CursorModelFactory<SystemSettingModel> FACTORY = new CursorModelFactory<SystemSettingModel>() {
+        @Override
+        public SystemSettingModel fromCursor(Cursor cursor) {
+            return SystemSettingModel.create(cursor);
+        }
+    };
+
     public static ObjectWithoutUidStore<SystemSettingModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingModel.TABLE,
-                new SystemSettingModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
+                new SystemSettingModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

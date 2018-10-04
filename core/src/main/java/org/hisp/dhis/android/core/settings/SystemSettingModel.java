@@ -35,7 +35,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 @AutoValue
@@ -62,14 +61,6 @@ public abstract class SystemSettingModel extends BaseModel {
     public static SystemSettingModel create(Cursor cursor) {
         return AutoValue_SystemSettingModel.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<SystemSettingModel> factory
-            = new CursorModelFactory<SystemSettingModel>() {
-        @Override
-        public SystemSettingModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     public static Builder builder() {
         return new $AutoValue_SystemSettingModel.Builder();

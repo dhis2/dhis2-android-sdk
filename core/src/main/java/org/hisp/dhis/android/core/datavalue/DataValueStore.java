@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
@@ -49,7 +51,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
 
         super(databaseAdapter, insertStatement, updateWhereStatement,
-                builder, BINDER, WHERE_UPDATE_BINDER);
+                builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
@@ -96,10 +98,17 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         }
     };
 
+    private static final CursorModelFactory<DataValue> FACTORY = new CursorModelFactory<DataValue>() {
+        @Override
+        public DataValue fromCursor(Cursor cursor) {
+            return DataValue.create(cursor);
+        }
+    };
+
     public Collection<DataValue> getDataValuesWithState(State state) {
 
         String whereClause = DataValue.Columns.STATE + " = '" + state.name() + "'";
-        return selectWhereClause(DataValue.factory, whereClause);
+        return selectWhereClause(whereClause);
     }
 
     /**

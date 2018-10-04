@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -52,11 +54,20 @@ public final class DataInputPeriodStore {
         }
     };
 
+    private static final CursorModelFactory<DataInputPeriodModel> FACTORY
+            = new CursorModelFactory<DataInputPeriodModel>() {
+        @Override
+        public DataInputPeriodModel fromCursor(Cursor cursor) {
+            return DataInputPeriodModel.create(cursor);
+        }
+    };
+
     public static LinkModelStore<DataInputPeriodModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
                 DataInputPeriodModel.TABLE,
                 new DataInputPeriodModel.Columns(),
                 DataInputPeriodModel.Columns.DATA_SET,
-                BINDER);
+                BINDER,
+                FACTORY);
     }
 }

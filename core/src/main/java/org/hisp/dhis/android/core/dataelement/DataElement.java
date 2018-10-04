@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -128,13 +127,6 @@ public abstract class DataElement extends BaseNameableObject implements Model {
     static DataElement create(Cursor cursor) {
         return $AutoValue_DataElement.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<DataElement> factory = new CursorModelFactory<DataElement>() {
-        @Override
-        public DataElement fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     public abstract ContentValues toContentValues();
 

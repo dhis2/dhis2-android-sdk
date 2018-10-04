@@ -169,7 +169,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
     }
 
     private Set<TrackedEntityAttributeReservedValueModel> selectAll() {
-        return store.selectAll(TrackedEntityAttributeReservedValueModel.factory);
+        return store.selectAll();
     }
 
     private void login() {

@@ -35,7 +35,6 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 
@@ -73,14 +72,6 @@ public abstract class CategoryCategoryComboLinkModel extends BaseModel {
     public static CategoryCategoryComboLinkModel create(Cursor cursor) {
         return AutoValue_CategoryCategoryComboLinkModel.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<CategoryCategoryComboLinkModel> factory
-            = new CursorModelFactory<CategoryCategoryComboLinkModel>() {
-        @Override
-        public CategoryCategoryComboLinkModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

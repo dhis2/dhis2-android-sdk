@@ -47,8 +47,9 @@ public class ObjectWithoutUidStoreImpl<M extends BaseModel>
                                      SQLiteStatement updateWhereStatement,
                                      SQLStatementBuilder builder,
                                      StatementBinder<M> binder,
-                                     WhereStatementBinder<M> whereBinder) {
-        super(databaseAdapter, insertStatement, builder, binder);
+                                     WhereStatementBinder<M> whereBinder,
+                                     CursorModelFactory<M> modelFactory) {
+        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
         this.updateWhereStatement = updateWhereStatement;
         this.whereBinder = whereBinder;
     }

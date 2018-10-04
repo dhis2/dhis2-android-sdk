@@ -28,21 +28,31 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
+
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class TrackedEntityTypeStore{
+public final class TrackedEntityTypeStore {
 
     // Only nameable columns
     private static StatementBinder<TrackedEntityTypeModel> BINDER
             = new NameableStatementBinder<TrackedEntityTypeModel>() {};
 
+    private static final CursorModelFactory<TrackedEntityTypeModel> FACTORY
+            = new CursorModelFactory<TrackedEntityTypeModel>() {
+        @Override
+        public TrackedEntityTypeModel fromCursor(Cursor cursor) {
+            return TrackedEntityTypeModel.create(cursor);
+        }
+    };
     public static IdentifiableObjectStore<TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeModel.TABLE,
-                new TrackedEntityTypeModel.Columns().all(), BINDER);
+                new TrackedEntityTypeModel.Columns().all(), BINDER, FACTORY);
     }
 
     private TrackedEntityTypeStore() {}

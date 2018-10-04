@@ -42,7 +42,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreCategoryListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreCategoryOptionComboListColumnAdapter;
@@ -80,13 +79,6 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Mo
     static CategoryCombo create(Cursor cursor) {
         return $AutoValue_CategoryCombo.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<CategoryCombo> factory = new CursorModelFactory<CategoryCombo>() {
-        @Override
-        public CategoryCombo fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     public abstract Builder toBuilder();
 

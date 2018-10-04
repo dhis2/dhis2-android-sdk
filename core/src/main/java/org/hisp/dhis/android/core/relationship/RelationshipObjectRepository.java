@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -47,11 +46,10 @@ final class RelationshipObjectRepository extends ReadOnlyIdentifiableObjectRepos
 
 
     RelationshipObjectRepository(IdentifiableObjectStore<Relationship> relationshipStore,
-                                 CursorModelFactory<Relationship> modelFactory,
                                  String uid,
                                  Collection<ChildrenAppender<Relationship>> childrenAppenders,
                                  RelationshipItemElementStoreSelector storeSelector) {
-        super(relationshipStore, modelFactory, uid, childrenAppenders);
+        super(relationshipStore, uid, childrenAppenders);
         this.relationshipStore = relationshipStore;
         this.storeSelector = storeSelector;
     }

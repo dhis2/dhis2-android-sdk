@@ -44,9 +44,11 @@ public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterfac
 
     private final SQLStatementWrapper statements;
 
-    public IdentifiableObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLStatementWrapper statements,
-                                   SQLStatementBuilder builder, StatementBinder<M> binder) {
-        super(databaseAdapter, statements.insert, builder, binder);
+    public IdentifiableObjectStoreImpl(DatabaseAdapter databaseAdapter,
+                                       SQLStatementWrapper statements,
+                                       SQLStatementBuilder builder, StatementBinder<M> binder,
+                                       CursorModelFactory<M> modelFactory) {
+        super(databaseAdapter, statements.insert, builder, binder, modelFactory);
         this.statements = statements;
     }
 
@@ -106,12 +108,12 @@ public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterfac
     }
 
     @Override
-    public M selectByUid(String uid, CursorModelFactory<M> modelFactory) throws RuntimeException {
+    public M selectByUid(String uid) throws RuntimeException {
         Cursor cursor = databaseAdapter.query(builder.selectByUid(), uid);
-        return mapObjectFromCursor(cursor, modelFactory);
+        return mapObjectFromCursor(cursor);
     }
 
-    private M mapObjectFromCursor(Cursor cursor, CursorModelFactory<M> modelFactory) {
+    private M mapObjectFromCursor(Cursor cursor) {
         M object = null;
 
         try {

@@ -32,7 +32,6 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -47,21 +46,23 @@ public abstract class CategoryCategoryComboLinkModel extends BaseModel {
     public static class Columns extends BaseModel.Columns {
         public static final String CATEGORY = "category";
         public static final String CATEGORY_COMBO = "categoryCombo";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    CATEGORY, CATEGORY_COMBO);
+                    CATEGORY, CATEGORY_COMBO, SORT_ORDER);
         }
     }
 
     @Nullable
-    @ColumnName(Columns.CATEGORY)
     public abstract String category();
 
     @Nullable
-    @ColumnName(Columns.CATEGORY_COMBO)
-    public abstract String combo();
+    public abstract String categoryCombo();
+
+    @Nullable
+    public abstract Integer sortOrder();
 
     @NonNull
     public static Builder builder() {
@@ -86,7 +87,9 @@ public abstract class CategoryCategoryComboLinkModel extends BaseModel {
 
         public abstract Builder category(@Nullable String category);
 
-        public abstract Builder combo(@Nullable String combo);
+        public abstract Builder categoryCombo(@Nullable String combo);
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         public abstract CategoryCategoryComboLinkModel build();
     }

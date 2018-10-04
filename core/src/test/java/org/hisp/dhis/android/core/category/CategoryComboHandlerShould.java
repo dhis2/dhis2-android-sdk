@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class CategoryComboHandlerShould {
     private SyncHandler<CategoryOptionCombo> optionComboHandler;
 
     @Mock
-    private LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
+    private OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
 
     @Mock
     private OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;

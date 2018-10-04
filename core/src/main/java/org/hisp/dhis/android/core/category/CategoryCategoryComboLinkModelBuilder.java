@@ -28,21 +28,23 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
 
-public class CategoryCategoryComboLinkModelBuilder extends ModelBuilder<Category, CategoryCategoryComboLinkModel> {
+public class CategoryCategoryComboLinkModelBuilder
+        extends OrderedLinkModelBuilder<Category, CategoryCategoryComboLinkModel> {
 
     private final CategoryCategoryComboLinkModel.Builder builder;
 
     CategoryCategoryComboLinkModelBuilder(CategoryCombo combo) {
         this.builder = CategoryCategoryComboLinkModel.builder()
-                .combo(combo.uid());
+                .categoryCombo(combo.uid());
     }
 
     @Override
-    public CategoryCategoryComboLinkModel buildModel(Category category) {
+    public CategoryCategoryComboLinkModel buildModel(Category category, Integer sortOrder) {
         return builder
                 .category(category.uid())
+                .sortOrder(sortOrder)
                 .build();
     }
 }

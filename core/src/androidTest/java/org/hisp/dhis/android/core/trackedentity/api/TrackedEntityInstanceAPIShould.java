@@ -126,8 +126,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
 
@@ -144,8 +144,13 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
                 .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
 
-        TrackedEntityInstance serverInvalidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+        try {
+            executor.executeObjectCall(trackedEntityInstanceService
+                    .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+            Assert.fail("Should not reach that line");
+        } catch (D2CallException e) {
+            assertThat(e.httpErrorCode()).isEqualTo(404);
+        }
 
         assertThat(serverValidTEI).isNotNull();
     }
@@ -161,8 +166,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -195,8 +200,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -232,8 +237,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -271,8 +276,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI1, validTEI2);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -313,8 +318,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI1, validTEI2);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -355,8 +360,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -398,8 +403,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -442,8 +447,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
@@ -485,8 +490,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(completedEnrollment);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 

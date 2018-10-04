@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel.factory;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class TrackedEntityAttributeReservedValueStore
@@ -70,7 +69,7 @@ public final class TrackedEntityAttributeReservedValueStore
     @Override
     public TrackedEntityAttributeReservedValueModel popOne(@NonNull String ownerUid,
                                                            @NonNull String organisationUnitUid) {
-        return popOneWhere(factory, where(ownerUid, organisationUnitUid));
+        return popOneWhere(where(ownerUid, organisationUnitUid));
     }
 
     @Override

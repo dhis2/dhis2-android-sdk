@@ -60,14 +60,6 @@ public abstract class ConstantModel extends BaseIdentifiableObjectModel {
         return new $$AutoValue_ConstantModel.Builder();
     }
 
-    public static final CursorModelFactory<ConstantModel> factory
-            = new CursorModelFactory<ConstantModel>() {
-        @Override
-        public ConstantModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
-
     @Nullable
     @ColumnName(Columns.VALUE)
     public abstract String value();

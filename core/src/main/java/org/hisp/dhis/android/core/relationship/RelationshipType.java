@@ -42,7 +42,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationshipConstraintAdapter;
 
@@ -90,13 +89,6 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     static RelationshipType create(Cursor cursor) {
         return AutoValue_RelationshipType.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<RelationshipType> factory = new CursorModelFactory<RelationshipType>() {
-        @Override
-        public RelationshipType fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @NonNull
     public abstract ContentValues toContentValues();

@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
@@ -50,7 +52,7 @@ public class DataSetCompleteRegistrationStore extends
                                              SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
 
         super(databaseAdapter, insertStatement, updateWhereStatement,
-                builder, BINDER, WHERE_UPDATE_BINDER);
+                builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 
     public static DataSetCompleteRegistrationStore create(DatabaseAdapter databaseAdapter) {
@@ -92,9 +94,17 @@ public class DataSetCompleteRegistrationStore extends
         }
     };
 
+    private static final CursorModelFactory<DataSetCompleteRegistration> FACTORY
+            = new CursorModelFactory<DataSetCompleteRegistration>() {
+        @Override
+        public DataSetCompleteRegistration fromCursor(Cursor cursor) {
+            return DataSetCompleteRegistration.create(cursor);
+        }
+    };
+
     Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state) {
         String whereClause = DataSetCompleteRegistration.Columns.STATE + "='" + state.name() + "'";
-        return selectWhereClause(DataSetCompleteRegistration.factory, whereClause);
+        return selectWhereClause(whereClause);
     }
 
     /**

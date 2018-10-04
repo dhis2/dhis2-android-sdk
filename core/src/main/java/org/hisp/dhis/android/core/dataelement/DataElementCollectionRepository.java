@@ -41,14 +41,12 @@ final class DataElementCollectionRepository {
 
     static ReadOnlyIdentifiableCollectionRepository<DataElement> create(DatabaseAdapter databaseAdapter) {
         /*ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
-                RelationshipConstraintStore.create(databaseAdapter),
-                RelationshipConstraint.factory
+                RelationshipConstraintStore.create(databaseAdapter)
         );
         */
 
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 DataElementStore.create(databaseAdapter),
-                DataElement.factory,
                 Collections.<ChildrenAppender<DataElement>>emptyList()
         );
     }

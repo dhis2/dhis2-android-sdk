@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSetModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +54,9 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
                                       SQLiteStatement updateWhereStatement,
                                       SQLStatementBuilder builder,
                                       StatementBinder<RelationshipItemModel> binder,
-                                      WhereStatementBinder<RelationshipItemModel> whereBinder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
+                                      WhereStatementBinder<RelationshipItemModel> whereBinder,
+                                      CursorModelFactory<RelationshipItemModel> modelFactory) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, modelFactory);
     }
 
     @Override
@@ -84,11 +86,9 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
 
     @Override
     public RelationshipItemModel getForRelationshipUidAndConstraintType(
-            @NonNull CursorModelFactory<RelationshipItemModel> modelFactory,
             @NonNull String uid,
             @NonNull RelationshipConstraintType constraintType) {
-        return selectOneWhere(modelFactory,
-                RelationshipItemModel.Columns.RELATIONSHIP + "='" + uid + "' AND " +
+        return selectOneWhere(RelationshipItemModel.Columns.RELATIONSHIP + "='" + uid + "' AND " +
                         RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + "='" + constraintType + "'");
     }
 
@@ -136,6 +136,14 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
         }
     };
 
+    private static final CursorModelFactory<RelationshipItemModel> FACTORY
+            = new CursorModelFactory<RelationshipItemModel>() {
+        @Override
+        public RelationshipItemModel fromCursor(Cursor cursor) {
+            return RelationshipItemModel.create(cursor);
+        }
+    };
+
     public static RelationshipItemStore create(DatabaseAdapter databaseAdapter) {
         BaseModel.Columns columns = new RelationshipItemModel.Columns();
 
@@ -148,7 +156,8 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
                 statementBuilder,
                 BINDER,
-                WHERE_UPDATE_BINDER
+                WHERE_UPDATE_BINDER,
+                FACTORY
         );
     }
 }

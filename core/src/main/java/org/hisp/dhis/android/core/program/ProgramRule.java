@@ -44,8 +44,6 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleActionListAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
-import org.hisp.dhis.android.core.dataset.AutoValue_SectionModel;
-import org.hisp.dhis.android.core.dataset.SectionModel;
 
 import java.util.List;
 

@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
@@ -47,7 +49,7 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<ProgramModel
     private ProgramStore(DatabaseAdapter databaseAdapter,
                          SQLStatementWrapper statementWrapper,
                          SQLStatementBuilder statementBuilder) {
-        super(databaseAdapter, statementWrapper, statementBuilder, BINDER);
+        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, FACTORY);
     }
     
     private static StatementBinder<ProgramModel> BINDER = new NameableStatementBinder<ProgramModel>() {
@@ -81,6 +83,13 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<ProgramModel
             sqLiteBind(sqLiteStatement, 34, o.expiryPeriodType());
             sqLiteBind(sqLiteStatement, 35, o.minAttributesRequiredToSearch());
             sqLiteBind(sqLiteStatement, 36, o.maxTeiCountToReturn());
+        }
+    };
+
+    private static final CursorModelFactory<ProgramModel> FACTORY = new CursorModelFactory<ProgramModel>() {
+        @Override
+        public ProgramModel fromCursor(Cursor cursor) {
+            return ProgramModel.create(cursor);
         }
     };
 

@@ -121,8 +121,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     }
 
     private Set<String> getOrgUnitUids() {
-        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll(
-                UserOrganisationUnitLinkModel.factory);
+        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
 
         Set<String> organisationUnitUids = new HashSet<>();
 

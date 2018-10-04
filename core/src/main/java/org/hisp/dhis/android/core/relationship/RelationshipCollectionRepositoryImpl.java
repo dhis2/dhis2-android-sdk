@@ -32,7 +32,6 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -60,14 +59,13 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     private final PojoBuilder<RelationshipItem, RelationshipItemModel> relationshipItemPojoBuilder;
 
     private RelationshipCollectionRepositoryImpl(IdentifiableObjectStore<Relationship> store,
-                                                 CursorModelFactory<Relationship> modelFactory,
                                                  RelationshipHandler relationshipHandler,
                                                  RelationshipItemStore relationshipItemStore,
                                                  RelationshipItemElementStoreSelector storeSelector,
                                                  PojoBuilder<RelationshipItem, RelationshipItemModel>
                                                relationshipItemPojoBuilder,
                                                  Collection<ChildrenAppender<Relationship>> childrenAppenders) {
-        super(store, modelFactory, childrenAppenders);
+        super(store, childrenAppenders);
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
@@ -107,7 +105,7 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
 
     @Override
     public ReadWriteObjectRepository<Relationship> uid(String uid) {
-        return new RelationshipObjectRepository(store, modelFactory, uid, childrenAppenders, storeSelector);
+        return new RelationshipObjectRepository(store, uid, childrenAppenders, storeSelector);
     }
 
     private boolean isUpdatableState(State state) {
@@ -124,10 +122,9 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
 
         // TODO Create query to avoid retrieving the whole table
-        Set<RelationshipItemModel> relationshipItemModels =
-                this.relationshipItemStore.selectAll(RelationshipItemModel.factory);
+        Set<RelationshipItemModel> relationshipItemModels = this.relationshipItemStore.selectAll();
 
-        Set<Relationship> allRelationshipsFromDb = this.store.selectAll(Relationship.factory);
+        Set<Relationship> allRelationshipsFromDb = this.store.selectAll();
 
         List<Relationship> relationships = new ArrayList<>();
 
@@ -194,7 +191,6 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
 
         return new RelationshipCollectionRepositoryImpl(
                 RelationshipStore.create(databaseAdapter),
-                Relationship.factory,
                 relationshipHandler,
                 RelationshipItemStoreImpl.create(databaseAdapter),
                 RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),

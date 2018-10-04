@@ -33,8 +33,6 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.wipe.WipeModule;
-import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
@@ -50,6 +48,8 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -167,7 +167,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                     .build();
         }
 
-        AuthenticatedUserModel existingUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel existingUser = authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
             throw D2CallException.builder()
@@ -194,7 +194,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             transaction.end();
         }
 
-        return userStore.selectByUid(existingUser.user(), User.factory);
+        return userStore.selectByUid(existingUser.user());
     }
 
     private void throwExceptionIfUsernameNull() throws D2CallException {
@@ -218,7 +218,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     }
 
     private void throwExceptionIfAlreadyAuthenticated() throws D2CallException {
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
         if (authenticatedUser != null && authenticatedUser.credentials() != null) {
             throw D2CallException.builder()
                     .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
@@ -229,7 +229,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     }
 
     private boolean wasLoggedAndUserIsNew(User newUser) {
-        User lastUser = userStore.selectFirst(User.factory);
+        User lastUser = userStore.selectFirst();
         return lastUser != null && !lastUser.uid().equals(newUser.uid());
     }
 

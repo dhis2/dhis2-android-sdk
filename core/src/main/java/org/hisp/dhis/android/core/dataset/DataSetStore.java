@@ -68,8 +68,7 @@ public final class DataSetStore {
         }
     };
 
-    private static final CursorModelFactory<DataSetModel> FACTORY
-            = new CursorModelFactory<DataSetModel>() {
+    private static final CursorModelFactory<DataSetModel> FACTORY = new CursorModelFactory<DataSetModel>() {
         @Override
         public DataSetModel fromCursor(Cursor cursor) {
             return DataSetModel.create(cursor);

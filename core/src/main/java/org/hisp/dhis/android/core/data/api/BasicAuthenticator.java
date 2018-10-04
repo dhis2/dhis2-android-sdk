@@ -57,7 +57,7 @@ final class BasicAuthenticator implements Authenticator {
             return chain.proceed(chain.request());
         }
 
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
         if (authenticatedUser == null || authenticatedUser.credentials() == null) {
             // proceed request if we do not
             // have any users authenticated

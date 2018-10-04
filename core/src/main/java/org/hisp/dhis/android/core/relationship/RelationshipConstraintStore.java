@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -67,9 +69,16 @@ public final class RelationshipConstraintStore {
         }
     };
 
+    private static final CursorModelFactory<RelationshipConstraint> FACTORY
+            = new CursorModelFactory<RelationshipConstraint>() {
+        @Override
+        public RelationshipConstraint fromCursor(Cursor cursor) {
+            return RelationshipConstraint.create(cursor);
+        }
+    };
 
     public static ObjectWithoutUidStore<RelationshipConstraint> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, RelationshipConstraintTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER);
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

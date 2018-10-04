@@ -36,7 +36,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 
 @AutoValue
 public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
@@ -64,14 +63,6 @@ public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
     public static Builder builder() {
         return new $$AutoValue_RelationshipModel.Builder();
     }
-
-    public static final CursorModelFactory<RelationshipModel> factory
-            = new CursorModelFactory<RelationshipModel>() {
-        @Override
-        public RelationshipModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @Nullable
     @ColumnName(Columns.RELATIONSHIP_TYPE)

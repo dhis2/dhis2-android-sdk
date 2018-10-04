@@ -118,7 +118,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                                     Integer remainingValues) throws D2CallException {
 
         OrganisationUnitModel organisationUnitModel =
-                this.organisationUnitStore.selectByUid(organisationUnitUid, OrganisationUnitModel.factory);
+                this.organisationUnitStore.selectByUid(organisationUnitUid);
 
         if (organisationUnitModel == null) {
             throw D2CallException.builder()

@@ -100,8 +100,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
                 this.relationshipItemStore.getRelationshipUidsForItems(relationship.from(), relationship.to());
 
         for (String existingRelationshipUid : existingRelationshipUidsForPair) {
-            Relationship existingRelationship = this.relationshipStore.selectByUid(existingRelationshipUid,
-                    Relationship.factory);
+            Relationship existingRelationship = this.relationshipStore.selectByUid(existingRelationshipUid);
 
             if (existingRelationship != null &&
                     relationship.relationshipType().equals(existingRelationship.relationshipType())) {

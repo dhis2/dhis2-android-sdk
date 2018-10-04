@@ -141,7 +141,7 @@ public class ProgramIndicatorEngineShould {
         programIndicatorEngine = new ProgramIndicatorEngine(programIndicatorStore, trackedEntityDataValueStore,
                 enrollmentStore, eventStore, dataElementStore, constantStore, trackedEntityAttributeValueStore);
 
-        when(programIndicatorStore.selectByUid(programIndicatorUid, ProgramIndicatorModel.factory)).thenReturn
+        when(programIndicatorStore.selectByUid(programIndicatorUid)).thenReturn
                 (programIndicator);
         when(programIndicator.aggregationType()).thenReturn(AggregationType.SUM);
 
@@ -179,16 +179,16 @@ public class ProgramIndicatorEngineShould {
         when(enrollmentStore.queryByUid(enrollmentUid)).thenReturn(enrollmentModel);
 
         when(dataElement.valueType()).thenReturn(ValueType.NUMBER);
-        when(dataElementStore.selectByUid(dataElementUid1, DataElement.factory)).thenReturn(dataElement);
-        when(dataElementStore.selectByUid(dataElementUid2, DataElement.factory)).thenReturn(dataElement);
-        when(dataElementStore.selectByUid(dataElementUid3, DataElement.factory)).thenReturn(dataElement);
-        when(dataElementStore.selectByUid(dataElementUid4, DataElement.factory)).thenReturn(dataElement);
+        when(dataElementStore.selectByUid(dataElementUid1)).thenReturn(dataElement);
+        when(dataElementStore.selectByUid(dataElementUid2)).thenReturn(dataElement);
+        when(dataElementStore.selectByUid(dataElementUid3)).thenReturn(dataElement);
+        when(dataElementStore.selectByUid(dataElementUid4)).thenReturn(dataElement);
 
         when(trackedEntityAttributeValueStore.queryByTrackedEntityInstance(trackedEntityInstanceUid))
                 .thenReturn(Collections.singletonList(attributeValue));
 
         when(constantModel.uid()).thenReturn(constantUid1);
-        when(constantStore.selectByUid(constantUid1, ConstantModel.factory)).thenReturn(constantModel);
+        when(constantStore.selectByUid(constantUid1)).thenReturn(constantModel);
     }
 
     @Test

@@ -128,8 +128,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     }
 
     private Set<String> getOrgUnitUids() {
-        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll(
-                UserOrganisationUnitLinkModel.factory);
+        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
 
         Set<String> organisationUnitUids = new HashSet<>();
 

@@ -38,7 +38,6 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
@@ -67,13 +66,6 @@ public abstract class SystemInfo extends BaseModel {
     public static SystemInfo create(Cursor cursor) {
         return AutoValue_SystemInfo.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<SystemInfo> factory = new CursorModelFactory<SystemInfo>() {
-        @Override
-        public SystemInfo fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     public static Builder builder() {
         return new AutoValue_SystemInfo.Builder();

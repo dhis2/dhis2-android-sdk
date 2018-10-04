@@ -35,7 +35,6 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 @AutoValue
@@ -116,13 +115,6 @@ public abstract class UserModel extends BaseIdentifiableObjectModel {
     public static UserModel create(Cursor cursor) {
         return AutoValue_UserModel.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<UserModel> factory = new CursorModelFactory<UserModel>() {
-        @Override
-        public UserModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {

@@ -39,7 +39,6 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
@@ -103,14 +102,6 @@ public abstract class DataValue extends BaseDataModel {
     public static DataValue create(Cursor cursor) {
         return AutoValue_DataValue.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<DataValue> factory =
-            new CursorModelFactory<DataValue>() {
-                @Override
-                public DataValue fromCursor(Cursor cursor) {
-                    return create(cursor);
-                }
-            };
 
     public abstract DataValue.Builder toBuilder();
 

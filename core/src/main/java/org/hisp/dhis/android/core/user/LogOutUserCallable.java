@@ -49,7 +49,7 @@ public class LogOutUserCallable implements Callable<Unit> {
 
     @Override
     public Unit call() throws Exception {
-        AuthenticatedUserModel existingUser = this.authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel existingUser = this.authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
             throw D2CallException.builder()

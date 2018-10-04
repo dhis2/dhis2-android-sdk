@@ -76,5 +76,4 @@ public final class AuthenticatedUserStore {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthenticatedUserModel.TABLE,
                 new AuthenticatedUserModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
-
 }

@@ -71,8 +71,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 
                 if (!searchOrgUnitUids.isEmpty()) {
-                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore
-                            .selectFirst(AuthenticatedUserModel.factory);
+                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
                     Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
                             databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());

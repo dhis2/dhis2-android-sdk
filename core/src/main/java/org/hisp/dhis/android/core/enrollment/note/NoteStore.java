@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -64,9 +66,15 @@ public final class NoteStore {
         }
     };
 
+    private static final CursorModelFactory<NoteModel> FACTORY = new CursorModelFactory<NoteModel>() {
+        @Override
+        public NoteModel fromCursor(Cursor cursor) {
+            return NoteModel.create(cursor);
+        }
+    };
 
     public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE, new NoteModel.Columns(),
-                BINDER, WHERE_UPDATE_BINDER);
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

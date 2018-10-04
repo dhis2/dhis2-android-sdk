@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -56,8 +58,16 @@ public final class ProgramSectionStore {
         }
     };
 
+    private static final CursorModelFactory<ProgramSectionModel> FACTORY
+            = new CursorModelFactory<ProgramSectionModel>() {
+        @Override
+        public ProgramSectionModel fromCursor(Cursor cursor) {
+            return ProgramSectionModel.create(cursor);
+        }
+    };
+
     public static IdentifiableObjectStore<ProgramSectionModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionModel.TABLE,
-                new ProgramSectionModel.Columns().all(), BINDER);
+                new ProgramSectionModel.Columns().all(), BINDER, FACTORY);
     }
 }

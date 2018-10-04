@@ -48,6 +48,7 @@ public final class SectionDataElementLinkStore {
         public void bindToStatement(@NonNull SectionDataElementLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.section());
             sqLiteBind(sqLiteStatement, 2, o.dataElement());
+            sqLiteBind(sqLiteStatement, 3, o.sortOrder());
         }
     };
 

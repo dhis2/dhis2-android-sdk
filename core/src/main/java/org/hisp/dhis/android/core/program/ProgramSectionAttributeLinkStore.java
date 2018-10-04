@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -52,10 +54,19 @@ public final class ProgramSectionAttributeLinkStore {
         }
     };
 
+    private static final CursorModelFactory<ProgramSectionAttributeLinkModel> FACTORY
+            = new CursorModelFactory<ProgramSectionAttributeLinkModel>() {
+        @Override
+        public ProgramSectionAttributeLinkModel fromCursor(Cursor cursor) {
+            return ProgramSectionAttributeLinkModel.create(cursor);
+        }
+    };
+
     public static LinkModelStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, ProgramSectionAttributeLinkModel.TABLE,
                 new ProgramSectionAttributeLinkModel.Columns(),
                 ProgramSectionAttributeLinkModel.Columns.PROGRAM_SECTION,
-                BINDER);
+                BINDER,
+                FACTORY);
     }
 }

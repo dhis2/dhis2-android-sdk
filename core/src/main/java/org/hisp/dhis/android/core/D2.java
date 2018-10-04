@@ -32,17 +32,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
@@ -280,15 +275,10 @@ public final class D2 {
                 throw new IllegalArgumentException("context == null");
             }
 
-            ObjectMapper objectMapper = new ObjectMapper()
-                    .setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw())
-                    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                    .setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(configuration.serverUrl())
                     .client(okHttpClient)
-                    .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                    .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
                     .addConverterFactory(FilterConverterFactory.create())
                     .addConverterFactory(FieldsConverterFactory.create())
                     .validateEagerly(true)

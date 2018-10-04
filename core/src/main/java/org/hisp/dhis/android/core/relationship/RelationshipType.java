@@ -57,11 +57,20 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     @JsonIgnore()
     public abstract Long id();
 
+
+    /**
+     * @deprecated since 2.29, replaced by {@link #fromConstraint()}
+     */
+    @Deprecated
     @Nullable
     public abstract String bIsToA();
 
     /* Field name doesn't correspond with column name (typo: upper case A) We can keep the inconsistency
         as it will be removed when 2.29 is no longer supported */
+    /**
+     * @deprecated since 2.29, replaced by {@link #toConstraint()}
+     */
+    @Deprecated
     @Nullable
     @ColumnName(RelationshipTypeTableInfo.Columns.A_IS_TO_B_WITH_UPPER_CASE_A)
     public abstract String aIsToB();

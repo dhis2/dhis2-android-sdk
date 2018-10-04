@@ -39,7 +39,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 @AutoValue
@@ -71,15 +70,6 @@ public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
     public static ProgramIndicatorModel create(Cursor cursor) {
         return AutoValue_ProgramIndicatorModel.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<ProgramIndicatorModel> factory
-            = new CursorModelFactory<ProgramIndicatorModel>() {
-        @Override
-        public ProgramIndicatorModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
-
 
     @Nullable
     @ColumnName(Columns.DISPLAY_IN_FORM)

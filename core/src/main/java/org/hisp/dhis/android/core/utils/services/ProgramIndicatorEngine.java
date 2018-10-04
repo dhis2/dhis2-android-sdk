@@ -164,8 +164,7 @@ public class ProgramIndicatorEngine {
     String parseIndicatorExpression(String enrollment, String event, String indicatorUid) {
         StringBuffer buffer = new StringBuffer();
 
-        ProgramIndicatorModel programIndicator = this.programIndicatorStore.selectByUid(indicatorUid,
-                ProgramIndicatorModel.factory);
+        ProgramIndicatorModel programIndicator = this.programIndicatorStore.selectByUid(indicatorUid);
         String expression = programIndicator.expression();
 
         Matcher matcher = EXPRESSION_PATTERN.matcher(expression);
@@ -235,7 +234,7 @@ public class ProgramIndicatorEngine {
                     matcher.appendReplacement(buffer, TextUtils.quote(value));
                 }
             } else if (KEY_CONSTANT.equals(key)) {
-                ConstantModel constant = constantStore.selectByUid(uid, ConstantModel.factory);
+                ConstantModel constant = constantStore.selectByUid(uid);
 
                 if (constant != null) {
                     matcher.appendReplacement(buffer, String.valueOf(constant.value()));
@@ -354,7 +353,7 @@ public class ProgramIndicatorEngine {
     }
 
     private String formatDataValue(TrackedEntityDataValue dataValue) {
-        if(dataElementStore.selectByUid(dataValue.dataElement(), DataElement.factory)
+        if(dataElementStore.selectByUid(dataValue.dataElement())
                 .valueType() == ValueType.BOOLEAN) {
             if(dataValue.value().equals("true")) {
                 return "1";

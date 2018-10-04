@@ -21,7 +21,8 @@ public final class CategoryCategoryComboLinkStore {
         public void bindToStatement(@NonNull CategoryCategoryComboLinkModel o,
                                     @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.category());
-            sqLiteBind(sqLiteStatement, 2, o.combo());
+            sqLiteBind(sqLiteStatement, 2, o.categoryCombo());
+            sqLiteBind(sqLiteStatement, 3, o.sortOrder());
         }
     };
 

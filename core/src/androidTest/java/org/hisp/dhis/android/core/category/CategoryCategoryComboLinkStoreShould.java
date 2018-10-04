@@ -78,7 +78,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     private void givenACategoryComboLinkModel(){
         newCategoryCategoryComboLinkModel = CategoryCategoryComboLinkModel.builder()
                 .category("KfdsGBcoiCa")
-                .combo("m2jTvAj5kkm")
+                .categoryCombo("m2jTvAj5kkm")
                 .build();
     }
 

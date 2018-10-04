@@ -36,7 +36,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.utils.Utils;
 
 @AutoValue
@@ -81,14 +80,6 @@ public abstract class AuthenticatedUserModel extends BaseModel {
     public static AuthenticatedUserModel create(Cursor cursor) {
         return AutoValue_AuthenticatedUserModel.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<AuthenticatedUserModel> factory
-            = new CursorModelFactory<AuthenticatedUserModel>() {
-        @Override
-        public AuthenticatedUserModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {

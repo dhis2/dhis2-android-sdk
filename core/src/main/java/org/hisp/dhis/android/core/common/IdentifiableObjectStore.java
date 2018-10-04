@@ -46,5 +46,5 @@ public interface IdentifiableObjectStore<O extends ObjectWithUidInterface> exten
 
     Set<String> selectUidsWhere(String whereClause) throws RuntimeException;
 
-    O selectByUid(String uid, CursorModelFactory<O> modelFactory) throws RuntimeException;
+    O selectByUid(String uid) throws RuntimeException;
 }

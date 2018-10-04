@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -39,20 +38,17 @@ public class ReadOnlyIdentifiableObjectRepositoryImpl<M extends ObjectWithUidInt
         extends ReadOnlyObjectRepositoryImpl<M> {
 
     protected final IdentifiableObjectStore<M> store;
-    protected final CursorModelFactory<M> modelFactory;
     protected final String uid;
 
     public ReadOnlyIdentifiableObjectRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                    CursorModelFactory<M> modelFactory,
                                                     String uid,
                                                     Collection<ChildrenAppender<M>> childrenAppenders) {
         super(childrenAppenders);
         this.store = store;
-        this.modelFactory = modelFactory;
         this.uid = uid;
     }
 
     public M get() {
-        return store.selectByUid(uid, modelFactory);
+        return store.selectByUid(uid);
     }
 }

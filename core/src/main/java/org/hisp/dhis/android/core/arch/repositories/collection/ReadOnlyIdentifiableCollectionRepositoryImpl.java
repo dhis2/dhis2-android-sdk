@@ -44,14 +44,13 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
     private final IdentifiableObjectStore<M> store;
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                        CursorModelFactory<M> modelFactory,
                                                         Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(store, modelFactory, childrenAppenders);
+        super(store, childrenAppenders);
         this.store = store;
     }
 
     @Override
     public ReadOnlyObjectRepository<M> uid(String uid) {
-        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, modelFactory, uid, childrenAppenders);
+        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
     }
 }

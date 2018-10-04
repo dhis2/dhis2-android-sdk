@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
@@ -40,25 +39,21 @@ import java.util.Set;
 public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
 
     private final ObjectStore<M> store;
-    protected final CursorModelFactory<M> modelFactory;
     protected final Collection<ChildrenAppender<M>> childrenAppenders;
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
-                                            CursorModelFactory<M> modelFactory,
                                             Collection<ChildrenAppender<M>> childrenAppenders) {
         this.store = store;
-        this.modelFactory = modelFactory;
         this.childrenAppenders = childrenAppenders;
     }
 
-    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
-                                            CursorModelFactory<M> modelFactory) {
-        this(store, modelFactory, Collections.<ChildrenAppender<M>>emptyList());
+    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store) {
+        this(store, Collections.<ChildrenAppender<M>>emptyList());
     }
 
     @Override
     public Set<M> getSet() {
-        return store.selectAll(modelFactory);
+        return store.selectAll();
     }
 
     @Override

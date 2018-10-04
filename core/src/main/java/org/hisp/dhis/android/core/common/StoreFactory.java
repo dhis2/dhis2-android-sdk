@@ -40,46 +40,49 @@ public final class StoreFactory {
 
     public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
     objectWithUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
-                       StatementBinder<I> binder) {
+                       StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
-        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder);
+        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder, modelFactory);
     }
 
     public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
-    objectWithUidStore(DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder) {
-        return objectWithUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder);
+    objectWithUidStore(DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
+                       CursorModelFactory<I> modelFactory) {
+        return objectWithUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder, modelFactory);
     }
 
     static <I extends BaseModel> ObjectStore<I>
-    objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns, StatementBinder<I> binder) {
+    objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns, StatementBinder<I> binder,
+                CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
         return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(
-                statementBuilder.insert()), statementBuilder, binder);
+                statementBuilder.insert()), statementBuilder, binder, modelFactory);
     }
 
     public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns, StatementBinder<I> binder,
-            WhereStatementBinder<I> whereBinder) {
+            WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
         return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder, binder, whereBinder);
+                statementBuilder, binder, whereBinder, modelFactory);
     }
 
     public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
-            WhereStatementBinder<I> whereBinder) {
-        return objectWithoutUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns(), binder, whereBinder);
+            WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
+        return objectWithoutUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns(), binder, whereBinder,
+                modelFactory);
     }
 
     public static <I extends BaseModel> LinkModelStore<I> linkModelStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns,
-            String masterColumn, StatementBinder<I> binder) {
+            String masterColumn, StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
         return new LinkModelStoreImpl<>(databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
-                statementBuilder, masterColumn, binder);
+                statementBuilder, masterColumn, binder, modelFactory);
     }
 }

@@ -1,7 +1,10 @@
 package org.hisp.dhis.android.core.trackedentity.api;
 
+import junit.framework.Assert;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -17,6 +20,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.imports.ImportStatus.ERROR;
@@ -82,8 +86,8 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCall(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy));
+        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
 
@@ -100,8 +104,13 @@ public class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
                 .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
 
-        TrackedEntityInstance serverInvalidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+        try {
+            executor.executeObjectCall(trackedEntityInstanceService
+                    .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+            Assert.fail("Should not reach that line");
+        } catch (D2CallException e) {
+            assertThat(e.httpErrorCode()).isEqualTo(404);
+        }
 
         assertThat(serverValidTEI).isNotNull();
     }

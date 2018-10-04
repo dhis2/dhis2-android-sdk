@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -46,7 +45,6 @@ import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -80,7 +78,7 @@ public class LogOutUserCallableShould {
 
     @Test
     public void clear_user_credentials() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         logOutUserCallable.call();
 
@@ -93,7 +91,7 @@ public class LogOutUserCallableShould {
 
     @Test
     public void throw_d2_exception_if_no_authenticated_user() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
+        when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         try {
             logOutUserCallable.call();

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +39,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -67,7 +65,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_true_if_any_users_are_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
 
@@ -76,7 +74,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_any_users_are_not_persisted_after_call() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
+        when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();
 
@@ -85,7 +83,7 @@ public class IsUserLoggedInCallableShould {
 
     @Test
     public void return_false_if_users_persisted_but_without_credentials() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         when(authenticatedUser.credentials()).thenReturn(null);
 
         Boolean isUserLoggedIn = isUserLoggedInCallable.call();

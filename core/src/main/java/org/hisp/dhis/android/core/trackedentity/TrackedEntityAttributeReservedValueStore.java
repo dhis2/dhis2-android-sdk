@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -55,7 +57,7 @@ public final class TrackedEntityAttributeReservedValueStore
                                                      StatementBinder<TrackedEntityAttributeReservedValueModel> binder,
                                                      WhereStatementBinder<TrackedEntityAttributeReservedValueModel>
                                                              whereBinder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, FACTORY);
     }
 
     @Override
@@ -110,6 +112,13 @@ public final class TrackedEntityAttributeReservedValueStore
         }
     };
 
+    private static final CursorModelFactory<TrackedEntityAttributeReservedValueModel> FACTORY
+            = new CursorModelFactory<TrackedEntityAttributeReservedValueModel>() {
+        @Override
+        public TrackedEntityAttributeReservedValueModel fromCursor(Cursor cursor) {
+            return TrackedEntityAttributeReservedValueModel.create(cursor);
+        }
+    };
 
     public static TrackedEntityAttributeReservedValueStoreInterface
     create(DatabaseAdapter databaseAdapter) {

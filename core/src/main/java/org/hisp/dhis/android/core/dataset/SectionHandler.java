@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
@@ -42,13 +44,13 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 
 public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionModel> {
 
-    private final LinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
+    private final OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 
     private final GenericHandler<DataElementOperand, DataElementOperandModel> greyedFieldsHandler;
     private final LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
 
     SectionHandler(IdentifiableObjectStore<SectionModel> sectionStore,
-                   LinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler,
+                   OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler,
                    GenericHandler<DataElementOperand, DataElementOperandModel> greyedFieldsHandler,
                    LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler) {
 
@@ -57,16 +59,6 @@ public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionMode
         this.sectionDataElementLinkHandler = sectionDataElementLinkHandler;
         this.greyedFieldsHandler = greyedFieldsHandler;
         this.sectionGreyedFieldsLinkHandler = sectionGreyedFieldsLinkHandler;
-    }
-
-    public static SectionHandler create(DatabaseAdapter databaseAdapter) {
-        return new SectionHandler(
-                SectionStore.create(databaseAdapter),
-                new LinkModelHandlerImpl<ObjectWithUid,
-                        SectionDataElementLinkModel>(SectionDataElementLinkStore.create(databaseAdapter)),
-                DataElementOperandHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<DataElementOperand, SectionGreyedFieldsLinkModel>(
-                        SectionGreyedFieldsLinkStore.create(databaseAdapter)));
     }
 
     @Override
@@ -81,5 +73,15 @@ public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionMode
         sectionGreyedFieldsLinkHandler.handleMany(section.uid(),
                 section.greyedFields(),
                 new SectionGreyedFieldsLinkModelBuilder(section));
-        }
+    }
+
+    public static SectionHandler create(DatabaseAdapter databaseAdapter) {
+        return new SectionHandler(
+                SectionStore.create(databaseAdapter),
+                new OrderedLinkModelHandlerImpl<ObjectWithUid,
+                        SectionDataElementLinkModel>(SectionDataElementLinkStore.create(databaseAdapter)),
+                DataElementOperandHandler.create(databaseAdapter),
+                new LinkModelHandlerImpl<DataElementOperand, SectionGreyedFieldsLinkModel>(
+                        SectionGreyedFieldsLinkStore.create(databaseAdapter)));
+    }
 }

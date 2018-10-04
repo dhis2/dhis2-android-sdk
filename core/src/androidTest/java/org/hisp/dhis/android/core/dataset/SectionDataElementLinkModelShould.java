@@ -48,7 +48,7 @@ public class SectionDataElementLinkModelShould extends LinkModelAbstractShould<S
 
     public SectionDataElementLinkModelShould() {
 
-        super(new Columns().all(), 2);
+        super(new Columns().all(), 3);
     }
 
     @Override
@@ -56,6 +56,7 @@ public class SectionDataElementLinkModelShould extends LinkModelAbstractShould<S
         return SectionDataElementLinkModel.builder()
                 .section("section_uid")
                 .dataElement("data_element_uid")
+                .sortOrder(1)
                 .build();
     }
 
@@ -68,7 +69,7 @@ public class SectionDataElementLinkModelShould extends LinkModelAbstractShould<S
     protected Object[] getModelAsObjectArray() {
 
         return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.section(), model.dataElement());
+                model.section(), model.dataElement(), model.sortOrder());
     }
 
     @Test
@@ -78,5 +79,6 @@ public class SectionDataElementLinkModelShould extends LinkModelAbstractShould<S
 
         assertThat(columnsList.contains(Columns.SECTION)).isEqualTo(true);
         assertThat(columnsList.contains(Columns.DATA_ELEMENT)).isEqualTo(true);
+        assertThat(columnsList.contains(Columns.SORT_ORDER)).isEqualTo(true);
     }
 }

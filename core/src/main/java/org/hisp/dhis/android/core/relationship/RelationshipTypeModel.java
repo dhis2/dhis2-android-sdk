@@ -69,10 +69,16 @@ public abstract class RelationshipTypeModel extends BaseIdentifiableObjectModel 
         }
     };
 
+    /**
+     * @deprecated since 2.29
+     */
     @Nullable
     @ColumnName(Columns.B_IS_TO_A)
     public abstract String bIsToA();
 
+    /**
+     * @deprecated since 2.29
+     */
     @Nullable
     @ColumnName(Columns.A_IS_TO_B)
     public abstract String aIsToB();

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final IdentifiableSyncHandlerImpl<Option> optionHandler;
+    private final SyncHandler<Option> optionHandler;
     private final OrphanCleaner<OptionSet, Option> optionCleaner;
 
     OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore,
-                     IdentifiableSyncHandlerImpl<Option> optionHandler,
+                     SyncHandler<Option> optionHandler,
                      OrphanCleaner<OptionSet, Option> optionCleaner) {
         super(optionSetStore);
         this.optionHandler = optionHandler;

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -52,7 +53,7 @@ final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
                 new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
     }
 
-    static OptionHandler create(DatabaseAdapter databaseAdapter) {
+    static SyncHandler<Option> create(DatabaseAdapter databaseAdapter) {
         return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
     }
 }

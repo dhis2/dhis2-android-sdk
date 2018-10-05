@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
-    private final GenericHandler<Option, OptionModel> optionHandler;
+    private final IdentifiableSyncHandlerImpl<Option> optionHandler;
     private final OrphanCleaner<OptionSet, Option> optionCleaner;
 
     OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore,
-                     GenericHandler<Option, OptionModel> optionHandler,
+                     IdentifiableSyncHandlerImpl<Option> optionHandler,
                      OrphanCleaner<OptionSet, Option> optionCleaner) {
         super(optionSetStore);
         this.optionHandler = optionHandler;
@@ -49,7 +49,7 @@ public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, O
 
     @Override
     protected void afterObjectHandled(OptionSet optionSet, HandleAction action) {
-        optionHandler.handleMany(optionSet.options(), new OptionModelBuilder());
+        optionHandler.handleMany(optionSet.options());
         if (action == HandleAction.Update) {
             optionCleaner.deleteOrphan(optionSet, optionSet.options());
         }
@@ -59,7 +59,7 @@ public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, O
         return new OptionSetHandler(
                 OptionSetStore.create(databaseAdapter),
                 OptionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<OptionSet, Option>(OptionModel.TABLE, OptionModel.Columns.OPTION_SET,
-                        databaseAdapter));
+                new OrphanCleanerImpl<OptionSet, Option>(OptionTableInfo.TABLE_INFO.name(),
+                        OptionFields.OPTION_SET, databaseAdapter));
     }
 }

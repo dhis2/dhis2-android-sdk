@@ -44,9 +44,10 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreOptionAdapter;
+import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
 
-@AutoValue@JsonDeserialize(builder = AutoValue_Option.Builder.class)
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Option.Builder.class)
 public abstract class Option extends BaseIdentifiableObject implements Model {
 
     // TODO move to base class after whole object refactor
@@ -60,7 +61,7 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
     public abstract Integer sortOrder();
 
     @Nullable
-    @ColumnAdapter(IgnoreOptionAdapter.class)
+    @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
     public abstract OptionSet optionSet();
 
     @Nullable

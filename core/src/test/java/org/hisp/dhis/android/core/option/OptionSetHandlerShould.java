@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -39,10 +39,10 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,12 +56,14 @@ public class OptionSetHandlerShould {
     private OptionSet optionSet;
 
     @Mock
-    private GenericHandler<Option, OptionModel> optionHandler;
+    private IdentifiableSyncHandlerImpl<Option> optionHandler;
 
     @Mock
     private OrphanCleaner<OptionSet, Option> optionCleaner;
 
     @Mock
+    private Option option;
+
     private List<Option> options;
 
     // object to test
@@ -72,13 +74,14 @@ public class OptionSetHandlerShould {
         MockitoAnnotations.initMocks(this);
         optionSetHandler = new OptionSetHandler(optionSetStore, optionHandler, optionCleaner);
         when(optionSet.uid()).thenReturn("test_option_set_uid");
+        options = Collections.singletonList(option);
         when(optionSet.options()).thenReturn(options);
     }
 
     @Test
     public void handle_options() {
         optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
-        verify(optionHandler).handleMany(same(options), any(OptionModelBuilder.class));
+        verify(optionHandler).handleMany(options);
     }
 
     @Test

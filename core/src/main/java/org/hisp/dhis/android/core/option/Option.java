@@ -91,7 +91,7 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
 
         public abstract Option.Builder sortOrder(@Nullable Integer sortOrder);
 
-        public abstract Option.Builder optionSet(@Nullable String optionSet);
+        public abstract Option.Builder optionSet(@Nullable OptionSet optionSet);
 
         public abstract Option.Builder style(@Nullable ObjectStyle style);
 

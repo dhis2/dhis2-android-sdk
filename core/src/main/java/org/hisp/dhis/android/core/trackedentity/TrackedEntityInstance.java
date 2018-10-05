@@ -81,7 +81,7 @@ public abstract class TrackedEntityInstance implements ObjectWithUidInterface, O
     private static final NestedField<TrackedEntityInstance, Relationship229Compatible> relationships
             = NestedField.create(RELATIONSHIPS);
 
-    static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
+    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
             relationships.with(RelationshipFields.allFields),
             trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),

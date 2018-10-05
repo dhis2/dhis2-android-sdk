@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -100,8 +101,9 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
             strategy = "SYNC";
         }
 
-        WebResponse webResponse = new APICallExecutor().executeObjectCall(
-                trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy));
+        WebResponse webResponse = new APICallExecutor().executeObjectCallWithAcceptedErrorCodes(
+                trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
+                Collections.singletonList(409), WebResponse.class);
         handleWebResponse(webResponse);
         return webResponse;
     }

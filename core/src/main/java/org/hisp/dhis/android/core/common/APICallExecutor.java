@@ -30,8 +30,11 @@ package org.hisp.dhis.android.core.common;
 
 import android.util.Log;
 
+import org.hisp.dhis.android.core.ObjectMapperFactory;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -63,6 +66,16 @@ public final class APICallExecutor {
     }
 
     public <P> P executeObjectCall(Call<P> call) throws D2CallException {
+        return executeObjectCallInternal(call, new ArrayList<Integer>(), null);
+    }
+
+    public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
+                                                         Class<P> errorClass) throws D2CallException {
+        return executeObjectCallInternal(call, acceptedErrorCodes, errorClass);
+    }
+
+    private <P> P executeObjectCallInternal(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass)
+            throws D2CallException {
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
@@ -71,6 +84,8 @@ public final class APICallExecutor {
                 } else {
                     return response.body();
                 }
+            } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
+                return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else {
                 throw responseException(response);
             }

@@ -26,24 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.option.Option;
 
-public class OptionModelBuilder extends ModelBuilder<Option, OptionModel> {
+import java.util.List;
 
-    @Override
-    public OptionModel buildModel(Option option) {
-        return OptionModel.builder()
-                .uid(option.uid())
-                .code(option.code())
-                .name(option.name())
-                .displayName(option.displayName())
-                .created(option.created())
-                .lastUpdated(option.lastUpdated())
-                .sortOrder(option.sortOrder())
-                .optionSet(UidsHelper.getUidOrNull(option.optionSet()))
-                .build();
-    }
+public final class IgnoreOptionListAdapter extends IgnoreColumnAdapter<List<Option>> {
 }

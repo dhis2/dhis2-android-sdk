@@ -32,6 +32,7 @@ import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -98,5 +99,23 @@ public abstract class OptionSet extends BaseIdentifiableObject {
                 valueType,
                 safeUnmodifiableList(options)
         );
+    }
+
+    public static Builder builder() {
+        return new $$AutoValue_OptionSet.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<OptionSet.Builder> {
+        public abstract OptionSet.Builder id(Long id);
+
+        public abstract OptionSet.Builder version(@Nullable Integer version);
+
+        public abstract OptionSet.Builder valueType(@Nullable ValueType valueType);
+
+        public abstract OptionSet.Builder options(@Nullable List<Option> options);
+
+        public abstract OptionSet build();
     }
 }

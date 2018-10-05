@@ -56,8 +56,8 @@ public final class OptionTableInfo {
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    OptionFields.OPTION_SET,
-                    OptionFields.SORT_ORDER
+                    OptionFields.SORT_ORDER,
+                    OptionFields.OPTION_SET
             );
         }
     }

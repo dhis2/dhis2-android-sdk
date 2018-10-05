@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
@@ -37,10 +37,10 @@ import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class OptionHandler extends IdentifiableHandlerImpl<Option, OptionModel> {
+final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    private OptionHandler(IdentifiableObjectStore<OptionModel> optionStore,
+    private OptionHandler(IdentifiableObjectStore<Option> optionStore,
                           GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
         super(optionStore);
         this.styleHandler = styleHandler;
@@ -48,10 +48,11 @@ final class OptionHandler extends IdentifiableHandlerImpl<Option, OptionModel> {
 
     @Override
     protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), new ObjectStyleModelBuilder(option.uid(), OptionModel.TABLE));
+        styleHandler.handle(option.style(),
+                new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
     }
 
-    static GenericHandler<Option, OptionModel> create(DatabaseAdapter databaseAdapter) {
+    static OptionHandler create(DatabaseAdapter databaseAdapter) {
         return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
     }
 }

@@ -69,12 +69,13 @@ public final class APICallExecutor {
         return executeObjectCallInternal(call, new ArrayList<Integer>(), null);
     }
 
-    public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass)
-            throws D2CallException {
+    public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
+                                                         Class<P> errorClass) throws D2CallException {
         return executeObjectCallInternal(call, acceptedErrorCodes, errorClass);
     }
 
-    private <P> P executeObjectCallInternal(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass) throws D2CallException {
+    private <P> P executeObjectCallInternal(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass)
+            throws D2CallException {
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -41,8 +42,6 @@ import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
 import org.junit.Before;
@@ -80,7 +79,7 @@ public class DataSetHandlerShould {
     private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
     @Mock
-    private GenericHandler<DataElementOperand, DataElementOperandModel> compulsoryDataElementOperandHandler;
+    private SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler;
 
     @Mock
     private LinkModelHandler<DataElementOperand,
@@ -179,8 +178,7 @@ public class DataSetHandlerShould {
         verify(sectionHandler, never()).handleMany(anyListOf(Section.class),
                 Matchers.<ModelBuilder<Section, SectionModel>>any());
 
-        verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class),
-                Matchers.<ModelBuilder<DataElementOperand, DataElementOperandModel>>any());
+        verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class));
 
         verify(dataInputPeriodHandler, never()).handleMany(anyString(), anyListOf(DataInputPeriod.class),
                 Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriodModel>>any());
@@ -218,8 +216,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(compulsoryDataElementOperandHandler).handleMany(anyListOf(DataElementOperand.class),
-                any(DataElementOperandModelBuilder.class));
+        verify(compulsoryDataElementOperandHandler).handleMany(anyListOf(DataElementOperand.class));
     }
 
     @Test

@@ -57,6 +57,10 @@ public class FieldsHelper<O> {
         return Field.create(BaseIdentifiableObject.LAST_UPDATED);
     }
 
+    public Field<O, String> deleted() {
+        return Field.create(BaseIdentifiableObject.DELETED);
+    }
+
     public NestedField<O, ?> nestedFieldWithUid(String fieldName) {
         NestedField<O, ObjectWithUid> nested = this.nestedField(fieldName);
         return nested.with(ObjectWithUid.uid);
@@ -75,7 +79,7 @@ public class FieldsHelper<O> {
         list.add(this.<String>field(BaseIdentifiableObject.DISPLAY_NAME));
         list.add(this.<String>field(BaseIdentifiableObject.CREATED));
         list.add(this.lastUpdated());
-        list.add(this.<String>field(BaseIdentifiableObject.DELETED));
+        list.add(this.deleted());
     }
 
     public List<Property<O, String>> getNameableFields() {

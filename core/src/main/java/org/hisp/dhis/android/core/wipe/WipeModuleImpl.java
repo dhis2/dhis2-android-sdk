@@ -17,8 +17,6 @@ import org.hisp.dhis.android.core.common.ObjectStyleStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.dataset.DataInputPeriodStore;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkStore;
@@ -80,13 +78,13 @@ public final class WipeModuleImpl implements WipeModule {
     @NonNull
     private final List<DeletableStore> metadataStores;
     private final List<DeletableStore> dataStores;
-    private final WipeableModule[] wipeableModules;
+    private final List<WipeableModule> wipeableModules;
     private final D2CallExecutor executor = new D2CallExecutor();
 
     WipeModuleImpl(@NonNull DatabaseAdapter databaseAdapter,
                    @NonNull List<DeletableStore> metadataStores,
                    @NonNull List<DeletableStore> dataStores,
-                   WipeableModule... wipeableModules) {
+                   List<WipeableModule> wipeableModules) {
         this.databaseAdapter = databaseAdapter;
         this.metadataStores = metadataStores;
         this.dataStores = dataStores;
@@ -171,7 +169,6 @@ public final class WipeModuleImpl implements WipeModule {
                 ProgramRuleStore.create(databaseAdapter),
                 OptionStore.create(databaseAdapter),
                 OptionSetStore.create(databaseAdapter),
-                DataElementStore.create(databaseAdapter),
                 new ProgramStageDataElementStoreImpl(databaseAdapter),
 
                 new ProgramStageSectionStoreImpl(databaseAdapter),
@@ -205,7 +202,6 @@ public final class WipeModuleImpl implements WipeModule {
                 SectionDataElementLinkStore.create(databaseAdapter),
                 SectionGreyedFieldsLinkStore.create(databaseAdapter),
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
-                DataElementOperandStore.create(databaseAdapter),
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
                 DataInputPeriodStore.create(databaseAdapter),
                 OrganisationUnitGroupStore.create(databaseAdapter),
@@ -224,7 +220,6 @@ public final class WipeModuleImpl implements WipeModule {
                 DataSetCompleteRegistrationStore.create(databaseAdapter)
         );
 
-        return new WipeModuleImpl(databaseAdapter, metadataStores, dataStores,
-                internalModules.systemInfo, internalModules.relationshipModule);
+        return new WipeModuleImpl(databaseAdapter, metadataStores, dataStores, internalModules.getWipeableModules());
     }
 }

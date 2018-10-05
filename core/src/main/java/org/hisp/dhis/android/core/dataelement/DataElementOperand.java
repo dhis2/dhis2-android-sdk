@@ -28,89 +28,67 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import android.database.Cursor;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 import javax.annotation.Nullable;
 
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
+
 @AutoValue
-public abstract class DataElementOperand extends BaseNameableObject {
+@JsonDeserialize(builder = AutoValue_DataElementOperand.Builder.class)
+public abstract class DataElementOperand extends BaseModel
+        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
 
-    private static final String DATA_ELEMENT = "dataElement";
-    private static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
+    @Override
+    @JsonProperty(UID)
+    public abstract String uid();
 
-    public static final Field<DataElementOperand, String> uid = Field.create(UID);
-    private static final Field<DataElementOperand, String> code = Field.create(CODE);
-    private static final Field<DataElementOperand, String> name = Field.create(NAME);
-    private static final Field<DataElementOperand, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<DataElementOperand, String> created = Field.create(CREATED);
-    private static final Field<DataElementOperand, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<DataElementOperand, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<DataElementOperand, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<DataElementOperand, String> description = Field.create(DESCRIPTION);
-    private static final Field<DataElementOperand, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<DataElementOperand, Boolean> deleted = Field.create(DELETED);
-
-    private static final NestedField<DataElementOperand, ObjectWithUid> dataElement
-            = NestedField.create(DATA_ELEMENT);
-    private static final NestedField<DataElementOperand, ObjectWithUid> categoryOptionCombo
-            = NestedField.create(CATEGORY_OPTION_COMBO);
-
-
-    public static final Fields<DataElementOperand> allFields = Fields.<DataElementOperand>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
-            description, displayDescription, deleted, dataElement.with(ObjectWithUid.uid),
-            categoryOptionCombo.with(ObjectWithUid.uid)
-            ).build();
-
+    @Override
+    @Nullable
+    @JsonProperty()
+    public abstract Boolean deleted();
 
     @Nullable
-    @JsonProperty(DATA_ELEMENT)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
-    String dataElementUid() {
-        ObjectWithUid dataElement = dataElement();
-        return dataElement == null ? "" : dataElement.uid();
-    }
-
     @Nullable
-    @JsonProperty(CATEGORY_OPTION_COMBO)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryOptionCombo();
 
-    String categoryOptionComboUid() {
-        ObjectWithUid categoryOptionCombo = categoryOptionCombo();
-        return categoryOptionCombo == null ? "" : categoryOptionCombo.uid();
+    public static DataElementOperand create(Cursor cursor) {
+        return AutoValue_DataElementOperand.createFromCursor(cursor);
     }
 
-    @JsonCreator
-    public static DataElementOperand create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement,
-            @JsonProperty(CATEGORY_OPTION_COMBO) ObjectWithUid categoryOptionCombo) {
-
-        return new AutoValue_DataElementOperand(uid, code, name,
-                displayName, created, lastUpdated, deleted, shortName,
-                displayShortName, description, displayDescription,
-                dataElement, categoryOptionCombo);
+    public static Builder builder() {
+        return new AutoValue_DataElementOperand.Builder();
     }
 
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder uid(String uid);
+
+        public abstract Builder deleted(Boolean deleted);
+
+        public abstract Builder dataElement(ObjectWithUid dataElement);
+
+        public abstract Builder categoryOptionCombo(ObjectWithUid categoryOptionCombo);
+
+        public abstract DataElementOperand build();
+    }
 }

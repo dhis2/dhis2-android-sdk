@@ -25,36 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+package org.hisp.dhis.android.core.dataelement;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public class IdentifiableSyncHandlerImpl<O extends ObjectWithUidInterface & ObjectWithDeleteInterface>
-        extends SyncHandlerBaseImpl<O> {
+public final class DataElementOperandFields {
 
-    private final IdentifiableObjectStore<O> store;
+    static final String DATA_ELEMENT = "dataElement";
+    static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
 
-    public IdentifiableSyncHandlerImpl(IdentifiableObjectStore<O> store) {
-        this.store = store;
-    }
+    private static final FieldsHelper<DataElementOperand> fh = new FieldsHelper<>();
 
-    @Override
-    protected HandleAction deleteOrPersist(O o) {
-        String modelUid = o.uid();
-        if ((isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
-            store.deleteIfExists(modelUid);
-            return HandleAction.Delete;
-        } else {
-            return store.updateOrInsert(o);
-        }
-    }
+    public static final Fields<DataElementOperand> allFields = Fields.<DataElementOperand>builder()
+            .fields(
+                    fh.uid(),
+                    fh.deleted(),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(CATEGORY_OPTION_COMBO)
+            ).build();
 
-    protected boolean deleteIfCondition(O o) {
-        return false;
+    private DataElementOperandFields() {
     }
 }

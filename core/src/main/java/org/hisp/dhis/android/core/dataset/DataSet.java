@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
@@ -123,7 +124,7 @@ public abstract class DataSet extends BaseNameableObject {
             dataSetElements.with(DataSetElement.allFields),
             indicators.with(ObjectWithUid.uid),
             sections.with(Section.allFields),
-            compulsoryDataElementOperands.with(DataElementOperand.allFields),
+            compulsoryDataElementOperands.with(DataElementOperandFields.allFields),
             dataInputPeriods.with(DataInputPeriod.allFields),
             access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyle.allFields)).build();

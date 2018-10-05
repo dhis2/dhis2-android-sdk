@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.option.Option;
 
-public final class IgnoreObjectStyleAdapter extends IgnoreColumnAdapter<ObjectStyle> {
+public final class IgnoreOptionAdapter extends IgnoreColumnAdapter<Option> {
 }

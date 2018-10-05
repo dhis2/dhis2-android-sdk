@@ -104,14 +104,14 @@ public abstract class OptionSet extends BaseIdentifiableObject implements Model 
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<OptionSet.Builder> {
-        public abstract OptionSet.Builder id(Long id);
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-        public abstract OptionSet.Builder version(@Nullable Integer version);
+        public abstract Builder version(@Nullable Integer version);
 
-        public abstract OptionSet.Builder valueType(@Nullable ValueType valueType);
+        public abstract Builder valueType(@Nullable ValueType valueType);
 
-        public abstract OptionSet.Builder options(@Nullable List<Option> options);
+        public abstract Builder options(@Nullable List<Option> options);
 
         public abstract OptionSet build();
     }

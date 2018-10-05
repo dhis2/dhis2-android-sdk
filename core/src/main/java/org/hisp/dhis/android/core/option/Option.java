@@ -86,14 +86,14 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Option.Builder> {
-        public abstract Option.Builder id(Long id);
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-        public abstract Option.Builder sortOrder(@Nullable Integer sortOrder);
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
-        public abstract Option.Builder optionSet(@Nullable OptionSet optionSet);
+        public abstract Builder optionSet(@Nullable OptionSet optionSet);
 
-        public abstract Option.Builder style(@Nullable ObjectStyle style);
+        public abstract Builder style(@Nullable ObjectStyle style);
 
         public abstract Option build();
     }

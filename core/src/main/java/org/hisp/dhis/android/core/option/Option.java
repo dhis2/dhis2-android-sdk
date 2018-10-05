@@ -33,6 +33,7 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -58,13 +59,16 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
     public abstract Long id();
 
     @Nullable
+    @JsonProperty()
     public abstract Integer sortOrder();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
     public abstract OptionSet optionSet();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreObjectStyleAdapter.class)
     public abstract ObjectStyle style();
 

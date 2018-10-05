@@ -49,8 +49,7 @@ public final class OptionFields {
             .fields(fh.getIdentifiableFields())
             .fields(
                     fh.<Integer>field(SORT_ORDER),
-                    fh.<OptionSet>nestedField(OPTION_SET)
-                            .with(OptionSet.uid),
+                    fh.nestedFieldWithUid(OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyle.allFields)
             ).build();

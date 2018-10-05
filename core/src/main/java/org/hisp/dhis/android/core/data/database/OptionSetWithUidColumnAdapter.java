@@ -28,7 +28,16 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.option.Option;
+import android.database.Cursor;
 
-public final class IgnoreOptionAdapter extends IgnoreColumnAdapter<Option> {
+import org.hisp.dhis.android.core.option.OptionSet;
+
+public class OptionSetWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OptionSet> {
+
+    @Override
+    public OptionSet fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return OptionSet.builder().uid(uid).build();
+    }
 }

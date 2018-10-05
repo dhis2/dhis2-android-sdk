@@ -69,41 +69,42 @@ public class ProgramStageDataElementHandler {
         int size = programStageDataElements.size();
         for (int i = 0; i < size; i++) {
             ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
-            if (programStageDataElement.dataElement() != null) {
-                boolean readableDataElement = programStageDataElement.dataElement().access().read();
+            if (programStageDataElement.dataElement() == null) {
+                continue;
+            }
+            boolean readableDataElement = programStageDataElement.dataElement().access().read();
 
-                if (isDeleted(programStageDataElement) || !readableDataElement) {
-                    programStageDataElementStore.delete(programStageDataElement.uid());
-                    if (!readableDataElement) {
-                        dataElementStore.deleteIfExists(programStageDataElement.dataElement().uid());
-                    }
-                } else {
-                    int updatedRow;
-
-                    updatedRow = programStageDataElementStore.update(
-                            programStageDataElement.uid(),
-                            programStageDataElement.code(), programStageDataElement.name(),
-                            programStageDataElement.displayName(), programStageDataElement.created(),
-                            programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
-                            programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
-                            programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
-                            programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
-                            programStageDataElement.uid());
-
-
-                    if (updatedRow <= 0) {
-                        programStageDataElementStore.insert(
-                                programStageDataElement.uid(), programStageDataElement.code(),
-                                programStageDataElement.name(), programStageDataElement.displayName(),
-                                programStageDataElement.created(), programStageDataElement.lastUpdated(),
-                                programStageDataElement.displayInReports(), programStageDataElement.compulsory(),
-                                programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
-                                programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
-                                programStageDataElement.programStage().uid()
-                        );
-                    }
-                    dataElementHandler.handle(programStageDataElement.dataElement());
+            if (isDeleted(programStageDataElement) || !readableDataElement) {
+                programStageDataElementStore.delete(programStageDataElement.uid());
+                if (!readableDataElement) {
+                    dataElementStore.deleteIfExists(programStageDataElement.dataElement().uid());
                 }
+            } else {
+                int updatedRow;
+
+                updatedRow = programStageDataElementStore.update(
+                        programStageDataElement.uid(),
+                        programStageDataElement.code(), programStageDataElement.name(),
+                        programStageDataElement.displayName(), programStageDataElement.created(),
+                        programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
+                        programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
+                        programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
+                        programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
+                        programStageDataElement.uid());
+
+
+                if (updatedRow <= 0) {
+                    programStageDataElementStore.insert(
+                            programStageDataElement.uid(), programStageDataElement.code(),
+                            programStageDataElement.name(), programStageDataElement.displayName(),
+                            programStageDataElement.created(), programStageDataElement.lastUpdated(),
+                            programStageDataElement.displayInReports(), programStageDataElement.compulsory(),
+                            programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
+                            programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
+                            programStageDataElement.programStage().uid()
+                    );
+                }
+                dataElementHandler.handle(programStageDataElement.dataElement());
             }
         }
     }

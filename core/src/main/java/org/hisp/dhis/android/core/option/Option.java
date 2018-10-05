@@ -28,67 +28,68 @@
 
 package org.hisp.dhis.android.core.option;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreOptionAdapter;
 
-import java.util.Date;
+@AutoValue@JsonDeserialize(builder = AutoValue_Option.Builder.class)
+public abstract class Option extends BaseIdentifiableObject implements Model {
 
-@AutoValue
-public abstract class Option extends BaseIdentifiableObject {
-    private final static String SORT_ORDER = "sortOrder";
-    private static final String OPTION_SET = "optionSet";
-    private final static String STYLE = "style";
-
-    public static final Field<Option, String> uid = Field.create(UID);
-    public static final Field<Option, String> code = Field.create(CODE);
-    public static final Field<Option, String> name = Field.create(NAME);
-    public static final Field<Option, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<Option, String> created = Field.create(CREATED);
-    public static final Field<Option, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<Option, Boolean> deleted = Field.create(DELETED);
-    public static final Field<Option, Integer> sortOrder = Field.create(SORT_ORDER);
-    public static final NestedField<Option, OptionSet> optionSet = NestedField.create(OPTION_SET);
-    public static final NestedField<Option, ObjectStyle> style = NestedField.create(STYLE);
-
-    static final Fields<Option> allFields = Fields.<Option>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, sortOrder, optionSet.with(OptionSet.uid),
-            style.with(ObjectStyle.allFields)).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(SORT_ORDER)
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty(OPTION_SET)
+    @ColumnAdapter(IgnoreOptionAdapter.class)
     public abstract OptionSet optionSet();
 
     @Nullable
-    @JsonProperty(STYLE)
+    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
     public abstract ObjectStyle style();
 
-    @JsonCreator
-    public static Option create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SORT_ORDER) Integer sortOrder,
-            @JsonProperty(OPTION_SET) OptionSet optionSet,
-            @JsonProperty(STYLE) ObjectStyle style,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_Option(uid, code, name, displayName, created, lastUpdated, deleted, sortOrder, optionSet,
-                style);
+    public static Builder builder() {
+        return new $$AutoValue_Option.Builder();
     }
 
+    static Option create(Cursor cursor) {
+        return $AutoValue_Option.createFromCursor(cursor);
+    }
+
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Option.Builder> {
+        public abstract Option.Builder id(Long id);
+
+        public abstract Option.Builder sortOrder(@Nullable Integer sortOrder);
+
+        public abstract Option.Builder optionSet(@Nullable String optionSet);
+
+        public abstract Option.Builder style(@Nullable ObjectStyle style);
+
+        public abstract Option build();
+    }
 }

@@ -28,7 +28,10 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramStage;
 
 import java.util.HashSet;
 import java.util.List;
@@ -70,5 +73,22 @@ final class DataSetParentUidsHelper {
             }
         }
         return uids;
+    }
+
+    static Set<String> getAssignedOptionSetUids(List<DataElement> dataElements) {
+
+        Set<String> dataElementUids = new HashSet<>();
+
+        if (dataElements != null) {
+
+            for (DataElement dataElement : dataElements) {
+                String optionSetUid = dataElement.optionSetUid();
+
+                dataElementUids.add(optionSetUid);
+            }
+
+            dataElementUids.remove(null);
+        }
+        return dataElementUids;
     }
 }

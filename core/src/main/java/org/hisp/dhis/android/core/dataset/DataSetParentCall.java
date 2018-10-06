@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
 import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.period.PeriodHandler;
 
 import java.util.List;
@@ -52,6 +54,7 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
     private final UidsCallFactory<IndicatorType> indicatorTypeCallFactory;
+    private final UidsCallFactory<OptionSet> optionSetCallFactory;
     private final PeriodHandler periodHandler;
 
     private DataSetParentCall(GenericCallData genericCallData,
@@ -59,12 +62,14 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
                               UidsCallFactory<DataElement> dataElementCallFactory,
                               UidsCallFactory<Indicator> indicatorCallFactory,
                               UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
+                              UidsCallFactory<OptionSet> optionSetCallFactory,
                               PeriodHandler periodHandler) {
         this.genericCallData = genericCallData;
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
         this.indicatorTypeCallFactory = indicatorTypeCallFactory;
+        this.optionSetCallFactory = optionSetCallFactory;
         this.periodHandler = periodHandler;
     }
 
@@ -103,6 +108,7 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
                     DataElementEndpointCall.FACTORY,
                     IndicatorEndpointCall.FACTORY,
                     IndicatorTypeEndpointCall.FACTORY,
+                    OptionSetCall.FACTORY,
                     PeriodHandler.create(genericCallData.databaseAdapter()));
         }
     };

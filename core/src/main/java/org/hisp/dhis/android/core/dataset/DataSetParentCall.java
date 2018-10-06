@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.option.OptionSetCall;
 import org.hisp.dhis.android.core.period.PeriodHandler;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 public final class DataSetParentCall extends SyncCall<List<DataSet>> {
@@ -82,9 +83,10 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
         return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<DataSet>>() {
             @Override
             public List<DataSet> call() throws D2CallException {
+
                 List<DataSet> dataSets = executor.executeD2Call(dataSetCallFactory.create(genericCallData));
 
-                executor.executeD2Call(dataElementCallFactory.create(genericCallData,
+                List<DataElement> dataElements = executor.executeD2Call(dataElementCallFactory.create(genericCallData,
                         DataSetParentUidsHelper.getDataElementUids(dataSets)));
 
                 List<Indicator> indicators = executor.executeD2Call(indicatorCallFactory.create(genericCallData,
@@ -92,6 +94,9 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
 
                 executor.executeD2Call(indicatorTypeCallFactory.create(genericCallData,
                         DataSetParentUidsHelper.getIndicatorTypeUids(indicators)));
+
+                Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
+                executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
 
                 periodHandler.generateAndPersist();
                 

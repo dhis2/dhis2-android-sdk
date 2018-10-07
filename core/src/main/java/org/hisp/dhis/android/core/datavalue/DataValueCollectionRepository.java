@@ -28,26 +28,46 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class DataValueHandlerImpl
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue>
-        implements DataValueHandler {
+final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
+        implements ReadWriteCollectionRepository<DataValue> {
 
-    private final DataValueStore dataValueStore;
+    private final DataValueHandler dataValueHandler;
 
-    private DataValueHandlerImpl(DataValueStore store) {
-        super(store);
-        this.dataValueStore = store;
+    private DataValueCollectionRepository(DataValueStore dataValueStore,
+                                          DataValueHandler dataValueHandler) {
+        super(dataValueStore);
+        this.dataValueHandler = dataValueHandler;
     }
 
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandlerImpl(DataValueStore.create(databaseAdapter));
+    static DataValueCollectionRepository create(DatabaseAdapter databaseAdapter) {
+
+        return new DataValueCollectionRepository(DataValueStore.create(databaseAdapter),
+                DataValueHandlerImpl.create(databaseAdapter));
+
     }
 
     @Override
-    public boolean exists(DataValue dataValue) {
-        return dataValueStore.exists(dataValue);
+    public void add(DataValue dataValue) throws D2CallException {
+
+        if (dataValueHandler.exists(dataValue)) {
+            throw D2CallException
+                    .builder()
+                    .isHttpError(false)
+                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                    .errorDescription("Tried to create already existing DataValue: " + dataValue)
+                    .build();
+        }
+
+        dataValue = dataValue.toBuilder().state(State.TO_POST).build();
+
+        dataValueHandler.handle(dataValue);
     }
+
 }

@@ -44,7 +44,7 @@ import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
+@SuppressWarnings({ "PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal", "PMD.AvoidDuplicateLiterals" })
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,

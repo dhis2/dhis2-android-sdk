@@ -74,7 +74,7 @@ public final class DataValueEndpointCall {
         protected CallProcessor<DataValue> processor(GenericCallData data, DataValueQuery query) {
 
             return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                    DataValueHandler.create(data.databaseAdapter()));
+                    DataValueHandlerImpl.create(data.databaseAdapter()));
         }
     };
 }

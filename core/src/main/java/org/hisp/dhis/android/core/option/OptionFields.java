@@ -25,35 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+public final class OptionFields {
 
-    private OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
-    }
+    final static String SORT_ORDER = "sortOrder";
+    final static String OPTION_SET = "optionSet";
+    final static String STYLE = "style";
 
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(),
-                new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
-    }
+    private static final FieldsHelper<Option> fh = new FieldsHelper<>();
 
-    static SyncHandler<Option> create(DatabaseAdapter databaseAdapter) {
-        return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
+    public static final Field<Option, String> uid = fh.uid();
+
+    static final Field<Option, String> lastUpdated = fh.lastUpdated();
+
+    public static final Fields<Option> allFields = Fields.<Option>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Integer>field(SORT_ORDER),
+                    fh.nestedFieldWithUid(OPTION_SET),
+                    fh.<ObjectStyle>nestedField(STYLE)
+                            .with(ObjectStyle.allFields)
+            ).build();
+
+    private OptionFields() {
     }
 }

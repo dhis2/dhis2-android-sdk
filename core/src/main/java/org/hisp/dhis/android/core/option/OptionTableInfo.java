@@ -25,35 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+public final class OptionTableInfo {
 
-    private OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
+    private OptionTableInfo() {
     }
 
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(),
-                new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    static SyncHandler<Option> create(DatabaseAdapter databaseAdapter) {
-        return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
+        @Override
+        public String name() {
+            return "Option";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    OptionFields.SORT_ORDER,
+                    OptionFields.OPTION_SET
+            );
+        }
     }
 }

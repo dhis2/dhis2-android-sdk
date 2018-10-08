@@ -25,35 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.database;
 
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+import android.database.Cursor;
 
-    private OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
-    }
+import org.hisp.dhis.android.core.option.OptionSet;
+
+public class OptionSetWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OptionSet> {
 
     @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(),
-                new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
-    }
-
-    static SyncHandler<Option> create(DatabaseAdapter databaseAdapter) {
-        return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
+    public OptionSet fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return OptionSet.builder().uid(uid).build();
     }
 }

@@ -28,24 +28,32 @@
 
 package org.hisp.dhis.android.core.option;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreOptionListAdapter;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-public abstract class OptionSet extends BaseIdentifiableObject {
+@JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
+public abstract class OptionSet extends BaseIdentifiableObject implements Model {
     private static final String VERSION = "version";
     private static final String VALUE_TYPE = "valueType";
     private static final String OPTIONS = "options";
@@ -61,42 +69,50 @@ public abstract class OptionSet extends BaseIdentifiableObject {
     public static final Field<OptionSet, Boolean> deleted = Field.create(DELETED);
     public static final NestedField<OptionSet, Option> options = NestedField.create(OPTIONS);
 
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
+
     @Nullable
     @JsonProperty(VERSION)
     public abstract Integer version();
 
     @Nullable
     @JsonProperty(VALUE_TYPE)
+    @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
     @JsonProperty(OPTIONS)
+    @ColumnAdapter(IgnoreOptionListAdapter.class)
     public abstract List<Option> options();
 
-    @JsonCreator
-    public static OptionSet create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(VERSION) Integer version,
-            @JsonProperty(VALUE_TYPE) ValueType valueType,
-            @JsonProperty(OPTIONS) List<Option> options,
-            @JsonProperty(DELETED) Boolean deleted) {
+    public static Builder builder() {
+        return new $$AutoValue_OptionSet.Builder();
+    }
 
-        return new AutoValue_OptionSet(
-                uid,
-                code,
-                name,
-                displayName,
-                created,
-                lastUpdated,
-                deleted,
-                version,
-                valueType,
-                safeUnmodifiableList(options)
-        );
+    static OptionSet create(Cursor cursor) {
+        return $AutoValue_OptionSet.createFromCursor(cursor);
+    }
+
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder version(@Nullable Integer version);
+
+        public abstract Builder valueType(@Nullable ValueType valueType);
+
+        public abstract Builder options(@Nullable List<Option> options);
+
+        public abstract OptionSet build();
     }
 }

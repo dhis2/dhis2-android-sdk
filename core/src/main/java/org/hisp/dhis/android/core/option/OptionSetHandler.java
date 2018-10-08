@@ -27,19 +27,19 @@
  */
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, OptionSetModel> {
+public final class OptionSetHandler extends IdentifiableSyncHandlerImpl<OptionSet> {
     private final SyncHandler<Option> optionHandler;
     private final OrphanCleaner<OptionSet, Option> optionCleaner;
 
-    OptionSetHandler(IdentifiableObjectStore<OptionSetModel> optionSetStore,
+    OptionSetHandler(IdentifiableObjectStore<OptionSet> optionSetStore,
                      SyncHandler<Option> optionHandler,
                      OrphanCleaner<OptionSet, Option> optionCleaner) {
         super(optionSetStore);
@@ -55,7 +55,7 @@ public final class OptionSetHandler extends IdentifiableHandlerImpl<OptionSet, O
         }
     }
 
-    public static OptionSetHandler create(DatabaseAdapter databaseAdapter) {
+    public static SyncHandler<OptionSet> create(DatabaseAdapter databaseAdapter) {
         return new OptionSetHandler(
                 OptionSetStore.create(databaseAdapter),
                 OptionHandler.create(databaseAdapter),

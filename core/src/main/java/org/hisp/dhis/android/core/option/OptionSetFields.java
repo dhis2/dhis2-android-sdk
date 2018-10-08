@@ -37,18 +37,18 @@ public final class OptionSetFields {
 
     final static String VERSION = "version";
     final static String VALUE_TYPE = "valueType";
-    final static String OPTIONS = "options";
+    private final static String OPTIONS = "options";
 
     private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
 
     public static final Field<OptionSet, String> uid = fh.uid();
 
-    static final Field<OptionSet, String> lastUpdated = fh.lastUpdated();
+    public static final Field<OptionSet, String> version = Field.create(VERSION);
 
     public static final Fields<OptionSet> allFields = Fields.<OptionSet>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(VERSION),
+                    version,
                     fh.<ValueType>field(VALUE_TYPE),
                     fh.<Option>nestedField(OPTIONS)
                             .with(OptionFields.allFields)

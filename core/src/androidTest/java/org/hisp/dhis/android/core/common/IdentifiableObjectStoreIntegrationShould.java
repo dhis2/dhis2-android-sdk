@@ -33,8 +33,9 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,29 +48,29 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class IdentifiableObjectStoreIntegrationShould extends AbsStoreTestCase {
 
-    private IdentifiableObjectStore<OptionSetModel> store;
+    private IdentifiableObjectStore<OptionSet> store;
 
-    private OptionSetModel model;
-    private OptionSetModel updatedModel;
+    private OptionSet optionSet;
+    private OptionSet updatedOptionSet;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.model = StoreMocks.generateOptionSetModel();
-        this.updatedModel = StoreMocks.generateUpdatedOptionSetModel();
+        this.optionSet = StoreMocks.generateOptionSet();
+        this.updatedOptionSet = StoreMocks.generateUpdatedOptionSet();
         this.store = OptionSetStore.create(databaseAdapter());
     }
 
     private Cursor getCursor() {
-        return getCursor(OptionSetModel.TABLE, new OptionSetModel.Columns().all());
+        return getCursor(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
     }
 
     @Test
-    public void insert_model() {
-        store.insert(model);
+    public void insert_option_set() {
+        store.insert(optionSet);
         Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, model);
+        optionSetCursorAssert(cursor, optionSet);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -79,25 +80,25 @@ public class IdentifiableObjectStoreIntegrationShould extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void throw_exception_for_second_identical_insertion() {
-        store.insert(this.model);
-        store.insert(this.model);
+        store.insert(this.optionSet);
+        store.insert(this.optionSet);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_exception_for_model_without_uid_inserting() {
-        OptionSetModel withoutUid = OptionSetModel.builder().code("code").build();
+    @Test(expected = IllegalStateException.class)
+    public void throw_exception_for_option_set_without_uid_inserting() {
+        OptionSet withoutUid = OptionSet.builder().code("code").build();
         store.insert(withoutUid);
     }
 
     @Test
-    public void delete_existing_model() {
-        store.insert(model);
-        store.delete(model.uid());
+    public void delete_existing_option_set() {
+        store.insert(optionSet);
+        store.delete(optionSet.uid());
         assertThatCursor(getCursor()).isExhausted();
     }
 
     @Test(expected = RuntimeException.class)
-    public void throw_exception_deleting_non_existing_model() {
+    public void throw_exception_deleting_non_existing_option_set() {
         store.delete("new-id");
     }
 
@@ -107,17 +108,17 @@ public class IdentifiableObjectStoreIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void do_not_throw_exception_safe_deleting_non_existing_model() {
+    public void do_not_throw_exception_safe_deleting_non_existing_option_set() {
         store.deleteIfExists("new-id");
         assertThatCursor(getCursor()).isExhausted();
     }
 
     @Test
-    public void update_model() {
-        store.insert(model);
-        store.update(updatedModel);
+    public void update_option_set() {
+        store.insert(optionSet);
+        store.update(updatedOptionSet);
         Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, updatedModel);
+        optionSetCursorAssert(cursor, updatedOptionSet);
     }
 
     @Test(expected = RuntimeException.class)
@@ -127,26 +128,26 @@ public class IdentifiableObjectStoreIntegrationShould extends AbsStoreTestCase {
 
     @Test(expected = RuntimeException.class)
     public void throw_exception_updating_with_null_uid() {
-        store.update(StoreMocks.generateOptionSetModelWithoutUid());
+        store.update(StoreMocks.generateOptionSetWithoutUid());
     }
 
     @Test(expected = RuntimeException.class)
-    public void throw_exception_updating_non_existing_model() {
-        store.update(model);
+    public void throw_exception_updating_non_existing_option_set() {
+        store.update(optionSet);
     }
 
     @Test
-    public void insert_when_no_model_and_update_or_insert() {
-        store.updateOrInsert(model);
+    public void insert_when_no_option_set_and_update_or_insert() {
+        store.updateOrInsert(optionSet);
         Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, model);
+        optionSetCursorAssert(cursor, optionSet);
     }
 
     @Test
-    public void update_when_model_and_update_or_insert() {
-        store.insert(model);
-        store.updateOrInsert(updatedModel);
+    public void update_when_option_set_and_update_or_insert() {
+        store.insert(optionSet);
+        store.updateOrInsert(updatedOptionSet);
         Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, updatedModel);
+        optionSetCursorAssert(cursor, updatedOptionSet);
     }
 }

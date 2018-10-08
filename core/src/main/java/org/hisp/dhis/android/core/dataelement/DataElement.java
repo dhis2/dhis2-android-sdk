@@ -94,7 +94,7 @@ public abstract class DataElement extends BaseNameableObject implements Model {
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid optionSet();
 
-    String optionSetUid() {
+    public String optionSetUid() {
         ObjectWithUid optionSet = optionSet();
         return optionSet == null ? null : optionSet.uid();
     }

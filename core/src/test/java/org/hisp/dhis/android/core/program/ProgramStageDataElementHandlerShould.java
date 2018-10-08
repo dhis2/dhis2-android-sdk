@@ -212,4 +212,22 @@ public class ProgramStageDataElementHandlerShould {
         verify(programStageDataElementStore).delete(programStageDataElement.uid());
         verify(dataElementStore).deleteIfExists(dataElementWithoutAccess.uid());
     }
+
+    @Test
+    public void do_nothing_when_data_element_is_null() throws Exception {
+        when(programStageDataElement.dataElement()).thenReturn(null);
+        programStageDataElementHandler.handleProgramStageDataElements(programStageDataElements);
+
+        // verify that program stage data element store is never invoked
+        verify(programStageDataElementStore, never()).delete(anyString());
+        verify(programStageDataElementStore, never()).insert(anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
+                anyString(), anyString());
+        verify(programStageDataElementStore, never()).update(anyString(), anyString(), anyString(), anyString(),
+                any(Date.class), any(Date.class), anyBoolean(), anyBoolean(), anyBoolean(), anyInt(), anyBoolean(),
+                anyString(), anyString(), anyString());
+
+        // verify that data element handler is never invoked
+        verify(dataElementHandler, never()).handle(any(DataElement.class));
+    }
 }

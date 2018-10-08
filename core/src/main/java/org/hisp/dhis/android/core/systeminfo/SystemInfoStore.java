@@ -28,13 +28,15 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -62,8 +64,15 @@ final class SystemInfoStore {
         }
     };
 
+    private static final CursorModelFactory<SystemInfo> FACTORY = new CursorModelFactory<SystemInfo>() {
+        @Override
+        public SystemInfo fromCursor(Cursor cursor) {
+            return SystemInfo.create(cursor);
+        }
+    };
+
     public static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER);
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

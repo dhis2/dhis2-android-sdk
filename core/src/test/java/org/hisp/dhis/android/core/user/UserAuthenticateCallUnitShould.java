@@ -31,10 +31,8 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -44,6 +42,7 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -165,7 +164,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(systemInfoEndpointCall.call()).thenReturn(systemInfoFromAPI);
         when(authenticateAPICall.execute()).thenReturn(Response.success(user));
 
-        when(userStore.selectFirst(any(CursorModelFactory.class))).thenReturn(loggedUser);
+        when(userStore.selectFirst()).thenReturn(loggedUser);
         when(systemInfoRepository.get()).thenReturn(systemInfoFromDb);
 
         when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
@@ -241,7 +240,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         verifyNoTransactionStarted();
 
         // stores must not be invoked
-        verify(authenticatedUserStore).selectFirst(any(CursorModelFactory.class));
+        verify(authenticatedUserStore).selectFirst();
         verifyNoMoreInteractions(authenticatedUserStore);
         verifyNoMoreInteractions(userHandler);
     }
@@ -328,7 +327,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test(expected = D2CallException.class)
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         userAuthenticateCall.call();
     }
 
@@ -337,7 +336,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     public void continue_if_user_has_logged_out() throws Exception {
         when(authenticatedUser.credentials()).thenReturn(null);
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         userAuthenticateCall.call();
         verifySuccess();
     }
@@ -348,7 +347,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(authenticateAPICall.execute()).thenThrow(IOException.class);
 
         when(authenticatedUser.credentials()).thenReturn(null);
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         userAuthenticateCall.call();
         verifySuccessOffline();
@@ -358,7 +357,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @SuppressWarnings("unchecked")
     public void throw_d2_exception_if_no_previous_authenticated_user_offline() throws Exception {
         when(authenticateAPICall.execute()).thenThrow(IOException.class);
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
+        when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         try {
             userAuthenticateCall.call();
@@ -374,7 +373,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUser);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         try {
             userAuthenticateCall.call();

@@ -69,6 +69,9 @@ public class ProgramStageDataElementHandler {
         int size = programStageDataElements.size();
         for (int i = 0; i < size; i++) {
             ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
+            if (programStageDataElement.dataElement() == null) {
+                continue;
+            }
             boolean readableDataElement = programStageDataElement.dataElement().access().read();
 
             if (isDeleted(programStageDataElement) || !readableDataElement) {
@@ -79,15 +82,15 @@ public class ProgramStageDataElementHandler {
             } else {
                 int updatedRow;
 
-                    updatedRow = programStageDataElementStore.update(
-                            programStageDataElement.uid(),
-                            programStageDataElement.code(), programStageDataElement.name(),
-                            programStageDataElement.displayName(), programStageDataElement.created(),
-                            programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
-                            programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
-                            programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
-                            programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
-                            programStageDataElement.uid());
+                updatedRow = programStageDataElementStore.update(
+                        programStageDataElement.uid(),
+                        programStageDataElement.code(), programStageDataElement.name(),
+                        programStageDataElement.displayName(), programStageDataElement.created(),
+                        programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
+                        programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
+                        programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
+                        programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
+                        programStageDataElement.uid());
 
 
                 if (updatedRow <= 0) {

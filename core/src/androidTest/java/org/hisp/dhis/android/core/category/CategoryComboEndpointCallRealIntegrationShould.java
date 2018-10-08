@@ -60,27 +60,25 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
     private void assertNotCombosInDB() {
         IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
-        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll(CategoryCombo.factory);
+        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
         assertTrue(categoryCombos.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
         IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
-        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll(CategoryCombo.factory);
+        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
         assertTrue(categoryCombos.size() > 0);
     }
 
     private Set<CategoryCategoryComboLinkModel> getCategoryCategoryComboLinkModels() {
         LinkModelStore<CategoryCategoryComboLinkModel>
                 categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter());
-        return categoryCategoryComboLinkStore.selectAll(
-                CategoryCategoryComboLinkModel.factory
-        );
+        return categoryCategoryComboLinkStore.selectAll();
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {
         IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStore.create(databaseAdapter());
-        Set<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll(CategoryOptionCombo.factory);
+        Set<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll();
         assertTrue(categoryOptionCombos.size() > 0);
     }
 

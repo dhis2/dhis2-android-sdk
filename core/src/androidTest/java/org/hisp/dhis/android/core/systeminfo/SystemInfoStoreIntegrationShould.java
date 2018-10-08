@@ -56,7 +56,7 @@ public class SystemInfoStoreIntegrationShould extends AbsStoreTestCase {
     public void get_inserted_object() {
         ObjectWithoutUidStore<SystemInfo> store = SystemInfoStore.create(databaseAdapter());
         store.insert(systemInfo);
-        SystemInfo systemInfoFromDb = store.selectFirst(SystemInfo.factory);
+        SystemInfo systemInfoFromDb = store.selectFirst();
         assertThat(systemInfoFromDb).isEqualTo(systemInfo);
     }
 }

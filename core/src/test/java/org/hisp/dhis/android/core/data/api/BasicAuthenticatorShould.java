@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.data.api;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.junit.After;
@@ -50,7 +49,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.utils.UserUtils.base64;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 // ToDo: Solve problem with INFO logs from MockWebServer being interpreted as errors in gradle
@@ -84,7 +82,7 @@ public class BasicAuthenticatorShould {
                         .credentials(base64("test_user", "test_password"))
                         .build();
 
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(authenticatedUserModel);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUserModel);
 
         okHttpClient.newCall(
                 new Request.Builder()
@@ -99,7 +97,7 @@ public class BasicAuthenticatorShould {
 
     @Test
     public void return_null_when_server_take_request_with_authenticate_with_empty_list() throws IOException, InterruptedException {
-        when(authenticatedUserStore.selectFirst(any(CursorModelFactory.class))).thenReturn(null);
+        when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         okHttpClient.newCall(
                 new Request.Builder()

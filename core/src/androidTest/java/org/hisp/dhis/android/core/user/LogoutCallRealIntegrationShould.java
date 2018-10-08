@@ -48,7 +48,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
         assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
 
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNull();
@@ -67,14 +67,14 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNull();
 
         d2.logIn("android", "Android123").call();
 
-        authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNotNull();

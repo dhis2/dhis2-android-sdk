@@ -7,8 +7,8 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -16,13 +16,13 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
 
     private final SyncHandler<CategoryOptionCombo> optionComboHandler;
-    private final LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
+    private final OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
     private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
 
     CategoryComboHandler(
             @NonNull IdentifiableObjectStore<CategoryCombo> store,
             @NonNull SyncHandler<CategoryOptionCombo> optionComboHandler,
-            @NonNull LinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler,
+            @NonNull OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler,
             OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         super(store);
         this.optionComboHandler = optionComboHandler;
@@ -45,7 +45,7 @@ class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
         return new CategoryComboHandler(
                 CategoryComboStore.create(databaseAdapter),
                 CategoryOptionComboHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<Category, CategoryCategoryComboLinkModel>(
+                new OrderedLinkModelHandlerImpl<Category, CategoryCategoryComboLinkModel>(
                         CategoryCategoryComboLinkStore.create(databaseAdapter)
                 ),
                 new OrphanCleanerImpl<CategoryCombo, CategoryOptionCombo>(CategoryOptionComboModel.TABLE,

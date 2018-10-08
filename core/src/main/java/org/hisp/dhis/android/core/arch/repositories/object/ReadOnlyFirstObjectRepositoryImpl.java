@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
@@ -39,22 +38,18 @@ public final class ReadOnlyFirstObjectRepositoryImpl<M extends Model>
         extends ReadOnlyObjectRepositoryImpl<M> {
 
     private final ObjectStore<M> store;
-    private final CursorModelFactory<M> modelFactory;
 
     public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store,
-                                             CursorModelFactory<M> modelFactory,
                                              Collection<ChildrenAppender<M>> childrenAppenders) {
         super(childrenAppenders);
         this.store = store;
-        this.modelFactory = modelFactory;
     }
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store,
-                                             CursorModelFactory<M> modelFactory) {
-        this(store, modelFactory, Collections.<ChildrenAppender<M>>emptyList());
+    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
+        this(store, Collections.<ChildrenAppender<M>>emptyList());
     }
 
     public M get() {
-        return this.store.selectFirst(this.modelFactory);
+        return this.store.selectFirst();
     }
 }

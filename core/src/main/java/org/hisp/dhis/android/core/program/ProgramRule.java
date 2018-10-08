@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -74,6 +75,10 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Mode
     @Nullable
     @ColumnAdapter(IgnoreProgramRuleActionListAdapter.class)
     public abstract List<ProgramRuleAction> programRuleActions();
+
+    public static ProgramRule create(Cursor cursor) {
+        return AutoValue_ProgramRule.createFromCursor(cursor);
+    }
 
     public static Builder builder() {
         return new AutoValue_ProgramRule.Builder();

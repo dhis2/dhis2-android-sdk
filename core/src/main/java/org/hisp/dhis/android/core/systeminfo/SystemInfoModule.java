@@ -46,8 +46,7 @@ public final class SystemInfoModule {
         return new SystemInfoModule(
                 DHISVersionManager.create(databaseAdapter),
                 new ReadOnlyFirstObjectRepositoryImpl<>(
-                        SystemInfoStore.create(databaseAdapter),
-                        SystemInfo.factory
+                        SystemInfoStore.create(databaseAdapter)
                 ));
     }
 }

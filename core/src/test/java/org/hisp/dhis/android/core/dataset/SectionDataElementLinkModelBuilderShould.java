@@ -50,6 +50,8 @@ public class SectionDataElementLinkModelBuilderShould {
     @Mock
     private ObjectWithUid dataElement;
 
+    private final Integer sortOrder = 1;
+
     private SectionDataElementLinkModel model;
 
     @Before
@@ -64,12 +66,13 @@ public class SectionDataElementLinkModelBuilderShould {
     }
 
     private SectionDataElementLinkModel buildModel() {
-        return new SectionDataElementLinkModelBuilder(section).buildModel(dataElement);
+        return new SectionDataElementLinkModelBuilder(section).buildModel(dataElement, sortOrder);
     }
 
     @Test
     public void copy_link_properties() {
         assertThat(model.section()).isEqualTo(section.uid());
         assertThat(model.dataElement()).isEqualTo(dataElement.uid());
+        assertThat(model.sortOrder()).isEqualTo(sortOrder);
     }
 }

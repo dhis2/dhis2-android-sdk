@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.period;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -61,8 +63,15 @@ public final class PeriodStore {
         }
     };
 
+    private static final CursorModelFactory<PeriodModel> FACTORY = new CursorModelFactory<PeriodModel>() {
+        @Override
+        public PeriodModel fromCursor(Cursor cursor) {
+            return PeriodModel.create(cursor);
+        }
+    };
+
     public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE, new PeriodModel.Columns(),
-                BINDER, WHERE_UPDATE_BINDER);
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

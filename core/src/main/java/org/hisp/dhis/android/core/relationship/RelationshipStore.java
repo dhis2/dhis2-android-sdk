@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -54,8 +56,15 @@ public final class RelationshipStore {
         }
     };
 
+    private static final CursorModelFactory<Relationship> FACTORY = new CursorModelFactory<Relationship>() {
+        @Override
+        public Relationship fromCursor(Cursor cursor) {
+            return Relationship.create(cursor);
+        }
+    };
+
     public static IdentifiableObjectStore<Relationship> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipModel.TABLE,
-                new RelationshipModel.Columns().all(), BINDER);
+                new RelationshipModel.Columns().all(), BINDER, FACTORY);
     }
 }

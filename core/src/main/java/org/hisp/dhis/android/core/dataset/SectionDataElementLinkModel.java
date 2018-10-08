@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -44,11 +43,12 @@ public abstract class SectionDataElementLinkModel extends BaseModel {
     public static class Columns extends BaseModel.Columns {
         public static final String SECTION = "section";
         public static final String DATA_ELEMENT = "dataElement";
+        public static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    SECTION, DATA_ELEMENT);
+                    SECTION, DATA_ELEMENT, SORT_ORDER);
         }
     }
 
@@ -61,18 +61,21 @@ public abstract class SectionDataElementLinkModel extends BaseModel {
     }
 
     @Nullable
-    @ColumnName(Columns.SECTION)
     public abstract String section();
 
     @Nullable
-    @ColumnName(Columns.DATA_ELEMENT)
     public abstract String dataElement();
+
+    @Nullable
+    public abstract Integer sortOrder();
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder section(String section);
         
         public abstract Builder dataElement(String dataElement);
+
+        public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract SectionDataElementLinkModel build();
     }

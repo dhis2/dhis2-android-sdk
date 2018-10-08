@@ -43,8 +43,9 @@ public final class LinkModelStoreImpl<M extends BaseModel>
                        SQLiteStatement insertStatement,
                        SQLStatementBuilder builder,
                        String masterColumn,
-                       StatementBinder<M> binder) {
-        super(databaseAdapter, insertStatement, builder, binder);
+                       StatementBinder<M> binder,
+                       CursorModelFactory<M> modelFactory) {
+        super(databaseAdapter, insertStatement, builder, binder, modelFactory);
         this.masterColumn = masterColumn;
     }
 

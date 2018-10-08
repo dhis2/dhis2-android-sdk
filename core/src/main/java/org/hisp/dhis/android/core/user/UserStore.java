@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.user;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -63,8 +65,15 @@ public final class UserStore {
         }
     };
 
+    private static final CursorModelFactory<User> FACTORY = new CursorModelFactory<User>() {
+        @Override
+        public User fromCursor(Cursor cursor) {
+            return User.create(cursor);
+        }
+    };
+
     public static IdentifiableObjectStore<User> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, UserModel.TABLE,
-                new UserModel.Columns().all(), BINDER);
+                new UserModel.Columns().all(), BINDER, FACTORY);
     }
 }

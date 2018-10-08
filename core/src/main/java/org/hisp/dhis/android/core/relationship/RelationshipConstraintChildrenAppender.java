@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.Collection;
@@ -37,19 +36,16 @@ import java.util.Set;
 final class RelationshipConstraintChildrenAppender implements ChildrenAppender<RelationshipType> {
 
     private final ObjectWithoutUidStore<RelationshipConstraint> constraintStore;
-    private final CursorModelFactory<RelationshipConstraint> modelFactory;
     private Set<RelationshipConstraint> constraintsSet;
 
 
-    RelationshipConstraintChildrenAppender(ObjectWithoutUidStore<RelationshipConstraint> constraintStore,
-                                           CursorModelFactory<RelationshipConstraint> modelFactory) {
+    RelationshipConstraintChildrenAppender(ObjectWithoutUidStore<RelationshipConstraint> constraintStore) {
         this.constraintStore = constraintStore;
-        this.modelFactory = modelFactory;
     }
 
     @Override
     public void prepareChildren(Collection<RelationshipType> collection) {
-        this.constraintsSet = this.constraintStore.selectAll(modelFactory);
+        this.constraintsSet = this.constraintStore.selectAll();
     }
 
     @Override

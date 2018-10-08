@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,7 +44,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel.factory;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class TrackedEntityAttributeReservedValueStore
@@ -56,7 +57,7 @@ public final class TrackedEntityAttributeReservedValueStore
                                                      StatementBinder<TrackedEntityAttributeReservedValueModel> binder,
                                                      WhereStatementBinder<TrackedEntityAttributeReservedValueModel>
                                                              whereBinder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, FACTORY);
     }
 
     @Override
@@ -70,7 +71,7 @@ public final class TrackedEntityAttributeReservedValueStore
     @Override
     public TrackedEntityAttributeReservedValueModel popOne(@NonNull String ownerUid,
                                                            @NonNull String organisationUnitUid) {
-        return popOneWhere(factory, where(ownerUid, organisationUnitUid));
+        return popOneWhere(where(ownerUid, organisationUnitUid));
     }
 
     @Override
@@ -111,6 +112,13 @@ public final class TrackedEntityAttributeReservedValueStore
         }
     };
 
+    private static final CursorModelFactory<TrackedEntityAttributeReservedValueModel> FACTORY
+            = new CursorModelFactory<TrackedEntityAttributeReservedValueModel>() {
+        @Override
+        public TrackedEntityAttributeReservedValueModel fromCursor(Cursor cursor) {
+            return TrackedEntityAttributeReservedValueModel.create(cursor);
+        }
+    };
 
     public static TrackedEntityAttributeReservedValueStoreInterface
     create(DatabaseAdapter databaseAdapter) {

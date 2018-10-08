@@ -322,7 +322,7 @@ public class EnrollmentStoreImpl extends StoreWithStateImpl implements Enrollmen
 
     private List<Note> getNotes(String uid) {
         List<Note> notes = new ArrayList<>();
-        Set<NoteModel> noteModels = NoteStore.create(databaseAdapter).selectAll(NoteModel.factory);
+        Set<NoteModel> noteModels = NoteStore.create(databaseAdapter).selectAll();
         NoteBuilder noteBuilder = new NoteBuilder();
         for (NoteModel noteModel : noteModels) {
             if (noteModel.enrollment().equals(uid)) {

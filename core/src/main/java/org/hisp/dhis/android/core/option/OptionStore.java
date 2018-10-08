@@ -28,13 +28,16 @@
 
 package org.hisp.dhis.android.core.option;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -43,17 +46,23 @@ public final class OptionStore {
 
     private OptionStore() {}
 
-    private static StatementBinder<OptionModel> BINDER = new IdentifiableStatementBinder<OptionModel>() {
+    private static StatementBinder<Option> BINDER = new IdentifiableStatementBinder<Option>() {
         @Override
-        public void bindToStatement(@NonNull OptionModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull Option o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 8, o.optionSet());
+            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.optionSet()));
         }
     };
 
-    public static IdentifiableObjectStore<OptionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OptionModel.TABLE, new OptionModel.Columns().all(),
-                BINDER);
+    private static final CursorModelFactory<Option> FACTORY = new CursorModelFactory<Option>() {
+        @Override
+        public Option fromCursor(Cursor cursor) {
+            return Option.create(cursor);
+        }
+    };
+
+    public static IdentifiableObjectStore<Option> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, OptionTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

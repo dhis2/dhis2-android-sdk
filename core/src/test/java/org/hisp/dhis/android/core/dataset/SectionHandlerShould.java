@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
 import org.junit.Before;
@@ -57,7 +58,7 @@ public class SectionHandlerShould {
     private IdentifiableObjectStore<SectionModel> sectionStore;
 
     @Mock
-    private LinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
+    private OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 
     @Mock
     private GenericHandler<DataElementOperand, DataElementOperandModel> greyedFieldsHandler;

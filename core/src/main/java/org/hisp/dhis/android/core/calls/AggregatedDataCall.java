@@ -115,7 +115,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
                 Set<String> dataSetUids = Collections.unmodifiableSet(dataSetStore.selectUids());
                 Set<String> periodIds = Collections.unmodifiableSet(
-                        selectPeriodIds(periodStore.selectAll(PeriodModel.factory)));
+                        selectPeriodIds(periodStore.selectAll()));
                 Set<String> organisationUnitUids = Collections.unmodifiableSet(
                         organisationUnitStore.queryRootOrganisationUnitUids());
 

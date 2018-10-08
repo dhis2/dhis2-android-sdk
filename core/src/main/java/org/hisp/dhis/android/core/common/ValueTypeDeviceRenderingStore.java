@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
@@ -69,8 +70,16 @@ public final class ValueTypeDeviceRenderingStore {
         }
     };
 
+    private static final CursorModelFactory<ValueTypeDeviceRenderingModel> FACTORY
+            = new CursorModelFactory<ValueTypeDeviceRenderingModel>() {
+        @Override
+        public ValueTypeDeviceRenderingModel fromCursor(Cursor cursor) {
+            return ValueTypeDeviceRenderingModel.create(cursor);
+        }
+    };
+
     public static ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, ValueTypeDeviceRenderingModel.TABLE,
-                new ValueTypeDeviceRenderingModel.Columns(), BINDER, WHERE_UPDATE_BINDER);
+                new ValueTypeDeviceRenderingModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

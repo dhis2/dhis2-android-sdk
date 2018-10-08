@@ -1,10 +1,12 @@
 package org.hisp.dhis.android.core.category;
 
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -25,9 +27,17 @@ public final class CategoryOptionComboCategoryOptionLinkStore {
         }
     };
 
+    private static final CursorModelFactory<CategoryOptionComboCategoryOptionLinkModel> FACTORY
+            = new CursorModelFactory<CategoryOptionComboCategoryOptionLinkModel>() {
+        @Override
+        public CategoryOptionComboCategoryOptionLinkModel fromCursor(Cursor cursor) {
+            return CategoryOptionComboCategoryOptionLinkModel.create(cursor);
+        }
+    };
+
     public static LinkModelStore<CategoryOptionComboCategoryOptionLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, CategoryOptionComboCategoryOptionLinkModel.TABLE,
                 new CategoryOptionComboCategoryOptionLinkModel.Columns(),
-                CategoryOptionComboCategoryOptionLinkModel.Columns.CATEGORY_OPTION_COMBO, BINDER);
+                CategoryOptionComboCategoryOptionLinkModel.Columns.CATEGORY_OPTION_COMBO, BINDER, FACTORY);
     }
 }

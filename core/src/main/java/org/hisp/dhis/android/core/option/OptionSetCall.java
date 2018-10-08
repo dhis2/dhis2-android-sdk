@@ -51,7 +51,7 @@ public final class OptionSetCall {
                 OptionSet.displayName, OptionSet.created,
                 OptionSet.lastUpdated, OptionSet.version,
                 OptionSet.valueType,
-                OptionSet.options.with(Option.allFields)
+                OptionSet.options.with(OptionFields.allFields)
         ).build();
     }
 

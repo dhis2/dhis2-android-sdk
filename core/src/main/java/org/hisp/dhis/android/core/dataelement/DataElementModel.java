@@ -36,7 +36,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -77,14 +76,6 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
     public static Builder builder() {
         return new $$AutoValue_DataElementModel.Builder();
     }
-
-    public static final CursorModelFactory<DataElementModel> factory
-            = new CursorModelFactory<DataElementModel>() {
-        @Override
-        public DataElementModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @Nullable
     @ColumnName(Columns.VALUE_TYPE)

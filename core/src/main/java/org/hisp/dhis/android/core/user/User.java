@@ -42,7 +42,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitListAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreUserCredentialsAdapter;
@@ -124,13 +123,6 @@ public abstract class User extends BaseIdentifiableObject implements Model {
     public static User create(Cursor cursor) {
         return AutoValue_User.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<User> factory = new CursorModelFactory<User>() {
-        @Override
-        public User fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @NonNull
     public abstract ContentValues toContentValues();

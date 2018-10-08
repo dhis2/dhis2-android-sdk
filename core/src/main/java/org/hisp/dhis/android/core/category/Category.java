@@ -42,7 +42,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreCategoryOptionListColumnAdapter;
 
@@ -73,13 +72,6 @@ public abstract class Category extends BaseNameableObject implements Model {
     static Category create(Cursor cursor) {
         return $AutoValue_Category.createFromCursor(cursor);
     }
-
-    public static final CursorModelFactory<Category> factory = new CursorModelFactory<Category>() {
-        @Override
-        public Category fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     public abstract Builder toBuilder();
 

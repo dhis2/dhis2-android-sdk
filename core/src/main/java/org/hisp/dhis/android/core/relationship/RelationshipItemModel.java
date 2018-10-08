@@ -36,7 +36,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -70,14 +69,6 @@ public abstract class RelationshipItemModel extends BaseModel {
     public static Builder builder() {
         return new $$AutoValue_RelationshipItemModel.Builder();
     }
-
-    public static final CursorModelFactory<RelationshipItemModel> factory
-            = new CursorModelFactory<RelationshipItemModel>() {
-        @Override
-        public RelationshipItemModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @ColumnName(Columns.RELATIONSHIP)
     public abstract String relationship();

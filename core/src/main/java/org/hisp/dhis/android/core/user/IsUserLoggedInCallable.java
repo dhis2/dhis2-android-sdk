@@ -46,7 +46,7 @@ public final class IsUserLoggedInCallable implements Callable<Boolean> {
 
     @Override
     public Boolean call() throws Exception {
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst(AuthenticatedUserModel.factory);
+        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
         return authenticatedUser != null && authenticatedUser.credentials() != null;
     }
 

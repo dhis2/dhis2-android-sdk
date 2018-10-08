@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.android.core.user;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -50,7 +52,7 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
                                           SQLStatementBuilder builder,
                                           StatementBinder<UserOrganisationUnitLinkModel> binder,
                                           WhereStatementBinder<UserOrganisationUnitLinkModel> whereBinder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder);
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, FACTORY);
     }
 
     private static final StatementBinder<UserOrganisationUnitLinkModel> BINDER
@@ -77,6 +79,13 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
         }
     };
 
+    private static final CursorModelFactory<UserOrganisationUnitLinkModel> FACTORY
+            = new CursorModelFactory<UserOrganisationUnitLinkModel>() {
+        @Override
+        public UserOrganisationUnitLinkModel fromCursor(Cursor cursor) {
+            return UserOrganisationUnitLinkModel.create(cursor);
+        }
+    };
 
     public static UserOrganisationUnitLinkStoreInterface create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(

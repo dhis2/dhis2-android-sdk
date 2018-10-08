@@ -36,7 +36,6 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -77,15 +76,6 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
     public static Builder builder() {
         return new $AutoValue_TrackedEntityAttributeReservedValueModel.Builder();
     }
-
-
-    public static final CursorModelFactory<TrackedEntityAttributeReservedValueModel> factory
-            = new CursorModelFactory<TrackedEntityAttributeReservedValueModel>() {
-        @Override
-        public TrackedEntityAttributeReservedValueModel fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     @Nullable
     @ColumnName(Columns.OWNER_OBJECT)

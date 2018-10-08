@@ -34,8 +34,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Relationship.Builder.class)
 public abstract class Relationship extends BaseRelationship {
@@ -43,13 +41,6 @@ public abstract class Relationship extends BaseRelationship {
     public static Builder builder() {
         return new AutoValue_Relationship.Builder();
     }
-
-    public static final CursorModelFactory<Relationship> factory = new CursorModelFactory<Relationship>() {
-        @Override
-        public Relationship fromCursor(Cursor cursor) {
-            return create(cursor);
-        }
-    };
 
     public static Relationship create(Cursor cursor) {
         return AutoValue_Relationship.createFromCursor(cursor);

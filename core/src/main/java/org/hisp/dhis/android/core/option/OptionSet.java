@@ -44,8 +44,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreOptionListAdapter;
 
@@ -54,20 +52,6 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_OptionSet.Builder.class)
 public abstract class OptionSet extends BaseIdentifiableObject implements Model {
-    private static final String VERSION = "version";
-    private static final String VALUE_TYPE = "valueType";
-    private static final String OPTIONS = "options";
-
-    public static final Field<OptionSet, String> uid = Field.create(UID);
-    public static final Field<OptionSet, String> code = Field.create(CODE);
-    public static final Field<OptionSet, String> name = Field.create(NAME);
-    public static final Field<OptionSet, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<OptionSet, String> created = Field.create(CREATED);
-    public static final Field<OptionSet, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<OptionSet, String> version = Field.create(VERSION);
-    public static final Field<OptionSet, ValueType> valueType = Field.create(VALUE_TYPE);
-    public static final Field<OptionSet, Boolean> deleted = Field.create(DELETED);
-    public static final NestedField<OptionSet, Option> options = NestedField.create(OPTIONS);
 
     // TODO move to base class after whole object refactor
     @Override
@@ -77,16 +61,16 @@ public abstract class OptionSet extends BaseIdentifiableObject implements Model 
     public abstract Long id();
 
     @Nullable
-    @JsonProperty(VERSION)
+    @JsonProperty()
     public abstract Integer version();
 
     @Nullable
-    @JsonProperty(VALUE_TYPE)
+    @JsonProperty()
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @JsonProperty(OPTIONS)
+    @JsonProperty()
     @ColumnAdapter(IgnoreOptionListAdapter.class)
     public abstract List<Option> options();
 

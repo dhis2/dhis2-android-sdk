@@ -33,8 +33,9 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetStore;
+import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,23 +47,23 @@ import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert
 @RunWith(AndroidJUnit4.class)
 public class ObjectStoreIntegrationShould extends AbsStoreTestCase {
 
-    private ObjectStore<OptionSetModel> store;
+    private IdentifiableObjectStore<OptionSet> store;
 
-    private OptionSetModel model;
+    private OptionSet optionSet;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.model = StoreMocks.generateOptionSetModel();
+        this.optionSet = StoreMocks.generateOptionSet();
         this.store = OptionSetStore.create(databaseAdapter());
     }
 
     @Test
-    public void insert_model() {
-        store.insert(model);
-        Cursor cursor = getCursor(OptionSetModel.TABLE, new OptionSetModel.Columns().all());
-        optionSetCursorAssert(cursor, model);
+    public void insert_option_set() {
+        store.insert(optionSet);
+        Cursor cursor = getCursor(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
+        optionSetCursorAssert(cursor, optionSet);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -72,7 +73,7 @@ public class ObjectStoreIntegrationShould extends AbsStoreTestCase {
 
     @Test(expected = SQLiteConstraintException.class)
     public void throw_exception_for_second_identical_insertion() {
-        store.insert(this.model);
-        store.insert(this.model);
+        store.insert(this.optionSet);
+        store.insert(this.optionSet);
     }
 }

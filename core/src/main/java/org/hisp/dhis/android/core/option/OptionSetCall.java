@@ -37,23 +37,12 @@ import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallPr
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Set;
 
 public final class OptionSetCall {
 
     private OptionSetCall() {}
-
-    private static Fields<OptionSet> getFields() {
-        return Fields.<OptionSet>builder().fields(
-                OptionSet.uid, OptionSet.code, OptionSet.name,
-                OptionSet.displayName, OptionSet.created,
-                OptionSet.lastUpdated, OptionSet.version,
-                OptionSet.valueType,
-                OptionSet.options.with(OptionFields.allFields)
-        ).build();
-    }
 
     public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactoryImpl<OptionSet>() {
 
@@ -67,7 +56,7 @@ public final class OptionSetCall {
 
                 @Override
                 protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
-                    return service.optionSets(getFields(), OptionSet.uid.in(query.uids()),
+                    return service.optionSets(OptionSetFields.allFields, OptionSet.uid.in(query.uids()),
                             null, query.paging());
                 }
             };

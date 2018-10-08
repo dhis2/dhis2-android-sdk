@@ -28,44 +28,20 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
-        implements ReadWriteCollectionRepository<DataValue> {
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    private final DataValueHandler dataValueHandler;
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public final class DataValueModule {
 
-    private DataValueCollectionRepository(DataValueStore dataValueStore,
-                                          DataValueHandler dataValueHandler) {
-        super(dataValueStore);
-        this.dataValueHandler = dataValueHandler;
+    public final DataValueCollectionRepository dataValues;
+
+    private DataValueModule(DataValueCollectionRepository dataValueCollectionRepository) {
+        this.dataValues = dataValueCollectionRepository;
     }
 
-    static DataValueCollectionRepository create(DatabaseAdapter databaseAdapter) {
-
-        return new DataValueCollectionRepository(DataValueStore.create(databaseAdapter),
-                DataValueHandlerImpl.create(databaseAdapter));
-
+    public static DataValueModule create(DatabaseAdapter databaseAdapter) {
+        return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
     }
-
-    @Override
-    public void add(DataValue dataValue) throws D2CallException {
-
-        if (dataValueHandler.exists(dataValue)) {
-            throw D2CallException
-                    .builder()
-                    .isHttpError(false)
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Tried to create already existing DataValue: " + dataValue)
-                    .build();
-        }
-
-        dataValueHandler.handle(dataValue.toBuilder().state(State.TO_POST).build());
-    }
-
 }

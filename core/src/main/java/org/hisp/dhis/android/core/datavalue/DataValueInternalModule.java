@@ -28,44 +28,36 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
-        implements ReadWriteCollectionRepository<DataValue> {
+public final class DataValueInternalModule implements WipeableModule {
 
-    private final DataValueHandler dataValueHandler;
+    public final DataValueModule publicModule;
 
-    private DataValueCollectionRepository(DataValueStore dataValueStore,
-                                          DataValueHandler dataValueHandler) {
-        super(dataValueStore);
-        this.dataValueHandler = dataValueHandler;
-    }
+    private final DatabaseAdapter databaseAdapter;
 
-    static DataValueCollectionRepository create(DatabaseAdapter databaseAdapter) {
 
-        return new DataValueCollectionRepository(DataValueStore.create(databaseAdapter),
-                DataValueHandlerImpl.create(databaseAdapter));
-
+    private DataValueInternalModule(DatabaseAdapter databaseAdapter,
+                                    DataValueModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.publicModule = publicModule;
     }
 
     @Override
-    public void add(DataValue dataValue) throws D2CallException {
-
-        if (dataValueHandler.exists(dataValue)) {
-            throw D2CallException
-                    .builder()
-                    .isHttpError(false)
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                    .errorDescription("Tried to create already existing DataValue: " + dataValue)
-                    .build();
-        }
-
-        dataValueHandler.handle(dataValue.toBuilder().state(State.TO_POST).build());
+    public void wipeMetadata() {
+        // Without metadata to wipe
     }
+
+    @Override
+    public void wipeData() {
+        DataValueStore.create(databaseAdapter).delete();
+    }
+
+    public static DataValueInternalModule create(DatabaseAdapter databaseAdapter) {
+        return new DataValueInternalModule(databaseAdapter,
+                DataValueModule.create(databaseAdapter));
+    }
+
 
 }

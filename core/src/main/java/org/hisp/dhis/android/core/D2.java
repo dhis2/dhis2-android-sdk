@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
+import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 import org.hisp.dhis.android.core.common.D2CallException;
@@ -218,6 +219,10 @@ public final class D2 {
 
     public DataElementModule dataElementModule() {
         return this.internalModules.dataElementModule.publicModule;
+    }
+
+    public DataValueModule dataValueModule() {
+        return this.internalModules.dataValueModule.publicModule;
     }
 
     public WipeModule wipeModule() {

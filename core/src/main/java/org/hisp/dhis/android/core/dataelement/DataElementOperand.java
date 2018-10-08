@@ -30,13 +30,16 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.database.Cursor;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -81,6 +84,8 @@ public abstract class DataElementOperand extends BaseModel
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        @JsonProperty(UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder deleted(Boolean deleted);

@@ -45,24 +45,23 @@ public final class OptionSetStore {
 
     private OptionSetStore() {}
 
-    private static StatementBinder<OptionSetModel> BINDER = new IdentifiableStatementBinder<OptionSetModel>() {
+    private static StatementBinder<OptionSet> BINDER = new IdentifiableStatementBinder<OptionSet>() {
         @Override
-        public void bindToStatement(@NonNull OptionSetModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull OptionSet o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.version());
             sqLiteBind(sqLiteStatement, 8, o.valueType());
         }
     };
 
-    private static final CursorModelFactory<OptionSetModel> FACTORY = new CursorModelFactory<OptionSetModel>() {
+    private static final CursorModelFactory<OptionSet> FACTORY = new CursorModelFactory<OptionSet>() {
         @Override
-        public OptionSetModel fromCursor(Cursor cursor) {
-            return OptionSetModel.create(cursor);
+        public OptionSet fromCursor(Cursor cursor) {
+            return OptionSet.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<OptionSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter,
-                OptionSetModel.TABLE, new OptionSetModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<OptionSet> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, OptionSetTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

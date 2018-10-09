@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.category;
 
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
@@ -29,7 +29,7 @@ final class CategoryOptionComboHandler extends IdentifiableSyncHandlerImpl<Categ
                 new CategoryOptionComboCategoryOptionLinkModelBuilder(optionCombo));
     }
 
-    public static SyncHandler<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
+    public static SyncHandlerWithTransformer<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
         return new CategoryOptionComboHandler(
                 CategoryOptionComboStore.create(databaseAdapter),
                 new LinkModelHandlerImpl<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>(

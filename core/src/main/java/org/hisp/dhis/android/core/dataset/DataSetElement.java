@@ -57,7 +57,7 @@ public abstract class DataSetElement implements Model {
     @JsonIgnore()
     public abstract Long id();
 
-    @Nullable
+    @NonNull
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();

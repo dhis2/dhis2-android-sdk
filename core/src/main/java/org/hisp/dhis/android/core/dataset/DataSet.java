@@ -121,7 +121,7 @@ public abstract class DataSet extends BaseNameableObject {
             expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
-            dataSetElements.with(DataSetElement.allFields),
+            dataSetElements.with(DataSetElementFields.allFieldsWithoutDataSet),
             indicators.with(ObjectWithUid.uid),
             sections.with(Section.allFields),
             compulsoryDataElementOperands.with(DataElementOperandFields.allFields),

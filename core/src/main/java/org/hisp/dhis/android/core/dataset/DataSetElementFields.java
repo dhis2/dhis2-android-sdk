@@ -39,15 +39,9 @@ public final class DataSetElementFields {
 
     private static final FieldsHelper<DataSetElement> fh = new FieldsHelper<>();
 
-    public static final Fields<DataSetElement> allFieldsWithDataSet = Fields.<DataSetElement>builder()
+    public static final Fields<DataSetElement> allFields = Fields.<DataSetElement>builder()
             .fields(
                     fh.nestedFieldWithUid(DATA_SET),
-                    fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(CATEGORY_COMBO)
-            ).build();
-
-    public static final Fields<DataSetElement> allFieldsWithoutDataSet = Fields.<DataSetElement>builder()
-            .fields(
                     fh.nestedFieldWithUid(DATA_ELEMENT),
                     fh.nestedFieldWithUid(CATEGORY_COMBO)
             ).build();

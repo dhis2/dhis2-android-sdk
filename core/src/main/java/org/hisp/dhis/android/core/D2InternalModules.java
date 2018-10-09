@@ -57,7 +57,7 @@ public final class D2InternalModules {
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, relationshipModule, dataElementModule);
+        return Arrays.asList(systemInfo, relationshipModule, dataElementModule, dataValueModule);
     }
 
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

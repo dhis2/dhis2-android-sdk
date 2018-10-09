@@ -28,22 +28,45 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataSetElement, DataSetDataElementLinkModel> {
+public final class DataSetElementLinkTableInfo {
 
-    private final DataSetDataElementLinkModel.Builder builder;
-
-    DataSetDataElementLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetDataElementLinkModel.builder()
-                .dataSet(dataSet.uid());
+    private DataSetElementLinkTableInfo() {
     }
 
-    @Override
-    public DataSetDataElementLinkModel buildModel(DataSetElement dataSetElement) {
-        return builder
-                .dataElement(dataSetElement.dataElement().uid())
-                .categoryCombo(dataSetElement.categoryComboUid())
-                .build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "DataSetDataElementLink";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DataSetElementFields.DATA_SET,
+                    DataSetElementFields.DATA_ELEMENT,
+                    DataSetElementFields.CATEGORY_COMBO
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    DataSetElementFields.DATA_SET,
+                    DataSetElementFields.DATA_ELEMENT
+            );
+        }
     }
 }

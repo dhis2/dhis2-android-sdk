@@ -33,9 +33,11 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -44,30 +46,38 @@ public final class DataSetDataElementLinkStore {
 
     private DataSetDataElementLinkStore() {}
 
-    private static final StatementBinder<DataSetDataElementLinkModel> BINDER
-            = new StatementBinder<DataSetDataElementLinkModel>() {
+    private static final StatementBinder<DataSetElement> BINDER = new StatementBinder<DataSetElement>() {
         @Override
-        public void bindToStatement(@NonNull DataSetDataElementLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.dataSet());
-            sqLiteBind(sqLiteStatement, 2, o.dataElement());
-            sqLiteBind(sqLiteStatement, 3, o.categoryCombo());
+        public void bindToStatement(@NonNull DataSetElement o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.dataSet()));
+            sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
+            sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryCombo()));
         }
     };
 
-    private static final CursorModelFactory<DataSetDataElementLinkModel> FACTORY
-            = new CursorModelFactory<DataSetDataElementLinkModel>() {
+    private static final WhereStatementBinder<DataSetElement> WHERE_UPDATE_BINDER =
+            new WhereStatementBinder<DataSetElement>() {
         @Override
-        public DataSetDataElementLinkModel fromCursor(Cursor cursor) {
-            return DataSetDataElementLinkModel.create(cursor);
+        public void bindToUpdateWhereStatement(@NonNull DataSetElement o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 4, UidsHelper.getUidOrNull(o.dataSet()));
+            sqLiteBind(sqLiteStatement, 5, UidsHelper.getUidOrNull(o.dataElement()));
+
         }
     };
 
-    public static LinkModelStore<DataSetDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetDataElementLinkModel.TABLE,
-                new DataSetDataElementLinkModel.Columns(),
-                DataSetDataElementLinkModel.Columns.DATA_SET,
+    private static final CursorModelFactory<DataSetElement> FACTORY
+            = new CursorModelFactory<DataSetElement>() {
+        @Override
+        public DataSetElement fromCursor(Cursor cursor) {
+            return DataSetElement.create(cursor);
+        }
+    };
+
+    public static ObjectWithoutUidStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter,
+                DataSetElementLinkTableInfo.TABLE_INFO,
                 BINDER,
+                WHERE_UPDATE_BINDER,
                 FACTORY);
     }
 }

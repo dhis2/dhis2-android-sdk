@@ -116,7 +116,7 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
-    private LinkModelHandler<DataSetElement, DataSetDataElementLinkModel> dataSetDataElementLinkHandler;
+    private SyncHandler<DataSetElement> dataSetElementLinkHandler;
 
     @Mock
     private LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
@@ -142,7 +142,7 @@ public class DataSetHandlerShould {
                 compulsoryDataElementOperandHandler,
                 dataSetCompulsoryDataElementOperandLinkHandler,
                 dataInputPeriodHandler,
-                dataSetDataElementLinkHandler,
+                dataSetElementLinkHandler,
                 dataSetIndicatorLinkHandler,
                 collectionCleaner);
 
@@ -250,8 +250,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(dataSetDataElementLinkHandler).handleMany(anyString(), anyListOf(DataSetElement.class),
-                any(DataSetDataElementLinkModelBuilder.class));
+        verify(dataSetElementLinkHandler).handleMany(anyListOf(DataSetElement.class));
     }
 
     @Test

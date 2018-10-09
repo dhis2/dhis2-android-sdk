@@ -25,26 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers;
 
-package org.hisp.dhis.android.core.category;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import java.util.Collection;
 
-final class CategoryOptionComboFields {
+public interface SyncHandlerWithTransformer<O> extends SyncHandler<O> {
 
-    static final String CATEGORY_COMBO = "categoryCombo";
-    private static final String CATEGORY_OPTIONS = "categoryOptions";
+    void handle(O o, ModelBuilder<O, O> modelBuilder);
 
-    private static final FieldsHelper<CategoryOptionCombo> fh = new FieldsHelper<>();
-
-
-    public static final Fields<CategoryOptionCombo> allFields = Fields.<CategoryOptionCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(CATEGORY_OPTIONS)
-            ).build();
-
-    private CategoryOptionComboFields() {
-    }
+    void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder);
 }

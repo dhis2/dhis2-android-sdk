@@ -1,8 +1,10 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
@@ -13,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -24,7 +27,7 @@ public class CategoryComboHandlerShould {
     private IdentifiableObjectStore<CategoryCombo> categoryComboStore;
 
     @Mock
-    private SyncHandler<CategoryOptionCombo> optionComboHandler;
+    private SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
 
     @Mock
     private OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
@@ -61,7 +64,7 @@ public class CategoryComboHandlerShould {
     @Test
     public void handle_option_combos() {
         categoryComboHandler.handle(combo);
-        verify(optionComboHandler).handleMany(optionCombos);
+        verify(optionComboHandler).handleMany(eq(optionCombos), any(ModelBuilder.class));
     }
 
     @Test

@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
 import java.util.Collection;
 
-abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
+abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
 
     @Override
     public final void handle(O o) {
@@ -44,10 +45,31 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
     }
 
     @Override
+    public final void handle(O o, ModelBuilder<O, O> modelBuilder) {
+        if (o == null) {
+            return;
+        }
+        O oTransformed = modelBuilder.buildModel(o);
+        O oFinal = beforeObjectHandled(oTransformed); // TODO delete?
+        HandleAction action = deleteOrPersist(oFinal);
+        afterObjectHandled(oFinal, action);
+    }
+
+    @Override
     public final void handleMany(Collection<O> oCollection) {
         if (oCollection != null) {
             for(O o : oCollection) {
                 handle(o);
+            }
+            afterCollectionHandled(oCollection);
+        }
+    }
+
+    @Override
+    public final void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder) {
+        if (oCollection != null) {
+            for(O o : oCollection) {
+                handle(o, modelBuilder);
             }
             afterCollectionHandled(oCollection);
         }

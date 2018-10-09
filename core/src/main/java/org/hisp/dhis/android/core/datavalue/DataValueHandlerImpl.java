@@ -28,10 +28,26 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public interface DataValueHandler extends SyncHandler<DataValue> {
+public final class DataValueHandlerImpl
+        extends ObjectWithoutUidSyncHandlerImpl<DataValue>
+        implements DataValueHandler {
 
-    boolean exists(DataValue dataValue);
+    private final DataValueStore dataValueStore;
 
+    private DataValueHandlerImpl(DataValueStore store) {
+        super(store);
+        this.dataValueStore = store;
+    }
+
+    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
+        return new DataValueHandlerImpl(DataValueStore.create(databaseAdapter));
+    }
+
+    @Override
+    public boolean exists(DataValue dataValue) {
+        return dataValueStore.exists(dataValue);
+    }
 }

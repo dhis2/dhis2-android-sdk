@@ -28,10 +28,36 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-public interface DataValueHandler extends SyncHandler<DataValue> {
+public final class DataValueInternalModule implements WipeableModule {
 
-    boolean exists(DataValue dataValue);
+    public final DataValueModule publicModule;
+
+    private final DatabaseAdapter databaseAdapter;
+
+
+    private DataValueInternalModule(DatabaseAdapter databaseAdapter,
+                                    DataValueModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.publicModule = publicModule;
+    }
+
+    @Override
+    public void wipeMetadata() {
+        // Without metadata to wipe
+    }
+
+    @Override
+    public void wipeData() {
+        DataValueStore.create(databaseAdapter).delete();
+    }
+
+    public static DataValueInternalModule create(DatabaseAdapter databaseAdapter) {
+        return new DataValueInternalModule(databaseAdapter,
+                DataValueModule.create(databaseAdapter));
+    }
+
 
 }

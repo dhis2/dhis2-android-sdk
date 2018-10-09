@@ -44,7 +44,7 @@ import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
+@SuppressWarnings({ "PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal", "PMD.AvoidDuplicateLiterals" })
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
@@ -120,6 +120,19 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         DataValue updatedDataValue = dataValue.toBuilder().state(newState).build();
 
         updateWhere(updatedDataValue);
+    }
+
+    public boolean exists(DataValue dataValue) {
+
+        String[] dataValueColumns = new DataValueTableInfo.Columns().whereUpdate();
+
+        String whereClause = dataValueColumns[0] + " = '" + dataValue.dataElement() +
+                             " AND " + dataValueColumns[1] + " = '" + dataValue.period() +
+                             " AND " + dataValueColumns[2] + " = '" + dataValue.organisationUnit() +
+                             " AND " + dataValueColumns[3] + " = '" + dataValue.categoryOptionCombo() +
+                             " AND " + dataValueColumns[4] + " = '" + dataValue.attributeOptionCombo();
+
+        return selectWhereClause(whereClause).size() > 0;
     }
 
 }

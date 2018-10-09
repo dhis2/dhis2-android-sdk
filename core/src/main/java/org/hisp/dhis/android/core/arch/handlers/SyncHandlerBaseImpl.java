@@ -39,9 +39,8 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
         if (o == null) {
             return;
         }
-        O object = beforeObjectHandled(o);
-        HandleAction action = deleteOrPersist(object);
-        afterObjectHandled(object, action);
+        HandleAction action = deleteOrPersist(o);
+        afterObjectHandled(o, action);
     }
 
     @Override
@@ -50,9 +49,8 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
             return;
         }
         O oTransformed = modelBuilder.buildModel(o);
-        O oFinal = beforeObjectHandled(oTransformed); // TODO delete?
-        HandleAction action = deleteOrPersist(oFinal);
-        afterObjectHandled(oFinal, action);
+        HandleAction action = deleteOrPersist(oTransformed);
+        afterObjectHandled(oTransformed, action);
     }
 
     @Override
@@ -76,10 +74,6 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     }
 
     protected abstract HandleAction deleteOrPersist(O o);
-
-    protected O beforeObjectHandled(O o) {
-        return o;
-    }
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void afterObjectHandled(O o, HandleAction action) {

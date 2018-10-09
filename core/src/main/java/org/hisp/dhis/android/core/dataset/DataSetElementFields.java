@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 public final class DataSetElementFields {
 
-    private static final String DATA_SET = "dataSet";
-    private static final String DATA_ELEMENT = "dataElement";
-    private static final String CATEGORY_COMBO = "categoryCombo";
+    static final String DATA_SET = "dataSet";
+    static final String DATA_ELEMENT = "dataElement";
+    static final String CATEGORY_COMBO = "categoryCombo";
 
     private static final FieldsHelper<DataSetElement> fh = new FieldsHelper<>();
 

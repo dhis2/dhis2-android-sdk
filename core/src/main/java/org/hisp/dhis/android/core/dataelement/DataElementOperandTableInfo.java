@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,23 +28,38 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class DataElementOperandModelBuilder extends ModelBuilder<DataElementOperand, DataElementOperandModel> {
+public final class DataElementOperandTableInfo {
 
-    @Override
-    public DataElementOperandModel buildModel(DataElementOperand dataElementOperand) {
+    private DataElementOperandTableInfo() {
+    }
 
-        return DataElementOperandModel.builder()
-                .uid(dataElementOperand.uid())
-                .name(dataElementOperand.name())
-                .displayName(dataElementOperand.displayName())
-                .created(dataElementOperand.created())
-                .lastUpdated(dataElementOperand.lastUpdated())
-                .shortName(dataElementOperand.shortName())
-                .displayShortName(dataElementOperand.displayShortName())
-                .dataElement(dataElementOperand.dataElementUid())
-                .categoryOptionCombo(dataElementOperand.categoryOptionComboUid())
-                .build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "DataElementOperand";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    BaseIdentifiableObjectModel.Columns.UID,
+                    DataElementOperandFields.DATA_ELEMENT,
+                    DataElementOperandFields.CATEGORY_OPTION_COMBO
+            );
+        }
     }
 }

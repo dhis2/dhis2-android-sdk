@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
@@ -45,8 +46,6 @@ import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
@@ -60,7 +59,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     private final GenericHandler<Section, SectionModel> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
-    private final GenericHandler<DataElementOperand, DataElementOperandModel> compulsoryDataElementOperandHandler;
+    private final SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler;
     private final LinkModelHandler<DataElementOperand,
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
@@ -73,8 +72,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
                    GenericHandler<Section, SectionModel> sectionHandler,
                    OrphanCleaner<DataSet, Section> sectionOrphanCleaner,
-                   GenericHandler<DataElementOperand, DataElementOperandModel>
-                           compulsoryDataElementOperandHandler,
+                   SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler,
                    LinkModelHandler<DataElementOperand,
                            DataSetCompulsoryDataElementOperandLinkModel>
                            dataSetCompulsoryDataElementOperandLinkHandler,
@@ -103,8 +101,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
 
         sectionHandler.handleMany(dataSet.sections(), new SectionModelBuilder());
 
-        compulsoryDataElementOperandHandler.handleMany(dataSet.compulsoryDataElementOperands(),
-                new DataElementOperandModelBuilder());
+        compulsoryDataElementOperandHandler.handleMany(dataSet.compulsoryDataElementOperands());
 
         dataSetCompulsoryDataElementOperandLinkHandler.handleMany(dataSet.uid(),
                 dataSet.compulsoryDataElementOperands(),

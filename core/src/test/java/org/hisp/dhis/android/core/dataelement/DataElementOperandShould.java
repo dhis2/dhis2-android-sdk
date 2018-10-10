@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
@@ -51,12 +50,6 @@ public class DataElementOperandShould extends BaseObjectShould implements Object
         DataElementOperand dataElementOperand = objectMapper.readValue(jsonStream, DataElementOperand.class);
 
         assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s");
-        assertThat(dataElementOperand.name()).isEqualTo("Q_Vitamin A received 4-6 months ago at 12-59 dose Fixed, <1y");
-        assertThat(dataElementOperand.displayName()).isEqualTo("Q_Vitamin A received 4-6 months ago at 12-59 dose Fixed, <1y");
-        assertThat(dataElementOperand.created()).isEqualTo(BaseNameableObject.parseDate("2018-07-21T18:40:18.919"));
-        assertThat(dataElementOperand.lastUpdated()).isEqualTo(BaseNameableObject.parseDate("2018-07-21T18:40:18.919"));
-        assertThat(dataElementOperand.shortName()).isEqualTo("Q_VitA_4-6m_VitA2 Fixed, <1y");
-        assertThat(dataElementOperand.displayShortName()).isEqualTo("Q_VitA_4-6m_VitA2 Fixed, <1y");
         assertThat(dataElementOperand.dataElement().uid()).isEqualTo("ca8lfO062zg");
         assertThat(dataElementOperand.categoryOptionCombo().uid()).isEqualTo("Prlt0C1RF0s");
     }

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -39,19 +39,17 @@ import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandModel;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandModelBuilder;
 
 public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionModel> {
 
     private final OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 
-    private final GenericHandler<DataElementOperand, DataElementOperandModel> greyedFieldsHandler;
+    private final SyncHandler<DataElementOperand> greyedFieldsHandler;
     private final LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
 
     SectionHandler(IdentifiableObjectStore<SectionModel> sectionStore,
                    OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler,
-                   GenericHandler<DataElementOperand, DataElementOperandModel> greyedFieldsHandler,
+                   SyncHandler<DataElementOperand> greyedFieldsHandler,
                    LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler) {
 
         super(sectionStore);
@@ -64,7 +62,7 @@ public class SectionHandler extends IdentifiableHandlerImpl<Section, SectionMode
     @Override
     protected void afterObjectHandled(Section section, HandleAction action) {
 
-        greyedFieldsHandler.handleMany(section.greyedFields(), new DataElementOperandModelBuilder());
+        greyedFieldsHandler.handleMany(section.greyedFields());
 
         sectionDataElementLinkHandler.handleMany(section.uid(),
                 section.dataElements(),

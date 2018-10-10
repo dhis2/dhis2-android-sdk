@@ -33,6 +33,10 @@ import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
+
+import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Retrofit;
 
@@ -50,6 +54,10 @@ public final class D2InternalModules {
         this.relationshipModule = relationshipModule;
         this.dataElementModule = dataElementModule;
         this.dataValueModule = dataValueModule;
+    }
+
+    public List<WipeableModule> getWipeableModules() {
+        return Arrays.asList(systemInfo, relationshipModule, dataElementModule, dataValueModule);
     }
 
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {

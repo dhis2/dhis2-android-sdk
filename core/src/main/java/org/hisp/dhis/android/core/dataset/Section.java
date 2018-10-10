@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandFields;
 
 import java.util.Date;
 import java.util.List;
@@ -78,7 +79,7 @@ public abstract class Section extends BaseIdentifiableObject {
             description, sortOrder, dataSet.with(ObjectWithUid.uid),
             showRowTotals, showColumnTotals,
             dataElements.with(ObjectWithUid.uid),
-            greyedFields.with(DataElementOperand.allFields)
+            greyedFields.with(DataElementOperandFields.allFields)
             ).build();
 
     @Nullable

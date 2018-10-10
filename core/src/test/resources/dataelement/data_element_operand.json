@@ -1,33 +1,10 @@
 {
-  "lastUpdated": "2018-07-21T18:40:18.919",
   "id": "ca8lfO062zg.Prlt0C1RF0s",
-  "created": "2018-07-21T18:40:18.919",
-  "name": "Q_Vitamin A received 4-6 months ago at 12-59 dose Fixed, <1y",
-  "shortName": "Q_VitA_4-6m_VitA2 Fixed, <1y",
-  "displayName": "Q_Vitamin A received 4-6 months ago at 12-59 dose Fixed, <1y",
-  "displayShortName": "Q_VitA_4-6m_VitA2 Fixed, <1y",
-  "externalAccess": false,
-  "dimensionItem": "ca8lfO062zg.Prlt0C1RF0s",
-  "favorite": false,
-  "dimensionItemType": "DATA_ELEMENT_OPERAND",
-  "access": {
-    "read": true,
-    "update": true,
-    "externalize": false,
-    "delete": true,
-    "write": true,
-    "manage": true
-  },
+  "deleted": false,
   "categoryOptionCombo": {
     "id": "Prlt0C1RF0s"
   },
   "dataElement": {
     "id": "ca8lfO062zg"
-  },
-  "favorites": [],
-  "translations": [],
-  "userGroupAccesses": [],
-  "attributeValues": [],
-  "userAccesses": [],
-  "legendSets": []
+  }
 }

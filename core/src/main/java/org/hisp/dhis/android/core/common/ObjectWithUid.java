@@ -43,6 +43,7 @@ public abstract class ObjectWithUid implements ObjectWithUidInterface {
 
     public static final Field<ObjectWithUid, String> uid = Field.create(UID);
 
+    @Override
     @NonNull
     @JsonProperty(UID)
     public abstract String uid();

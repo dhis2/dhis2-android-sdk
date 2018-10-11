@@ -66,16 +66,21 @@ public final class APICallExecutor {
     }
 
     public <P> P executeObjectCall(Call<P> call) throws D2CallException {
-        return executeObjectCallInternal(call, new ArrayList<Integer>(), null);
+        return executeObjectCallInternal(call, new ArrayList<Integer>(), null, null);
     }
 
     public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
                                                          Class<P> errorClass) throws D2CallException {
-        return executeObjectCallInternal(call, acceptedErrorCodes, errorClass);
+        return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null);
     }
 
-    private <P> P executeObjectCallInternal(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass)
+    public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
             throws D2CallException {
+        return executeObjectCallInternal(call, new ArrayList<Integer>(), null, errorCatcher);
+    }
+
+    private <P> P executeObjectCallInternal(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass,
+                                            APICallErrorCatcher errorCatcher) throws D2CallException {
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
@@ -86,6 +91,8 @@ public final class APICallExecutor {
                 }
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
+            } else if (errorCatcher != null) {
+                throw exceptionBuilder.errorCode(errorCatcher.catchError(response)).build();
             } else {
                 throw responseException(response);
             }

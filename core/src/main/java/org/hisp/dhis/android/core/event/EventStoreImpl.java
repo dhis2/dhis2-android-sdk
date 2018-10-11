@@ -153,7 +153,7 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
     private static final String QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE = "SELECT " +
             FIELDS +
             " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'" +
-            " ORDER BY Event." + Columns.EVENT_DATE;
+            " ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
 
     private final SQLiteStatement insertStatement;
     private final SQLiteStatement updateStatement;

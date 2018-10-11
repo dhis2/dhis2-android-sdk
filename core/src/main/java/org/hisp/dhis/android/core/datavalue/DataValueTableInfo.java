@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 public class DataValueTableInfo {
 
     // Different BD column names than API fields.
-    private static final String ORGANISATION_UNIT =  "organisationUnit";
+    static final String ORGANISATION_UNIT =  "organisationUnit";
     private static final String FOLLOW_UP = "followUp";
 
     private DataValueTableInfo() {}

@@ -44,8 +44,11 @@ import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings({ "PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal", "PMD.AvoidDuplicateLiterals" })
+@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
+
+    private static final String EQ = " = '";
+    private static final String AND = "' AND ";
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
@@ -107,7 +110,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     public Collection<DataValue> getDataValuesWithState(State state) {
 
-        String whereClause = DataValue.Columns.STATE + " = '" + state.name() + "'";
+        String whereClause = DataValue.Columns.STATE + EQ + state.name() + "'";
         return selectWhereClause(whereClause);
     }
 
@@ -123,15 +126,11 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
     }
 
     public boolean exists(DataValue dataValue) {
-
-        String[] dataValueColumns = new DataValueTableInfo.Columns().whereUpdate();
-
-        String whereClause = dataValueColumns[0] + " = '" + dataValue.dataElement() +
-                             " AND " + dataValueColumns[1] + " = '" + dataValue.period() +
-                             " AND " + dataValueColumns[2] + " = '" + dataValue.organisationUnit() +
-                             " AND " + dataValueColumns[3] + " = '" + dataValue.categoryOptionCombo() +
-                             " AND " + dataValueColumns[4] + " = '" + dataValue.attributeOptionCombo();
-
+        String whereClause = DataValueFields.DATA_ELEMENT + EQ + dataValue.dataElement() +
+                AND + DataValueFields.PERIOD + EQ + dataValue.period() +
+                AND + DataValueTableInfo.ORGANISATION_UNIT + EQ + dataValue.organisationUnit() +
+                AND + DataValueFields.CATEGORY_OPTION_COMBO + EQ + dataValue.categoryOptionCombo() +
+                AND + DataValueFields.ATTRIBUTE_OPTION_COMBO + EQ + dataValue.attributeOptionCombo() + "';";
         return selectWhereClause(whereClause).size() > 0;
     }
 

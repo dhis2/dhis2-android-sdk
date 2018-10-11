@@ -81,8 +81,16 @@ public final class StoreFactory {
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns,
             String masterColumn, StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
-        return new LinkModelStoreImpl<>(databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
+        return new LinkModelStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
+                statementBuilder, masterColumn, binder, modelFactory);
+    }
+
+    public static <I extends Model> LinkModelStore<I> linkModelStore(
+            DatabaseAdapter databaseAdapter, TableInfo tableInfo, String masterColumn, StatementBinder<I> binder,
+            CursorModelFactory<I> modelFactory) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(),
+                tableInfo.columns().whereUpdate());
+        return new LinkModelStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
                 statementBuilder, masterColumn, binder, modelFactory);
     }
 }

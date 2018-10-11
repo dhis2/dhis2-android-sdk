@@ -113,7 +113,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                     ProgramRuleEndpointCall.FACTORY,
                     TrackedEntityTypeCall.FACTORY,
                     RelationshipTypeEndpointCall.FACTORY,
-                    OptionSetCall.FACTORY);
+                    OptionSetCall.factory(genericCallData.retrofit()));
         }
     };
 }

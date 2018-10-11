@@ -28,40 +28,32 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class OptionSetFields {
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+    final static String VERSION = "version";
+    final static String VALUE_TYPE = "valueType";
+    private final static String OPTIONS = "options";
 
-public final class OptionSetStore {
+    private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
 
-    private OptionSetStore() {}
+    public static final Field<OptionSet, String> uid = fh.uid();
 
-    private static StatementBinder<OptionSet> BINDER = new IdentifiableStatementBinder<OptionSet>() {
-        @Override
-        public void bindToStatement(@NonNull OptionSet o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.version());
-            sqLiteBind(sqLiteStatement, 8, o.valueType());
-        }
-    };
+    public static final Field<OptionSet, String> version = Field.create(VERSION);
 
-    private static final CursorModelFactory<OptionSet> FACTORY = new CursorModelFactory<OptionSet>() {
-        @Override
-        public OptionSet fromCursor(Cursor cursor) {
-            return OptionSet.create(cursor);
-        }
-    };
+    public static final Fields<OptionSet> allFields = Fields.<OptionSet>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    version,
+                    fh.<ValueType>field(VALUE_TYPE),
+                    fh.<Option>nestedField(OPTIONS)
+                            .with(OptionFields.allFields)
+            ).build();
 
-    public static IdentifiableObjectStore<OptionSet> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OptionSetTableInfo.TABLE_INFO, BINDER, FACTORY);
+    private OptionSetFields() {
     }
 }

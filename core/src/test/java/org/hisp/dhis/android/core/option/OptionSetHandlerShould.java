@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
@@ -50,7 +49,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class OptionSetHandlerShould {
     @Mock
-    private IdentifiableObjectStore<OptionSetModel> optionSetStore;
+    private IdentifiableObjectStore<OptionSet> optionSetStore;
 
     @Mock
     private OptionSet optionSet;
@@ -80,27 +79,27 @@ public class OptionSetHandlerShould {
 
     @Test
     public void handle_options() {
-        optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
+        optionSetHandler.handle(optionSet);
         verify(optionHandler).handleMany(options);
     }
 
     @Test
     public void clean_orphan_options_after_update() {
-        when(optionSetStore.updateOrInsert(any(OptionSetModel.class))).thenReturn(HandleAction.Update);
-        optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
+        when(optionSetStore.updateOrInsert(any(OptionSet.class))).thenReturn(HandleAction.Update);
+        optionSetHandler.handle(optionSet);
         verify(optionCleaner).deleteOrphan(optionSet, options);
     }
 
     @Test
     public void not_clean_orphan_options_after_insert() {
-        when(optionSetStore.updateOrInsert(any(OptionSetModel.class))).thenReturn(HandleAction.Insert);
-        optionSetHandler.handle(optionSet, new OptionSetModelBuilder());
+        when(optionSetStore.updateOrInsert(any(OptionSet.class))).thenReturn(HandleAction.Insert);
+        optionSetHandler.handle(optionSet);
         verify(optionCleaner, never()).deleteOrphan(optionSet, options);
     }
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<OptionSet, OptionSetModel> genericHandler =
+        IdentifiableSyncHandlerImpl<OptionSet> genericHandler =
                 new OptionSetHandler(null,null, null);
     }
 }

@@ -28,21 +28,37 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class OptionSetModelBuilder extends ModelBuilder<OptionSet, OptionSetModel> {
+public final class OptionSetTableInfo {
 
-    @Override
-    public OptionSetModel buildModel(OptionSet optionSet) {
-        return OptionSetModel.builder()
-                .uid(optionSet.uid())
-                .code(optionSet.code())
-                .name(optionSet.name())
-                .displayName(optionSet.displayName())
-                .created(optionSet.created())
-                .lastUpdated(optionSet.lastUpdated())
-                .version(optionSet.version())
-                .valueType(optionSet.valueType())
-                .build();
+    private OptionSetTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "OptionSet";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    OptionSetFields.VERSION,
+                    OptionSetFields.VALUE_TYPE
+            );
+        }
     }
 }

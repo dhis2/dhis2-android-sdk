@@ -136,9 +136,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                     d2Exception.errorCode() == D2ErrorCode.SOCKET_TIMEOUT) {
                 return loginOffline();
             } else if (
-                    d2Exception.errorCode() == D2ErrorCode.BAD_CREDENTIALS ||
-                    d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_LOCKED ||
-                    d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+                    d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED ||
+                    d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_LOCKED) {
                 wipeModule.wipeEverything();
                 throw d2Exception;
             } else {

@@ -127,12 +127,20 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
 
         try {
-            User authenticatedUser = new APICallExecutor().executeObjectCall(authenticateCall);
+            User authenticatedUser = new APICallExecutor().executeObjectCallWithErrorCatcher(authenticateCall,
+                    new UserAuthenticateCallErrorCatcher());
             return loginOnline(authenticatedUser);
         } catch (D2CallException d2Exception) {
-            if (d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+            if (
+                    d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
                     d2Exception.errorCode() == D2ErrorCode.SOCKET_TIMEOUT) {
                 return loginOffline();
+            } else if (
+                    d2Exception.errorCode() == D2ErrorCode.BAD_CREDENTIALS ||
+                    d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_LOCKED ||
+                    d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+                wipeModule.wipeEverything();
+                throw d2Exception;
             } else {
                 throw d2Exception;
             }

@@ -91,15 +91,15 @@ public final class APICallExecutor {
                 }
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
-            } else if (errorCatcher != null) {
-                D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
-                if (d2ErrorCode != null) {
-                    throw exceptionBuilder.errorCode(d2ErrorCode).build();
-                } else {
-                    throw responseException(response);
-                }
-            } else {
+            } else if (errorCatcher == null) {
                 throw responseException(response);
+            } else {
+                D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
+                if (d2ErrorCode == null) {
+                    throw responseException(response);
+                } else {
+                    throw exceptionBuilder.errorCode(d2ErrorCode).build();
+                }
             }
         } catch (SocketTimeoutException e) {
             throw socketTimeoutException(e);

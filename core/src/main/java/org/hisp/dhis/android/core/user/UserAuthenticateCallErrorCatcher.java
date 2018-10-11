@@ -42,12 +42,15 @@ public final class UserAuthenticateCallErrorCatcher implements APICallErrorCatch
 
         String errorResponse = response.errorBody().string();
 
-        if (errorResponse.indexOf("LDAP authentication is not configured") > 0) {
+        if (errorResponse.indexOf("LDAP authentication is not configured") > 0 ||
+                errorResponse.indexOf("Bad credentials") > 0) {
             return D2ErrorCode.BAD_CREDENTIALS;
-        } else if (errorResponse.indexOf("fafa") > 0) {
+        } else if (errorResponse.indexOf("User is disabled") > 0) {
             return D2ErrorCode.USER_ACCOUNT_DISABLED;
-        } else {
+        } else if (errorResponse.indexOf("User account is locked") > 0) {
             return D2ErrorCode.USER_ACCOUNT_LOCKED;
         }
+
+        throw new IllegalStateException("There are no matches with the response errors");
     }
 }

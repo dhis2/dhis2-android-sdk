@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -116,7 +116,7 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
-    private SyncHandler<DataSetElement> dataSetElementLinkHandler;
+    private LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
 
     @Mock
     private LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
@@ -250,7 +250,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(dataSetElementLinkHandler).handleMany(anyListOf(DataSetElement.class));
+        verify(dataSetElementLinkHandler).handleMany(anyString(), anyListOf(DataSetElement.class));
     }
 
     @Test

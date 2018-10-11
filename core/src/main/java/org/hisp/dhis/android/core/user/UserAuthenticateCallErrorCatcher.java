@@ -51,6 +51,6 @@ public final class UserAuthenticateCallErrorCatcher implements APICallErrorCatch
             return D2ErrorCode.USER_ACCOUNT_LOCKED;
         }
 
-        throw new IllegalStateException("There are no matches with the response errors");
+        return null;
     }
 }

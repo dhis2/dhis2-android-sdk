@@ -92,7 +92,12 @@ public final class APICallExecutor {
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher != null) {
-                throw exceptionBuilder.errorCode(errorCatcher.catchError(response)).build();
+                D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
+                if (d2ErrorCode != null) {
+                    throw exceptionBuilder.errorCode(d2ErrorCode).build();
+                } else {
+                    throw responseException(response);
+                }
             } else {
                 throw responseException(response);
             }

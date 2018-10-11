@@ -17,52 +17,6 @@ public final class DatabaseAssert {
         this.databaseAdapter = databaseAdapter;
     }
 
-    public DatabaseAssert ifValueExist(String tableName, String fieldName, String fieldValue) {
-        boolean isExist = false;
-
-        Cursor res = databaseAdapter.query(
-                "SELECT " + fieldName + " from " + tableName + " where " + fieldName + " = '"
-                        + fieldValue + "'", null);
-        int value = res.getCount();
-        if (value == 1) {
-            isExist = true;
-        }
-
-        assertThat(isExist, is(true));
-
-        return this;
-    }
-
-    public DatabaseAssert isFieldExist(String tableName, String fieldName) {
-        boolean isExist = false;
-        Cursor res = databaseAdapter.query("PRAGMA table_info(" + tableName + ")", null);
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
-            while (res.moveToNext()) {
-                if (res.getString(value).equals(fieldName)) {
-                    isExist = true;
-                    break;
-                }
-            }
-        }
-        assertThat(isExist, is(true));
-
-        return this;
-    }
-
-    public DatabaseAssert ifTableExist(String table) {
-        boolean isExist = false;
-        Cursor res = databaseAdapter.query("PRAGMA table_info(" + table + ")", null);
-        int value = res.getColumnIndex("name");
-        if (value != -1) {
-            isExist = true;
-        }
-        assertThat(isExist, is(true));
-
-        return this;
-    }
-
-
     public DatabaseAssert isEmpty() {
         verifyEmptyDatabase(true);
 
@@ -90,18 +44,19 @@ public final class DatabaseAssert {
     private void verifyEmptyDatabase(boolean expectedEmpty) {
         boolean isEmpty = true;
 
-        Cursor res = databaseAdapter.query(" SELECT name FROM sqlite_master "
+        Cursor cursor = databaseAdapter.query(" SELECT name FROM sqlite_master "
                 + "WHERE type='table' and name!='android_metadata' and name!='sqlite_sequence'");
-        int value = res.getColumnIndex("name");
+        int value = cursor.getColumnIndex("name");
         if (value != -1) {
-            while (res.moveToNext()) {
-                String tableName = res.getString(value);
+            while (cursor.moveToNext()) {
+                String tableName = cursor.getString(value);
 
                 if (tableCount(tableName) > 0) {
                     isEmpty = false;
                 }
             }
         }
+        cursor.close();
         assertThat(isEmpty, is(expectedEmpty));
     }
 
@@ -118,6 +73,7 @@ public final class DatabaseAssert {
             }
         }
 
+        cursor.close();
         return count;
     }
 }

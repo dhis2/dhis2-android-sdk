@@ -175,6 +175,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
                 toInteger(UNIQUE),
                 toInteger(INHERIT)
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -201,6 +202,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
                 toInteger(GENERATED), toInteger(DISPLAY_ON_VISIT_SCHEDULE), toInteger(ORG_UNIT_SCOPE),
                 toInteger(UNIQUE), toInteger(INHERIT)
         ).isExhausted();
+        cursor.close();
     }
 
     @Test(expected = SQLiteConstraintException.class)
@@ -226,12 +228,14 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(TrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
         // checking that tracked entity attribute is successfully inserted
         assertThatCursor(cursor).hasRow(1L, UID, OPTION_SET_UID);
+        cursor.close();
 
         database().delete(OptionSetModel.TABLE, OptionSetModel.Columns.UID + " =?", new String[]{OPTION_SET_UID});
         cursor = database().query(TrackedEntityAttributeModel.TABLE, projection, null, null, null, null, null);
 
         // checking that tracked entity attribute is deleted
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
 
     }
 
@@ -249,6 +253,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
 
         // check that tracked entity attribute was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID, EXPRESSION);
+        cursor.close();
 
         String updatedExpression = "updated_expression";
 
@@ -266,6 +271,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
 
         // check that tracked entity attribute is updated in database
         assertThatCursor(cursor).hasRow(UID, updatedExpression).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -280,6 +286,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
 
         // check that tracked entity attribute was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID);
+        cursor.close();
 
         int delete = store.delete(UID);
 
@@ -289,6 +296,7 @@ public class TrackedEntityAttributeStoreShould extends AbsStoreTestCase {
 
         // check that tracked entity attribute doesn't exist in database
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     // ToDo: consider introducing conflict resolution strategy

@@ -74,7 +74,9 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
                 new UserCredentialsStoreImpl(d2.databaseAdapter()).insert("user_credential_uid1", null,
                         null, null, null, null, null, "no_user_uid");
 
-                assertThatCursorHasRowCount(getUserCredentialsCursor(), 2);
+                Cursor userCredentialsCursor = getUserCredentialsCursor();
+                assertThatCursorHasRowCount(userCredentialsCursor, 2);
+                userCredentialsCursor.close();
                 new ForeignKeyCleaner(d2.databaseAdapter()).cleanForeignKeyErrors();
                 return null;
             }
@@ -90,6 +92,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
         Truth.assertThat(cursor.getString(userColumnIndex)).isEqualTo("DXyJmlo9rge");
 
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -100,8 +103,15 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        final Integer programRuleCount = getProgramRuleCursor().getCount();
-        final Integer programRuleActionCount = getProgramRuleActionCursor().getCount();
+        final Cursor programRuleCursor = getProgramRuleCursor();
+        Cursor programRuleActionCursor = getProgramRuleActionCursor();
+
+        final Integer programRuleCount = programRuleCursor.getCount();
+        final Integer programRuleActionCount = programRuleActionCursor.getCount();
+
+        programRuleCursor.close();
+        programRuleActionCursor.close();
+
         final Program program = Program.builder().uid("nonexisent-program").build();
 
         executor.executeD2CallTransactionally(d2.databaseAdapter(), new Callable<Void>() {
@@ -113,15 +123,25 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
                         Date(), new Date(), null, null, null, null, null, null, ProgramRuleActionType.ASSIGN,
                         null, null, PROGRAM_RULE_UID);
 
-                assertThatCursorHasRowCount(getProgramRuleCursor(), programRuleCount + 1);
-                assertThatCursorHasRowCount(getProgramRuleActionCursor(), programRuleActionCount + 1);
+                Cursor programRuleCursor1 = getProgramRuleCursor();
+                Cursor programRuleActionCursor1 = getProgramRuleActionCursor();
+                assertThatCursorHasRowCount(programRuleCursor1, programRuleCount + 1);
+                assertThatCursorHasRowCount(programRuleActionCursor1, programRuleActionCount + 1);
+                programRuleCursor1.close();
+                programRuleActionCursor1.close();
 
                 ForeignKeyCleaner foreignKeyCleaner = new ForeignKeyCleaner(d2.databaseAdapter());
                 Integer rowsAffected = foreignKeyCleaner.cleanForeignKeyErrors();
 
                 Truth.assertThat(rowsAffected).isEqualTo(1);
-                assertThatCursorHasRowCount(getProgramRuleCursor(), programRuleCount);
-                assertThatCursorHasRowCount(getProgramRuleActionCursor(), programRuleActionCount);
+
+                Cursor programRuleCursor2 = getProgramRuleCursor();
+                Cursor programRuleActionCursor2 = getProgramRuleActionCursor();
+                assertThatCursorHasRowCount(programRuleCursor2, programRuleCount);
+                assertThatCursorHasRowCount(programRuleActionCursor2, programRuleActionCount);
+                programRuleCursor2.close();
+                programRuleActionCursor2.close();
+                
                 return null;
             }
         });

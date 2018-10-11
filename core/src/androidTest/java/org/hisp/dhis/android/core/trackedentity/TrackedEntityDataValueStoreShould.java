@@ -175,6 +175,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
                 VALUE,
                 toInteger(PROVIDED_ELSEWHERE)
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -187,6 +188,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_1, null, null, DATA_ELEMENT_1, null, null,
                 null).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -205,6 +207,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     //@Test
@@ -225,6 +228,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -246,6 +250,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
 
         // verify that TEDV was successfully inserted
         assertThatCursor(cursor).hasRow(EVENT_1).isExhausted();
+        cursor.close();
 
         Map<String, List<TrackedEntityDataValue>> map =
                 trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.FALSE);
@@ -317,6 +322,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
                 STORED_BY,
                 VALUE,
                 toInteger(PROVIDED_ELSEWHERE));
+        cursor.close();
 
         assertThat(updateReturn).isEqualTo(1);
     }

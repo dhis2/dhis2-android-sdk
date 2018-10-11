@@ -369,6 +369,8 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
 
         // checking that psde was successfully inserted
         assertThatCursor(cursor).hasRow(UID, DISPLAY_NAME, 0); // 0 == Boolean.FALSE
+        cursor.close();
+
         String updatedDisplayName = "updatedDisplayName";
         Boolean updatedCompulsory = Boolean.TRUE;
 
@@ -391,6 +393,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
 
         // checking that row was updated
         assertThatCursor(cursor).hasRow(UID, updatedDisplayName, 1); // 1 == Boolean.TRUE
+        cursor.close();
 
     }
 
@@ -419,6 +422,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);
         // checking that psde was successfully inserted
         assertThatCursor(cursor).hasRow(UID);
+        cursor.close();
 
         int delete = store.delete(UID);
 
@@ -428,6 +432,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         cursor = database().query(ProgramStageDataElementModel.TABLE, projection, null, null, null, null, null);
 
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test(expected = IllegalArgumentException.class)

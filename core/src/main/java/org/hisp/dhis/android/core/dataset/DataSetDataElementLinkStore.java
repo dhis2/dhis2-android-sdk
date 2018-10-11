@@ -33,9 +33,8 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -55,16 +54,6 @@ public final class DataSetDataElementLinkStore {
         }
     };
 
-    private static final WhereStatementBinder<DataSetElement> WHERE_UPDATE_BINDER =
-            new WhereStatementBinder<DataSetElement>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull DataSetElement o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 4, UidsHelper.getUidOrNull(o.dataSet()));
-            sqLiteBind(sqLiteStatement, 5, UidsHelper.getUidOrNull(o.dataElement()));
-
-        }
-    };
-
     private static final CursorModelFactory<DataSetElement> FACTORY
             = new CursorModelFactory<DataSetElement>() {
         @Override
@@ -73,11 +62,11 @@ public final class DataSetDataElementLinkStore {
         }
     };
 
-    public static ObjectWithoutUidStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter,
+    public static LinkModelStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
                 DataSetElementLinkTableInfo.TABLE_INFO,
+                DataSetElementFields.DATA_SET,
                 BINDER,
-                WHERE_UPDATE_BINDER,
                 FACTORY);
     }
 }

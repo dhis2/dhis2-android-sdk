@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandFields;
@@ -53,10 +52,8 @@ public final class SectionFields {
                     fh.<Integer>field(SORT_ORDER),
                     fh.<Boolean>field(SHOW_ROW_TOTALS),
                     fh.<Boolean>field(SHOW_COLUMN_TOTALS),
-                    fh.<ObjectWithUid>nestedField(DATA_SET)
-                            .with(ObjectWithUid.uid),
-                    fh.<ObjectWithUid>nestedField(DATA_ELEMENTS)
-                            .with(ObjectWithUid.uid),
+                    fh.nestedFieldWithUid(DATA_SET),
+                    fh.nestedFieldWithUid(DATA_ELEMENTS),
                     fh.<DataElementOperand>nestedField(GREYED_FIELDS)
                             .with(DataElementOperandFields.allFields)
             ).build();

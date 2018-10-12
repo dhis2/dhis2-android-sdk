@@ -56,7 +56,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
 
     private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
-    private final GenericHandler<Section, SectionModel> sectionHandler;
+    private final SyncHandler<Section> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
 
     private final SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler;
@@ -70,7 +70,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
                    GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
-                   GenericHandler<Section, SectionModel> sectionHandler,
+                   SyncHandler<Section> sectionHandler,
                    OrphanCleaner<DataSet, Section> sectionOrphanCleaner,
                    SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler,
                    LinkModelHandler<DataElementOperand,
@@ -99,7 +99,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         styleHandler.handle(dataSet.style(),
                 new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
 
-        sectionHandler.handleMany(dataSet.sections(), new SectionModelBuilder());
+        sectionHandler.handleMany(dataSet.sections());
 
         compulsoryDataElementOperandHandler.handleMany(dataSet.compulsoryDataElementOperands());
 
@@ -130,10 +130,10 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
 
         return new DataSetHandler(
                 DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter), SectionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<DataSet, Section>(SectionModel.TABLE,
-                        SectionModel.Columns.DATA_SET,
-                        databaseAdapter),
+                ObjectStyleHandler.create(databaseAdapter),
+                SectionHandler.create(databaseAdapter),
+                new OrphanCleanerImpl<DataSet, Section>(SectionTableInfo.TABLE_INFO.name(),
+                        SectionFields.DATA_SET, databaseAdapter),
                 DataElementOperandHandler.create(databaseAdapter),
                 new LinkModelHandlerImpl<DataElementOperand,
                         DataSetCompulsoryDataElementOperandLinkModel>(

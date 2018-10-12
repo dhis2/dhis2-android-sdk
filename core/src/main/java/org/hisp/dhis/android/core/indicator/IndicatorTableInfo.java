@@ -28,38 +28,42 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class IndicatorFields {
+public final class IndicatorTableInfo {
 
-    final static String ANNUALIZED = "annualized";
-    final static String INDICATOR_TYPE = "indicatorType";
-    final static String NUMERATOR = "numerator";
-    final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
-    final static String DENOMINATOR = "denominator";
-    final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
-    final static String URL = "url";
+    private IndicatorTableInfo() {
+    }
 
-    private static final FieldsHelper<Indicator> fh = new FieldsHelper<>();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public static final Field<Indicator, String> uid = fh.uid();
+        @Override
+        public String name() {
+            return "Indicator";
+        }
 
-    static final Field<Indicator, String> lastUpdated = fh.lastUpdated();
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-    public static final Fields<Indicator> allFields = Fields.<Indicator>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<Boolean>field(ANNUALIZED),
-                    fh.nestedFieldWithUid(INDICATOR_TYPE),
-                    fh.<String>field(NUMERATOR),
-                    fh.<String>field(NUMERATOR_DESCRIPTION),
-                    fh.<String>field(DENOMINATOR),
-                    fh.<String>field(DENOMINATOR_DESCRIPTION),
-                    fh.<String>field(URL)
-            ).build();
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
 
-    private IndicatorFields() {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    IndicatorFields.ANNUALIZED,
+                    IndicatorFields.INDICATOR_TYPE,
+                    IndicatorFields.NUMERATOR,
+                    IndicatorFields.NUMERATOR_DESCRIPTION,
+                    IndicatorFields.DENOMINATOR,
+                    IndicatorFields.DENOMINATOR_DESCRIPTION,
+                    IndicatorFields.URL
+            );
+        }
     }
 }

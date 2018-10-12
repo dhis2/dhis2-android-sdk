@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.indicator;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class IndicatorTableInfo {
@@ -51,7 +52,7 @@ public final class IndicatorTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    static class Columns extends BaseNameableObjectModel.Columns {
 
         @Override
         public String[] all() {

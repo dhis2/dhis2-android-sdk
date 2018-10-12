@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 public class SectionHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<SectionModel> sectionStore;
+    private IdentifiableObjectStore<Section> sectionStore;
 
     @Mock
     private OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
@@ -71,9 +71,9 @@ public class SectionHandlerShould {
     // object to test
     private SectionHandler sectionHandler;
 
-    List<ObjectWithUid> dataElements;
+    private List<ObjectWithUid> dataElements;
 
-    List<DataElementOperand> greyedFields;
+    private List<DataElementOperand> greyedFields;
 
     @Before
     public void setUp() throws Exception {
@@ -96,22 +96,20 @@ public class SectionHandlerShould {
     @Test
     public void passingNullArguments_shouldNotPerformAnyAction() {
 
-       sectionHandler.handle(null, null);
+       sectionHandler.handle(null);
 
         verify(sectionStore, never()).delete(anyString());
 
-        verify(sectionStore, never()).update(any(SectionModel.class));
+        verify(sectionStore, never()).update(any(Section.class));
 
-        verify(sectionStore, never()).insert(any(SectionModel.class));
+        verify(sectionStore, never()).insert(any(Section.class));
     }
 
     @Test
     public void handlingSection_shouldHandleLinkedDataElements() {
       
-        sectionHandler.handle(section, new SectionModelBuilder());
+        sectionHandler.handle(section);
         verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
         verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), eq(greyedFields), any(SectionGreyedFieldsLinkModelBuilder.class));
     }
-
-
 }

@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
-public class ObjectStyleModelBuilder extends ModelBuilder<ObjectStyle, ObjectStyleModel> {
+public class ObjectStyleModelBuilder extends ModelBuilder<ObjectStyle, ObjectStyle> {
 
-    private final ObjectStyleModel.Builder builder;
+    private final ObjectStyle.Builder builder;
 
     public ObjectStyleModelBuilder(String uid, String objectTable) {
-        builder = ObjectStyleModel.builder()
+        builder = ObjectStyle.builder()
                 .uid(uid)
                 .objectTable(objectTable);
     }
 
     @Override
-    public ObjectStyleModel buildModel(ObjectStyle objectStyle) {
+    public ObjectStyle buildModel(ObjectStyle objectStyle) {
         return builder
                 .color(objectStyle.color())
                 .icon(objectStyle.icon()).build();

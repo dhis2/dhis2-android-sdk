@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -38,7 +39,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -71,7 +71,7 @@ public class DataSetHandlerShould {
     private IdentifiableObjectStore<DataSetModel> dataSetStore;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
     private SyncHandler<Section> sectionHandler;

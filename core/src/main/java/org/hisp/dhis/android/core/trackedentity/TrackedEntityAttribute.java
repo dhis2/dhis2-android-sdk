@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Field;
@@ -123,7 +124,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject {
             uid, code, created, lastUpdated, name, displayName, shortName, displayShortName, description,
             displayDescription, displayInListNoProgram, displayOnVisitSchedule, expression, generated, inherit,
             orgUnitScope, programScope, pattern, sortOrderInListNoProgram, unique, valueType, searchScope,
-            optionSet.with(OptionSetFields.uid, OptionSetFields.version), style.with(ObjectStyle.allFields),
+            optionSet.with(OptionSetFields.uid, OptionSetFields.version), style.with(ObjectStyleFields.allFields),
             access.with(Access.read), renderType).build();
 
     @Nullable

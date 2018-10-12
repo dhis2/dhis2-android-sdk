@@ -28,44 +28,61 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
 @AutoValue
-public abstract class ObjectStyle {
-    private static final String COLOR = "color";
-    private static final String ICON = "icon";
-
-    private static final Field<ObjectStyle, String> color = Field.create(COLOR);
-    private static final Field<ObjectStyle, String> icon = Field.create(ICON);
-
-    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(color, icon).build();
+@JsonDeserialize(builder = AutoValue_ObjectStyle.Builder.class)
+public abstract class ObjectStyle extends BaseModel {
 
     @Nullable
-    @JsonProperty(COLOR)
+    @JsonProperty()
     public abstract String color();
 
     @Nullable
-    @JsonProperty(ICON)
+    @JsonProperty()
     public abstract String icon();
 
-    @JsonCreator
-    public static ObjectStyle create(@JsonProperty(COLOR) String color,
-                                     @JsonProperty(ICON) String icon) {
-        return new AutoValue_ObjectStyle(color, icon);
+
+    @Nullable
+    @ColumnName(ObjectStyleModel.Columns.UID)
+    @JsonIgnore()
+    public abstract String uid();
+
+    @Nullable
+    @JsonIgnore()
+    public abstract String objectTable();
+
+    @NonNull
+    public static ObjectStyle create(Cursor cursor) {
+        return AutoValue_ObjectStyle.createFromCursor(cursor);
     }
 
-    public static String getColor(ObjectStyle objectStyle) {
-        return objectStyle == null ?  null : objectStyle.color();
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_ObjectStyle.Builder();
     }
 
-    public static String getIcon(ObjectStyle objectStyle) {
-        return objectStyle == null ?  null : objectStyle.icon();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder color(String color);
+
+        public abstract Builder icon(String icon);
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder objectTable(String objectTable);
+
+        public abstract ObjectStyle build();
     }
 }

@@ -88,6 +88,6 @@ public class DataSetShould extends BaseObjectShould implements ObjectShould {
         assertThat(dataSet.compulsoryDataElementOperands().get(0).uid()).isEqualTo("NJnhOzjaLYk.rCMUTmcreqP");
         assertThat(dataSet.access()).isEqualTo(Access.create(true, true, true, true,
                 false, true, DataAccess.create(true, true)));
-        assertThat(dataSet.style()).isEqualTo(ObjectStyle.create("#000", "my-icon-name"));
+        assertThat(dataSet.style()).isEqualTo(ObjectStyle.builder().color("#000").icon("my-icon-name").build());
     }
 }

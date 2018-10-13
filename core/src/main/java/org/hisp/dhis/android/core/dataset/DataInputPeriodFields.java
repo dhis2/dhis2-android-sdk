@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.datavalue.DataValue;
 
 public class DataInputPeriodFields {
 

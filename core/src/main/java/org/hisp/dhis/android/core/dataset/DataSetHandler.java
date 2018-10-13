@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import android.drm.DrmStore;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;

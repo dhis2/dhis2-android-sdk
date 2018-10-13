@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -48,6 +49,15 @@ import java.util.Date;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataInputPeriod.Builder.class)
 public abstract class DataInputPeriod extends BaseDataModel {
+
+    @JsonIgnore
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid dataSet();
+
+    String dataSetUid() {
+        ObjectWithUid dataSet = dataSet();
+        return dataSet == null ? null : dataSet.uid();
+    }
 
     @JsonProperty
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
@@ -83,6 +93,8 @@ public abstract class DataInputPeriod extends BaseDataModel {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataModel.Builder<DataInputPeriod.Builder> {
+
+        public abstract Builder dataSet(@NonNull ObjectWithUid dataSet);
 
         public abstract Builder period(@NonNull ObjectWithUid period);
 

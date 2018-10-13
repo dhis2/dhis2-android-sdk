@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-public class DataInputPeriodFields {
+final class DataInputPeriodFields {
 
     static final String PERIOD = "period";
     static final String OPENING_DATE = "openingDate";

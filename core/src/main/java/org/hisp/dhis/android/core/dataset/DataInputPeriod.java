@@ -55,8 +55,7 @@ public abstract class DataInputPeriod extends BaseDataModel {
     public abstract ObjectWithUid dataSet();
 
     String dataSetUid() {
-        ObjectWithUid dataSet = dataSet();
-        return dataSet == null ? null : dataSet.uid();
+        return dataSet() == null ? null : dataSet().uid();
     }
 
     @JsonProperty
@@ -64,8 +63,7 @@ public abstract class DataInputPeriod extends BaseDataModel {
     public abstract ObjectWithUid period();
 
     String periodUid() {
-        ObjectWithUid period = period();
-        return period == null ? null : period.uid();
+        return period() == null ? null : period().uid();
     }
 
     @Nullable

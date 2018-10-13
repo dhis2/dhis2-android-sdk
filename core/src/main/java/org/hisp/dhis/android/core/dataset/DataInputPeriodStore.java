@@ -33,41 +33,62 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataInputPeriodStore {
+public final class DataInputPeriodStore extends ObjectWithoutUidStoreImpl<DataInputPeriod> {
 
-    private DataInputPeriodStore() {}
+    private DataInputPeriodStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
+                                 SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
 
-    private static final StatementBinder<DataInputPeriodModel> BINDER = new StatementBinder<DataInputPeriodModel>() {
-        @Override
-        public void bindToStatement(@NonNull DataInputPeriodModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.dataSet());
-            sqLiteBind(sqLiteStatement, 2, o.period());
-            sqLiteBind(sqLiteStatement, 3, o.openingDate());
-            sqLiteBind(sqLiteStatement, 4, o.closingDate());
-        }
-    };
-
-    private static final CursorModelFactory<DataInputPeriodModel> FACTORY
-            = new CursorModelFactory<DataInputPeriodModel>() {
-        @Override
-        public DataInputPeriodModel fromCursor(Cursor cursor) {
-            return DataInputPeriodModel.create(cursor);
-        }
-    };
-
-    public static LinkModelStore<DataInputPeriodModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataInputPeriodModel.TABLE,
-                new DataInputPeriodModel.Columns(),
-                DataInputPeriodModel.Columns.DATA_SET,
-                BINDER,
-                FACTORY);
+        super(databaseAdapter, insertStatement, updateWhereStatement,
+                builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
+
+    public static DataInputPeriodStore create(DatabaseAdapter databaseAdapter) {
+
+        SQLStatementBuilder sqlStatementBuilder =
+                new SQLStatementBuilder(DataInputPeriodTableInfo.TABLE_INFO.name(),
+                        DataInputPeriodTableInfo.TABLE_INFO.columns());
+
+        return new DataInputPeriodStore(databaseAdapter, databaseAdapter.compileStatement(
+                sqlStatementBuilder.insert()),
+                databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
+                sqlStatementBuilder);
+    }
+
+    private static final StatementBinder<DataInputPeriod> BINDER =
+            new StatementBinder<DataInputPeriod>() {
+                @Override
+                public void bindToStatement(@NonNull DataInputPeriod dataInputPeriod,
+                                            @NonNull SQLiteStatement sqLiteStatement) {
+                    sqLiteBind(sqLiteStatement, 1, dataInputPeriod.dataSetUid());
+                    sqLiteBind(sqLiteStatement, 2, dataInputPeriod.periodUid());
+                    sqLiteBind(sqLiteStatement, 3, dataInputPeriod.openingDate());
+                    sqLiteBind(sqLiteStatement, 4, dataInputPeriod.closingDate());
+                }
+            };
+
+    private static final WhereStatementBinder<DataInputPeriod> WHERE_UPDATE_BINDER =
+            new WhereStatementBinder<DataInputPeriod>() {
+                @Override
+                public void bindToUpdateWhereStatement(@NonNull DataInputPeriod dataInputPeriod,
+                                                       @NonNull SQLiteStatement sqLiteStatement) {
+                    sqLiteBind(sqLiteStatement, 5, dataInputPeriod.dataSetUid());
+                    sqLiteBind(sqLiteStatement, 6, dataInputPeriod.periodUid());
+                }
+            };
+
+    private static final CursorModelFactory<DataInputPeriod> FACTORY
+            = new CursorModelFactory<DataInputPeriod>() {
+        @Override
+        public DataInputPeriod fromCursor(Cursor cursor) {
+            return DataInputPeriod.create(cursor);
+        }
+    };
 }

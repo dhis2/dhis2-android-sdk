@@ -50,6 +50,7 @@ import java.util.Date;
 @JsonDeserialize(builder = AutoValue_DataInputPeriod.Builder.class)
 public abstract class DataInputPeriod extends BaseDataModel {
 
+    @Nullable
     @JsonIgnore
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
@@ -92,13 +93,13 @@ public abstract class DataInputPeriod extends BaseDataModel {
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataModel.Builder<DataInputPeriod.Builder> {
 
-        public abstract Builder dataSet(@NonNull ObjectWithUid dataSet);
+        public abstract Builder dataSet(ObjectWithUid dataSet);
 
-        public abstract Builder period(@NonNull ObjectWithUid period);
+        public abstract Builder period(ObjectWithUid period);
 
-        public abstract Builder openingDate(@NonNull Date openingDate);
+        public abstract Builder openingDate(Date openingDate);
 
-        public abstract Builder closingDate(@NonNull Date closingDate);
+        public abstract Builder closingDate(Date closingDate);
 
         public abstract DataInputPeriod build();
     }

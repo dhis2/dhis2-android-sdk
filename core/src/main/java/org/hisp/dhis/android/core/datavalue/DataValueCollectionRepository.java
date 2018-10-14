@@ -38,12 +38,14 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
         implements ReadWriteCollectionRepository<DataValue> {
 
+    private final DataValueStore dataValueStore;
     private final DataValueHandler dataValueHandler;
 
     private DataValueCollectionRepository(DataValueStore dataValueStore,
                                           DataValueHandler dataValueHandler) {
         super(dataValueStore);
         this.dataValueHandler = dataValueHandler;
+        this.dataValueStore = dataValueStore;
     }
 
     static DataValueCollectionRepository create(DatabaseAdapter databaseAdapter) {
@@ -56,7 +58,7 @@ final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryIm
     @Override
     public void add(DataValue dataValue) throws D2CallException {
 
-        if (dataValueHandler.exists(dataValue)) {
+        if (dataValueStore.exists(dataValue)) {
             throw D2CallException
                     .builder()
                     .isHttpError(false)

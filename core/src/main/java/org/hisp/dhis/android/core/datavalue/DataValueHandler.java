@@ -32,22 +32,14 @@ import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class DataValueHandler
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue>
-        implements DataValueHandler {
-
-    private final DataValueStore dataValueStore;
+        extends ObjectWithoutUidSyncHandlerImpl<DataValue> {
 
     private DataValueHandler(DataValueStore store) {
         super(store);
-        this.dataValueStore = store;
     }
 
     public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
         return new DataValueHandler(DataValueStore.create(databaseAdapter));
     }
 
-    @Override
-    public boolean exists(DataValue dataValue) {
-        return dataValueStore.exists(dataValue);
-    }
 }

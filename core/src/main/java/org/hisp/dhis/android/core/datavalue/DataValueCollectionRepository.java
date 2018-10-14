@@ -49,7 +49,7 @@ final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryIm
     static DataValueCollectionRepository create(DatabaseAdapter databaseAdapter) {
 
         return new DataValueCollectionRepository(DataValueStore.create(databaseAdapter),
-                DataValueHandlerImpl.create(databaseAdapter));
+                DataValueHandler.create(databaseAdapter));
 
     }
 

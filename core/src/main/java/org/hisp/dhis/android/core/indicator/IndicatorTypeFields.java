@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 public final class IndicatorTypeFields {
 
-    private final static String NUMBER = "number";
-    private final static String FACTOR = "factor";
+    final static String NUMBER = "number";
+    final static String FACTOR = "factor";
 
     private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();
 

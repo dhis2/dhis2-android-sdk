@@ -78,6 +78,14 @@ public class ProgramWrapper {
                         //programStageSection.async().save();
                         for (ProgramStageDataElement programStageDataElement :
                                 getProgramStageDataElementsBySection(programStage,programStageSection)) {
+                            if(programStageSection.getProgramStageDataElements() != null){
+                                for(int i = 0 ; i < programStageSection.getDataElements().size(); i++){
+                                    if(programStageDataElement.getDataelement().equals(programStageSection.getDataElements().get(i).getUid())){
+                                        programStageDataElement.setSectionOrder(i);
+                                    }
+                                }
+                            }
+
                             programStageDataElement.setProgramStageSection(programStageSection.getUid());
                             operations.add(DbOperation.save(programStageDataElement));
                             operations.addAll(saveDataElementAttributes(programStageDataElement.getDataElementObj(), attributes));

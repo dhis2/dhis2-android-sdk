@@ -67,6 +67,7 @@ import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -169,7 +170,9 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                     addEventDateRow(context, form, rows);
                     addCoordinateRow(form, rows);
                 }
-                populateDataEntryRows(form, section.getProgramStageDataElements(), rows, username, context);
+                List<ProgramStageDataElement> listDataElement = section.getProgramStageDataElementsInSection();
+                Collections.sort(listDataElement);
+                populateDataEntryRows(form, listDataElement, rows, username, context);
                 populateIndicatorRows(form, section.getProgramIndicators(), rows);
                 form.getSections().add(new DataEntryFragmentSection(section.getName(), section.getUid(), rows));
             }
@@ -226,6 +229,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         for (ProgramStageDataElement stageDataElement : dataElements) {
             DataValue dataValue = getDataValue(stageDataElement.getDataelement(), form.getEvent(), username);
             DataElement dataElement = getDataElement(stageDataElement.getDataelement());
+
             if (dataElement != null) {
                 form.getDataElementNames().put(stageDataElement.getDataelement(),
                         dataElement.getDisplayName());

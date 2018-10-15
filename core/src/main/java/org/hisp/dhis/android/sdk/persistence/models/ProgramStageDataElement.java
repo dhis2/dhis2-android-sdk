@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import android.support.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -40,12 +42,13 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Simen Skogly Russnes on 18.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class ProgramStageDataElement extends BaseModel {
+public class ProgramStageDataElement extends BaseModel implements Comparable<ProgramStageDataElement> {
 
     private static final String CLASS_TAG = "ProgramStageDataElement";
 
@@ -86,6 +89,10 @@ public class ProgramStageDataElement extends BaseModel {
     @Column(name = "renderOptionsAsRadio")
     boolean renderOptionsAsRadio;
 
+    @Column(name = "sectionOrder")
+    int sectionOrder;
+
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
@@ -117,6 +124,14 @@ public class ProgramStageDataElement extends BaseModel {
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public int getSectionOrder() {
+        return sectionOrder;
+    }
+
+    public void setSectionOrder(int sectionOrder) {
+        this.sectionOrder = sectionOrder;
     }
 
     public boolean getAllowProvidedElsewhere() {
@@ -185,5 +200,16 @@ public class ProgramStageDataElement extends BaseModel {
 
     public void setRenderOptionsAsRadio(boolean renderOptionsAsRadio) {
         this.renderOptionsAsRadio = renderOptionsAsRadio;
+    }
+
+    @Override
+    public int compareTo(@NonNull ProgramStageDataElement o) {
+        //CompareTo used only when there are sections
+        if(o.getSectionOrder() > this.sectionOrder)
+            return -1;
+        else if(o.getSectionOrder() < this.sectionOrder)
+            return 1;
+        else
+            return 0;
     }
 }

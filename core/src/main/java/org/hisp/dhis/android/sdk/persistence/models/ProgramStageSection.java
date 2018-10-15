@@ -80,6 +80,14 @@ public class ProgramStageSection extends BaseMetaDataObject {
         return programStageDataElements;
     }
 
+    public List<ProgramStageDataElement> getProgramStageDataElementsInSection() {
+        if (programStageDataElements == null) {
+            programStageDataElements = MetaDataController.getProgramStageDataElementsInSection(this);
+        }
+
+        return programStageDataElements;
+    }
+
     public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
         this.programStageDataElements = programStageDataElements;
     }

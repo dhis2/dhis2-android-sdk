@@ -34,10 +34,13 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.user.User;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,15 +51,25 @@ public final class SearchOrganisationUnitCall {
     private SearchOrganisationUnitCall() {}
 
     public interface Factory {
-        Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                            Set<String> uids, String userId);
+        Call<List<OrganisationUnit>> create(GenericCallData genericCallData, User user);
     }
 
     public static final Factory FACTORY = new Factory() {
         @Override
-        public Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                                   Set<String> uids, String userId) {
-            return new EndpointCall<>(fetcher(retrofit, uids), processor(databaseAdapter, userId));
+        public Call<List<OrganisationUnit>> create(GenericCallData genericCallData, User user) {
+
+            Set<String> organisationUnitUids = new HashSet<>();
+
+            for (OrganisationUnit searchOrganisationUnitUid : user.teiSearchOrganisationUnits()){
+                organisationUnitUids.add(searchOrganisationUnitUid.uid());
+            }
+
+            for (OrganisationUnit captureOrganisationUnit : user.organisationUnits()){
+                organisationUnitUids.remove(captureOrganisationUnit.uid());
+            }
+
+            return new EndpointCall<>(fetcher(genericCallData.retrofit(), organisationUnitUids),
+                    processor(genericCallData.databaseAdapter(), user.uid()));
         }
 
         private static final int MAX_UID_LIST_SIZE = 120;

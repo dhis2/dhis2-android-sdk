@@ -81,10 +81,10 @@ public class TrackedEntityInstanceSynchronizer extends Synchronizer {
             ImportSummary importSummary = mTrackedEntityInstanceRepository.sync(
                     trackedEntityInstance);
 
-            if (importSummary.isSuccessOrOK()) {
+            if (importSummary != null && importSummary.isSuccessOrOK()) {
                 syncEnrollments(trackedEntityInstance.getLocalId());
                 changeTEIToSynced(trackedEntityInstance);
-            } else if (importSummary.isError()) {
+            } else if (importSummary != null && importSummary.isError()) {
                 super.handleImportSummaryError(importSummary, TRACKEDENTITYINSTANCE,
                         200, trackedEntityInstance.getLocalId());
             }

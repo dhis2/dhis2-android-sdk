@@ -25,8 +25,8 @@ public class EnrollmentRepository implements IEnrollmentRepository {
     public ImportSummary sync(Enrollment enrollment) {
         ImportSummary importSummary = mEnrollmentRemoteDataSource.save(enrollment);
 
-        if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
-                ImportSummary.OK.equals(importSummary.getStatus())) {
+        if (importSummary != null && (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                ImportSummary.OK.equals(importSummary.getStatus()))) {
             updateEnrollmentTimestamp(enrollment);
         }
 

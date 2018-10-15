@@ -57,8 +57,9 @@ public class EventRepository implements IEventRepository {
     @Override
     public ImportSummary sync(Event event) {
         ImportSummary importSummary = mRemoteDataSource.update(event);
-
-        updateEventTimestampIfIsPushed(event, importSummary);
+        if(importSummary != null){
+            updateEventTimestampIfIsPushed(event, importSummary);
+        }
 
         return importSummary;
     }

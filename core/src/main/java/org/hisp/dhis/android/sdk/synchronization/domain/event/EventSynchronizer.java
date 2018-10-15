@@ -43,8 +43,9 @@ public class EventSynchronizer extends Synchronizer {
                     "Synchronizing single event " + event.getUid() + " " + event.getStatus());
 
             ImportSummary importSummary = mEventRepository.sync(event);
-
-            manageSyncResult(event, importSummary);
+            if(importSummary != null){
+                manageSyncResult(event, importSummary);
+            }
 
         } catch (APIException api) {
             super.handleSerializableItemException(api, FailedItem.EVENT,
@@ -66,10 +67,12 @@ public class EventSynchronizer extends Synchronizer {
             try {
                 importSummaries = mEventRepository.sync(
                         new ArrayList<>(eventsMapCheck.values()));
-                for (ImportSummary importSummary : importSummaries) {
-                    Event event = eventsMapCheck.get(importSummary.getReference());
-                    if (event != null) {
-                        manageSyncResult(event, importSummary);
+                if(importSummaries != null){
+                    for (ImportSummary importSummary : importSummaries) {
+                        Event event = eventsMapCheck.get(importSummary.getReference());
+                        if (event != null) {
+                            manageSyncResult(event, importSummary);
+                        }
                     }
                 }
             } catch (APIException api) {

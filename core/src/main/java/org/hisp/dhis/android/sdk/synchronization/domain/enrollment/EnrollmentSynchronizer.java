@@ -64,15 +64,15 @@ public class EnrollmentSynchronizer extends Synchronizer {
     }
 
     private boolean syncEnrollment(Enrollment enrollment) {
-        boolean isSyncSuccess = true;
+        boolean isSyncSuccess = false;
 
         try {
             ImportSummary importSummary = mEnrollmentRepository.sync(enrollment);
 
-            if (importSummary.isSuccessOrOK()) {
+            if (importSummary != null && importSummary.isSuccessOrOK()) {
                 isSyncSuccess = true;
 
-            } else if (importSummary.isError()) {
+            } else if (importSummary != null && importSummary.isError()) {
                 super.handleImportSummaryError(importSummary, FailedItem.ENROLLMENT, 200,
                         enrollment.getLocalId());
                 isSyncSuccess = false;

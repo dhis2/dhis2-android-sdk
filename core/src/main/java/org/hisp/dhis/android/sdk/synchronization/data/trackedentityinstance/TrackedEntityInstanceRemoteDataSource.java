@@ -75,7 +75,8 @@ public class TrackedEntityInstanceRemoteDataSource  extends ARemoteDataSource {
     private ImportSummary postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         Response response = null;
         try {
-            response = dhisApi.postTrackedEntityInstance(trackedEntityInstance).execute();
+            if(trackedEntityInstance != null && !dhisApi.postTrackedEntityInstance(trackedEntityInstance).isExecuted())
+                response = dhisApi.postTrackedEntityInstance(trackedEntityInstance).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,8 +86,9 @@ public class TrackedEntityInstanceRemoteDataSource  extends ARemoteDataSource {
     private ImportSummary putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         Response response = null;
         try {
-
-            response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getUid(), trackedEntityInstance).execute();
+            if(trackedEntityInstance != null &&!dhisApi.putTrackedEntityInstance(trackedEntityInstance.getUid(), trackedEntityInstance).isExecuted() ){
+                response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getUid(), trackedEntityInstance).execute();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

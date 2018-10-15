@@ -588,8 +588,10 @@ final class TrackerDataLoader extends ResourceController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        saveResourceDataFromServer(ResourceType.EVENTS, organisationUnitUid + programUid, dhisApi,
-                events.getEvents(), null, serverDateTime);
+        if(events != null && events.getEvents() != null){
+            saveResourceDataFromServer(ResourceType.EVENTS, organisationUnitUid + programUid, dhisApi,
+                    events.getEvents(), null, serverDateTime);
+        }
     }
 
     static TrackedEntityInstance queryTrackedEntityInstanceDataFromServer(DhisApi dhisApi,

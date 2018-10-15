@@ -65,14 +65,17 @@ public class EventRemoteDataSource extends ARemoteDataSource {
         ApiResponse apiResponse =null;
         try {
             response = dhisApi.postEvents(events).execute();
-            apiResponse = DhisController.getInstance().getObjectMapper().
-                    readValue(((ResponseBody)response.body()).string(), ApiResponse.class);
+            if(response != null && response.body() != null){
+                apiResponse = DhisController.getInstance().getObjectMapper().
+                        readValue(((ResponseBody)response.body()).string(), ApiResponse.class);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
-        return apiResponse.getImportSummaries();
+        return apiResponse != null ? apiResponse.getImportSummaries(): null;
     }
 
     private List<ImportSummary> batchDeletedEvents(Map<String, List<Event>> events, DhisApi dhisApi) throws  APIException {
@@ -122,7 +125,10 @@ public class EventRemoteDataSource extends ARemoteDataSource {
     private ImportSummary putEvent(Event event, DhisApi dhisApi) throws APIException {
         Response response = null;
         try {
-            response = dhisApi.putEvent(event.getEvent(), event).execute();
+            if(event!= null){
+                response = dhisApi.putEvent(event.getEvent(), event).execute();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

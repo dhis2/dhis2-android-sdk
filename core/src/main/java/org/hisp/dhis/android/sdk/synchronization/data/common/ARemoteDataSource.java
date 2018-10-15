@@ -38,7 +38,7 @@ public abstract class ARemoteDataSource {
     public ImportSummary getImportSummary(Response response) {
         //because the web api almost randomly gives the responses in different forms, this
         //method checks which one it is that is being returned, and parses accordingly.
-        if (response.code() == 200) {
+        if (response != null && response.code() == 200) {
             try {
                 String body = ((ResponseBody)response.body()).string();
                 JsonNode node = DhisController.getInstance().getObjectMapper().
@@ -56,7 +56,7 @@ public abstract class ARemoteDataSource {
             } catch (ConversionException e) {
                 e.printStackTrace();
             }
-        }else if (response.code() == 409){
+        }else if (response != null && response.code() == 409){
             throw APIException.fromRetrofitError(409, response, null);
         }
         return null;

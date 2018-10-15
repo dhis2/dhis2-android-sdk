@@ -99,6 +99,8 @@ public final class D2 {
                     .penaltyDeath()
                     .build());
         } else {
+            /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
+            when running the StrictMode above. That's why it's in the else clause */
             SSLContextInitializer.initializeSSLContext(context);
         }
 

@@ -210,6 +210,7 @@ public class EventStoreShould extends AbsStoreTestCase {
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -227,6 +228,7 @@ public class EventStoreShould extends AbsStoreTestCase {
                 ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -285,6 +287,7 @@ public class EventStoreShould extends AbsStoreTestCase {
         database().delete(ProgramStageModel.TABLE, ProgramStageModel.Columns.UID + "=?", new String[]{PROGRAM_STAGE});
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -316,6 +319,7 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -333,6 +337,7 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         // check that event was successfully inserted into database
         assertThatCursor(cursor).hasRow(EVENT_UID, dateString).isExhausted();
+        cursor.close();
 
         Date updatedDate = new Date();
 
@@ -344,12 +349,13 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         assertTrue(updated==1);
 
-        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
         String updatedDateString = BaseIdentifiableObject.DATE_FORMAT.format(updatedDate);
 
         // check that event was updated with updatedDateString
-        assertThatCursor(cursor).hasRow(EVENT_UID, updatedDateString).isExhausted();
+        assertThatCursor(cursor2).hasRow(EVENT_UID, updatedDateString).isExhausted();
+        cursor2.close();
     }
 
     @Test
@@ -366,13 +372,15 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         // check that event was successfully inserted into database
         assertThatCursor(cursor).hasRow(EVENT_UID, ORGANISATION_UNIT).isExhausted();
+        cursor.close();
 
         eventStore.delete(EVENT_UID);
 
-        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
         // check that event is deleted
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
     }
 
     @Test
@@ -390,13 +398,16 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         // check that event was successfully inserted into database
         assertThatCursor(cursor).hasRow(EVENT_UID, STATE).isExhausted();
+        cursor.close();
+
         State updatedState = State.ERROR;
         eventStore.setState(EVENT_UID, updatedState);
 
-        cursor = database().query(EventModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(EventModel.TABLE, projection, null, null, null, null, null);
 
         // check that state was updated
-        assertThatCursor(cursor).hasRow(EVENT_UID, updatedState);
+        assertThatCursor(cursor2).hasRow(EVENT_UID, updatedState);
+        cursor2.close();
 
     }
 
@@ -430,12 +441,14 @@ public class EventStoreShould extends AbsStoreTestCase {
         Cursor dataValueCursor = database().query(TrackedEntityDataValueModel.TABLE, dataValueProjection,
                 null, null, null, null, null);
         assertThatCursor(dataValueCursor).hasRow(EVENT_UID).isExhausted();
+        dataValueCursor.close();
 
         String[] projection = {Columns.UID};
         Cursor cursor = database().query(EventModel.TABLE, projection, Columns.UID + " =?",
                 new String[]{EVENT_UID}, null, null, null);
         // verify that eventContentValues was successfully inserted
         assertThatCursor(cursor).hasRow(EVENT_UID).isExhausted();
+        cursor.close();
 
 
         // query for events

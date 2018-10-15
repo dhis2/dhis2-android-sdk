@@ -74,7 +74,7 @@ public class DataSetHandlerShould {
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
-    private GenericHandler<Section, SectionModel> sectionHandler;
+    private SyncHandler<Section> sectionHandler;
 
     @Mock
     private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
@@ -176,8 +176,7 @@ public class DataSetHandlerShould {
         verify(dataSetStore, never()).update(any(DataSetModel.class));
         verify(dataSetStore, never()).insert(any(DataSetModel.class));
 
-        verify(sectionHandler, never()).handleMany(anyListOf(Section.class),
-                Matchers.<ModelBuilder<Section, SectionModel>>any());
+        verify(sectionHandler, never()).handleMany(anyListOf(Section.class));
 
         verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class));
 
@@ -190,8 +189,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(sectionHandler).handleMany(anyListOf(Section.class),
-                any(SectionModelBuilder.class));
+        verify(sectionHandler).handleMany(anyListOf(Section.class));
     }
 
     @Test

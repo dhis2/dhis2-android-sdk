@@ -123,7 +123,7 @@ public abstract class DataSet extends BaseNameableObject {
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
             dataSetElements.with(DataSetElementFields.allFields),
             indicators.with(ObjectWithUid.uid),
-            sections.with(Section.allFields),
+            sections.with(SectionFields.allFields),
             compulsoryDataElementOperands.with(DataElementOperandFields.allFields),
             dataInputPeriods.with(DataInputPeriod.allFields),
             access.with(Access.data.with(DataAccess.write)),

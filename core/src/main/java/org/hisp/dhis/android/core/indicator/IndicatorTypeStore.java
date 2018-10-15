@@ -45,24 +45,23 @@ public final class IndicatorTypeStore {
 
     private IndicatorTypeStore() {}
 
-    private static StatementBinder<IndicatorTypeModel> BINDER = new IdentifiableStatementBinder<IndicatorTypeModel>() {
+    private static StatementBinder<IndicatorType> BINDER = new IdentifiableStatementBinder<IndicatorType>() {
         @Override
-        public void bindToStatement(@NonNull IndicatorTypeModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull IndicatorType o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.number());
             sqLiteBind(sqLiteStatement, 8, o.factor());
         }
     };
 
-    private static final CursorModelFactory<IndicatorTypeModel> FACTORY = new CursorModelFactory<IndicatorTypeModel>() {
+    private static final CursorModelFactory<IndicatorType> FACTORY = new CursorModelFactory<IndicatorType>() {
         @Override
-        public IndicatorTypeModel fromCursor(Cursor cursor) {
-            return IndicatorTypeModel.create(cursor);
+        public IndicatorType fromCursor(Cursor cursor) {
+            return IndicatorType.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<IndicatorTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTypeModel.TABLE,
-                new IndicatorTypeModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<IndicatorType> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

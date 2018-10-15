@@ -62,10 +62,6 @@ public abstract class IndicatorType extends BaseIdentifiableObject implements Mo
     @JsonProperty()
     public abstract Integer factor();
 
-    @Nullable
-    @JsonProperty()
-    abstract String url();
-
     public static Builder builder() {
         return new $$AutoValue_IndicatorType.Builder();
     }
@@ -80,7 +76,7 @@ public abstract class IndicatorType extends BaseIdentifiableObject implements Mo
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder number(Boolean number);

@@ -10,10 +10,10 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OldSearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 
@@ -32,7 +32,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private final EventHandler eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
-    private final SearchOrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final OldSearchOrganisationUnitCall.Factory organisationUnitCallFactory;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     private final Collection<Event> events;
@@ -43,7 +43,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull EventHandler eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
-            @NonNull SearchOrganisationUnitCall.Factory organisationUnitCallFactory,
+            @NonNull OldSearchOrganisationUnitCall.Factory organisationUnitCallFactory,
             @NonNull Collection<Event> events,
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
@@ -105,7 +105,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 EventHandler.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
-                SearchOrganisationUnitCall.FACTORY,
+                OldSearchOrganisationUnitCall.FACTORY,
                 events,
                 new ForeignKeyCleaner(databaseAdapter)
         );

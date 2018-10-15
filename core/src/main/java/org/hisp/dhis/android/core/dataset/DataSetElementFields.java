@@ -26,10 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.dataset;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public interface LinkModelStore<M extends Model> extends ObjectStore<M> {
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+public final class DataSetElementFields {
+
+    static final String DATA_SET = "dataSet";
+    static final String DATA_ELEMENT = "dataElement";
+    static final String CATEGORY_COMBO = "categoryCombo";
+
+    private static final FieldsHelper<DataSetElement> fh = new FieldsHelper<>();
+
+    public static final Fields<DataSetElement> allFields = Fields.<DataSetElement>builder()
+            .fields(
+                    fh.nestedFieldWithUid(DATA_SET),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(CATEGORY_COMBO)
+            ).build();
+
+    private DataSetElementFields() {
+    }
 }

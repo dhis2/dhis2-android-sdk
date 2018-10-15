@@ -25,11 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.handlers;
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.common.Model;
 
-import android.support.annotation.NonNull;
+import java.util.Collection;
 
-public interface LinkModelStore<M extends Model> extends ObjectStore<M> {
-    void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
+public interface LinkSyncHandler<O extends Model> {
+    void handleMany(String masterUid, Collection<O> slaves);
 }

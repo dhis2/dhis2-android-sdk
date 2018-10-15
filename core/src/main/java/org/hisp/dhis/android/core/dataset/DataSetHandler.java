@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
@@ -64,7 +66,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
     private final LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler;
-    private final LinkModelHandler<DataSetElement, DataSetDataElementLinkModel> dataSetDataElementLinkHandler;
+    private final LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
     private final LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
 
@@ -77,7 +79,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                            DataSetCompulsoryDataElementOperandLinkModel>
                            dataSetCompulsoryDataElementOperandLinkHandler,
                    LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler,
-                   LinkModelHandler<DataSetElement, DataSetDataElementLinkModel> dataSetDataElementLinkHandler,
+                   LinkSyncHandler<DataSetElement> dataSetElementLinkHandler,
                    LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler,
                    CollectionCleaner<DataSet> collectionCleaner) {
 
@@ -88,7 +90,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         this.compulsoryDataElementOperandHandler = compulsoryDataElementOperandHandler;
         this.dataSetCompulsoryDataElementOperandLinkHandler = dataSetCompulsoryDataElementOperandLinkHandler;
         this.dataInputPeriodHandler = dataInputPeriodHandler;
-        this.dataSetDataElementLinkHandler = dataSetDataElementLinkHandler;
+        this.dataSetElementLinkHandler = dataSetElementLinkHandler;
         this.dataSetIndicatorLinkHandler = dataSetIndicatorLinkHandler;
         this.collectionCleaner = collectionCleaner;
     }
@@ -110,8 +112,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
         dataInputPeriodHandler.handleMany(dataSet.uid(), dataSet.dataInputPeriods(),
                 new DataInputPeriodModelBuilder(dataSet));
 
-        dataSetDataElementLinkHandler.handleMany(dataSet.uid(), dataSet.dataSetElements(),
-                new DataSetDataElementLinkModelBuilder(dataSet));
+        dataSetElementLinkHandler.handleMany(dataSet.uid(), dataSet.dataSetElements());
 
         dataSetIndicatorLinkHandler.handleMany(dataSet.uid(), dataSet.indicators(),
                 new DataSetIndicatorLinkModelBuilder(dataSet));
@@ -140,8 +141,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                         DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<DataInputPeriod, DataInputPeriodModel>(
                         DataInputPeriodStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<DataSetElement, DataSetDataElementLinkModel>(
-                        DataSetDataElementLinkStore.create(databaseAdapter)),
+                new LinkSyncHandlerImpl<>(DataSetDataElementLinkStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<ObjectWithUid, DataSetIndicatorLinkModel>(
                         DataSetIndicatorLinkStore.create(databaseAdapter)),
                 new CollectionCleanerImpl<DataSet>(DataSetModel.TABLE, databaseAdapter)

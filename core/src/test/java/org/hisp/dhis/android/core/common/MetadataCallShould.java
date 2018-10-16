@@ -66,6 +66,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould extends BaseCallShould {
+
     @Mock
     private SystemInfo systemInfo;
 

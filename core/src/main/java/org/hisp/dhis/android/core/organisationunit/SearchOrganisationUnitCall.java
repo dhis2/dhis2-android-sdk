@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,71 +28,96 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.EndpointCall;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.user.User;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-import retrofit2.Retrofit;
+public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
 
-public final class SearchOrganisationUnitCall {
+    private final User user;
+    private final OrganisationUnitService organisationUnitService;
+    private final GenericHandler<OrganisationUnit, OrganisationUnitModel> searchOrganisationUnitHandler;
+    private final GenericCallData data;
 
-    private SearchOrganisationUnitCall() {}
-
-    public interface Factory {
-        Call<List<OrganisationUnit>> create(GenericCallData genericCallData, User user);
+    SearchOrganisationUnitCall(@NonNull User user,
+                 @NonNull OrganisationUnitService organisationUnitService,
+                 @NonNull GenericCallData data,
+                 @NonNull GenericHandler<OrganisationUnit, OrganisationUnitModel>
+                         searchOrganisationUnitHandler) {
+        this.user = user;
+        this.organisationUnitService = organisationUnitService;
+        this.data = data;
+        this.searchOrganisationUnitHandler = searchOrganisationUnitHandler;
     }
 
-    public static final Factory FACTORY = new Factory() {
+    @Override
+    public List<OrganisationUnit> call() throws Exception {
+        setExecuted();
+
+        final Set<OrganisationUnit> searchOrganisationUnits = new HashSet<>();
+        final APICallExecutor apiExecutor = new APICallExecutor();
+
+        return new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(),
+                new Callable<List<OrganisationUnit>>() {
+                    @Override
+                    public List<OrganisationUnit> call() throws Exception {
+                        OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
+                        Set<String> rootOrgUnitUids = getOrganisationUnitListUids(user.teiSearchOrganisationUnits());
+                        for (String uid : rootOrgUnitUids) {
+                            searchOrganisationUnits.addAll(
+                                    apiExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
+                        }
+
+                        searchOrganisationUnitHandler.handleMany(searchOrganisationUnits, modelBuilder);
+
+                        return new ArrayList<>(searchOrganisationUnits);
+                    }
+                });
+    }
+
+    private Set<String> getOrganisationUnitListUids(List<OrganisationUnit> organisationUnits) {
+
+        Set<String> organisationUnitsUids = new HashSet<>();
+
+        for (OrganisationUnit organisationUnit : organisationUnits) {
+            organisationUnitsUids.add(organisationUnit.uid());
+        }
+
+        return organisationUnitsUids;
+    }
+
+    private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(@NonNull String uid) {
+        return organisationUnitService.getOrganisationUnitWithDescendants(
+                uid, OrganisationUnit.allFields, true, false);
+    }
+
+    public interface Factory {
+        Call<List<OrganisationUnit>> create(GenericCallData data, User user);
+    }
+
+    public static final SearchOrganisationUnitCall.Factory FACTORY =
+            new SearchOrganisationUnitCall.Factory() {
         @Override
-        public Call<List<OrganisationUnit>> create(GenericCallData genericCallData, User user) {
-
-            Set<String> organisationUnitUids = new HashSet<>();
-
-            for (OrganisationUnit searchOrganisationUnitUid : user.teiSearchOrganisationUnits()){
-                organisationUnitUids.add(searchOrganisationUnitUid.uid());
-            }
-
-            for (OrganisationUnit captureOrganisationUnit : user.organisationUnits()){
-                organisationUnitUids.remove(captureOrganisationUnit.uid());
-            }
-
-            return new EndpointCall<>(fetcher(genericCallData.retrofit(), organisationUnitUids),
-                    processor(genericCallData.databaseAdapter(), user.uid()));
-        }
-
-        private static final int MAX_UID_LIST_SIZE = 120;
-
-        CallFetcher<OrganisationUnit> fetcher(Retrofit retrofit, Set<String> uids) {
-            final OrganisationUnitService service = retrofit.create(OrganisationUnitService.class);
-
-            return new UidsNoResourceCallFetcher<OrganisationUnit>(uids, MAX_UID_LIST_SIZE) {
-
-                @Override
-                protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query) {
-                    return service.getSearchOrganisationUnits(OrganisationUnit.allFields,
-                            OrganisationUnit.uid.in(query.uids()), Boolean.FALSE);
-                }
-            };
-        }
-
-        CallProcessor<OrganisationUnit> processor(DatabaseAdapter databaseAdapter, String userId) {
-            return new TransactionalNoResourceCallProcessor<>(
-                    databaseAdapter,
-                    SearchOrganisationUnitHandler.create(databaseAdapter, userId),
-                    new OrganisationUnitModelBuilder()
-            );
+        public Call<List<OrganisationUnit>> create(GenericCallData data, User user) {
+            GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =
+                    SearchOrganisationUnitHandler.create(data.databaseAdapter(), user.uid());
+            return new SearchOrganisationUnitCall(user,
+                    data.retrofit().create(OrganisationUnitService.class),
+                    data,
+                    handler);
         }
     };
 }

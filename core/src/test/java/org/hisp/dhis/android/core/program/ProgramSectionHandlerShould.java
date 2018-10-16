@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.program;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Before;
@@ -60,7 +59,7 @@ public class ProgramSectionHandlerShould {
     private LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel> programSectionAttributeLinkHandler;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
     private ProgramSection programSection;

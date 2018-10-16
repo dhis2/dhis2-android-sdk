@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -102,7 +103,7 @@ final class ProgramStageFields {
                             .with(ProgramStageSection.allFields),
                     fh.<ProgramStageDataElement>nestedField(PROGRAM_STAGE_DATA_ELEMENTS)
                             .with(ProgramStageDataElement.allFields),
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyle.allFields),
+                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<PeriodType>field(PERIOD_TYPE),
                     fh.<ObjectWithUid>field(PROGRAM),
                     fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),

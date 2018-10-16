@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -101,7 +102,7 @@ final class ProgramFields {
                     fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicator.allFields),
                     fh.nestedFieldWithUid(PROGRAM_STAGES),
                     fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES).with(ProgramRuleVariable.allFields),
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyle.allFields),
+                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Integer>field(EXPIRY_DAYS),
                     fh.<Integer>field(COMPLETE_EVENTS_EXPIRY_DAYS),
                     fh.<PeriodType>field(EXPIRY_PERIOD_TYPE),

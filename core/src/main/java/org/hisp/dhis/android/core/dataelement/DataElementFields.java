@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
@@ -75,7 +76,7 @@ public final class DataElementFields {
                     fh.<ObjectWithUid>nestedField(CATEGORY_COMBO)
                             .with(ObjectWithUid.uid),
                     fh.<ObjectStyle>nestedField(STYLE)
-                            .with(ObjectStyle.allFields),
+                            .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)
                             .with(Access.read),
                     fh.<ValueTypeRendering>nestedField(RENDER_TYPE)

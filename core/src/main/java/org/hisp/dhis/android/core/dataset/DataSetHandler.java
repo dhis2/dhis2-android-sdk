@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -56,7 +55,7 @@ import java.util.Collection;
 
 public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
 
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     private final SyncHandler<Section> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
@@ -71,7 +70,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     private final CollectionCleaner<DataSet> collectionCleaner;
 
     DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
-                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
+                   SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                    SyncHandler<Section> sectionHandler,
                    OrphanCleaner<DataSet, Section> sectionOrphanCleaner,
                    SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler,

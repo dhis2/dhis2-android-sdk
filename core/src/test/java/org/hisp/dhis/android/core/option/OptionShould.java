@@ -63,7 +63,7 @@ public class OptionShould extends BaseObjectShould implements ObjectShould {
         assertThat(option.displayName()).isEqualTo("0-14 years");
         assertThat(option.sortOrder()).isEqualTo(1);
         assertThat(option.optionSet().uid()).isEqualTo("VQ2lai3OfVG");
-        assertThat(option.style()).isEqualTo(ObjectStyle.create("#000", "my-icon-name"));
+        assertThat(option.style()).isEqualTo(ObjectStyle.builder().color("#000").icon("my-icon-name").build());
     }
 
     @Test

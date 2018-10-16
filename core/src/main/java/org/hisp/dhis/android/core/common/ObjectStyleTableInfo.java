@@ -28,47 +28,44 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class ObjectStyleTableInfo {
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+    private ObjectStyleTableInfo() {
+    }
 
-public final class ObjectStyleStore {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private ObjectStyleStore() {}
-
-    private static final StatementBinder<ObjectStyle> BINDER = new StatementBinder<ObjectStyle>() {
         @Override
-        public void bindToStatement(@NonNull ObjectStyle o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.objectTable());
-            sqLiteBind(sqLiteStatement, 3, o.color());
-            sqLiteBind(sqLiteStatement, 4, o.icon());
+        public String name() {
+            return "ObjectStyle";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
         }
     };
 
-    private static final WhereStatementBinder<ObjectStyle> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<ObjectStyle>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull ObjectStyle o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 5, o.uid());
-        }
-    };
+    static class Columns extends BaseModel.Columns {
 
-    private static final CursorModelFactory<ObjectStyle> FACTORY = new CursorModelFactory<ObjectStyle>() {
-        @Override
-        public ObjectStyle fromCursor(Cursor cursor) {
-            return ObjectStyle.create(cursor);
-        }
-    };
+        private static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        private static final String OBJECT_TABLE = "objectTable";
 
-    public static ObjectWithoutUidStore<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, ObjectStyleTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, FACTORY);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    UID,
+                    OBJECT_TABLE,
+                    ObjectStyleFields.COLOR,
+                    ObjectStyleFields.ICON);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{UID};
+        }
     }
 }

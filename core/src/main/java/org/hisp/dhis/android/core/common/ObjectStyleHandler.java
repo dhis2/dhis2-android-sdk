@@ -27,13 +27,15 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class ObjectStyleHandler {
 
     private ObjectStyleHandler() {}
 
-    public static GenericHandler<ObjectStyle, ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidHandlerImpl<>(ObjectStyleStore.create(databaseAdapter));
+    public static SyncHandlerWithTransformer<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(ObjectStyleStore.create(databaseAdapter));
     }
 }

@@ -28,24 +28,45 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class SectionModelBuilder extends ModelBuilder<Section, SectionModel> {
+public final class DataSetElementLinkTableInfo {
 
-    @Override
-    public SectionModel buildModel(Section section) {
-        return SectionModel.builder()
-                .uid(section.uid())
-                .code(section.code())
-                .name(section.name())
-                .displayName(section.displayName())
-                .created(section.created())
-                .lastUpdated(section.lastUpdated())
-                .description(section.description())
-                .sortOrder(section.sortOrder())
-                .dataSet(section.dataSetUid())
-                .showRowTotals(section.showRowTotals())
-                .showColumnTotals(section.showColumnTotals())
-                .build();
+    private DataSetElementLinkTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "DataSetDataElementLink";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DataSetElementFields.DATA_SET,
+                    DataSetElementFields.DATA_ELEMENT,
+                    DataSetElementFields.CATEGORY_COMBO
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    DataSetElementFields.DATA_SET,
+                    DataSetElementFields.DATA_ELEMENT
+            );
+        }
     }
 }

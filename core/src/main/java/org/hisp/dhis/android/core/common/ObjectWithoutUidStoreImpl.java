@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ObjectWithoutUidStoreImpl<M extends BaseModel>
+public class ObjectWithoutUidStoreImpl<M extends Model>
         extends ObjectStoreImpl<M> implements ObjectWithoutUidStore<M> {
     private final SQLiteStatement updateWhereStatement;
     private final WhereStatementBinder<M> whereBinder;

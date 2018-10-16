@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
@@ -74,7 +75,7 @@ public class DataSetHandlerShould {
     private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
 
     @Mock
-    private GenericHandler<Section, SectionModel> sectionHandler;
+    private SyncHandler<Section> sectionHandler;
 
     @Mock
     private OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
@@ -117,7 +118,7 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
-    private LinkModelHandler<DataSetElement, DataSetDataElementLinkModel> dataSetDataElementLinkHandler;
+    private LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
 
     @Mock
     private LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
@@ -143,7 +144,7 @@ public class DataSetHandlerShould {
                 compulsoryDataElementOperandHandler,
                 dataSetCompulsoryDataElementOperandLinkHandler,
                 dataInputPeriodHandler,
-                dataSetDataElementLinkHandler,
+                dataSetElementLinkHandler,
                 dataSetIndicatorLinkHandler,
                 collectionCleaner);
 
@@ -176,8 +177,7 @@ public class DataSetHandlerShould {
         verify(dataSetStore, never()).update(any(DataSetModel.class));
         verify(dataSetStore, never()).insert(any(DataSetModel.class));
 
-        verify(sectionHandler, never()).handleMany(anyListOf(Section.class),
-                Matchers.<ModelBuilder<Section, SectionModel>>any());
+        verify(sectionHandler, never()).handleMany(anyListOf(Section.class));
 
         verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class));
 
@@ -190,8 +190,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(sectionHandler).handleMany(anyListOf(Section.class),
-                any(SectionModelBuilder.class));
+        verify(sectionHandler).handleMany(anyListOf(Section.class));
     }
 
     @Test
@@ -251,8 +250,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(dataSetDataElementLinkHandler).handleMany(anyString(), anyListOf(DataSetElement.class),
-                any(DataSetDataElementLinkModelBuilder.class));
+        verify(dataSetElementLinkHandler).handleMany(anyString(), anyListOf(DataSetElement.class));
     }
 
     @Test

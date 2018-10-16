@@ -25,17 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.dataset;
 
-public final class IndicatorHandler {
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-    private IndicatorHandler() {}
+public final class DataSetElementFields {
 
-    public static SyncHandler<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    static final String DATA_SET = "dataSet";
+    static final String DATA_ELEMENT = "dataElement";
+    static final String CATEGORY_COMBO = "categoryCombo";
+
+    private static final FieldsHelper<DataSetElement> fh = new FieldsHelper<>();
+
+    public static final Fields<DataSetElement> allFields = Fields.<DataSetElement>builder()
+            .fields(
+                    fh.nestedFieldWithUid(DATA_SET),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(CATEGORY_COMBO)
+            ).build();
+
+    private DataSetElementFields() {
     }
 }

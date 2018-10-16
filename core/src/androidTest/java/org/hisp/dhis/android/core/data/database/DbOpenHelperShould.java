@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -43,6 +44,8 @@ public class DbOpenHelperShould {
     public void have_tests_on_database_versions() {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , null);
+        SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
         assertThat(dbOpenHelper.getWritableDatabase().getVersion()).isEqualTo(DbOpenHelper.VERSION);
+        database.close();
     }
 }

@@ -28,30 +28,42 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class IndicatorModelBuilder extends ModelBuilder<Indicator, IndicatorModel> {
+public final class IndicatorTableInfo {
 
-    @Override
-    public IndicatorModel buildModel(Indicator indicator) {
-        return IndicatorModel.builder()
-                .uid(indicator.uid())
-                .code(indicator.code())
-                .name(indicator.name())
-                .displayName(indicator.displayName())
-                .created(indicator.created())
-                .lastUpdated(indicator.lastUpdated())
-                .shortName(indicator.shortName())
-                .displayShortName(indicator.displayShortName())
-                .description(indicator.description())
-                .displayDescription(indicator.displayDescription())
-                .annualized(indicator.annualized())
-                .indicatorType(indicator.indicatorTypeUid())
-                .numerator(indicator.numerator())
-                .numeratorDescription(indicator.numeratorDescription())
-                .denominator(indicator.denominator())
-                .denominatorDescription(indicator.denominatorDescription())
-                .url(indicator.url())
-                .build();
+    private IndicatorTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Indicator";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseNameableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    IndicatorFields.ANNUALIZED,
+                    IndicatorFields.INDICATOR_TYPE,
+                    IndicatorFields.NUMERATOR,
+                    IndicatorFields.NUMERATOR_DESCRIPTION,
+                    IndicatorFields.DENOMINATOR,
+                    IndicatorFields.DENOMINATOR_DESCRIPTION,
+                    IndicatorFields.URL
+            );
+        }
     }
 }

@@ -25,17 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.Model;
 
-public final class IndicatorHandler {
+import java.util.Collection;
 
-    private IndicatorHandler() {}
+public class LinkSyncHandlerImpl<O extends Model> implements LinkSyncHandler<O> {
 
-    public static SyncHandler<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    private final LinkModelStore<O> store;
+
+    public LinkSyncHandlerImpl(LinkModelStore<O> store) {
+        this.store = store;
+    }
+
+    @Override
+    public void handleMany(String masterUid, Collection<O> slaves) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (O slave : slaves) {
+                store.insert(slave);
+            }
+        }
     }
 }

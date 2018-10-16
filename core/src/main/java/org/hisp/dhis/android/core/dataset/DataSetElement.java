@@ -28,50 +28,73 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
-public abstract class DataSetElement {
-    private final static String DATA_ELEMENT = "dataElement";
-    private final static String CATEGORY_COMBO = "categoryCombo";
+@JsonDeserialize(builder = AutoValue_DataSetElement.Builder.class)
+public abstract class DataSetElement implements Model {
 
-    public static final NestedField<DataSetElement, ObjectWithUid> dataElement =
-            NestedField.create(DATA_ELEMENT);
-
-    public static final NestedField<DataSetElement, ObjectWithUid> categoryCombo =
-            NestedField.create(CATEGORY_COMBO);
-
-    public static final Fields<DataSetElement> allFields =
-            Fields.<DataSetElement>builder().fields(dataElement.with(ObjectWithUid.uid),
-                    categoryCombo.with(ObjectWithUid.uid)).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @NonNull
-    @JsonProperty(DATA_ELEMENT)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid dataSet();
+
+    @NonNull
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
     @Nullable
-    @JsonProperty(CATEGORY_COMBO)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
-    String categoryComboUid() {
-        ObjectWithUid categoryCombo = categoryCombo();
-        return categoryCombo == null ? null : categoryCombo.uid();
+    public static Builder builder() {
+        return new $$AutoValue_DataSetElement.Builder();
     }
 
-    @JsonCreator
-    public static DataSetElement create(
-            @JsonProperty(DATA_ELEMENT) ObjectWithUid dataElement,
-            @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo) {
+    static DataSetElement create(Cursor cursor) {
+        return $AutoValue_DataSetElement.createFromCursor(cursor);
+    }
 
-        return new AutoValue_DataSetElement(dataElement, categoryCombo);
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder dataSet(ObjectWithUid dataSet);
+
+        public abstract Builder dataElement(ObjectWithUid dataElement);
+
+        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
+
+        public abstract DataSetElement build();
     }
 }

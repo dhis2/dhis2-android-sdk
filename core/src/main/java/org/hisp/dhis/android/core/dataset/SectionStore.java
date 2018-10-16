@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,27 +46,26 @@ public final class SectionStore {
 
     private SectionStore() {}
 
-    private static StatementBinder<SectionModel> BINDER = new IdentifiableStatementBinder<SectionModel>() {
+    private static StatementBinder<Section> BINDER = new IdentifiableStatementBinder<Section>() {
         @Override
-        public void bindToStatement(@NonNull SectionModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull Section o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.description());
             sqLiteBind(sqLiteStatement, 8, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 9, o.dataSet());
+            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.dataSet()));
             sqLiteBind(sqLiteStatement, 10, o.showRowTotals());
             sqLiteBind(sqLiteStatement, 11, o.showColumnTotals());
         }
     };
 
-    private static final CursorModelFactory<SectionModel> FACTORY = new CursorModelFactory<SectionModel>() {
+    private static final CursorModelFactory<Section> FACTORY = new CursorModelFactory<Section>() {
         @Override
-        public SectionModel fromCursor(Cursor cursor) {
-            return SectionModel.create(cursor);
+        public Section fromCursor(Cursor cursor) {
+            return Section.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<SectionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, SectionModel.TABLE,
-                new SectionModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<Section> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, SectionTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

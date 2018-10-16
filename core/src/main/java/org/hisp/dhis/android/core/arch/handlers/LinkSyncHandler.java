@@ -25,17 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.Model;
 
-public final class IndicatorHandler {
+import java.util.Collection;
 
-    private IndicatorHandler() {}
-
-    public static SyncHandler<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(IndicatorStore.create(databaseAdapter));
-    }
+public interface LinkSyncHandler<O extends Model> {
+    void handleMany(String masterUid, Collection<O> slaves);
 }

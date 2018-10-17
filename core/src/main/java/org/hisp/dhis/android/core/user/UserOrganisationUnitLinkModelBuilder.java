@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -69,13 +68,11 @@ public class UserOrganisationUnitLinkModelBuilder
         switch (this.organisationUnitScope) {
 
             case SCOPE_TEI_SEARCH:
-                selectedScopeOrganisationUnits = Collections.unmodifiableList(
-                        user.teiSearchOrganisationUnits());
+                selectedScopeOrganisationUnits = user.teiSearchOrganisationUnits();
                 break;
 
             case SCOPE_DATA_CAPTURE:
-                selectedScopeOrganisationUnits = Collections.unmodifiableList(
-                        user.organisationUnits());
+                selectedScopeOrganisationUnits = user.organisationUnits();
                 break;
         }
 

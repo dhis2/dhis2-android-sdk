@@ -16,6 +16,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
+import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -74,7 +75,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                     AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
                     Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
-                            databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
+                            databaseAdapter, retrofit, searchOrgUnitUids,
+                            User.builder().uid(authenticatedUserModel.user()).build());
                     executor.executeD2Call(organisationUnitCall);
                 }
 

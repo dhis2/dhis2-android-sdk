@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.organisationunit.OldSearchOrganisationUnitCall
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
+import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +71,8 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
                     AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
                     Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
-                            databaseAdapter, retrofit, searchOrgUnitUids, authenticatedUserModel.user());
+                            databaseAdapter, retrofit, searchOrgUnitUids,
+                            User.builder().uid(authenticatedUserModel.user()).build());
                     executor.executeD2Call(organisationUnitCall);
                 }
 

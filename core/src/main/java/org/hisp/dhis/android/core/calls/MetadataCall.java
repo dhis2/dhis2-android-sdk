@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.settings.SystemSetting;
@@ -76,6 +77,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final ListCallFactory<CategoryCombo> categoryComboCallFactory;
     private final GenericCallFactory<List<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
     private final GenericCallFactory<List<DataSet>> dataSetParentCallFactory;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
@@ -89,6 +91,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull ListCallFactory<CategoryCombo> categoryComboCallFactory,
                         @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
+                        @NonNull SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory,
                         @NonNull GenericCallFactory<List<DataSet>> dataSetParentCallFactory,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
@@ -102,6 +105,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.categoryComboCallFactory = categoryComboCallFactory;
         this.programParentCallFactory = programParentCallFactory;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
+        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
         this.dataSetParentCallFactory = dataSetParentCallFactory;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
@@ -134,6 +138,8 @@ public class MetadataCall extends SyncCall<Unit> {
                 executor.executeD2Call(organisationUnitCallFactory.create(
                         genericCallData, user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)));
 
+                executor.executeD2Call(searchOrganisationUnitCallFactory.create(genericCallData, user));
+
                 foreignKeyCleaner.cleanForeignKeyErrors();
 
                 return new Unit();
@@ -154,6 +160,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 CategoryComboEndpointCall.factory(retrofit),
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
+                SearchOrganisationUnitCall.FACTORY,
                 DataSetParentCall.FACTORY,
                 new ForeignKeyCleaner(databaseAdapter)
         );

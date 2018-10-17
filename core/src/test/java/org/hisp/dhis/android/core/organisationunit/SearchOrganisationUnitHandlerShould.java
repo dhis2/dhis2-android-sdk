@@ -31,6 +31,7 @@ import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +65,10 @@ public class SearchOrganisationUnitHandlerShould {
         MockitoAnnotations.initMocks(this);
         when(organisationUnit.uid()).thenReturn(organisationUnitUid);
 
-        handler = new SearchOrganisationUnitHandler(organisationUnitStore, userOrganisationUnitLinkStore, userUid);
+        handler = new SearchOrganisationUnitHandler(
+                organisationUnitStore,
+                userOrganisationUnitLinkStore,
+                User.builder().uid(userUid).build());
     }
 
     @Test

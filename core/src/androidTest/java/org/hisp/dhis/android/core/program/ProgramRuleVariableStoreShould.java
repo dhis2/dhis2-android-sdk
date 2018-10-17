@@ -154,6 +154,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
                 TRACKED_ENTITY_ATTRIBUTE,
                 PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -194,6 +195,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
                 deferredTrackedEntityAttribute,
                 PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         ).isExhausted();
+        cursor.close();
 
     }
 
@@ -230,6 +232,7 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
                 null,
                 PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         ).isExhausted();
+        cursor.close();
 
     }
 
@@ -248,12 +251,14 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM).isExhausted();
+        cursor.close();
 
         database().delete(ProgramModel.TABLE, ProgramModel.Columns.UID + " =?", new String[]{PROGRAM});
 
-        cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
+        Cursor cursor2 = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
     }
 
     @Test
@@ -272,13 +277,14 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, PROGRAM_STAGE);
+        cursor.close();
 
         database().delete(ProgramStageModel.TABLE, ProgramStageModel.Columns.UID + " =?", new String[]{PROGRAM_STAGE});
 
-        cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION,
+        Cursor cursor2 = database().query(ProgramRuleVariableModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
     }
 
     @Test
@@ -297,13 +303,15 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, DATA_ELEMENT);
+        cursor.close();
 
         database().delete(DataElementModel.TABLE, DataElementModel.Columns.UID + " =?", new String[]{DATA_ELEMENT});
 
-        cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION,
+        Cursor cursor2 = database().query(ProgramRuleVariableModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
     }
 
     @Test
@@ -322,14 +330,16 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM, TRACKED_ENTITY_ATTRIBUTE);
+        cursor.close();
 
         database().delete(TrackedEntityAttributeModel.TABLE,
                 TrackedEntityAttributeModel.Columns.UID + " =?", new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
-        cursor = database().query(ProgramRuleVariableModel.TABLE, PROJECTION,
+        Cursor cursor2 = database().query(ProgramRuleVariableModel.TABLE, PROJECTION,
                 null, null, null, null, null);
 
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
 
     }
 
@@ -348,6 +358,8 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
 
         // check that program rule variable was successfully inserted
         assertThatCursor(cursor).hasRow(UID, 1); // 1 == Boolean.TRUE
+        cursor.close();
+
         boolean updatedUseCodeForOptionSet = Boolean.FALSE;
 
         int update = store.update(
@@ -357,9 +369,10 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
 
         assertThat(update).isEqualTo(1);
 
-        cursor = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
 
-        assertThatCursor(cursor).hasRow(UID, 0).isExhausted(); // 0 == Boolean.FALSE
+        assertThatCursor(cursor2).hasRow(UID, 0).isExhausted(); // 0 == Boolean.FALSE
+        cursor.close();
     }
 
     @Test
@@ -376,15 +389,17 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
 
         // check that program rule variable was successfully inserted
         assertThatCursor(cursor).hasRow(UID);
+        cursor.close();
 
         int delete = store.delete(UID);
 
         // check that store returns 1 on successful delete
         assertThat(delete).isEqualTo(1);
 
-        cursor = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(ProgramRuleVariableModel.TABLE, projection, null, null, null, null, null);
         // check that program rule variable is not in database
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
     }
 
     @Test(expected = IllegalArgumentException.class)

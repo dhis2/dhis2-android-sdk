@@ -143,6 +143,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
                 SORT_ORDER,
                 PROGRAM_STAGE
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -162,6 +163,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SORT_ORDER,
                 deferredProgramStage
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -178,6 +180,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
                 null, null, null, null, null);
         // checking that program stage section was successfully inserted
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_STAGE).isExhausted();
+        cursor.close();
 
         // deleting foreign key reference
         database().delete(ProgramStageModel.TABLE,
@@ -187,6 +190,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
                 null, null, null, null, null);
         // checking that program stage section is deleted.
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test(expected = SQLiteConstraintException.class)
@@ -222,6 +226,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
 
         // check that row was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID, DISPLAY_NAME);
+        cursor.close();
         String updatedDisplayName = "updated_display_name";
 
         // update program stage section with new display name
@@ -236,6 +241,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
 
         // check that row was updated
         assertThatCursor(cursor).hasRow(UID, updatedDisplayName);
+        cursor.close();
     }
 
     @Test
@@ -254,6 +260,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramStageSectionModel.TABLE, projection, null, null, null, null, null);
         // check that program stage section was successfully inserted
         assertThatCursor(cursor).hasRow(UID);
+        cursor.close();
 
         // delete program stage section
         int delete = store.delete(UID);
@@ -265,6 +272,7 @@ public class ProgramStageSectionStoreShould extends AbsStoreTestCase {
 
         // check that row doesn't exist in database
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test(expected = IllegalArgumentException.class)

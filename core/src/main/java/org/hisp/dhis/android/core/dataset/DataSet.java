@@ -39,11 +39,13 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
@@ -120,13 +122,13 @@ public abstract class DataSet extends BaseNameableObject {
             expiryDays, timelyDays, notifyCompletingUser,
             openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
             skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
-            dataSetElements.with(DataSetElement.allFields),
+            dataSetElements.with(DataSetElementFields.allFields),
             indicators.with(ObjectWithUid.uid),
-            sections.with(Section.allFields),
-            compulsoryDataElementOperands.with(DataElementOperand.allFields),
+            sections.with(SectionFields.allFields),
+            compulsoryDataElementOperands.with(DataElementOperandFields.allFields),
             dataInputPeriods.with(DataInputPeriod.allFields),
             access.with(Access.data.with(DataAccess.write)),
-            style.with(ObjectStyle.allFields)).build();
+            style.with(ObjectStyleFields.allFields)).build();
 
 
     @Nullable

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
@@ -51,7 +52,7 @@ public final class OptionFields {
                     fh.<Integer>field(SORT_ORDER),
                     fh.nestedFieldWithUid(OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE)
-                            .with(ObjectStyle.allFields)
+                            .with(ObjectStyleFields.allFields)
             ).build();
 
     private OptionFields() {

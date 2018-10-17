@@ -120,6 +120,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
                 USER_CREDENTIALS_USERNAME,
                 USER_UID
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -156,6 +157,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
                 USER_CREDENTIALS_USERNAME,
                 deferredUid
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -182,6 +184,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
                 null,
                 USER_UID
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -200,6 +203,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(UserCredentialsModel.TABLE, USER_CREDENTIALS_PROJECTION,
                 null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -223,6 +227,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
 
         // checking that userCredentials was successfully inserted into database
         assertThatCursor(cursor).hasRow(ID, UID, NAME, USER_UID);
+        cursor.close();
 
         Date date = new Date();
 
@@ -235,6 +240,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
         // checking that userCredentials was successfully updated
         assertThat(updatedRow).isEqualTo(1);
         assertThatCursor(cursor).hasRow(ID, UID, "new name", USER_UID);
+        cursor.close();
 
     }
 
@@ -261,6 +267,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
 
         // checking that userCredentials was successfully inserted into database
         assertThatCursor(cursor).hasRow(ID, UID, NAME, USER_UID);
+        cursor.close();
 
         int deletedRow = store.delete(UID);
 
@@ -268,6 +275,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
 
         assertThat(deletedRow).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
 
     }
 
@@ -293,6 +301,7 @@ public class UserCredentialsStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(UserCredentialsModel.TABLE, null, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test(expected = IllegalArgumentException.class)

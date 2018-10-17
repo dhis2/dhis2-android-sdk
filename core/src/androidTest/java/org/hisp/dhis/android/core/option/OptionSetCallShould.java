@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,28 +59,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class OptionSetCallShould extends AbsStoreTestCase {
-    private static final String[] OPTION_SET_PROJECTION = {
-            OptionSetModel.Columns.ID,
-            OptionSetModel.Columns.UID,
-            OptionSetModel.Columns.CODE,
-            OptionSetModel.Columns.NAME,
-            OptionSetModel.Columns.DISPLAY_NAME,
-            OptionSetModel.Columns.CREATED,
-            OptionSetModel.Columns.LAST_UPDATED,
-            OptionSetModel.Columns.VERSION,
-            OptionSetModel.Columns.VALUE_TYPE
-    };
-
-    private static final String[] OPTION_PROJECTION = {
-            OptionModel.Columns.ID,
-            OptionModel.Columns.UID,
-            OptionModel.Columns.CODE,
-            OptionModel.Columns.NAME,
-            OptionModel.Columns.DISPLAY_NAME,
-            OptionModel.Columns.CREATED,
-            OptionModel.Columns.LAST_UPDATED,
-            OptionModel.Columns.OPTION_SET
-    };
 
     private Dhis2MockServer dhis2MockServer;
     private Call<List<OptionSet>> optionSetCall;
@@ -193,7 +172,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
         uids.add("POc7DkGU3QU");
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-        optionSetCall = OptionSetCall.FACTORY.create(getGenericCallData(d2), uids);
+        optionSetCall = OptionSetCall.factory(getGenericCallData(d2).retrofit()).create(getGenericCallData(d2), uids);
 
         d2CallExecutor = new D2CallExecutor();
 
@@ -203,10 +182,12 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     public void persist_option_set_with_options_in_data_base_when_call() throws Exception {
         d2CallExecutor.executeD2Call(optionSetCall);
 
-        Cursor optionSetCursor = database().query(OptionSetModel.TABLE,
-                OPTION_SET_PROJECTION, null, null, null, null, null);
-        Cursor optionCursor = database().query(OptionModel.TABLE,
-                OPTION_PROJECTION, null, null, null, null, null);
+        Cursor optionSetCursor = database().query(OptionSetTableInfo.TABLE_INFO.name(),
+                ColumnsArrayUtils.getColumnsWithId(OptionSetTableInfo.TABLE_INFO.columns().all()),
+                null, null, null,null, null);
+        Cursor optionCursor = database().query(OptionTableInfo.TABLE_INFO.name(),
+                ColumnsArrayUtils.getColumnsWithId(OptionTableInfo.TABLE_INFO.columns().all()),
+                null, null, null, null, null);
 
         assertThatCursor(optionSetCursor)
                 .hasRow(
@@ -230,6 +211,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "C", // displayName
                         "2014-08-18T12:39:16.000", // created
                         "2014-08-18T12:39:16.000", // lastUpdated
+                        "1", // sortOrder
                         "POc7DkGU3QU"  // optionSet
                 );
 
@@ -242,6 +224,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "TR", // displayName
                         "2014-08-18T12:39:16.000", // created
                         "2014-08-18T12:39:16.000", // lastUpdated
+                        "2", // sortOrder
                         "POc7DkGU3QU"  // optionSet
                 );
 
@@ -255,6 +238,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "TRR", // displayName
                         "2014-08-18T12:39:16.000", // created
                         "2014-08-18T12:39:16.000", // lastUpdated
+                        "3", // sortOrder
                         "POc7DkGU3QU"  // optionSet
                 );
 
@@ -267,6 +251,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "TRRDm", // displayName
                         "2014-08-18T12:39:16.000", // created
                         "2014-08-18T12:39:16.000", // lastUpdated
+                        "4", // sortOrder
                         "POc7DkGU3QU"  // optionSet
                 )
                 .isExhausted();
@@ -274,7 +259,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void return_option_set_model_after_call() throws Exception {
+    public void return_option_set_after_call() throws Exception {
         List<OptionSet> optionSetList = d2CallExecutor.executeD2Call(optionSetCall);
 
         assertThat(optionSetList.size()).isEqualTo(1);

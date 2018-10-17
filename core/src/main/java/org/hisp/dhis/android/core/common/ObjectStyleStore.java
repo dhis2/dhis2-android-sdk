@@ -42,9 +42,9 @@ public final class ObjectStyleStore {
 
     private ObjectStyleStore() {}
 
-    private static final StatementBinder<ObjectStyleModel> BINDER = new StatementBinder<ObjectStyleModel>() {
+    private static final StatementBinder<ObjectStyle> BINDER = new StatementBinder<ObjectStyle>() {
         @Override
-        public void bindToStatement(@NonNull ObjectStyleModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull ObjectStyle o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.uid());
             sqLiteBind(sqLiteStatement, 2, o.objectTable());
             sqLiteBind(sqLiteStatement, 3, o.color());
@@ -52,23 +52,23 @@ public final class ObjectStyleStore {
         }
     };
 
-    private static final WhereStatementBinder<ObjectStyleModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<ObjectStyleModel>() {
+    private static final WhereStatementBinder<ObjectStyle> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<ObjectStyle>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull ObjectStyleModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToUpdateWhereStatement(@NonNull ObjectStyle o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 5, o.uid());
         }
     };
 
-    private static final CursorModelFactory<ObjectStyleModel> FACTORY = new CursorModelFactory<ObjectStyleModel>() {
+    private static final CursorModelFactory<ObjectStyle> FACTORY = new CursorModelFactory<ObjectStyle>() {
         @Override
-        public ObjectStyleModel fromCursor(Cursor cursor) {
-            return ObjectStyleModel.create(cursor);
+        public ObjectStyle fromCursor(Cursor cursor) {
+            return ObjectStyle.create(cursor);
         }
     };
 
-    public static ObjectWithoutUidStore<ObjectStyleModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, ObjectStyleModel.TABLE,
-                new ObjectStyleModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
+    public static ObjectWithoutUidStore<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, ObjectStyleTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

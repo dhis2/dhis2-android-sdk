@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,25 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class DataElementOperandModelBuilder extends ModelBuilder<DataElementOperand, DataElementOperandModel> {
+public final class ObjectStyleTableInfo {
 
-    @Override
-    public DataElementOperandModel buildModel(DataElementOperand dataElementOperand) {
+    private ObjectStyleTableInfo() {
+    }
 
-        return DataElementOperandModel.builder()
-                .uid(dataElementOperand.uid())
-                .name(dataElementOperand.name())
-                .displayName(dataElementOperand.displayName())
-                .created(dataElementOperand.created())
-                .lastUpdated(dataElementOperand.lastUpdated())
-                .shortName(dataElementOperand.shortName())
-                .displayShortName(dataElementOperand.displayShortName())
-                .dataElement(dataElementOperand.dataElementUid())
-                .categoryOptionCombo(dataElementOperand.categoryOptionComboUid())
-                .build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ObjectStyle";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+
+        private static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        private static final String OBJECT_TABLE = "objectTable";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    UID,
+                    OBJECT_TABLE,
+                    ObjectStyleFields.COLOR,
+                    ObjectStyleFields.ICON);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{UID};
+        }
     }
 }

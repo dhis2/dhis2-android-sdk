@@ -101,7 +101,9 @@ public final class UserFields {
                     OrganisationUnit.programs.with(ObjectWithUid.uid),
                     OrganisationUnit.dataSets.with(DataSet.uid)
             ),
-            teiSearchOrganisationUnits.with(OrganisationUnit.uid)
+            teiSearchOrganisationUnits.with(
+                    OrganisationUnit.uid,
+                    OrganisationUnit.path)
     ).build();
 
     private UserFields() {}

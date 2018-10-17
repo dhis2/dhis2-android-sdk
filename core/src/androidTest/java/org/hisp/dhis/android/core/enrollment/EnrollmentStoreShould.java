@@ -171,6 +171,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
                 LONGITUDE,
                 STATE
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -228,6 +229,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
                 LONGITUDE,
                 STATE
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -239,6 +241,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(UID, null, null, null, null, ORGANISATION_UNIT, PROGRAM,
                 null, null, null, null, TRACKED_ENTITY_INSTANCE, null, null, null).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -256,6 +259,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
 
         // check that enrollment was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID, ENROLLMENT_STATUS.name()).isExhausted();
+        cursor.close();
 
         EnrollmentStatus updatedStatus = EnrollmentStatus.CANCELLED;
         store.update(UID, null, null, null, null,
@@ -265,10 +269,11 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
                 TRACKED_ENTITY_INSTANCE,
                 null, null, null, UID);
 
-        cursor = database().query(TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(TABLE, projection, null, null, null, null, null);
 
         // check that enrollment was successfully updated
-        assertThatCursor(cursor).hasRow(UID, updatedStatus.name()).isExhausted();
+        assertThatCursor(cursor2).hasRow(UID, updatedStatus.name()).isExhausted();
+        cursor2.close();
 
     }
 
@@ -286,13 +291,15 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
 
         // check that enrollment was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID).isExhausted();
+        cursor.close();
 
         store.delete(UID);
 
-        cursor = database().query(TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(TABLE, projection, null, null, null, null, null);
 
         // check that enrollment is deleted
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
     }
 
     @Test
@@ -320,6 +327,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
         //Query for Enrollment:
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -348,6 +356,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
 
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -375,6 +384,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
 
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -394,15 +404,17 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
 
         // check that enrollment was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID, STATE).isExhausted();
+        cursor.close();
 
         State updatedState = State.ERROR;
         store.setState(UID, updatedState);
 
-        cursor = database().query(EnrollmentModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(EnrollmentModel.TABLE, projection, null, null, null, null, null);
 
         // check that state is updated
-        assertThatCursor(cursor).hasRow(UID, updatedState);
+        assertThatCursor(cursor2).hasRow(UID, updatedState);
 
+        cursor2.close();
     }
 
     @Test
@@ -421,6 +433,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
 
         // check that enrollment was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID).isExhausted();
+        cursor.close();
 
         Map<String, List<Enrollment>> map = store.query();
         assertThat(map.size()).isEqualTo(1);

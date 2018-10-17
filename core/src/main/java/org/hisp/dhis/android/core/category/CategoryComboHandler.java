@@ -4,9 +4,10 @@ package org.hisp.dhis.android.core.category;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -15,13 +16,13 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
 
-    private final SyncHandler<CategoryOptionCombo> optionComboHandler;
+    private final SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
     private final OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
     private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
 
     CategoryComboHandler(
             @NonNull IdentifiableObjectStore<CategoryCombo> store,
-            @NonNull SyncHandler<CategoryOptionCombo> optionComboHandler,
+            @NonNull SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler,
             @NonNull OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler,
             OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         super(store);
@@ -31,8 +32,15 @@ class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
     }
 
     @Override
-    protected void afterObjectHandled(CategoryCombo combo, HandleAction action) {
-        optionComboHandler.handleMany(combo.categoryOptionCombos());
+    protected void afterObjectHandled(final CategoryCombo combo, HandleAction action) {
+        optionComboHandler.handleMany(combo.categoryOptionCombos(),
+                new ModelBuilder<CategoryOptionCombo, CategoryOptionCombo>() {
+            @Override
+            public CategoryOptionCombo buildModel(CategoryOptionCombo optionCombo) {
+                return optionCombo.toBuilder().categoryCombo(combo).build();
+            }
+        });
+
         categoryCategoryComboLinkHandler.handleMany(combo.uid(), combo.categories(),
                 new CategoryCategoryComboLinkModelBuilder(combo));
 

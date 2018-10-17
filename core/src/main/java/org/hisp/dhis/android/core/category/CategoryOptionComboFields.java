@@ -42,7 +42,6 @@ final class CategoryOptionComboFields {
     public static final Fields<CategoryOptionCombo> allFields = Fields.<CategoryOptionCombo>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.nestedFieldWithUid(CATEGORY_COMBO),
                     fh.nestedFieldWithUid(CATEGORY_OPTIONS)
             ).build();
 

@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface DataElementService {
+interface DataElementService {
     @GET("dataElements")
     Call<Payload<DataElement>> getDataElements(@Query("fields") @Which Fields<DataElement> fields,
                                                @Query("filter") @Where Filter<DataElement, String> uids,

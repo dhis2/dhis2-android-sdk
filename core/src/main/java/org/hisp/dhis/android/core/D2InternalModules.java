@@ -30,8 +30,13 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
+import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
+
+import java.util.Arrays;
+import java.util.List;
 
 import retrofit2.Retrofit;
 
@@ -39,13 +44,20 @@ public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
     public final RelationshipInternalModule relationshipModule;
     public final DataElementInternalModule dataElementModule;
+    public final DataValueInternalModule dataValueModule;
 
     public D2InternalModules(SystemInfoInternalModule systemInfo,
                              RelationshipInternalModule relationshipModule,
-                             DataElementInternalModule dataElementModule) {
+                             DataElementInternalModule dataElementModule,
+                             DataValueInternalModule dataValueModule) {
         this.systemInfo = systemInfo;
         this.relationshipModule = relationshipModule;
         this.dataElementModule = dataElementModule;
+        this.dataValueModule = dataValueModule;
+    }
+
+    public List<WipeableModule> getWipeableModules() {
+        return Arrays.asList(systemInfo, relationshipModule, dataElementModule, dataValueModule);
     }
 
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
@@ -55,7 +67,8 @@ public final class D2InternalModules {
                 RelationshipInternalModule.create(
                         databaseAdapter,
                         systemInfoInternalModule.publicModule.versionManager),
-                DataElementInternalModule.create(databaseAdapter)
+                DataElementInternalModule.create(databaseAdapter),
+                DataValueInternalModule.create(databaseAdapter)
         );
     }
 }

@@ -26,32 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public class IndicatorModelBuilder extends ModelBuilder<Indicator, IndicatorModel> {
+public final class DataElementOperandFields {
 
-    @Override
-    public IndicatorModel buildModel(Indicator indicator) {
-        return IndicatorModel.builder()
-                .uid(indicator.uid())
-                .code(indicator.code())
-                .name(indicator.name())
-                .displayName(indicator.displayName())
-                .created(indicator.created())
-                .lastUpdated(indicator.lastUpdated())
-                .shortName(indicator.shortName())
-                .displayShortName(indicator.displayShortName())
-                .description(indicator.description())
-                .displayDescription(indicator.displayDescription())
-                .annualized(indicator.annualized())
-                .indicatorType(indicator.indicatorTypeUid())
-                .numerator(indicator.numerator())
-                .numeratorDescription(indicator.numeratorDescription())
-                .denominator(indicator.denominator())
-                .denominatorDescription(indicator.denominatorDescription())
-                .url(indicator.url())
-                .build();
+    static final String DATA_ELEMENT = "dataElement";
+    static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
+
+    private static final FieldsHelper<DataElementOperand> fh = new FieldsHelper<>();
+
+    public static final Fields<DataElementOperand> allFields = Fields.<DataElementOperand>builder()
+            .fields(
+                    fh.uid(),
+                    fh.deleted(),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(CATEGORY_OPTION_COMBO)
+            ).build();
+
+    private DataElementOperandFields() {
     }
 }

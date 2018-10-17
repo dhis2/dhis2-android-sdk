@@ -28,22 +28,40 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class DataSetDataElementLinkModelBuilder extends ModelBuilder<DataSetElement, DataSetDataElementLinkModel> {
+public final class SectionTableInfo {
 
-    private final DataSetDataElementLinkModel.Builder builder;
-
-    DataSetDataElementLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetDataElementLinkModel.builder()
-                .dataSet(dataSet.uid());
+    private SectionTableInfo() {
     }
 
-    @Override
-    public DataSetDataElementLinkModel buildModel(DataSetElement dataSetElement) {
-        return builder
-                .dataElement(dataSetElement.dataElement().uid())
-                .categoryCombo(dataSetElement.categoryComboUid())
-                .build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Section";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    SectionFields.DESCRIPTION,
+                    SectionFields.SORT_ORDER,
+                    SectionFields.DATA_SET,
+                    SectionFields.SHOW_ROW_TOTALS,
+                    SectionFields.SHOW_COLUMN_TOTALS
+            );
+        }
     }
 }

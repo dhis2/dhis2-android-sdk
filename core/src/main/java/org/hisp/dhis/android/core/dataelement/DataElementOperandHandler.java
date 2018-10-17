@@ -28,22 +28,16 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressWarnings("PMD.UseUtilityClass")
-public class DataElementOperandHandler
-        extends IdentifiableHandlerImpl<DataElementOperand, DataElementOperandModel> {
+public final class DataElementOperandHandler {
 
-
-    DataElementOperandHandler(IdentifiableObjectStore<DataElementOperandModel> dataElementOperandStore) {
-
-        super(dataElementOperandStore);
+    private DataElementOperandHandler() {
     }
 
-    public static DataElementOperandHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataElementOperandHandler(DataElementOperandStore.create(databaseAdapter));
+    public static SyncHandler<DataElementOperand> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableSyncHandlerImpl<>(DataElementOperandStore.create(databaseAdapter));
     }
-
 }

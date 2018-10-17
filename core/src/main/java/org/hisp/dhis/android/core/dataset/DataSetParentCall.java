@@ -113,7 +113,7 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
                     DataElementEndpointCall.FACTORY,
                     IndicatorEndpointCall.FACTORY,
                     IndicatorTypeEndpointCall.FACTORY,
-                    OptionSetCall.FACTORY,
+                    OptionSetCall.factory(genericCallData.retrofit()),
                     PeriodHandler.create(genericCallData.databaseAdapter()));
         }
     };

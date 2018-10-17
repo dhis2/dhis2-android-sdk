@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -65,6 +66,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class MetadataCallShould extends BaseCallShould {
+
     @Mock
     private SystemInfo systemInfo;
 
@@ -126,6 +128,9 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<List<OrganisationUnit>> organisationUnitEndpointCall;
 
     @Mock
+    private Call<List<OrganisationUnit>> searchOrganisationUnitCall;
+
+    @Mock
     private NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
 
     @Mock
@@ -145,6 +150,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private OrganisationUnitCall.Factory organisationUnitCallFactory;
+
+    @Mock
+    private SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
 
     @Mock
     private GenericCallFactory<List<DataSet>> dataSetParentCallFactory;
@@ -177,6 +185,8 @@ public class MetadataCallShould extends BaseCallShould {
         when(categoryComboCallFactory.create(any(GenericCallData.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),
                 anySetOf(String.class))).thenReturn(organisationUnitEndpointCall);
+        when(searchOrganisationUnitCallFactory.create(any(GenericCallData.class), same(user))).thenReturn(
+                searchOrganisationUnitCall);
         when(dataSetParentCallFactory.create(any(GenericCallData.class))).thenReturn(dataSetParentCall);
 
         // Calls
@@ -187,6 +197,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(categoryComboEndpointCall.call()).thenReturn(Lists.newArrayList(categoryCombo));
         when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
         when(organisationUnitEndpointCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
+        when(searchOrganisationUnitCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(dataSetParentCall.call()).thenReturn(Lists.newArrayList(dataSet));
 
         // Metadata call
@@ -201,6 +212,7 @@ public class MetadataCallShould extends BaseCallShould {
                 categoryComboCallFactory,
                 programParentCallFactory,
                 organisationUnitCallFactory,
+                searchOrganisationUnitCallFactory,
                 dataSetParentCallFactory,
                 foreignKeyCleaner);
     }
@@ -254,6 +266,12 @@ public class MetadataCallShould extends BaseCallShould {
     @Test(expected = D2CallException.class)
     public void fail_when_organisation_unit_call_fail() throws Exception {
         when(organisationUnitEndpointCall.call()).thenThrow(d2CallException);
+        metadataCall.call();
+    }
+
+    @Test(expected = D2CallException.class)
+    public void fail_when_search_organisation_unit_call_fail() throws Exception {
+        when(searchOrganisationUnitCall.call()).thenThrow(d2CallException);
         metadataCall.call();
     }
 

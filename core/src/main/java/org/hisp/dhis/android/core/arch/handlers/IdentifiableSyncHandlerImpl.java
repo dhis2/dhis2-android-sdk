@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public class IdentifiableSyncHandlerImpl<O extends IdentifiableObject & ObjectWithDeleteInterface>
+public class IdentifiableSyncHandlerImpl<O extends ObjectWithUidInterface & ObjectWithDeleteInterface>
         extends SyncHandlerBaseImpl<O> {
 
     private final IdentifiableObjectStore<O> store;

@@ -72,6 +72,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     private String enrollmentUid = "la16vwCoFM8";
     private String event1 = "gphKB0UjOrX";
     private String event2 = "EAZOUgr2Ksv";
+    private String event3 = "BVL4LcEEDdU";
 
     private String dataElement1 = "ddaBs9lgZyP";
     private String dataElement2 = "Kb9hZ428FyH";
@@ -155,18 +156,38 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void evaluate_last_value_indicators() {
+    public void evaluate_last_value_indicators_different_dates() {
         createEnrollment(null, null);
-        createEvent(event1, programStage1, today());
-        createEvent(event2, programStage1, twoDaysBefore());
-        insertTrackedEntityDataValue(event1, dataElement1, "5"); // Expected as last value
-        insertTrackedEntityDataValue(event2, dataElement1, "3");
+        createEvent(event1, programStage1, twoDaysBefore(), today());
+        createEvent(event2, programStage1, today(), today());
+        createEvent(event3, programStage1, twoDaysBefore(), today());
+        insertTrackedEntityDataValue(event1, dataElement1, "1");
+        insertTrackedEntityDataValue(event2, dataElement1, "2"); // Expected as last value
+        insertTrackedEntityDataValue(event3, dataElement1, "3");
 
         setProgramIndicatorExpressionAsLast(de(programStage1,dataElement1));
 
-        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event2, programIndicatorUid);
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, null, programIndicatorUid);
 
-        assertThat(result).isEqualTo("5");
+        assertThat(result).isEqualTo("2");
+    }
+
+    @Test
+    public void evaluate_last_value_indicators_same_date() {
+        createEnrollment(null, null);
+        Date eventDate = twoDaysBefore();
+        createEvent(event1, programStage1, eventDate, twoDaysBefore());
+        createEvent(event2, programStage1, eventDate, today());
+        createEvent(event3, programStage1, eventDate, twoDaysBefore());
+        insertTrackedEntityDataValue(event1, dataElement1, "1");
+        insertTrackedEntityDataValue(event2, dataElement1, "2"); // Expected as last value
+        insertTrackedEntityDataValue(event3, dataElement1, "3");
+
+        setProgramIndicatorExpressionAsLast(de(programStage1,dataElement1));
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, null, programIndicatorUid);
+
+        assertThat(result).isEqualTo("2");
     }
 
     @Test
@@ -226,9 +247,14 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
                 programUid,enrollmentDate,incidentDate,null,null,teiUid,null,null,null);
     }
 
+    private void createEvent(String eventUid, String programStageUid, Date eventDate, Date lastUpdated) {
+        new EventStoreImpl(databaseAdapter()).insert(eventUid,enrollmentUid,null, lastUpdated,null,null,null,
+                null,null, programUid,programStageUid,orgunitUid,eventDate,null,null,
+                null,null,null,null);
+    }
+
     private void createEvent(String eventUid, String programStageUid, Date eventDate) {
-        new EventStoreImpl(databaseAdapter()).insert(eventUid,enrollmentUid,null,null,null,null,null,null,null,
-                programUid,programStageUid,orgunitUid,eventDate,null,null,null,null,null,null);
+        createEvent(eventUid, programStageUid, eventDate, null);
     }
 
     private void setProgramIndicatorExpressionAsAverage(String expression) {

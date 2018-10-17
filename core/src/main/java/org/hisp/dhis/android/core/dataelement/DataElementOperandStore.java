@@ -36,40 +36,34 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataElementOperandStore {
+final class DataElementOperandStore {
 
     private DataElementOperandStore() {}
 
-    private static final StatementBinder<DataElementOperandModel> BINDER
-            = new StatementBinder<DataElementOperandModel>() {
+    private static final StatementBinder<DataElementOperand> BINDER
+            = new StatementBinder<DataElementOperand>() {
         @Override
-        public void bindToStatement(@NonNull DataElementOperandModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull DataElementOperand o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.name());
-            sqLiteBind(sqLiteStatement, 3, o.displayName());
-            sqLiteBind(sqLiteStatement, 4, o.created());
-            sqLiteBind(sqLiteStatement, 5, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 6, o.shortName());
-            sqLiteBind(sqLiteStatement, 7, o.displayShortName());
-            sqLiteBind(sqLiteStatement, 8, o.dataElement());
-            sqLiteBind(sqLiteStatement, 9, o.categoryOptionCombo());
+            sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
+            sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryOptionCombo()));
         }
     };
 
-    private static final CursorModelFactory<DataElementOperandModel> FACTORY
-            = new CursorModelFactory<DataElementOperandModel>() {
+    private static final CursorModelFactory<DataElementOperand> FACTORY = new CursorModelFactory<DataElementOperand>() {
         @Override
-        public DataElementOperandModel fromCursor(Cursor cursor) {
-            return DataElementOperandModel.create(cursor);
+        public DataElementOperand fromCursor(Cursor cursor) {
+            return DataElementOperand.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<DataElementOperandModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, DataElementOperandModel.TABLE,
-                new DataElementOperandModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<DataElementOperand> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, DataElementOperandTableInfo.TABLE_INFO,
+                BINDER, FACTORY);
     }
 }

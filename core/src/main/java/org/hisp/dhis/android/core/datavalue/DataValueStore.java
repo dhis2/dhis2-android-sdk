@@ -47,6 +47,9 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
+    private static final String EQ = " = '";
+    private static final String AND = "' AND ";
+
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
 
@@ -107,7 +110,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     public Collection<DataValue> getDataValuesWithState(State state) {
 
-        String whereClause = DataValue.Columns.STATE + " = '" + state.name() + "'";
+        String whereClause = DataValue.Columns.STATE + EQ + state.name() + "'";
         return selectWhereClause(whereClause);
     }
 
@@ -120,6 +123,15 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         DataValue updatedDataValue = dataValue.toBuilder().state(newState).build();
 
         updateWhere(updatedDataValue);
+    }
+
+    public boolean exists(DataValue dataValue) {
+        String whereClause = DataValueFields.DATA_ELEMENT + EQ + dataValue.dataElement() +
+                AND + DataValueFields.PERIOD + EQ + dataValue.period() +
+                AND + DataValueTableInfo.ORGANISATION_UNIT + EQ + dataValue.organisationUnit() +
+                AND + DataValueFields.CATEGORY_OPTION_COMBO + EQ + dataValue.categoryOptionCombo() +
+                AND + DataValueFields.ATTRIBUTE_OPTION_COMBO + EQ + dataValue.attributeOptionCombo() + "';";
+        return selectWhereClause(whereClause).size() > 0;
     }
 
 }

@@ -2,15 +2,15 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.option.OptionSetModel;
+import org.hisp.dhis.android.core.option.OptionSet;
 
 import java.util.Date;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 class StoreMocks {
-    static OptionSetModel generateOptionSetModel() {
-        return OptionSetModel.builder()
+    static OptionSet generateOptionSet() {
+        return OptionSet.builder()
                 .uid("1234567890")
                 .code("code")
                 .name("name")
@@ -22,8 +22,8 @@ class StoreMocks {
                 .build();
     }
 
-    static OptionSetModel generateUpdatedOptionSetModel() {
-        return OptionSetModel.builder()
+    static OptionSet generateUpdatedOptionSet() {
+        return OptionSet.builder()
                 .uid("1234567890")
                 .code("updated_code")
                 .name("name")
@@ -35,8 +35,8 @@ class StoreMocks {
                 .build();
     }
 
-    static OptionSetModel generateOptionSetModelWithoutUid() {
-        return OptionSetModel.builder()
+    static OptionSet generateOptionSetWithoutUid() {
+        return OptionSet.builder()
                 .uid(null)
                 .code("code")
                 .name("name")
@@ -48,16 +48,16 @@ class StoreMocks {
                 .build();
     }
 
-    static void optionSetCursorAssert(Cursor cursor, OptionSetModel m) {
+    static void optionSetCursorAssert(Cursor cursor, OptionSet o) {
         assertThatCursor(cursor).hasRow(
-                m.uid(),
-                m.code(),
-                m.name(),
-                m.displayName(),
-                m.createdStr(),
-                m.lastUpdatedStr(),
-                m.version(),
-                m.valueType()
+                o.uid(),
+                o.code(),
+                o.name(),
+                o.displayName(),
+                BaseIdentifiableObject.DATE_FORMAT.format(o.created()),
+                BaseIdentifiableObject.DATE_FORMAT.format(o.lastUpdated()),
+                o.version(),
+                o.valueType()
         ).isExhausted();
     }
 }

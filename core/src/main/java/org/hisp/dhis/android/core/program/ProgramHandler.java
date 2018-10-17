@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -51,7 +51,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
             programTrackedEntityAttributeHandler;
     private final GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
 
@@ -62,7 +62,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,
                    GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler,
-                   GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
+                   SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
                    CollectionCleaner<Program> collectionCleaner) {
         super(programStore);

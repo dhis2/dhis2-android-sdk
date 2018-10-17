@@ -25,27 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public class SectionModelBuilder extends ModelBuilder<Section, SectionModel> {
+import java.util.Collection;
 
-    @Override
-    public SectionModel buildModel(Section section) {
-        return SectionModel.builder()
-                .uid(section.uid())
-                .code(section.code())
-                .name(section.name())
-                .displayName(section.displayName())
-                .created(section.created())
-                .lastUpdated(section.lastUpdated())
-                .description(section.description())
-                .sortOrder(section.sortOrder())
-                .dataSet(section.dataSetUid())
-                .showRowTotals(section.showRowTotals())
-                .showColumnTotals(section.showColumnTotals())
-                .build();
-    }
+public interface SyncHandlerWithTransformer<O> extends SyncHandler<O> {
+
+    void handle(O o, ModelBuilder<O, O> modelBuilder);
+
+    void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder);
 }

@@ -33,53 +33,47 @@ import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.data.api.Fields;
 
 import java.util.Set;
+
+import retrofit2.Retrofit;
 
 public final class OptionSetCall {
 
     private OptionSetCall() {}
 
-    private static Fields<OptionSet> getFields() {
-        return Fields.<OptionSet>builder().fields(
-                OptionSet.uid, OptionSet.code, OptionSet.name,
-                OptionSet.displayName, OptionSet.created,
-                OptionSet.lastUpdated, OptionSet.version,
-                OptionSet.valueType,
-                OptionSet.options.with(OptionFields.allFields)
-        ).build();
+    public static UidsCallFactory<OptionSet> factory(Retrofit retrofit) {
+
+        final OptionSetService service = retrofit.create(OptionSetService.class);
+
+        return new UidsCallFactoryImpl<OptionSet>() {
+
+            private static final int MAX_UID_LIST_SIZE = 130;
+
+            @Override
+            protected CallFetcher<OptionSet> fetcher(GenericCallData data, Set<String> uids) {
+
+                return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE) {
+
+                    @Override
+                    protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
+                        return service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(query.uids()),
+                                null, query.paging());
+                    }
+                };
+            }
+
+            @Override
+            protected CallProcessor<OptionSet> processor(GenericCallData data) {
+                return new TransactionalNoResourceSyncCallProcessor<>(
+                        data.databaseAdapter(),
+                        OptionSetHandler.create(data.databaseAdapter())
+                );
+            }
+        };
     }
-
-    public static final UidsCallFactory<OptionSet> FACTORY = new UidsCallFactoryImpl<OptionSet>() {
-
-        private static final int MAX_UID_LIST_SIZE = 130;
-
-        @Override
-        protected CallFetcher<OptionSet> fetcher(GenericCallData data, Set<String> uids) {
-            final OptionSetService service = data.retrofit().create(OptionSetService.class);
-
-            return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE) {
-
-                @Override
-                protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
-                    return service.optionSets(getFields(), OptionSet.uid.in(query.uids()),
-                            null, query.paging());
-                }
-            };
-        }
-
-        @Override
-        protected CallProcessor<OptionSet> processor(GenericCallData data) {
-            return new TransactionalNoResourceCallProcessor<>(
-                    data.databaseAdapter(),
-                    OptionSetHandler.create(data.databaseAdapter()),
-                    new OptionSetModelBuilder()
-            );
-        }
-    };
 }

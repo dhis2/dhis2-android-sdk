@@ -74,7 +74,7 @@ public class ProgramSectionModelBuilderShould extends
                 ObjectWithUid.create("program_uid"),
                 null,
                 2,
-                ObjectStyle.create(COLOR, ICON),
+                ObjectStyle.builder().color(COLOR).icon(ICON).build(),
                 "form_name",
                 DELETED);
     }

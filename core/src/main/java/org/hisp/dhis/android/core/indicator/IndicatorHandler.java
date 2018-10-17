@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class IndicatorHandler {
 
     private IndicatorHandler() {}
 
-    public static GenericHandler<Indicator, IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    public static SyncHandler<Indicator> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableSyncHandlerImpl<>(IndicatorStore.create(databaseAdapter));
     }
 }

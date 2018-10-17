@@ -103,7 +103,7 @@ public class DataSetModelBuilderShould extends NameableModelBuilderAbstractShoul
                 new ArrayList<DataInputPeriod>(),
                 Access.create(true, true, false, true,
                         true, true, DataAccess.create(true, false)),
-                ObjectStyle.create(COLOR, ICON),
+                ObjectStyle.builder().color(COLOR).icon(ICON).build(),
                 DELETED);
     }
 

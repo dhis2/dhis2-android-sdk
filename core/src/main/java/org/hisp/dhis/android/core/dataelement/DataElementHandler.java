@@ -28,24 +28,23 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     DataElementHandler(IdentifiableObjectStore<DataElement> dataElementStore,
-                       GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
+                       SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(dataElementStore);
         this.styleHandler = styleHandler;

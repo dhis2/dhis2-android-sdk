@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
@@ -192,6 +191,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
                 BaseIdentifiableObject.DATE_FORMAT.format(genericCallData.serverDate()));
+
+        organisationUnitCursor.close();
+        userOrganisationUnitCursor.close();
+        resourceCursor.close();
     }
 
     @Override

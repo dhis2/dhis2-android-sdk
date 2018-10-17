@@ -36,6 +36,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -71,7 +72,7 @@ public abstract class ProgramSection extends BaseIdentifiableObject {
 
     static final Fields<ProgramSection> allFields = Fields.<ProgramSection>builder().fields(
             uid, code, name, displayName, created, lastUpdated, deleted, description, program.with(ObjectWithUid.uid),
-            sortOrder, formName, attributes.with(ObjectWithUid.uid), style.with(ObjectStyle.allFields)).build();
+            sortOrder, formName, attributes.with(ObjectWithUid.uid), style.with(ObjectStyleFields.allFields)).build();
 
     @Nullable
     @JsonProperty(DESCRIPTION)

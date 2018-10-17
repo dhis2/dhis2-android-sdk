@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,12 +46,12 @@ public final class IndicatorStore {
 
     private IndicatorStore() {}
 
-    private static StatementBinder<IndicatorModel> BINDER = new NameableStatementBinder<IndicatorModel>() {
+    private static StatementBinder<Indicator> BINDER = new NameableStatementBinder<Indicator>() {
         @Override
-        public void bindToStatement(@NonNull IndicatorModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull Indicator o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.annualized());
-            sqLiteBind(sqLiteStatement, 12, o.indicatorType());
+            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.indicatorType()));
             sqLiteBind(sqLiteStatement, 13, o.numerator());
             sqLiteBind(sqLiteStatement, 14, o.numeratorDescription());
             sqLiteBind(sqLiteStatement, 15, o.denominator());
@@ -59,15 +60,14 @@ public final class IndicatorStore {
         }
     };
 
-    private static final CursorModelFactory<IndicatorModel> FACTORY = new CursorModelFactory<IndicatorModel>() {
+    private static final CursorModelFactory<Indicator> FACTORY = new CursorModelFactory<Indicator>() {
         @Override
-        public IndicatorModel fromCursor(Cursor cursor) {
-            return IndicatorModel.create(cursor);
+        public Indicator fromCursor(Cursor cursor) {
+            return Indicator.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<IndicatorModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorModel.TABLE,
-                new IndicatorModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<Indicator> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

@@ -29,20 +29,19 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     private OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+                          SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(optionStore);
         this.styleHandler = styleHandler;
     }

@@ -60,7 +60,7 @@ public final class StoreFactory {
                 statementBuilder.insert()), statementBuilder, binder, modelFactory);
     }
 
-    public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
+    public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns, StatementBinder<I> binder,
             WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
@@ -70,19 +70,27 @@ public final class StoreFactory {
                 statementBuilder, binder, whereBinder, modelFactory);
     }
 
-    public static <I extends BaseModel> ObjectWithoutUidStore<I> objectWithoutUidStore(
+    public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
             WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
         return objectWithoutUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns(), binder, whereBinder,
                 modelFactory);
     }
 
-    public static <I extends BaseModel> LinkModelStore<I> linkModelStore(
+    public static <I extends Model> LinkModelStore<I> linkModelStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns,
             String masterColumn, StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
-        return new LinkModelStoreImpl<>(databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
+        return new LinkModelStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
+                statementBuilder, masterColumn, binder, modelFactory);
+    }
+
+    public static <I extends Model> LinkModelStore<I> linkModelStore(
+            DatabaseAdapter databaseAdapter, TableInfo tableInfo, String masterColumn, StatementBinder<I> binder,
+            CursorModelFactory<I> modelFactory) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(),
+                tableInfo.columns().whereUpdate());
+        return new LinkModelStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
                 statementBuilder, masterColumn, binder, modelFactory);
     }
 }

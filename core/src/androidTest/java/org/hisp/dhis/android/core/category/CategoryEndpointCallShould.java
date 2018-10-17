@@ -29,6 +29,7 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
     @Override
     @After
     public void tearDown() throws IOException {
+        super.tearDown();
         dhis2MockServer.shutdown();
     }
 

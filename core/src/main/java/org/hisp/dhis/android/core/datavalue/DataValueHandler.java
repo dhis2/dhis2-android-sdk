@@ -29,15 +29,17 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class DataValueHandler {
+public final class DataValueHandler
+        extends ObjectWithoutUidSyncHandlerImpl<DataValue> {
 
-    private DataValueHandler() {}
+    private DataValueHandler(DataValueStore store) {
+        super(store);
+    }
 
-    public static SyncHandler<DataValue> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(DataValueStore.create(databaseAdapter));
+    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
+        return new DataValueHandler(DataValueStore.create(databaseAdapter));
     }
 
 }

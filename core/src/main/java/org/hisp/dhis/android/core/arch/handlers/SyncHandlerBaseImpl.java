@@ -28,19 +28,29 @@
 package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
 import java.util.Collection;
 
-abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
+abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
 
     @Override
     public final void handle(O o) {
         if (o == null) {
             return;
         }
-        O object = beforeObjectHandled(o);
-        HandleAction action = deleteOrPersist(object);
-        afterObjectHandled(object, action);
+        HandleAction action = deleteOrPersist(o);
+        afterObjectHandled(o, action);
+    }
+
+    @Override
+    public final void handle(O o, ModelBuilder<O, O> modelBuilder) {
+        if (o == null) {
+            return;
+        }
+        O oTransformed = modelBuilder.buildModel(o);
+        HandleAction action = deleteOrPersist(oTransformed);
+        afterObjectHandled(oTransformed, action);
     }
 
     @Override
@@ -53,11 +63,17 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandler<O> {
         }
     }
 
-    protected abstract HandleAction deleteOrPersist(O o);
-
-    protected O beforeObjectHandled(O o) {
-        return o;
+    @Override
+    public final void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder) {
+        if (oCollection != null) {
+            for(O o : oCollection) {
+                handle(o, modelBuilder);
+            }
+            afterCollectionHandled(oCollection);
+        }
     }
+
+    protected abstract HandleAction deleteOrPersist(O o);
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void afterObjectHandled(O o, HandleAction action) {

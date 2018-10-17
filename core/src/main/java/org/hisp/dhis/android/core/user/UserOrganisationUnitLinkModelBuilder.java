@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
@@ -41,9 +43,11 @@ public class UserOrganisationUnitLinkModelBuilder
 
     private final UserOrganisationUnitLinkModel.Builder builder;
     private final User user;
+    OrganisationUnitModel.Scope organisationUnitScope;
 
     public UserOrganisationUnitLinkModelBuilder(OrganisationUnitModel.Scope scope, User user) {
         this.user = user;
+        this.organisationUnitScope = scope;
         this.builder = UserOrganisationUnitLinkModel.builder()
                 .organisationUnitScope(scope.name())
                 .user(user.uid());
@@ -57,11 +61,28 @@ public class UserOrganisationUnitLinkModelBuilder
                 .build();
     }
 
+    @SuppressWarnings("PMD")
     private boolean isRoot(OrganisationUnit organisationUnit) {
-        if (user.organisationUnits() == null) {
+
+        List<OrganisationUnit> selectedScopeOrganisationUnits = null;
+
+        switch (this.organisationUnitScope) {
+
+            case SCOPE_TEI_SEARCH:
+                selectedScopeOrganisationUnits = Collections.unmodifiableList(
+                        user.teiSearchOrganisationUnits());
+                break;
+
+            case SCOPE_DATA_CAPTURE:
+                selectedScopeOrganisationUnits = Collections.unmodifiableList(
+                        user.organisationUnits());
+                break;
+        }
+
+        if (selectedScopeOrganisationUnits == null) {
             return false;
         } else {
-            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+            Set<String> rootOrgUnitUids = findRoots(selectedScopeOrganisationUnits);
             return rootOrgUnitUids.contains(organisationUnit.uid());
         }
     }

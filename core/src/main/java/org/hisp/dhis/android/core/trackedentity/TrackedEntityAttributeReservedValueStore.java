@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -81,8 +82,10 @@ public final class TrackedEntityAttributeReservedValueStore
 
     private String where(@NonNull String ownerUid,
                          @NonNull String organisationUnitUid) {
-        return Columns.OWNER_UID + "='" + ownerUid + "' AND " +
-                Columns.ORGANISATION_UNIT + "='" + organisationUnitUid + "'";
+        return new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
+                .appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnitUid)
+                .build();
     }
 
     private static final StatementBinder<TrackedEntityAttributeReservedValueModel> BINDER

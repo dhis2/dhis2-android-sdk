@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
+
 public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
 
     private final User user;
@@ -75,7 +77,7 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
                     @Override
                     public List<OrganisationUnit> call() throws Exception {
                         OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
-                        Set<String> rootOrgUnitUids = getOrganisationUnitListUids(user.teiSearchOrganisationUnits());
+                        Set<String> rootOrgUnitUids = findRoots(user.teiSearchOrganisationUnits());
                         for (String uid : rootOrgUnitUids) {
                             searchOrganisationUnits.addAll(
                                     apiExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
@@ -86,17 +88,6 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
                         return new ArrayList<>(searchOrganisationUnits);
                     }
                 });
-    }
-
-    private Set<String> getOrganisationUnitListUids(List<OrganisationUnit> organisationUnits) {
-
-        Set<String> organisationUnitsUids = new HashSet<>();
-
-        for (OrganisationUnit organisationUnit : organisationUnits) {
-            organisationUnitsUids.add(organisationUnit.uid());
-        }
-
-        return organisationUnitsUids;
     }
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(@NonNull String uid) {
@@ -113,7 +104,7 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
         @Override
         public Call<List<OrganisationUnit>> create(GenericCallData data, User user) {
             GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =
-                    SearchOrganisationUnitHandler.create(data.databaseAdapter(), user.uid());
+                    SearchOrganisationUnitHandler.create(data.databaseAdapter(), user);
             return new SearchOrganisationUnitCall(user,
                     data.retrofit().create(OrganisationUnitService.class),
                     data,

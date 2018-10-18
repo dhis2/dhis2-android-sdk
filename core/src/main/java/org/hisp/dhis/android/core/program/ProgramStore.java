@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
@@ -102,7 +103,9 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<ProgramModel
 
     @Override
     public Set<String> queryWithoutRegistrationProgramUids() throws RuntimeException {
-        return selectStringColumnsWhereClause(ProgramModel.Columns.UID,
-                ProgramModel.Columns.PROGRAM_TYPE + " = '" + ProgramType.WITHOUT_REGISTRATION + "'");
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(ProgramModel.Columns.PROGRAM_TYPE, ProgramType.WITHOUT_REGISTRATION.toString())
+                .build();
+        return selectStringColumnsWhereClause(ProgramModel.Columns.UID, whereClause);
     }
 }

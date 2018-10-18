@@ -26,32 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.user;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    BAD_CREDENTIALS,
-    CANT_CREATE_EXISTING_OBJECT,
-    CANT_DELETE_NON_EXISTING_OBJECT,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_SERVER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    ORGANISATION_UNIT_NOT_FOUND,
-    OBJECT_CANT_BE_UPDATED,
-    SEARCH_GRID_PARSE,
-    SOCKET_TIMEOUT,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    USER_ACCOUNT_DISABLED,
-    USER_ACCOUNT_LOCKED,
-    UNEXPECTED
+import org.hisp.dhis.android.core.common.APICallErrorCatcher;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
+
+import java.io.IOException;
+
+import retrofit2.Response;
+
+public final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+
+    @Override
+    public D2ErrorCode catchError(Response<?> response) throws IOException {
+
+        String errorResponse = response.errorBody().string();
+
+        if (errorResponse.contains("LDAP authentication is not configured") ||
+                errorResponse.contains("Bad credentials")) {
+            return D2ErrorCode.BAD_CREDENTIALS;
+        } else if (errorResponse.contains("User is disabled")) {
+            return D2ErrorCode.USER_ACCOUNT_DISABLED;
+        } else if (errorResponse.contains("User account is locked")) {
+            return D2ErrorCode.USER_ACCOUNT_LOCKED;
+        }
+
+        return null;
+    }
 }

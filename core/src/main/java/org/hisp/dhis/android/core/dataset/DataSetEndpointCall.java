@@ -58,7 +58,7 @@ final class DataSetEndpointCall {
                 @Override
                 protected Call<Payload<DataSet>> getCall(String lastUpdated) {
                     String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                    return service.getDataSets(DataSet.allFields, accessDataReadFilter, Boolean.FALSE);
+                    return service.getDataSets(DataSetFields.allFields, accessDataReadFilter, Boolean.FALSE);
                 }
             };
         }

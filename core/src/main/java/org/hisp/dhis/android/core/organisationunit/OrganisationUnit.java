@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetFields;
 import org.hisp.dhis.android.core.program.Program;
 
 import java.util.Date;
@@ -86,7 +87,7 @@ public abstract class OrganisationUnit extends BaseNameableObject {
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, displayDescription, path, openingDate,
             closedDate, level, deleted, parent.with(uid), programs.with(ObjectWithUid.uid),
-            dataSets.with(DataSet.uid),
+            dataSets.with(DataSetFields.uid),
             ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName),
             organisationUnitGroups.with(OrganisationUnitGroup.allFields)).build();
     

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetFields;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 public final class UserFields {
@@ -99,7 +100,7 @@ public final class UserFields {
                     OrganisationUnit.uid,
                     OrganisationUnit.path,
                     OrganisationUnit.programs.with(ObjectWithUid.uid),
-                    OrganisationUnit.dataSets.with(DataSet.uid)
+                    OrganisationUnit.dataSets.with(DataSetFields.uid)
             ),
             teiSearchOrganisationUnits.with(
                     OrganisationUnit.uid,

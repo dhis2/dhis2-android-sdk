@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.children;
 
-import org.hisp.dhis.android.core.common.Model;
-
 import java.util.Collection;
 
-public interface ChildrenAppender<M extends Model> {
+public interface ChildrenAppender<M> {
     void prepareChildren(Collection<M> collection);
     M appendChildren(M m);
 }

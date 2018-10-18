@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
@@ -53,10 +54,12 @@ import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.program.Program;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
-public abstract class DataElement extends BaseNameableObject implements Model {
+public abstract class DataElement extends BaseNameableObject
+        implements Model, ObjectWithStyle<DataElement, DataElement.Builder> {
 
     // TODO move to base class after whole object refactor
     @Override
@@ -107,10 +110,6 @@ public abstract class DataElement extends BaseNameableObject implements Model {
         ObjectWithUid combo = categoryCombo();
         return combo == null ? CategoryComboModel.DEFAULT_UID : combo.uid();
     }
-    
-    @Nullable
-    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
-    public abstract ObjectStyle style();
 
     @Nullable
     @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
@@ -134,7 +133,9 @@ public abstract class DataElement extends BaseNameableObject implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<DataElement.Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<DataElement.Builder>
+            implements ObjectWithStyle.Builder<DataElement, DataElement.Builder> {
+
         public abstract DataElement.Builder id(Long id);
 
         public abstract DataElement.Builder valueType(ValueType valueType);
@@ -156,8 +157,6 @@ public abstract class DataElement extends BaseNameableObject implements Model {
         public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
 
         public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
-
-        public abstract DataElement.Builder style(ObjectStyle style);
 
         public abstract DataElement.Builder renderType(ValueTypeRendering renderType);
 

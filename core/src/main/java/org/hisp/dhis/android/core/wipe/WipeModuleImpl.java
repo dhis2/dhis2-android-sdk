@@ -13,7 +13,7 @@ import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.ObjectStyleStore;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -191,7 +191,7 @@ public final class WipeModuleImpl implements WipeModule {
                 IndicatorTypeStore.create(databaseAdapter),
                 DataSetIndicatorLinkStore.create(databaseAdapter),
                 PeriodStore.create(databaseAdapter),
-                ObjectStyleStore.create(databaseAdapter),
+                ObjectStyleStoreImpl.create(databaseAdapter),
                 ValueTypeDeviceRenderingStore.create(databaseAdapter),
                 LegendStore.create(databaseAdapter),
                 LegendSetStore.create(databaseAdapter),

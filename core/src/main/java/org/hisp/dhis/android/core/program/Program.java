@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -49,7 +49,8 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Program.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class Program extends BaseNameableObject {
+public abstract class Program extends BaseNameableObject
+        implements ObjectWithStyle<Program, Program.Builder> {
 
     @Nullable
     public abstract Integer version();
@@ -150,9 +151,6 @@ public abstract class Program extends BaseNameableObject {
     public abstract List<ProgramRuleVariable> programRuleVariables();
 
     @Nullable
-    public abstract ObjectStyle style();
-
-    @Nullable
     public abstract Integer expiryDays();
 
     @Nullable
@@ -170,13 +168,17 @@ public abstract class Program extends BaseNameableObject {
     @Nullable
     public abstract List<ProgramSection> programSections();
 
+    public abstract Builder toBuilder();
+
     public static Builder builder() {
         return new AutoValue_Program.Builder();
     }
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<Program, Builder> {
+
         public abstract Builder version(Integer version);
 
         public abstract Builder onlyEnrollOnce(Boolean onlyEnrollOnce);
@@ -229,8 +231,6 @@ public abstract class Program extends BaseNameableObject {
         public abstract Builder programRules(List<ProgramRule> programRules);
 
         public abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
-
-        public abstract Builder style(ObjectStyle style);
 
         public abstract Builder expiryDays(Integer expiryDays);
 

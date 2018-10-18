@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -57,9 +57,9 @@ public final class IndicatorTypeEndpointCall {
                 @Override
                 protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query) {
                     return service.getIndicatorTypes(
-                            IndicatorType.allFields,
-                            IndicatorType.lastUpdated.gt(null),
-                            IndicatorType.uid.in(query.uids()),
+                            IndicatorTypeFields.allFields,
+                            IndicatorTypeFields.lastUpdated.gt(null),
+                            IndicatorTypeFields.uid.in(query.uids()),
                             Boolean.FALSE);
                 }
             };
@@ -67,10 +67,9 @@ public final class IndicatorTypeEndpointCall {
 
         @Override
         protected CallProcessor<IndicatorType> processor(GenericCallData data) {
-            return new TransactionalNoResourceCallProcessor<>(
+            return new TransactionalNoResourceSyncCallProcessor<>(
                     data.databaseAdapter(),
-                    IndicatorTypeHandler.create(data.databaseAdapter()),
-                    new IndicatorTypeModelBuilder()
+                    IndicatorTypeHandler.create(data.databaseAdapter())
             );
         }
     };

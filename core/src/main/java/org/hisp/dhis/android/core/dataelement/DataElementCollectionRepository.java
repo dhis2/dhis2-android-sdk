@@ -42,10 +42,11 @@ final class DataElementCollectionRepository {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<DataElement> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataElement> childrenAppender = new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
-                ObjectStyleStoreImpl.create(databaseAdapter),
-                DataElementTableInfo.TABLE_INFO
-        );
+        ChildrenAppender<DataElement> childrenAppender =
+                new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        DataElementTableInfo.TABLE_INFO
+                );
 
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 DataElementStore.create(databaseAdapter),

@@ -25,32 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common;
 
-package org.hisp.dhis.android.core.data.database;
+public final class AccessHelper {
 
-import android.content.ContentValues;
-import android.database.Cursor;
+    private AccessHelper() {}
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.AccessHelper;
-import org.hisp.dhis.android.core.common.DataAccess;
-
-public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
-
-    @Override
-    public Access fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        Integer accessDataWrite = cursor.getInt(columnIndex);
-
-        return Access.create(null,null, null, null, null, null,
-                DataAccess.create(true, accessDataWrite == 1));
-    }
-
-    @Override
-    public void toContentValues(ContentValues values, String columnName, Access value) {
-        Integer accessDataWrite = AccessHelper.getAccessDataWrite(value);
-        values.put(columnName, accessDataWrite);
+    public static Integer getAccessDataWrite(Access access) {
+        return access != null && access.data() != null && access.data().write() ? 1 : 0;
     }
 }

@@ -25,17 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.dataset;
 
-public final class IndicatorHandler {
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandFields;
 
-    private IndicatorHandler() {}
+public final class SectionFields {
 
-    public static SyncHandler<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    final static String DESCRIPTION = "description";
+    final static String SORT_ORDER = "sortOrder";
+    final static String DATA_SET = "dataSet";
+    final static String SHOW_ROW_TOTALS = "showRowTotals";
+    final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
+    private final static String DATA_ELEMENTS = "dataElements";
+    private final static String GREYED_FIELDS = "greyedFields";
+
+    private static final FieldsHelper<Section> fh = new FieldsHelper<>();
+
+    public static final Fields<Section> allFields = Fields.<Section>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<String>field(DESCRIPTION),
+                    fh.<Integer>field(SORT_ORDER),
+                    fh.nestedFieldWithUid(DATA_SET),
+                    fh.<Boolean>field(SHOW_ROW_TOTALS),
+                    fh.<Boolean>field(SHOW_COLUMN_TOTALS),
+                    fh.nestedFieldWithUid(DATA_ELEMENTS),
+                    fh.<DataElementOperand>nestedField(GREYED_FIELDS)
+                            .with(DataElementOperandFields.allFields)
+            ).build();
+
+    private SectionFields() {
     }
 }

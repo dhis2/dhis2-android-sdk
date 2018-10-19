@@ -28,113 +28,95 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
-public abstract class Indicator extends BaseNameableObject {
-    private final static String ANNUALIZED = "annualized";
-    private final static String INDICATOR_TYPE = "indicatorType";
-    private final static String NUMERATOR = "numerator";
-    private final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
-    private final static String DENOMINATOR = "denominator";
-    private final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
-    private final static String URL = "url";
+@JsonDeserialize(builder = AutoValue_Indicator.Builder.class)
+public abstract class Indicator extends BaseNameableObject implements Model {
 
-    static final Field<Indicator, String> uid = Field.create(UID);
-    private static final Field<Indicator, String> code = Field.create(CODE);
-    private static final Field<Indicator, String> name = Field.create(NAME);
-    private static final Field<Indicator, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<Indicator, String> created = Field.create(CREATED);
-    static final Field<Indicator, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<Indicator, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<Indicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<Indicator, String> description = Field.create(DESCRIPTION);
-    private static final Field<Indicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<Indicator, Boolean> deleted = Field.create(DELETED);
-
-    private static final Field<Indicator, Boolean> annualized = Field.create(ANNUALIZED);
-    private static final Field<Indicator, ObjectWithUid> indicatorType = Field.create(INDICATOR_TYPE);
-    private static final Field<Indicator, String> numerator = Field.create(NUMERATOR);
-    private static final Field<Indicator, String> numeratorDescription = Field.create(NUMERATOR_DESCRIPTION);
-    private static final Field<Indicator, String> denominator = Field.create(DENOMINATOR);
-    private static final Field<Indicator, String> denominatorDescription = Field.create(DENOMINATOR_DESCRIPTION);
-    private static final Field<Indicator, String> url = Field.create(URL);
-
-    static final Fields<Indicator> allFields = Fields.<Indicator>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
-            description, displayDescription, deleted,
-            annualized, indicatorType, numerator, numeratorDescription, denominator,
-            denominatorDescription, url).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(ANNUALIZED)
+    @JsonProperty()
     abstract Boolean annualized();
 
     @Nullable
-    @JsonProperty(INDICATOR_TYPE)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid indicatorType();
 
-    String indicatorTypeUid() {
-        ObjectWithUid type = indicatorType();
-        return type == null ? null : type.uid();
-    }
-
     @Nullable
-    @JsonProperty(NUMERATOR)
+    @JsonProperty()
     abstract String numerator();
 
     @Nullable
-    @JsonProperty(NUMERATOR_DESCRIPTION)
+    @JsonProperty()
     abstract String numeratorDescription();
 
     @Nullable
-    @JsonProperty(DENOMINATOR)
+    @JsonProperty()
     abstract String denominator();
 
     @Nullable
-    @JsonProperty(DENOMINATOR_DESCRIPTION)
+    @JsonProperty()
     abstract String denominatorDescription();
 
     @Nullable
-    @JsonProperty(URL)
+    @JsonProperty()
     abstract String url();
 
-    @JsonCreator
-    static Indicator create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(ANNUALIZED) Boolean annualized,
-            @JsonProperty(INDICATOR_TYPE) ObjectWithUid indicatorType,
-            @JsonProperty(NUMERATOR) String numerator,
-            @JsonProperty(NUMERATOR_DESCRIPTION) String numeratorDescription,
-            @JsonProperty(DENOMINATOR) String denominator,
-            @JsonProperty(DENOMINATOR_DESCRIPTION) String denominatorDescription,
-            @JsonProperty(URL) String url,
-            @JsonProperty(DELETED) Boolean deleted) {
+    public static Builder builder() {
+        return new $$AutoValue_Indicator.Builder();
+    }
 
-        return new AutoValue_Indicator(uid, code, name,
-                displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription,
-                annualized, indicatorType, numerator, numeratorDescription, denominator,
-                denominatorDescription, url);
+    static Indicator create(Cursor cursor) {
+        return $AutoValue_Indicator.createFromCursor(cursor);
+    }
+
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder annualized(Boolean annualized);
+
+        public abstract Builder indicatorType(ObjectWithUid indicatorType);
+
+        public abstract Builder numerator(String numerator);
+
+        public abstract Builder numeratorDescription(String numeratorDescription);
+
+        public abstract Builder denominator(String denominator);
+
+        public abstract Builder denominatorDescription(String denominatorDescription);
+
+        public abstract Builder url(String url);
+
+        public abstract Indicator build();
     }
 }

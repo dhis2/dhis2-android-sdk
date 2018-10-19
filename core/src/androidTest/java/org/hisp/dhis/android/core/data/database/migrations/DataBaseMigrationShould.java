@@ -27,15 +27,20 @@ public class DataBaseMigrationShould {
 
     @Before
     public void deleteDB() {
-        if (dbName != null) {
-            InstrumentationRegistry.getContext().deleteDatabase(dbName);
-        }
+        this.closeAndDeleteDatabase();
         dbOpenHelper = null;
         databaseInMemory = null;
     }
 
     @After
     public void tearDown() {
+        this.closeAndDeleteDatabase();
+    }
+
+    private void closeAndDeleteDatabase() {
+        if (databaseInMemory != null) {
+            databaseInMemory.close();
+        }
         if (dbName != null) {
             InstrumentationRegistry.getContext().deleteDatabase(dbName);
         }
@@ -65,7 +70,7 @@ public class DataBaseMigrationShould {
                     InstrumentationRegistry.getTargetContext().getApplicationContext()
                     , dbName, databaseVersion);
             databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-            databaseInMemory = ((SqLiteDatabaseAdapter) databaseAdapter).database();
+            databaseInMemory = databaseAdapter.database();
         } else if (dbName == null) {
             if (databaseInMemory.getVersion() < databaseVersion) {
                 dbOpenHelper.onUpgrade(databaseInMemory, databaseInMemory.getVersion(),

@@ -185,6 +185,7 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
                 DATA_ELEMENT,
                 PROGRAM_RULE
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -231,6 +232,7 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
                 deferredDataElement,
                 deferredProgramRule
         ).isExhausted();
+        cursor.close();
     }
 
     @Test
@@ -256,6 +258,7 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
                 null,
                 PROGRAM_RULE
         ).isExhausted();
+        cursor.close();
     }
 
     @Test(expected = SQLiteConstraintException.class)
@@ -324,12 +327,15 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
         // checking that program rule action was successfully inserted
         assertThatCursor(cursor).hasRow(ID, UID, PROGRAM_RULE).isExhausted();
+        cursor.close();
+
         // deleting program rule
         database().delete(ProgramRuleModel.TABLE, ProgramRuleModel.Columns.UID + " =?", new String[]{PROGRAM_RULE});
 
-        cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
         // checking that program rule action is deleted
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
 
     }
 
@@ -352,6 +358,8 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
         // check that program rule action was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID, LOCATION);
+        cursor.close();
+
         String updatedLocation = "updated_location_program_rule_action";
         int update = store.update(
                 UID, CODE, NAME, DISPLAY_NAME, date, date,
@@ -361,10 +369,11 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
         // check that store returns 1 on successful update
         assertThat(update).isEqualTo(1);
 
-        cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
 
         // check that program rule action is updated in database
-        assertThatCursor(cursor).hasRow(UID, updatedLocation).isExhausted();
+        assertThatCursor(cursor2).hasRow(UID, updatedLocation).isExhausted();
+        cursor2.close();
     }
 
     @Test
@@ -385,6 +394,7 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
         Cursor cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
         // check that program rule action was successfully inserted into database
         assertThatCursor(cursor).hasRow(UID);
+        cursor.close();
 
         // Delete program rule action
         int delete = store.delete(UID);
@@ -392,10 +402,11 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
         // check that store returns 1 on successful delete
         assertThat(delete).isEqualTo(1);
 
-        cursor = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
+        Cursor cursor2 = database().query(ProgramRuleActionModel.TABLE, projection, null, null, null, null, null);
 
         // check that program rule action is deleted in database
-        assertThatCursor(cursor).isExhausted();
+        assertThatCursor(cursor2).isExhausted();
+        cursor2.close();
     }
 
     // ToDo: consider introducing conflict resolution strategy

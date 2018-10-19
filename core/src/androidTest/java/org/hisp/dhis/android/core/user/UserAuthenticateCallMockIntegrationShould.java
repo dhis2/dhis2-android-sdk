@@ -96,13 +96,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
             AuthenticatedUserModel.Columns.CREDENTIALS
     };
 
-    private static String[] USER_ORGANISATION_UNIT_PROJECTION = {
-            UserOrganisationUnitLinkModel.Columns.ID,
-            UserOrganisationUnitLinkModel.Columns.USER,
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE,
-    };
-
     private static String[] RESOURCE_PROJECTION = {
             ResourceModel.Columns.ID,
             ResourceModel.Columns.RESOURCE_TYPE,
@@ -136,12 +129,10 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 USER_PROJECTION, null, null, null, null, null);
         Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
-        Cursor authenticatedUsers = database().query(AuthenticatedUserModel.TABLE,
+        Cursor authenticatedUsersCursor = database().query(AuthenticatedUserModel.TABLE,
                 AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);
-        Cursor userOrganisationUnitLinks = database().query(UserOrganisationUnitLinkModel.TABLE,
-                USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 
-        Cursor resource = database().query(ResourceModel.TABLE, RESOURCE_PROJECTION,
+        Cursor resourceCursor = database().query(ResourceModel.TABLE, RESOURCE_PROJECTION,
                 null, null, null, null, null);
 
         assertThatCursor(userCursor)
@@ -183,7 +174,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 )
                 .isExhausted();
 
-        assertThatCursor(authenticatedUsers)
+        assertThatCursor(authenticatedUsersCursor)
                 .hasRow(
                         1L, // id
                         "DXyJmlo9rge", // user
@@ -193,33 +184,38 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         String dateString = "2017-11-29T11:27:46.935";
 
-        assertThatCursor(resource)
+        assertThatCursor(resourceCursor)
                 .hasRow(
                         1L,
                         ResourceModel.Type.SYSTEM_INFO,
                         dateString
                 );
 
-        assertThatCursor(resource)
+        assertThatCursor(resourceCursor)
                 .hasRow(
                         2L,
                         ResourceModel.Type.USER,
                         dateString
                 );
 
-        assertThatCursor(resource)
+        assertThatCursor(resourceCursor)
                 .hasRow(
                         3L,
                         ResourceModel.Type.USER_CREDENTIALS,
                         dateString
                 );
 
-        assertThatCursor(resource)
+        assertThatCursor(resourceCursor)
                 .hasRow(
                         4L,
                         ResourceModel.Type.AUTHENTICATED_USER,
                         dateString
                 );
+
+        userCursor.close();
+        userCredentialsCursor.close();
+        authenticatedUsersCursor.close();
+        resourceCursor.close();
     }
 
     @Test

@@ -25,17 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class IndicatorHandler {
+public final class IndicatorFields {
 
-    private IndicatorHandler() {}
+    final static String ANNUALIZED = "annualized";
+    final static String INDICATOR_TYPE = "indicatorType";
+    final static String NUMERATOR = "numerator";
+    final static String NUMERATOR_DESCRIPTION = "numeratorDescription";
+    final static String DENOMINATOR = "denominator";
+    final static String DENOMINATOR_DESCRIPTION = "denominatorDescription";
+    final static String URL = "url";
 
-    public static SyncHandler<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    private static final FieldsHelper<Indicator> fh = new FieldsHelper<>();
+
+    public static final Field<Indicator, String> uid = fh.uid();
+
+    static final Field<Indicator, String> lastUpdated = fh.lastUpdated();
+
+    public static final Fields<Indicator> allFields = Fields.<Indicator>builder()
+            .fields(fh.getNameableFields())
+            .fields(
+                    fh.<Boolean>field(ANNUALIZED),
+                    fh.nestedFieldWithUid(INDICATOR_TYPE),
+                    fh.<String>field(NUMERATOR),
+                    fh.<String>field(NUMERATOR_DESCRIPTION),
+                    fh.<String>field(DENOMINATOR),
+                    fh.<String>field(DENOMINATOR_DESCRIPTION),
+                    fh.<String>field(URL)
+            ).build();
+
+    private IndicatorFields() {
     }
 }

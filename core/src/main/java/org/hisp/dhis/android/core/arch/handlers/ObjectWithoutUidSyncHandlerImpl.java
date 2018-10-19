@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-public class ObjectWithoutUidSyncHandlerImpl<O extends BaseModel> extends SyncHandlerBaseImpl<O> {
+public class ObjectWithoutUidSyncHandlerImpl<O extends Model> extends SyncHandlerBaseImpl<O> {
 
     private final ObjectWithoutUidStore<O> store;
 

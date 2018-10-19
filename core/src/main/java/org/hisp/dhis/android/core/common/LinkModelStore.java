@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-public interface LinkModelStore<M extends BaseModel> extends ObjectStore<M> {
+public interface LinkModelStore<M extends Model> extends ObjectStore<M> {
     void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException;
 }

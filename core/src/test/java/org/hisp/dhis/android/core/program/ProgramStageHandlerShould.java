@@ -27,14 +27,13 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.period.FeatureType;
@@ -49,13 +48,12 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
 public class ProgramStageHandlerShould {
@@ -87,7 +85,7 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageSection> programStageSections;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
     private OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;

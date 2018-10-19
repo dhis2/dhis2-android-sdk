@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
@@ -46,9 +47,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
-
-    private static final String EQ = " = '";
-    private static final String AND = "' AND ";
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
@@ -109,8 +107,8 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
     };
 
     public Collection<DataValue> getDataValuesWithState(State state) {
-
-        String whereClause = DataValue.Columns.STATE + EQ + state.name() + "'";
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataValue.Columns.STATE, state.name()).build();
         return selectWhereClause(whereClause);
     }
 
@@ -126,11 +124,13 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
     }
 
     public boolean exists(DataValue dataValue) {
-        String whereClause = DataValueFields.DATA_ELEMENT + EQ + dataValue.dataElement() +
-                AND + DataValueFields.PERIOD + EQ + dataValue.period() +
-                AND + DataValueTableInfo.ORGANISATION_UNIT + EQ + dataValue.organisationUnit() +
-                AND + DataValueFields.CATEGORY_OPTION_COMBO + EQ + dataValue.categoryOptionCombo() +
-                AND + DataValueFields.ATTRIBUTE_OPTION_COMBO + EQ + dataValue.attributeOptionCombo() + "';";
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataValueFields.DATA_ELEMENT, dataValue.dataElement())
+                .appendKeyStringValue(DataValueFields.PERIOD, dataValue.period())
+                .appendKeyStringValue(DataValueTableInfo.ORGANISATION_UNIT, dataValue.organisationUnit())
+                .appendKeyStringValue(DataValueFields.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
+                .appendKeyStringValue(DataValueFields.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
+                .build();
         return selectWhereClause(whereClause).size() > 0;
     }
 

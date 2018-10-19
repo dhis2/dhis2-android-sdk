@@ -28,10 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
@@ -47,6 +43,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals",

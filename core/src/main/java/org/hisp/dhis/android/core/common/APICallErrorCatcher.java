@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,20 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.io.IOException;
 
-public final class DataValueHandler
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue> {
+import retrofit2.Response;
 
-    private DataValueHandler(DataValueStore store) {
-        super(store);
-    }
-
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
-    }
-
+public interface APICallErrorCatcher {
+    D2ErrorCode catchError(Response<?> response) throws IOException;
 }

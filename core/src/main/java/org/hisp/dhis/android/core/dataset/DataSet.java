@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -127,7 +128,7 @@ public abstract class DataSet extends BaseNameableObject {
             compulsoryDataElementOperands.with(DataElementOperandFields.allFields),
             dataInputPeriods.with(DataInputPeriodFields.allFields),
             access.with(Access.data.with(DataAccess.write)),
-            style.with(ObjectStyle.allFields)).build();
+            style.with(ObjectStyleFields.allFields)).build();
 
 
     @Nullable

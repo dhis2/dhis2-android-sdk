@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
@@ -55,7 +54,7 @@ public class DataElementHandlerShould {
     private IdentifiableObjectStore<DataElement> dataElementStore;
 
     @Mock
-    private GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;

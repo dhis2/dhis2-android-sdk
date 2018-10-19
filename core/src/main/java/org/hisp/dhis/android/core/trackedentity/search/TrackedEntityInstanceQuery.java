@@ -1,14 +1,14 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
 import java.util.List;
-
-import android.support.annotation.Nullable;
-import android.support.annotation.NonNull;
 
 @AutoValue
 public abstract class TrackedEntityInstanceQuery extends BaseQuery {

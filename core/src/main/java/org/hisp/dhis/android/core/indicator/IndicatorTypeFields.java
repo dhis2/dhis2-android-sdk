@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,28 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class DataValueHandlerImpl
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue>
-        implements DataValueHandler {
+public final class IndicatorTypeFields {
 
-    private final DataValueStore dataValueStore;
+    final static String NUMBER = "number";
+    final static String FACTOR = "factor";
 
-    private DataValueHandlerImpl(DataValueStore store) {
-        super(store);
-        this.dataValueStore = store;
-    }
+    private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();
 
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandlerImpl(DataValueStore.create(databaseAdapter));
-    }
+    public static final Field<IndicatorType, String> uid = fh.uid();
 
-    @Override
-    public boolean exists(DataValue dataValue) {
-        return dataValueStore.exists(dataValue);
+    static final Field<IndicatorType, String> lastUpdated = fh.lastUpdated();
+
+    public static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Boolean>field(NUMBER),
+                    fh.<Integer>field(FACTOR)
+            ).build();
+
+    private IndicatorTypeFields() {
     }
 }

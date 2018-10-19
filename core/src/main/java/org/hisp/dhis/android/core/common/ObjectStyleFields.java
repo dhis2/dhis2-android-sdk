@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,20 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class DataValueHandler
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue> {
+public final class ObjectStyleFields {
+    static final String COLOR = "color";
+    static final String ICON = "icon";
 
-    private DataValueHandler(DataValueStore store) {
-        super(store);
+    private static FieldsHelper<ObjectStyle> fh = new FieldsHelper<>();
+    public static final Fields<ObjectStyle> allFields = Fields.<ObjectStyle>builder().fields(
+            fh.<String>field(COLOR),
+            fh.<String>field(ICON)
+    ).build();
+
+    private ObjectStyleFields() {
     }
-
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
-    }
-
 }

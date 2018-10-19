@@ -26,50 +26,61 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.user.User;
 
+import java.util.List;
 import java.util.Set;
 
-public final class IndicatorTypeEndpointCall {
+import retrofit2.Retrofit;
 
-    private IndicatorTypeEndpointCall() {
+@Deprecated
+public final class OldSearchOrganisationUnitCall {
+
+    private OldSearchOrganisationUnitCall() {}
+
+    public interface Factory {
+        Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                            Set<String> uids, User user);
     }
 
-    public static final UidsCallFactory<IndicatorType> FACTORY = new UidsCallFactoryImpl<IndicatorType>() {
-        private static final int MAX_UID_LIST_SIZE = 140;
-
+    public static final Factory FACTORY = new Factory() {
         @Override
-        protected CallFetcher<IndicatorType> fetcher(GenericCallData data, Set<String> uids) {
-            final IndicatorTypeService service = data.retrofit().create(IndicatorTypeService.class);
+        public Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+                                                   Set<String> uids, User user) {
+            return new EndpointCall<>(fetcher(retrofit, uids), processor(databaseAdapter, user));
+        }
 
-            return new UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE) {
+        private static final int MAX_UID_LIST_SIZE = 120;
+
+        CallFetcher<OrganisationUnit> fetcher(Retrofit retrofit, Set<String> uids) {
+            final OrganisationUnitService service = retrofit.create(OrganisationUnitService.class);
+
+            return new UidsNoResourceCallFetcher<OrganisationUnit>(uids, MAX_UID_LIST_SIZE) {
 
                 @Override
-                protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query) {
-                    return service.getIndicatorTypes(
-                            IndicatorTypeFields.allFields,
-                            IndicatorTypeFields.lastUpdated.gt(null),
-                            IndicatorTypeFields.uid.in(query.uids()),
-                            Boolean.FALSE);
+                protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query) {
+                    return service.getSearchOrganisationUnits(OrganisationUnit.allFields,
+                            OrganisationUnit.uid.in(query.uids()), Boolean.FALSE);
                 }
             };
         }
 
-        @Override
-        protected CallProcessor<IndicatorType> processor(GenericCallData data) {
-            return new TransactionalNoResourceSyncCallProcessor<>(
-                    data.databaseAdapter(),
-                    IndicatorTypeHandler.create(data.databaseAdapter())
+        CallProcessor<OrganisationUnit> processor(DatabaseAdapter databaseAdapter, User user) {
+            return new TransactionalNoResourceCallProcessor<>(
+                    databaseAdapter,
+                    SearchOrganisationUnitHandler.create(databaseAdapter, user),
+                    new OrganisationUnitModelBuilder()
             );
         }
     };

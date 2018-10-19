@@ -27,15 +27,14 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
@@ -48,7 +47,7 @@ import java.util.Collection;
 public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, ProgramStageModel> {
     private final ProgramStageSectionHandler programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
     private final CollectionCleaner<ProgramStage> collectionCleaner;
@@ -57,7 +56,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
     ProgramStageHandler(IdentifiableObjectStore<ProgramStageModel> programStageStore,
                         ProgramStageSectionHandler programStageSectionHandler,
                         ProgramStageDataElementHandler programStageDataElementHandler,
-                        GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler,
+                        SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
                         CollectionCleaner<ProgramStage> collectionCleaner,

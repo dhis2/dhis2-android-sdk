@@ -42,30 +42,30 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 public class SearchOrganisationUnitHandler extends IdentifiableHandlerImpl<OrganisationUnit, OrganisationUnitModel> {
 
     private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
-    private final String userId;
+    private final User user;
 
     SearchOrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
                                   @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
                                           userOrganisationUnitLinkStore,
-                                  @NonNull String userId) {
+                                  @NonNull User user) {
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.userId = userId;
+        this.user = user;
     }
 
     @Override
     protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
         UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
-                OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, User.builder().uid(userId).build());
+                OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user);
 
         userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
     }
 
     public static SearchOrganisationUnitHandler create(DatabaseAdapter databaseAdapter,
-                                                       String userId) {
+                                                       User user) {
         return new SearchOrganisationUnitHandler(
                 OrganisationUnitStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
-                userId);
+                user);
     }
 }

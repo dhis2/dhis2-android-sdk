@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectStyleModel;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,12 +42,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> {
     private final LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
             programSectionAttributeLinkHandler;
-    private final GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler;
+    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSectionModel> programSectionStore,
                           LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
                                   programSectionAttributeLinkHandler,
-                          GenericHandler<ObjectStyle, ObjectStyleModel> styleHandler) {
+                          SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(programSectionStore);
         this.programSectionAttributeLinkHandler = programSectionAttributeLinkHandler;
         this.styleHandler = styleHandler;

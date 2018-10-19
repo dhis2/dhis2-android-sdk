@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,21 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db;
 
-package org.hisp.dhis.android.core.datavalue;
+public class WhereClauseBuilder {
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+    private static final String EQ_STR = " = '";
+    private static final String END_STR = "'";
 
-public final class DataValueHandler
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue> {
+    private static final String EQ_NUMBER = " = ";
 
-    private DataValueHandler(DataValueStore store) {
-        super(store);
+    private static final String AND = " AND ";
+
+    @SuppressWarnings("PMD.AvoidStringBufferField")
+    private final StringBuilder whereClause = new StringBuilder();
+    private boolean isFirst = true;
+
+    public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
+        return appendKeyValue(column, value, EQ_STR, END_STR);
     }
 
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
+    public WhereClauseBuilder appendKeyNumberValue(String column, double value) {
+        return appendKeyValue(column, value, EQ_NUMBER, "");
     }
 
+    public WhereClauseBuilder appendKeyNumberValue(String column, int value) {
+        return appendKeyValue(column, value, EQ_NUMBER, "");
+    }
+
+    private WhereClauseBuilder appendKeyValue(String column, Object value, String eq, String end) {
+        String andOpt = isFirst ? "" : AND;
+        isFirst = false;
+        whereClause.append(andOpt).append(column).append(eq).append(value).append(end);
+        return this;
+    }
+
+    public String build() {
+        if (whereClause.length() == 0) {
+            throw new RuntimeException("No columns added");
+        } else {
+            return whereClause.toString();
+        }
+    }
 }

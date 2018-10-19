@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,20 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class DataValueHandler
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue> {
+public final class IndicatorTypeTableInfo {
 
-    private DataValueHandler(DataValueStore store) {
-        super(store);
+    private IndicatorTypeTableInfo() {
     }
 
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
+        @Override
+        public String name() {
+            return "IndicatorType";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    IndicatorTypeFields.NUMBER,
+                    IndicatorTypeFields.FACTOR
+            );
+        }
+    }
 }

@@ -64,6 +64,6 @@ public class ProgramSectionShould extends BaseObjectShould implements ObjectShou
         assertThat(programSection.attributes().get(0).uid()).isEqualTo("zDhUuAYrxNC");
         assertThat(programSection.sortOrder()).isEqualTo(1);
         assertThat(programSection.formName()).isEqualTo("formName");
-        assertThat(programSection.style()).isEqualTo(ObjectStyle.create("#fff", "my-icon"));
+        assertThat(programSection.style()).isEqualTo(ObjectStyle.builder().color("#fff").icon("my-icon").build());
     }
 }

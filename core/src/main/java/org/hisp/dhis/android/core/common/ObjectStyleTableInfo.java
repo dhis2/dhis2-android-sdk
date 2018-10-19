@@ -26,23 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class IndicatorTypeModelBuilder extends ModelBuilder<IndicatorType, IndicatorTypeModel> {
+public final class ObjectStyleTableInfo {
 
-    @Override
-    public IndicatorTypeModel buildModel(IndicatorType type) {
-        return IndicatorTypeModel.builder()
-                .uid(type.uid())
-                .code(type.code())
-                .name(type.name())
-                .displayName(type.displayName())
-                .created(type.created())
-                .lastUpdated(type.lastUpdated())
-                .number(type.number())
-                .factor(type.factor())
-                .build();
+    private ObjectStyleTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ObjectStyle";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+
+        private static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        private static final String OBJECT_TABLE = "objectTable";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    UID,
+                    OBJECT_TABLE,
+                    ObjectStyleFields.COLOR,
+                    ObjectStyleFields.ICON);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{UID};
+        }
     }
 }

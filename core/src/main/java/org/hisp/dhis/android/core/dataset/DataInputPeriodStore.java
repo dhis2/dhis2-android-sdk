@@ -66,9 +66,9 @@ public final class DataInputPeriodStore {
 
     public static LinkModelStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
 
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataInputPeriodModel.TABLE,
-                new DataInputPeriod.Columns(),
+        return StoreFactory.linkModelStore(
+                databaseAdapter,
+                DataInputPeriodTableInfo.TABLE_INFO,
                 DataInputPeriodTableInfo.DATA_SET,
                 BINDER,
                 FACTORY);

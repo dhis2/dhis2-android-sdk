@@ -37,7 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -47,7 +47,8 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class ProgramStage extends BaseIdentifiableObject {
+public abstract class ProgramStage extends BaseIdentifiableObject
+        implements ObjectWithStyle<ProgramStage, ProgramStage.Builder> {
 
     @Nullable
     public abstract String description();
@@ -117,9 +118,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
     public abstract List<ProgramStageDataElement> programStageDataElements();
 
     @Nullable
-    public abstract ObjectStyle style();
-
-    @Nullable
     public abstract PeriodType periodType();
 
     @Nullable
@@ -144,7 +142,8 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<ProgramStage, Builder> {
         public abstract Builder description(String description);
 
         public abstract Builder displayDescription(String displayDescription);
@@ -186,8 +185,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject {
         public abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
 
         public abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
-
-        public abstract Builder style(ObjectStyle style);
 
         public abstract Builder periodType(PeriodType periodType);
 

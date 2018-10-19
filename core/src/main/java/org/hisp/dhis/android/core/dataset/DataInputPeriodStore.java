@@ -33,34 +33,16 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataInputPeriodStore extends ObjectWithoutUidStoreImpl<DataInputPeriod> {
+public final class DataInputPeriodStore {
 
-    private DataInputPeriodStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
-                                 SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
-
-        super(databaseAdapter, insertStatement, updateWhereStatement,
-                builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
-    }
-
-    public static DataInputPeriodStore create(DatabaseAdapter databaseAdapter) {
-
-        SQLStatementBuilder sqlStatementBuilder =
-                new SQLStatementBuilder(DataInputPeriodTableInfo.TABLE_INFO.name(),
-                        DataInputPeriodTableInfo.TABLE_INFO.columns());
-
-        return new DataInputPeriodStore(databaseAdapter, databaseAdapter.compileStatement(
-                sqlStatementBuilder.insert()),
-                databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
-                sqlStatementBuilder);
-    }
+    private DataInputPeriodStore() {}
 
     private static final StatementBinder<DataInputPeriod> BINDER =
             new StatementBinder<DataInputPeriod>() {
@@ -74,16 +56,6 @@ public final class DataInputPeriodStore extends ObjectWithoutUidStoreImpl<DataIn
                 }
             };
 
-    private static final WhereStatementBinder<DataInputPeriod> WHERE_UPDATE_BINDER =
-            new WhereStatementBinder<DataInputPeriod>() {
-                @Override
-                public void bindToUpdateWhereStatement(@NonNull DataInputPeriod dataInputPeriod,
-                                                       @NonNull SQLiteStatement sqLiteStatement) {
-                    sqLiteBind(sqLiteStatement, 5, dataInputPeriod.dataSetUid());
-                    sqLiteBind(sqLiteStatement, 6, dataInputPeriod.periodUid());
-                }
-            };
-
     private static final CursorModelFactory<DataInputPeriod> FACTORY
             = new CursorModelFactory<DataInputPeriod>() {
         @Override
@@ -91,4 +63,14 @@ public final class DataInputPeriodStore extends ObjectWithoutUidStoreImpl<DataIn
             return DataInputPeriod.create(cursor);
         }
     };
+
+    public static LinkModelStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
+
+        return StoreFactory.linkModelStore(databaseAdapter,
+                DataInputPeriodModel.TABLE,
+                new DataInputPeriod.Columns(),
+                DataInputPeriodTableInfo.DATA_SET,
+                BINDER,
+                FACTORY);
+    }
 }

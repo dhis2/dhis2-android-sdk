@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -65,11 +65,10 @@ final class DataSetEndpointCall {
 
         @Override
         protected CallProcessor<DataSet> processor(GenericCallData data) {
-            return new TransactionalResourceCallProcessor<>(
+            return new TransactionalResourceSyncCallProcessor<>(
                     data,
                     DataSetHandler.create(data.databaseAdapter()),
-                    resourceType,
-                    new DataSetModelBuilder()
+                    resourceType
             );
         }
     };

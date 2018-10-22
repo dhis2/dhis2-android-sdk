@@ -23,9 +23,10 @@ public interface EventService {
     String EVENTS = "events";
     String ATTRIBUTE_CATEGORY_COMBO = "attributeCc";
     String ATTRIBUTE_CATEGORY_OPTION = "attributeCos";
+    String STRATEGY = "strategy";
 
     @POST(EVENTS)
-    Call<WebResponse> postEvents(@Body EventPayload events);
+    Call<WebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
 
     @GET(EVENTS)
     Call<Payload<Event>> getEvents(

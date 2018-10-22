@@ -46,7 +46,11 @@ public final class EventPostCall extends SyncCall<WebResponse> {
         EventPayload eventPayload = new EventPayload();
         eventPayload.events = eventsToPost;
 
-        WebResponse webResponse = new APICallExecutor().executeObjectCall(eventService.postEvents(eventPayload));
+        String strategy = "CREATE_AND_UPDATE";
+
+        WebResponse webResponse =
+                new APICallExecutor().executeObjectCall(eventService.postEvents(eventPayload, strategy));
+
         handleWebResponse(webResponse);
         return webResponse;
     }

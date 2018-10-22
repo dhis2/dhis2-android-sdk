@@ -38,9 +38,7 @@ import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
-import org.hisp.dhis.android.core.datavalue.DataValueModule;
-import org.hisp.dhis.android.core.wipe.WipeModule;
-import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
+import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
@@ -50,6 +48,7 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
@@ -69,6 +68,8 @@ import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -230,6 +231,10 @@ public final class D2 {
 
     public RelationshipModule relationshipModule() {
         return this.internalModules.relationshipModule.publicModule;
+    }
+
+    public CategoryModule categoryModule() {
+        return this.internalModules.categoryModule.publicModule;
     }
 
     public DataElementModule dataElementModule() {

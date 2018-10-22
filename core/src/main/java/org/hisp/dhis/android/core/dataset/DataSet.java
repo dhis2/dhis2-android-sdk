@@ -44,14 +44,13 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DataInputPeriodListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DataSetElementListAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreDataElementOperandListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.SectionListAdapter;
@@ -63,7 +62,7 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataSet.Builder.class)
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
-public abstract class DataSet extends BaseNameableObject implements Model {
+public abstract class DataSet extends BaseNameableObject implements Model, ObjectWithStyle<DataSet, DataSet.Builder> {
 
     // TODO move to base class after whole object refactor
     @Override
@@ -164,11 +163,6 @@ public abstract class DataSet extends BaseNameableObject implements Model {
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
-    public abstract ObjectStyle style();
-
     public static Builder builder() {
         return new $$AutoValue_DataSet.Builder();
     }
@@ -183,7 +177,8 @@ public abstract class DataSet extends BaseNameableObject implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<DataSet, DataSet.Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder periodType(PeriodType periodType);
@@ -227,8 +222,6 @@ public abstract class DataSet extends BaseNameableObject implements Model {
         public abstract Builder dataInputPeriods(List<DataInputPeriod> dataInputPeriods);
 
         public abstract Builder access(Access access);
-
-        public abstract Builder style(ObjectStyle style);
 
         public abstract DataSet build();
     }

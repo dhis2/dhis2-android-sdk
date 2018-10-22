@@ -62,6 +62,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataSet.Builder.class)
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
 public abstract class DataSet extends BaseNameableObject implements Model {
 
     // TODO move to base class after whole object refactor

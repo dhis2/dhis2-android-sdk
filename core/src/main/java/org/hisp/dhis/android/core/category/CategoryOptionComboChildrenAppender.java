@@ -27,40 +27,28 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-public final class CategoryInternalModule implements WipeableModule {
+import java.util.Collection;
+import java.util.List;
 
-    private final DatabaseAdapter databaseAdapter;
-    public final CategoryModule publicModule;
+final class CategoryOptionComboChildrenAppender implements ChildrenAppender<CategoryCombo> {
 
-    private CategoryInternalModule(DatabaseAdapter databaseAdapter,
-                                   CategoryModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
-        this.publicModule = publicModule;
+    private final CategoryOptionComboStore store;
+
+    CategoryOptionComboChildrenAppender(CategoryOptionComboStore store) {
+        this.store = store;
     }
 
     @Override
-    public void wipeMetadata() {
-        CategoryStore.create(databaseAdapter).delete();
-        CategoryOptionStore.create(databaseAdapter).delete();
-        CategoryOptionComboStoreImpl.create(databaseAdapter).delete();
-        CategoryCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryComboStore.create(databaseAdapter).delete();
-        CategoryCategoryComboLinkStore.create(databaseAdapter).delete();
+    public void prepareChildren(Collection<CategoryCombo> collection) {
+        // no previous set call is needed
     }
 
     @Override
-    public void wipeData() {
-        // Without data to wipe
-    }
-
-    public static CategoryInternalModule create(DatabaseAdapter databaseAdapter) {
-        return new CategoryInternalModule(
-                databaseAdapter,
-                CategoryModule.create(databaseAdapter)
-        );
+    public CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+        CategoryCombo.Builder builder = categoryCombo.toBuilder();
+        List<CategoryOptionCombo> optionCombos = store.getForCategoryCombo(categoryCombo.uid());
+        return builder.categoryOptionCombos(optionCombos).build();
     }
 }

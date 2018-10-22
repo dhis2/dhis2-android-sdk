@@ -40,9 +40,13 @@ final class CategoryComboCollectionRepository {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<CategoryCombo> childrenAppender = new CategoryOptionComboChildrenAppender(
+                CategoryOptionComboStoreImpl.create(databaseAdapter)
+        );
+
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 CategoryComboStore.create(databaseAdapter),
-                Collections.<ChildrenAppender<CategoryCombo>>emptyList()
+                Collections.singletonList(childrenAppender)
         );
     }
 }

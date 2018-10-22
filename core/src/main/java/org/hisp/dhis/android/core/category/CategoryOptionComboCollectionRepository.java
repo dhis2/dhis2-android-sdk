@@ -41,7 +41,7 @@ final class CategoryOptionComboCollectionRepository {
 
     static ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryOptionComboStore.create(databaseAdapter),
+                CategoryOptionComboStoreImpl.create(databaseAdapter),
                 Collections.<ChildrenAppender<CategoryOptionCombo>>emptyList()
         );
     }

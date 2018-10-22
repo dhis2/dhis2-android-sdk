@@ -77,7 +77,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void assertThereAreCategoryOptionCombosInDB() {
-        IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStore.create(databaseAdapter());
+        IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStoreImpl.create(databaseAdapter());
         Set<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll();
         assertTrue(categoryOptionCombos.size() > 0);
     }

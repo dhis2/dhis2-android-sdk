@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
@@ -53,6 +54,10 @@ public class SQLStatementBuilder {
         this.tableName = tableName;
         this.columns = columns.all().clone();
         this.updateWhereColumns = columns.whereUpdate().clone();
+    }
+
+    public SQLStatementBuilder(TableInfo tableInfo) {
+        this(tableInfo.name(), tableInfo.columns());
     }
 
     private String commaSeparatedColumns() {

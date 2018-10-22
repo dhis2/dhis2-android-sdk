@@ -44,7 +44,7 @@ public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
         int columnIndex = cursor.getColumnIndex(columnName);
         Integer accessDataWrite = cursor.getInt(columnIndex);
 
-        return Access.create(null,null, null, null, null, null,
+        return Access.create(null, null, null, null, null, null,
                 DataAccess.create(true, accessDataWrite == 1));
     }
 

@@ -39,6 +39,14 @@ public class CategoryModuleRealIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    public void let_client_access_category_option_combos() throws Exception {
+        d2.logIn("android", "Android123").call();
+        d2.syncMetaData().call();
+        Set<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.getSetWithAllChildren();
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Ifqide84xSh").getWithAllChildren();
+    }
+
+    @Test
     public void let_client_access_category_combos() throws Exception {
         d2.logIn("android", "Android123").call();
         d2.syncMetaData().call();

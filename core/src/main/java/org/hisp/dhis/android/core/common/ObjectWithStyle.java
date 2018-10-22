@@ -25,17 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
-public final class ObjectStyleHandler {
+import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
 
-    private ObjectStyleHandler() {}
+import android.support.annotation.Nullable;
 
-    public static SyncHandlerWithTransformer<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(ObjectStyleStoreImpl.create(databaseAdapter));
+public interface ObjectWithStyle<O, B extends ObjectWithStyle.Builder<O, B>> {
+
+    @Nullable
+    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
+    ObjectStyle style();
+
+    B toBuilder();
+
+    interface Builder<O, T extends Builder> {
+        T style(ObjectStyle style);
+
+        O build();
     }
 }

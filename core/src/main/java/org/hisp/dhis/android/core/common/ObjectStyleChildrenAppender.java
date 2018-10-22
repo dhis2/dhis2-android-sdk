@@ -27,15 +27,33 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-public final class ObjectStyleHandler {
+import java.util.Collection;
 
-    private ObjectStyleHandler() {}
+public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
+        B extends ObjectWithStyle.Builder<O, B>> implements ChildrenAppender<O> {
 
-    public static SyncHandlerWithTransformer<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(ObjectStyleStoreImpl.create(databaseAdapter));
+    private final ObjectStyleStore objectStyleStore;
+    private final TableInfo objectWithStyleTableInfo;
+
+
+    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
+                                TableInfo objectWithStyleTableInfo) {
+        this.objectStyleStore = objectStyleStore;
+        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
+    }
+
+    @Override
+    public void prepareChildren(Collection<O> collection) {
+        // Intentionally empty
+    }
+
+    @Override
+    public O appendChildren(O objectWithStyle) {
+        B builder = objectWithStyle.toBuilder();
+        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
+        return builder.style(style).build();
     }
 }

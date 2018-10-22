@@ -51,8 +51,8 @@ public final class ObjectStyleTableInfo {
 
     static class Columns extends BaseModel.Columns {
 
-        private static final String UID = BaseIdentifiableObjectModel.Columns.UID;
-        private static final String OBJECT_TABLE = "objectTable";
+        static final String UID = BaseIdentifiableObjectModel.Columns.UID;
+        static final String OBJECT_TABLE = "objectTable";
 
         @Override
         public String[] all() {

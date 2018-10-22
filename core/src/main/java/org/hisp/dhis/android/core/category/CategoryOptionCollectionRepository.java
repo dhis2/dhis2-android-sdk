@@ -27,43 +27,22 @@
  */
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Collections;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class CategoryModule {
+final class CategoryOptionCollectionRepository {
 
-    /*
-        CategoryStore.create(databaseAdapter).delete();
-        CategoryOptionStore.create(databaseAdapter).delete();
-        CategoryOptionComboStore.create(databaseAdapter).delete();
-        CategoryCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryComboStore.create(databaseAdapter).delete();
-        CategoryCategoryComboLinkStore.create(databaseAdapter).delete();
-     */
-
-    public final ReadOnlyIdentifiableCollectionRepository<Category> categories;
-    public final ReadOnlyIdentifiableCollectionRepository<CategoryOption> categoryOptions;
-    public final ReadOnlyIdentifiableCollectionRepository<CategoryCombo> categoryCombos;
-
-    private CategoryModule(
-            ReadOnlyIdentifiableCollectionRepository<Category> categories,
-            ReadOnlyIdentifiableCollectionRepository<CategoryOption> categoryOptions,
-            ReadOnlyIdentifiableCollectionRepository<CategoryCombo> categoryCombos
-    ) {
-        this.categories = categories;
-        this.categoryOptions = categoryOptions;
-        this.categoryCombos = categoryCombos;
+    private CategoryOptionCollectionRepository() {
     }
 
-    static CategoryModule create(DatabaseAdapter databaseAdapter) {
-        return new CategoryModule(
-                CategoryCollectionRepository.create(databaseAdapter),
-                CategoryOptionCollectionRepository.create(databaseAdapter),
-                CategoryComboCollectionRepository.create(databaseAdapter)
+    static ReadOnlyIdentifiableCollectionRepository<CategoryOption> create(DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                CategoryOptionStore.create(databaseAdapter),
+                Collections.<ChildrenAppender<CategoryOption>>emptyList()
         );
     }
 }

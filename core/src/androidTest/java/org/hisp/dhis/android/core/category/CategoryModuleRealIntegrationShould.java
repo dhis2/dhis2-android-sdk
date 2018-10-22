@@ -23,18 +23,26 @@ public class CategoryModuleRealIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void let_client_access_category_combos() throws Exception {
-        d2.logIn("android", "Android123").call();
-        d2.syncMetaData().call();
-        Set<CategoryCombo> combos = d2.categoryModule().categoryCombos.getSetWithAllChildren();
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
-    }
-
-    @Test
     public void let_client_access_categories() throws Exception {
         d2.logIn("android", "Android123").call();
         d2.syncMetaData().call();
         Set<Category> categories = d2.categoryModule().categories.getSetWithAllChildren();
         Category category = d2.categoryModule().categories.uid("YNZyaJHiHYq").getWithAllChildren();
+    }
+
+    @Test
+    public void let_client_access_category_options() throws Exception {
+        d2.logIn("android", "Android123").call();
+        d2.syncMetaData().call();
+        Set<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions.getSetWithAllChildren();
+        CategoryOption categoryOption = d2.categoryModule().categoryOptions.uid("AdkHQiiJBB4").getWithAllChildren();
+    }
+
+    @Test
+    public void let_client_access_category_combos() throws Exception {
+        d2.logIn("android", "Android123").call();
+        d2.syncMetaData().call();
+        Set<CategoryCombo> combos = d2.categoryModule().categoryCombos.getSetWithAllChildren();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
     }
 }

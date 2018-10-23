@@ -25,17 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.user;
 
-public final class ObjectStyleHandler {
+import org.hisp.dhis.android.core.common.APICallErrorCatcher;
+import org.hisp.dhis.android.core.common.D2ErrorCode;
 
-    private ObjectStyleHandler() {}
+import java.io.IOException;
 
-    public static SyncHandlerWithTransformer<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(ObjectStyleStoreImpl.create(databaseAdapter));
+import retrofit2.Response;
+
+public final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+
+    @Override
+    public D2ErrorCode catchError(Response<?> response) throws IOException {
+
+        String errorResponse = response.errorBody().string();
+
+        if (errorResponse.contains("LDAP authentication is not configured") ||
+                errorResponse.contains("Bad credentials")) {
+            return D2ErrorCode.BAD_CREDENTIALS;
+        } else if (errorResponse.contains("User is disabled")) {
+            return D2ErrorCode.USER_ACCOUNT_DISABLED;
+        } else if (errorResponse.contains("User account is locked")) {
+            return D2ErrorCode.USER_ACCOUNT_LOCKED;
+        }
+
+        return null;
     }
 }

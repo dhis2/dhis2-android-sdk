@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
@@ -103,7 +104,9 @@ public class DataSetCompleteRegistrationStore extends
     };
 
     Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state) {
-        String whereClause = DataSetCompleteRegistration.Columns.STATE + "='" + state.name() + "'";
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(DataSetCompleteRegistration.Columns.STATE, state.name())
+                .build();
         return selectWhereClause(whereClause);
     }
 

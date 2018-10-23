@@ -28,21 +28,28 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public class IndicatorTypeModelBuilder extends ModelBuilder<IndicatorType, IndicatorTypeModel> {
+public final class IndicatorTypeFields {
 
-    @Override
-    public IndicatorTypeModel buildModel(IndicatorType type) {
-        return IndicatorTypeModel.builder()
-                .uid(type.uid())
-                .code(type.code())
-                .name(type.name())
-                .displayName(type.displayName())
-                .created(type.created())
-                .lastUpdated(type.lastUpdated())
-                .number(type.number())
-                .factor(type.factor())
-                .build();
+    final static String NUMBER = "number";
+    final static String FACTOR = "factor";
+
+    private static final FieldsHelper<IndicatorType> fh = new FieldsHelper<>();
+
+    public static final Field<IndicatorType, String> uid = fh.uid();
+
+    static final Field<IndicatorType, String> lastUpdated = fh.lastUpdated();
+
+    public static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Boolean>field(NUMBER),
+                    fh.<Integer>field(FACTOR)
+            ).build();
+
+    private IndicatorTypeFields() {
     }
 }

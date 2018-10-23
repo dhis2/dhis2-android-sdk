@@ -25,17 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.io.IOException;
 
-public final class ObjectStyleHandler {
+import retrofit2.Response;
 
-    private ObjectStyleHandler() {}
-
-    public static SyncHandlerWithTransformer<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(ObjectStyleStoreImpl.create(databaseAdapter));
-    }
+public interface APICallErrorCatcher {
+    D2ErrorCode catchError(Response<?> response) throws IOException;
 }

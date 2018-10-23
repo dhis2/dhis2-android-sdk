@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -40,14 +42,15 @@ final class DataElementCollectionRepository {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<DataElement> create(DatabaseAdapter databaseAdapter) {
-        /*ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
-                RelationshipConstraintStore.create(databaseAdapter)
-        );
-        */
+        ChildrenAppender<DataElement> childrenAppender =
+                new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        DataElementTableInfo.TABLE_INFO
+                );
 
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 DataElementStore.create(databaseAdapter),
-                Collections.<ChildrenAppender<DataElement>>emptyList()
+                Collections.singletonList(childrenAppender)
         );
     }
 }

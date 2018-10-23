@@ -28,59 +28,61 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
 @AutoValue
-public abstract class IndicatorType extends BaseIdentifiableObject {
-    private final static String NUMBER = "number";
-    private final static String FACTOR = "factor";
+@JsonDeserialize(builder = AutoValue_IndicatorType.Builder.class)
+public abstract class IndicatorType extends BaseIdentifiableObject implements Model {
 
-    static final Field<IndicatorType, String> uid = Field.create(UID);
-    private static final Field<IndicatorType, String> code = Field.create(CODE);
-    private static final Field<IndicatorType, String> name = Field.create(NAME);
-    private static final Field<IndicatorType, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<IndicatorType, String> created = Field.create(CREATED);
-    static final Field<IndicatorType, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<IndicatorType, Boolean> deleted = Field.create(DELETED);
-
-    private static final Field<IndicatorType, Boolean> number = Field.create(NUMBER);
-    private static final Field<IndicatorType, Integer> factor = Field.create(FACTOR);
-
-    static final Fields<IndicatorType> allFields = Fields.<IndicatorType>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted,
-            number, factor).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(NUMBER)
+    @JsonProperty()
     public abstract Boolean number();
 
     @Nullable
-    @JsonProperty(FACTOR)
+    @JsonProperty()
     public abstract Integer factor();
 
-    @JsonCreator
-    public static IndicatorType create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(NUMBER) Boolean number,
-            @JsonProperty(FACTOR) Integer factor,
-            @JsonProperty(DELETED) Boolean deleted) {
+    public static Builder builder() {
+        return new $$AutoValue_IndicatorType.Builder();
+    }
 
-        return new AutoValue_IndicatorType(uid, code, name,
-                displayName, created, lastUpdated, deleted, number, factor);
+    static IndicatorType create(Cursor cursor) {
+        return $AutoValue_IndicatorType.createFromCursor(cursor);
+    }
+
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder number(Boolean number);
+
+        public abstract Builder factor(Integer factor);
+
+        public abstract IndicatorType build();
     }
 }

@@ -25,17 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public class WhereClauseBuilder {
 
-public final class ObjectStyleHandler {
+    private static final String EQ_STR = " = '";
+    private static final String END_STR = "'";
 
-    private ObjectStyleHandler() {}
+    private static final String EQ_NUMBER = " = ";
 
-    public static SyncHandlerWithTransformer<ObjectStyle> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(ObjectStyleStoreImpl.create(databaseAdapter));
+    private static final String AND = " AND ";
+
+    @SuppressWarnings("PMD.AvoidStringBufferField")
+    private final StringBuilder whereClause = new StringBuilder();
+    private boolean isFirst = true;
+
+    public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
+        return appendKeyValue(column, value, EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendKeyNumberValue(String column, double value) {
+        return appendKeyValue(column, value, EQ_NUMBER, "");
+    }
+
+    public WhereClauseBuilder appendKeyNumberValue(String column, int value) {
+        return appendKeyValue(column, value, EQ_NUMBER, "");
+    }
+
+    private WhereClauseBuilder appendKeyValue(String column, Object value, String eq, String end) {
+        String andOpt = isFirst ? "" : AND;
+        isFirst = false;
+        whereClause.append(andOpt).append(column).append(eq).append(value).append(end);
+        return this;
+    }
+
+    public String build() {
+        if (whereClause.length() == 0) {
+            throw new RuntimeException("No columns added");
+        } else {
+            return whereClause.toString();
+        }
     }
 }

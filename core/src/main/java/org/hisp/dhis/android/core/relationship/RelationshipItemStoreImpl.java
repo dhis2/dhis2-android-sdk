@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -87,8 +88,11 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
     public RelationshipItemModel getForRelationshipUidAndConstraintType(
             @NonNull String uid,
             @NonNull RelationshipConstraintType constraintType) {
-        return selectOneWhere(RelationshipItemModel.Columns.RELATIONSHIP + "='" + uid + "' AND " +
-                        RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + "='" + constraintType + "'");
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(RelationshipItemModel.Columns.RELATIONSHIP, uid)
+                .appendKeyStringValue(RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE, constraintType)
+                .build();
+        return selectOneWhere(whereClause);
     }
 
     private Cursor getAllItemsOfSameType(@NonNull RelationshipItem from, @NonNull RelationshipItem to) {

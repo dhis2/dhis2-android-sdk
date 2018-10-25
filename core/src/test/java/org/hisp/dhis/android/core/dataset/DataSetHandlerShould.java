@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -48,6 +50,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -85,7 +88,7 @@ public class DataSetHandlerShould {
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
     @Mock
-    private LinkSyncHandler<DataInputPeriod> dataInputPeriodHandler;
+    private LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler;
 
     @Mock
     private DataSet dataSet;
@@ -178,7 +181,9 @@ public class DataSetHandlerShould {
 
         verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class));
 
-        verify(dataInputPeriodHandler, never()).handleMany(anyString(), anyListOf(DataInputPeriod.class));
+        verify(dataInputPeriodHandler, never()).handleMany(anyString(),
+                anyListOf(DataInputPeriod.class),
+                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
     }
 
     @Test
@@ -229,7 +234,9 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(dataInputPeriodHandler).handleMany(anyString(), anyListOf(DataInputPeriod.class));
+        verify(dataInputPeriodHandler).handleMany(anyString(),
+                anyListOf(DataInputPeriod.class),
+                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
     }
 
     @Test

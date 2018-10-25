@@ -30,63 +30,40 @@ package org.hisp.dhis.android.core.indicator;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-
 @RunWith(AndroidJUnit4.class)
-public class IndicatorStoreIntegrationShould extends AbsStoreTestCase {
+public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
 
-    private final Indicator indicator = IndicatorSamples.getIndicator();
+    public IndicatorStoreIntegrationShould() {
+        super(IndicatorStore.create(DatabaseAdapterFactory.get(false)));
+    }
 
-    @Before
     @Override
-    public void setUp() throws IOException {
-        super.setUp();
-        database().setForeignKeyConstraintsEnabled(false);
+    protected Indicator buildObject() {
+        return IndicatorSamples.getIndicator();
     }
 
-    @Test
-    public void get_inserted_object() {
-        IdentifiableObjectStore<Indicator> store = IndicatorStore.create(databaseAdapter());
-        store.insert(indicator);
-        Indicator indicatorFromDb = store.selectFirst();
-        assertThat(indicatorFromDb).isEqualTo(indicator);
+    @Override
+    protected Indicator buildObjectWithId() {
+        return IndicatorSamples.getIndicator().toBuilder()
+                .id(1L)
+                .build();
     }
 
-    @Test
-    public void delete_inserted_object() {
-        IdentifiableObjectStore<Indicator> store = IndicatorStore.create(databaseAdapter());
-        store.insert(indicator);
-        store.delete(indicator.uid());
-        assertThat(store.selectFirst()).isEqualTo(null);
-    }
-
-    @Test
-    public void update_inserted_object() {
-        IdentifiableObjectStore<Indicator> store = IndicatorStore.create(databaseAdapter());
-        store.insert(indicator);
-        Indicator indicatorToUpdate = indicator.toBuilder()
+    @Override
+    protected Indicator buildObjectToUpdate() {
+        return IndicatorSamples.getIndicator().toBuilder()
                 .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
                 .build();
-        store.update(indicatorToUpdate);
-        Indicator indicatorFromDb = store.selectFirst();
-        assertThat(indicatorFromDb).isEqualTo(indicatorToUpdate);
     }
 
     @Test
-    public void select_inserted_object_uid() {
-        IdentifiableObjectStore<Indicator> store = IndicatorStore.create(databaseAdapter());
-        store.insert(indicator);
-        String indicatorUidFromDb = store.selectUids().iterator().next();
-        assertThat(indicatorUidFromDb).isEqualTo(indicator.uid());
+    public void stub() throws Exception {
     }
 }

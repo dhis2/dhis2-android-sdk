@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.utils.Utils;
 
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
 
 public class SQLStatementBuilder {
@@ -42,6 +44,7 @@ public class SQLStatementBuilder {
     private final static String LIMIT = " LIMIT ";
     private final static String FROM = " FROM ";
     private final static String SELECT = "SELECT ";
+    private static final String AND = " AND ";
 
     @SuppressWarnings("PMD.UseVarargs")
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
@@ -91,23 +94,30 @@ public class SQLStatementBuilder {
     }
 
     String deleteById() {
-        return "DELETE" + FROM + tableName + WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+        return "DELETE" + FROM + tableName + WHERE + UID + "=?;";
     }
 
     String selectUids() {
-        return SELECT + BaseIdentifiableObjectModel.Columns.UID + FROM + tableName;
+        return SELECT + UID + FROM + tableName;
     }
 
     String selectUidsWhere(String whereClause) {
-        return SELECT + BaseIdentifiableObjectModel.Columns.UID + FROM + tableName + WHERE + whereClause + ";";
+        return SELECT + UID + FROM + tableName + WHERE + whereClause + ";";
     }
 
     String selectColumnWhere(String column, String whereClause) {
         return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
 
+    public String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid) {
+        return SELECT + "c.*" + FROM + projection.linkTableInfo.name() + " AS l, " +
+                projection.childTableInfo.name() + " AS c" +
+                WHERE + "l." + projection.childColumn + "=" + "c." + UID +
+                AND + "l." + projection.parentColumn + "='" + parentUid + "';";
+    }
+
     String selectByUid() {
-        return selectWhere(andSeparatedColumnEqualInterrogationMark(BaseIdentifiableObjectModel.Columns.UID));
+        return selectWhere(andSeparatedColumnEqualInterrogationMark(UID));
     }
 
     String selectWhere(String whereClause) {
@@ -128,7 +138,7 @@ public class SQLStatementBuilder {
 
     public String update() {
         return "UPDATE " + tableName + " SET " + commaSeparatedColumnEqualInterrogationMark(columns) +
-                WHERE + BaseIdentifiableObjectModel.Columns.UID + "=?;";
+                WHERE + UID + "=?;";
     }
 
     public String updateWhere() {
@@ -151,7 +161,7 @@ public class SQLStatementBuilder {
 
     private static String[] identifiableColumns() {
         return Utils.appendInNewArray(idColumn(),
-                BaseIdentifiableObjectModel.Columns.UID + TEXT + " NOT NULL UNIQUE",
+                UID + TEXT + " NOT NULL UNIQUE",
                 BaseIdentifiableObjectModel.Columns.CODE + TEXT,
                 BaseIdentifiableObjectModel.Columns.NAME + TEXT,
                 BaseIdentifiableObjectModel.Columns.DISPLAY_NAME + TEXT,

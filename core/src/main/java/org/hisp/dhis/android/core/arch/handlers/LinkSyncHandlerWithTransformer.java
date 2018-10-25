@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,41 +25,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
 import java.util.Collection;
 
-public class LinkSyncHandlerImpl<O extends Model> implements LinkSyncHandler<O>,
-        LinkSyncHandlerWithTransformer<O> {
+public interface LinkSyncHandlerWithTransformer<O extends Model> extends LinkSyncHandler<O> {
 
-    private final LinkModelStore<O> store;
-
-    public LinkSyncHandlerImpl(LinkModelStore<O> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handleMany(String masterUid, Collection<O> slaves) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (O slave : slaves) {
-                store.insert(slave);
-            }
-        }
-    }
-
-    @Override
-    public void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (O slave : slaves) {
-                O oTransformed = modelBuilder.buildModel(slave);
-                store.insert(oTransformed);
-            }
-        }
-    }
+    void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder);
 }
+

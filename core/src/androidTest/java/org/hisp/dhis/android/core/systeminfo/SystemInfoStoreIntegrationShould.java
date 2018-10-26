@@ -30,33 +30,32 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
-import static com.google.common.truth.Truth.assertThat;
-
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoStoreIntegrationShould extends AbsStoreTestCase {
+public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
 
-    private final SystemInfo systemInfo = SystemInfoSamples.get1();
-
-    @Before
-    @Override
-    public void setUp() throws IOException {
-        super.setUp();
+    public SystemInfoStoreIntegrationShould() {
+        super(SystemInfoStore.create(DatabaseAdapterFactory.get(true)));
     }
 
-    @Test
-    public void get_inserted_object() {
-        ObjectWithoutUidStore<SystemInfo> store = SystemInfoStore.create(databaseAdapter());
-        store.insert(systemInfo);
-        SystemInfo systemInfoFromDb = store.selectFirst();
-        assertThat(systemInfoFromDb).isEqualTo(systemInfo);
+    @Override
+    protected SystemInfo buildObject() {
+        return SystemInfoSamples.get1();
+    }
+
+    @Override
+    protected SystemInfo buildObjectToUpdate() {
+        return SystemInfoSamples.get2();
+    }
+
+    @Override
+    protected SystemInfo buildObjectWithId() {
+        return SystemInfoSamples.get1().toBuilder()
+                .id(1L)
+                .build();
     }
 }

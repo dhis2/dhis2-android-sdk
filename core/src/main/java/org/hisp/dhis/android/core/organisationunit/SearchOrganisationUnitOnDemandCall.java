@@ -44,10 +44,9 @@ import java.util.Set;
 
 import retrofit2.Retrofit;
 
-@Deprecated
-public final class OldSearchOrganisationUnitCall {
+public final class SearchOrganisationUnitOnDemandCall {
 
-    private OldSearchOrganisationUnitCall() {}
+    private SearchOrganisationUnitOnDemandCall() {}
 
     public interface Factory {
         Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,

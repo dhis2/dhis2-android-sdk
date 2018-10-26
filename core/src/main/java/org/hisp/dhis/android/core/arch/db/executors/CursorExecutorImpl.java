@@ -25,28 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.executors;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import android.database.Cursor;
 
-public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
+import org.hisp.dhis.android.core.common.CursorModelFactory;
 
-    private final ObjectStyleStore objectStyleStore;
-    private final TableInfo objectWithStyleTableInfo;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+public class CursorExecutorImpl<M> implements CursorExecutor<M> {
 
-    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
-                                TableInfo objectWithStyleTableInfo) {
-        this.objectStyleStore = objectStyleStore;
-        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
+    private final CursorModelFactory<M> modelFactory;
+
+    public CursorExecutorImpl(CursorModelFactory<M> modelFactory) {
+        this.modelFactory = modelFactory;
     }
 
     @Override
-    protected O appendChildren(O objectWithStyle) {
-        B builder = objectWithStyle.toBuilder();
-        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
-        return builder.style(style).build();
+    public void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    collection.add(modelFactory.fromCursor(cursor));
+                }
+                while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
+        }
+    }
+
+    @Override
+    public List<M> getObjects(Cursor cursor) {
+        List<M> list = new ArrayList<>();
+        addObjectsToCollection(cursor, list);
+        return list;
     }
 }

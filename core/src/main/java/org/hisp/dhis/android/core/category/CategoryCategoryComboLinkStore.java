@@ -37,8 +37,7 @@ final class CategoryCategoryComboLinkStore {
     };
 
     public static LinkModelStore<CategoryCategoryComboLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryComboLinkModel.TABLE,
-                new CategoryCategoryComboLinkModel.Columns(),
-                CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO, BINDER, FACTORY);
+        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+                CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO, BINDER, FACTORY);
     }
 }

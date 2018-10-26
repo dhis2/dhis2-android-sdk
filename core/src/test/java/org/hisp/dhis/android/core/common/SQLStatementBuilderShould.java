@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.category.CategoryTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.legendset.LegendModel;
@@ -44,15 +46,22 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class SQLStatementBuilderShould {
 
-    private SQLStatementBuilder builder;
+    private final static String TABLE_NAME = "Test_Table";
+    private final static String COL_1 = "Test_Column_Name1";
+    private final static String COL_2 = "Test_Column_Name2";
+
+    private final static String[] columns = new String[]{COL_1, COL_2};
+
+    private SQLStatementBuilder builder = new SQLStatementBuilder(TABLE_NAME, columns, columns);
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            CategoryTableInfo.TABLE_INFO,
+            COL_1,
+            COL_2);
 
     @Before
     public void setUp() throws IOException {
-        String[] columns = new String[]{
-                "Test_Column_Name1",
-                "Test_Column_Name2"
-        };
-        this.builder = new SQLStatementBuilder("Test_Table", columns, columns);
+
     }
 
     @Test
@@ -198,6 +207,13 @@ public class SQLStatementBuilderShould {
     public void generate_select_by_uid_statement() {
         assertThat(builder.selectByUid()).isEqualTo(
                 "SELECT * FROM Test_Table WHERE uid=?;"
+        );
+    }
+
+    @Test
+    public void generate_select_children_with_link_table() {
+        assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID")).isEqualTo(
+                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID';"
         );
     }
 }

@@ -25,28 +25,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+
+package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
-
-    private final ObjectStyleStore objectStyleStore;
-    private final TableInfo objectWithStyleTableInfo;
+public final class CategoryCategoryComboLinkTableInfo {
 
 
-    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
-                                TableInfo objectWithStyleTableInfo) {
-        this.objectStyleStore = objectStyleStore;
-        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "CategoryCategoryComboLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            CategoryTableInfo.TABLE_INFO,
+            Columns.CATEGORY_COMBO,
+            Columns.CATEGORY);
+
+    private CategoryCategoryComboLinkTableInfo() {
     }
 
-    @Override
-    protected O appendChildren(O objectWithStyle) {
-        B builder = objectWithStyle.toBuilder();
-        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
-        return builder.style(style).build();
+    static class Columns extends BaseModel.Columns {
+
+        private static final String CATEGORY = "category";
+        static final String CATEGORY_COMBO = "categoryCombo";
+        private static final String SORT_ORDER = "sortOrder";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CATEGORY, CATEGORY_COMBO, SORT_ORDER);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

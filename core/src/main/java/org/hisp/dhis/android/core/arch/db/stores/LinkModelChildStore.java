@@ -25,28 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.stores;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
+import java.util.List;
 
-    private final ObjectStyleStore objectStyleStore;
-    private final TableInfo objectWithStyleTableInfo;
-
-
-    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
-                                TableInfo objectWithStyleTableInfo) {
-        this.objectStyleStore = objectStyleStore;
-        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
-    }
-
-    @Override
-    protected O appendChildren(O objectWithStyle) {
-        B builder = objectWithStyle.toBuilder();
-        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
-        return builder.style(style).build();
-    }
+public interface LinkModelChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
+    List<C> getChildren(P p);
 }

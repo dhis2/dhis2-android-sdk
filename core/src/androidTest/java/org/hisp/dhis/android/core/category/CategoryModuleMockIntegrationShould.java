@@ -32,12 +32,20 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
-    public void allow_access_to_combos_with_children() {
+    public void allow_access_to_combos_with_category_option_combos() {
         Set<CategoryCombo> combos = d2.categoryModule().categoryCombos.getSetWithAllChildren();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
-            // TODO assertThat(combo.categories() == null, is(false));
             assertThat(combo.categoryOptionCombos() == null, is(false));
+        }
+    }
+
+    @Test
+    public void allow_access_to_combos_with_categories() {
+        Set<CategoryCombo> combos = d2.categoryModule().categoryCombos.getSetWithAllChildren();
+        assertThat(combos.size(), is(2));
+        for (CategoryCombo combo : combos) {
+            assertThat(combo.categories() == null, is(false));
         }
     }
 
@@ -47,21 +55,32 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
-        // TODO assertThat(combo.categories() == null, is(false));
+        assertThat(combo.categories() == null, is(true));
         assertThat(combo.categoryOptionCombos() == null, is(true));
     }
 
     @Test
-    public void allow_access_to_combo_by_uid_with_children() {
+    public void allow_access_to_combo_by_uid_with_category_option_combos() {
         CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
-        // TODO assertThat(combo.categories() == null, is(true));
         List<CategoryOptionCombo> optionCombos = combo.categoryOptionCombos();
         assertThat(optionCombos == null, is(false));
         assertThat(optionCombos.size(), is(1));
         assertThat(optionCombos.iterator().next().name(), is("Trained TBA, At PHU"));
+    }
+
+    @Test
+    public void allow_access_to_combo_by_uid_with_categories() {
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
+        assertThat(combo.uid(), is("m2jTvAj5kkm"));
+        assertThat(combo.code(), is("BIRTHS"));
+        assertThat(combo.name(), is("Births"));
+        List<Category> categories = combo.categories();
+        assertThat(combo.categories() == null, is(false));
+        assertThat(categories.size(), is(2));
+        assertThat(categories.iterator().next().code(), is("BIRTHS_ATTENDED"));
     }
 
     @Test

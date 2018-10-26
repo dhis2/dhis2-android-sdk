@@ -46,7 +46,7 @@ public interface DatabaseAdapter {
      *
      * @param sql The raw SQL statement, may contain ? for unknown values to be
      *            bound later.
-     * @return A pre-compiled {@link SQLiteStatement} object. Note that
+     * @return A pre-compiled {@link SQLiteStatement} object. Note2229Compatible that
      * {@link SQLiteStatement}s are not synchronized, see the documentation for more details.
      */
     SQLiteStatement compileStatement(String sql);
@@ -58,7 +58,7 @@ public interface DatabaseAdapter {
      * @param selectionArgs You may include ?s in where clause in the query,
      *                      which will be replaced by the values from selectionArgs. The
      *                      values will be bound as Strings.
-     * @return A {@link Cursor} object, which is positioned before the first entry. Note that
+     * @return A {@link Cursor} object, which is positioned before the first entry. Note2229Compatible that
      * {@link Cursor}s are not synchronized, see the documentation for more details.
      */
     Cursor query(String sql, String... selectionArgs);

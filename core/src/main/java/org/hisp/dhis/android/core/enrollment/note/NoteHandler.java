@@ -35,7 +35,7 @@ public final class NoteHandler {
 
     private NoteHandler() {}
 
-    public static GenericHandler<Note, NoteModel> create(DatabaseAdapter databaseAdapter) {
+    public static GenericHandler<Note229Compatible, NoteModel> create(DatabaseAdapter databaseAdapter) {
         return new ObjectWithoutUidHandlerImpl<>(NoteStore.create(databaseAdapter));
     }
 }

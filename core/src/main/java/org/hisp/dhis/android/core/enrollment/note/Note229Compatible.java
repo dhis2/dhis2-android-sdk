@@ -28,28 +28,46 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import android.support.annotation.Nullable;
 
-import java.io.IOException;
-import java.text.ParseException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public class NoteShould extends BaseObjectShould implements ObjectShould {
+@AutoValue
+public abstract class Note229Compatible {
+    private final static String VALUE = "value";
+    private final static String STORED_BY = "storedBy";
+    private final static String STORED_DATE = "storedDate";
 
-    public NoteShould() {
-        super("note.json");
-    }
+    private static final Field<Note229Compatible, String> value = Field.create(VALUE);
+    private static final Field<Note229Compatible, String> storedBy = Field.create(STORED_BY);
+    private static final Field<Note229Compatible, String> storedDate= Field.create(STORED_DATE);
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
+    public static final Fields<Note229Compatible> allFields = Fields.<Note229Compatible>builder().fields(
+            value, storedBy, storedDate).build();
 
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
+    @Nullable
+    @JsonProperty(VALUE)
+    public abstract String value();
+
+    @Nullable
+    @JsonProperty(STORED_BY)
+    public abstract String storedBy();
+
+    @Nullable
+    @JsonProperty(STORED_DATE)
+    public abstract String storedDate();
+
+    @JsonCreator
+    public static Note229Compatible create(
+            @JsonProperty(VALUE) String value,
+            @JsonProperty(STORED_BY) String storedBy,
+            @JsonProperty(STORED_DATE) String storedDate) {
+
+        return new AutoValue_Note229Compatible(value, storedBy, storedDate);
     }
 }

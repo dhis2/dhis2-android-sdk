@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
 import org.hisp.dhis.android.core.enrollment.note.NoteBuilder;
 import org.hisp.dhis.android.core.enrollment.note.NoteModel;
 import org.hisp.dhis.android.core.enrollment.note.NoteStore;
@@ -320,8 +320,8 @@ public class EnrollmentStoreImpl extends StoreWithStateImpl implements Enrollmen
         return enrollmentMap;
     }
 
-    private List<Note> getNotes(String uid) {
-        List<Note> notes = new ArrayList<>();
+    private List<Note229Compatible> getNotes(String uid) {
+        List<Note229Compatible> notes = new ArrayList<>();
         Set<NoteModel> noteModels = NoteStore.create(databaseAdapter).selectAll();
         NoteBuilder noteBuilder = new NoteBuilder();
         for (NoteModel noteModel : noteModels) {

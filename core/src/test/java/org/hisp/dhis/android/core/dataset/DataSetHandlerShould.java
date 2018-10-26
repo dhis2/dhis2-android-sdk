@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
@@ -87,7 +88,7 @@ public class DataSetHandlerShould {
             DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
 
     @Mock
-    private LinkModelHandler<DataInputPeriod, DataInputPeriodModel> dataInputPeriodHandler;
+    private LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler;
 
     @Mock
     private DataSet dataSet;
@@ -180,8 +181,9 @@ public class DataSetHandlerShould {
 
         verify(compulsoryDataElementOperandHandler, never()).handleMany(anyListOf(DataElementOperand.class));
 
-        verify(dataInputPeriodHandler, never()).handleMany(anyString(), anyListOf(DataInputPeriod.class),
-                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriodModel>>any());
+        verify(dataInputPeriodHandler, never()).handleMany(anyString(),
+                anyListOf(DataInputPeriod.class),
+                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
     }
 
     @Test
@@ -232,8 +234,9 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet, new DataSetModelBuilder());
 
-        verify(dataInputPeriodHandler).handleMany(anyString(), anyListOf(DataInputPeriod.class),
-                any(DataInputPeriodModelBuilder.class));
+        verify(dataInputPeriodHandler).handleMany(anyString(),
+                anyListOf(DataInputPeriod.class),
+                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
     }
 
     @Test

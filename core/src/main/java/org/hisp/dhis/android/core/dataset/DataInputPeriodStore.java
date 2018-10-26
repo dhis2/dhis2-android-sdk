@@ -44,29 +44,32 @@ public final class DataInputPeriodStore {
 
     private DataInputPeriodStore() {}
 
-    private static final StatementBinder<DataInputPeriodModel> BINDER = new StatementBinder<DataInputPeriodModel>() {
+    private static final StatementBinder<DataInputPeriod> BINDER =
+            new StatementBinder<DataInputPeriod>() {
+                @Override
+                public void bindToStatement(@NonNull DataInputPeriod dataInputPeriod,
+                                            @NonNull SQLiteStatement sqLiteStatement) {
+                    sqLiteBind(sqLiteStatement, 1, dataInputPeriod.dataSetUid());
+                    sqLiteBind(sqLiteStatement, 2, dataInputPeriod.periodUid());
+                    sqLiteBind(sqLiteStatement, 3, dataInputPeriod.openingDate());
+                    sqLiteBind(sqLiteStatement, 4, dataInputPeriod.closingDate());
+                }
+            };
+
+    private static final CursorModelFactory<DataInputPeriod> FACTORY
+            = new CursorModelFactory<DataInputPeriod>() {
         @Override
-        public void bindToStatement(@NonNull DataInputPeriodModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.dataSet());
-            sqLiteBind(sqLiteStatement, 2, o.period());
-            sqLiteBind(sqLiteStatement, 3, o.openingDate());
-            sqLiteBind(sqLiteStatement, 4, o.closingDate());
+        public DataInputPeriod fromCursor(Cursor cursor) {
+            return DataInputPeriod.create(cursor);
         }
     };
 
-    private static final CursorModelFactory<DataInputPeriodModel> FACTORY
-            = new CursorModelFactory<DataInputPeriodModel>() {
-        @Override
-        public DataInputPeriodModel fromCursor(Cursor cursor) {
-            return DataInputPeriodModel.create(cursor);
-        }
-    };
+    public static LinkModelStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
 
-    public static LinkModelStore<DataInputPeriodModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataInputPeriodModel.TABLE,
-                new DataInputPeriodModel.Columns(),
-                DataInputPeriodModel.Columns.DATA_SET,
+        return StoreFactory.linkModelStore(
+                databaseAdapter,
+                DataInputPeriodTableInfo.TABLE_INFO,
+                DataInputPeriodTableInfo.DATA_SET,
                 BINDER,
                 FACTORY);
     }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,41 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+package org.hisp.dhis.android.core.dataset;
 
-import java.util.Collection;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class LinkSyncHandlerImpl<O extends Model> implements LinkSyncHandler<O>,
-        LinkSyncHandlerWithTransformer<O> {
+public class DataInputPeriodTableInfo {
 
-    private final LinkModelStore<O> store;
+    static final String DATA_SET = "dataSet";
 
-    public LinkSyncHandlerImpl(LinkModelStore<O> store) {
-        this.store = store;
-    }
+    private DataInputPeriodTableInfo() {}
 
-    @Override
-    public void handleMany(String masterUid, Collection<O> slaves) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (O slave : slaves) {
-                store.insert(slave);
-            }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "DataInputPeriod";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new DataInputPeriodTableInfo.Columns();
+        }
+    };
+
+    static class Columns extends BaseDataModel.Columns {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DataInputPeriodTableInfo.DATA_SET,
+                    DataInputPeriodFields.PERIOD,
+                    DataInputPeriodFields.OPENING_DATE,
+                    DataInputPeriodFields.CLOSING_DATE);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{
+                    DataInputPeriodTableInfo.DATA_SET,
+                    DataInputPeriodFields.PERIOD
+            };
         }
     }
 
-    @Override
-    public void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (O slave : slaves) {
-                O oTransformed = modelBuilder.buildModel(slave);
-                store.insert(oTransformed);
-            }
-        }
-    }
 }

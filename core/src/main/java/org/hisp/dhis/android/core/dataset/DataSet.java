@@ -126,7 +126,7 @@ public abstract class DataSet extends BaseNameableObject {
             indicators.with(ObjectWithUid.uid),
             sections.with(SectionFields.allFields),
             compulsoryDataElementOperands.with(DataElementOperandFields.allFields),
-            dataInputPeriods.with(DataInputPeriod.allFields),
+            dataInputPeriods.with(DataInputPeriodFields.allFields),
             access.with(Access.data.with(DataAccess.write)),
             style.with(ObjectStyleFields.allFields)).build();
 

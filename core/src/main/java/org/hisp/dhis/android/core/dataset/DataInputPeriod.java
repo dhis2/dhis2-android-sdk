@@ -28,62 +28,79 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataInputPeriod {
+@JsonDeserialize(builder = AutoValue_DataInputPeriod.Builder.class)
+public abstract class DataInputPeriod extends BaseDataModel {
 
-    private static final String PERIOD = "period";
-    private static final String OPENING_DATE = "openingDate";
-    private static final String CLOSING_DATE = "closingDate";
+    @Nullable
+    @JsonIgnore
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid dataSet();
 
-    public static final NestedField<DataInputPeriod, ObjectWithUid> period = NestedField.create(PERIOD);
-    public static final Field<DataInputPeriod, String> openingDate = Field.create(OPENING_DATE);
-    public static final Field<DataInputPeriod, String> closingDate = Field.create(CLOSING_DATE);
+    String dataSetUid() {
+        return dataSet() == null ? null : dataSet().uid();
+    }
 
-    public static final Fields<DataInputPeriod> allFields = Fields.<DataInputPeriod>builder().fields(
-            period.with(ObjectWithUid.uid),
-            openingDate,
-            closingDate
-    ).build();
-
-    @JsonProperty(PERIOD)
+    @JsonProperty
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid period();
 
     String periodUid() {
-        ObjectWithUid period = period();
-        return period == null ? null : period.uid();
+        return period() == null ? null : period().uid();
     }
 
     @Nullable
-    @JsonProperty(OPENING_DATE)
+    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
-    @JsonProperty(CLOSING_DATE)
+    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closingDate();
 
-    @JsonCreator
-    public static DataInputPeriod create(
-            @JsonProperty(PERIOD) ObjectWithUid period,
-            @JsonProperty(OPENING_DATE) Date openingDate,
-            @JsonProperty(CLOSING_DATE) Date closingDate) {
+    @NonNull
+    static DataInputPeriod create(Cursor cursor) {
+        return $AutoValue_DataInputPeriod.createFromCursor(cursor);
+    }
 
-        return new AutoValue_DataInputPeriod(period, openingDate, closingDate);
+    public abstract DataInputPeriod.Builder toBuilder();
+
+    public static DataInputPeriod.Builder builder() {
+        return new $$AutoValue_DataInputPeriod.Builder();
+    }
+
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseDataModel.Builder<DataInputPeriod.Builder> {
+
+        public abstract Builder dataSet(ObjectWithUid dataSet);
+
+        public abstract Builder period(ObjectWithUid period);
+
+        public abstract Builder openingDate(Date openingDate);
+
+        public abstract Builder closingDate(Date closingDate);
+
+        public abstract DataInputPeriod build();
     }
 }

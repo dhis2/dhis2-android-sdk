@@ -26,26 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.arch.handlers;
 
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public class DataInputPeriodModelBuilder extends ModelBuilder<DataInputPeriod, DataInputPeriodModel> {
+import java.util.Collection;
 
-    private final DataInputPeriodModel.Builder builder;
+public interface LinkSyncHandlerWithTransformer<O extends Model> extends LinkSyncHandler<O> {
 
-    public DataInputPeriodModelBuilder(DataSet dataSet) {
-        this.builder = DataInputPeriodModel.builder()
-                .dataSet(dataSet.uid());
-    }
-
-    @Override
-    public DataInputPeriodModel buildModel(DataInputPeriod dataInputPeriod) {
-
-        return builder
-                .period(dataInputPeriod.periodUid())
-                .openingDate(dataInputPeriod.openingDate())
-                .closingDate(dataInputPeriod.closingDate())
-                .build();
-    }
+    void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder);
 }
+

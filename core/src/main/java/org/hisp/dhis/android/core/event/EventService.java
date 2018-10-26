@@ -22,7 +22,6 @@ public interface EventService {
     String PAGE = "page";
     String EVENTS = "events";
     String ATTRIBUTE_CATEGORY_COMBO = "attributeCc";
-    String ATTRIBUTE_CATEGORY_OPTION = "attributeCos";
     String STRATEGY = "strategy";
 
     @POST(EVENTS)
@@ -44,6 +43,5 @@ public interface EventService {
             @Query(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<Event> fields,
             @Query(PAGING) Boolean paging, @Query(PAGE) int page,
-            @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo,
-            @Query(ATTRIBUTE_CATEGORY_OPTION) String categoryOption);
+            @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo);
 }

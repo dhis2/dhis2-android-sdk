@@ -34,9 +34,7 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
-import org.hisp.dhis.android.core.category.CategoryOptionModel;
 import org.hisp.dhis.android.core.category.CreateCategoryOptionComboUtils;
-import org.hisp.dhis.android.core.category.CreateCategoryOptionUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -90,7 +88,6 @@ public class EventStoreShould extends AbsStoreTestCase {
             Columns.COMPLETE_DATE, // completedDate
             Columns.DUE_DATE, // dueDate
             Columns.STATE,
-            Columns.ATTRIBUTE_CATEGORY_OPTIONS,
             Columns.ATTRIBUTE_OPTION_COMBO,
             Columns.TRACKED_ENTITY_INSTANCE
     };
@@ -112,7 +109,6 @@ public class EventStoreShould extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY_UID = "trackedEntityUid";
     private static final long RELATIONSHIP_TYPE_ID = 3L;
     private static final String RELATIONSHIP_TYPE_UID = "relationshipTypeUid";
-    private static final String ATTRIBUTE_CATEGORY_OPTION_UID = "attributeCategoryOptionUid";
     private static final String ATTRIBUTE_OPTION_COMBO_UID = "attributeOptionComboUid";
     private final Date date;
 
@@ -153,10 +149,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 1L, ATTRIBUTE_OPTION_COMBO_UID
         );
         database().insert(CategoryOptionComboModel.TABLE, null, categoryOptionCombo);
-        ContentValues categoryOption = CreateCategoryOptionUtils.create(
-                1l, ATTRIBUTE_CATEGORY_OPTION_UID
-        );
-        database().insert(CategoryOptionModel.TABLE, null, categoryOption);
         database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
@@ -182,7 +174,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date, // completedDate
                 date, // dueDate
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
@@ -206,7 +197,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 dateString, // completedDate
                 dateString, // dueDate
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         ).isExhausted();
@@ -218,14 +208,12 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         long rowId = eventStore.insert(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE);
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(EVENT_UID, ENROLLMENT_UID, null, null, null, null, null, null, null, PROGRAM,
                 PROGRAM_STAGE, ORGANISATION_UNIT, null, null, null, null,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE).isExhausted();
         cursor.close();
@@ -250,7 +238,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
@@ -279,7 +266,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
@@ -309,7 +295,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
@@ -343,7 +328,6 @@ public class EventStoreShould extends AbsStoreTestCase {
 
         int updated = eventStore.update(EVENT_UID, null, null, null, null, null, null, null, null,
                 PROGRAM, PROGRAM_STAGE, ORGANISATION_UNIT, updatedDate, null, null, null,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID, TRACKED_ENTITY_INSTANCE,
                 EVENT_UID);
 
@@ -489,7 +473,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
@@ -514,7 +497,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
@@ -539,7 +521,6 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
@@ -565,11 +546,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 date,
                 date,
                 STATE,
-                ATTRIBUTE_CATEGORY_OPTION_UID,
                 ATTRIBUTE_OPTION_COMBO_UID,
                 TRACKED_ENTITY_INSTANCE
         );
     }
-
-
 }

@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.event.EventEndpointCall;
 import org.hisp.dhis.android.core.event.EventQuery;
 
@@ -19,24 +18,18 @@ public class EventCallFactory {
         return EventEndpointCall.create(retrofit, eventQuery);
     }
 
-    public static EventEndpointCall create(Retrofit retrofit, String orgUnit, int pageSize, String categoryComboUID,
-                                           String categoryOptionUID) {
+    public static EventEndpointCall create(Retrofit retrofit, String orgUnit, int pageSize, String categoryComboUID) {
 
         CategoryCombo categoryCombo = CategoryCombo
                 .builder()
                 .uid(categoryComboUID)
                 .build();
 
-        CategoryOption categoryOption = CategoryOption
-                .builder()
-                .uid(categoryOptionUID)
-                .build();
-
         EventQuery eventQuery = EventQuery.Builder
                 .create()
                 .withOrgUnit(orgUnit)
                 .withPageSize(pageSize)
-                .withCategoryComboAndCategoryOption(categoryCombo, categoryOption)
+                .withCategoryCombo(categoryCombo)
                 .build();
 
         return EventEndpointCall.create(retrofit, eventQuery);

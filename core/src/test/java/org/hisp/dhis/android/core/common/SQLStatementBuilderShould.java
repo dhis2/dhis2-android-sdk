@@ -52,7 +52,7 @@ public class SQLStatementBuilderShould {
 
     private final static String[] columns = new String[]{COL_1, COL_2};
 
-    private SQLStatementBuilder builder = new SQLStatementBuilder("Test_Table", columns, columns);
+    private SQLStatementBuilder builder = new SQLStatementBuilder(TABLE_NAME, columns, columns);
 
     static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
             CategoryTableInfo.TABLE_INFO,

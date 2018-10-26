@@ -26,43 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.indicator;
 
-import android.support.annotation.Nullable;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
-    public static final String SHORT_NAME = "shortName";
-    public static final String DISPLAY_SHORT_NAME = "displayShortName";
-    public static final String DESCRIPTION = "description";
-    public static final String DISPLAY_DESCRIPTION = "displayDescription";
+@RunWith(AndroidJUnit4.class)
+public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
 
-    @Nullable
+    public IndicatorStoreIntegrationShould() {
+        super(IndicatorStore.create(DatabaseAdapterFactory.get(false)));
+    }
+
     @Override
-    public abstract String shortName();
+    protected Indicator buildObject() {
+        return IndicatorSamples.getIndicator();
+    }
 
-    @Nullable
     @Override
-    public abstract String displayShortName();
+    protected Indicator buildObjectWithId() {
+        return IndicatorSamples.getIndicator().toBuilder()
+                .id(1L)
+                .build();
+    }
 
-    @Nullable
     @Override
-    public abstract String description();
+    protected Indicator buildObjectToUpdate() {
+        return IndicatorSamples.getIndicator().toBuilder()
+                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
+                .build();
+    }
 
-    @Nullable
-    @Override
-    public abstract String displayDescription();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
-
-        public abstract T shortName(@Nullable String shortName);
-
-        public abstract T displayShortName(@Nullable String displayShortName);
-
-        public abstract T description(@Nullable String description);
-
-        public abstract T displayDescription(@Nullable String displayDescription);
+    @Test
+    public void stub() throws Exception {
     }
 }

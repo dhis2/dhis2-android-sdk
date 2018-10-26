@@ -96,7 +96,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
     }
 
     @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> {
+    public static abstract class Builder<T extends Builder> {
 
         @JsonProperty(UID)
         public abstract T uid(String uid);

@@ -26,43 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.data.indicator;
 
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.indicator.Indicator;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
-    public static final String SHORT_NAME = "shortName";
-    public static final String DISPLAY_SHORT_NAME = "displayShortName";
-    public static final String DESCRIPTION = "description";
-    public static final String DISPLAY_DESCRIPTION = "displayDescription";
+public class IndicatorSamples {
 
-    @Nullable
-    @Override
-    public abstract String shortName();
+    public static Indicator getIndicator() {
+        Indicator.Builder indicatorBuilder = Indicator.builder();
 
-    @Nullable
-    @Override
-    public abstract String displayShortName();
 
-    @Nullable
-    @Override
-    public abstract String description();
-
-    @Nullable
-    @Override
-    public abstract String displayDescription();
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
-
-        public abstract T shortName(@Nullable String shortName);
-
-        public abstract T displayShortName(@Nullable String displayShortName);
-
-        public abstract T description(@Nullable String description);
-
-        public abstract T displayDescription(@Nullable String displayDescription);
+        fillNameableProperties(indicatorBuilder);
+        indicatorBuilder
+                .annualized(false)
+                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
+                .numerator("#{a.b}")
+                .numeratorDescription("num descr")
+                .denominator("#{c.d}")
+                .denominatorDescription("den descr")
+                .url("dhis2.org");
+        return indicatorBuilder.build();
     }
 }

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 public final class LegendHandler {
 

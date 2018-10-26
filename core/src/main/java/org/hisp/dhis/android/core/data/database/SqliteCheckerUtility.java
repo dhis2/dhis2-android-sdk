@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
+
 final public class SqliteCheckerUtility {
 
     private SqliteCheckerUtility() {

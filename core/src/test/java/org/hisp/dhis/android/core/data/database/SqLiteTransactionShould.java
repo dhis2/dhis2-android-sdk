@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteOpenHelper;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteTransaction;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -41,12 +43,12 @@ import static org.mockito.Mockito.when;
 public class SqLiteTransactionShould {
 
     @Mock
-    DbOpenHelper dbOpenHelper;
+    BriteOpenHelper dbOpenHelper;
 
     @Mock
     SQLiteDatabase database;
 
-    private SqLiteTransaction transaction; // The class we are testing
+    private BriteTransaction transaction; // The class we are testing
 
     @Before
     public void setUp() {
@@ -54,7 +56,7 @@ public class SqLiteTransactionShould {
 
         when(dbOpenHelper.getWritableDatabase()).thenReturn(database);
 
-        transaction = new SqLiteTransaction(dbOpenHelper);
+        transaction = new BriteTransaction(dbOpenHelper);
     }
 
     @Test

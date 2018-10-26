@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.configuration;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 public final class ConfigurationManagerFactory {
 

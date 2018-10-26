@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.common;
 
 import android.util.Log;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.Transaction;
 
 import java.util.ArrayList;
 import java.util.Collection;

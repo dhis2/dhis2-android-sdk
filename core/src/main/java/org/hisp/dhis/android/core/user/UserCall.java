@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.arch.db.implementations.Transaction;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 public final class UserCall extends SyncCall<User> {

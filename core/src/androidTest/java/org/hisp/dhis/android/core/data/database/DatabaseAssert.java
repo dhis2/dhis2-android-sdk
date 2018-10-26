@@ -5,6 +5,8 @@ import static org.hamcrest.core.Is.is;
 
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
+
 public final class DatabaseAssert {
 
     DatabaseAdapter databaseAdapter;

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 public final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<TrackedEntityType, TrackedEntityTypeModel> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;

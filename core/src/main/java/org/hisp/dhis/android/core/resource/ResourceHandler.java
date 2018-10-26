@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 import java.util.Date;
 

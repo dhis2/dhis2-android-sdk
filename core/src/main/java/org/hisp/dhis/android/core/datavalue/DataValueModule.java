@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

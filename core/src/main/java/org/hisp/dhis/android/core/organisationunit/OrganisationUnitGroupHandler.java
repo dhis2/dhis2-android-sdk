@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 @SuppressWarnings("PMD.UseUtilityClass")
 public class OrganisationUnitGroupHandler

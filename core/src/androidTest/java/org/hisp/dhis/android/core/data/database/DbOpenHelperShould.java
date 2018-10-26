@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteOpenHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,10 +43,10 @@ public class DbOpenHelperShould {
 
     @Test
     public void have_tests_on_database_versions() {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
+        BriteOpenHelper dbOpenHelper = new BriteOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , null);
         SQLiteDatabase database = dbOpenHelper.getWritableDatabase();
-        assertThat(dbOpenHelper.getWritableDatabase().getVersion()).isEqualTo(DbOpenHelper.VERSION);
+        assertThat(dbOpenHelper.getWritableDatabase().getVersion()).isEqualTo(BriteOpenHelper.VERSION);
         database.close();
     }
 }

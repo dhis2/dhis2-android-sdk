@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollecti
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
         implements ReadWriteCollectionRepository<DataValue> {

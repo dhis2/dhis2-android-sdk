@@ -77,7 +77,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
         /*  This test won't pass independently of the sync of metadata, as the foreign keys
             constraints won't be satisfied.
             To run the test, you will need to disable foreign key support in database in
-            DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
+            BriteOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */
 
         dataValueCall.call();

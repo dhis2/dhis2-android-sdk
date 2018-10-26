@@ -7,7 +7,7 @@ import com.facebook.stetho.okhttp3.StethoInterceptor;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 import java.util.concurrent.TimeUnit;
 

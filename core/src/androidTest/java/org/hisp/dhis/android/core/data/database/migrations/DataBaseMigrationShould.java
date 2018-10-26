@@ -4,9 +4,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteOpenHelper;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteDatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class DataBaseMigrationShould {
     private DatabaseAdapter databaseAdapter;
-    private DbOpenHelper dbOpenHelper;
+    private BriteOpenHelper dbOpenHelper;
     private String dbName = null;
     private SQLiteDatabase databaseInMemory;
 
@@ -66,10 +66,10 @@ public class DataBaseMigrationShould {
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {
         if (databaseAdapter == null) {
-            dbOpenHelper = new DbOpenHelper(
+            dbOpenHelper = new BriteOpenHelper(
                     InstrumentationRegistry.getTargetContext().getApplicationContext()
                     , dbName, databaseVersion);
-            databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+            databaseAdapter = new BriteDatabaseAdapter(dbOpenHelper);
             databaseInMemory = databaseAdapter.database();
         } else if (dbName == null) {
             if (databaseInMemory.getVersion() < databaseVersion) {

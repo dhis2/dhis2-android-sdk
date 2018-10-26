@@ -27,7 +27,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
 
    /* How to extract database from tests:
     edit: AbsStoreTestCase.java (adding database name.)
-    DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext()
+    BriteOpenHelper dbOpenHelper = new BriteOpenHelper(InstrumentationRegistry.getTargetContext()
     .getApplicationContext(),
     "test.db");
     make a debugger break point where desired (after sync complete)

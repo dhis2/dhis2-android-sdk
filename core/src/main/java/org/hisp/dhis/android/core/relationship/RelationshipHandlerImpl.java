@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;

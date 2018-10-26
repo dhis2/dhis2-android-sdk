@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 final class CategoryCategoryComboLinkChildStore {
 

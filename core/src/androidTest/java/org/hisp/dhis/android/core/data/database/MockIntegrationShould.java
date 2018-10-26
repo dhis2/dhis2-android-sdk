@@ -5,6 +5,9 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteOpenHelper;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteDatabaseAdapter;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -25,10 +28,10 @@ public abstract class MockIntegrationShould {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(
+        BriteOpenHelper dbOpenHelper = new BriteOpenHelper(
                 InstrumentationRegistry.getTargetContext().getApplicationContext(), dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        DatabaseAdapter databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        DatabaseAdapter databaseAdapter = new BriteDatabaseAdapter(dbOpenHelper);
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
     }

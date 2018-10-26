@@ -35,6 +35,9 @@ import android.support.test.InstrumentationRegistry;
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteOpenHelper;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteDatabaseAdapter;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.junit.After;
 import org.junit.Before;
@@ -51,10 +54,10 @@ public abstract class AbsStoreTestCase {
 
     @Before
     public void setUp() throws IOException {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
+        BriteOpenHelper dbOpenHelper = new BriteOpenHelper(InstrumentationRegistry.getTargetContext().getApplicationContext()
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        databaseAdapter = new BriteDatabaseAdapter(dbOpenHelper);
         Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }
 

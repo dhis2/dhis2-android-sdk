@@ -29,11 +29,10 @@
 package org.hisp.dhis.android.core;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
-import org.hisp.dhis.android.core.data.database.DbOpenHelper;
-import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteDatabaseAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +49,7 @@ import static org.assertj.core.api.Java6Assertions.fail;
 public class D2Tests {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private DbOpenHelper dbOpenHelper;
+    private SQLiteOpenHelper dbOpenHelper;
 
     @Mock
     private OkHttpClient okHttpClient;
@@ -70,7 +69,7 @@ public class D2Tests {
         this.builder = new D2.Builder()
                 .configuration(configuration)
                 .okHttpClient(okHttpClient)
-                .databaseAdapter(new SqLiteDatabaseAdapter(dbOpenHelper))
+                .databaseAdapter(new BriteDatabaseAdapter(dbOpenHelper))
                 .context(context);
     }
 
@@ -88,7 +87,7 @@ public class D2Tests {
     @Test
     public void throw_illegal_argument_exception_when_build_with_db_open_helper_is_null() {
         try {
-            builder.databaseAdapter(new SqLiteDatabaseAdapter(null)).build();
+            builder.databaseAdapter(new BriteDatabaseAdapter(null)).build();
 
             fail("IllegalArgumentException was expected, but was not thrown");
         } catch (IllegalArgumentException illegalArgumentException) {

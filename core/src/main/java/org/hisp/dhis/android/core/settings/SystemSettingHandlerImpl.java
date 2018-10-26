@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 public final class SystemSettingHandlerImpl implements SystemSettingHandler {
 

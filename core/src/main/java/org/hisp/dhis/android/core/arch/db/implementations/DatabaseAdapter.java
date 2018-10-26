@@ -26,11 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.arch.db.implementations;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+
+import org.hisp.dhis.android.core.arch.db.implementations.Transaction;
 
 @SuppressWarnings("PMD.UseVarargs")
 public interface DatabaseAdapter {
@@ -112,7 +114,7 @@ public interface DatabaseAdapter {
 
 
     /**
-     * @return A newly started {@link org.hisp.dhis.android.core.data.database.Transaction}
+     * @return A newly started {@link Transaction}
      */
     Transaction beginNewTransaction();
 

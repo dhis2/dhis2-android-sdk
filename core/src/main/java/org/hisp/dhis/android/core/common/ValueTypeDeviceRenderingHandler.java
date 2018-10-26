@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.implementations.DatabaseAdapter;
 
 public final class ValueTypeDeviceRenderingHandler extends ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
         ValueTypeDeviceRenderingModel> {

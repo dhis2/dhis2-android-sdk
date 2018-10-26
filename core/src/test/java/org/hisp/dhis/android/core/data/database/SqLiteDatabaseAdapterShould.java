@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.data.database;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteOpenHelper;
+import org.hisp.dhis.android.core.arch.db.implementations.brite.BriteDatabaseAdapter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,24 +22,24 @@ public class SqLiteDatabaseAdapterShould {
     SQLiteDatabase readableDatabase;
 
     @Mock
-    DbOpenHelper dbOpenHelper;
+    BriteOpenHelper dbOpenHelper;
 
     @Mock
     SQLiteStatement sqLiteStatement;
 
-    SqLiteDatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
+    BriteDatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         Mockito.when(dbOpenHelper.getWritableDatabase()).thenReturn(writableDatabase);
         Mockito.when(dbOpenHelper.getReadableDatabase()).thenReturn(readableDatabase);
-        sqLiteDatabaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        sqLiteDatabaseAdapter = new BriteDatabaseAdapter(dbOpenHelper);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void throw_illegal_argument_exception_when_provide_null_db_open_helper() throws Exception {
-        new SqLiteDatabaseAdapter(null);
+        new BriteDatabaseAdapter(null);
     }
 
     @Test

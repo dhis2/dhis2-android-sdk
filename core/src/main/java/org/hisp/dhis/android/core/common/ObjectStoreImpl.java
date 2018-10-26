@@ -94,10 +94,10 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public Set<M> selectAll() {
-        Set<M> set = new HashSet<>();
-        addAll(set);
-        return set;
+    public List<M> selectAll() {
+        List<M> list = new ArrayList<>();
+        addAll(list);
+        return list;
     }
 
     @Override

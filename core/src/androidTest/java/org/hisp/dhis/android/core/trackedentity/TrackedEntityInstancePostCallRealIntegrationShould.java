@@ -264,7 +264,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.downloadTrackedEntityInstances(5, true).call();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.getSet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
 
         // Create a TEI by copying an existing one
         String teiBUid = codeGenerator.generate();
@@ -316,7 +316,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         TrackedEntityInstance t0 = trackedEntityInstances.get(0);
         TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.getSet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
 
         d2.relationshipModule().relationships.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
@@ -341,7 +341,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         ReadOnlyIdentifiableCollectionRepository<RelationshipType> typesRepository = relationshipModule.relationshipTypes;
         RelationshipCollectionRepository relationshipsRepository = relationshipModule.relationships;
 
-        RelationshipType relationshipType = typesRepository.getSet().iterator().next();
+        RelationshipType relationshipType = typesRepository.get().iterator().next();
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid());

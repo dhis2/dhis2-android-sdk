@@ -24,9 +24,9 @@ import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import retrofit2.Retrofit;
 
@@ -126,7 +125,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
-        Set<NoteModel> noteModels = noteStore.selectAll();
+        List<NoteModel> noteModels = noteStore.selectAll();
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 

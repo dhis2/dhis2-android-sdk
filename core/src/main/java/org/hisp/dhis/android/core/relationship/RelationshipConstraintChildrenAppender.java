@@ -31,12 +31,12 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 final class RelationshipConstraintChildrenAppender extends ChildrenAppender<RelationshipType> {
 
     private final ObjectWithoutUidStore<RelationshipConstraint> constraintStore;
-    private Set<RelationshipConstraint> constraintsSet;
+    private List<RelationshipConstraint> constraints;
 
 
     RelationshipConstraintChildrenAppender(ObjectWithoutUidStore<RelationshipConstraint> constraintStore) {
@@ -45,13 +45,13 @@ final class RelationshipConstraintChildrenAppender extends ChildrenAppender<Rela
 
     @Override
     public void prepareChildren(Collection<RelationshipType> collection) {
-        this.constraintsSet = this.constraintStore.selectAll();
+        this.constraints = this.constraintStore.selectAll();
     }
 
     @Override
     protected RelationshipType appendChildren(RelationshipType relationshipType) {
         RelationshipType.Builder builder = relationshipType.toBuilder();
-        for (RelationshipConstraint constraint : this.constraintsSet) {
+        for (RelationshipConstraint constraint : this.constraints) {
             if (constraint.relationshipType().uid().equals(relationshipType.uid())) {
                 if (constraint.constraintType().equals(RelationshipConstraintType.FROM)) {
                     builder.fromConstraint(constraint);

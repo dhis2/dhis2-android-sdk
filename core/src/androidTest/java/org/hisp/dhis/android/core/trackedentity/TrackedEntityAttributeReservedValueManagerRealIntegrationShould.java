@@ -41,7 +41,6 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -168,7 +167,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         d2.popTrackedEntityAttributeReservedValue(ownerUid, "not_stored_organisation_unit_uid");
     }
 
-    private Set<TrackedEntityAttributeReservedValueModel> selectAll() {
+    private List<TrackedEntityAttributeReservedValueModel> selectAll() {
         return store.selectAll();
     }
 

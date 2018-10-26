@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOnlyCollectionRepository<M> {
 
@@ -52,12 +52,12 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOn
     }
 
     @Override
-    public Set<M> getSet() {
+    public List<M> get() {
         return store.selectAll();
     }
 
     @Override
-    public Set<M> getSetWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObjectSet(getSet(), childrenAppenders);
+    public List<M> getWithAllChildren() {
+        return ChildrenAppenderExecutor.appendInObjectCollection(get(), childrenAppenders);
     }
 }

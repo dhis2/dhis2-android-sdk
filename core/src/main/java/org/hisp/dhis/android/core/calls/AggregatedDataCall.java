@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -140,7 +141,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
     }
 
-    private Set<String> selectPeriodIds(Set<PeriodModel> periodModels) {
+    private Set<String> selectPeriodIds(Collection<PeriodModel> periodModels) {
         Set<String> periodIds = new HashSet<>();
 
         for (PeriodModel period : periodModels) {

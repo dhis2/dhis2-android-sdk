@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -73,7 +73,7 @@ public abstract class ObjectStoreAbstractIntegrationShould<M> {
     @Test
     public void insert_and_select_all_objects() {
         store.insert(object);
-        Set<M> objectsFromDb = store.selectAll();
+        List<M> objectsFromDb = store.selectAll();
         assertThat(objectsFromDb.iterator().next()).isEqualTo(object);
     }
 

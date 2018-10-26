@@ -60,7 +60,7 @@ public abstract class ObjectStoreAbstractIntegrationShould<M> {
 
     @After
     public void tearDown() throws IOException {
-        DatabaseAdapterFactory.get(true).database().close();
+        DatabaseAdapterFactory.get(false).database().close();
     }
 
     @Test

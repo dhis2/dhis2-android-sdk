@@ -73,7 +73,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private String enrollment1Uid;
     private String trackedEntityInstance1Uid;
 
-    private String categoryOptionUid;
     private String categoryComboOptionUid;
 
 
@@ -101,7 +100,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         coordinates = "[9,9]";
         featureType = FeatureType.POINT;
 
-        categoryOptionUid = "xYerKDKCefk";
         categoryComboOptionUid = "HllvX50cXC0";
         eventUid = codeGenerator.generate();
         enrollmentUid = codeGenerator.generate();
@@ -413,7 +411,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         eventStore.insert(
                 eventUid, enrollmentUid, refDate, refDate, null, null,
                 EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                refDate, refDate, refDate, State.TO_POST, categoryOptionUid, categoryComboOptionUid, trackedEntityInstanceUid
+                refDate, refDate, refDate, State.TO_POST, categoryComboOptionUid, trackedEntityInstanceUid
         );
 
         trackedEntityDataValueStore.insert(
@@ -484,10 +482,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private boolean verifyEventCategoryAttributes(Event event, Event downloadedEvent) {
-            if(event.uid().equals(downloadedEvent.uid()) && event.attributeOptionCombo().equals(downloadedEvent.attributeOptionCombo()) && event.attributeCategoryOptions().equals(downloadedEvent.attributeCategoryOptions())){
-                return true;
-            }
-        return false;
+        return event.uid().equals(downloadedEvent.uid()) &&
+                event.attributeOptionCombo().equals(downloadedEvent.attributeOptionCombo());
     }
 
     private Date getCurrentDateMinusTwoHoursTenMinutes() {

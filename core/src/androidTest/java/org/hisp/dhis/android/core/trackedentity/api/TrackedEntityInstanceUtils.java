@@ -36,7 +36,6 @@ class TrackedEntityInstanceUtils {
     private static String coordinates = "[9,9]";
     private static FeatureType featureType = FeatureType.POINT;
 
-    private static String validCategoryOptionUid = "xYerKDKCefk"; // Default
     private static String validCategoryComboOptionUid = "HllvX50cXC0"; // Default
 
 
@@ -242,7 +241,7 @@ class TrackedEntityInstanceUtils {
                 null, "9", false));
         return Event.create(codeGenerator.generate(), enrollmentUid, refDate, refDate, null, null, validProgramUid,
                 validProgramStageUid, validOrgUnitUid, refDate, EventStatus.COMPLETED, null, null, null, false,
-                values, validCategoryOptionUid, validCategoryComboOptionUid, teiUid);
+                values, validCategoryComboOptionUid, teiUid);
     }
 
     private static Event createFutureEvent(String teiUid, String enrollmentUid) {
@@ -268,7 +267,7 @@ class TrackedEntityInstanceUtils {
                                      List<TrackedEntityDataValue> values) {
         return Event.create(codeGenerator.generate(), enrollmentUid, refDate, refDate, null, null, validProgramUid,
                 validProgramStageUid, validOrgUnitUid, refDate, EventStatus.ACTIVE, null, null, null, false,
-                values, validCategoryOptionUid, validCategoryComboOptionUid,
+                values, validCategoryComboOptionUid,
                 teiUid);
     }
 

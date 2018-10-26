@@ -35,8 +35,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 public final class CategoryCategoryComboLinkTableInfo {
 
-    private CategoryCategoryComboLinkTableInfo() {
-    }
+
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
@@ -55,6 +54,9 @@ public final class CategoryCategoryComboLinkTableInfo {
             CategoryTableInfo.TABLE_INFO,
             Columns.CATEGORY_COMBO,
             Columns.CATEGORY);
+
+    private CategoryCategoryComboLinkTableInfo() {
+    }
 
     static class Columns extends BaseModel.Columns {
 

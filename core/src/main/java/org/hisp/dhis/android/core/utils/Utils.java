@@ -103,7 +103,7 @@ public final class Utils {
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    public static <T> List<Set<T>> setPartition(Set<T> originalSet, int size) {
+    public static <T> List<Set<T>> setPartition(Collection<T> originalSet, int size) {
         int setCount = (int) Math.ceil((double) originalSet.size() / size);
         List<Set<T>> sets = new ArrayList<>(setCount);
         for (int i = 0; i < setCount; i++) {

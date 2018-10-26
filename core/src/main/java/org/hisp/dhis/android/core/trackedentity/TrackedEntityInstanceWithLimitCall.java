@@ -16,6 +16,7 @@ import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,7 +62,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     }
     
     private List<TrackedEntityInstance> getTrackedEntityInstances() throws D2CallException {
-        Set<String> organisationUnitUids;
+        Collection<String> organisationUnitUids;
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         TeiQuery.Builder teiQueryBuilder = TeiQuery.Builder.create();
         int pageSize = teiQueryBuilder.build().getPageSize();

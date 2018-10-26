@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -102,7 +102,7 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<ProgramModel
     }
 
     @Override
-    public Set<String> queryWithoutRegistrationProgramUids() throws RuntimeException {
+    public List<String> queryWithoutRegistrationProgramUids() throws RuntimeException {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(ProgramModel.Columns.PROGRAM_TYPE, ProgramType.WITHOUT_REGISTRATION.toString())
                 .build();

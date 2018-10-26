@@ -37,9 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -101,11 +99,11 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public Set<M> selectWhereClause(String whereClause) {
-        Set<M> set = new HashSet<>();
+    public List<M> selectWhereClause(String whereClause) {
+        List<M> list = new ArrayList<>();
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
-        addObjectsToCollection(cursor, set);
-        return set;
+        addObjectsToCollection(cursor, list);
+        return list;
     }
 
     public List<M> selectWhereClauseAsList(String whereClause) {
@@ -181,13 +179,13 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public Set<String> selectStringColumnsWhereClause(String column, String clause) {
+    public List<String> selectStringColumnsWhereClause(String column, String clause) {
         Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
         return mapStringColumnSetFromCursor(cursor);
     }
 
-    Set<String> mapStringColumnSetFromCursor(Cursor cursor) {
-        Set<String> columns = new HashSet<>(cursor.getCount());
+    List<String> mapStringColumnSetFromCursor(Cursor cursor) {
+        List<String> columns = new ArrayList<>(cursor.getCount());
 
         try {
             if (cursor.getCount() > 0) {

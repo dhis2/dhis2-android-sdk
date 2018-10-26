@@ -39,11 +39,11 @@ public interface ObjectStore<M> extends DeletableStore {
 
     List<M> selectAll();
 
-    Set<M> selectWhereClause(String whereClause);
+    List<M> selectWhereClause(String whereClause);
 
     M selectFirst();
 
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
 
     boolean deleteById(@NonNull M m);
 }

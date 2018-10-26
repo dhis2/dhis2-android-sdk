@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-import java.util.Set;
+import java.util.List;
 
 public interface IdentifiableObjectStore<O extends ObjectWithUidInterface> extends ObjectStore<O> {
 
@@ -42,9 +42,9 @@ public interface IdentifiableObjectStore<O extends ObjectWithUidInterface> exten
 
     HandleAction updateOrInsert(@NonNull O o) throws RuntimeException;
 
-    Set<String> selectUids() throws RuntimeException;
+    List<String> selectUids() throws RuntimeException;
 
-    Set<String> selectUidsWhere(String whereClause) throws RuntimeException;
+    List<String> selectUidsWhere(String whereClause) throws RuntimeException;
 
     O selectByUid(String uid) throws RuntimeException;
 }

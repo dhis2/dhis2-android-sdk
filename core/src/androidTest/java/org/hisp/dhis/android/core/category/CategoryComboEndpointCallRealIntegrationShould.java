@@ -12,7 +12,6 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -84,7 +83,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
     private void assertThereAreCategoriesInDB() {
         IdentifiableObjectStore<CategoryOption> categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
-        Set<String> categoryOptionUids = categoryOptionStore.selectUids();
+        List<String> categoryOptionUids = categoryOptionStore.selectUids();
         assertTrue(categoryOptionUids.size() > 0);
     }
 }

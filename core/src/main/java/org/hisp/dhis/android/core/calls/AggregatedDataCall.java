@@ -114,10 +114,10 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         systemInfo.serverDate(), versionManager);
 
-                Set<String> dataSetUids = Collections.unmodifiableSet(dataSetStore.selectUids());
+                List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
                 Set<String> periodIds = Collections.unmodifiableSet(
                         selectPeriodIds(periodStore.selectAll()));
-                Set<String> organisationUnitUids = Collections.unmodifiableSet(
+                List<String> organisationUnitUids = Collections.unmodifiableList(
                         organisationUnitStore.queryRootOrganisationUnitUids());
 
                 DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);

@@ -38,8 +38,10 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
+import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -302,7 +304,8 @@ public class EnrollmentStoreImpl extends StoreWithStateImpl implements Enrollmen
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, coordinates, deleted, null, null
+                            status, trackedEntityInstance, coordinates, deleted, null,
+                            Collections.<Note229Compatible>emptyList()
                     ));
                 }
                 while (cursor.moveToNext());

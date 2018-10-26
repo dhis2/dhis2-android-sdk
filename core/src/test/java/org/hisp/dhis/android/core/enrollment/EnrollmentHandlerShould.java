@@ -5,6 +5,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventHandler;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +43,9 @@ public class EnrollmentHandlerShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
+    private DHISVersionManager versionManager;
+
+    @Mock
     private OrphanCleaner<Enrollment, Event> eventCleaner;
 
     // object to test
@@ -53,7 +57,8 @@ public class EnrollmentHandlerShould {
         when(enrollment.uid()).thenReturn("test_enrollment_uid");
         when(enrollment.events()).thenReturn(Collections.singletonList(event));
 
-        enrollmentHandler = new EnrollmentHandler(databaseAdapter, enrollmentStore, eventHandler, eventCleaner);
+        enrollmentHandler = new EnrollmentHandler(databaseAdapter, versionManager, enrollmentStore, eventHandler,
+                eventCleaner);
     }
 
     @Test

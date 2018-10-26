@@ -37,10 +37,10 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class Note229CompatibleShould extends BaseObjectShould implements ObjectShould {
+public class Note29Should extends BaseObjectShould implements ObjectShould {
 
-    public Note229CompatibleShould() {
-        super("note.json");
+    public Note29Should() {
+        super("note29.json");
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Note229CompatibleShould extends BaseObjectShould implements ObjectS
     public void map_from_json_string() throws IOException, ParseException {
         Note229Compatible note229Compatible = objectMapper.readValue(jsonStream, Note229Compatible.class);
 
-        assertThat(note229Compatible.value()).isEqualTo("Note2229Compatible");
+        assertThat(note229Compatible.value()).isEqualTo("Note");
         assertThat(note229Compatible.storedBy()).isEqualTo("android");
         assertThat(note229Compatible.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
     }

@@ -150,7 +150,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                     event.program(), event.programStage(), event.organisationUnit(), event.eventDate(),
                                     event.status(), event.coordinates(),
                                     event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                                    event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                                    event.attributeOptionCombo(),
                                     event.trackedEntityInstance()));
                         }
                     }

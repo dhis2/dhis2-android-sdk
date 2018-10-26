@@ -56,7 +56,6 @@ public interface EventStore extends DeletableStore, StoreWithState {
                 @Nullable Date completedDate,
                 @Nullable Date dueDate,
                 @NonNull State state,
-                @Nullable String attributeCategoryOptions,
                 @NonNull String attributeOptionCombo,
                 @Nullable String trackedEntityInstance
     );
@@ -77,7 +76,6 @@ public interface EventStore extends DeletableStore, StoreWithState {
                @Nullable Date completedDate,
                @Nullable Date dueDate,
                @NonNull State state,
-               @Nullable String attributeCategoryOptions,
                @NonNull String attributeOptionCombo,
                @Nullable String trackedEntityInstance,
                @NonNull String whereEventUid

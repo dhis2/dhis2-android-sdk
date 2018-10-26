@@ -69,7 +69,6 @@ public class EventShould {
                         "    \"status\": \"COMPLETED\",\n" +
                         "    \"eventDate\": \"2015-05-01T00:00:00.000\",\n" +
                         "    \"orgUnitName\": \"Ngelehun CHC\",\n" +
-                        "    \"attributeCategoryOptions\": \"as6ygGvUGNg\",\n" +
                         "    \"created\": \"2015-09-08T21:40:22.000\",\n" +
                         "    \"completedDate\": \"2015-11-15T00:00:00.000\",\n" +
                         "    \"lastUpdated\": \"2015-11-15T14:55:22.995\",\n" +

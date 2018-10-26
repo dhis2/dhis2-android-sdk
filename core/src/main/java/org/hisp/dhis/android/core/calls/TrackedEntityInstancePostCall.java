@@ -5,12 +5,17 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
+import org.hisp.dhis.android.core.enrollment.note.NoteBuilder;
+import org.hisp.dhis.android.core.enrollment.note.NoteModel;
+import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -40,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Retrofit;
 
@@ -59,6 +65,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final ObjectWithoutUidStore<NoteModel> noteStore;
 
     private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
                                           @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
@@ -68,7 +75,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                           @NonNull EnrollmentStore enrollmentStore,
                                           @NonNull EventStore eventStore,
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+                                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                                          @NonNull ObjectWithoutUidStore<NoteModel> noteStore) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -78,6 +86,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.noteStore = noteStore;
     }
 
     @Override
@@ -117,6 +126,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
+        Set<NoteModel> noteModels = noteStore.selectAll();
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 
@@ -154,13 +164,22 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                     event.trackedEntityInstance()));
                         }
                     }
+
+                    List<Note229Compatible> notesForEnrollment = new ArrayList<>();
+                    NoteBuilder noteBuilder = new NoteBuilder(versionManager);
+                    for (NoteModel noteModel : noteModels) {
+                        if (enrollment.uid().equals(noteModel.enrollment())) {
+                            notesForEnrollment.add(noteBuilder.buildPojo(noteModel));
+                        }
+                    }
+
                     enrollmentsRecreated.add(
                             Enrollment.create(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
                                     enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
                                     enrollment.organisationUnit(), enrollment.program(), enrollment.enrollmentDate(),
                                     enrollment.incidentDate(), enrollment.followUp(), enrollment.enrollmentStatus(),
                                     enrollment.trackedEntityInstance(), enrollment.coordinate(), enrollment.deleted(),
-                                    eventRecreated, enrollment.notes()));
+                                    eventRecreated, notesForEnrollment));
                 }
             }
 
@@ -222,7 +241,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
                 new TrackedEntityDataValueStoreImpl(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
+                NoteStore.create(databaseAdapter)
         );
     }
 }

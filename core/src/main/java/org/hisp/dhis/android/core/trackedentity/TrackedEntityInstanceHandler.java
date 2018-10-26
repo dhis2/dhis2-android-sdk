@@ -132,7 +132,7 @@ public class TrackedEntityInstanceHandler {
                 internalModules.relationshipModule.relationshipHandler,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityAttributeValueHandler.create(databaseAdapter),
-                EnrollmentHandler.create(databaseAdapter),
+                EnrollmentHandler.create(databaseAdapter, internalModules.systemInfo.publicModule.versionManager),
                 new DataOrphanCleanerImpl<TrackedEntityInstance, Enrollment>(EnrollmentModel.TABLE,
                         EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, EnrollmentModel.Columns.STATE, databaseAdapter)
         );

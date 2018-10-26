@@ -44,7 +44,7 @@ import java.util.Date;
 @AutoValue
 public abstract class NoteModel extends BaseModel {
 
-    public static final String TABLE = "Note2229Compatible";
+    public static final String TABLE = "Note";
 
     public static class Columns extends BaseModel.Columns {
         public static final String ENROLLMENT = "enrollment";

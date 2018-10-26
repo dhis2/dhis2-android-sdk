@@ -71,6 +71,8 @@ public abstract class SystemInfo extends BaseModel {
         return new AutoValue_SystemInfo.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseModel.Builder<SystemInfo.Builder> {

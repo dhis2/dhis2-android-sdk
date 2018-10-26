@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
 import java.util.HashSet;
@@ -21,9 +20,6 @@ public class EventQuery {
     private final OuMode ouMode;
 
     @Nullable
-    private final CategoryOption categoryOption;
-
-    @Nullable
     private final CategoryCombo categoryCombo;
 
     public EventQuery(boolean paging, int page, int pageSize,
@@ -37,13 +33,11 @@ public class EventQuery {
         this.uIds = uIds;
         this.ouMode = ouMode;
         this.categoryCombo = null;
-        this.categoryOption = null;
     }
 
     public EventQuery(boolean paging, int page, int pageSize,
             String orgUnit, String program, String trackedEntityInstance, Set<String> uIds, OuMode ouMode,
-            @Nullable CategoryCombo categoryCombo,
-            @Nullable CategoryOption categoryOption) {
+            @Nullable CategoryCombo categoryCombo) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
@@ -53,7 +47,6 @@ public class EventQuery {
         this.uIds = uIds;
         this.ouMode = ouMode;
         this.categoryCombo = categoryCombo;
-        this.categoryOption = categoryOption;
     }
 
     public Set<String> getUIds() {
@@ -89,11 +82,6 @@ public class EventQuery {
     }
 
     @Nullable
-    public CategoryOption getCategoryOption() {
-        return categoryOption;
-    }
-
-    @Nullable
     public CategoryCombo getCategoryCombo() {
         return categoryCombo;
     }
@@ -108,9 +96,6 @@ public class EventQuery {
         OuMode ouMode = OuMode.SELECTED;
 
         private Set<String> uIds = new HashSet<>();
-
-        @Nullable
-        private CategoryOption categoryOption;
 
         @Nullable
         private CategoryCombo categoryCombo;
@@ -162,9 +147,7 @@ public class EventQuery {
             return this;
         }
 
-        public Builder withCategoryComboAndCategoryOption(@NonNull CategoryCombo categoryCombo,
-                CategoryOption categoryOption) {
-            this.categoryOption = categoryOption;
+        public Builder withCategoryCombo(@NonNull CategoryCombo categoryCombo) {
             this.categoryCombo = categoryCombo;
             return this;
         }
@@ -172,7 +155,7 @@ public class EventQuery {
         public EventQuery build() {
             return new EventQuery(paging, page, pageSize,
                     orgUnit, program, trackedEntityInstance, uIds, ouMode,
-                    categoryCombo, categoryOption);
+                    categoryCombo);
         }
     }
 }

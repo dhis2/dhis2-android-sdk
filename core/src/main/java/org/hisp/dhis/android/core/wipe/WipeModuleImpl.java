@@ -3,13 +3,6 @@ package org.hisp.dhis.android.core.wipe;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkStore;
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryComboStore;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkStore;
-import org.hisp.dhis.android.core.category.CategoryOptionComboStore;
-import org.hisp.dhis.android.core.category.CategoryOptionStore;
-import org.hisp.dhis.android.core.category.CategoryStore;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
@@ -176,13 +169,6 @@ public final class WipeModuleImpl implements WipeModule {
                 TrackedEntityTypeStore.create(databaseAdapter),
                 OrganisationUnitProgramLinkStore.create(databaseAdapter),
 
-                CategoryStore.create(databaseAdapter),
-                CategoryOptionStore.create(databaseAdapter),
-                CategoryOptionComboStore.create(databaseAdapter),
-                CategoryCategoryOptionLinkStore.create(databaseAdapter),
-                CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter),
-                CategoryComboStore.create(databaseAdapter),
-                CategoryCategoryComboLinkStore.create(databaseAdapter),
                 DataSetStore.create(databaseAdapter),
                 DataSetDataElementLinkStore.create(databaseAdapter),
                 DataSetOrganisationUnitLinkStore.create(databaseAdapter),

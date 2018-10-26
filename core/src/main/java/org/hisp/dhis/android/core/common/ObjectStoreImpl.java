@@ -35,8 +35,10 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
@@ -104,6 +106,13 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
         addObjectsToCollection(cursor, set);
         return set;
+    }
+
+    public List<M> selectWhereClauseAsList(String whereClause) {
+        List<M> list = new ArrayList<>();
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
+        addObjectsToCollection(cursor, list);
+        return list;
     }
 
     @Override

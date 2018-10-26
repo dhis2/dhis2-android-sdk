@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.Payload;
@@ -31,18 +30,16 @@ public final class EventEndpointCall extends SyncCall<List<Event>> {
 
         Call<Payload<Event>> call;
 
-        if (eventQuery.getCategoryCombo() == null || eventQuery.getCategoryOption() == null) {
+        if (eventQuery.getCategoryCombo() == null) {
             call = eventService.getEvents(eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), Event.allFields, Boolean.TRUE,
                     eventQuery.getPage(), eventQuery.getPageSize());
         } else {
             CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
-            CategoryOption categoryOption =  eventQuery.getCategoryOption();
 
             call = eventService.getEvents(eventQuery.getOrgUnit(), eventQuery.getProgram(),
                     eventQuery.getTrackedEntityInstance(), Event.allFields, Boolean.TRUE,
-                    eventQuery.getPage(), eventQuery.getPageSize(), categoryCombo.uid(),
-                    categoryOption.uid());
+                    eventQuery.getPage(), eventQuery.getPageSize(), categoryCombo.uid());
         }
 
         return new APICallExecutor().executePayloadCall(call);

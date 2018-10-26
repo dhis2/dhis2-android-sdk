@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import java.util.Collection;
 import java.util.Set;
 
-final class RelationshipConstraintChildrenAppender implements ChildrenAppender<RelationshipType> {
+final class RelationshipConstraintChildrenAppender extends ChildrenAppender<RelationshipType> {
 
     private final ObjectWithoutUidStore<RelationshipConstraint> constraintStore;
     private Set<RelationshipConstraint> constraintsSet;
@@ -49,7 +49,7 @@ final class RelationshipConstraintChildrenAppender implements ChildrenAppender<R
     }
 
     @Override
-    public RelationshipType appendChildren(RelationshipType relationshipType) {
+    protected RelationshipType appendChildren(RelationshipType relationshipType) {
         RelationshipType.Builder builder = relationshipType.toBuilder();
         for (RelationshipConstraint constraint : this.constraintsSet) {
             if (constraint.relationshipType().uid().equals(relationshipType.uid())) {

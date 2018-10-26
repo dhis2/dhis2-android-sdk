@@ -51,7 +51,10 @@ public final class CategoryCategoryComboLinkTableInfo {
         }
     };
 
-
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            CategoryTableInfo.TABLE_INFO,
+            Columns.CATEGORY_COMBO,
+            Columns.CATEGORY);
 
     static class Columns extends BaseModel.Columns {
 
@@ -70,9 +73,4 @@ public final class CategoryCategoryComboLinkTableInfo {
             return all();
         }
     }
-
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            CategoryTableInfo.TABLE_INFO,
-            Columns.CATEGORY_COMBO,
-            Columns.CATEGORY);
 }

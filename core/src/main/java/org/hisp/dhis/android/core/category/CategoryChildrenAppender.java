@@ -30,24 +30,17 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-import java.util.Collection;
-
-public final class CategoryChildrenAppender implements ChildrenAppender<CategoryCombo> {
+final class CategoryChildrenAppender extends ChildrenAppender<CategoryCombo> {
 
 
     private final LinkModelChildStore<CategoryCombo, Category> linkModelChildStore;
 
-    public CategoryChildrenAppender(LinkModelChildStore<CategoryCombo, Category> linkModelChildStore) {
+    CategoryChildrenAppender(LinkModelChildStore<CategoryCombo, Category> linkModelChildStore) {
         this.linkModelChildStore = linkModelChildStore;
     }
 
     @Override
-    public void prepareChildren(Collection<CategoryCombo> collection) {
-
-    }
-
-    @Override
-    public CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
         CategoryCombo.Builder builder = categoryCombo.toBuilder();
         builder.categories(linkModelChildStore.getChildren(categoryCombo));
         return builder.build();

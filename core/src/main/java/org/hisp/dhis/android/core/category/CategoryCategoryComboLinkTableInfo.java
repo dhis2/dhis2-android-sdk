@@ -72,7 +72,6 @@ public final class CategoryCategoryComboLinkTableInfo {
     }
 
     static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            TABLE_INFO,
             CategoryTableInfo.TABLE_INFO,
             Columns.CATEGORY_COMBO,
             Columns.CATEGORY);

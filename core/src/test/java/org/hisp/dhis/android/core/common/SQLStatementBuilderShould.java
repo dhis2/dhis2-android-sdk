@@ -27,17 +27,13 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.legendset.LegendModel;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,7 +55,6 @@ public class SQLStatementBuilderShould {
     private SQLStatementBuilder builder = new SQLStatementBuilder("Test_Table", columns, columns);
 
     static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            CategoryCategoryComboLinkTableInfo.TABLE_INFO,
             CategoryTableInfo.TABLE_INFO,
             COL_1,
             COL_2);

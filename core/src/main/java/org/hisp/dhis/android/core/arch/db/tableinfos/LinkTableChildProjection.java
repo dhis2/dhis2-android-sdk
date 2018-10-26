@@ -31,16 +31,13 @@ import org.hisp.dhis.android.core.arch.db.TableInfo;
 
 public class LinkTableChildProjection {
 
-    public final TableInfo linkTableInfo;
     public final TableInfo childTableInfo;
     public final String parentColumn;
     public final String childColumn;
 
-    public LinkTableChildProjection(TableInfo linkTableInfo,
-                                    TableInfo childTableInfo,
+    public LinkTableChildProjection(TableInfo childTableInfo,
                                     String parentColumn,
                                     String childColumn) {
-        this.linkTableInfo = linkTableInfo;
         this.childTableInfo = childTableInfo;
         this.parentColumn = parentColumn;
         this.childColumn = childColumn;

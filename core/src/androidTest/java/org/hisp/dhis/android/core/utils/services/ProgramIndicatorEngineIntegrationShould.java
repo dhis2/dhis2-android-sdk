@@ -250,7 +250,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     private void createEvent(String eventUid, String programStageUid, Date eventDate, Date lastUpdated) {
         new EventStoreImpl(databaseAdapter()).insert(eventUid,enrollmentUid,null, lastUpdated,null,null,null,
                 null,null, programUid,programStageUid,orgunitUid,eventDate,null,null,
-                null,null,null,null);
+                null,null,null);
     }
 
     private void createEvent(String eventUid, String programStageUid, Date eventDate) {

@@ -72,7 +72,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
                     event.createdAtClient(), event.lastUpdatedAtClient(), event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                    event.attributeCategoryOptions(), event.attributeOptionCombo(), event.trackedEntityInstance()));
+                    event.attributeOptionCombo(), event.trackedEntityInstance()));
         }
 
         return eventRecreated;

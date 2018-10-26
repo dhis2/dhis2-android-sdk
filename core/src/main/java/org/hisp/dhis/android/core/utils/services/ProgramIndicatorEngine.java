@@ -325,7 +325,7 @@ public class ProgramIndicatorEngine {
         return Event.create(e.uid(), e.enrollmentUid(), e.created(), e.lastUpdated(), e.createdAtClient(),
                 e.lastUpdatedAtClient(), e.program(), e.programStage(), e.organisationUnit(), e.eventDate(),
                 e.status(), e.coordinates(), e.completedDate(), e.dueDate(), e.deleted(), dataValues,
-                e.attributeCategoryOptions(), e.attributeOptionCombo(), e.trackedEntityInstance());
+                e.attributeOptionCombo(), e.trackedEntityInstance());
     }
 
     private TrackedEntityDataValue evaluateDataElementInStage(String deId,

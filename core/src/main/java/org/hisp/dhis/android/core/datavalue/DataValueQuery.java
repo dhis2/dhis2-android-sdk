@@ -33,7 +33,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseQuery;
 
 import java.util.Collection;
-import java.util.Set;
 
 @AutoValue
 public abstract class DataValueQuery extends BaseQuery {

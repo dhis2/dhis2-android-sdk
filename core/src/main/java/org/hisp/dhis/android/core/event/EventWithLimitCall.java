@@ -86,7 +86,9 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         return events;
     }
 
-    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int pageSize, Collection<String> programUids,
+    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
+                                            int pageSize,
+                                            Collection<String> programUids,
                                             int globalEventsSize) throws D2CallException {
         List<Event> events = new ArrayList<>();
 

@@ -36,6 +36,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class CategoryCategoryComboLinkChildStore {
 
+    private CategoryCategoryComboLinkChildStore() {
+    }
+
     static LinkModelChildStore<CategoryCombo, Category> create(DatabaseAdapter databaseAdapter) {
         return new LinkModelChildStoreImpl<>(
                 CategoryCategoryComboLinkTableInfo.CHILD_PROJECTION,

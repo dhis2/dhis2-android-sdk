@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerWithTransformer;
@@ -35,7 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
@@ -55,7 +55,7 @@ import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
 
 import java.util.Collection;
 
-public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetModel> {
+public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
@@ -71,7 +71,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
     private final LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
 
-    DataSetHandler(IdentifiableObjectStore<DataSetModel> dataSetStore,
+    DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
                    SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                    SyncHandler<Section> sectionHandler,
                    OrphanCleaner<DataSet, Section> sectionOrphanCleaner,

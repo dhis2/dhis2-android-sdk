@@ -34,9 +34,11 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.AccessHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,12 +47,12 @@ public final class DataSetStore {
 
     private DataSetStore() {}
 
-    private static StatementBinder<DataSetModel> BINDER = new NameableStatementBinder<DataSetModel>() {
+    private static StatementBinder<DataSet> BINDER = new NameableStatementBinder<DataSet>() {
         @Override
-        public void bindToStatement(@NonNull DataSetModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull DataSet o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.periodType());
-            sqLiteBind(sqLiteStatement, 12, o.categoryCombo());
+            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.categoryCombo()));
             sqLiteBind(sqLiteStatement, 13, o.mobile());
             sqLiteBind(sqLiteStatement, 14, o.version());
             sqLiteBind(sqLiteStatement, 15, o.expiryDays());
@@ -64,19 +66,18 @@ public final class DataSetStore {
             sqLiteBind(sqLiteStatement, 23, o.dataElementDecoration());
             sqLiteBind(sqLiteStatement, 24, o.renderAsTabs());
             sqLiteBind(sqLiteStatement, 25, o.renderHorizontally());
-            sqLiteBind(sqLiteStatement, 26, o.accessDataWrite());
+            sqLiteBind(sqLiteStatement, 26, AccessHelper.getAccessDataWrite(o.access()));
         }
     };
 
-    private static final CursorModelFactory<DataSetModel> FACTORY = new CursorModelFactory<DataSetModel>() {
+    private static final CursorModelFactory<DataSet> FACTORY = new CursorModelFactory<DataSet>() {
         @Override
-        public DataSetModel fromCursor(Cursor cursor) {
-            return DataSetModel.create(cursor);
+        public DataSet fromCursor(Cursor cursor) {
+            return DataSet.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<DataSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, DataSetModel.TABLE,
-                new DataSetModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<DataSet> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, DataSetTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
@@ -69,7 +68,7 @@ import static org.mockito.Mockito.when;
 public class DataSetHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<DataSetModel> dataSetStore;
+    private IdentifiableObjectStore<DataSet> dataSetStore;
 
     @Mock
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
@@ -174,8 +173,8 @@ public class DataSetHandlerShould {
         dataSetHandler.handle(null, null);
 
         verify(dataSetStore, never()).delete(anyString());
-        verify(dataSetStore, never()).update(any(DataSetModel.class));
-        verify(dataSetStore, never()).insert(any(DataSetModel.class));
+        verify(dataSetStore, never()).update(any(DataSet.class));
+        verify(dataSetStore, never()).insert(any(DataSet.class));
 
         verify(sectionHandler, never()).handleMany(anyListOf(Section.class));
 
@@ -189,7 +188,7 @@ public class DataSetHandlerShould {
     @Test
     public void handle_nested_sections() {
 
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        dataSetHandler.handle(dataSet);
 
         verify(sectionHandler).handleMany(anyListOf(Section.class));
     }
@@ -197,8 +196,8 @@ public class DataSetHandlerShould {
     @Test
     public void delete_orphan_sections() {
 
-        when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Update);
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        when(dataSetStore.updateOrInsert(any(DataSet.class))).thenReturn(HandleAction.Update);
+        dataSetHandler.handle(dataSet);
 
         verify(sectionOrphanCleaner).deleteOrphan(dataSet, dataSet.sections());
     }
@@ -206,8 +205,8 @@ public class DataSetHandlerShould {
     @Test
     public void not_delete_orphan_sections_inserting() {
 
-        when(dataSetStore.updateOrInsert(any(DataSetModel.class))).thenReturn(HandleAction.Insert);
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        when(dataSetStore.updateOrInsert(any(DataSet.class))).thenReturn(HandleAction.Insert);
+        dataSetHandler.handle(dataSet);
 
         verify(sectionOrphanCleaner, never()).deleteOrphan(dataSet, dataSet.sections());
     }
@@ -215,7 +214,7 @@ public class DataSetHandlerShould {
     @Test
     public void handle_nested_compulsory_data_elements_operands() {
 
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        dataSetHandler.handle(dataSet);
 
         verify(compulsoryDataElementOperandHandler).handleMany(anyListOf(DataElementOperand.class));
     }
@@ -223,7 +222,7 @@ public class DataSetHandlerShould {
     @Test
     public void handle_data_set_compulsory_data_element_operand_link() {
 
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        dataSetHandler.handle(dataSet);
 
         verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()), eq(compulsoryDataElementOperands),
                 any(DataSetCompulsoryDataElementOperandLinkModelBuilder.class));
@@ -232,7 +231,7 @@ public class DataSetHandlerShould {
     @Test
     public void handle_nested_data_input_periods() {
 
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        dataSetHandler.handle(dataSet);
 
         verify(dataInputPeriodHandler).handleMany(anyString(),
                 anyListOf(DataInputPeriod.class),
@@ -242,7 +241,7 @@ public class DataSetHandlerShould {
     @Test
     public void handle_style() {
 
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        dataSetHandler.handle(dataSet);
 
         verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
     }
@@ -250,7 +249,7 @@ public class DataSetHandlerShould {
     @Test
     public void handle_data_element_links() {
 
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        dataSetHandler.handle(dataSet);
 
         verify(dataSetElementLinkHandler).handleMany(anyString(), anyListOf(DataSetElement.class));
     }
@@ -258,7 +257,7 @@ public class DataSetHandlerShould {
     @Test
     public void handle_indicator_links() {
 
-        dataSetHandler.handle(dataSet, new DataSetModelBuilder());
+        dataSetHandler.handle(dataSet);
 
         verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
                 any(DataSetIndicatorLinkModelBuilder.class));

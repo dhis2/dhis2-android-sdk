@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
-public final class CategoryCategoryComboTableInfo {
+public final class CategoryCategoryComboLinkTableInfo {
 
-    private CategoryCategoryComboTableInfo() {
+    private CategoryCategoryComboLinkTableInfo() {
     }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
@@ -51,6 +51,8 @@ public final class CategoryCategoryComboTableInfo {
         }
     };
 
+
+
     static class Columns extends BaseModel.Columns {
 
         private static final String CATEGORY = "category";
@@ -65,8 +67,13 @@ public final class CategoryCategoryComboTableInfo {
 
         @Override
         public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
-                    CATEGORY, CATEGORY_COMBO, SORT_ORDER);
+            return all();
         }
     }
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            TABLE_INFO,
+            CategoryTableInfo.TABLE_INFO,
+            Columns.CATEGORY_COMBO,
+            Columns.CATEGORY);
 }

@@ -25,44 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children;
 
-import org.hisp.dhis.android.core.common.Model;
+package org.hisp.dhis.android.core.category;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class ChildrenAppenderExecutor {
+final class CategoryCategoryComboLinkChildStore {
 
-    private ChildrenAppenderExecutor() {
-    }
-
-    public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
-        M mWithChildren = m;
-        for (ChildrenAppender<M> appender: childrenAppenders) {
-            appender.prepareChildren(Collections.singleton(mWithChildren));
-            mWithChildren = appender.appendChildren(mWithChildren);
-        }
-        return mWithChildren;
-    }
-
-    public static <M extends Model> Set<M> appendInObjectSet(Set<M> set,
-                                                             Collection<ChildrenAppender<M>> childrenAppenders) {
-
-        for (ChildrenAppender<M> appender: childrenAppenders) {
-            appender.prepareChildren(set);
-        }
-
-        Set<M> setWithChildren = new HashSet<>(set.size());
-        for (M m: set) {
-            M mWithChildren = m;
-            for (ChildrenAppender<M> appender: childrenAppenders) {
-                mWithChildren = appender.appendChildren(mWithChildren);
-            }
-            setWithChildren.add(mWithChildren);
-        }
-        return setWithChildren;
+    static LinkModelChildStore<CategoryCombo, Category> create(DatabaseAdapter databaseAdapter) {
+        return new LinkModelChildStoreImpl<>(
+                CategoryCategoryComboLinkTableInfo.CHILD_PROJECTION,
+                databaseAdapter,
+                new SQLStatementBuilder(CategoryCategoryComboLinkTableInfo.TABLE_INFO),
+                new CursorExecutorImpl<>(CategoryStore.FACTORY));
     }
 }

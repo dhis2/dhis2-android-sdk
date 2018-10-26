@@ -25,44 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.children;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
-public final class ChildrenAppenderExecutor {
+public final class CategoryChildrenAppender implements ChildrenAppender<CategoryCombo> {
 
-    private ChildrenAppenderExecutor() {
+
+    private final LinkModelChildStore<CategoryCombo, Category> linkModelChildStore;
+
+    public CategoryChildrenAppender(LinkModelChildStore<CategoryCombo, Category> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
-        M mWithChildren = m;
-        for (ChildrenAppender<M> appender: childrenAppenders) {
-            appender.prepareChildren(Collections.singleton(mWithChildren));
-            mWithChildren = appender.appendChildren(mWithChildren);
-        }
-        return mWithChildren;
+    @Override
+    public void prepareChildren(Collection<CategoryCombo> collection) {
+
     }
 
-    public static <M extends Model> Set<M> appendInObjectSet(Set<M> set,
-                                                             Collection<ChildrenAppender<M>> childrenAppenders) {
-
-        for (ChildrenAppender<M> appender: childrenAppenders) {
-            appender.prepareChildren(set);
-        }
-
-        Set<M> setWithChildren = new HashSet<>(set.size());
-        for (M m: set) {
-            M mWithChildren = m;
-            for (ChildrenAppender<M> appender: childrenAppenders) {
-                mWithChildren = appender.appendChildren(mWithChildren);
-            }
-            setWithChildren.add(mWithChildren);
-        }
-        return setWithChildren;
+    @Override
+    public CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+        CategoryCombo.Builder builder = categoryCombo.toBuilder();
+        builder.categories(linkModelChildStore.getChildren(categoryCombo));
+        return builder.build();
     }
 }

@@ -110,7 +110,7 @@ public class SQLStatementBuilder {
     }
 
     public String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid) {
-        return SELECT + "c.*" + FROM + projection.linkTableInfo.name() + " AS l, " +
+        return SELECT + "c.*" + FROM + tableName + " AS l, " +
                 projection.childTableInfo.name() + " AS c" +
                 WHERE + "l." + projection.childColumn + "=" + "c." + UID +
                 AND + "l." + projection.parentColumn + "='" + parentUid + "';";

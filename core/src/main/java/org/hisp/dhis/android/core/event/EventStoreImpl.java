@@ -75,10 +75,9 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
             Columns.COMPLETE_DATE + ", " +
             Columns.DUE_DATE + ", " +
             Columns.STATE + ", " +
-            Columns.ATTRIBUTE_CATEGORY_OPTIONS + ", " +
             Columns.ATTRIBUTE_OPTION_COMBO + ", " +
             Columns.TRACKED_ENTITY_INSTANCE + ") " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
     private static final String UPDATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
             Columns.UID + " =? , " +
@@ -97,7 +96,6 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
             Columns.COMPLETE_DATE + " =? , " +
             Columns.DUE_DATE + " =? , " +
             Columns.STATE + " =?, " +
-            Columns.ATTRIBUTE_CATEGORY_OPTIONS + " =?, " +
             Columns.ATTRIBUTE_OPTION_COMBO + " =?, " +
             Columns.TRACKED_ENTITY_INSTANCE + " =? " +
             " WHERE " +
@@ -124,7 +122,6 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
             "  Event.completedDate, " +
             "  Event.dueDate, "  +
             "  Event.state, " +
-            "  Event.attributeCategoryOptions, "  +
             "  Event.attributeOptionCombo, "  +
             "  Event.trackedEntityInstance ";
 
@@ -175,7 +172,7 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
                        @NonNull String programStage, @NonNull String organisationUnit,
                        @Nullable Date eventDate, @Nullable Date completedDate,
                        @Nullable Date dueDate, @Nullable State state,
-                       @Nullable String attributeCategoryOptions, @Nullable String attributeOptionCombo,
+                       @Nullable String attributeOptionCombo,
                        @Nullable String trackedEntityInstance) {
         sqLiteBind(insertStatement, 1, uid);
         sqLiteBind(insertStatement, 2, enrollmentUid);
@@ -193,9 +190,8 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
         sqLiteBind(insertStatement, 14, completedDate);
         sqLiteBind(insertStatement, 15, dueDate);
         sqLiteBind(insertStatement, 16, state);
-        sqLiteBind(insertStatement, 17, attributeCategoryOptions);
-        sqLiteBind(insertStatement, 18, attributeOptionCombo);
-        sqLiteBind(insertStatement, 19, trackedEntityInstance);
+        sqLiteBind(insertStatement, 17, attributeOptionCombo);
+        sqLiteBind(insertStatement, 18, trackedEntityInstance);
 
         long insert = databaseAdapter.executeInsert(EventModel.TABLE, insertStatement);
 
@@ -212,7 +208,7 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
                       @NonNull String programStage, @NonNull String organisationUnit,
                       @NonNull Date eventDate, @Nullable Date completedDate,
                       @Nullable Date dueDate, @NonNull State state,
-                      @Nullable String attributeCategoryOptions, @Nullable String attributeOptionCombo,
+                      @Nullable String attributeOptionCombo,
                       @Nullable String trackedEntityInstance, @NonNull String whereEventUid) {
 
         sqLiteBind(updateStatement, 1, uid);
@@ -231,12 +227,11 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
         sqLiteBind(updateStatement, 14, completedDate);
         sqLiteBind(updateStatement, 15, dueDate);
         sqLiteBind(updateStatement, 16, state);
-        sqLiteBind(updateStatement, 17, attributeCategoryOptions);
-        sqLiteBind(updateStatement, 18, attributeOptionCombo);
-        sqLiteBind(updateStatement, 19, trackedEntityInstance);
+        sqLiteBind(updateStatement, 17, attributeOptionCombo);
+        sqLiteBind(updateStatement, 18, trackedEntityInstance);
 
         // bind the where clause
-        sqLiteBind(updateStatement, 20, whereEventUid);
+        sqLiteBind(updateStatement, 19, whereEventUid);
 
         int rowId = databaseAdapter.executeUpdateDelete(EventModel.TABLE, updateStatement);
         updateStatement.clearBindings();
@@ -375,9 +370,8 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
         Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
         Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
         String stateStr = cursor.getString(15) == null ? null : cursor.getString(15);
-        String categoryCombo = cursor.getString(16) == null ? null : cursor.getString(16);
-        String optionCombo = cursor.getString(17) == null ? null : cursor.getString(17);
-        String trackedEntityInstance = cursor.getString(18) == null ? null : cursor.getString(18);
+        String optionCombo = cursor.getString(16) == null ? null : cursor.getString(16);
+        String trackedEntityInstance = cursor.getString(17) == null ? null : cursor.getString(17);
 
         Coordinates coordinates = null;
 
@@ -391,7 +385,7 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
                 uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus,
                 coordinates, completedDate,
-                dueDate, deleted, null, categoryCombo, optionCombo, trackedEntityInstance);
+                dueDate, deleted, null, optionCombo, trackedEntityInstance);
 
         return event;
     }

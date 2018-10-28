@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OldSearchOrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitOnDemandCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
@@ -32,7 +32,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityInstanceUidHelper uidsHelper;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
-    private final OldSearchOrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     private final Collection<TrackedEntityInstance> trackedEntityInstances;
@@ -45,7 +45,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull TrackedEntityInstanceUidHelper uidsHelper,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
-            @NonNull OldSearchOrganisationUnitCall.Factory organisationUnitCallFactory,
+            @NonNull SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory,
             @NonNull Collection<TrackedEntityInstance> trackedEntityInstances,
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
@@ -55,7 +55,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.uidsHelper = uidsHelper;
         this.authenticatedUserStore = authenticatedUserStore;
-        this.organisationUnitCallFactory = organisationUnitCallFactory;
+        this.searchOrganisationUnitOnDemandCallFactory = searchOrganisationUnitOnDemandCallFactory;
         this.trackedEntityInstances = trackedEntityInstances;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
@@ -76,9 +76,10 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 if (!searchOrgUnitUids.isEmpty()) {
                     AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
-                    Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
-                            databaseAdapter, retrofit, searchOrgUnitUids,
-                            User.builder().uid(authenticatedUserModel.user()).build());
+                    Call<List<OrganisationUnit>> organisationUnitCall =
+                            searchOrganisationUnitOnDemandCallFactory.create(
+                                databaseAdapter, retrofit, searchOrgUnitUids,
+                                User.builder().uid(authenticatedUserModel.user()).build());
                     executor.executeD2Call(organisationUnitCall);
                 }
 
@@ -115,7 +116,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
-                OldSearchOrganisationUnitCall.FACTORY,
+                SearchOrganisationUnitOnDemandCall.FACTORY,
                 trackedEntityInstances,
                 new ForeignKeyCleaner(databaseAdapter)
         );

@@ -146,7 +146,7 @@ public class DataSetHandler extends IdentifiableHandlerImpl<DataSet, DataSetMode
                 new LinkModelHandlerImpl<DataElementOperand,
                         DataSetCompulsoryDataElementOperandLinkModel>(
                         DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
-                new LinkSyncHandlerImpl<>(DataInputPeriodStore.create(databaseAdapter)),
+                new LinkSyncHandlerImpl<>(DataInputPeriodLinkStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(DataSetDataElementLinkStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<ObjectWithUid, DataSetIndicatorLinkModel>(
                         DataSetIndicatorLinkStore.create(databaseAdapter)),

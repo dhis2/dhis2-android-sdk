@@ -25,17 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.database;
 
-final class UserCredentialsHandler {
-    private UserCredentialsHandler() {
-    }
+import android.database.Cursor;
 
-    public static SyncHandler<UserCredentials> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter));
+import org.hisp.dhis.android.core.user.User;
+
+public class UserWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<User> {
+
+    @Override
+    public User fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return User.builder().uid(uid).build();
     }
 }

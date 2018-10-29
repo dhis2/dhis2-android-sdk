@@ -28,61 +28,74 @@
 
 package org.hisp.dhis.android.core.user;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.IgnoreUserRoleListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.UserWithUidColumnAdapter;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-public abstract class UserCredentials extends BaseIdentifiableObject {
-    private static final String USER_ROLES = "userRoles";
-    private static final String USERNAME = "username";
-    private static final String DELETED = "deleted";
+@JsonDeserialize(builder = AutoValue_UserCredentials.Builder.class)
+public abstract class UserCredentials extends BaseIdentifiableObject implements Model {
 
-    private static final Field<UserCredentials, String> uid = Field.create(UID);
-    private static final Field<UserCredentials, String> code = Field.create(CODE);
-    private static final Field<UserCredentials, String> name = Field.create(NAME);
-    private static final Field<UserCredentials, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<UserCredentials, String> created = Field.create(CREATED);
-    private static final Field<UserCredentials, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<UserCredentials, String> username = Field.create(USERNAME);
-    private static final Field<UserCredentials, Boolean> deleted = Field.create(DELETED);
-
-    static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, username, deleted).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(USERNAME)
+    @JsonProperty()
     public abstract String username();
 
     @Nullable
-    @JsonProperty(USER_ROLES)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreUserRoleListColumnAdapter.class)
     public abstract List<UserRole> userRoles();
 
+    @Nullable
+    @JsonIgnore
+    @ColumnAdapter(UserWithUidColumnAdapter.class)
+    public abstract User user();
 
-    @JsonCreator
-    public static UserCredentials create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(USERNAME) String username,
-            @JsonProperty(USER_ROLES) List<UserRole> userRoles,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_UserCredentials(uid, code, name, displayName, created, lastUpdated, deleted, username,
-                safeUnmodifiableList(userRoles)
-        );
+    public abstract ContentValues toContentValues();
+
+    static UserCredentials create(Cursor cursor) {
+        return $AutoValue_UserCredentials.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_UserCredentials.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder username(String username);
+
+        public abstract Builder userRoles(List<UserRole> userRoles);
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder user(User user);
+
+        public abstract UserCredentials build();
     }
 }

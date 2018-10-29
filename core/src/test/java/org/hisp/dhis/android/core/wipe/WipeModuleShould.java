@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.Before;
@@ -68,7 +68,7 @@ public class WipeModuleShould {
     private IdentifiableObjectStore<UserModel> userStore;
 
     @Mock
-    private UserCredentialsStore userCredentialsStore;
+    private IdentifiableObjectStore<UserCredentials> userCredentialsStore;
 
     @Mock
     private ObjectStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;

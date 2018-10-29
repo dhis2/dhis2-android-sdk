@@ -55,7 +55,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
-import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
+import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
 import org.hisp.dhis.android.core.user.UserStore;
@@ -145,7 +145,7 @@ public final class WipeModuleImpl implements WipeModule {
 
         List<DeletableStore> metadataStores = Arrays.asList(
                 UserStore.create(databaseAdapter),
-                new UserCredentialsStoreImpl(databaseAdapter),
+                UserCredentialsStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),

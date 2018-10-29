@@ -28,15 +28,16 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
-    private final UserCredentialsHandler userCredentialsHandler;
+    private final SyncHandler<UserCredentials> userCredentialsHandler;
 
     UserHandler(IdentifiableObjectStore<User> userStore,
-                UserCredentialsHandler userCredentialsHandler) {
+                SyncHandler<UserCredentials> userCredentialsHandler) {
         super(userStore);
         this.userCredentialsHandler = userCredentialsHandler;
     }
@@ -48,6 +49,10 @@ public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
 
     @Override
     protected void afterObjectHandled(User user, HandleAction action) {
-        userCredentialsHandler.handleUserCredentials(user.userCredentials(), user);
+        UserCredentials credentials = user.userCredentials();
+        if (credentials != null) {
+            UserCredentials credentialsWithUser = credentials.toBuilder().user(user).build();
+            userCredentialsHandler.handle(credentialsWithUser);
+        }
     }
 }

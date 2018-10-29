@@ -25,28 +25,54 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.Collections;
+public final class CategoryCategoryOptionLinkTableInfo {
 
-final class CategoryCollectionRepository {
 
-    private CategoryCollectionRepository() {
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "CategoryCategoryOptionLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            CategoryOptionTableInfo.TABLE_INFO,
+            Columns.CATEGORY,
+            Columns.CATEGORY_OPTION);
+
+    private CategoryCategoryOptionLinkTableInfo() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Category> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<Category> categoryOptionChildrenAppender = new CategoryOptionChildrenAppender(
-                CategoryCategoryOptionLinkChildStore.create(databaseAdapter)
-        );
+    static class Columns extends BaseModel.Columns {
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryStore.create(databaseAdapter),
-                Collections.singletonList(categoryOptionChildrenAppender)
-        );
+        static final String CATEGORY = "category";
+        private static final String CATEGORY_OPTION = "categoryOption";
+        private static final String SORT_ORDER = "sortOrder";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CATEGORY, CATEGORY_OPTION, SORT_ORDER);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

@@ -27,26 +27,22 @@
  */
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
+final class CategoryOptionChildrenAppender extends ChildrenAppender<Category> {
 
-final class CategoryCollectionRepository {
 
-    private CategoryCollectionRepository() {
+    private final LinkModelChildStore<Category, CategoryOption> linkModelChildStore;
+
+    CategoryOptionChildrenAppender(LinkModelChildStore<Category, CategoryOption> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Category> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<Category> categoryOptionChildrenAppender = new CategoryOptionChildrenAppender(
-                CategoryCategoryOptionLinkChildStore.create(databaseAdapter)
-        );
-
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryStore.create(databaseAdapter),
-                Collections.singletonList(categoryOptionChildrenAppender)
-        );
+    @Override
+    protected Category appendChildren(Category category) {
+        Category.Builder builder = category.toBuilder();
+        builder.categoryOptions(linkModelChildStore.getChildren(category));
+        return builder.build();
     }
 }

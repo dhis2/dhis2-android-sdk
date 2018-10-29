@@ -25,28 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
+final class CategoryCategoryOptionLinkChildStore {
 
-final class CategoryCollectionRepository {
-
-    private CategoryCollectionRepository() {
+    private CategoryCategoryOptionLinkChildStore() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Category> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<Category> categoryOptionChildrenAppender = new CategoryOptionChildrenAppender(
-                CategoryCategoryOptionLinkChildStore.create(databaseAdapter)
-        );
-
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryStore.create(databaseAdapter),
-                Collections.singletonList(categoryOptionChildrenAppender)
-        );
+    static LinkModelChildStore<Category, CategoryOption> create(DatabaseAdapter databaseAdapter) {
+        return new LinkModelChildStoreImpl<>(
+                CategoryCategoryOptionLinkTableInfo.CHILD_PROJECTION,
+                databaseAdapter,
+                new SQLStatementBuilder(CategoryCategoryOptionLinkTableInfo.TABLE_INFO),
+                new CursorExecutorImpl<>(CategoryOptionStore.FACTORY));
     }
 }

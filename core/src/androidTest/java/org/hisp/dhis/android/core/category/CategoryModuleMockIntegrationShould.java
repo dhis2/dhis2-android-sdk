@@ -97,6 +97,27 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
+    public void allow_access_to_categories_with_category_options() {
+        List<Category> categories = d2.categoryModule().categories.getWithAllChildren();
+        assertThat(categories.size(), is(4));
+        for (Category category : categories) {
+            assertThat(category.categoryOptions() == null, is(false));
+        }
+    }
+
+    @Test
+    public void allow_access_to_category_by_uid_with_category_options() {
+        Category category = d2.categoryModule().categories.uid("vGs6omsRekv").getWithAllChildren();
+        assertThat(category.uid(), is("vGs6omsRekv"));
+        assertThat(category.name(), is("default"));
+        assertThat(category.dataDimensionType(), is("DISAGGREGATION"));
+        List<CategoryOption> categoryOptions = category.categoryOptions();
+        assertThat(categoryOptions == null, is(false));
+        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.iterator().next().uid(), is("as6ygGvUGNg"));
+    }
+
+    @Test
     public void allow_access_to_category_option_combos_without_children() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
         assertThat(categoryOptionCombos.size(), is(2));

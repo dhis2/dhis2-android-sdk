@@ -25,28 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.db.stores;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.db.executors.CursorExecutor;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
+import java.util.List;
 
-    private final ObjectStyleStore objectStyleStore;
-    private final TableInfo objectWithStyleTableInfo;
+public class LinkModelChildStoreImpl<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface>
+        implements LinkModelChildStore<P, C> {
 
+    private final LinkTableChildProjection linkTableChildProjection;
 
-    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
-                                TableInfo objectWithStyleTableInfo) {
-        this.objectStyleStore = objectStyleStore;
-        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLStatementBuilder statementBuilder;
+
+    private final CursorExecutor<C> cursorExecutor;
+
+    public LinkModelChildStoreImpl(LinkTableChildProjection linkTableChildProjection,
+                                   DatabaseAdapter databaseAdapter,
+                                   SQLStatementBuilder statementBuilder,
+                                   CursorExecutor<C> cursorExecutor) {
+        this.linkTableChildProjection = linkTableChildProjection;
+        this.databaseAdapter = databaseAdapter;
+        this.statementBuilder = statementBuilder;
+        this.cursorExecutor = cursorExecutor;
     }
 
     @Override
-    protected O appendChildren(O objectWithStyle) {
-        B builder = objectWithStyle.toBuilder();
-        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
-        return builder.style(style).build();
+    public List<C> getChildren(P p) {
+        String selectStatement = statementBuilder.selectChildrenWithLinkTable(linkTableChildProjection, p.uid());
+        return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
     }
 }

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifia
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 final class CategoryComboCollectionRepository {
 
@@ -40,13 +40,20 @@ final class CategoryComboCollectionRepository {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<CategoryCombo> childrenAppender = new CategoryOptionComboChildrenAppender(
+        ChildrenAppender<CategoryCombo> categoryOptionComboChildrenAppender = new CategoryOptionComboChildrenAppender(
                 CategoryOptionComboStoreImpl.create(databaseAdapter)
+        );
+
+        ChildrenAppender<CategoryCombo> categoryChildrenAppender = new CategoryChildrenAppender(
+                CategoryCategoryComboLinkChildStore.create(databaseAdapter)
         );
 
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 CategoryComboStore.create(databaseAdapter),
-                Collections.singletonList(childrenAppender)
+                Arrays.asList(
+                        categoryChildrenAppender,
+                        categoryOptionComboChildrenAppender
+                )
         );
     }
 }

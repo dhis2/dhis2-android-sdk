@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.PojoBuilder;
 
-import java.util.Collection;
-
-final class RelationshipItemChildrenAppender implements ChildrenAppender<Relationship> {
+final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
 
     private final RelationshipItemStore store;
     private final PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder;
@@ -44,12 +42,7 @@ final class RelationshipItemChildrenAppender implements ChildrenAppender<Relatio
     }
 
     @Override
-    public void prepareChildren(Collection<Relationship> collection) {
-        // no previous set call is needed
-    }
-
-    @Override
-    public Relationship appendChildren(Relationship relationship) {
+    protected Relationship appendChildren(Relationship relationship) {
         RelationshipItemModel fromItemModel = store.getForRelationshipUidAndConstraintType(
                 relationship.uid(), RelationshipConstraintType.FROM);
         RelationshipItemModel toItemModel = store.getForRelationshipUidAndConstraintType(

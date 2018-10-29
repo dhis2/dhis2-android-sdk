@@ -42,8 +42,8 @@ public final class ChildrenAppenderExecutor {
     public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
         M mWithChildren = m;
         for (ChildrenAppender<M> appender: childrenAppenders) {
-            appender.prepareChildren(Collections.singleton(m));
-            mWithChildren = appender.appendChildren(m);
+            appender.prepareChildren(Collections.singleton(mWithChildren));
+            mWithChildren = appender.appendChildren(mWithChildren);
         }
         return mWithChildren;
     }

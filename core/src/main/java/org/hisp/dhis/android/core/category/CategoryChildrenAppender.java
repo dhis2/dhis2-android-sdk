@@ -25,28 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
-
-    private final ObjectStyleStore objectStyleStore;
-    private final TableInfo objectWithStyleTableInfo;
+final class CategoryChildrenAppender extends ChildrenAppender<CategoryCombo> {
 
 
-    public ObjectStyleChildrenAppender(ObjectStyleStore objectStyleStore,
-                                TableInfo objectWithStyleTableInfo) {
-        this.objectStyleStore = objectStyleStore;
-        this.objectWithStyleTableInfo = objectWithStyleTableInfo;
+    private final LinkModelChildStore<CategoryCombo, Category> linkModelChildStore;
+
+    CategoryChildrenAppender(LinkModelChildStore<CategoryCombo, Category> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
     @Override
-    protected O appendChildren(O objectWithStyle) {
-        B builder = objectWithStyle.toBuilder();
-        ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
-        return builder.style(style).build();
+    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+        CategoryCombo.Builder builder = categoryCombo.toBuilder();
+        builder.categories(linkModelChildStore.getChildren(categoryCombo));
+        return builder.build();
     }
 }

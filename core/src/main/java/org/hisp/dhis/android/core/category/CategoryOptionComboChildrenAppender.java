@@ -29,10 +29,9 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-import java.util.Collection;
 import java.util.List;
 
-final class CategoryOptionComboChildrenAppender implements ChildrenAppender<CategoryCombo> {
+final class CategoryOptionComboChildrenAppender extends ChildrenAppender<CategoryCombo> {
 
     private final CategoryOptionComboStore store;
 
@@ -41,12 +40,7 @@ final class CategoryOptionComboChildrenAppender implements ChildrenAppender<Cate
     }
 
     @Override
-    public void prepareChildren(Collection<CategoryCombo> collection) {
-        // no previous set call is needed
-    }
-
-    @Override
-    public CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
         CategoryCombo.Builder builder = categoryCombo.toBuilder();
         List<CategoryOptionCombo> optionCombos = store.getForCategoryCombo(categoryCombo.uid());
         return builder.categoryOptionCombos(optionCombos).build();

@@ -28,245 +28,201 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DataInputPeriodListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DataSetElementListAdapter;
+import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreDataElementOperandListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.SectionListAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandFields;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class DataSet extends BaseNameableObject {
+@JsonDeserialize(builder = AutoValue_DataSet.Builder.class)
+@SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
+public abstract class DataSet extends BaseNameableObject implements Model, ObjectWithStyle<DataSet, DataSet.Builder> {
 
-    private final static String PERIOD_TYPE = "periodType";
-    private final static String CATEGORY_COMBO = "categoryCombo";
-    private final static String MOBILE = "mobile";
-    private final static String VERSION = "version";
-    private final static String EXPIRY_DAYS = "expiryDays";
-    private final static String TIMELY_DAYS = "timelyDays";
-    private final static String NOTIFY_COMPLETING_USER = "notifyCompletingUser";
-    private final static String OPEN_FUTURE_PERIODS = "openFuturePeriods";
-    private final static String FIELD_COMBINATION_REQUIRED = "fieldCombinationRequired";
-    private final static String VALID_COMPLETE_ONLY = "validCompleteOnly";
-    private final static String NO_VALUE_REQUIRES_COMMENT = "noValueRequiresComment";
-    private final static String SKIP_OFFLINE = "skipOffline";
-    private final static String DATA_ELEMENT_DECORATION = "dataElementDecoration";
-    private final static String RENDER_AS_TABS = "renderAsTabs";
-    private final static String RENDER_HORIZONTALLY = "renderHorizontally";
-    private final static String DATA_SET_ELEMENTS = "dataSetElements";
-    private final static String INDICATORS = "indicators";
-    private final static String SECTIONS = "sections";
-    private final static String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
-    private final static String DATA_INPUT_PERIODS = "dataInputPeriods";
-    private final static String ACCESS = "access";
-    private final static String STYLE = "style";
-
-    public static final Field<DataSet, String> uid = Field.create(UID);
-    private static final Field<DataSet, String> code = Field.create(CODE);
-    private static final Field<DataSet, String> name = Field.create(NAME);
-    private static final Field<DataSet, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<DataSet, String> created = Field.create(CREATED);
-    static final Field<DataSet, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<DataSet, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<DataSet, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<DataSet, String> description = Field.create(DESCRIPTION);
-    private static final Field<DataSet, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<DataSet, Boolean> deleted = Field.create(DELETED);
-
-    private static final Field<DataSet, PeriodType> periodType = Field.create(PERIOD_TYPE);
-    private static final NestedField<DataSet, ObjectWithUid> categoryCombo = NestedField.create(CATEGORY_COMBO);
-    private static final Field<DataSet, Boolean> mobile = Field.create(MOBILE);
-    private static final Field<DataSet, Integer> version = Field.create(VERSION);
-    private static final Field<DataSet, Integer> expiryDays = Field.create(EXPIRY_DAYS);
-    private static final Field<DataSet, Integer> timelyDays = Field.create(TIMELY_DAYS);
-    private static final Field<DataSet, Boolean> notifyCompletingUser = Field.create(NOTIFY_COMPLETING_USER);
-    private static final Field<DataSet, Integer> openFuturePeriods = Field.create(OPEN_FUTURE_PERIODS);
-    private static final Field<DataSet, Boolean> fieldCombinationRequired = Field.create(FIELD_COMBINATION_REQUIRED);
-    private static final Field<DataSet, Boolean> validCompleteOnly = Field.create(VALID_COMPLETE_ONLY);
-    private static final Field<DataSet, Boolean> noValueRequiresComment = Field.create(NO_VALUE_REQUIRES_COMMENT);
-    private static final Field<DataSet, Boolean> skipOffline = Field.create(SKIP_OFFLINE);
-    private static final Field<DataSet, Boolean> dataElementDecoration = Field.create(DATA_ELEMENT_DECORATION);
-    private static final Field<DataSet, Boolean> renderAsTabs = Field.create(RENDER_AS_TABS);
-    private static final Field<DataSet, Boolean> renderHorizontally = Field.create(RENDER_HORIZONTALLY);
-    private static final NestedField<DataSet, DataSetElement> dataSetElements = NestedField.create(DATA_SET_ELEMENTS);
-    private static final NestedField<DataSet, ObjectWithUid> indicators = NestedField.create(INDICATORS);
-    private static final NestedField<DataSet, Section> sections = NestedField.create(SECTIONS);
-    private static final NestedField<DataSet, DataElementOperand> compulsoryDataElementOperands
-            = NestedField.create(COMPULSORY_DATA_ELEMENT_OPERANDS);
-    private static final NestedField<DataSet, DataInputPeriod> dataInputPeriods
-            = NestedField.create(DATA_INPUT_PERIODS);
-    private static final NestedField<DataSet, Access> access = NestedField.create(ACCESS);
-    private static final NestedField<DataSet, ObjectStyle> style = NestedField.create(STYLE);
-
-
-    static final Fields<DataSet> allFields = Fields.<DataSet>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
-            description, displayDescription, deleted,
-            periodType, categoryCombo.with(ObjectWithUid.uid), mobile, version,
-            expiryDays, timelyDays, notifyCompletingUser,
-            openFuturePeriods, fieldCombinationRequired, validCompleteOnly, noValueRequiresComment,
-            skipOffline, dataElementDecoration, renderAsTabs, renderHorizontally,
-            dataSetElements.with(DataSetElementFields.allFields),
-            indicators.with(ObjectWithUid.uid),
-            sections.with(SectionFields.allFields),
-            compulsoryDataElementOperands.with(DataElementOperandFields.allFields),
-            dataInputPeriods.with(DataInputPeriodFields.allFields),
-            access.with(Access.data.with(DataAccess.write)),
-            style.with(ObjectStyleFields.allFields)).build();
-
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(PERIOD_TYPE)
+    @JsonProperty()
+    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
-    @JsonProperty(CATEGORY_COMBO)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
-    String categoryComboUid() {
-        ObjectWithUid combo = categoryCombo();
-        return combo == null ? CategoryComboModel.DEFAULT_UID : combo.uid();
-    }
-
     @Nullable
-    @JsonProperty(MOBILE)
+    @JsonProperty()
     public abstract Boolean mobile();
 
     @Nullable
-    @JsonProperty(VERSION)
+    @JsonProperty()
     public abstract Integer version();
 
     @Nullable
-    @JsonProperty(EXPIRY_DAYS)
+    @JsonProperty()
     public abstract Integer expiryDays();
 
     @Nullable
-    @JsonProperty(TIMELY_DAYS)
+    @JsonProperty()
     public abstract Integer timelyDays();
 
     @Nullable
-    @JsonProperty(NOTIFY_COMPLETING_USER)
+    @JsonProperty()
     public abstract Boolean notifyCompletingUser();
 
     @Nullable
-    @JsonProperty(OPEN_FUTURE_PERIODS)
+    @JsonProperty()
     public abstract Integer openFuturePeriods();
 
     @Nullable
-    @JsonProperty(FIELD_COMBINATION_REQUIRED)
+    @JsonProperty()
     public abstract Boolean fieldCombinationRequired();
 
     @Nullable
-    @JsonProperty(VALID_COMPLETE_ONLY)
+    @JsonProperty()
     public abstract Boolean validCompleteOnly();
 
     @Nullable
-    @JsonProperty(NO_VALUE_REQUIRES_COMMENT)
+    @JsonProperty()
     public abstract Boolean noValueRequiresComment();
 
     @Nullable
-    @JsonProperty(SKIP_OFFLINE)
+    @JsonProperty()
     public abstract Boolean skipOffline();
 
     @Nullable
-    @JsonProperty(DATA_ELEMENT_DECORATION)
+    @JsonProperty()
     public abstract Boolean dataElementDecoration();
 
     @Nullable
-    @JsonProperty(RENDER_AS_TABS)
+    @JsonProperty()
     public abstract Boolean renderAsTabs();
 
     @Nullable
-    @JsonProperty(RENDER_HORIZONTALLY)
+    @JsonProperty()
     public abstract Boolean renderHorizontally();
 
     @Nullable
-    @JsonProperty(DATA_SET_ELEMENTS)
+    @JsonProperty()
+    @ColumnAdapter(DataSetElementListAdapter.class)
     public abstract List<DataSetElement> dataSetElements();
     
     @Nullable
-    @JsonProperty(INDICATORS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> indicators();
 
     @Nullable
-    @JsonProperty(SECTIONS)
+    @JsonProperty()
+    @ColumnAdapter(SectionListAdapter.class)
     public abstract List<Section> sections();
 
     @Nullable
-    @JsonProperty(COMPULSORY_DATA_ELEMENT_OPERANDS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreDataElementOperandListColumnAdapter.class)
     public abstract List<DataElementOperand> compulsoryDataElementOperands();
 
     @Nullable
-    @JsonProperty(DATA_INPUT_PERIODS)
+    @JsonProperty()
+    @ColumnAdapter(DataInputPeriodListColumnAdapter.class)
     public abstract List<DataInputPeriod> dataInputPeriods();
 
     @Nullable
-    @JsonProperty(ACCESS)
+    @JsonProperty()
+    @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
-    @Nullable
-    @JsonProperty(STYLE)
-    public abstract ObjectStyle style();
+    public static Builder builder() {
+        return new $$AutoValue_DataSet.Builder();
+    }
 
-    @JsonCreator
-    public static DataSet create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(PERIOD_TYPE) PeriodType periodType,
-            @JsonProperty(CATEGORY_COMBO) ObjectWithUid categoryCombo,
-            @JsonProperty(MOBILE) Boolean mobile,
-            @JsonProperty(VERSION) Integer version,
-            @JsonProperty(EXPIRY_DAYS) Integer expiryDays,
-            @JsonProperty(TIMELY_DAYS) Integer timelyDays,
-            @JsonProperty(NOTIFY_COMPLETING_USER) Boolean notifyCompletingUser,
-            @JsonProperty(OPEN_FUTURE_PERIODS) Integer openFuturePeriods,
-            @JsonProperty(FIELD_COMBINATION_REQUIRED) Boolean fieldCombinationRequired,
-            @JsonProperty(VALID_COMPLETE_ONLY) Boolean validCompleteOnly,
-            @JsonProperty(NO_VALUE_REQUIRES_COMMENT) Boolean noValueRequiresComment,
-            @JsonProperty(SKIP_OFFLINE) Boolean skipOffline,
-            @JsonProperty(DATA_ELEMENT_DECORATION) Boolean dataElementDecoration,
-            @JsonProperty(RENDER_AS_TABS) Boolean renderAsTabs,
-            @JsonProperty(RENDER_HORIZONTALLY) Boolean renderHorizontally,
-            @JsonProperty(DATA_SET_ELEMENTS) List<DataSetElement> dataSetElements,
-            @JsonProperty(INDICATORS) List<ObjectWithUid> indicators,
-            @JsonProperty(SECTIONS) List<Section> sections,
-            @JsonProperty(COMPULSORY_DATA_ELEMENT_OPERANDS) List<DataElementOperand> compulsoryDataElementOperands,
-            @JsonProperty(DATA_INPUT_PERIODS) List<DataInputPeriod> dataInputPeriods,
-            @JsonProperty(ACCESS) Access access,
-            @JsonProperty(STYLE) ObjectStyle style,
-            @JsonProperty(DELETED) Boolean deleted) {
+    static DataSet create(Cursor cursor) {
+        return $AutoValue_DataSet.createFromCursor(cursor);
+    }
 
-        return new AutoValue_DataSet(uid, code, name,
-                displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription,
-                periodType, categoryCombo, mobile, version, expiryDays, timelyDays,
-                notifyCompletingUser, openFuturePeriods, fieldCombinationRequired,
-                validCompleteOnly, noValueRequiresComment, skipOffline,
-                dataElementDecoration, renderAsTabs, renderHorizontally, dataSetElements,
-                indicators, sections, compulsoryDataElementOperands, dataInputPeriods, access, style);
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<DataSet, DataSet.Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder periodType(PeriodType periodType);
+
+        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
+
+        public abstract Builder mobile(Boolean mobile);
+
+        public abstract Builder version(Integer version);
+
+        public abstract Builder expiryDays(Integer expiryDays);
+
+        public abstract Builder timelyDays(Integer timelyDays);
+
+        public abstract Builder notifyCompletingUser(Boolean notifyCompletingUser);
+
+        public abstract Builder openFuturePeriods(Integer openFuturePeriods);
+
+        public abstract Builder fieldCombinationRequired(Boolean fieldCombinationRequired);
+
+        public abstract Builder validCompleteOnly(Boolean validCompleteOnly);
+
+        public abstract Builder noValueRequiresComment(Boolean noValueRequiresComment);
+
+        public abstract Builder skipOffline(Boolean skipOffline);
+
+        public abstract Builder dataElementDecoration(Boolean dataElementDecoration);
+
+        public abstract Builder renderAsTabs(Boolean renderAsTabs);
+
+        public abstract Builder renderHorizontally(Boolean renderHorizontally);
+
+        public abstract Builder dataSetElements(List<DataSetElement> dataSetElements);
+
+        public abstract Builder indicators(List<ObjectWithUid> indicators);
+
+        public abstract Builder sections(List<Section> sections);
+
+        public abstract Builder compulsoryDataElementOperands(List<DataElementOperand> compulsoryDataElementOperands);
+
+        public abstract Builder dataInputPeriods(List<DataInputPeriod> dataInputPeriods);
+
+        public abstract Builder access(Access access);
+
+        public abstract DataSet build();
     }
 }

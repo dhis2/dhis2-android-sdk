@@ -17,6 +17,7 @@ import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,8 +62,8 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     }
 
     private List<Event> getEvents() throws D2CallException {
-        Set<String> organisationUnitUids;
-        Set<String> programUids = programStore.queryWithoutRegistrationProgramUids();
+        Collection<String> organisationUnitUids;
+        List<String> programUids = programStore.queryWithoutRegistrationProgramUids();
         List<Event> events = new ArrayList<>();
         EventQuery.Builder eventQueryBuilder = EventQuery.Builder.create();
         int pageSize = eventQueryBuilder.build().getPageSize();
@@ -85,7 +86,9 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         return events;
     }
 
-    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int pageSize, Set<String> programUids,
+    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
+                                            int pageSize,
+                                            Collection<String> programUids,
                                             int globalEventsSize) throws D2CallException {
         List<Event> events = new ArrayList<>();
 
@@ -128,7 +131,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     }
 
     private Set<String> getOrgUnitUids() {
-        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
+        List<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
 
         Set<String> organisationUnitUids = new HashSet<>();
 

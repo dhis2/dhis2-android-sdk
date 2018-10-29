@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -23,7 +22,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_combos_without_children() {
-        Set<CategoryCombo> combos = d2.categoryModule().categoryCombos.getSet();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.get();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categories() == null, is(true));
@@ -33,7 +32,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_combos_with_category_option_combos() {
-        Set<CategoryCombo> combos = d2.categoryModule().categoryCombos.getSetWithAllChildren();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.getWithAllChildren();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categoryOptionCombos() == null, is(false));
@@ -42,7 +41,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_combos_with_categories() {
-        Set<CategoryCombo> combos = d2.categoryModule().categoryCombos.getSetWithAllChildren();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.getWithAllChildren();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categories() == null, is(false));
@@ -85,7 +84,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_categories_without_children() {
-        Set<Category> categories = d2.categoryModule().categories.getSet();
+        List<Category> categories = d2.categoryModule().categories.get();
         assertThat(categories.size(), is(4));
     }
 
@@ -99,7 +98,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_category_option_combos_without_children() {
-        Set<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.getSet();
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
         assertThat(categoryOptionCombos.size(), is(2));
     }
 
@@ -112,7 +111,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_category_combos_without_children() {
-        Set<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions.getSet();
+        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions.get();
         assertThat(categoryOptions.size(), is(8));
     }
 

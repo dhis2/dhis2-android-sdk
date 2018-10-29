@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.arch.repositories.children;
 
 import org.hisp.dhis.android.core.common.Model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public final class ChildrenAppenderExecutor {
 
@@ -41,24 +41,25 @@ public final class ChildrenAppenderExecutor {
 
     public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
         M mWithChildren = m;
-        for (ChildrenAppender<M> appender: childrenAppenders) {
+        for (ChildrenAppender<M> appender : childrenAppenders) {
             appender.prepareChildren(Collections.singleton(mWithChildren));
             mWithChildren = appender.appendChildren(mWithChildren);
         }
         return mWithChildren;
     }
 
-    public static <M extends Model> Set<M> appendInObjectSet(Set<M> set,
-                                                             Collection<ChildrenAppender<M>> childrenAppenders) {
+    public static <M extends Model> List<M> appendInObjectCollection(
+            List<M> list,
+            Collection<ChildrenAppender<M>> childrenAppenders) {
 
-        for (ChildrenAppender<M> appender: childrenAppenders) {
-            appender.prepareChildren(set);
+        for (ChildrenAppender<M> appender : childrenAppenders) {
+            appender.prepareChildren(list);
         }
 
-        Set<M> setWithChildren = new HashSet<>(set.size());
-        for (M m: set) {
+        List<M> setWithChildren = new ArrayList<>(list.size());
+        for (M m : list) {
             M mWithChildren = m;
-            for (ChildrenAppender<M> appender: childrenAppenders) {
+            for (ChildrenAppender<M> appender : childrenAppenders) {
                 mWithChildren = appender.appendChildren(mWithChildren);
             }
             setWithChildren.add(mWithChildren);

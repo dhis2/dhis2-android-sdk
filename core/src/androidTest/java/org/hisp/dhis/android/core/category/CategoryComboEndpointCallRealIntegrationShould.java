@@ -12,7 +12,6 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -60,17 +59,17 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
     private void assertNotCombosInDB() {
         IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
-        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
+        List<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
         assertTrue(categoryCombos.isEmpty());
     }
 
     private void assertThereAreCombosInDB() {
         IdentifiableObjectStore<CategoryCombo> categoryComboStore = CategoryComboStore.create(databaseAdapter());
-        Set<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
+        List<CategoryCombo> categoryCombos = categoryComboStore.selectAll();
         assertTrue(categoryCombos.size() > 0);
     }
 
-    private Set<CategoryCategoryComboLinkModel> getCategoryCategoryComboLinkModels() {
+    private List<CategoryCategoryComboLinkModel> getCategoryCategoryComboLinkModels() {
         LinkModelStore<CategoryCategoryComboLinkModel>
                 categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter());
         return categoryCategoryComboLinkStore.selectAll();
@@ -78,13 +77,13 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
     private void assertThereAreCategoryOptionCombosInDB() {
         IdentifiableObjectStore<CategoryOptionCombo> categoryOptionComboStore = CategoryOptionComboStoreImpl.create(databaseAdapter());
-        Set<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll();
+        List<CategoryOptionCombo> categoryOptionCombos = categoryOptionComboStore.selectAll();
         assertTrue(categoryOptionCombos.size() > 0);
     }
 
     private void assertThereAreCategoriesInDB() {
         IdentifiableObjectStore<CategoryOption> categoryOptionStore = CategoryOptionStore.create(databaseAdapter());
-        Set<String> categoryOptionUids = categoryOptionStore.selectUids();
+        List<String> categoryOptionUids = categoryOptionStore.selectUids();
         assertTrue(categoryOptionUids.size() > 0);
     }
 }

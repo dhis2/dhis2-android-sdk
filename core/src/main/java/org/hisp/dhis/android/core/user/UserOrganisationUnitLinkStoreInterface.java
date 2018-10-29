@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.Set;
+import java.util.List;
 
 public interface UserOrganisationUnitLinkStoreInterface extends ObjectWithoutUidStore<UserOrganisationUnitLinkModel> {
 
-    Set<String> queryRootOrganisationUnitUids() throws RuntimeException;
+    List<String> queryRootOrganisationUnitUids() throws RuntimeException;
 }

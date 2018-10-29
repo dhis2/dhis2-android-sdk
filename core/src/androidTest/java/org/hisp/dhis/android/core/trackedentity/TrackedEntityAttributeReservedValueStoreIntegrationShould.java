@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -139,7 +139,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
     }
 
     private void storeContains(TrackedEntityAttributeReservedValueModel value, Boolean contains) {
-        Set<TrackedEntityAttributeReservedValueModel> values = store.selectAll();
+        List<TrackedEntityAttributeReservedValueModel> values = store.selectAll();
         assertThat(values.contains(value), is(contains));
     }
 }

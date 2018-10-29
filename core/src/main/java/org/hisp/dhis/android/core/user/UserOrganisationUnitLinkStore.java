@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -101,7 +101,7 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
     }
 
     @Override
-    public Set<String> queryRootOrganisationUnitUids() throws RuntimeException {
+    public List<String> queryRootOrganisationUnitUids() throws RuntimeException {
         return selectStringColumnsWhereClause(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
                         UserOrganisationUnitLinkModel.Columns.ROOT + " = 1");
     }

@@ -38,17 +38,14 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
-import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteBuilder;
-import org.hisp.dhis.android.core.enrollment.note.NoteModel;
-import org.hisp.dhis.android.core.enrollment.note.NoteStore;
+import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -307,7 +304,8 @@ public class EnrollmentStoreImpl extends StoreWithStateImpl implements Enrollmen
                     enrollmentMap.get(trackedEntityInstance).add(Enrollment.create(
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
-                            status, trackedEntityInstance, coordinates, deleted, null, getNotes(uid)
+                            status, trackedEntityInstance, coordinates, deleted, null,
+                            Collections.<Note229Compatible>emptyList()
                     ));
                 }
                 while (cursor.moveToNext());
@@ -318,18 +316,6 @@ public class EnrollmentStoreImpl extends StoreWithStateImpl implements Enrollmen
         }
 
         return enrollmentMap;
-    }
-
-    private List<Note> getNotes(String uid) {
-        List<Note> notes = new ArrayList<>();
-        Set<NoteModel> noteModels = NoteStore.create(databaseAdapter).selectAll();
-        NoteBuilder noteBuilder = new NoteBuilder();
-        for (NoteModel noteModel : noteModels) {
-            if (noteModel.enrollment().equals(uid)) {
-                notes.add(noteBuilder.buildPojo(noteModel));
-            }
-        }
-        return notes;
     }
 
     @Override

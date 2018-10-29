@@ -28,46 +28,28 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import java.io.IOException;
+import java.text.ParseException;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@AutoValue
-public abstract class Note {
-    private final static String VALUE = "value";
-    private final static String STORED_BY = "storedBy";
-    private final static String STORED_DATE = "storedDate";
+public class Note30Should extends BaseObjectShould implements ObjectShould {
 
-    private static final Field<Note, String> value = Field.create(VALUE);
-    private static final Field<Note, String> storedBy = Field.create(STORED_BY);
-    private static final Field<Note, String> storedDate= Field.create(STORED_DATE);
+    public Note30Should() {
+        super("note30.json");
+    }
 
-    public static final Fields<Note> allFields = Fields.<Note>builder().fields(
-            value, storedBy, storedDate).build();
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        Note229Compatible note229Compatible = objectMapper.readValue(jsonStream, Note229Compatible.class);
 
-    @Nullable
-    @JsonProperty(VALUE)
-    public abstract String value();
-
-    @Nullable
-    @JsonProperty(STORED_BY)
-    public abstract String storedBy();
-
-    @Nullable
-    @JsonProperty(STORED_DATE)
-    public abstract String storedDate();
-
-    @JsonCreator
-    public static Note create(
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(STORED_BY) String storedBy,
-            @JsonProperty(STORED_DATE) String storedDate) {
-
-        return new AutoValue_Note(value, storedBy, storedDate);
+        assertThat(note229Compatible.value()).isEqualTo("Note");
+        assertThat(note229Compatible.storedBy()).isEqualTo("android");
+        assertThat(note229Compatible.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
     }
 }

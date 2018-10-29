@@ -28,43 +28,46 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import android.support.annotation.Nullable;
 
-import java.text.ParseException;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.auto.value.AutoValue;
 
-public class NoteModelBuilder extends ModelBuilder<Note229Compatible, NoteModel> {
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-    private final NoteModel.Builder builder;
-    private final DHISVersionManager versionManager;
+@AutoValue
+public abstract class Note229Compatible {
+    private final static String VALUE = "value";
+    private final static String STORED_BY = "storedBy";
+    private final static String STORED_DATE = "storedDate";
 
-    public NoteModelBuilder(Enrollment enrollment, DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
-        this.builder = NoteModel.builder()
-                .enrollment(enrollment.uid());
-    }
+    private static final Field<Note229Compatible, String> value = Field.create(VALUE);
+    private static final Field<Note229Compatible, String> storedBy = Field.create(STORED_BY);
+    private static final Field<Note229Compatible, String> storedDate= Field.create(STORED_DATE);
 
-    @Override
-    public NoteModel buildModel(Note229Compatible pojo) {
+    public static final Fields<Note229Compatible> allFields = Fields.<Note229Compatible>builder().fields(
+            value, storedBy, storedDate).build();
 
-        Date storedDate;
-        try {
-            if (this.versionManager.is2_29()) {
-                storedDate = BaseIdentifiableObject.parseSpaceDate(pojo.storedDate());
-            } else {
-                storedDate = BaseIdentifiableObject.parseDate(pojo.storedDate());
-            }
-        } catch (ParseException ignored) {
-            storedDate = null;
-        }
+    @Nullable
+    @JsonProperty(VALUE)
+    public abstract String value();
 
-        return builder
-                .value(pojo.value())
-                .storedBy(pojo.storedBy())
-                .storedDate(storedDate)
-                .build();
+    @Nullable
+    @JsonProperty(STORED_BY)
+    public abstract String storedBy();
+
+    @Nullable
+    @JsonProperty(STORED_DATE)
+    public abstract String storedDate();
+
+    @JsonCreator
+    public static Note229Compatible create(
+            @JsonProperty(VALUE) String value,
+            @JsonProperty(STORED_BY) String storedBy,
+            @JsonProperty(STORED_DATE) String storedDate) {
+
+        return new AutoValue_Note229Compatible(value, storedBy, storedDate);
     }
 }

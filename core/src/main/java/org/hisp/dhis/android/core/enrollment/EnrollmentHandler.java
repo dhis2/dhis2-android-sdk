@@ -7,28 +7,32 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
 import org.hisp.dhis.android.core.enrollment.note.NoteHandler;
 import org.hisp.dhis.android.core.enrollment.note.NoteModel;
 import org.hisp.dhis.android.core.enrollment.note.NoteModelBuilder;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
 public class EnrollmentHandler {
+    private final DHISVersionManager versionManager;
     private final EnrollmentStore enrollmentStore;
     private final EventHandler eventHandler;
-    private final GenericHandler<Note, NoteModel> noteHandler;
+    private final GenericHandler<Note229Compatible, NoteModel> noteHandler;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
     EnrollmentHandler(@NonNull DatabaseAdapter databaseAdapter,
+                      @NonNull DHISVersionManager versionManager,
                       @NonNull EnrollmentStore enrollmentStore,
                       @NonNull EventHandler eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner) {
+        this.versionManager = versionManager;
         this.enrollmentStore = enrollmentStore;
         this.eventHandler = eventHandler;
         this.noteHandler = NoteHandler.create(databaseAdapter);
@@ -86,14 +90,15 @@ public class EnrollmentHandler {
             }
 
             eventHandler.handleMany(enrollment.events());
-            noteHandler.handleMany(enrollment.notes(), new NoteModelBuilder(enrollment));
+            noteHandler.handleMany(enrollment.notes(), new NoteModelBuilder(enrollment, this.versionManager));
         }
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
     }
 
-    public static EnrollmentHandler create(DatabaseAdapter databaseAdapter) {
+    public static EnrollmentHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
         return new EnrollmentHandler(
                 databaseAdapter,
+                versionManager,
                 new EnrollmentStoreImpl(databaseAdapter),
                 EventHandler.create(databaseAdapter),
                 new DataOrphanCleanerImpl<Enrollment, Event>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,

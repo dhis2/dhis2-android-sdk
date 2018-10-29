@@ -30,22 +30,33 @@ package org.hisp.dhis.android.core.enrollment.note;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.PojoBuilder;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.text.ParseException;
 
-public class NoteBuilder extends PojoBuilder<Note, NoteModel> {
+public class NoteBuilder extends PojoBuilder<Note229Compatible, NoteModel> {
+
+    private final DHISVersionManager versionManager;
+
+    public NoteBuilder(DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
+    }
 
     @Override
-    public Note buildPojo(NoteModel model) {
+    public Note229Compatible buildPojo(NoteModel model) {
 
         String date;
         try {
-            date = BaseIdentifiableObject.dateToSpaceDateStr(model.storedDate());
+            if (this.versionManager.is2_29()) {
+                date = BaseIdentifiableObject.dateToSpaceDateStr(model.storedDate());
+            } else {
+                date = BaseIdentifiableObject.dateToDateStr(model.storedDate());
+            }
         } catch (ParseException ignored) {
             date = null;
         }
 
-        return Note.create(
+        return Note229Compatible.create(
                 model.value(),
                 model.storedBy(),
                 date

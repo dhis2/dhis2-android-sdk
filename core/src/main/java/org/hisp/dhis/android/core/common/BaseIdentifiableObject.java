@@ -95,6 +95,10 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
         return BaseIdentifiableObject.SPACE_DATE_FORMAT.format(date);
     }
 
+    public static String dateToDateStr(Date date) throws ParseException {
+        return BaseIdentifiableObject.DATE_FORMAT.format(date);
+    }
+
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder<T extends Builder> {
 

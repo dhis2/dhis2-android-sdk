@@ -26,35 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.relationship;
 
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
+import org.hisp.dhis.android.core.data.relationship.RelationshipConstraintSamples;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
+public class RelationshipConstraintStoreIntegrationShould extends
+        ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint> {
 
-    public SystemInfoStoreIntegrationShould() {
-        super(SystemInfoStore.create(DatabaseAdapterFactory.get(false)));
+    public RelationshipConstraintStoreIntegrationShould() {
+        super(RelationshipConstraintStore.create(DatabaseAdapterFactory.get(false)));
     }
 
     @Override
-    protected SystemInfo buildObject() {
-        return SystemInfoSamples.get1();
+    protected RelationshipConstraint buildObject() {
+        return RelationshipConstraintSamples.getRelationshipConstraint();
     }
 
     @Override
-    protected SystemInfo buildObjectToUpdate() {
-        return SystemInfoSamples.get2();
+    protected RelationshipConstraint buildObjectToUpdate() {
+        return RelationshipConstraintSamples.getRelationshipConstraint().toBuilder()
+                .relationshipEntity(RelationshipEntityType.PROGRAM_INSTANCE)
+                .build();
     }
 
     @Override
-    protected SystemInfo buildObjectWithId() {
-        return SystemInfoSamples.get1().toBuilder()
+    protected RelationshipConstraint buildObjectWithId() {
+        return RelationshipConstraintSamples.getRelationshipConstraint().toBuilder()
                 .id(1L)
                 .build();
     }

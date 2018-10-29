@@ -28,69 +28,56 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ObjectStore;
-import org.junit.After;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class ObjectStoreAbstractIntegrationShould<M> {
+public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M>
+        extends ObjectStoreAbstractIntegrationShould<M> {
 
-    protected M object;
-    protected M objectWithId;
-    protected ObjectStore<M> store;
+    private M objectToUpdate;
+    protected ObjectWithoutUidStore<M> store;
 
-    ObjectStoreAbstractIntegrationShould(ObjectStore<M> store) {
+    public ObjectWithoutUidStoreAbstractIntegrationShould(ObjectWithoutUidStore<M> store) {
+        super(store);
         this.store = store;
-        this.object = buildObject();
-        this.objectWithId = buildObjectWithId();
+        this.objectToUpdate = buildObjectToUpdate();
     }
 
-    protected abstract M buildObject();
-    protected abstract M buildObjectWithId();
+    protected abstract M buildObjectToUpdate();
 
     @Before
     public void setUp() throws IOException {
-        store.delete();
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        DatabaseAdapterFactory.get(false).database().close();
+        super.setUp();
     }
 
     @Test
-    public void insert_and_select_first_object() {
+    public void insert_and_update_where() {
         store.insert(object);
+        store.updateWhere(objectToUpdate);
         M objectFromDb = store.selectFirst();
-        assertThat(objectFromDb).isEqualTo(object);
+        assertThat(objectFromDb).isEqualTo(objectToUpdate);
     }
 
     @Test
-    public void insert_and_select_all_objects() {
+    public void update_when_call_update_or_insert_where_and_there_is_a_previous_object() {
         store.insert(object);
-        Set<M> objectsFromDb = store.selectAll();
-        assertThat(objectsFromDb.iterator().next()).isEqualTo(object);
+        HandleAction handleAction = store.updateOrInsertWhere(objectToUpdate);
+        assertThat(handleAction).isEqualTo(HandleAction.Update);
+        M objectFromDb = store.selectFirst();
+        assertThat(objectFromDb).isEqualTo(objectToUpdate);
     }
 
     @Test
-    public void delete_inserted_object_by_id() {
-        store.insert(objectWithId);
-        store.deleteById(objectWithId);
-        assertThat(store.selectFirst()).isEqualTo(null);
-    }
-
-    @Test
-    public void select_inserted_object_where_clause() {
-        // TODO Implement test for store.selectWhereClause() method
-    }
-
-    @Test
-    public void select_inserted_string_columns_where_clause() {
-        // TODO Implement test for store.selectStringColumnsWhereClause() method
+    public void insert_when_call_update_or_insert_where_and_there_is_no_previous_object() {
+        HandleAction handleAction = store.updateOrInsertWhere(objectToUpdate);
+        assertThat(handleAction).isEqualTo(HandleAction.Insert);
+        M objectFromDb = store.selectFirst();
+        assertThat(objectFromDb).isEqualTo(objectToUpdate);
     }
 }

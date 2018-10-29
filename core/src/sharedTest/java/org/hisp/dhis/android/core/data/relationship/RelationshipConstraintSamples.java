@@ -26,36 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.data.relationship;
 
-import android.support.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
+import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
-import org.junit.runner.RunWith;
 
-@RunWith(AndroidJUnit4.class)
-public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
+public class RelationshipConstraintSamples {
 
-    public SystemInfoStoreIntegrationShould() {
-        super(SystemInfoStore.create(DatabaseAdapterFactory.get(false)));
-    }
-
-    @Override
-    protected SystemInfo buildObject() {
-        return SystemInfoSamples.get1();
-    }
-
-    @Override
-    protected SystemInfo buildObjectToUpdate() {
-        return SystemInfoSamples.get2();
-    }
-
-    @Override
-    protected SystemInfo buildObjectWithId() {
-        return SystemInfoSamples.get1().toBuilder()
-                .id(1L)
+    public static RelationshipConstraint getRelationshipConstraint() {
+        return RelationshipConstraint.builder()
+                .relationshipType(ObjectWithUid.create("relationship_type_uid"))
+                .constraintType(RelationshipConstraintType.FROM)
+                .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+                .trackedEntityType(ObjectWithUid.create("tracked_entity_type_uid"))
+                .program(ObjectWithUid.create("program_uid"))
+                .programStage(ObjectWithUid.create("program_stage_uid"))
                 .build();
     }
 }

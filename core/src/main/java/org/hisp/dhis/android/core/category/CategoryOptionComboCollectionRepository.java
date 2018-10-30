@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -40,13 +39,11 @@ final class CategoryOptionComboCollectionRepository {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<CategoryOptionCombo> categoryOptionChildrenAppender = new CategoryOptionComboCategoryOptionChildrenAppender(
-                CategoryOptionComboCategoryOptionLinkChildStore.create(databaseAdapter)
-        );
-
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 CategoryOptionComboStoreImpl.create(databaseAdapter),
-                Collections.singletonList(categoryOptionChildrenAppender)
+                Collections.singletonList(
+                        CategoryOptionComboCategoryOptionChildrenAppender.create(databaseAdapter)
+                )
         );
     }
 }

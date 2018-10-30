@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ final class CategoryOptionComboChildrenAppender extends ChildrenAppender<Categor
 
     private final CategoryOptionComboStore store;
 
-    CategoryOptionComboChildrenAppender(CategoryOptionComboStore store) {
+    private CategoryOptionComboChildrenAppender(CategoryOptionComboStore store) {
         this.store = store;
     }
 
@@ -44,5 +45,11 @@ final class CategoryOptionComboChildrenAppender extends ChildrenAppender<Categor
         CategoryCombo.Builder builder = categoryCombo.toBuilder();
         List<CategoryOptionCombo> optionCombos = store.getForCategoryCombo(categoryCombo.uid());
         return builder.categoryOptionCombos(optionCombos).build();
+    }
+
+    static ChildrenAppender<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
+        return new CategoryOptionComboChildrenAppender(
+                CategoryOptionComboStoreImpl.create(databaseAdapter)
+        );
     }
 }

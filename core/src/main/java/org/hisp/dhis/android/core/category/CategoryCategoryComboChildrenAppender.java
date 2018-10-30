@@ -25,25 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class CategoryOptionComboCategoryOptionLinkChildStore {
+final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<CategoryCombo> {
 
-    private CategoryOptionComboCategoryOptionLinkChildStore() {
+
+    private final LinkModelChildStore<CategoryCombo, Category> linkModelChildStore;
+
+    private CategoryCategoryComboChildrenAppender(LinkModelChildStore<CategoryCombo, Category> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    static LinkModelChildStore<CategoryOptionCombo, CategoryOption> create(DatabaseAdapter databaseAdapter) {
-        return new LinkModelChildStoreImpl<>(
-                CategoryOptionComboCategoryOptionLinkTableInfo.CHILD_PROJECTION,
-                databaseAdapter,
-                new SQLStatementBuilder(CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO),
-                new CursorExecutorImpl<>(CategoryOptionStore.FACTORY));
+    @Override
+    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+        CategoryCombo.Builder builder = categoryCombo.toBuilder();
+        builder.categories(linkModelChildStore.getChildren(categoryCombo));
+        return builder.build();
+    }
+
+    static ChildrenAppender<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
+        return new CategoryCategoryComboChildrenAppender(
+                StoreFactory.<CategoryCombo, Category>linkModelChildStore(
+                        databaseAdapter,
+                        CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+                        CategoryCategoryComboLinkTableInfo.CHILD_PROJECTION,
+                        CategoryStore.FACTORY
+                )
+        );
     }
 }

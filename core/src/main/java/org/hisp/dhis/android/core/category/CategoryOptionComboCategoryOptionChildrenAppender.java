@@ -29,13 +29,15 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAppender<CategoryOptionCombo> {
 
 
     private final LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore;
 
-    CategoryOptionComboCategoryOptionChildrenAppender(
+    private CategoryOptionComboCategoryOptionChildrenAppender(
             LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore) {
         this.linkModelChildStore = linkModelChildStore;
     }
@@ -45,5 +47,15 @@ final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAp
         CategoryOptionCombo.Builder builder = optionCombo.toBuilder();
         builder.categoryOptions(linkModelChildStore.getChildren(optionCombo));
         return builder.build();
+    }
+
+    static ChildrenAppender<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
+        return new CategoryOptionComboCategoryOptionChildrenAppender(
+                StoreFactory.<CategoryOptionCombo, CategoryOption>linkModelChildStore(
+                        databaseAdapter,
+                        CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+                        CategoryOptionComboCategoryOptionLinkTableInfo.CHILD_PROJECTION,
+                        CategoryOptionStore.FACTORY)
+        );
     }
 }

@@ -162,7 +162,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
-    public void allow_access_to_category_option_combo_by_uid_with_sorted_category_options() {
+    public void allow_access_to_category_option_combo_by_uid_with_category_options() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").getWithAllChildren();
         assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
         assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));

@@ -87,14 +87,14 @@ public final class UserFields {
             uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle,
             surname, firstName, introduction, employer, interests, languages, email, phoneNumber, nationality,
             deleted,
-            userCredentials.with(UserCredentials.allFields)
+            userCredentials.with(UserCredentialsFields.allFields)
     ).build();
 
     static final Fields<User> allFieldsWithOrgUnit = Fields.<User>builder().fields(
             uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle,
             surname, firstName, introduction, employer, interests, languages, email, phoneNumber, nationality,
             deleted,
-            userCredentials.with(UserCredentials.allFields),
+            userCredentials.with(UserCredentialsFields.allFields),
             organisationUnits.with(
                     OrganisationUnit.uid,
                     OrganisationUnit.path,

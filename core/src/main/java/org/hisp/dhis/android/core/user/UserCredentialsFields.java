@@ -25,17 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-final class UserCredentialsHandler {
-    private UserCredentialsHandler() {
-    }
+final class UserCredentialsFields {
+    static final String USERNAME = "username";
 
-    public static SyncHandler<UserCredentials> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter));
+    private static final FieldsHelper<UserCredentials> fh = new FieldsHelper<>();
+
+    public static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<String>field(USERNAME)
+            ).build();
+
+    private UserCredentialsFields() {
     }
 }

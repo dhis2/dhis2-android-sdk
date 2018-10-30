@@ -16,8 +16,10 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
+import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
-import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
+import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,10 +71,14 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         executor.executeD2CallTransactionally(d2.databaseAdapter(), new Callable<Void>() {
             @Override
-            public Void call() throws D2CallException {
+            public Void call() {
                 givenAMetadataInDatabase();
-                new UserCredentialsStoreImpl(d2.databaseAdapter()).insert("user_credential_uid1", null,
-                        null, null, null, null, null, "no_user_uid");
+                User user = User.builder().uid("no_user_uid").build();
+                UserCredentials userCredentials = UserCredentials.builder()
+                        .uid("user_credential_uid1")
+                        .user(user)
+                        .build();
+                UserCredentialsStore.create(d2.databaseAdapter()).insert(userCredentials);
 
                 Cursor userCredentialsCursor = getUserCredentialsCursor();
                 assertThatCursorHasRowCount(userCredentialsCursor, 2);

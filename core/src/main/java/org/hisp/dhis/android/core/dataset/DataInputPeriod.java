@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
@@ -48,24 +48,16 @@ import java.util.Date;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataInputPeriod.Builder.class)
-public abstract class DataInputPeriod extends BaseDataModel {
+public abstract class DataInputPeriod extends BaseModel {
 
     @Nullable
     @JsonIgnore
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
 
-    String dataSetUid() {
-        return dataSet() == null ? null : dataSet().uid();
-    }
-
     @JsonProperty
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid period();
-
-    String periodUid() {
-        return period() == null ? null : period().uid();
-    }
 
     @Nullable
     @JsonProperty
@@ -91,7 +83,7 @@ public abstract class DataInputPeriod extends BaseDataModel {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDataModel.Builder<DataInputPeriod.Builder> {
+    public abstract static class Builder extends BaseModel.Builder<DataInputPeriod.Builder> {
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
 

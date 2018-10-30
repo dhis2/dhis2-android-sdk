@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,35 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.data.dataset;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.SafeDateFormat;
-import org.hisp.dhis.android.core.common.UidsHelper;
-import org.junit.Test;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataset.DataSetElement;
 
-import java.io.IOException;
-import java.text.ParseException;
+public class DataSetElementSamples {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
-
-    public static final SafeDateFormat dateFormat = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-    public DataInputPeriodShould() {
-        super("dataset/data_input_period.json");
-    }
-
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-
-        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
-
-        assertThat(UidsHelper.getUidOrNull(dataInputPeriod.period())).isEqualTo("201801");
-        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
-        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
+    public static DataSetElement getDataSetElement() {
+        return DataSetElement.builder()
+                .dataSet(ObjectWithUid.create("data_set_uid"))
+                .dataElement(ObjectWithUid.create("data_element_uid"))
+                .categoryCombo(ObjectWithUid.create("category_combo"))
+                .build();
     }
 }

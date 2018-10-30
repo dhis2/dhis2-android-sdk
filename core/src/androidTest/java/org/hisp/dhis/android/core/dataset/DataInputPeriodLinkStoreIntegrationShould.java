@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,33 +28,48 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.SafeDateFormat;
-import org.hisp.dhis.android.core.common.UidsHelper;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.text.ParseException;
+@RunWith(AndroidJUnit4.class)
+public class DataInputPeriodLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<DataInputPeriod> {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class DataInputPeriodShould extends BaseObjectShould implements ObjectShould {
-
-    public static final SafeDateFormat dateFormat = new SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-    public DataInputPeriodShould() {
-        super("dataset/data_input_period.json");
+    public DataInputPeriodLinkStoreIntegrationShould() {
+        super(DataInputPeriodLinkStore.create(DatabaseAdapterFactory.get(false)));
     }
 
     @Override
+    protected String addMasterUid() {
+        return DataInputPeriodSamples.getDataInputPeriod().dataSet().uid();
+    }
+
+    @Override
+    protected DataInputPeriod buildObject() {
+        return DataInputPeriodSamples.getDataInputPeriod();
+    }
+
+    @Override
+    protected DataInputPeriod buildObjectWithOtherMasterUid() {
+        return DataInputPeriodSamples.getDataInputPeriod().toBuilder()
+                .dataSet(ObjectWithUid.create("new_data_set_uid"))
+                .build();
+    }
+
+    @Override
+    protected DataInputPeriod buildObjectWithId() {
+        return DataInputPeriodSamples.getDataInputPeriod().toBuilder()
+                .id(1L)
+                .build();
+    }
+
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-
-        DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
-
-        assertThat(UidsHelper.getUidOrNull(dataInputPeriod.period())).isEqualTo("201801");
-        assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
-        assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
+    public void stub() {
     }
 }

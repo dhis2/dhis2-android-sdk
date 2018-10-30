@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataset.DataInputPeriodStore;
+import org.hisp.dhis.android.core.dataset.DataInputPeriodLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkStore;
 import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
@@ -189,7 +189,7 @@ public final class WipeModuleImpl implements WipeModule {
                 SectionGreyedFieldsLinkStore.create(databaseAdapter),
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
                 DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
-                DataInputPeriodStore.create(databaseAdapter),
+                DataInputPeriodLinkStore.create(databaseAdapter),
                 OrganisationUnitGroupStore.create(databaseAdapter),
                 OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
         );

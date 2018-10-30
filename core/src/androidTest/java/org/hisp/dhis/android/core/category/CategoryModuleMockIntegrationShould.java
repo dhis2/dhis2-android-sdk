@@ -73,15 +73,23 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
-    public void allow_access_to_combo_by_uid_with_categories() {
+    public void allow_access_to_combo_by_uid_with_sorted_categories() {
         CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
+
         List<Category> categories = combo.categories();
-        assertThat(combo.categories() == null, is(false));
+        assertThat(categories == null, is(false));
         assertThat(categories.size(), is(2));
-        assertThat(categories.iterator().next().code(), is("BIRTHS_ATTENDED"));
+
+        Category category0 = categories.get(0);
+        assertThat(category0.uid(), is("KfdsGBcoiCa"));
+        assertThat(category0.code(), is("BIRTHS_ATTENDED"));
+
+        Category category1 = categories.get(1);
+        assertThat(category1.uid(), is("cX5k9anHEHd"));
+        assertThat(category1.code(), is("GENDER"));
     }
 
     @Test
@@ -108,15 +116,27 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
-    public void allow_access_to_category_by_uid_with_category_options() {
-        Category category = d2.categoryModule().categories.uid("vGs6omsRekv").getWithAllChildren();
-        assertThat(category.uid(), is("vGs6omsRekv"));
-        assertThat(category.name(), is("default"));
+    public void allow_access_to_category_by_uid_with_sorted_category_options() {
+        Category category = d2.categoryModule().categories.uid("KfdsGBcoiCa").getWithAllChildren();
+        assertThat(category.uid(), is("KfdsGBcoiCa"));
+        assertThat(category.name(), is("Births attended by"));
         assertThat(category.dataDimensionType(), is("DISAGGREGATION"));
+
         List<CategoryOption> categoryOptions = category.categoryOptions();
         assertThat(categoryOptions == null, is(false));
-        assertThat(categoryOptions.size(), is(1));
-        assertThat(categoryOptions.iterator().next().uid(), is("as6ygGvUGNg"));
+        assertThat(categoryOptions.size(), is(3));
+
+        CategoryOption categoryOption0 = categoryOptions.get(0);
+        assertThat(categoryOption0.uid(), is("TNYQzTHdoxL"));
+        assertThat(categoryOption0.code(), is("MCH_AIDES"));
+
+        CategoryOption categoryOption1 = categoryOptions.get(1);
+        assertThat(categoryOption1.uid(), is("TXGfLxZlInA"));
+        assertThat(categoryOption1.code(), is("SECHN"));
+
+        CategoryOption categoryOption2 = categoryOptions.get(2);
+        assertThat(categoryOption2.uid(), is("uZUnebiT5DI"));
+        assertThat(categoryOption2.code(), is("TRAINED_TBA"));
     }
 
     @Test
@@ -142,7 +162,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
-    public void allow_access_to_category_option_combo_by_uid_with_category_options() {
+    public void allow_access_to_category_option_combo_by_uid_with_sorted_category_options() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").getWithAllChildren();
         assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
         assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));

@@ -25,28 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.Collections;
+public final class CategoryOptionComboCategoryOptionLinkTableInfo {
 
-final class CategoryOptionComboCollectionRepository {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private CategoryOptionComboCollectionRepository() {
+        @Override
+        public String name() {
+            return "CategoryOptionComboCategoryOptionLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            CategoryOptionTableInfo.TABLE_INFO,
+            Columns.CATEGORY_OPTION_COMBO,
+            Columns.CATEGORY_OPTION);
+
+    private CategoryOptionComboCategoryOptionLinkTableInfo() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<CategoryOptionCombo> categoryOptionChildrenAppender = new CategoryOptionComboCategoryOptionChildrenAppender(
-                CategoryOptionComboCategoryOptionLinkChildStore.create(databaseAdapter)
-        );
+    static class Columns extends BaseModel.Columns {
+        public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
+        public static final String CATEGORY_OPTION = "categoryOption";
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryOptionComboStoreImpl.create(databaseAdapter),
-                Collections.singletonList(categoryOptionChildrenAppender)
-        );
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    CATEGORY_OPTION_COMBO, CATEGORY_OPTION);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

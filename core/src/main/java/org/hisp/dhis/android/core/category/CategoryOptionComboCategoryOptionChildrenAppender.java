@@ -27,26 +27,23 @@
  */
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
+final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAppender<CategoryOptionCombo> {
 
-final class CategoryOptionComboCollectionRepository {
 
-    private CategoryOptionComboCollectionRepository() {
+    private final LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore;
+
+    CategoryOptionComboCategoryOptionChildrenAppender(
+            LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<CategoryOptionCombo> categoryOptionChildrenAppender = new CategoryOptionComboCategoryOptionChildrenAppender(
-                CategoryOptionComboCategoryOptionLinkChildStore.create(databaseAdapter)
-        );
-
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryOptionComboStoreImpl.create(databaseAdapter),
-                Collections.singletonList(categoryOptionChildrenAppender)
-        );
+    @Override
+    protected CategoryOptionCombo appendChildren(CategoryOptionCombo optionCombo) {
+        CategoryOptionCombo.Builder builder = optionCombo.toBuilder();
+        builder.categoryOptions(linkModelChildStore.getChildren(optionCombo));
+        return builder.build();
     }
 }

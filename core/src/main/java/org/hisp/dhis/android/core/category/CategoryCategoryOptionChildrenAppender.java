@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-final class CategoryOptionChildrenAppender extends ChildrenAppender<Category> {
+final class CategoryCategoryOptionChildrenAppender extends ChildrenAppender<Category> {
 
 
     private final LinkModelChildStore<Category, CategoryOption> linkModelChildStore;
 
-    CategoryOptionChildrenAppender(LinkModelChildStore<Category, CategoryOption> linkModelChildStore) {
+    CategoryCategoryOptionChildrenAppender(LinkModelChildStore<Category, CategoryOption> linkModelChildStore) {
         this.linkModelChildStore = linkModelChildStore;
     }
 

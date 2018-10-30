@@ -40,7 +40,7 @@ final class CategoryCollectionRepository {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<Category> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<Category> categoryOptionChildrenAppender = new CategoryOptionChildrenAppender(
+        ChildrenAppender<Category> categoryOptionChildrenAppender = new CategoryCategoryOptionChildrenAppender(
                 CategoryCategoryOptionLinkChildStore.create(databaseAdapter)
         );
 

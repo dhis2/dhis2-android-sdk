@@ -27,10 +27,13 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import android.util.ArrayMap;
+
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public final class UidsHelper {
@@ -59,6 +62,14 @@ public final class UidsHelper {
             uids[i++] = "'" + o.uid() + "'";
         }
         return uids;
+    }
+
+    public static <O extends ObjectWithUidInterface> Map<String, O> mapByUid(Collection<O> objects) {
+        Map<String, O> map = new ArrayMap<>(objects.size());
+        for (O o: objects) {
+            map.put(o.uid(), o);
+        }
+        return map;
     }
 
     public static <O extends ObjectWithUidInterface> O findByUid(Collection<O> objects, String uid) {

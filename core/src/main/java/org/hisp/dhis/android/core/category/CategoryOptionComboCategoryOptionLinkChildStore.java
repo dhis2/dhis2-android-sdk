@@ -25,28 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
+final class CategoryOptionComboCategoryOptionLinkChildStore {
 
-final class CategoryOptionComboCollectionRepository {
-
-    private CategoryOptionComboCollectionRepository() {
+    private CategoryOptionComboCategoryOptionLinkChildStore() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<CategoryOptionCombo> categoryOptionChildrenAppender = new CategoryOptionComboCategoryOptionChildrenAppender(
-                CategoryOptionComboCategoryOptionLinkChildStore.create(databaseAdapter)
-        );
-
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryOptionComboStoreImpl.create(databaseAdapter),
-                Collections.singletonList(categoryOptionChildrenAppender)
-        );
+    static LinkModelChildStore<CategoryOptionCombo, CategoryOption> create(DatabaseAdapter databaseAdapter) {
+        return new LinkModelChildStoreImpl<>(
+                CategoryOptionComboCategoryOptionLinkTableInfo.CHILD_PROJECTION,
+                databaseAdapter,
+                new SQLStatementBuilder(CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO),
+                new CursorExecutorImpl<>(CategoryOptionStore.FACTORY));
     }
 }

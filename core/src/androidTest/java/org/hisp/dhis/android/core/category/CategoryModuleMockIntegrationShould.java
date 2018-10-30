@@ -2,12 +2,14 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -124,10 +126,39 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
+    public void allow_access_to_category_option_combos_with_category_options() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.getWithAllChildren();
+        assertThat(categoryOptionCombos.size(), is(2));
+        for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
+            assertThat(categoryOptionCombo.categoryOptions() == null, is(false));
+        }
+    }
+
+    @Test
     public void allow_access_to_category_option_combo_by_uid_without_children() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").get();
         assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
         assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));
+    }
+
+    @Test
+    public void allow_access_to_category_option_combo_by_uid_with_category_options() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").getWithAllChildren();
+        assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
+        assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));
+
+        List<CategoryOption> categoryOptions = categoryOptionCombo.categoryOptions();
+        assertThat(categoryOptions == null, is(false));
+        assertThat(categoryOptions.size(), is(2));
+
+        Map<String, CategoryOption> categoryOptionsMap = UidsHelper.mapByUid(categoryOptions);
+        CategoryOption categoryOption1 = categoryOptionsMap.get("uZUnebiT5DI");
+        assertThat(categoryOption1.uid(), is("uZUnebiT5DI"));
+        assertThat(categoryOption1.name(), is("Trained TBA"));
+
+        CategoryOption categoryOption2 = categoryOptionsMap.get("Fp4gVHbRvEV");
+        assertThat(categoryOption2.uid(), is("Fp4gVHbRvEV"));
+        assertThat(categoryOption2.name(), is("At PHU"));
     }
 
     @Test

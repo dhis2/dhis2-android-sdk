@@ -172,13 +172,13 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(categoryOptions.size(), is(2));
 
         Map<String, CategoryOption> categoryOptionsMap = UidsHelper.mapByUid(categoryOptions);
-        CategoryOption categoryOption1 = categoryOptionsMap.get("uZUnebiT5DI");
-        assertThat(categoryOption1.uid(), is("uZUnebiT5DI"));
-        assertThat(categoryOption1.name(), is("Trained TBA"));
+        CategoryOption categoryOption0 = categoryOptionsMap.get("uZUnebiT5DI");
+        assertThat(categoryOption0.uid(), is("uZUnebiT5DI"));
+        assertThat(categoryOption0.name(), is("Trained TBA"));
 
-        CategoryOption categoryOption2 = categoryOptionsMap.get("Fp4gVHbRvEV");
-        assertThat(categoryOption2.uid(), is("Fp4gVHbRvEV"));
-        assertThat(categoryOption2.name(), is("At PHU"));
+        CategoryOption categoryOption1 = categoryOptionsMap.get("Fp4gVHbRvEV");
+        assertThat(categoryOption1.uid(), is("Fp4gVHbRvEV"));
+        assertThat(categoryOption1.name(), is("At PHU"));
     }
 
     @Test

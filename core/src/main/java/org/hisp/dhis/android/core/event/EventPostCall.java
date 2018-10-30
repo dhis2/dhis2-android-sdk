@@ -11,6 +11,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +49,8 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
         String strategy = "CREATE_AND_UPDATE";
 
-        WebResponse webResponse =
-                new APICallExecutor().executeObjectCall(eventService.postEvents(eventPayload, strategy));
+        WebResponse webResponse = new APICallExecutor().executeObjectCallWithAcceptedErrorCodes(
+                eventService.postEvents(eventPayload, strategy), Collections.singletonList(409), WebResponse.class);
 
         handleWebResponse(webResponse);
         return webResponse;

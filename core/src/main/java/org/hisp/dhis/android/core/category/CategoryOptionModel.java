@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
@@ -22,6 +21,7 @@ public abstract class CategoryOptionModel extends BaseNameableObjectModel {
     public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String START_DATE = "startDate";
         public static final String END_DATE = "endDate";
+        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
@@ -30,14 +30,15 @@ public abstract class CategoryOptionModel extends BaseNameableObjectModel {
     }
 
     @Nullable
-    @ColumnName(Columns.START_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date startDate();
 
     @Nullable
-    @ColumnName(Columns.END_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
+
+    @Nullable
+    public abstract Boolean accessDataWrite();
 
     @NonNull
     public static Builder builder() {
@@ -55,6 +56,8 @@ public abstract class CategoryOptionModel extends BaseNameableObjectModel {
         public abstract Builder startDate(Date startDate);
 
         public abstract Builder endDate(Date endDate);
+
+        public abstract Builder accessDataWrite(Boolean accessDataWrite);
 
         public abstract CategoryOptionModel build();
     }

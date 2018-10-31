@@ -21,7 +21,13 @@
           "name": "default",
           "id": "as6ygGvUGNg",
           "shortName": "default",
-          "displayName": "default"
+          "displayName": "default",
+          "access": {
+            "data": {
+              "read": true,
+              "write": true
+            }
+          }
         }
       ]
     },
@@ -42,7 +48,13 @@
           "name": "MCH Aides",
           "id": "TNYQzTHdoxL",
           "shortName": "MCH Aides",
-          "displayName": "MCH Aides"
+          "displayName": "MCH Aides",
+          "access": {
+            "data": {
+              "read": true,
+              "write": false
+            }
+          }
         },
         {
           "lastUpdated": "2011-12-24T12:24:24.149",
@@ -51,7 +63,13 @@
           "name": "SECHN",
           "id": "TXGfLxZlInA",
           "shortName": "SECHN",
-          "displayName": "SECHN"
+          "displayName": "SECHN",
+          "access": {
+            "data": {
+              "read": true,
+              "write": true
+            }
+          }
         },
         {
           "lastUpdated": "2011-12-24T12:24:24.149",
@@ -60,7 +78,13 @@
           "name": "Trained TBA",
           "id": "uZUnebiT5DI",
           "shortName": "Trained TBA",
-          "displayName": "Trained TBA"
+          "displayName": "Trained TBA",
+          "access": {
+            "data": {
+              "read": true,
+              "write": true
+            }
+          }
         }
       ]
     },
@@ -81,7 +105,13 @@
           "name": "Female",
           "id": "apsOixVZlf1",
           "shortName": "Female",
-          "displayName": "Female"
+          "displayName": "Female",
+          "access": {
+            "data": {
+              "read": true,
+              "write": false
+            }
+          }
         },
         {
           "lastUpdated": "2011-12-24T12:24:24.149",
@@ -90,7 +120,13 @@
           "name": "Male",
           "id": "jRbMi0aBjYn",
           "shortName": "Male",
-          "displayName": "Male"
+          "displayName": "Male",
+          "access": {
+            "data": {
+              "read": true,
+              "write": true
+            }
+          }
         }
       ]
     },
@@ -111,7 +147,13 @@
           "name": "In Community",
           "id": "wHFX72Y0KXx",
           "shortName": "In Community",
-          "displayName": "In Community"
+          "displayName": "In Community",
+          "access": {
+            "data": {
+              "read": true,
+              "write": true
+            }
+          }
         },
         {
           "lastUpdated": "2011-12-24T12:24:24.149",
@@ -120,7 +162,13 @@
           "name": "At PHU",
           "id": "Fp4gVHbRvEV",
           "shortName": "At PHU",
-          "displayName": "At PHU"
+          "displayName": "At PHU",
+          "access": {
+            "data": {
+              "read": true,
+              "write": false
+            }
+          }
         }
       ]
     }

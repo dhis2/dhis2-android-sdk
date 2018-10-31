@@ -52,7 +52,7 @@ public final class CategoryOptionTableInfo {
     };
 
     static class Columns extends BaseNameableObjectModel.Columns {
-        private static final String ACCESS_DATA_WRITE = "accessDataWrite";
+        static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {

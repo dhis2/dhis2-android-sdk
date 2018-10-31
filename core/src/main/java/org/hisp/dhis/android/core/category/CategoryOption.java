@@ -73,6 +73,7 @@ public abstract class CategoryOption extends BaseNameableObject implements Model
     @Nullable
     @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
+    @ColumnName(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE)
     public abstract Access access();
 
 

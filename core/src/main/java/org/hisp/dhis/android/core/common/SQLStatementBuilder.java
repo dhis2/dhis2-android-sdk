@@ -32,35 +32,45 @@ import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.utils.Utils;
 
+import static org.hisp.dhis.android.core.arch.db.TableInfo.SORT_ORDER;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.utils.Utils.commaAndSpaceSeparatedArrayValues;
 
 public class SQLStatementBuilder {
+    // TODO save TableInfo instead of separate files when architecture 1.0 is ready
     final String tableName;
     public final String[] columns;
     private final String[] updateWhereColumns;
+    private final boolean hasSortOrder;
+
     private final static String TEXT = " TEXT";
     private final static String WHERE = " WHERE ";
     private final static String LIMIT = " LIMIT ";
     private final static String FROM = " FROM ";
     private final static String SELECT = "SELECT ";
-    private static final String AND = " AND ";
+    private final static String AND = " AND ";
+    private final static String ORDER_BY = " ORDER BY " + SORT_ORDER;
 
     @SuppressWarnings("PMD.UseVarargs")
-    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
+    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, boolean hasSortOrder) {
         this.tableName = tableName;
         this.columns = columns.clone();
         this.updateWhereColumns = updateWhereColumns.clone();
+        this.hasSortOrder = hasSortOrder;
+    }
+
+    @SuppressWarnings("PMD.UseVarargs")
+    SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns) {
+        this(tableName, columns, updateWhereColumns, false);
     }
 
     public SQLStatementBuilder(String tableName, BaseModel.Columns columns) {
-        this.tableName = tableName;
-        this.columns = columns.all().clone();
-        this.updateWhereColumns = columns.whereUpdate().clone();
+        this(tableName, columns.all().clone(), columns.whereUpdate().clone(), false);
     }
 
     public SQLStatementBuilder(TableInfo tableInfo) {
-        this(tableInfo.name(), tableInfo.columns());
+        this(tableInfo.name(), tableInfo.columns().all().clone(), tableInfo.columns().whereUpdate().clone(),
+                tableInfo.hasSortOrder());
     }
 
     private String commaSeparatedColumns() {
@@ -113,7 +123,12 @@ public class SQLStatementBuilder {
         return SELECT + "c.*" + FROM + tableName + " AS l, " +
                 projection.childTableInfo.name() + " AS c" +
                 WHERE + "l." + projection.childColumn + "=" + "c." + UID +
-                AND + "l." + projection.parentColumn + "='" + parentUid + "';";
+                AND + "l." + projection.parentColumn + "='" + parentUid + "'" +
+                orderBySortOrderClause() + ";";
+    }
+
+    private String orderBySortOrderClause() {
+        return hasSortOrder ? ORDER_BY : "";
     }
 
     String selectByUid() {

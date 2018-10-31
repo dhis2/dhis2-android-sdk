@@ -52,9 +52,9 @@ public class SQLStatementBuilderShould {
 
     private final static String[] columns = new String[]{COL_1, COL_2};
 
-    private SQLStatementBuilder builder = new SQLStatementBuilder(TABLE_NAME, columns, columns);
+    private SQLStatementBuilder builder = new SQLStatementBuilder(TABLE_NAME, columns, columns, false);
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+    private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
             CategoryTableInfo.TABLE_INFO,
             COL_1,
             COL_2);
@@ -214,6 +214,14 @@ public class SQLStatementBuilderShould {
     public void generate_select_children_with_link_table() {
         assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID")).isEqualTo(
                 "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID';"
+        );
+    }
+
+    @Test
+    public void generate_select_children_with_link_table_with_sort_order() {
+        SQLStatementBuilder builderWithSortOrder = new SQLStatementBuilder(TABLE_NAME, columns, columns, true);
+        assertThat(builderWithSortOrder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID")).isEqualTo(
+                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID' ORDER BY sortOrder;"
         );
     }
 }

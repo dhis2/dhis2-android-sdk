@@ -25,68 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
-
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.indicator.Indicator;
+package org.hisp.dhis.android.core.category;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-final class DataSetParentUidsHelper {
+public final class CategoryParentUidsHelper {
 
-    private DataSetParentUidsHelper() {
+    private CategoryParentUidsHelper() {
     }
 
-    static Set<String> getDataElementUids(List<DataSet> dataSets) {
+    public static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
         Set<String> uids = new HashSet<>();
-        for (DataSet dataSet : dataSets) {
-            List<DataSetElement> dataSetElements = dataSet.dataSetElements();
-            assert dataSetElements != null;
-            for (DataSetElement dataSetElement : dataSetElements) {
-                uids.add(dataSetElement.dataElement().uid());
+        for (CategoryCombo categoryCombo : categoryCombos) {
+            List<Category> categories = categoryCombo.categories();
+            if (categories != null) {
+                for (Category category : categories) {
+                    uids.add(category.uid());
+                }
             }
         }
         return uids;
-    }
-
-    static Set<String> getIndicatorUids(List<DataSet> dataSets) {
-        Set<String> uids = new HashSet<>();
-        for (DataSet dataSet : dataSets) {
-            for (ObjectWithUid indicator : dataSet.indicators()) {
-                uids.add(indicator.uid());
-            }
-        }
-        return uids;
-    }
-
-    static Set<String> getIndicatorTypeUids(List<Indicator> indicators) {
-        Set<String> uids = new HashSet<>();
-        for (Indicator indicator : indicators) {
-            ObjectWithUid type = indicator.indicatorType();
-            if (type != null) {
-                uids.add(type.uid());
-            }
-        }
-        return uids;
-    }
-
-    static Set<String> getAssignedOptionSetUids(List<DataElement> dataElements) {
-
-        Set<String> dataElementUids = new HashSet<>();
-
-        if (dataElements != null) {
-
-            for (DataElement dataElement : dataElements) {
-                String optionSetUid = dataElement.optionSetUid();
-
-                dataElementUids.add(optionSetUid);
-            }
-
-            dataElementUids.remove(null);
-        }
-        return dataElementUids;
     }
 }

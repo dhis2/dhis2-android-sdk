@@ -73,6 +73,18 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
+    public void dont_fail_when_asking_for_combos_without_children_when_not_in_database() {
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").get();
+        assertThat(combo == null, is(true));
+    }
+
+    @Test
+    public void dont_fail_when_asking_for_combos_with_children_when_not_in_database() {
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").getWithAllChildren();
+        assertThat(combo == null, is(true));
+    }
+
+    @Test
     public void allow_access_to_combo_by_uid_with_sorted_categories() {
         CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));

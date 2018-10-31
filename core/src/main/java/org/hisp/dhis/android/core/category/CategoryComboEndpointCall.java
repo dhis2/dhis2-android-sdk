@@ -19,7 +19,7 @@ public final class CategoryComboEndpointCall {
     }
 
     public static final UidsCallFactory<CategoryCombo> FACTORY = new UidsCallFactoryImpl<CategoryCombo>() {
-        private static final int MAX_UID_LIST_SIZE = 100;
+        private static final int MAX_UID_LIST_SIZE = 130;
 
         @Override
         protected CallFetcher<CategoryCombo> fetcher(GenericCallData data, Set<String> uids) {

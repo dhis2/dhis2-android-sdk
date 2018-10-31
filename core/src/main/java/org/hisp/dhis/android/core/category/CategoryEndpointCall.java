@@ -19,7 +19,7 @@ public final class CategoryEndpointCall {
     }
 
     public static final UidsCallFactory<Category> FACTORY = new UidsCallFactoryImpl<Category>() {
-        private static final int MAX_UID_LIST_SIZE = 100;
+        private static final int MAX_UID_LIST_SIZE = 90;
 
         @Override
         protected CallFetcher<Category> fetcher(GenericCallData data, Set<String> uids) {

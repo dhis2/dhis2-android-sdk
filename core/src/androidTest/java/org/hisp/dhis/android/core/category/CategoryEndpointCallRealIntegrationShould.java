@@ -1,6 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -30,7 +32,7 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
         Call<List<Category>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(getGenericCallData(d2),
-                new HashSet<String>());
+                new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));
         List<Category> categories = categoryEndpointCall.call();
 
         assertFalse(categories.isEmpty());

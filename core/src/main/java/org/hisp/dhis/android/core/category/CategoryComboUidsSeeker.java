@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-final class CategoryComboUidsSeeker {
+public class CategoryComboUidsSeeker {
 
     private DatabaseAdapter databaseAdapter;
 
@@ -48,8 +48,6 @@ final class CategoryComboUidsSeeker {
 
         return categoryCombos;
     }
-
-
 
     public static CategoryComboUidsSeeker create(DatabaseAdapter databaseAdapter) {
         return new CategoryComboUidsSeeker(databaseAdapter);

@@ -166,7 +166,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 UserCall.FACTORY,
                 CategoryEndpointCall.FACTORY,
                 CategoryComboEndpointCall.FACTORY,
-                CategoryComboUidsSeeker.create(databaseAdapter),
+                new CategoryComboUidsSeeker(databaseAdapter),
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
                 SearchOrganisationUnitCall.FACTORY,

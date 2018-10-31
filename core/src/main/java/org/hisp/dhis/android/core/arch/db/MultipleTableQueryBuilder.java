@@ -42,9 +42,6 @@ public class MultipleTableQueryBuilder {
     private final StringBuilder clause = new StringBuilder();
     private boolean isFirst = true;
 
-    public MultipleTableQueryBuilder() {
-    }
-
     public MultipleTableQueryBuilder generateQuery(String columnName, Collection<String> tableNames) {
         for (String tableName : tableNames) {
             appendKeyValue(columnName, tableName);

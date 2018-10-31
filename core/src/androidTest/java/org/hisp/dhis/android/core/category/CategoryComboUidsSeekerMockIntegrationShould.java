@@ -25,7 +25,7 @@ public class CategoryComboUidsSeekerMockIntegrationShould extends MockIntegratio
 
     @Test
     public void seek_category_combos_uids() {
-        Set<String> categories = CategoryComboUidsSeeker.create(databaseAdapter).seekUids();
+        Set<String> categories = new CategoryComboUidsSeeker(databaseAdapter).seekUids();
 
         assertThat(categories.size(), is(2));
         assertThat(categories.contains("m2jTvAj5kkm"), is(true));

@@ -17,9 +17,9 @@ import java.util.Set;
 
 public class CategoryComboUidsSeeker {
 
-    private DatabaseAdapter databaseAdapter;
+    private final DatabaseAdapter databaseAdapter;
 
-    private CategoryComboUidsSeeker(DatabaseAdapter databaseAdapter) {
+    public CategoryComboUidsSeeker(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
     }
 
@@ -47,9 +47,5 @@ public class CategoryComboUidsSeeker {
         }
 
         return categoryCombos;
-    }
-
-    public static CategoryComboUidsSeeker create(DatabaseAdapter databaseAdapter) {
-        return new CategoryComboUidsSeeker(databaseAdapter);
     }
 }

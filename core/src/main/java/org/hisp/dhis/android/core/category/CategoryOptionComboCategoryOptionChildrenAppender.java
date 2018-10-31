@@ -25,25 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
-import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class CategoryCategoryComboLinkChildStore {
+final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAppender<CategoryOptionCombo> {
 
-    private CategoryCategoryComboLinkChildStore() {
+
+    private final LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore;
+
+    private CategoryOptionComboCategoryOptionChildrenAppender(
+            LinkModelChildStore<CategoryOptionCombo, CategoryOption> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    static LinkModelChildStore<CategoryCombo, Category> create(DatabaseAdapter databaseAdapter) {
-        return new LinkModelChildStoreImpl<>(
-                CategoryCategoryComboLinkTableInfo.CHILD_PROJECTION,
-                databaseAdapter,
-                new SQLStatementBuilder(CategoryCategoryComboLinkTableInfo.TABLE_INFO),
-                new CursorExecutorImpl<>(CategoryStore.FACTORY));
+    @Override
+    protected CategoryOptionCombo appendChildren(CategoryOptionCombo optionCombo) {
+        CategoryOptionCombo.Builder builder = optionCombo.toBuilder();
+        builder.categoryOptions(linkModelChildStore.getChildren(optionCombo));
+        return builder.build();
+    }
+
+    static ChildrenAppender<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
+        return new CategoryOptionComboCategoryOptionChildrenAppender(
+                StoreFactory.<CategoryOptionCombo, CategoryOption>linkModelChildStore(
+                        databaseAdapter,
+                        CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+                        CategoryOptionComboCategoryOptionLinkTableInfo.CHILD_PROJECTION,
+                        CategoryOptionStore.FACTORY)
+        );
     }
 }

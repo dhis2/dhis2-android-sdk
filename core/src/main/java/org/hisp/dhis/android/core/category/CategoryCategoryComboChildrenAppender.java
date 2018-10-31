@@ -27,22 +27,34 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
+final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<CategoryCombo> {
 
-final class CategoryCollectionRepository {
 
-    private CategoryCollectionRepository() {
+    private final LinkModelChildStore<CategoryCombo, Category> linkModelChildStore;
+
+    private CategoryCategoryComboChildrenAppender(LinkModelChildStore<CategoryCombo, Category> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Category> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryStore.create(databaseAdapter),
-                Collections.singletonList(
-                        CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
+    @Override
+    protected CategoryCombo appendChildren(CategoryCombo categoryCombo) {
+        CategoryCombo.Builder builder = categoryCombo.toBuilder();
+        builder.categories(linkModelChildStore.getChildren(categoryCombo));
+        return builder.build();
+    }
+
+    static ChildrenAppender<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
+        return new CategoryCategoryComboChildrenAppender(
+                StoreFactory.<CategoryCombo, Category>linkModelChildStore(
+                        databaseAdapter,
+                        CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+                        CategoryCategoryComboLinkTableInfo.CHILD_PROJECTION,
+                        CategoryStore.FACTORY
                 )
         );
     }

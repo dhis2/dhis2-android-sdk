@@ -2,12 +2,14 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -97,9 +99,39 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
+    public void allow_access_to_categories_with_category_options() {
+        List<Category> categories = d2.categoryModule().categories.getWithAllChildren();
+        assertThat(categories.size(), is(4));
+        for (Category category : categories) {
+            assertThat(category.categoryOptions() == null, is(false));
+        }
+    }
+
+    @Test
+    public void allow_access_to_category_by_uid_with_category_options() {
+        Category category = d2.categoryModule().categories.uid("vGs6omsRekv").getWithAllChildren();
+        assertThat(category.uid(), is("vGs6omsRekv"));
+        assertThat(category.name(), is("default"));
+        assertThat(category.dataDimensionType(), is("DISAGGREGATION"));
+        List<CategoryOption> categoryOptions = category.categoryOptions();
+        assertThat(categoryOptions == null, is(false));
+        assertThat(categoryOptions.size(), is(1));
+        assertThat(categoryOptions.iterator().next().uid(), is("as6ygGvUGNg"));
+    }
+
+    @Test
     public void allow_access_to_category_option_combos_without_children() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
         assertThat(categoryOptionCombos.size(), is(2));
+    }
+
+    @Test
+    public void allow_access_to_category_option_combos_with_category_options() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.getWithAllChildren();
+        assertThat(categoryOptionCombos.size(), is(2));
+        for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
+            assertThat(categoryOptionCombo.categoryOptions() == null, is(false));
+        }
     }
 
     @Test
@@ -107,6 +139,26 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").get();
         assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
         assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));
+    }
+
+    @Test
+    public void allow_access_to_category_option_combo_by_uid_with_category_options() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").getWithAllChildren();
+        assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
+        assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));
+
+        List<CategoryOption> categoryOptions = categoryOptionCombo.categoryOptions();
+        assertThat(categoryOptions == null, is(false));
+        assertThat(categoryOptions.size(), is(2));
+
+        Map<String, CategoryOption> categoryOptionsMap = UidsHelper.mapByUid(categoryOptions);
+        CategoryOption categoryOption1 = categoryOptionsMap.get("uZUnebiT5DI");
+        assertThat(categoryOption1.uid(), is("uZUnebiT5DI"));
+        assertThat(categoryOption1.name(), is("Trained TBA"));
+
+        CategoryOption categoryOption2 = categoryOptionsMap.get("Fp4gVHbRvEV");
+        assertThat(categoryOption2.uid(), is("Fp4gVHbRvEV"));
+        assertThat(categoryOption2.name(), is("At PHU"));
     }
 
     @Test

@@ -37,8 +37,7 @@ final class CategoryCategoryOptionLinkStore {
     };
 
     public static LinkModelStore<CategoryCategoryOptionLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryOptionLinkModel.TABLE,
-                new CategoryCategoryOptionLinkModel.Columns(),
+        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
                 CategoryCategoryOptionLinkModel.Columns.CATEGORY, BINDER, FACTORY);
     }
 }

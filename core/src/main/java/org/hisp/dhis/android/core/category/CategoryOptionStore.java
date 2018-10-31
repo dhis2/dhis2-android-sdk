@@ -27,7 +27,7 @@ final class CategoryOptionStore {
         }
     };
 
-    private static final CursorModelFactory<CategoryOption> FACTORY = new CursorModelFactory<CategoryOption>() {
+    static final CursorModelFactory<CategoryOption> FACTORY = new CursorModelFactory<CategoryOption>() {
         @Override
         public CategoryOption fromCursor(Cursor cursor) {
             return CategoryOption.create(cursor);

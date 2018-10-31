@@ -1,6 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -11,6 +13,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
@@ -29,19 +32,21 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
     //@Test
     public void download_categories_combos_and_relatives() throws Exception {
-
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-        downloadCategories();
+        d2.databaseAdapter().database().setForeignKeyConstraintsEnabled(false);
 
         assertNotCombosInDB();
         assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
 
         Call<List<CategoryCombo>> categoryComboEndpointCall =
-                CategoryComboEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2));
+                CategoryComboEndpointCall.FACTORY.create(getGenericCallData(d2),
+                        new HashSet<>(Lists.newArrayList("bjDvmb4bfuf")));
         List<CategoryCombo> categoryCombos = categoryComboEndpointCall.call();
 
         assertFalse(categoryCombos.isEmpty());
+
+        downloadCategories();
 
         assertDataIsProperlyParsedAndInsertedInTheDB();
     }
@@ -54,7 +59,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        CategoryEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2)).call();
+        CategoryEndpointCall.FACTORY.create(getGenericCallData(d2),
+                new HashSet<>(Lists.newArrayList("GLevLNI9wkl"))).call();
     }
 
     private void assertNotCombosInDB() {

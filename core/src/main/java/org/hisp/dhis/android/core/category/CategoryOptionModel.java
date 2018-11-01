@@ -25,7 +25,7 @@ public abstract class CategoryOptionModel extends BaseNameableObjectModel {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), START_DATE, END_DATE);
+            return Utils.appendInNewArray(super.all(), START_DATE, END_DATE, ACCESS_DATA_WRITE);
         }
     }
 

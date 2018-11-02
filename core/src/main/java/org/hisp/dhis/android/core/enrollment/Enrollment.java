@@ -40,7 +40,8 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
-import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
+import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
 
 import java.util.Date;
@@ -81,12 +82,12 @@ public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWit
     private static final Field<Enrollment, Coordinates> coordinate = Field.create(COORDINATE);
 
     private static final NestedField<Enrollment, Event> events = NestedField.create(EVENTS);
-    private static final NestedField<Enrollment, Note229Compatible> notes = NestedField.create(NOTES);
+    private static final NestedField<Enrollment, Note> notes = NestedField.create(NOTES);
 
     public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder().fields(
             uid, created, lastUpdated, coordinate, enrollmentDate, incidentDate, enrollmentStatus,
             followUp, program, organisationUnit, trackedEntityInstance, deleted, events.with(Event.allFields),
-            notes.with(Note229Compatible.allFields)
+            notes.with(NoteFields.allFieldsWithoutEnrollment)
     ).build();
 
     @JsonProperty(UID)
@@ -150,7 +151,7 @@ public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWit
 
     @Nullable
     @JsonProperty(NOTES)
-    public abstract List<Note229Compatible> notes();
+    public abstract List<Note> notes();
 
     @JsonCreator
     public static Enrollment create(
@@ -169,7 +170,7 @@ public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWit
             @JsonProperty(COORDINATE) Coordinates coordinate,
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(EVENTS) List<Event> events,
-            @JsonProperty(NOTES) List<Note229Compatible> notes) {
+            @JsonProperty(NOTES) List<Note> notes) {
         return new AutoValue_Enrollment(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 organisationUnit, program, enrollmentDate, incidentDate, followUp, enrollmentStatus,
                 trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events), notes);

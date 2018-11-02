@@ -51,15 +51,16 @@ public abstract class NoteModel extends BaseModel {
         public static final String VALUE = "value";
         public static final String STORED_BY = "storedBy";
         public static final String STORED_DATE = "storedDate";
+        public static final String UID = "uid";
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE);
+            return Utils.appendInNewArray(super.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE, UID);
         }
 
         @Override
         public String[] whereUpdate() {
-            return new String[]{ENROLLMENT, VALUE, STORED_BY, STORED_DATE};
+            return new String[]{ENROLLMENT, VALUE, STORED_BY, STORED_DATE, UID};
         }
     }
 
@@ -70,6 +71,10 @@ public abstract class NoteModel extends BaseModel {
     public static Builder builder() {
         return new $AutoValue_NoteModel.Builder();
     }
+
+    @Nullable
+    @ColumnName(Columns.UID)
+    public abstract String uid();
 
     @Nullable
     @ColumnName(Columns.ENROLLMENT)
@@ -90,6 +95,8 @@ public abstract class NoteModel extends BaseModel {
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder uid(String uid);
+
         public abstract Builder enrollment(String enrollment);
 
         public abstract Builder value(String value);

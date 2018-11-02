@@ -46,7 +46,7 @@ public class Note30Should extends BaseObjectShould implements ObjectShould {
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Note229Compatible note229Compatible = objectMapper.readValue(jsonStream, Note229Compatible.class);
+        Note note229Compatible = objectMapper.readValue(jsonStream, Note.class);
 
         assertThat(note229Compatible.value()).isEqualTo("Note");
         assertThat(note229Compatible.storedBy()).isEqualTo("android");

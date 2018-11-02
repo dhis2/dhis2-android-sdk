@@ -12,10 +12,9 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
-import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
-import org.hisp.dhis.android.core.enrollment.note.NoteBuilder;
-import org.hisp.dhis.android.core.enrollment.note.NoteModel;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteStore;
+import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -64,7 +63,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
-    private final ObjectWithoutUidStore<NoteModel> noteStore;
+    private final ObjectWithoutUidStore<Note> noteStore;
 
     private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
                                           @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
@@ -75,7 +74,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                           @NonNull EventStore eventStore,
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                           @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
-                                          @NonNull ObjectWithoutUidStore<NoteModel> noteStore) {
+                                          @NonNull ObjectWithoutUidStore<Note> noteStore) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -125,7 +124,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
-        List<NoteModel> noteModels = noteStore.selectAll();
+        List<Note> notes = noteStore.selectAll();
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 
@@ -164,11 +163,11 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                         }
                     }
 
-                    List<Note229Compatible> notesForEnrollment = new ArrayList<>();
-                    NoteBuilder noteBuilder = new NoteBuilder(versionManager);
-                    for (NoteModel noteModel : noteModels) {
-                        if (enrollment.uid().equals(noteModel.enrollment())) {
-                            notesForEnrollment.add(noteBuilder.buildPojo(noteModel));
+                    List<Note> notesForEnrollment = new ArrayList<>();
+                    NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
+                    for (Note note : notes) {
+                        if (enrollment.uid().equals(note.enrollment())) {
+                            notesForEnrollment.add(transformer.transform(note));
                         }
                     }
 

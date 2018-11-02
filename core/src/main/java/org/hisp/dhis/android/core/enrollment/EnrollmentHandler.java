@@ -2,20 +2,21 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteHandler;
-import org.hisp.dhis.android.core.enrollment.note.NoteModel;
-import org.hisp.dhis.android.core.enrollment.note.NoteModelBuilder;
+import org.hisp.dhis.android.core.enrollment.note.NoteToStoreTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
@@ -24,7 +25,7 @@ public class EnrollmentHandler {
     private final DHISVersionManager versionManager;
     private final EnrollmentStore enrollmentStore;
     private final EventHandler eventHandler;
-    private final GenericHandler<Note229Compatible, NoteModel> noteHandler;
+    private final SyncHandler<Note> noteHandler;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
     EnrollmentHandler(@NonNull DatabaseAdapter databaseAdapter,
@@ -90,7 +91,15 @@ public class EnrollmentHandler {
             }
 
             eventHandler.handleMany(enrollment.events());
-            noteHandler.handleMany(enrollment.notes(), new NoteModelBuilder(enrollment, this.versionManager));
+
+            Collection<Note> notes = new ArrayList<>();
+            NoteToStoreTransformer transformer = new NoteToStoreTransformer(enrollment, versionManager);
+            if (enrollment.notes() != null) {
+                for (Note note : enrollment.notes()) {
+                    notes.add(transformer.transform(note));
+                }
+            }
+            noteHandler.handleMany(notes);
         }
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
     }

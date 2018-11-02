@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.core.utils.services;
 
+import android.content.ContentValues;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -117,6 +121,8 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         programStageStore.insert(stage1);
         programStageStore.insert(stage2);
 
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
         DataElement de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build();
         DataElement de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build();
         IdentifiableObjectStore<DataElement> dataElementStore = DataElementStore.create(databaseAdapter());

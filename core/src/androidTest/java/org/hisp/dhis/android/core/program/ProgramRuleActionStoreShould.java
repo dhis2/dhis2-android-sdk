@@ -33,7 +33,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
@@ -137,11 +140,15 @@ public class ProgramRuleActionStoreShould extends AbsStoreTestCase {
                 PROGRAM_STAGE_SECTION, PROGRAM_STAGE);
         database().insert(ProgramStageSectionModel.TABLE, null, programStageSection);
 
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
         ContentValues dataElement = CreateDataElementUtils.create(1L, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
 
         ContentValues programIndicator = CreateProgramIndicatorUtils.create(1L, PROGRAM_INDICATOR, PROGRAM);
         database().insert(ProgramIndicatorModel.TABLE, null, programIndicator);
+
     }
 
     @Test

@@ -33,6 +33,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
@@ -113,6 +115,10 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     @Test
     public void insert_persist_program_stage_data_element_in_data_base_when_insert() {
         // inserting necessary foreign key
+
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
 
@@ -174,6 +180,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
                 deferredDataElementUid,
                 deferredProgramStageUid
         );
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
         ContentValues dataElement = CreateDataElementUtils.create(ID, deferredDataElementUid, null);
         ContentValues programStage = CreateProgramStageUtils.create(1L, deferredProgramStageUid, PROGRAM);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID, TRACKED_ENTITY_UID);
@@ -185,6 +192,7 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
         database().insert(ProgramStageModel.TABLE, null, programStage);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
         database().insert(DataElementModel.TABLE, null, dataElement);
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -202,6 +210,9 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         // inserting necessary foreign key
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
+
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
 
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, OPTION_SET);
         database().insert(DataElementModel.TABLE, null, dataElement);
@@ -274,6 +285,8 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
 
     @Test
     public void delete_program_stage_data_element_in_data_base_when_delete_data_element() {
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
 
@@ -310,6 +323,9 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
         ContentValues optionSet = CreateOptionSetUtils.create(ID, OPTION_SET);
         database().insert(OptionSetModel.TABLE, null, optionSet);
 
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, OPTION_SET);
         database().insert(DataElementModel.TABLE, null, dataElement);
 
@@ -344,6 +360,10 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     @Test
     public void update__program_stage_data_element_in_data_base_without_program_stage_section_when_update() throws Exception {
         // inserting mandatory and nested foreign keys
+
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
 
@@ -401,6 +421,10 @@ public class ProgramStageDataElementStoreShould extends AbsStoreTestCase {
     @Test
     public void delete_program_stage_data_element_when_delete() throws Exception {
         // inserting necessary foreign keys
+
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
 

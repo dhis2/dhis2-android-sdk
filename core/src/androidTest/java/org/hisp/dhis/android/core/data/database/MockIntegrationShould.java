@@ -4,6 +4,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.facebook.stetho.Stetho;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
@@ -19,6 +21,7 @@ public abstract class MockIntegrationShould {
 
     private static SQLiteDatabase sqLiteDatabase;
     private static String dbName = null;
+    public static DatabaseAdapter databaseAdapter;
 
     private static Dhis2MockServer dhis2MockServer;
     protected static D2 d2;
@@ -28,9 +31,10 @@ public abstract class MockIntegrationShould {
         DbOpenHelper dbOpenHelper = new DbOpenHelper(
                 InstrumentationRegistry.getTargetContext().getApplicationContext(), dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        DatabaseAdapter databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
         dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
+        Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }
 
     @AfterClass

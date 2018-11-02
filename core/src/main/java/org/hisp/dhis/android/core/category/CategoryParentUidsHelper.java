@@ -25,32 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-final class CategoryComboFields {
+public final class CategoryParentUidsHelper {
 
-    static final String IS_DEFAULT = "isDefault";
-    private static final String CATEGORIES = "categories";
-    private static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
+    private CategoryParentUidsHelper() {
+    }
 
-    private static final FieldsHelper<CategoryCombo> fh = new FieldsHelper<>();
-
-    public static final Field<CategoryCombo, String> uid = fh.uid();
-
-    public static final Fields<CategoryCombo> allFields = Fields.<CategoryCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Boolean>field(IS_DEFAULT),
-                    fh.nestedFieldWithUid(CATEGORIES),
-                    fh.<CategoryOptionCombo>nestedField(CATEGORY_OPTION_COMBOS)
-                            .with(CategoryOptionComboFields.allFields)
-            ).build();
-
-    private CategoryComboFields() {
+    public static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
+        Set<String> uids = new HashSet<>();
+        for (CategoryCombo categoryCombo : categoryCombos) {
+            List<Category> categories = categoryCombo.categories();
+            if (categories != null) {
+                for (Category category : categories) {
+                    uids.add(category.uid());
+                }
+            }
+        }
+        return uids;
     }
 }

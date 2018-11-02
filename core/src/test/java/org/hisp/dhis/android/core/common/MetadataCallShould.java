@@ -28,13 +28,15 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
+import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -140,10 +142,13 @@ public class MetadataCallShould extends BaseCallShould {
     private GenericCallFactory<User> userCallFactory;
 
     @Mock
-    private ListCallFactory<Category> categoryCallFactory;
+    private UidsCallFactory<Category> categoryCallFactory;
 
     @Mock
-    private ListCallFactory<CategoryCombo> categoryComboCallFactory;
+    private UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+
+    @Mock
+    private CategoryComboUidsSeeker categoryComboUidsSeeker;
 
     @Mock
     private GenericCallFactory<List<Program>> programParentCallFactory;
@@ -181,8 +186,8 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingCallFactory.create(any(GenericCallData.class))).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
-        when(categoryCallFactory.create(any(GenericCallData.class))).thenReturn(categoryEndpointCall);
-        when(categoryComboCallFactory.create(any(GenericCallData.class))).thenReturn(categoryComboEndpointCall);
+        when(categoryCallFactory.create(any(GenericCallData.class), anySetOf(String.class))).thenReturn(categoryEndpointCall);
+        when(categoryComboCallFactory.create(any(GenericCallData.class), anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),
                 anySetOf(String.class))).thenReturn(organisationUnitEndpointCall);
         when(searchOrganisationUnitCallFactory.create(any(GenericCallData.class), same(user))).thenReturn(
@@ -199,6 +204,8 @@ public class MetadataCallShould extends BaseCallShould {
         when(organisationUnitEndpointCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(searchOrganisationUnitCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(dataSetParentCall.call()).thenReturn(Lists.newArrayList(dataSet));
+        when(categoryComboUidsSeeker.seekUids()).thenReturn(
+                Sets.newHashSet(Lists.newArrayList("category_combo_uid")));
 
         // Metadata call
         metadataCall = new MetadataCall(
@@ -210,6 +217,7 @@ public class MetadataCallShould extends BaseCallShould {
                 userCallFactory,
                 categoryCallFactory,
                 categoryComboCallFactory,
+                categoryComboUidsSeeker,
                 programParentCallFactory,
                 organisationUnitCallFactory,
                 searchOrganisationUnitCallFactory,

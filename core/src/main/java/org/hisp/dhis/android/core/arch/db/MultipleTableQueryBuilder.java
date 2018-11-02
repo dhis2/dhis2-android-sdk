@@ -25,32 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db;
 
-package org.hisp.dhis.android.core.category;
+import java.util.Collection;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+public class MultipleTableQueryBuilder {
 
-final class CategoryComboFields {
+    private static final String NOT_NULL = " IS NOT NULL";
+    private static final String SELECT = "SELECT ";
+    private static final String WHERE = " WHERE ";
+    private static final String FROM = " FROM ";
+    private static final String UNION = " UNION ";
+    private static final String END_STR = ";";
 
-    static final String IS_DEFAULT = "isDefault";
-    private static final String CATEGORIES = "categories";
-    private static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
+    @SuppressWarnings("PMD.AvoidStringBufferField")
+    private final StringBuilder clause = new StringBuilder();
+    private boolean isFirst = true;
 
-    private static final FieldsHelper<CategoryCombo> fh = new FieldsHelper<>();
+    public MultipleTableQueryBuilder generateQuery(String columnName, Collection<String> tableNames) {
+        for (String tableName : tableNames) {
+            appendKeyValue(columnName, tableName);
+        }
+        clause.append(END_STR);
+        return this;
+    }
 
-    public static final Field<CategoryCombo, String> uid = fh.uid();
+    private MultipleTableQueryBuilder appendKeyValue(String column, String tableName) {
+        String andOpt = isFirst ? "" : UNION;
+        isFirst = false;
+        clause.append(andOpt).append(SELECT).append(column).append(FROM).append(tableName)
+                .append(WHERE).append(column).append(NOT_NULL);
+        return this;
+    }
 
-    public static final Fields<CategoryCombo> allFields = Fields.<CategoryCombo>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Boolean>field(IS_DEFAULT),
-                    fh.nestedFieldWithUid(CATEGORIES),
-                    fh.<CategoryOptionCombo>nestedField(CATEGORY_OPTION_COMBOS)
-                            .with(CategoryOptionComboFields.allFields)
-            ).build();
-
-    private CategoryComboFields() {
+    public String build() {
+        if (clause.length() == 0) {
+            throw new RuntimeException("No columns added");
+        } else {
+            return clause.toString();
+        }
     }
 }

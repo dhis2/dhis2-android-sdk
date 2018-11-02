@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.ObjectMapperFactory;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +104,8 @@ public final class APICallExecutor {
             }
         } catch (SocketTimeoutException e) {
             throw socketTimeoutException(e);
+        } catch (UnknownHostException e) {
+            throw unknownHostException(e);
         } catch (IOException e) {
             throw ioException(e);
         }
@@ -147,6 +150,15 @@ public final class APICallExecutor {
         return exceptionBuilder
                 .errorCode(D2ErrorCode.SOCKET_TIMEOUT)
                 .errorDescription("API call failed due to a SocketTimeoutException.")
+                .originalException(e)
+                .build();
+    }
+
+    private D2CallException unknownHostException(UnknownHostException e) {
+        Log.e(this.getClass().getSimpleName(), e.toString());
+        return exceptionBuilder
+                .errorCode(D2ErrorCode.UNKNOWN_HOST)
+                .errorDescription("API call failed due to UnknownHostException")
                 .originalException(e)
                 .build();
     }

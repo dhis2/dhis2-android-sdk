@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.trackedentity.api;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.imports.ImportStatus;
@@ -168,7 +168,7 @@ class TrackedEntityInstanceUtils {
 
         return Enrollment.create(codeGenerator.generate(), refDate, refDate, null, null, validOrgUnitUid,
                 validProgramUid, refDate, refDate, false, EnrollmentStatus.ACTIVE, teiUid, null, false,
-                Collections.<Event>emptyList(), Collections.<Note229Compatible>emptyList());
+                Collections.<Event>emptyList(), Collections.<Note>emptyList());
     }
 
     private static Enrollment createFutureEnrollment(String teiUid) {
@@ -176,7 +176,7 @@ class TrackedEntityInstanceUtils {
 
         return Enrollment.create(codeGenerator.generate(), refDate, refDate, null, null, validOrgUnitUid,
                 validProgramUid, refDate, refDate, false, EnrollmentStatus.ACTIVE, teiUid, null, false,
-                Collections.<Event>emptyList(), Collections.<Note229Compatible>emptyList());
+                Collections.<Event>emptyList(), Collections.<Note>emptyList());
     }
 
     private static Enrollment createValidEnrollmentAndEvent(String teiUid) {
@@ -186,7 +186,7 @@ class TrackedEntityInstanceUtils {
 
         return Enrollment.create(enrollmentUid, refDate, refDate, null, null, validOrgUnitUid,
                 validProgramUid, refDate, refDate, false, EnrollmentStatus.ACTIVE, teiUid, null, false,
-                Collections.singletonList(event), Collections.<Note229Compatible>emptyList());
+                Collections.singletonList(event), Collections.<Note>emptyList());
     }
 
     private static Enrollment createEnrollmentAndFutureEvent(String teiUid) {
@@ -196,7 +196,7 @@ class TrackedEntityInstanceUtils {
 
         return Enrollment.create(enrollmentUid, refDate, refDate, null, null, validOrgUnitUid,
                 validProgramUid, refDate, refDate, false, EnrollmentStatus.ACTIVE, teiUid, null, false,
-                Collections.singletonList(event), Collections.<Note229Compatible>emptyList());
+                Collections.singletonList(event), Collections.<Note>emptyList());
     }
 
     private static Enrollment createEnrollmentAndEventWithInvalidDataElement(String teiUid) {
@@ -206,7 +206,7 @@ class TrackedEntityInstanceUtils {
 
         return Enrollment.create(enrollmentUid, refDate, refDate, null, null, validOrgUnitUid,
                 validProgramUid, refDate, refDate, false, EnrollmentStatus.ACTIVE, teiUid, null, false,
-                Collections.singletonList(event), Collections.<Note229Compatible>emptyList());
+                Collections.singletonList(event), Collections.<Note>emptyList());
     }
 
     private static Enrollment createEnrollmentAndEventWithValidAndInvalidDataValue(String teiUid) {
@@ -216,7 +216,7 @@ class TrackedEntityInstanceUtils {
 
         return Enrollment.create(enrollmentUid, refDate, refDate, null, null, validOrgUnitUid,
                 validProgramUid, refDate, refDate, false, EnrollmentStatus.ACTIVE, teiUid, null, false,
-                Collections.singletonList(event), Collections.<Note229Compatible>emptyList());
+                Collections.singletonList(event), Collections.<Note>emptyList());
     }
 
     private static Enrollment createCompletedEnrollmentWithEvent(String teiUid) {
@@ -226,7 +226,7 @@ class TrackedEntityInstanceUtils {
 
         return Enrollment.create(enrollmentUid, refDate, refDate, null, null, validOrgUnitUid,
                 validProgramUid, refDate, refDate, false, EnrollmentStatus.COMPLETED, teiUid, null, false,
-                Collections.singletonList(event), Collections.<Note229Compatible>emptyList());
+                Collections.singletonList(event), Collections.<Note>emptyList());
     }
 
     private static Event createValidEvent(String teiUid, String enrollmentUid) {

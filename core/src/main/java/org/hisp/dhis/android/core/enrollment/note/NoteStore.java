@@ -53,6 +53,7 @@ public final class NoteStore {
             sqLiteBind(sqLiteStatement, 3, o.storedBy());
             sqLiteBind(sqLiteStatement, 4, o.storedDate());
             sqLiteBind(sqLiteStatement, 5, o.uid());
+            sqLiteBind(sqLiteStatement, 6, o.state());
         }
     };
 
@@ -60,11 +61,12 @@ public final class NoteStore {
             = new WhereStatementBinder<Note>() {
         @Override
         public void bindToUpdateWhereStatement(@NonNull Note o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 6, o.enrollment());
-            sqLiteBind(sqLiteStatement, 7, o.value());
-            sqLiteBind(sqLiteStatement, 8, o.storedBy());
-            sqLiteBind(sqLiteStatement, 9, o.storedDate());
-            sqLiteBind(sqLiteStatement, 10, o.uid());
+            sqLiteBind(sqLiteStatement, 7, o.enrollment());
+            sqLiteBind(sqLiteStatement, 8, o.value());
+            sqLiteBind(sqLiteStatement, 9, o.storedBy());
+            sqLiteBind(sqLiteStatement, 10, o.storedDate());
+            sqLiteBind(sqLiteStatement, 11, o.uid());
+            sqLiteBind(sqLiteStatement, 12, o.state());
         }
     };
 

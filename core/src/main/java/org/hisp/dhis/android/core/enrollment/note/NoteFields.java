@@ -35,16 +35,17 @@ import org.hisp.dhis.android.core.data.api.Fields;
 public final class NoteFields {
 
     final static String UID = "uid";
-    final static String ENROLLMENT = "enrollment";
+    public final static String ENROLLMENT = "enrollment";
     final static String VALUE = "value";
     final static String STORED_BY = "storedBy";
     final static String STORED_DATE = "storedDate";
+    public final static String STATE = "state";
 
     private static final FieldsHelper<Note> fh = new FieldsHelper<>();
 
     public static final Field<Note, String> uid = fh.uid();
 
-    public static final Fields<Note> allFieldsWithoutEnrollment = Fields.<Note>builder()
+    public static final Fields<Note> fieldsForTEICall = Fields.<Note>builder()
             .fields(
                     fh.<String>field(UID),
                     fh.<String>field(VALUE),

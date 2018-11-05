@@ -32,25 +32,10 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
-import java.util.HashSet;
-
 public final class NoteHandler extends ObjectWithoutUidSyncHandlerImpl<Note> {
-
-    private final ObjectWithoutUidStore<Note> noteStore;
 
     private NoteHandler(ObjectWithoutUidStore<Note> store) {
         super(store);
-        this.noteStore = store;
-    }
-
-    @Override
-    protected Collection<Note> beforeCollectionHandled(Collection<Note> notes) {
-        Collection<Note> existingNotes = noteStore.selectAll();
-        noteStore.delete();
-        notes.addAll(existingNotes);
-
-        return new HashSet<>(existingNotes);
     }
 
     public static SyncHandler<Note> create(DatabaseAdapter databaseAdapter) {

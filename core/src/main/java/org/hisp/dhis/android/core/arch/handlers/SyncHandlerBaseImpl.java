@@ -66,7 +66,7 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     @Override
     public final void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder) {
         if (oCollection != null) {
-            for(O o : beforeCollectionHandled(oCollection)) {
+            for(O o : oCollection) {
                 handle(o, modelBuilder);
             }
             afterCollectionHandled(oCollection);
@@ -74,11 +74,6 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     }
 
     protected abstract HandleAction deleteOrPersist(O o);
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected Collection<O> beforeCollectionHandled(Collection<O> oCollection) {
-        return oCollection;
-    }
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void afterObjectHandled(O o, HandleAction action) {

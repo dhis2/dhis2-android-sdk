@@ -59,7 +59,8 @@ public final class NoteTableInfo {
                     NoteFields.VALUE,
                     NoteFields.STORED_BY,
                     NoteFields.STORED_DATE,
-                    NoteFields.UID
+                    NoteFields.UID,
+                    NoteFields.STATE
             );
         }
     }

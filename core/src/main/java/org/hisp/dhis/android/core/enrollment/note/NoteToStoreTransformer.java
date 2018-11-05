@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.text.ParseException;
 
-public class NoteToStoreTransformer extends Transformer<Note> {
+public class NoteToStoreTransformer implements Transformer<Note> {
 
     private final Note.Builder builder;
     private final DHISVersionManager versionManager;
@@ -49,26 +49,27 @@ public class NoteToStoreTransformer extends Transformer<Note> {
     @Override
     public Note transform(Note note) {
 
-        String storedDate;
-        String uid = null;
         try {
             if (this.versionManager.is2_29()) {
-                storedDate = BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseSpaceDate(note.storedDate()));
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
+                        .uid(null);
             } else {
-                storedDate = BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate()));
-                uid = note.uid();
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseDate(note.storedDate())))
+                        .uid(note.uid());
             }
         } catch (ParseException ignored) {
-            storedDate = null;
+            builder
+                    .storedDate(null)
+                    .uid(null);
         }
 
         return builder
-                .uid(uid)
                 .value(note.value())
                 .storedBy(note.storedBy())
-                .storedDate(storedDate)
                 .build();
     }
 }

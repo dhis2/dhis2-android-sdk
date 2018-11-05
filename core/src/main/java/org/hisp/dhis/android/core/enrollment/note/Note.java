@@ -32,6 +32,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -51,15 +52,19 @@ public abstract class Note extends BaseModel implements ObjectWithUidInterface {
     public abstract String uid();
 
     @Nullable
+    @JsonIgnore()
     public abstract String enrollment();
 
     @Nullable
+    @JsonProperty()
     public abstract String value();
 
     @Nullable
+    @JsonProperty()
     public abstract String storedBy();
 
     @Nullable
+    @JsonProperty()
     public abstract String storedDate();
 
     public static Builder builder() {

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.enrollment.note;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 
@@ -43,8 +44,8 @@ public final class NoteUniquenessManager {
                                                   String enrollmentUid,
                                                   ObjectWithoutUidStore<Note> noteStore) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(NoteFields.STATE, State.TO_POST)
-                .appendKeyStringValue(NoteFields.ENROLLMENT, enrollmentUid).build();
+                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
+                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
         List<Note> toPostNotes = noteStore.selectWhereClause(whereClause);
         noteStore.delete();
 

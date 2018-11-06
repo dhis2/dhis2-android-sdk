@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.enrollment.note;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -51,23 +53,24 @@ public final class NoteTableInfo {
     };
 
     static class Columns extends BaseModel.Columns {
+        final static String ENROLLMENT = "enrollment";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    NoteFields.ENROLLMENT,
+                    ENROLLMENT,
                     NoteFields.VALUE,
                     NoteFields.STORED_BY,
                     NoteFields.STORED_DATE,
-                    NoteFields.UID,
-                    NoteFields.STATE
+                    BaseIdentifiableObjectModel.Columns.UID,
+                    BaseDataModel.Columns.STATE
             );
         }
 
         @Override
         public String[] whereUpdate() {
             return new String[]{
-                    NoteFields.ENROLLMENT,
+                    ENROLLMENT,
                     NoteFields.VALUE,
                     NoteFields.STORED_BY,
                     NoteFields.STORED_DATE

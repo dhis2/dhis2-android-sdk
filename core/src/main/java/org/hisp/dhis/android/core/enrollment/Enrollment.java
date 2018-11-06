@@ -87,7 +87,7 @@ public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWit
     public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder().fields(
             uid, created, lastUpdated, coordinate, enrollmentDate, incidentDate, enrollmentStatus,
             followUp, program, organisationUnit, trackedEntityInstance, deleted, events.with(Event.allFields),
-            notes.with(NoteFields.fieldsForTEICall)
+            notes.with(NoteFields.all)
     ).build();
 
     @JsonProperty(UID)

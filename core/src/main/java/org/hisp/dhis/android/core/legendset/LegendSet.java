@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.legendset;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,10 +40,10 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_LegendSet.Builder.class)
 public abstract class LegendSet extends BaseIdentifiableObject {
     private final static String SYMBOLIZER = "symbolizer";
     private final static String LEGENDS = "legends";
@@ -58,7 +59,8 @@ public abstract class LegendSet extends BaseIdentifiableObject {
     private static final NestedField<LegendSet, Legend> legends = NestedField.create(LEGENDS);
 
     public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, symbolizer, legends.with(Legend.allFields))
+            uid, code, name, displayName, created, lastUpdated, deleted, symbolizer,
+            legends.with(LegendFields.allFields))
             .build();
 
     @Nullable
@@ -69,19 +71,17 @@ public abstract class LegendSet extends BaseIdentifiableObject {
     @JsonProperty(LEGENDS)
     public abstract List<Legend> legends();
 
-    @JsonCreator
-    static LegendSet create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(SYMBOLIZER) String symbolizer,
-            @JsonProperty(LEGENDS) List<Legend> legends) {
+    public static Builder builder() {
+        return new AutoValue_LegendSet.Builder();
+    }
 
-        return new AutoValue_LegendSet(uid, code, name, displayName, created, lastUpdated, deleted, symbolizer,
-                legends);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder symbolizer(String symbolizer);
+
+        public abstract Builder legends(List<Legend> legends);
+
+        public abstract LegendSet build();
     }
 }

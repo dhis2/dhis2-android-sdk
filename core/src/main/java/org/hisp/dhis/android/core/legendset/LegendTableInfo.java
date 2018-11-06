@@ -28,29 +28,41 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class LegendModelBuilder extends ModelBuilder<Legend, LegendModel> {
+import static org.hisp.dhis.android.core.legendset.LegendFields.COLOR;
+import static org.hisp.dhis.android.core.legendset.LegendFields.END_VALUE;
+import static org.hisp.dhis.android.core.legendset.LegendFields.START_VALUE;
 
-    private final LegendModel.Builder builder;
+public final class LegendTableInfo {
 
-    LegendModelBuilder(LegendSet legendSet) {
-        this.builder = LegendModel.builder()
-                .legendSet(legendSet.uid());
+    private LegendTableInfo() {
     }
 
-    @Override
-    public LegendModel buildModel(Legend legend) {
-        return builder
-                .uid(legend.uid())
-                .code(legend.code())
-                .name(legend.name())
-                .displayName(legend.displayName())
-                .created(legend.created())
-                .lastUpdated(legend.lastUpdated())
-                .startValue(legend.startValue())
-                .endValue(legend.endValue())
-                .color(legend.color())
-                .build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Legend";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+        private final static String LEGEND_SET = "legendSet";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    START_VALUE, END_VALUE, COLOR, LEGEND_SET
+            );
+        }
     }
 }

@@ -25,17 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.database;
 
-public final class LegendHandler {
+import android.database.Cursor;
 
-    private LegendHandler() {}
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
-    public static SyncHandlerWithTransformer<Legend> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(LegendStore.create(databaseAdapter));
+public class LegendSetWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<LegendSet> {
+
+    @Override
+    public LegendSet fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return LegendSet.builder().uid(uid).build();
     }
 }

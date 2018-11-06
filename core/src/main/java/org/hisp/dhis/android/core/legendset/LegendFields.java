@@ -25,17 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class LegendHandler {
+final class LegendFields {
+    final static String START_VALUE = "startValue";
+    final static String END_VALUE = "endValue";
+    final static String COLOR = "color";
 
-    private LegendHandler() {}
+    private static final FieldsHelper<Legend> fh = new FieldsHelper<>();
 
-    public static SyncHandlerWithTransformer<Legend> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(LegendStore.create(databaseAdapter));
+    public static final Fields<Legend> allFields = Fields.<Legend>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Double>field(START_VALUE),
+                    fh.<Double>field(END_VALUE),
+                    fh.<String>field(COLOR)
+            ).build();
+
+    private LegendFields() {
     }
 }

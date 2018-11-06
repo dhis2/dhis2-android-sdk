@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
@@ -129,7 +130,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 trackedEntityInstanceStore.queryToPost();
 
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(NoteFields.STATE, State.TO_POST).build();
+                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
         List<Note> notes = noteStore.selectWhereClause(whereClause);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();

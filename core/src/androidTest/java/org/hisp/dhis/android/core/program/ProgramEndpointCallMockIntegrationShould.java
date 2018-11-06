@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.legendset.Legend;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;

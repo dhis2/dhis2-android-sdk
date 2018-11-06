@@ -43,7 +43,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.LegendSetWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Legend.Builder.class)
@@ -70,8 +71,8 @@ public abstract class Legend extends BaseIdentifiableObject implements Model {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(LegendSetWithUidColumnAdapter.class)
-    public abstract LegendSet legendSet();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid legendSet();
 
     public abstract ContentValues toContentValues();
 
@@ -96,7 +97,7 @@ public abstract class Legend extends BaseIdentifiableObject implements Model {
 
         public abstract Builder color(String color);
 
-        public abstract Builder legendSet(LegendSet legendSet);
+        public abstract Builder legendSet(ObjectWithUid legendSet);
 
         public abstract Legend build();
     }

@@ -3,9 +3,11 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -13,6 +15,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.NoteFields;
 import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
@@ -124,7 +127,10 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
-        List<Note> notes = noteStore.selectAll();
+
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(NoteFields.STATE, State.TO_POST).build();
+        List<Note> notes = noteStore.selectWhereClause(whereClause);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 

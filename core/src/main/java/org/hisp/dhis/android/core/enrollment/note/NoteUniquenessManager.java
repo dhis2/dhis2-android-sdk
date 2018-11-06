@@ -28,22 +28,38 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.State;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public final class NoteUniquenessManager {
 
-    public static Set<Note> buildUniqueCollection(Collection<Note> notes, ObjectWithoutUidStore<Note> noteStore) {
-        Collection<Note> existingNotes = noteStore.selectAll();
-        notes.addAll(existingNotes);
+    public static Set<Note> buildUniqueCollection(Collection<Note> notes,
+                                                  String enrollmentUid,
+                                                  ObjectWithoutUidStore<Note> noteStore) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(NoteFields.STATE, State.TO_POST)
+                .appendKeyStringValue(NoteFields.ENROLLMENT, enrollmentUid).build();
+        List<Note> toPostNotes = noteStore.selectWhereClause(whereClause);
         noteStore.delete();
 
         Set<Note> uniqueNotes = new HashSet<>();
         for (Note note : notes) {
-            uniqueNotes.add(note.toBuilder().id(null).build());
+            uniqueNotes.add(note.toBuilder()
+                    .id(null)
+                    .state(null)
+                    .build());
+        }
+
+        for (Note toPostNote : toPostNotes) {
+            uniqueNotes.add(toPostNote.toBuilder()
+                    .id(null)
+                    .build());
         }
 
         return uniqueNotes;

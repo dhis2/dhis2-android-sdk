@@ -4,12 +4,15 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteHandler;
+import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.enrollment.note.NoteToStoreTransformer;
+import org.hisp.dhis.android.core.enrollment.note.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.event.EventModel;
@@ -26,17 +29,20 @@ public class EnrollmentHandler {
     private final EnrollmentStore enrollmentStore;
     private final EventHandler eventHandler;
     private final SyncHandler<Note> noteHandler;
+    private final ObjectWithoutUidStore<Note> noteStore;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
     EnrollmentHandler(@NonNull DatabaseAdapter databaseAdapter,
                       @NonNull DHISVersionManager versionManager,
                       @NonNull EnrollmentStore enrollmentStore,
                       @NonNull EventHandler eventHandler,
-                      @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner) {
+                      @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
+                      @NonNull SyncHandler<Note> noteHandler) {
         this.versionManager = versionManager;
         this.enrollmentStore = enrollmentStore;
         this.eventHandler = eventHandler;
-        this.noteHandler = NoteHandler.create(databaseAdapter);
+        this.noteHandler = noteHandler;
+        this.noteStore = NoteStore.create(databaseAdapter);
         this.eventOrphanCleaner = eventOrphanCleaner;
     }
 
@@ -99,7 +105,8 @@ public class EnrollmentHandler {
                     notes.add(transformer.transform(note));
                 }
             }
-            noteHandler.handleMany(notes);
+
+            noteHandler.handleMany(NoteUniquenessManager.buildUniqueCollection(notes, enrollment.uid(), noteStore));
         }
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
     }
@@ -111,7 +118,8 @@ public class EnrollmentHandler {
                 new EnrollmentStoreImpl(databaseAdapter),
                 EventHandler.create(databaseAdapter),
                 new DataOrphanCleanerImpl<Enrollment, Event>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
-                        EventModel.Columns.STATE, databaseAdapter)
+                        EventModel.Columns.STATE, databaseAdapter),
+                NoteHandler.create(databaseAdapter)
         );
     }
 }

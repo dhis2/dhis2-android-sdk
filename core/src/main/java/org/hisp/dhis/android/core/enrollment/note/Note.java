@@ -46,14 +46,12 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Note.Builder.class)
 public abstract class Note extends BaseDataModel implements ObjectWithUidInterface, DataModel {
 
     @Nullable
-    @JsonProperty(UID)
+    @JsonProperty(NoteFields.UID)
     public abstract String uid();
 
     @Nullable
@@ -95,6 +93,7 @@ public abstract class Note extends BaseDataModel implements ObjectWithUidInterfa
     public static abstract class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
+        @JsonProperty(NoteFields.UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder enrollment(String enrollment);

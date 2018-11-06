@@ -16,7 +16,6 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteFields;
 import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;

@@ -40,6 +40,9 @@ import java.util.Set;
 
 public final class NoteUniquenessManager {
 
+    private NoteUniquenessManager() {
+    }
+
     public static Set<Note> buildUniqueCollection(Collection<Note> notes,
                                                   String enrollmentUid,
                                                   ObjectWithoutUidStore<Note> noteStore) {

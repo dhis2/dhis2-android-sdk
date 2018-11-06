@@ -63,5 +63,15 @@ public final class NoteTableInfo {
                     NoteFields.STATE
             );
         }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{
+                    NoteFields.ENROLLMENT,
+                    NoteFields.VALUE,
+                    NoteFields.STORED_BY,
+                    NoteFields.STORED_DATE
+            };
+        }
     }
 }

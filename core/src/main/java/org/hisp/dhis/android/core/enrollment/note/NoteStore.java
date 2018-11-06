@@ -65,8 +65,6 @@ public final class NoteStore {
             sqLiteBind(sqLiteStatement, 8, o.value());
             sqLiteBind(sqLiteStatement, 9, o.storedBy());
             sqLiteBind(sqLiteStatement, 10, o.storedDate());
-            sqLiteBind(sqLiteStatement, 11, o.uid());
-            sqLiteBind(sqLiteStatement, 12, o.state());
         }
     };
 

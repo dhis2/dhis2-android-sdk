@@ -32,17 +32,17 @@ public class EnrollmentHandler {
     private final ObjectWithoutUidStore<Note> noteStore;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
-    EnrollmentHandler(@NonNull DatabaseAdapter databaseAdapter,
-                      @NonNull DHISVersionManager versionManager,
+    EnrollmentHandler(@NonNull DHISVersionManager versionManager,
                       @NonNull EnrollmentStore enrollmentStore,
                       @NonNull EventHandler eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
-                      @NonNull SyncHandler<Note> noteHandler) {
+                      @NonNull SyncHandler<Note> noteHandler,
+                      @NonNull ObjectWithoutUidStore<Note> noteStore) {
         this.versionManager = versionManager;
         this.enrollmentStore = enrollmentStore;
         this.eventHandler = eventHandler;
         this.noteHandler = noteHandler;
-        this.noteStore = NoteStore.create(databaseAdapter);
+        this.noteStore = noteStore;
         this.eventOrphanCleaner = eventOrphanCleaner;
     }
 
@@ -113,13 +113,13 @@ public class EnrollmentHandler {
 
     public static EnrollmentHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
         return new EnrollmentHandler(
-                databaseAdapter,
                 versionManager,
                 new EnrollmentStoreImpl(databaseAdapter),
                 EventHandler.create(databaseAdapter),
                 new DataOrphanCleanerImpl<Enrollment, Event>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
                         EventModel.Columns.STATE, databaseAdapter),
-                NoteHandler.create(databaseAdapter)
+                NoteHandler.create(databaseAdapter),
+                NoteStore.create(databaseAdapter)
         );
     }
 }

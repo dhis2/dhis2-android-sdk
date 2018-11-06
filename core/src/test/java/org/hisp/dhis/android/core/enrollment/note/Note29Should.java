@@ -46,10 +46,10 @@ public class Note29Should extends BaseObjectShould implements ObjectShould {
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Note note229Compatible = objectMapper.readValue(jsonStream, Note.class);
+        Note note = objectMapper.readValue(jsonStream, Note.class);
 
-        assertThat(note229Compatible.value()).isEqualTo("Note");
-        assertThat(note229Compatible.storedBy()).isEqualTo("android");
-        assertThat(note229Compatible.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19 15:20:55.058");
     }
 }

@@ -36,19 +36,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.DataModel;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DbStateColumnAdapter;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Note.Builder.class)
-public abstract class Note extends BaseDataModel implements ObjectWithUidInterface, DataModel {
+public abstract class Note extends BaseDataModel implements ObjectWithUidInterface {
 
     @Nullable
     @JsonProperty(NoteFields.UID)
@@ -70,12 +65,6 @@ public abstract class Note extends BaseDataModel implements ObjectWithUidInterfa
     @JsonProperty()
     public abstract String storedDate();
 
-    @Override
-    @Nullable
-    @JsonIgnore()
-    @ColumnAdapter(DbStateColumnAdapter.class)
-    public abstract State state();
-
     public static Builder builder() {
         return new $$AutoValue_Note.Builder();
     }
@@ -90,7 +79,7 @@ public abstract class Note extends BaseDataModel implements ObjectWithUidInterfa
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
         @JsonProperty(NoteFields.UID)
@@ -103,8 +92,6 @@ public abstract class Note extends BaseDataModel implements ObjectWithUidInterfa
         public abstract Builder storedBy(String storedBy);
 
         public abstract Builder storedDate(String storedDate);
-
-        public abstract Builder state(State state);
 
         public abstract Note build();
     }

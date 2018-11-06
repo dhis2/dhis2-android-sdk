@@ -28,20 +28,23 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public class LegendSetModelBuilder extends ModelBuilder<LegendSet, LegendSetModel> {
+public final class LegendSetFields {
 
-    @Override
-    public LegendSetModel buildModel(LegendSet legendSet) {
-        return LegendSetModel.builder()
-                .uid(legendSet.uid())
-                .code(legendSet.code())
-                .name(legendSet.name())
-                .displayName(legendSet.displayName())
-                .created(legendSet.created())
-                .lastUpdated(legendSet.lastUpdated())
-                .symbolizer(legendSet.symbolizer())
-                .build();
+    final static String SYMBOLIZER = "symbolizer";
+    private final static String LEGENDS = "legends";
+
+    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
+
+    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<String>field(SYMBOLIZER),
+                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
+            ).build();
+
+    private LegendSetFields() {
     }
 }

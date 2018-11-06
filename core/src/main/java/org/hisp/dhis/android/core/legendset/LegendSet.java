@@ -28,48 +28,52 @@
 
 package org.hisp.dhis.android.core.legendset;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.IgnoreLegendListColumnAdapter;
 
 import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_LegendSet.Builder.class)
-public abstract class LegendSet extends BaseIdentifiableObject {
-    private final static String SYMBOLIZER = "symbolizer";
-    private final static String LEGENDS = "legends";
+public abstract class LegendSet extends BaseIdentifiableObject implements Model {
 
-    private static final Field<LegendSet, String> uid = Field.create(UID);
-    private static final Field<LegendSet, String> code = Field.create(CODE);
-    private static final Field<LegendSet, String> name = Field.create(NAME);
-    private static final Field<LegendSet, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<LegendSet, String> created = Field.create(CREATED);
-    private static final Field<LegendSet, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<LegendSet, String> deleted = Field.create(DELETED);
-    private static final Field<LegendSet, String> symbolizer = Field.create(SYMBOLIZER);
-    private static final NestedField<LegendSet, Legend> legends = NestedField.create(LEGENDS);
-
-    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, symbolizer,
-            legends.with(LegendFields.allFields))
-            .build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(SYMBOLIZER)
+    @JsonProperty()
     public abstract String symbolizer();
 
     @Nullable
-    @JsonProperty(LEGENDS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreLegendListColumnAdapter.class)
     public abstract List<Legend> legends();
+
+    public abstract ContentValues toContentValues();
+
+    static LegendSet create(Cursor cursor) {
+        return $AutoValue_LegendSet.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_LegendSet.Builder();
@@ -78,6 +82,8 @@ public abstract class LegendSet extends BaseIdentifiableObject {
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
         public abstract Builder symbolizer(String symbolizer);
 
         public abstract Builder legends(List<Legend> legends);

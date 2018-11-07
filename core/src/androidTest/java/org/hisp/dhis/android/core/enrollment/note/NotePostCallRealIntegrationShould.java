@@ -51,7 +51,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void download_tei_add_one_note_and_sync_in_2_30_or_more() throws Exception {
-        d2 = D2Factory.create(RealServerMother.android_current, databaseAdapter());
+        d2 = D2Factory.create(RealServerMother.url2_30, databaseAdapter());
         downloadUpdateAndSyncTei();
     }
 
@@ -83,8 +83,12 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
     private void addNote() {
         ObjectWithoutUidStore<Note> noteStore = NoteStore.create(databaseAdapter());
         Note note = noteStore.selectFirst();
-        noteStore.updateOrInsertWhere(note.toBuilder()
-                .uid(new CodeGeneratorImpl().generate())
-                .value("New note").state(State.TO_POST).build());
+        if (note == null) {
+            throw new RuntimeException("There is no stored notes.");
+        } else {
+            noteStore.updateOrInsertWhere(note.toBuilder()
+                    .uid(new CodeGeneratorImpl().generate())
+                    .value("New note").state(State.TO_POST).build());
+        }
     }
 }

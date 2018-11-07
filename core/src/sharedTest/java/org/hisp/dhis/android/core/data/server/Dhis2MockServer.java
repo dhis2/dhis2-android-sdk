@@ -34,12 +34,10 @@ import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Scanner;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -85,13 +83,13 @@ public class Dhis2MockServer {
 
     public void enqueueLoginResponses() throws IOException {
         enqueueMockResponse("mockserver/login.json");
-        enqueueMockResponse("mockserver/system_info.json");
+        enqueueMockResponse("systeminfo/system_info.json");
     }
 
     public void enqueueMetadataResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
                 "user/user.json",
-                "mockserver/organisationUnits.json");
+                "organisationunit/organisation_units.json");
     }
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
@@ -101,7 +99,7 @@ public class Dhis2MockServer {
 
     private void enqueueMetadataResponsesWithUserAndOrgUnits(String userPath, String orgUnitPath)
             throws IOException {
-        enqueueMockResponse("mockserver/system_info.json");
+        enqueueMockResponse("systeminfo/system_info.json");
         enqueueMockResponse("mockserver/system_setting.json");
         enqueueMockResponse(userPath);
         enqueueMockResponse("mockserver/programs.json");

@@ -77,7 +77,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         MockResponse mockResponse = new MockResponse();
 
         IFileReader fileReader = new ResourcesFileReader();
-        String body = fileReader.getStringFromFile("mockserver/system_info.json");
+        String body = fileReader.getStringFromFile("systeminfo/system_info.json");
         mockResponse.setBody(body);
 
         mockWebServer.enqueue(mockResponse);

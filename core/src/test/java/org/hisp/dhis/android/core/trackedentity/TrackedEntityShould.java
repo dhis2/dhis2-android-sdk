@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,44 +38,17 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class TrackedEntityShould {
+public class TrackedEntityShould extends BaseObjectShould implements ObjectShould {
 
+    public TrackedEntityShould() {
+        super("trackedentity/tracked_entity_type.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        TrackedEntityType trackedEntityType = objectMapper.readValue("{\n" +
-                "\n" +
-                "    \"created\": \"2014-08-20T12:28:56.409\",\n" +
-                "    \"lastUpdated\": \"2015-10-14T13:36:53.063\",\n" +
-                "    \"name\": \"Person\",\n" +
-                "    \"href\": \"https://play.dhis2.org/dev/api/getTrackedEntityTypes/nEenWmSyUEp\",\n" +
-                "    \"id\": \"nEenWmSyUEp\",\n" +
-                "    \"displayDescription\": \"Person\",\n" +
-                "    \"displayName\": \"Person\",\n" +
-                "    \"description\": \"Person\",\n" +
-                "    \"externalAccess\": false,\n" +
-                "    \"access\": {\n" +
-                "        \"read\": true,\n" +
-                "        \"updateWithSection\": true,\n" +
-                "        \"externalize\": false,\n" +
-                "        \"delete\": true,\n" +
-                "        \"write\": true,\n" +
-                "        \"manage\": false\n" +
-                "    },\n" +
-                "    \"userGroupAccesses\": [ ],\n" +
-                "    \"attributeValues\": [ ],\n" +
-                "    \"translations\": [ ]\n" +
-                "\n" +
-                "}",TrackedEntityType.class);
-
-        assertThat(trackedEntityType.lastUpdated()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2015-10-14T13:36:53.063"));
-        assertThat(trackedEntityType.created()).isEqualTo(
-                BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-20T12:28:56.409"));
-        assertThat(trackedEntityType.uid()).isEqualTo("nEenWmSyUEp");
-        assertThat(trackedEntityType.displayName()).isEqualTo("Person");
-        assertThat(trackedEntityType.name()).isEqualTo("Person");
-        assertThat(trackedEntityType.description()).isEqualTo("Person");
-        assertThat(trackedEntityType.displayDescription()).isEqualTo("Person");
+        TrackedEntityType jsonTrackedEntityType = objectMapper.readValue(jsonStream, TrackedEntityType.class);
+        TrackedEntityType expectedTrackedEntityType = TrackedEntityTypeSamples.get();
+        assertThat(jsonTrackedEntityType).isEqualTo(expectedTrackedEntityType);
     }
 }

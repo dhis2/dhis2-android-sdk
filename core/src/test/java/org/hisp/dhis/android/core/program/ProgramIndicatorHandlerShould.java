@@ -54,7 +54,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class ProgramIndicatorHandlerShould {
     @Mock
-    private IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
+    private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
 
     @Mock
     private LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
@@ -71,10 +71,8 @@ public class ProgramIndicatorHandlerShould {
     @Mock
     private ObjectWithUid program;
 
-    private ProgramIndicatorModelBuilder programIndicatorModelBuilder;
-
     // object to test
-    private ProgramIndicatorHandler programIndicatorHandler;
+    private SyncHandler<ProgramIndicator> programIndicatorHandler;
 
     // list of program indicators
     private List<ProgramIndicator> programIndicators;
@@ -92,8 +90,6 @@ public class ProgramIndicatorHandlerShould {
         programIndicators = new ArrayList<>();
         programIndicators.add(programIndicator);
 
-        programIndicatorModelBuilder = new ProgramIndicatorModelBuilder();
-
         legendSets = new ArrayList<>();
         legendSets.add(legendSet);
 
@@ -104,41 +100,41 @@ public class ProgramIndicatorHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
-        programIndicatorHandler.handle(null, null);
+    public void do_nothing_when_passing_null_argument() {
+        programIndicatorHandler.handle(null);
 
         // verify that program indicator store is never called
         verify(programIndicatorStore, never()).delete(anyString());
 
-        verify(programIndicatorStore, never()).update(any(ProgramIndicatorModel.class));
+        verify(programIndicatorStore, never()).update(any(ProgramIndicator.class));
 
-        verify(programIndicatorStore, never()).insert(any(ProgramIndicatorModel.class));
+        verify(programIndicatorStore, never()).insert(any(ProgramIndicator.class));
     }
 
 
     @Test
-    public void delete_shouldDeleteProgramIndicator() throws Exception {
+    public void delete_shouldDeleteProgramIndicator() {
         when(programIndicator.deleted()).thenReturn(Boolean.TRUE);
 
-        programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
+        programIndicatorHandler.handleMany(programIndicators);
 
         // verify that delete is called once
         verify(programIndicatorStore, times(1)).deleteIfExists(programIndicator.uid());
     }
 
     @Test
-    public void update_shouldUpdateProgramIndicatorWithoutProgramStageSection() throws Exception {
-        programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
+    public void update_shouldUpdateProgramIndicatorWithoutProgramStageSection() {
+        programIndicatorHandler.handleMany(programIndicators);
 
         // verify that update is called once
-        verify(programIndicatorStore, times(1)).updateOrInsert(any(ProgramIndicatorModel.class));
+        verify(programIndicatorStore, times(1)).updateOrInsert(any(ProgramIndicator.class));
 
         verify(programIndicatorStore, never()).delete(anyString());
     }
 
     @Test
-    public void call_program_indicator_legend_set_handler() throws Exception {
-        programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
+    public void call_program_indicator_legend_set_handler() {
+        programIndicatorHandler.handleMany(programIndicators);
         verify(legendSetHandler).handleMany(eq(legendSets));
     }
 }

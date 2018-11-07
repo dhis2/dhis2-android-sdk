@@ -26,39 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.program;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
+import org.hisp.dhis.android.core.data.program.ProgramIndicatorSamples;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
+public class ProgramIndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramIndicator> {
 
-    public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(DatabaseAdapterFactory.get(false)));
+    public ProgramIndicatorStoreIntegrationShould() {
+        super(ProgramIndicatorStore.create(DatabaseAdapterFactory.get(false)));
     }
 
     @Override
-    protected Indicator buildObject() {
-        return IndicatorSamples.getIndicator();
+    protected ProgramIndicator buildObject() {
+        return ProgramIndicatorSamples.getProgramIndicator();
     }
 
     @Override
-    protected Indicator buildObjectWithId() {
-        return IndicatorSamples.getIndicator().toBuilder()
+    protected ProgramIndicator buildObjectWithId() {
+        return ProgramIndicatorSamples.getProgramIndicator().toBuilder()
                 .id(1L)
                 .build();
     }
 
     @Override
-    protected Indicator buildObjectToUpdate() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
+    protected ProgramIndicator buildObjectToUpdate() {
+        return ProgramIndicatorSamples.getProgramIndicator().toBuilder()
+                .decimals(413)
                 .build();
     }
 }

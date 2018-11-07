@@ -318,26 +318,9 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_program_indicators_when_call() throws Exception {
         programEndpointCall.call();
 
-        String[] projection = {
-                UID,
-                ProgramIndicatorModel.Columns.CODE,
-                ProgramIndicatorModel.Columns.NAME,
-                ProgramIndicatorModel.Columns.DISPLAY_NAME,
-                ProgramIndicatorModel.Columns.CREATED,
-                ProgramIndicatorModel.Columns.LAST_UPDATED,
-                ProgramIndicatorModel.Columns.SHORT_NAME,
-                ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME,
-                ProgramIndicatorModel.Columns.DESCRIPTION,
-                ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION,
-                ProgramIndicatorModel.Columns.DISPLAY_IN_FORM,
-                ProgramIndicatorModel.Columns.EXPRESSION,
-                ProgramIndicatorModel.Columns.DIMENSION_ITEM,
-                ProgramIndicatorModel.Columns.FILTER,
-                ProgramIndicatorModel.Columns.DECIMALS,
-                ProgramIndicatorModel.Columns.PROGRAM
-        };
-
-        Cursor programIndicatorCursor = database().query(ProgramIndicatorModel.TABLE, projection,
+        Cursor programIndicatorCursor = database().query(
+                ProgramIndicatorTableInfo.TABLE_INFO.name(),
+                ProgramIndicatorTableInfo.TABLE_INFO.columns().all(),
                 UID + "=?", new String[]{"rXoaHGAXWy9"}, null, null, null);
         assertThatCursor(programIndicatorCursor).hasRow(
                 "rXoaHGAXWy9",
@@ -358,6 +341,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                 "rXoaHGAXWy9",
                 null,
                 2,
+                "SUM",
                 "IpHINAT79UW"
         ).isExhausted();
     }

@@ -26,39 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.data.program;
 
-import android.support.test.runner.AndroidJUnit4;
-
+import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 
-@RunWith(AndroidJUnit4.class)
-public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-    public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(DatabaseAdapterFactory.get(false)));
-    }
+public class ProgramIndicatorSamples {
 
-    @Override
-    protected Indicator buildObject() {
-        return IndicatorSamples.getIndicator();
-    }
+    public static ProgramIndicator getProgramIndicator() {
+        ProgramIndicator.Builder builder = ProgramIndicator.builder();
 
-    @Override
-    protected Indicator buildObjectWithId() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .id(1L)
-                .build();
-    }
 
-    @Override
-    protected Indicator buildObjectToUpdate() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
-                .build();
+        fillNameableProperties(builder);
+        builder
+                .uid("test_program_indicator")
+                .displayInForm(true)
+                .expression("test_expression")
+                .dimensionItem("test_dimension_item")
+                .filter("test_filter")
+                .decimals(3)
+                .aggregationType(AggregationType.AVERAGE)
+                .program(ObjectWithUid.create("test_program"));
+        return builder.build();
     }
 }

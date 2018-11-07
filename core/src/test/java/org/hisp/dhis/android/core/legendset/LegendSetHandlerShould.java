@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class LegendSetHandlerShould {
     private IdentifiableObjectStore<LegendSetModel> legendSetStore;
 
     @Mock
-    private GenericHandler<Legend, LegendModel> legendHandler;
+    private SyncHandlerWithTransformer<Legend> legendHandler;
 
     @Mock
     private Legend legend;
@@ -88,9 +89,9 @@ public class LegendSetHandlerShould {
     }
 
     @Test
-    public void call_style_handler() throws Exception {
+    public void call_style_handler() {
         legendSetHandler.handle(legendSet, new LegendSetModelBuilder());
-        verify(legendHandler).handleMany(eq(legendSet.legends()), any(LegendModelBuilder.class));
+        verify(legendHandler).handleMany(eq(legendSet.legends()), any(ModelBuilder.class));
     }
 
     @Test

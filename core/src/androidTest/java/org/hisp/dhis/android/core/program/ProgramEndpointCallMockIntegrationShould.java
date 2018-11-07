@@ -108,7 +108,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
-        dhis2MockServer.enqueueMockResponse("mockserver/programs_complete.json");
+        dhis2MockServer.enqueueMockResponse("program/programs_complete.json");
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());

@@ -49,8 +49,8 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("mockserver/events_1.json");
-        dhis2MockServer.enqueueMockResponse("mockserver/events_2.json");
+        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+        dhis2MockServer.enqueueMockResponse("event/events_2.json");
 
         d2.downloadSingleEvents(eventLimitByOrgUnit, false).call();
 

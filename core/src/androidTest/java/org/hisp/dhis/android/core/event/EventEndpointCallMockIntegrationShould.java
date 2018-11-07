@@ -58,13 +58,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
-        dhis2MockServer.enqueueMockResponse("mockserver/events_1.json");
+        dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
         List<Event> events = eventEndpointCall.call();
 
         EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
 
-        verifyDownloadedEvents("mockserver/events_1.json");
+        verifyDownloadedEvents("event/events_1.json");
     }
 
     @Test
@@ -75,7 +75,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", pageSize);
 
-        dhis2MockServer.enqueueMockResponse("mockserver/events_2.json");
+        dhis2MockServer.enqueueMockResponse("event/events_2.json");
 
         List<Event> events = eventEndpointCall.call();
 
@@ -97,7 +97,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
-                "mockserver/two_events_first_good_second_wrong_foreign_key.json");
+                "event/two_events_first_good_second_wrong_foreign_key.json");
 
         eventEndpointCall.call();
 

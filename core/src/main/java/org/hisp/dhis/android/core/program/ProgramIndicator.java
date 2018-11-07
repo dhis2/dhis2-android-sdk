@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.LegendSetFields;
 
 import java.util.Date;
 import java.util.List;
@@ -79,7 +80,7 @@ public abstract class ProgramIndicator extends BaseNameableObject {
     static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder().fields(
             uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
             description, displayDescription, deleted, decimals, dimensionItem, displayInForm, expression, filter,
-            aggregationType, program.with(ObjectWithUid.uid), legendSets.with(LegendSet.allFields)
+            aggregationType, program.with(ObjectWithUid.uid), legendSets.with(LegendSetFields.allFields)
     ).build();
 
     @Nullable

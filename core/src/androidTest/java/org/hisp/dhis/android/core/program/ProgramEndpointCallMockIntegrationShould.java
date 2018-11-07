@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
@@ -362,12 +363,31 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    public void persist_legend_sets_when_call() throws Exception {
+        programEndpointCall.call();
+
+        Cursor programIndicatorCursor = database().query(
+                LegendSetTableInfo.TABLE_INFO.name(),
+                LegendSetTableInfo.TABLE_INFO.columns().all(),
+                UID + "=?", new String[]{"TiOkbpGEud4"}, null, null, null);
+        assertThatCursor(programIndicatorCursor).hasRow(
+                "TiOkbpGEud4",
+                "AGE15YINT",
+                "Age 15y interval",
+                "Age 15y interval",
+                "2017-06-02T11:40:33.452",
+                "2017-06-02T11:41:01.999",
+                "color"
+        ).isExhausted();
+    }
+
+    @Test
     public void persist_legends_when_call() throws Exception {
         programEndpointCall.call();
 
-        String[] projection = LegendTableInfo.TABLE_INFO.columns().all();
-
-        Cursor programIndicatorCursor = database().query(LegendTableInfo.TABLE_INFO.name(), projection,
+        Cursor programIndicatorCursor = database().query(
+                LegendTableInfo.TABLE_INFO.name(),
+                LegendTableInfo.TABLE_INFO.columns().all(),
                 UID + "=?", new String[]{"ZUUGJnvX40X"}, null, null, null);
         assertThatCursor(programIndicatorCursor).hasRow(
                 "ZUUGJnvX40X",

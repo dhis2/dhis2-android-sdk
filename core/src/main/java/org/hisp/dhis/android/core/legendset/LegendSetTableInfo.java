@@ -28,39 +28,38 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import static org.hisp.dhis.android.core.legendset.LegendSetFields.SYMBOLIZER;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public final class LegendSetTableInfo {
 
-public final class LegendSetStore {
+    private LegendSetTableInfo() {
+    }
 
-    private LegendSetStore() {}
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private static StatementBinder<LegendSet> BINDER = new IdentifiableStatementBinder<LegendSet>() {
         @Override
-        public void bindToStatement(@NonNull LegendSet o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.symbolizer());
+        public String name() {
+            return "LegendSet";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
         }
     };
 
-    private static final CursorModelFactory<LegendSet> FACTORY = new CursorModelFactory<LegendSet>() {
-        @Override
-        public LegendSet fromCursor(Cursor cursor) {
-            return LegendSet.create(cursor);
-        }
-    };
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
 
-    public static IdentifiableObjectStore<LegendSet> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, LegendSetTableInfo.TABLE_INFO, BINDER, FACTORY);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    SYMBOLIZER
+            );
+        }
     }
 }

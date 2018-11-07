@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
@@ -36,18 +37,16 @@ import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.LegendSetHandler;
-import org.hisp.dhis.android.core.legendset.LegendSetModel;
-import org.hisp.dhis.android.core.legendset.LegendSetModelBuilder;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModelBuilder;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 
 public class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndicator, ProgramIndicatorModel> {
-    private final GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
+    private final SyncHandler<LegendSet> legendSetHandler;
     private final LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
 
     ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore,
-                            GenericHandler<LegendSet, LegendSetModel> legendSetHandler,
+                            SyncHandler<LegendSet> legendSetHandler,
                             LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel>
                                     programIndicatorLegendSetLinkHandler) {
         super(programIndicatorStore);
@@ -66,7 +65,7 @@ public class ProgramIndicatorHandler extends IdentifiableHandlerImpl<ProgramIndi
 
     @Override
     protected void afterObjectHandled(ProgramIndicator programIndicator, HandleAction action) {
-        legendSetHandler.handleMany(programIndicator.legendSets(), new LegendSetModelBuilder());
+        legendSetHandler.handleMany(programIndicator.legendSets());
         programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicator.legendSets(),
                 new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator));
     }

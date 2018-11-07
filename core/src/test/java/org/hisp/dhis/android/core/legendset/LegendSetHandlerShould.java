@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.legendset;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
 public class LegendSetHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<LegendSetModel> legendSetStore;
+    private IdentifiableObjectStore<LegendSet> legendSetStore;
 
     @Mock
     private SyncHandlerWithTransformer<Legend> legendHandler;
@@ -83,28 +83,28 @@ public class LegendSetHandlerShould {
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<LegendSet, LegendSetModel> genericHandler = new LegendSetHandler
+    public void extend_identifiable_sync_handler_impl() {
+        IdentifiableSyncHandlerImpl<LegendSet> genericHandler = new LegendSetHandler
                 (null, null, null);
     }
 
     @Test
     public void call_style_handler() {
-        legendSetHandler.handle(legendSet, new LegendSetModelBuilder());
+        legendSetHandler.handle(legendSet);
         verify(legendHandler).handleMany(eq(legendSet.legends()), any(ModelBuilder.class));
     }
 
     @Test
     public void clean_orphan_legends_after_update() {
-        when(legendSetStore.updateOrInsert(any(LegendSetModel.class))).thenReturn(HandleAction.Update);
-        legendSetHandler.handle(legendSet, new LegendSetModelBuilder());
+        when(legendSetStore.updateOrInsert(any(LegendSet.class))).thenReturn(HandleAction.Update);
+        legendSetHandler.handle(legendSet);
         verify(legendCleaner).deleteOrphan(legendSet, legends);
     }
 
     @Test
     public void not_clean_orphan_legends_after_insert() {
-        when(legendSetStore.updateOrInsert(any(LegendSetModel.class))).thenReturn(HandleAction.Insert);
-        legendSetHandler.handle(legendSet, new LegendSetModelBuilder());
+        when(legendSetStore.updateOrInsert(any(LegendSet.class))).thenReturn(HandleAction.Insert);
+        legendSetHandler.handle(legendSet);
         verify(legendCleaner, never()).deleteOrphan(legendSet, legends);
     }
 }

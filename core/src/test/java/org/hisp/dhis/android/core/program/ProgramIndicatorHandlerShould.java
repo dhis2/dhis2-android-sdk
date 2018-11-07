@@ -27,13 +27,11 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.LegendSetModel;
-import org.hisp.dhis.android.core.legendset.LegendSetModelBuilder;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +60,7 @@ public class ProgramIndicatorHandlerShould {
     private LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
 
     @Mock
-    private GenericHandler<LegendSet, LegendSetModel> legendSetHandler;
+    private SyncHandler<LegendSet> legendSetHandler;
 
     @Mock
     private ProgramIndicator programIndicator;
@@ -141,6 +139,6 @@ public class ProgramIndicatorHandlerShould {
     @Test
     public void call_program_indicator_legend_set_handler() throws Exception {
         programIndicatorHandler.handleMany(programIndicators, programIndicatorModelBuilder);
-        verify(legendSetHandler).handleMany(eq(legendSets), any(LegendSetModelBuilder.class));
+        verify(legendSetHandler).handleMany(eq(legendSets));
     }
 }

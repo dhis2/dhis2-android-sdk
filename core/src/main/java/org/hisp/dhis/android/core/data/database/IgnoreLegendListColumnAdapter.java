@@ -26,41 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.legendset.Legend;
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-public final class LegendSetStore {
-
-    private LegendSetStore() {}
-
-    private static StatementBinder<LegendSet> BINDER = new IdentifiableStatementBinder<LegendSet>() {
-        @Override
-        public void bindToStatement(@NonNull LegendSet o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.symbolizer());
-        }
-    };
-
-    private static final CursorModelFactory<LegendSet> FACTORY = new CursorModelFactory<LegendSet>() {
-        @Override
-        public LegendSet fromCursor(Cursor cursor) {
-            return LegendSet.create(cursor);
-        }
-    };
-
-    public static IdentifiableObjectStore<LegendSet> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, LegendSetTableInfo.TABLE_INFO, BINDER, FACTORY);
-    }
+public final class IgnoreLegendListColumnAdapter extends IgnoreColumnAdapter<List<Legend>> {
 }

@@ -1,0 +1,22 @@
+{
+  "created": "2014-08-20T12:28:56.409",
+  "lastUpdated": "2015-10-14T13:36:53.063",
+  "name": "Person",
+  "href": "https://play.dhis2.org/dev/api/getTrackedEntityTypes/nEenWmSyUEp",
+  "id": "nEenWmSyUEp",
+  "displayDescription": "Person",
+  "displayName": "Person",
+  "description": "Person",
+  "externalAccess": false,
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "translations": []
+}

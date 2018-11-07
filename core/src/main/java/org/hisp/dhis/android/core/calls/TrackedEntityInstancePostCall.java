@@ -221,7 +221,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
 
         EnrollmentImportHandler enrollmentImportHandler = new EnrollmentImportHandler(
-                enrollmentStore, eventImportHandler
+                enrollmentStore, noteStore, eventImportHandler
         );
 
         TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler =

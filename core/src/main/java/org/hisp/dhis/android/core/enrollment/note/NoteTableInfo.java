@@ -52,8 +52,8 @@ public final class NoteTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        final static String ENROLLMENT = "enrollment";
+    public static class Columns extends BaseModel.Columns {
+        public final static String ENROLLMENT = "enrollment";
 
         @Override
         public String[] all() {

@@ -38,9 +38,9 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class TrackedEntityShould extends BaseObjectShould implements ObjectShould {
+public class TrackedEntityTypeShould extends BaseObjectShould implements ObjectShould {
 
-    public TrackedEntityShould() {
+    public TrackedEntityTypeShould() {
         super("trackedentity/tracked_entity_type.json");
     }
 

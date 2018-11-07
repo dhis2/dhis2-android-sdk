@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
@@ -101,7 +101,7 @@ public class ProgramIndicatorEngine {
     private static final Pattern VALUECOUNT_PATTERN =
             Pattern.compile("V\\{(" + VAR_VALUE_COUNT + "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
 
-    private final IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
+    private final IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
@@ -109,7 +109,7 @@ public class ProgramIndicatorEngine {
     private final IdentifiableObjectStore<ConstantModel> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore,
+    ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
                            TrackedEntityDataValueStore trackedEntityDataValueStore,
                            EnrollmentStore enrollmentStore,
                            EventStore eventStore,
@@ -164,7 +164,7 @@ public class ProgramIndicatorEngine {
     String parseIndicatorExpression(String enrollment, String event, String indicatorUid) {
         StringBuffer buffer = new StringBuffer();
 
-        ProgramIndicatorModel programIndicator = this.programIndicatorStore.selectByUid(indicatorUid);
+        ProgramIndicator programIndicator = this.programIndicatorStore.selectByUid(indicatorUid);
         String expression = programIndicator.expression();
 
         Matcher matcher = EXPRESSION_PATTERN.matcher(expression);

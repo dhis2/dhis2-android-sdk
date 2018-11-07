@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -45,7 +46,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
@@ -272,8 +273,8 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     private void insertProgramIndicator(String expression, AggregationType aggregationType) {
-        ProgramIndicatorModel programIndicator = ProgramIndicatorModel.builder().uid(programIndicatorUid)
-                .program(programUid).expression(expression).aggregationType(aggregationType).build();
+        ProgramIndicator programIndicator = ProgramIndicator.builder().uid(programIndicatorUid)
+                .program(ObjectWithUid.create(programUid)).expression(expression).aggregationType(aggregationType).build();
         ProgramIndicatorStore.create(databaseAdapter()).insert(programIndicator);
     }
 

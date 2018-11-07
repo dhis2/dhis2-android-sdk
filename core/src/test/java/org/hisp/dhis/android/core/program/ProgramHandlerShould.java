@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
@@ -67,7 +68,7 @@ public class ProgramHandlerShould {
     private ProgramRuleVariableHandler programRuleVariableHandler;
 
     @Mock
-    private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
+    private SyncHandler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
     private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
@@ -189,8 +190,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_indicator_handler() {
         programHandler.handle(program, new ProgramModelBuilder());
-        verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class),
-                any(ProgramIndicatorModelBuilder.class));
+        verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class));
     }
 
     @Test

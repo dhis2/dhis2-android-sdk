@@ -26,39 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.data.database;
 
-import android.support.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.common.AggregationType;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
-import org.junit.runner.RunWith;
-
-@RunWith(AndroidJUnit4.class)
-public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
-
-    public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(DatabaseAdapterFactory.get(false)));
-    }
-
+public class DbAggregationTypeColumnAdapter extends EnumColumnAdapter<AggregationType> {
     @Override
-    protected Indicator buildObject() {
-        return IndicatorSamples.getIndicator();
-    }
-
-    @Override
-    protected Indicator buildObjectWithId() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .id(1L)
-                .build();
-    }
-
-    @Override
-    protected Indicator buildObjectToUpdate() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
-                .build();
+    protected Class<AggregationType> getEnumClass() {
+        return AggregationType.class;
     }
 }

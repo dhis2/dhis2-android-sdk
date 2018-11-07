@@ -229,6 +229,7 @@
                   "description": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
                   "displayShortName": "Health immunization score",
                   "decimals": 2,
+                  "aggregationType": "SUM",
                   "program": {
                       "id": "IpHINAT79UW"
                   },

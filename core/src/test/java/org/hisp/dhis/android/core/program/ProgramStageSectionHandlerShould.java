@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
@@ -63,7 +63,7 @@ public class ProgramStageSectionHandlerShould {
     private ProgramStageSectionStore programStageSectionStore;
 
     @Mock
-    private GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
+    private SyncHandler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
     private LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
@@ -125,7 +125,7 @@ public class ProgramStageSectionHandlerShould {
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
+                anyListOf(ProgramIndicator.class));
 
     }
 
@@ -164,7 +164,7 @@ public class ProgramStageSectionHandlerShould {
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
+                anyListOf(ProgramIndicator.class));
     }
 
     @Test
@@ -203,7 +203,7 @@ public class ProgramStageSectionHandlerShould {
         );
 
         verify(programIndicatorHandler, times(1)).handleMany(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
+                anyListOf(ProgramIndicator.class));
 
     }
 
@@ -230,7 +230,7 @@ public class ProgramStageSectionHandlerShould {
         );
 
         verify(programIndicatorHandler, never()).handleMany(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
+                anyListOf(ProgramIndicator.class));
     }
 
     @Test
@@ -257,7 +257,7 @@ public class ProgramStageSectionHandlerShould {
         );
 
         verify(programIndicatorHandler, never()).handleMany(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
+                anyListOf(ProgramIndicator.class));
     }
 
     @Test
@@ -283,6 +283,6 @@ public class ProgramStageSectionHandlerShould {
         );
 
         verify(programIndicatorHandler, never()).handleMany(
-                anyListOf(ProgramIndicator.class), any(ProgramIndicatorModelBuilder.class));
+                anyListOf(ProgramIndicator.class));
     }
 }

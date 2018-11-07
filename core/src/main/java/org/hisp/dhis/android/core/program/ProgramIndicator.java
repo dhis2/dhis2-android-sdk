@@ -28,119 +28,109 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.DbAggregationTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreLegendSetListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.LegendSetFields;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramIndicator extends BaseNameableObject {
-    private static final String DISPLAY_IN_FORM = "displayInForm";
-    private static final String EXPRESSION = "expression";
-    private static final String DIMENSION_ITEM = "dimensionItem";
-    private static final String FILTER = "filter";
-    private static final String DECIMALS = "decimals";
-    private static final String AGGREGATION_TYPE = "aggregationType";
-    private static final String PROGRAM = "program";
-    private static final String LEGEND_SETS = "legendSets";
+@JsonDeserialize(builder = AutoValue_ProgramIndicator.Builder.class)
+public abstract class ProgramIndicator extends BaseNameableObject implements Model {
 
-    public static final Field<ProgramIndicator, String> uid = Field.create(UID);
-    private static final Field<ProgramIndicator, String> code = Field.create(CODE);
-    private static final Field<ProgramIndicator, String> name = Field.create(NAME);
-    private static final Field<ProgramIndicator, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<ProgramIndicator, String> created = Field.create(CREATED);
-    private static final Field<ProgramIndicator, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<ProgramIndicator, Boolean> deleted = Field.create(DELETED);
-    private static final Field<ProgramIndicator, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<ProgramIndicator, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<ProgramIndicator, String> description = Field.create(DESCRIPTION);
-    private static final Field<ProgramIndicator, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<ProgramIndicator, Boolean> displayInForm = Field.create(DISPLAY_IN_FORM);
-    private static final Field<ProgramIndicator, String> expression = Field.create(EXPRESSION);
-    private static final Field<ProgramIndicator, String> dimensionItem = Field.create(DIMENSION_ITEM);
-    private static final Field<ProgramIndicator, String> filter = Field.create(FILTER);
-    private static final Field<ProgramIndicator, Integer> decimals = Field.create(DECIMALS);
-    private static final Field<ProgramIndicator, AggregationType> aggregationType = Field.create(AGGREGATION_TYPE);
-    public static final NestedField<ProgramIndicator, ObjectWithUid> program = NestedField.create(PROGRAM);
-    private static final NestedField<ProgramIndicator, LegendSet> legendSets = NestedField.create(LEGEND_SETS);
-
-    static final Fields<ProgramIndicator> allFields = Fields.<ProgramIndicator>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
-            description, displayDescription, deleted, decimals, dimensionItem, displayInForm, expression, filter,
-            aggregationType, program.with(ObjectWithUid.uid), legendSets.with(LegendSetFields.allFields)
-    ).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(DISPLAY_IN_FORM)
+    @JsonProperty()
     public abstract Boolean displayInForm();
 
     @Nullable
-    @JsonProperty(EXPRESSION)
+    @JsonProperty()
     public abstract String expression();
 
     @Nullable
-    @JsonProperty(DIMENSION_ITEM)
+    @JsonProperty()
     public abstract String dimensionItem();
 
     @Nullable
-    @JsonProperty(FILTER)
+    @JsonProperty()
     public abstract String filter();
 
     @Nullable
-    @JsonProperty(DECIMALS)
+    @JsonProperty()
     public abstract Integer decimals();
 
     @Nullable
-    @JsonProperty(AGGREGATION_TYPE)
+    @JsonProperty()
+    @ColumnAdapter(DbAggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
     @Nullable
-    @JsonProperty(PROGRAM)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty(LEGEND_SETS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreLegendSetListColumnAdapter.class)
     public abstract List<LegendSet> legendSets();
 
-    @JsonCreator
-    public static ProgramIndicator create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(DISPLAY_IN_FORM) Boolean displayInForm,
-            @JsonProperty(EXPRESSION) String expression,
-            @JsonProperty(DIMENSION_ITEM) String dimensionItem,
-            @JsonProperty(FILTER) String filter,
-            @JsonProperty(DECIMALS) Integer decimals,
-            @JsonProperty(AGGREGATION_TYPE) AggregationType aggregationType,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(PROGRAM) ObjectWithUid program,
-            @JsonProperty(LEGEND_SETS) List<LegendSet> legendSets
-    ) {
-        return new AutoValue_ProgramIndicator(
-                uid, code, name, displayName, created, lastUpdated, deleted, shortName, displayShortName,
-                description, displayDescription, displayInForm, expression, dimensionItem, filter, decimals,
-                aggregationType, program, legendSets);
+    public abstract ContentValues toContentValues();
+
+    static ProgramIndicator create(Cursor cursor) {
+        return $AutoValue_ProgramIndicator.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_ProgramIndicator.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder  extends BaseNameableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder displayInForm(Boolean displayInForm);
+
+        public abstract Builder expression(String expression);
+
+        public abstract Builder dimensionItem(String dimensionItem);
+
+        public abstract Builder filter(String filter);
+
+        public abstract Builder decimals(Integer decimals);
+
+        public abstract Builder aggregationType(AggregationType aggregationType);
+
+        public abstract Builder program(ObjectWithUid program);
+
+        public abstract Builder legendSets(List<LegendSet> legendSets);
+
+        public abstract ProgramIndicator build();
+    }
 }

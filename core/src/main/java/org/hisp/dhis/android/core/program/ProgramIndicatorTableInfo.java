@@ -28,30 +28,42 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class ProgramIndicatorModelBuilder extends ModelBuilder<ProgramIndicator, ProgramIndicatorModel> {
+public final class ProgramIndicatorTableInfo {
 
-    @Override
-    public ProgramIndicatorModel buildModel(ProgramIndicator programIndicator) {
-        return ProgramIndicatorModel.builder()
-                .uid(programIndicator.uid())
-                .code(programIndicator.code())
-                .name(programIndicator.name())
-                .displayName(programIndicator.displayName())
-                .created(programIndicator.created())
-                .lastUpdated(programIndicator.lastUpdated())
-                .shortName(programIndicator.shortName())
-                .displayShortName(programIndicator.displayShortName())
-                .description(programIndicator.description())
-                .displayDescription(programIndicator.displayDescription())
-                .displayInForm(programIndicator.displayInForm())
-                .expression(programIndicator.expression())
-                .dimensionItem(programIndicator.dimensionItem())
-                .filter(programIndicator.filter())
-                .decimals(programIndicator.decimals())
-                .aggregationType(programIndicator.aggregationType())
-                .program(programIndicator.program().uid())
-                .build();
+    private ProgramIndicatorTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ProgramIndicator";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseNameableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramIndicatorFields.DISPLAY_IN_FORM,
+                    ProgramIndicatorFields.EXPRESSION,
+                    ProgramIndicatorFields.DIMENSION_ITEM,
+                    ProgramIndicatorFields.FILTER,
+                    ProgramIndicatorFields.DECIMALS,
+                    ProgramIndicatorFields.AGGREGATION_TYPE,
+                    ProgramIndicatorFields.PROGRAM
+            );
+        }
     }
 }

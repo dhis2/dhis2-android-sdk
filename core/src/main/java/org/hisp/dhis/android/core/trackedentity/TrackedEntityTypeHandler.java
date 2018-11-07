@@ -27,20 +27,21 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<TrackedEntityType, TrackedEntityTypeModel> {
+public final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
+
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
-    private TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityTypeModel> trackedEntityTypeStore,
+    private TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
                                      SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(trackedEntityTypeStore);
         this.styleHandler = styleHandler;
@@ -49,10 +50,10 @@ public final class TrackedEntityTypeHandler extends IdentifiableHandlerImpl<Trac
     @Override
     protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
         styleHandler.handle(trackedEntityType.style(), new ObjectStyleModelBuilder(trackedEntityType.uid(),
-                TrackedEntityTypeModel.TABLE));
+                TrackedEntityTypeTableInfo.TABLE_INFO.name()));
     }
 
-    public static GenericHandler<TrackedEntityType, TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
+    public static SyncHandler<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
         return new TrackedEntityTypeHandler(
                 TrackedEntityTypeStore.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter));

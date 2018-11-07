@@ -39,21 +39,19 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class TrackedEntityTypeStore {
 
-    // Only nameable columns
-    private static StatementBinder<TrackedEntityTypeModel> BINDER
-            = new NameableStatementBinder<TrackedEntityTypeModel>() {};
+    private TrackedEntityTypeStore() {}
 
-    private static final CursorModelFactory<TrackedEntityTypeModel> FACTORY
-            = new CursorModelFactory<TrackedEntityTypeModel>() {
+    // Only nameable columns
+    private static StatementBinder<TrackedEntityType> BINDER = new NameableStatementBinder<TrackedEntityType>() {};
+
+    private static final CursorModelFactory<TrackedEntityType> FACTORY = new CursorModelFactory<TrackedEntityType>() {
         @Override
-        public TrackedEntityTypeModel fromCursor(Cursor cursor) {
-            return TrackedEntityTypeModel.create(cursor);
+        public TrackedEntityType fromCursor(Cursor cursor) {
+            return TrackedEntityType.create(cursor);
         }
     };
-    public static IdentifiableObjectStore<TrackedEntityTypeModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeModel.TABLE,
-                new TrackedEntityTypeModel.Columns().all(), BINDER, FACTORY);
-    }
 
-    private TrackedEntityTypeStore() {}
+    public static IdentifiableObjectStore<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeTableInfo.TABLE_INFO, BINDER, FACTORY);
+    }
 }

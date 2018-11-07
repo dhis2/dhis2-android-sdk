@@ -28,30 +28,27 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
+import org.junit.Test;
 
-import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.io.IOException;
+import java.text.ParseException;
 
-public final class TrackedEntityTypeStore {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    // Only nameable columns
-    private static StatementBinder<TrackedEntityType> BINDER = new NameableStatementBinder<TrackedEntityType>() {};
+public class TrackedEntityTypeShould extends BaseObjectShould implements ObjectShould {
 
-    private static final CursorModelFactory<TrackedEntityType> FACTORY = new CursorModelFactory<TrackedEntityType>() {
-        @Override
-        public TrackedEntityType fromCursor(Cursor cursor) {
-            return TrackedEntityType.create(cursor);
-        }
-    };
+    public TrackedEntityTypeShould() {
+        super("trackedentity/tracked_entity_type.json");
+    }
 
-    private TrackedEntityTypeStore() {}
-
-    public static IdentifiableObjectStore<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeTableInfo.TABLE_INFO, BINDER, FACTORY);
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        TrackedEntityType jsonTrackedEntityType = objectMapper.readValue(jsonStream, TrackedEntityType.class);
+        TrackedEntityType expectedTrackedEntityType = TrackedEntityTypeSamples.get();
+        assertThat(jsonTrackedEntityType).isEqualTo(expectedTrackedEntityType);
     }
 }

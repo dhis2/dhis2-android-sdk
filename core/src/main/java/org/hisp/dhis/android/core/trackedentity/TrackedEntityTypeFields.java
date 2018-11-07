@@ -28,30 +28,28 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectStyleFields;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class TrackedEntityTypeFields {
 
-public final class TrackedEntityTypeStore {
+    private final static String STYLE = "style";
 
-    // Only nameable columns
-    private static StatementBinder<TrackedEntityType> BINDER = new NameableStatementBinder<TrackedEntityType>() {};
+    private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
 
-    private static final CursorModelFactory<TrackedEntityType> FACTORY = new CursorModelFactory<TrackedEntityType>() {
-        @Override
-        public TrackedEntityType fromCursor(Cursor cursor) {
-            return TrackedEntityType.create(cursor);
-        }
-    };
+    public static final Field<TrackedEntityType, String> uid = fh.uid();
 
-    private TrackedEntityTypeStore() {}
+    static final Field<TrackedEntityType, String> lastUpdated = fh.lastUpdated();
 
-    public static IdentifiableObjectStore<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeTableInfo.TABLE_INFO, BINDER, FACTORY);
+    public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
+            .fields(fh.getNameableFields())
+            .fields(
+                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
+            ).build();
+
+    private TrackedEntityTypeFields() {
     }
 }

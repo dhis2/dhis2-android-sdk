@@ -26,25 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.trackedentity;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
-public class TrackedEntityTypeModelBuilder extends ModelBuilder<TrackedEntityType, TrackedEntityTypeModel> {
+import java.text.ParseException;
+import java.util.Date;
 
-    @Override
-    public TrackedEntityTypeModel buildModel(TrackedEntityType type) {
-        return TrackedEntityTypeModel.builder()
-                .uid(type.uid())
-                .code(type.code())
-                .name(type.name())
-                .displayName(type.displayName())
-                .created(type.created())
-                .lastUpdated(type.lastUpdated())
-                .shortName(type.shortName())
-                .displayShortName(type.displayShortName())
-                .description(type.description())
-                .displayDescription(type.displayDescription())
+public class TrackedEntityTypeSamples {
+
+    public static TrackedEntityType get() {
+        return TrackedEntityType.builder()
+                .uid("nEenWmSyUEp")
+                .name("Person")
+                .displayName("Person")
+                .created(getDate("2014-08-20T12:28:56.409"))
+                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+                .description("Person")
+                .displayDescription("Person")
                 .build();
+    }
+
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

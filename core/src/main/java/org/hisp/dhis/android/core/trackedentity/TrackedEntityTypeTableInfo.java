@@ -28,30 +28,29 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
-import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class TrackedEntityTypeTableInfo {
 
-public final class TrackedEntityTypeStore {
+    private TrackedEntityTypeTableInfo() {
+    }
 
-    // Only nameable columns
-    private static StatementBinder<TrackedEntityType> BINDER = new NameableStatementBinder<TrackedEntityType>() {};
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private static final CursorModelFactory<TrackedEntityType> FACTORY = new CursorModelFactory<TrackedEntityType>() {
         @Override
-        public TrackedEntityType fromCursor(Cursor cursor) {
-            return TrackedEntityType.create(cursor);
+        public String name() {
+            return "TrackedEntityType";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
         }
     };
 
-    private TrackedEntityTypeStore() {}
-
-    public static IdentifiableObjectStore<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeTableInfo.TABLE_INFO, BINDER, FACTORY);
+    static class Columns extends BaseNameableObjectModel.Columns {
+        // Empty by design. BaseNameableObjectModel.Columns contains all needed columns
     }
 }

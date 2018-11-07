@@ -28,30 +28,42 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public final class TrackedEntityTypeStore {
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityTypeStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityType> {
 
-    // Only nameable columns
-    private static StatementBinder<TrackedEntityType> BINDER = new NameableStatementBinder<TrackedEntityType>() {};
+    public TrackedEntityTypeStoreIntegrationShould() {
+        super(TrackedEntityTypeStore.create(DatabaseAdapterFactory.get(false)));
+    }
 
-    private static final CursorModelFactory<TrackedEntityType> FACTORY = new CursorModelFactory<TrackedEntityType>() {
-        @Override
-        public TrackedEntityType fromCursor(Cursor cursor) {
-            return TrackedEntityType.create(cursor);
-        }
-    };
+    @Override
+    protected TrackedEntityType buildObject() {
+        return TrackedEntityTypeSamples.get();
+    }
 
-    private TrackedEntityTypeStore() {}
+    @Override
+    protected TrackedEntityType buildObjectWithId() {
+        return TrackedEntityTypeSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
 
-    public static IdentifiableObjectStore<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, TrackedEntityTypeTableInfo.TABLE_INFO, BINDER, FACTORY);
+    @Override
+    protected TrackedEntityType buildObjectToUpdate() {
+        return TrackedEntityTypeSamples.get().toBuilder()
+                .description("new_description")
+                .build();
+    }
+
+    @Test
+    public void stub() throws Exception {
     }
 }

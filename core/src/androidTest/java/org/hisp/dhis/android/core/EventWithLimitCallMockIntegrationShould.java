@@ -4,7 +4,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -30,7 +30,7 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
@@ -49,8 +49,8 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
 
         givenAMetadataInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("events_1.json");
-        dhis2MockServer.enqueueMockResponse("events_2.json");
+        dhis2MockServer.enqueueMockResponse("mockserver/events_1.json");
+        dhis2MockServer.enqueueMockResponse("mockserver/events_2.json");
 
         d2.downloadSingleEvents(eventLimitByOrgUnit, false).call();
 

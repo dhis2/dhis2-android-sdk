@@ -84,6 +84,7 @@ android {
         }
         androidTest {
             java.srcDirs sharedTestDir
+            resources.srcDirs += ['src/test/resources']
         }
 
     }

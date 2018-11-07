@@ -34,10 +34,12 @@ import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Scanner;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -82,39 +84,38 @@ public class Dhis2MockServer {
     }
 
     public void enqueueLoginResponses() throws IOException {
-        enqueueMockResponse("login.json");
-        enqueueMockResponse("system_info.json");
+        enqueueMockResponse("mockserver/login.json");
+        enqueueMockResponse("mockserver/system_info.json");
     }
 
     public void enqueueMetadataResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
-                "user.json",
-                "organisationUnits.json");
+                "user/user.json",
+                "mockserver/organisationUnits.json");
     }
-
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
-                "admin/user.json",
-                "admin/organisation_units.json");
+                "user/admin_user.json",
+                "organisationunits/admin_organisation_units.json");
     }
 
     private void enqueueMetadataResponsesWithUserAndOrgUnits(String userPath, String orgUnitPath)
             throws IOException {
-        enqueueMockResponse("system_info.json");
-        enqueueMockResponse("system_setting.json");
+        enqueueMockResponse("mockserver/system_info.json");
+        enqueueMockResponse("mockserver/system_setting.json");
         enqueueMockResponse(userPath);
-        enqueueMockResponse("programs.json");
-        enqueueMockResponse("program_stages.json");
-        enqueueMockResponse("program_rules.json");
-        enqueueMockResponse("tracked_entity_types.json");
-        enqueueMockResponse("relationship_types.json");
-        enqueueMockResponse("option_sets.json");
-        enqueueMockResponse("data_sets.json");
-        enqueueMockResponse("data_elements.json");
-        enqueueMockResponse("indicators.json");
-        enqueueMockResponse("indicator_types.json");
-        enqueueMockResponse("category_combos.json");
-        enqueueMockResponse("categories.json");
+        enqueueMockResponse("mockserver/programs.json");
+        enqueueMockResponse("mockserver/program_stages.json");
+        enqueueMockResponse("mockserver/program_rules.json");
+        enqueueMockResponse("mockserver/tracked_entity_types.json");
+        enqueueMockResponse("mockserver/relationship_types.json");
+        enqueueMockResponse("mockserver/option_sets.json");
+        enqueueMockResponse("mockserver/data_sets.json");
+        enqueueMockResponse("mockserver/data_elements.json");
+        enqueueMockResponse("mockserver/indicators.json");
+        enqueueMockResponse("mockserver/indicator_types.json");
+        enqueueMockResponse("categories/category_combos.json");
+        enqueueMockResponse("categories/categories.json");
         enqueueMockResponse(orgUnitPath);
     }
 

@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -100,11 +100,11 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
-        dhis2MockServer.enqueueMockResponse("admin/organisation_units.json");
+        dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json");
 
         List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.create("O6uvpzGd5pu",
                 null, null, null, null, null, null, null, null, null, null, "/ImspTQPwCqd/O6uvpzGd5pu", null, null,

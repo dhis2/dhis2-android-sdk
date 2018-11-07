@@ -8,7 +8,7 @@ import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,7 +32,7 @@ public abstract class MockIntegrationShould {
                 InstrumentationRegistry.getTargetContext().getApplicationContext(), dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
         Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }

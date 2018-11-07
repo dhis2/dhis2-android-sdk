@@ -98,7 +98,7 @@ public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsS
         TrackedEntityInstance syncedTrackedEntityInstance =
                 givenASyncedTrackedEntityInstanceInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("mockserver/tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
         d2.syncDownSyncedTrackedEntityInstances().call();
 
@@ -113,8 +113,8 @@ public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsS
 
         List<TrackedEntityInstance> trackedEntityInstances = givenASyncedTrackedEntityInstancesInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("mockserver/tracked_entity_instance.json");
-        dhis2MockServer.enqueueMockResponse("mockserver/tracked_entity_instance_2.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_2.json");
 
         d2.syncDownSyncedTrackedEntityInstances().call();
 

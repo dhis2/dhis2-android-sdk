@@ -82,7 +82,7 @@ public class Dhis2MockServer {
     }
 
     public void enqueueLoginResponses() throws IOException {
-        enqueueMockResponse("mockserver/login.json");
+        enqueueMockResponse("user/login.json");
         enqueueMockResponse("systeminfo/system_info.json");
     }
 
@@ -100,18 +100,18 @@ public class Dhis2MockServer {
     private void enqueueMetadataResponsesWithUserAndOrgUnits(String userPath, String orgUnitPath)
             throws IOException {
         enqueueMockResponse("systeminfo/system_info.json");
-        enqueueMockResponse("mockserver/system_setting.json");
+        enqueueMockResponse("settings/system_setting.json");
         enqueueMockResponse(userPath);
-        enqueueMockResponse("mockserver/programs.json");
-        enqueueMockResponse("mockserver/program_stages.json");
-        enqueueMockResponse("mockserver/program_rules.json");
-        enqueueMockResponse("mockserver/tracked_entity_types.json");
-        enqueueMockResponse("mockserver/relationship_types.json");
-        enqueueMockResponse("mockserver/option_sets.json");
-        enqueueMockResponse("mockserver/data_sets.json");
-        enqueueMockResponse("mockserver/data_elements.json");
-        enqueueMockResponse("mockserver/indicators.json");
-        enqueueMockResponse("mockserver/indicator_types.json");
+        enqueueMockResponse("program/programs.json");
+        enqueueMockResponse("program/program_stages.json");
+        enqueueMockResponse("program/program_rules.json");
+        enqueueMockResponse("trackedentity/tracked_entity_types.json");
+        enqueueMockResponse("relationship/relationship_types.json");
+        enqueueMockResponse("option/option_sets.json");
+        enqueueMockResponse("dataset/data_sets.json");
+        enqueueMockResponse("dataelement/data_elements.json");
+        enqueueMockResponse("indicators/indicators.json");
+        enqueueMockResponse("indicators/indicator_types.json");
         enqueueMockResponse("categories/category_combos.json");
         enqueueMockResponse("categories/categories.json");
         enqueueMockResponse(orgUnitPath);

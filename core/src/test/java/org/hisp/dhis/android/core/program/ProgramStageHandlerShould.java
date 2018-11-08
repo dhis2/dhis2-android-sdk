@@ -45,6 +45,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,6 +83,8 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageDataElement> programStageDataElements;
 
     @Mock
+    private ProgramStageSection programStageSection;
+
     private List<ProgramStageSection> programStageSections;
 
     @Mock
@@ -114,13 +117,17 @@ public class ProgramStageHandlerShould {
         programStageModelBuilder = new ProgramStageModelBuilder();
 
         programStageHandler = new ProgramStageHandler(
-                programStageStore, programStageSectionHandler,
+                programStageStore,
+                programStageSectionHandler,
                 programStageDataElementHandler,
                 styleHandler,
                 programStageDataElementCleaner,
                 programStageSectionCleaner,
                 collectionCleaner,
                 versionManager);
+
+        programStageSections = new ArrayList<>();
+        programStageSections.add(programStageSection);
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
@@ -145,8 +152,7 @@ public class ProgramStageHandlerShould {
     @Test
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage, programStageModelBuilder);
-        verify(programStageSectionHandler).handleProgramStageSection("test_program_stage_uid",
-                programStageSections);
+        verify(programStageSectionHandler).handleMany(programStageSections);
     }
 
     @Test

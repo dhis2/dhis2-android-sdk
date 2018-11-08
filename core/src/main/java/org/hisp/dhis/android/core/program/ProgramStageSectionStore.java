@@ -45,14 +45,15 @@ public final class ProgramStageSectionStore {
 
     private ProgramStageSectionStore() {}
 
-    private static StatementBinder<ProgramStageSection> BINDER = new IdentifiableStatementBinder<ProgramStageSection>() {
+    private static StatementBinder<ProgramStageSection> BINDER =
+            new IdentifiableStatementBinder<ProgramStageSection>() {
         @Override
         public void bindToStatement(@NonNull ProgramStageSection o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.sortOrder());
             sqLiteBind(sqLiteStatement, 8, o.programStage());
-            sqLiteBind(sqLiteStatement, 8, o.desktopRenderType());
-            sqLiteBind(sqLiteStatement, 8, o.mobileRenderType());
+            sqLiteBind(sqLiteStatement, 9, o.desktopRenderType());
+            sqLiteBind(sqLiteStatement, 10, o.mobileRenderType());
         }
     };
 

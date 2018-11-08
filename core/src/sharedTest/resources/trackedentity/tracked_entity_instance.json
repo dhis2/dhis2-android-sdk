@@ -1,11 +1,31 @@
 {
+  "lastUpdated": "2015-10-15T11:32:27.242",
+  "created": "2014-06-06T20:44:21.375",
   "trackedEntityType": "nEenWmSyUEp",
   "orgUnit": "DiszpKrYNg8",
   "trackedEntityInstance": "PgmUFEQYZdt",
   "featureType": "POINT",
   "coordinates": "[9,9]",
   "deleted": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "trackedEntityInstanceB": "G1afLIEKt8A",
+      "displayName": "Mother-Child",
+      "trackedEntityInstanceA": "Ea0rRdBPAIp",
+      "relationship": "V2kkHafqs8G",
+      "relative": {
+        "created": "2013-09-08T21:40:28.000",
+        "orgUnit": "DiszpKrYNg8",
+        "trackedEntityInstance": "G1afLIEKt8A",
+        "lastUpdated": "2014-07-23T12:18:42.751",
+        "trackedEntityType": "nEenWmSyUEp",
+        "deleted": false,
+        "enrollments": [],
+        "relationships": [],
+        "attributes": []
+      }
+    }
+  ],
   "attributes": [
     {
       "lastUpdated": "2017-12-12T07:35:12.904",

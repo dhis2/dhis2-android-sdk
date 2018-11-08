@@ -1,0 +1,35 @@
+{
+  "lastUpdated": "2016-10-11T10:41:40.401",
+  "id": "YhqgQ6Iy4c4",
+  "href": "https://play.dhis2.org/dev/api/programTrackedEntityAttributes/YhqgQ6Iy4c4",
+  "created": "2016-10-11T10:41:40.401",
+  "name": "Child Programme Gender",
+  "shortName": "Child Programme Gender",
+  "displayName": "Child Programme Gender",
+  "mandatory": false,
+  "displayShortName": "Child Programme Gender",
+  "externalAccess": false,
+  "valueType": "TEXT",
+  "allowFutureDate": false,
+  "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
+  "displayInList": false,
+  "sortOrder": 1,
+  "dimensionItemType": "PROGRAM_ATTRIBUTE",
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false
+  },
+  "program": {
+    "id": "IpHINAT79UW"
+  },
+  "trackedEntityAttribute": {
+    "id": "cejWyOfXge6"
+  },
+  "translations": [],
+  "userGroupAccesses": [],
+  "attributeValues": []
+}

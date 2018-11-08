@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,37 +38,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramRuleVariableShould {
+public class ProgramRuleVariableShould extends BaseObjectShould implements ObjectShould {
+
+    public ProgramRuleVariableShould() {
+        super("program/program_rule_variable.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        ProgramRuleVariable programRuleVariable = objectMapper.readValue("{\n" +
-                "\"created\": \"2015-08-07T18:38:12.931\",\n" +
-                "\"lastUpdated\": \"2015-08-07T18:38:12.932\",\n" +
-                "\"name\": \"age\",\n" +
-                "\"href\": \"https://play.dhis2.org/dev/api/programRuleVariables/RycV5uDi66i\",\n" +
-                "\"id\": \"RycV5uDi66i\",\n" +
-                "\"displayName\": \"age\",\n" +
-                "\"programRuleVariableSourceType\": \"DATAELEMENT_NEWEST_EVENT_PROGRAM\",\n" +
-                "\"externalAccess\": false,\n" +
-                "\"access\": {\n" +
-                "\"read\": true,\n" +
-                "\"updateWithSection\": true,\n" +
-                "\"externalize\": false,\n" +
-                "\"delete\": true,\n" +
-                "\"write\": true,\n" +
-                "\"manage\": false\n" +
-                "},\n" +
-                "\"program\": {\n" +
-                "\"id\": \"eBAyeGv0exc\"\n" +
-                "},\n" +
-                "\"dataElement\": {\n" +
-                "\"id\": \"qrur9Dvnyt5\"\n" +
-                "},\n" +
-                "\"userGroupAccesses\": [],\n" +
-                "\"attributeValues\": [],\n" +
-                "\"translations\": []\n" +
-                "}", ProgramRuleVariable.class);
+        ProgramRuleVariable programRuleVariable = objectMapper.readValue(jsonStream, ProgramRuleVariable.class);
 
         assertThat(programRuleVariable.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-07T18:38:12.931"));

@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,7 +41,11 @@ import nl.jqno.equalsverifier.Warning;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class UserCredentialShould {
+public class UserCredentialShould extends BaseObjectShould implements ObjectShould {
+
+    public UserCredentialShould() {
+        super("user/user_credentials.json");
+    }
 
     @Test
     public void have_the_equals_method_conform_to_contract() {
@@ -51,45 +54,10 @@ public class UserCredentialShould {
                 .verify();
     }
 
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        UserCredentials userCredentials = objectMapper.readValue("{\n" +
-                "\n" +
-                "    \"code\": \"admin\",\n" +
-                "    \"created\": \"2013-04-18T17:15:08.401\",\n" +
-                "    \"lastUpdated\": \"2016-10-25T09:21:33.884\",\n" +
-                "    \"id\": \"ZyjSDLHGPv4\",\n" +
-                "    \"lastLogin\": \"2016-10-25T09:21:33.881\",\n" +
-                "    \"passwordLastUpdated\": \"2014-12-18T20:56:05.264\",\n" +
-                "    \"invitation\": false,\n" +
-                "    \"externalAuth\": false,\n" +
-                "    \"selfRegistered\": false,\n" +
-                "    \"disabled\": false,\n" +
-                "    \"username\": \"admin\",\n" +
-                "    \"userInfo\": {\n" +
-                "        \"id\": \"xE7jOejl9FI\"\n" +
-                "    },\n" +
-                "    \"user\": {\n" +
-                "        \"id\": \"xE7jOejl9FI\"\n" +
-                "    },\n" +
-                "    \"cogsDimensionConstraints\": [ ],\n" +
-                "    \"catDimensionConstraints\": [ ],\n" +
-                "    \"userRoles\": [\n" +
-                "        {\n" +
-                "            \"id\": \"Ufph3mGRmMo\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"UYXOT4A7JMI\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"aNk5AyC7ydy\"\n" +
-                "        }\n" +
-                "    ]\n" +
-                "\n" +
-                "},", UserCredentials.class);
-
+        UserCredentials userCredentials = objectMapper.readValue(jsonStream, UserCredentials.class);
 
         assertThat(userCredentials.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-25T09:21:33.884"));

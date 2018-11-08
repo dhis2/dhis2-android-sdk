@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.program;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
 import org.hisp.dhis.android.core.program.ProgramStageSectionDeviceRendering;
 import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
@@ -49,7 +50,7 @@ public class ProgramStageSectionSamples {
                                 ProgramStageSectionRenderingType.SEQUENTIAL),
                         ProgramStageSectionDeviceRendering.create(
                                 ProgramStageSectionRenderingType.LISTING)))
-                .programStage("program_stage_uid")
+                .programStage(ObjectWithUid.create("program_stage_uid"))
         .desktopRenderType(ProgramStageSectionRenderingType.SEQUENTIAL)
         .mobileRenderType(ProgramStageSectionRenderingType.LISTING);
         return builder.build();

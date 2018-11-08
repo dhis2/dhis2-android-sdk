@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -51,13 +52,14 @@ public final class ProgramStageSectionStore {
         public void bindToStatement(@NonNull ProgramStageSection o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 8, o.programStage());
+            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.programStage()));
             sqLiteBind(sqLiteStatement, 9, o.desktopRenderType());
             sqLiteBind(sqLiteStatement, 10, o.mobileRenderType());
         }
     };
 
-    private static final CursorModelFactory<ProgramStageSection> FACTORY = new CursorModelFactory<ProgramStageSection>() {
+    private static final CursorModelFactory<ProgramStageSection> FACTORY =
+            new CursorModelFactory<ProgramStageSection>() {
         @Override
         public ProgramStageSection fromCursor(Cursor cursor) {
             return ProgramStageSection.create(cursor);

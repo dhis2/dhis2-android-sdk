@@ -43,8 +43,10 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.IgnoreDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageSectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -52,7 +54,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStageSection.Builder.class)
-public abstract class ProgramStageSection  extends BaseIdentifiableObject implements Model {
+public abstract class ProgramStageSection extends BaseIdentifiableObject implements Model {
 
     // TODO move to base class after whole object refactor
     @Override
@@ -82,7 +84,8 @@ public abstract class ProgramStageSection  extends BaseIdentifiableObject implem
 
     @Nullable
     @JsonIgnore()
-    public abstract String programStage();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programStage();
 
     @Nullable
     @JsonIgnore()
@@ -119,7 +122,7 @@ public abstract class ProgramStageSection  extends BaseIdentifiableObject implem
 
         public abstract Builder renderType(ProgramStageSectionRendering renderType);
 
-        public abstract Builder programStage(String programStage);
+        public abstract Builder programStage(ObjectWithUid programStage);
 
         public abstract Builder desktopRenderType(ProgramStageSectionRenderingType desktopRenderType);
 

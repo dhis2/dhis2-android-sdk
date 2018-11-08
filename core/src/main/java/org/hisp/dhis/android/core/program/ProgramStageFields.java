@@ -100,7 +100,7 @@ final class ProgramStageFields {
                     fh.<Integer>field(MIN_DAYS_FROM_START),
                     fh.<Integer>field(STANDARD_INTERVAL),
                     fh.<ProgramStageSection>nestedField(PROGRAM_STAGE_SECTIONS)
-                            .with(ProgramStageSection.allFields),
+                            .with(ProgramStageSectionFields.allFields),
                     fh.<ProgramStageDataElement>nestedField(PROGRAM_STAGE_DATA_ELEMENTS)
                             .with(ProgramStageDataElement.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),

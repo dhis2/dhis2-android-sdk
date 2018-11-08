@@ -28,28 +28,43 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public interface ProgramStageSectionStore extends DeletableStore {
-    long insert(
-            @NonNull String uid, @Nullable String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable Integer sortOrder, @Nullable String programStage,
-            @Nullable ProgramStageSectionRenderingType desktopRenderType,
-            @Nullable ProgramStageSectionRenderingType mobileRenderType
-    );
+public final class ProgramStageSectionStore {
 
-    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
-               @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-               @Nullable Integer sortOrder, @Nullable String programStage,
-               @Nullable ProgramStageSectionRenderingType desktopRenderType,
-               @Nullable ProgramStageSectionRenderingType mobileRenderType,
-               @NonNull String whereProgramStageSectionUid);
+    private ProgramStageSectionStore() {}
 
-    int delete(String uid);
+    private static StatementBinder<ProgramStageSection> BINDER = new IdentifiableStatementBinder<ProgramStageSection>() {
+        @Override
+        public void bindToStatement(@NonNull ProgramStageSection o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.sortOrder());
+            sqLiteBind(sqLiteStatement, 8, o.programStage());
+            sqLiteBind(sqLiteStatement, 8, o.desktopRenderType());
+            sqLiteBind(sqLiteStatement, 8, o.mobileRenderType());
+        }
+    };
+
+    private static final CursorModelFactory<ProgramStageSection> FACTORY = new CursorModelFactory<ProgramStageSection>() {
+        @Override
+        public ProgramStageSection fromCursor(Cursor cursor) {
+            return ProgramStageSection.create(cursor);
+        }
+    };
+
+    public static IdentifiableObjectStore<ProgramStageSection> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageSectionTableInfo.TABLE_INFO,
+                BINDER, FACTORY);
+    }
 }

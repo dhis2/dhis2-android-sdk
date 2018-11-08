@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.IgnoreDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreProgramStageSectionRenderingColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ProgramStageSectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.List;
@@ -77,7 +77,7 @@ public abstract class ProgramStageSection  extends BaseIdentifiableObject implem
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreProgramStageSectionRenderingColumnAdapter.class)
+    @ColumnAdapter(ProgramStageSectionRenderingColumnAdapter.class)
     public abstract ProgramStageSectionRendering renderType();
 
     @Nullable

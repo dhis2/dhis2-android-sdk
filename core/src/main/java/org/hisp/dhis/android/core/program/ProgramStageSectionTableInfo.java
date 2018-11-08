@@ -50,10 +50,10 @@ public final class ProgramStageSectionTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
         static final String PROGRAM_STAGE = "programStage";
-        static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
-        static final String MOBILE_RENDER_TYPE = "mobileRenderType";
+        public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
+        public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
 
         @Override
         public String[] all() {

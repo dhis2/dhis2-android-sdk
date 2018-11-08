@@ -28,8 +28,35 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public final class IgnoreProgramStageSectionRenderingColumnAdapter
-        extends IgnoreColumnAdapter<ProgramStageSectionRendering> {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.program.ProgramStageSectionDeviceRendering;
+import org.hisp.dhis.android.core.program.ProgramStageSectionRendering;
+import org.hisp.dhis.android.core.program.ProgramStageSectionRenderingType;
+import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
+
+
+public class ProgramStageSectionRenderingColumnAdapter implements ColumnTypeAdapter<ProgramStageSectionRendering> {
+
+    @Override
+    public ProgramStageSectionRendering fromCursor(Cursor cursor, String columnName) {
+        int desktopTypeColumnIndex = cursor.getColumnIndex(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE);
+        int mobileTypeColumnIndex = cursor.getColumnIndex(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
+
+        String desktopType = cursor.getString(desktopTypeColumnIndex);
+        String mobileType = cursor.getString(mobileTypeColumnIndex);
+
+        return ProgramStageSectionRendering.create(
+                ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(desktopType)),
+                ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(mobileType)));
+    }
+
+    @Override
+    public void toContentValues(ContentValues values, String columnName, ProgramStageSectionRendering value) {
+        values.put(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, value.desktop().type().name());
+        values.put(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, value.mobile().type().name());
+    }
 }

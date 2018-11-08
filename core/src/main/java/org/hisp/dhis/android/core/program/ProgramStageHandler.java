@@ -93,8 +93,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
     protected void afterObjectHandled(ProgramStage programStage, HandleAction action) {
         programStageDataElementHandler.handleProgramStageDataElements(
                 programStage.programStageDataElements());
-        programStageSectionHandler.handleProgramStageSection(programStage.uid(),
-                programStage.programStageSections());
+        programStageSectionHandler.handleMany(programStage.programStageSections());
         styleHandler.handle(programStage.style(),
                 new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
         if (action == HandleAction.Update) {

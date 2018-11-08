@@ -43,7 +43,7 @@ public class Relationship30Should extends BaseObjectShould implements ObjectShou
     private RelationshipSamples samples = new RelationshipSamples();
 
     public Relationship30Should() {
-        super("relationship/relationship30.json");
+        super("relationship/relationship_30.json");
     }
 
     @Override

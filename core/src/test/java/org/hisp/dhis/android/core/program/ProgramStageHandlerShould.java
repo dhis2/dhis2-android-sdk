@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -103,7 +104,10 @@ public class ProgramStageHandlerShould {
     private DHISVersionManager versionManager;
 
     @Mock
-    private ProgramStage.Builder builder;
+    private ProgramStage.Builder programStageBuilder;
+
+    @Mock
+    private ProgramStageSection.Builder programStageSectionBuilder;
 
     // object to test
     private ProgramStageHandler programStageHandler;
@@ -136,10 +140,15 @@ public class ProgramStageHandlerShould {
         when(dataAccess.read()).thenReturn(true);
         when(access.data()).thenReturn(dataAccess);
         when(programStage.access()).thenReturn(access);
-        when(programStage.toBuilder()).thenReturn(builder);
-        when(builder.featureType(any(FeatureType.class))).thenReturn(builder);
-        when(builder.captureCoordinates(any(Boolean.class))).thenReturn(builder);
-        when(builder.build()).thenReturn(programStage);
+
+        when(programStage.toBuilder()).thenReturn(programStageBuilder);
+        when(programStageBuilder.featureType(any(FeatureType.class))).thenReturn(programStageBuilder);
+        when(programStageBuilder.captureCoordinates(any(Boolean.class))).thenReturn(programStageBuilder);
+        when(programStageBuilder.build()).thenReturn(programStage);
+
+        when(programStageSection.toBuilder()).thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.programStage(any(ObjectWithUid.class))).thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.build()).thenReturn(programStageSection);
     }
 
     @Test

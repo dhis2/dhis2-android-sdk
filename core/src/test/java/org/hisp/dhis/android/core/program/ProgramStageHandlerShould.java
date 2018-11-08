@@ -148,6 +148,10 @@ public class ProgramStageHandlerShould {
 
         when(programStageSection.toBuilder()).thenReturn(programStageSectionBuilder);
         when(programStageSectionBuilder.programStage(any(ObjectWithUid.class))).thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.desktopRenderType(any(ProgramStageSectionRenderingType.class)))
+                .thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.mobileRenderType(any(ProgramStageSectionRenderingType.class)))
+                .thenReturn(programStageSectionBuilder);
         when(programStageSectionBuilder.build()).thenReturn(programStageSection);
     }
 

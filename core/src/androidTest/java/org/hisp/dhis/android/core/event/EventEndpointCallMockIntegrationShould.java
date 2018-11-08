@@ -103,7 +103,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         verifyNumberOfDownloadedEvents(1);
         verifyNumberOfDownloadedTrackedEntityDataValue(6);
-        verifyDownloadedEvents("event_1_with_all_data_values.json");
+        verifyDownloadedEvents("event/event_1_with_all_data_values.json");
     }
 
     private void givenAMetadataInDatabase() throws Exception {

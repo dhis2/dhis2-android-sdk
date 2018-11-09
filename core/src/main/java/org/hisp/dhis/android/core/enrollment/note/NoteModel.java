@@ -35,18 +35,18 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class NoteModel extends BaseModel {
+public abstract class NoteModel extends BaseDataModel {
 
     public static final String TABLE = "Note";
 
-    public static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseDataModel.Columns {
         public static final String ENROLLMENT = "enrollment";
         public static final String VALUE = "value";
         public static final String STORED_BY = "storedBy";
@@ -55,7 +55,7 @@ public abstract class NoteModel extends BaseModel {
 
         @Override
         public String[] all() {
-            return Utils.appendInNewArray(super.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE, UID);
+            return Utils.appendInNewArray(super.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE, UID, STATE);
         }
 
         @Override
@@ -94,7 +94,7 @@ public abstract class NoteModel extends BaseModel {
     public abstract Date storedDate();
 
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder uid(String uid);
 
         public abstract Builder enrollment(String enrollment);

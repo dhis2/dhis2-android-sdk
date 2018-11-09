@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetFields;
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
-import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,7 +25,7 @@ public class CategoryComboUidsSeeker {
 
     public Set<String> seekUids() {
         List<String> tableNames = Arrays.asList(
-                ProgramModel.TABLE,
+                ProgramTableInfo.TABLE_INFO.name(),
                 DataSetTableInfo.TABLE_INFO.name(),
                 DataElementTableInfo.TABLE_INFO.name(),
                 DataSetElementLinkTableInfo.TABLE_INFO.name());

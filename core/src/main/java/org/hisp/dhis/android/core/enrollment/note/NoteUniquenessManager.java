@@ -56,7 +56,7 @@ public final class NoteUniquenessManager {
         for (Note note : notes) {
             uniqueNotes.add(note.toBuilder()
                     .id(null)
-                    .state(null)
+                    .state(State.SYNCED)
                     .build());
         }
 

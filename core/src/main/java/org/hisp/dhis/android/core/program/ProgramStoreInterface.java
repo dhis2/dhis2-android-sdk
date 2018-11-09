@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.List;
 
-public interface ProgramStoreInterface extends IdentifiableObjectStore<ProgramModel> {
+public interface ProgramStoreInterface extends IdentifiableObjectStore<Program> {
 
     List<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
 }

@@ -28,18 +28,39 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
+import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleVariableListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramSectionListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.RelationshipTypeWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.TrackedEntityTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -49,84 +70,103 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Program.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class Program extends BaseNameableObject implements ObjectWithStyle<Program, Program.Builder> {
+public abstract class Program extends BaseNameableObject implements Model, ObjectWithStyle<Program, Program.Builder> {
+
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
+    @JsonProperty()
     public abstract Integer version();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean onlyEnrollOnce();
 
     @Nullable
+    @JsonProperty()
     public abstract String enrollmentDateLabel();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean displayIncidentDate();
 
     @Nullable
+    @JsonProperty()
     public abstract String incidentDateLabel();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean registration();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean selectEnrollmentDatesInFuture();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean dataEntryMethod();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean ignoreOverdueEvents();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean relationshipFromA();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean selectIncidentDatesInFuture();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean captureCoordinates();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean useFirstStageDuringRegistration();
 
     @Nullable
+    @JsonProperty()
     public abstract Boolean displayFrontPageList();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(RelationshipTypeWithUidColumnAdapter.class)
     public abstract RelationshipType relationshipType();
 
-    String relationshipTypeUid() {
-        RelationshipType relationshipType = relationshipType();
-        return relationshipType == null ? null : relationshipType.uid();
-    }
-
     @Nullable
+    @JsonProperty()
     public abstract String relationshipText();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
     public abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(ProgramWithUidColumnAdapter.class)
     public abstract Program relatedProgram();
 
-    String relatedProgramUid() {
-        Program relatedProgram = relatedProgram();
-        return relatedProgram == null ? null : relatedProgram.uid();
-    }
-
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(TrackedEntityTypeWithUidColumnAdapter.class)
     public abstract TrackedEntityType trackedEntityType();
 
-    String trackedEntityTypeUid() {
-        TrackedEntityType trackedEntityType = trackedEntityType();
-        return trackedEntityType == null ? null : trackedEntityType.uid();
-    }
-
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(CategoryComboWithUidColumnAdapter.class)
     public abstract CategoryCombo categoryCombo();
 
     String categoryComboUid() {
@@ -135,48 +175,75 @@ public abstract class Program extends BaseNameableObject implements ObjectWithSt
     }
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(AccessColumnAdapter.class)
+    @ColumnName(ProgramTableInfo.Columns.ACCESS_DATA_WRITE)
     public abstract Access access();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreProgramIndicatorListColumnAdapter.class)
     public abstract List<ProgramIndicator> programIndicators();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> programStages();
 
     @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(IgnoreProgramRuleListColumnAdapter.class)
     public abstract List<ProgramRule> programRules();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
     public abstract List<ProgramRuleVariable> programRuleVariables();
 
     @Nullable
+    @JsonProperty()
     public abstract Integer expiryDays();
 
     @Nullable
+    @JsonProperty()
     public abstract Integer completeEventsExpiryDays();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType expiryPeriodType();
 
     @Nullable
+    @JsonProperty()
     public abstract Integer minAttributesRequiredToSearch();
 
     @Nullable
+    @JsonProperty()
     public abstract Integer maxTeiCountToReturn();
 
     @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
     public abstract List<ProgramSection> programSections();
 
-    public abstract Builder toBuilder();
-
     public static Builder builder() {
-        return new AutoValue_Program.Builder();
+        return new $$AutoValue_Program.Builder();
     }
+
+    static Program create(Cursor cursor) {
+        return $AutoValue_Program.createFromCursor(cursor);
+    }
+
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Program, Builder> {
+
+        public abstract Builder id(Long id);
 
         public abstract Builder version(Integer version);
 

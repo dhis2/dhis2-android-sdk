@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
 
 import java.util.Date;
 import java.util.List;
@@ -89,7 +90,7 @@ public abstract class Event implements ObjectWithDeleteInterface, ObjectWithUidI
     public static final Fields<Event> allFields = Fields.<Event>builder().fields(
             attributeOptionCombo, uid, created, lastUpdated, completeDate,
             coordinates, dueDate, enrollment, eventDate, eventStatus, organisationUnit, program, programStage,
-            deleted, trackedEntityDataValues.with(TrackedEntityDataValue.allFields)
+            deleted, trackedEntityDataValues.with(TrackedEntityDataValueFields.allFields)
     ).build();
 
     @JsonProperty(UID)

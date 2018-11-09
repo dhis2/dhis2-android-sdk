@@ -69,7 +69,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Program.Builder.class)
-@SuppressWarnings({"PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
 public abstract class Program extends BaseNameableObject implements Model, ObjectWithStyle<Program, Program.Builder> {
 
     // TODO move to base class after whole object refactor

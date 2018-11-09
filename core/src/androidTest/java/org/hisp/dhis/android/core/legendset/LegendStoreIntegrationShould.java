@@ -28,29 +28,37 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.support.test.runner.AndroidJUnit4;
 
-public class LegendModelBuilder extends ModelBuilder<Legend, LegendModel> {
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legend.LegendSamples;
+import org.junit.runner.RunWith;
 
-    private final LegendModel.Builder builder;
+@RunWith(AndroidJUnit4.class)
+public class LegendStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Legend> {
 
-    LegendModelBuilder(LegendSet legendSet) {
-        this.builder = LegendModel.builder()
-                .legendSet(legendSet.uid());
+    public LegendStoreIntegrationShould() {
+        super(LegendStore.create(DatabaseAdapterFactory.get(false)));
     }
 
     @Override
-    public LegendModel buildModel(Legend legend) {
-        return builder
-                .uid(legend.uid())
-                .code(legend.code())
-                .name(legend.name())
-                .displayName(legend.displayName())
-                .created(legend.created())
-                .lastUpdated(legend.lastUpdated())
-                .startValue(legend.startValue())
-                .endValue(legend.endValue())
-                .color(legend.color())
+    protected Legend buildObject() {
+        return LegendSamples.getLegend();
+    }
+
+    @Override
+    protected Legend buildObjectWithId() {
+        return LegendSamples.getLegend().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected Legend buildObjectToUpdate() {
+        return LegendSamples.getLegend().toBuilder()
+                .legendSet(ObjectWithUid.create("new_legend_set_uid"))
                 .build();
     }
 }

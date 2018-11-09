@@ -26,32 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.legend;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.legendset.Legend;
 
-public class ProgramIndicatorModelBuilder extends ModelBuilder<ProgramIndicator, ProgramIndicatorModel> {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    @Override
-    public ProgramIndicatorModel buildModel(ProgramIndicator programIndicator) {
-        return ProgramIndicatorModel.builder()
-                .uid(programIndicator.uid())
-                .code(programIndicator.code())
-                .name(programIndicator.name())
-                .displayName(programIndicator.displayName())
-                .created(programIndicator.created())
-                .lastUpdated(programIndicator.lastUpdated())
-                .shortName(programIndicator.shortName())
-                .displayShortName(programIndicator.displayShortName())
-                .description(programIndicator.description())
-                .displayDescription(programIndicator.displayDescription())
-                .displayInForm(programIndicator.displayInForm())
-                .expression(programIndicator.expression())
-                .dimensionItem(programIndicator.dimensionItem())
-                .filter(programIndicator.filter())
-                .decimals(programIndicator.decimals())
-                .aggregationType(programIndicator.aggregationType())
-                .program(programIndicator.program().uid())
-                .build();
+public class LegendSamples {
+
+    public static Legend getLegend() {
+        Legend.Builder legendBuilder = Legend.builder();
+
+        fillIdentifiableProperties(legendBuilder);
+        legendBuilder
+                .startValue(30.5)
+                .endValue(40.0)
+                .color("#d9f0a3")
+                .legendSet(ObjectWithUid.create("legend_set_uid"));
+        return legendBuilder.build();
     }
 }

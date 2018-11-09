@@ -32,6 +32,7 @@ import android.content.ContentValues;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.ValueType;
 
 public class CreateDataElementUtils {
@@ -77,6 +78,7 @@ public class CreateDataElementUtils {
         dataElement.put(DataElementModel.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
         dataElement.put(DataElementModel.Columns.DIMENSION, DIMENSION);
         dataElement.put(DataElementModel.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
+        dataElement.put(DataElementModel.Columns.CATEGORY_COMBO, CategoryComboModel.DEFAULT_UID);
         if (optionSetId == null) {
             dataElement.putNull(DataElementModel.Columns.OPTION_SET);
         } else {

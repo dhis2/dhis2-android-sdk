@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 public final class DataSetFields {
 
     static final String PERIOD_TYPE = "periodType";
-    static final String CATEGORY_COMBO = "categoryCombo";
+    public static final String CATEGORY_COMBO = "categoryCombo";
     static final String MOBILE = "mobile";
     static final String VERSION = "version";
     static final String EXPIRY_DAYS = "expiryDays";

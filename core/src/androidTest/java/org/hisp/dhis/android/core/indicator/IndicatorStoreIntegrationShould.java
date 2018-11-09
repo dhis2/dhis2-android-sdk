@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
@@ -61,9 +60,5 @@ public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbst
         return IndicatorSamples.getIndicator().toBuilder()
                 .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
                 .build();
-    }
-
-    @Test
-    public void stub() throws Exception {
     }
 }

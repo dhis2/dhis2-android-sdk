@@ -52,12 +52,14 @@ public final class CategoryOptionTableInfo {
     };
 
     static class Columns extends BaseNameableObjectModel.Columns {
+        static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     CategoryOptionFields.START_DATE,
-                    CategoryOptionFields.END_DATE
+                    CategoryOptionFields.END_DATE,
+                    ACCESS_DATA_WRITE
             );
         }
     }

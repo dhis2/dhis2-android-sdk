@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
@@ -74,7 +73,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject {
     static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder().fields(
             uid, code, name, displayName, created, lastUpdated, sortOrder, deleted,
             dataElements.with(DataElementFields.uid),
-            programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(ObjectWithUid.uid)),
+            programIndicators.with(ProgramIndicatorFields.uid, ProgramIndicatorFields.programWithUid),
             renderType).build();
 
     @Nullable

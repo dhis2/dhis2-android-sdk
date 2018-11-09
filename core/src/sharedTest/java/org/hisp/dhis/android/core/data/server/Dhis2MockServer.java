@@ -103,8 +103,6 @@ public class Dhis2MockServer {
         enqueueMockResponse("system_info.json");
         enqueueMockResponse("system_setting.json");
         enqueueMockResponse(userPath);
-        enqueueMockResponse("categories.json");
-        enqueueMockResponse("category_combos.json");
         enqueueMockResponse("programs.json");
         enqueueMockResponse("program_stages.json");
         enqueueMockResponse("program_rules.json");
@@ -115,6 +113,8 @@ public class Dhis2MockServer {
         enqueueMockResponse("data_elements.json");
         enqueueMockResponse("indicators.json");
         enqueueMockResponse("indicator_types.json");
+        enqueueMockResponse("category_combos.json");
+        enqueueMockResponse("categories.json");
         enqueueMockResponse(orgUnitPath);
     }
 

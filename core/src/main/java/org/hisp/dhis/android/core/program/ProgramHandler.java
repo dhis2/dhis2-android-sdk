@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
@@ -46,7 +47,7 @@ import java.util.Collection;
 public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramModel> {
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
-    private final GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler;
+    private final SyncHandler<ProgramIndicator> programIndicatorHandler;
     private final IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
     private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
             programTrackedEntityAttributeHandler;
@@ -57,7 +58,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
 
     ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
                    ProgramRuleVariableHandler programRuleVariableHandler,
-                   GenericHandler<ProgramIndicator, ProgramIndicatorModel> programIndicatorHandler,
+                   SyncHandler<ProgramIndicator> programIndicatorHandler,
                    IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler,
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
                            programTrackedEntityAttributeHandler,
@@ -94,7 +95,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     protected void afterObjectHandled(Program program, HandleAction action) {
         programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes(),
                 new ProgramTrackedEntityAttributeModelBuilder());
-        programIndicatorHandler.handleMany(program.programIndicators(), new ProgramIndicatorModelBuilder());
+        programIndicatorHandler.handleMany(program.programIndicators());
         programRuleHandler.handleMany(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());

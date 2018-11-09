@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -79,7 +79,7 @@ public class ProgramIndicatorEngineShould {
     private EnrollmentModel enrollmentModel;
 
     @Mock
-    private ProgramIndicatorModel programIndicator;
+    private ProgramIndicator programIndicator;
 
     @Mock
     private TrackedEntityDataValue value1;
@@ -118,7 +118,7 @@ public class ProgramIndicatorEngineShould {
     private String constantUid1 = "gzlRs2HEGAf";
 
     @Mock
-    private IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
+    private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
     @Mock
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
     @Mock

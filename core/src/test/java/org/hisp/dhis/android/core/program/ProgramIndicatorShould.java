@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,47 +39,15 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramIndicatorShould {
+public class ProgramIndicatorShould extends BaseObjectShould implements ObjectShould {
+
+    public ProgramIndicatorShould() {
+        super("program/program_indicator.json");
+    }
+
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        ProgramIndicator programIndicator = objectMapper.readValue("{\n" +
-                "\"lastUpdated\": \"2015-09-21T23:47:57.820\",\n" +
-                "\"id\": \"GSae40Fyppf\",\n" +
-                "\"href\": \"https://play.dhis2.org/dev/api/programIndicators/GSae40Fyppf\",\n" +
-                "\"created\": \"2015-09-21T23:35:50.945\",\n" +
-                "\"name\": \"Age at visit\",\n" +
-                "\"shortName\": \"Age\",\n" +
-                "\"aggregationType\": \"AVERAGE\",\n" +
-                "\"displayName\": \"Age at visit\",\n" +
-                "\"displayInForm\": true,\n" +
-                "\"publicAccess\": \"rw------\",\n" +
-                "\"description\": \"Age at visit\",\n" +
-                "\"displayShortName\": \"Age\",\n" +
-                "\"externalAccess\": false,\n" +
-                "\"displayDescription\": \"Age at visit\",\n" +
-                "\"expression\": \"d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})\",\n" +
-                "\"dimensionItem\": \"GSae40Fyppf\",\n" +
-                "\"dimensionItemType\": \"PROGRAM_INDICATOR\",\n" +
-                "\"access\": {\n" +
-                "\"read\": true,\n" +
-                "\"updateWithSection\": true,\n" +
-                "\"externalize\": false,\n" +
-                "\"delete\": true,\n" +
-                "\"write\": true,\n" +
-                "\"manage\": true\n" +
-                "},\n" +
-                "\"program\": {\n" +
-                "\"id\": \"uy2gU8kT1jF\"\n" +
-                "},\n" +
-                "\"user\": {\n" +
-                "\"id\": \"xE7jOejl9FI\"\n" +
-                "},\n" +
-                "\"translations\": [],\n" +
-                "\"programIndicatorGroups\": [],\n" +
-                "\"userGroupAccesses\": [],\n" +
-                "\"attributeValues\": []\n" +
-                "}", ProgramIndicator.class);
+        ProgramIndicator programIndicator = objectMapper.readValue(jsonStream, ProgramIndicator.class);
 
         assertThat(programIndicator.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-21T23:35:50.945"));

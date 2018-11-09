@@ -99,7 +99,7 @@ final class ProgramFields {
                     fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
                     fh.nestedFieldWithUid(CATEGORY_COMBO),
                     fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
-                    fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicator.allFields),
+                    fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicatorFields.allFields),
                     fh.nestedFieldWithUid(PROGRAM_STAGES),
                     fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES).with(ProgramRuleVariable.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),

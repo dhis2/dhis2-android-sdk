@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class LegendHandler {
 
     private LegendHandler() {}
 
-    public static GenericHandler<Legend, LegendModel> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableHandlerImpl<>(LegendStore.create(databaseAdapter));
+    public static SyncHandlerWithTransformer<Legend> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableSyncHandlerImpl<>(LegendStore.create(databaseAdapter));
     }
 }

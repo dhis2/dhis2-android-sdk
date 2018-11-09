@@ -28,11 +28,16 @@
 
 package org.hisp.dhis.android.core.utils.services;
 
+import android.content.ContentValues;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -41,7 +46,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
@@ -52,7 +57,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,8 +103,8 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         OrganisationUnitModel orgunit = OrganisationUnitModel.builder().uid(orgunitUid).build();
         OrganisationUnitStore.create(databaseAdapter()).insert(orgunit);
 
-        TrackedEntityTypeModel trackedEntityTypeModel = TrackedEntityTypeModel.builder().uid(teiTypeUid).build();
-        TrackedEntityTypeStore.create(databaseAdapter()).insert(trackedEntityTypeModel);
+        TrackedEntityType trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build();
+        TrackedEntityTypeStore.create(databaseAdapter()).insert(trackedEntityType);
 
         TrackedEntityInstanceStore teiStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         teiStore.insert(teiUid, new Date(), new Date(), null, null, orgunitUid, teiTypeUid, null, null,
@@ -117,6 +122,8 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         programStageStore.insert(stage1);
         programStageStore.insert(stage2);
 
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
         DataElement de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build();
         DataElement de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build();
         IdentifiableObjectStore<DataElement> dataElementStore = DataElementStore.create(databaseAdapter());
@@ -266,8 +273,8 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     private void insertProgramIndicator(String expression, AggregationType aggregationType) {
-        ProgramIndicatorModel programIndicator = ProgramIndicatorModel.builder().uid(programIndicatorUid)
-                .program(programUid).expression(expression).aggregationType(aggregationType).build();
+        ProgramIndicator programIndicator = ProgramIndicator.builder().uid(programIndicatorUid)
+                .program(ObjectWithUid.create(programUid)).expression(expression).aggregationType(aggregationType).build();
         ProgramIndicatorStore.create(databaseAdapter()).insert(programIndicator);
     }
 

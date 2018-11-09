@@ -25,23 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category;
 
-package org.hisp.dhis.android.core.legendset;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+public final class CategoryParentUidsHelper {
 
-public class LegendSetModelBuilder extends ModelBuilder<LegendSet, LegendSetModel> {
+    private CategoryParentUidsHelper() {
+    }
 
-    @Override
-    public LegendSetModel buildModel(LegendSet legendSet) {
-        return LegendSetModel.builder()
-                .uid(legendSet.uid())
-                .code(legendSet.code())
-                .name(legendSet.name())
-                .displayName(legendSet.displayName())
-                .created(legendSet.created())
-                .lastUpdated(legendSet.lastUpdated())
-                .symbolizer(legendSet.symbolizer())
-                .build();
+    public static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
+        Set<String> uids = new HashSet<>();
+        for (CategoryCombo categoryCombo : categoryCombos) {
+            List<Category> categories = categoryCombo.categories();
+            if (categories != null) {
+                for (Category category : categories) {
+                    uids.add(category.uid());
+                }
+            }
+        }
+        return uids;
     }
 }

@@ -26,57 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.IdentifiableModelBuilderAbstractShould;
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.junit.Before;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-import java.io.IOException;
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityTypeStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityType> {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CODE;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.DISPLAY_NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
-
-@RunWith(JUnit4.class)
-public class LegendSetModelBuilderShould extends IdentifiableModelBuilderAbstractShould<LegendSet, LegendSetModel> {
-
-    @Override
-    @Before
-    public void setUp() throws IOException {
-        super.setUp();
+    public TrackedEntityTypeStoreIntegrationShould() {
+        super(TrackedEntityTypeStore.create(DatabaseAdapterFactory.get(false)));
     }
 
     @Override
-    protected LegendSet buildPojo() {
-        return LegendSet.create(
-                UID,
-                CODE,
-                NAME,
-                DISPLAY_NAME,
-                CREATED,
-                LAST_UPDATED,
-                false,
-                "color",
-                Lists.<Legend>newArrayList()
-        );
+    protected TrackedEntityType buildObject() {
+        return TrackedEntityTypeSamples.get();
     }
 
     @Override
-    protected ModelBuilder<LegendSet, LegendSetModel> modelBuilder() {
-        return new LegendSetModelBuilder();
+    protected TrackedEntityType buildObjectWithId() {
+        return TrackedEntityTypeSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityType buildObjectToUpdate() {
+        return TrackedEntityTypeSamples.get().toBuilder()
+                .description("new_description")
+                .build();
     }
 
     @Test
-    public void copy_pojo_legend_set_properties() {
-        assertThat(model.symbolizer()).isEqualTo(pojo.symbolizer());
+    public void stub() throws Exception {
     }
 }

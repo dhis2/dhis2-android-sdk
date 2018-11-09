@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -45,6 +46,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,6 +84,8 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageDataElement> programStageDataElements;
 
     @Mock
+    private ProgramStageSection programStageSection;
+
     private List<ProgramStageSection> programStageSections;
 
     @Mock
@@ -100,7 +104,10 @@ public class ProgramStageHandlerShould {
     private DHISVersionManager versionManager;
 
     @Mock
-    private ProgramStage.Builder builder;
+    private ProgramStage.Builder programStageBuilder;
+
+    @Mock
+    private ProgramStageSection.Builder programStageSectionBuilder;
 
     // object to test
     private ProgramStageHandler programStageHandler;
@@ -114,13 +121,17 @@ public class ProgramStageHandlerShould {
         programStageModelBuilder = new ProgramStageModelBuilder();
 
         programStageHandler = new ProgramStageHandler(
-                programStageStore, programStageSectionHandler,
+                programStageStore,
+                programStageSectionHandler,
                 programStageDataElementHandler,
                 styleHandler,
                 programStageDataElementCleaner,
                 programStageSectionCleaner,
                 collectionCleaner,
                 versionManager);
+
+        programStageSections = new ArrayList<>();
+        programStageSections.add(programStageSection);
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
@@ -129,10 +140,19 @@ public class ProgramStageHandlerShould {
         when(dataAccess.read()).thenReturn(true);
         when(access.data()).thenReturn(dataAccess);
         when(programStage.access()).thenReturn(access);
-        when(programStage.toBuilder()).thenReturn(builder);
-        when(builder.featureType(any(FeatureType.class))).thenReturn(builder);
-        when(builder.captureCoordinates(any(Boolean.class))).thenReturn(builder);
-        when(builder.build()).thenReturn(programStage);
+
+        when(programStage.toBuilder()).thenReturn(programStageBuilder);
+        when(programStageBuilder.featureType(any(FeatureType.class))).thenReturn(programStageBuilder);
+        when(programStageBuilder.captureCoordinates(any(Boolean.class))).thenReturn(programStageBuilder);
+        when(programStageBuilder.build()).thenReturn(programStage);
+
+        when(programStageSection.toBuilder()).thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.programStage(any(ObjectWithUid.class))).thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.desktopRenderType(any(ProgramStageSectionRenderingType.class)))
+                .thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.mobileRenderType(any(ProgramStageSectionRenderingType.class)))
+                .thenReturn(programStageSectionBuilder);
+        when(programStageSectionBuilder.build()).thenReturn(programStageSection);
     }
 
     @Test
@@ -145,8 +165,7 @@ public class ProgramStageHandlerShould {
     @Test
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage, programStageModelBuilder);
-        verify(programStageSectionHandler).handleProgramStageSection("test_program_stage_uid",
-                programStageSections);
+        verify(programStageSectionHandler).handleMany(programStageSections);
     }
 
     @Test

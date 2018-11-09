@@ -33,9 +33,11 @@ import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -90,17 +92,34 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
     }
 
     @Override
-    protected void afterObjectHandled(ProgramStage programStage, HandleAction action) {
+    protected void afterObjectHandled(final ProgramStage programStage, HandleAction action) {
         programStageDataElementHandler.handleProgramStageDataElements(
                 programStage.programStageDataElements());
-        programStageSectionHandler.handleProgramStageSection(programStage.uid(),
-                programStage.programStageSections());
+        programStageSectionHandler.handleMany(programStage.programStageSections(),
+                new ModelBuilder<ProgramStageSection, ProgramStageSection>() {
+                    @Override
+                    public ProgramStageSection buildModel(ProgramStageSection programStageSection) {
+                        return programStageSection.toBuilder()
+                                .programStage(ObjectWithUid.create(programStage.uid()))
+                                .desktopRenderType(desktopRenderType(programStageSection.renderType()))
+                                .mobileRenderType(mobileRenderType(programStageSection.renderType()))
+                                .build();
+                    }
+                });
         styleHandler.handle(programStage.style(),
                 new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
         if (action == HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());
             programStageSectionCleaner.deleteOrphan(programStage, programStage.programStageSections());
         }
+    }
+
+    private ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering renderType) {
+        return renderType == null || renderType.desktop() == null ? null : renderType.desktop().type();
+    }
+
+    private ProgramStageSectionRenderingType mobileRenderType(ProgramStageSectionRendering renderType) {
+        return renderType == null || renderType.mobile() == null ? null : renderType.mobile().type();
     }
 
     @Override

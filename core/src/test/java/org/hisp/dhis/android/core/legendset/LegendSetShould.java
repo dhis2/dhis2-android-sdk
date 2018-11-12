@@ -41,7 +41,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class LegendSetShould extends BaseObjectShould implements ObjectShould {
 
     public LegendSetShould() {
-        super("legendset/legendSet.json");
+        super("legendset/legend_set.json");
     }
 
     @Override

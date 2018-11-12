@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
 import org.hisp.dhis.android.core.data.file.IFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.junit.After;
 import org.junit.Before;
@@ -76,8 +76,8 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
 
         MockResponse mockResponse = new MockResponse();
 
-        IFileReader fileReader = new AssetsFileReader();
-        String body = fileReader.getStringFromFile("system_info.json");
+        IFileReader fileReader = new ResourcesFileReader();
+        String body = fileReader.getStringFromFile("systeminfo/system_info.json");
         mockResponse.setBody(body);
 
         mockWebServer.enqueue(mockResponse);

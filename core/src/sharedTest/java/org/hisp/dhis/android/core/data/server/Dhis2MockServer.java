@@ -82,39 +82,38 @@ public class Dhis2MockServer {
     }
 
     public void enqueueLoginResponses() throws IOException {
-        enqueueMockResponse("login.json");
-        enqueueMockResponse("system_info.json");
+        enqueueMockResponse("user/login.json");
+        enqueueMockResponse("systeminfo/system_info.json");
     }
 
     public void enqueueMetadataResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
-                "user.json",
-                "organisationUnits.json");
+                "user/user.json",
+                "organisationunit/organisation_units.json");
     }
-
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
-                "admin/user.json",
-                "admin/organisation_units.json");
+                "user/admin_user.json",
+                "organisationunits/admin_organisation_units.json");
     }
 
     private void enqueueMetadataResponsesWithUserAndOrgUnits(String userPath, String orgUnitPath)
             throws IOException {
-        enqueueMockResponse("system_info.json");
-        enqueueMockResponse("system_setting.json");
+        enqueueMockResponse("systeminfo/system_info.json");
+        enqueueMockResponse("settings/system_setting.json");
         enqueueMockResponse(userPath);
-        enqueueMockResponse("programs.json");
-        enqueueMockResponse("program_stages.json");
-        enqueueMockResponse("program_rules.json");
-        enqueueMockResponse("tracked_entity_types.json");
-        enqueueMockResponse("relationship_types.json");
-        enqueueMockResponse("option_sets.json");
-        enqueueMockResponse("data_sets.json");
-        enqueueMockResponse("data_elements.json");
-        enqueueMockResponse("indicators.json");
-        enqueueMockResponse("indicator_types.json");
-        enqueueMockResponse("category_combos.json");
-        enqueueMockResponse("categories.json");
+        enqueueMockResponse("program/programs.json");
+        enqueueMockResponse("program/program_stages.json");
+        enqueueMockResponse("program/program_rules.json");
+        enqueueMockResponse("trackedentity/tracked_entity_types.json");
+        enqueueMockResponse("relationship/relationship_types.json");
+        enqueueMockResponse("option/option_sets.json");
+        enqueueMockResponse("dataset/data_sets.json");
+        enqueueMockResponse("dataelement/data_elements.json");
+        enqueueMockResponse("indicators/indicators.json");
+        enqueueMockResponse("indicators/indicator_types.json");
+        enqueueMockResponse("categories/category_combos.json");
+        enqueueMockResponse("categories/categories.json");
         enqueueMockResponse(orgUnitPath);
     }
 

@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.junit.After;
@@ -68,7 +68,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         String response = "{\n" +
                 "\n" +

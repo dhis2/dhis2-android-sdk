@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -41,7 +41,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
 
@@ -62,11 +62,11 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("tracked_entity_instance.json", teiUid);
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
     }
 
     @Test
@@ -79,18 +79,18 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
         trackedEntityInstanceByUidEndPointCall = d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance_with_removed_data.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("tracked_entity_instance_with_removed_data.json",
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_with_removed_data.json",
                 teiUid);
     }
 
@@ -110,7 +110,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
     private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
             throws IOException {
-        String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
+        String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
                 BaseIdentifiableObject.DATE_FORMAT.raw());

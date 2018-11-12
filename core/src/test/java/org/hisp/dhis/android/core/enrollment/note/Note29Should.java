@@ -40,7 +40,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class Note29Should extends BaseObjectShould implements ObjectShould {
 
     public Note29Should() {
-        super("note29.json");
+        super("enrollment/note/note_29.json");
     }
 
     @Override

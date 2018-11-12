@@ -28,46 +28,37 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import java.text.ParseException;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+public class NoteToPostTransformer implements Transformer<Note> {
 
-@AutoValue
-public abstract class Note229Compatible {
-    private final static String VALUE = "value";
-    private final static String STORED_BY = "storedBy";
-    private final static String STORED_DATE = "storedDate";
+    private final DHISVersionManager versionManager;
 
-    private static final Field<Note229Compatible, String> value = Field.create(VALUE);
-    private static final Field<Note229Compatible, String> storedBy = Field.create(STORED_BY);
-    private static final Field<Note229Compatible, String> storedDate= Field.create(STORED_DATE);
+    public NoteToPostTransformer(DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
+    }
 
-    public static final Fields<Note229Compatible> allFields = Fields.<Note229Compatible>builder().fields(
-            value, storedBy, storedDate).build();
+    @Override
+    public Note transform(Note note) {
 
-    @Nullable
-    @JsonProperty(VALUE)
-    public abstract String value();
+        Note.Builder noteBuilder = note.toBuilder();
 
-    @Nullable
-    @JsonProperty(STORED_BY)
-    public abstract String storedBy();
+        try {
+            if (this.versionManager.is2_29()) {
+                noteBuilder.storedDate(BaseIdentifiableObject.dateToSpaceDateStr(
+                        BaseIdentifiableObject.parseDate(note.storedDate())))
+                .uid(null);
+            }
+        } catch (ParseException ignored) {
+            noteBuilder
+                    .storedDate(null)
+                    .uid(null);
+        }
 
-    @Nullable
-    @JsonProperty(STORED_DATE)
-    public abstract String storedDate();
-
-    @JsonCreator
-    public static Note229Compatible create(
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(STORED_BY) String storedBy,
-            @JsonProperty(STORED_DATE) String storedDate) {
-
-        return new AutoValue_Note229Compatible(value, storedBy, storedDate);
+        return noteBuilder.build();
     }
 }

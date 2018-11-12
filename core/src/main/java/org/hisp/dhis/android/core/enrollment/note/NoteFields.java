@@ -28,38 +28,29 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.PojoBuilder;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import java.text.ParseException;
+public final class NoteFields {
 
-public class NoteBuilder extends PojoBuilder<Note229Compatible, NoteModel> {
+    final static String UID = "note";
+    final static String VALUE = "value";
+    final static String STORED_BY = "storedBy";
+    final static String STORED_DATE = "storedDate";
 
-    private final DHISVersionManager versionManager;
+    private static final FieldsHelper<Note> fh = new FieldsHelper<>();
 
-    public NoteBuilder(DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
-    }
+    public static final Field<Note, String> uid = fh.uid();
 
-    @Override
-    public Note229Compatible buildPojo(NoteModel model) {
+    public static final Fields<Note> all = Fields.<Note>builder()
+            .fields(
+                    fh.<String>field(UID),
+                    fh.<String>field(VALUE),
+                    fh.<String>field(STORED_BY),
+                    fh.<String>field(STORED_DATE)
+            ).build();
 
-        String date;
-        try {
-            if (this.versionManager.is2_29()) {
-                date = BaseIdentifiableObject.dateToSpaceDateStr(model.storedDate());
-            } else {
-                date = BaseIdentifiableObject.dateToDateStr(model.storedDate());
-            }
-        } catch (ParseException ignored) {
-            date = null;
-        }
-
-        return Note229Compatible.create(
-                model.value(),
-                model.storedBy(),
-                date
-        );
+    private NoteFields() {
     }
 }

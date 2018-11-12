@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
-import org.hisp.dhis.android.core.enrollment.note.Note229Compatible;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -305,7 +305,7 @@ public class EnrollmentStoreImpl extends StoreWithStateImpl implements Enrollmen
                             uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                             organisationUnit, program, enrollmentDate, incidentDate, followUp,
                             status, trackedEntityInstance, coordinates, deleted, null,
-                            Collections.<Note229Compatible>emptyList()
+                            Collections.<Note>emptyList()
                     ));
                 }
                 while (cursor.moveToNext());

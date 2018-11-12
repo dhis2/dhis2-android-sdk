@@ -28,29 +28,48 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import java.io.IOException;
 import java.text.ParseException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+public class NoteToStoreTransformer implements Transformer<Note> {
 
-public class Note30Should extends BaseObjectShould implements ObjectShould {
+    private final Note.Builder builder;
+    private final DHISVersionManager versionManager;
 
-    public Note30Should() {
-        super("note30.json");
+    public NoteToStoreTransformer(Enrollment enrollment, DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
+        this.builder = Note.builder()
+                .enrollment(enrollment.uid());
     }
 
     @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
+    public Note transform(Note note) {
 
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+        try {
+            if (this.versionManager.is2_29()) {
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
+                        .uid(null);
+            } else {
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseDate(note.storedDate())))
+                        .uid(note.uid());
+            }
+        } catch (ParseException ignored) {
+            builder
+                    .storedDate(null)
+                    .uid(null);
+        }
+
+        return builder
+                .value(note.value())
+                .storedBy(note.storedBy())
+                .build();
     }
 }

@@ -1,8 +1,12 @@
 package org.hisp.dhis.android.core.enrollment;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -34,13 +38,19 @@ public class EnrollmentHandlerShould {
     private EventHandler eventHandler;
 
     @Mock
+    private SyncHandler<Note> noteHandler;
+
+    @Mock
+    private ObjectWithoutUidStore<Note> noteStore;
+
+    @Mock
     private Enrollment enrollment;
 
     @Mock
     private Event event;
 
     @Mock
-    private DatabaseAdapter databaseAdapter;
+    private Note note;
 
     @Mock
     private DHISVersionManager versionManager;
@@ -56,9 +66,11 @@ public class EnrollmentHandlerShould {
         MockitoAnnotations.initMocks(this);
         when(enrollment.uid()).thenReturn("test_enrollment_uid");
         when(enrollment.events()).thenReturn(Collections.singletonList(event));
+        when(enrollment.notes()).thenReturn(Collections.singletonList(note));
+        when(note.storedDate()).thenReturn(FillPropertiesTestUtils.LAST_UPDATED_STR);
 
-        enrollmentHandler = new EnrollmentHandler(databaseAdapter, versionManager, enrollmentStore, eventHandler,
-                eventCleaner);
+        enrollmentHandler = new EnrollmentHandler(versionManager, enrollmentStore, eventHandler,
+                eventCleaner, noteHandler, noteStore);
     }
 
     @Test

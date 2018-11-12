@@ -28,29 +28,53 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.io.IOException;
-import java.text.ParseException;
+public final class NoteTableInfo {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class Note30Should extends BaseObjectShould implements ObjectShould {
-
-    public Note30Should() {
-        super("note30.json");
+    private NoteTableInfo() {
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+        @Override
+        public String name() {
+            return "Note";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseModel.Columns {
+        public final static String ENROLLMENT = "enrollment";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ENROLLMENT,
+                    NoteFields.VALUE,
+                    NoteFields.STORED_BY,
+                    NoteFields.STORED_DATE,
+                    BaseIdentifiableObjectModel.Columns.UID,
+                    BaseDataModel.Columns.STATE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{
+                    ENROLLMENT,
+                    NoteFields.VALUE,
+                    NoteFields.STORED_BY,
+                    NoteFields.STORED_DATE
+            };
+        }
     }
 }

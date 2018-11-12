@@ -28,73 +28,61 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.utils.Utils;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
-public abstract class NoteModel extends BaseDataModel {
-
-    public static final String TABLE = "Note";
-
-    public static class Columns extends BaseDataModel.Columns {
-        public static final String ENROLLMENT = "enrollment";
-        public static final String VALUE = "value";
-        public static final String STORED_BY = "storedBy";
-        public static final String STORED_DATE = "storedDate";
-        public static final String UID = "uid";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(), ENROLLMENT, VALUE, STORED_BY, STORED_DATE, UID, STATE);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{ENROLLMENT, VALUE, STORED_BY, STORED_DATE, UID};
-        }
-    }
-
-    public static NoteModel create(Cursor cursor) {
-        return AutoValue_NoteModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $AutoValue_NoteModel.Builder();
-    }
+@JsonDeserialize(builder = AutoValue_Note.Builder.class)
+public abstract class Note extends BaseDataModel implements ObjectWithUidInterface {
 
     @Nullable
-    @ColumnName(Columns.UID)
+    @JsonProperty(NoteFields.UID)
     public abstract String uid();
 
     @Nullable
-    @ColumnName(Columns.ENROLLMENT)
+    @JsonIgnore()
     public abstract String enrollment();
 
     @Nullable
-    @ColumnName(Columns.VALUE)
+    @JsonProperty()
     public abstract String value();
 
     @Nullable
-    @ColumnName(Columns.STORED_BY)
+    @JsonProperty()
     public abstract String storedBy();
 
     @Nullable
-    @ColumnName(Columns.STORED_DATE)
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date storedDate();
+    @JsonProperty()
+    public abstract String storedDate();
+
+    public static Builder builder() {
+        return new $$AutoValue_Note.Builder();
+    }
+
+    static Note create(Cursor cursor) {
+        return $AutoValue_Note.createFromCursor(cursor);
+    }
+
+    public abstract ContentValues toContentValues();
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        @JsonProperty(NoteFields.UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder enrollment(String enrollment);
@@ -103,8 +91,8 @@ public abstract class NoteModel extends BaseDataModel {
 
         public abstract Builder storedBy(String storedBy);
 
-        public abstract Builder storedDate(Date storedDate);
+        public abstract Builder storedDate(String storedDate);
 
-        public abstract NoteModel build();
+        public abstract Note build();
     }
 }

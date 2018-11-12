@@ -28,29 +28,44 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.State;
 
-import java.io.IOException;
-import java.text.ParseException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+public final class NoteUniquenessManager {
 
-public class Note30Should extends BaseObjectShould implements ObjectShould {
-
-    public Note30Should() {
-        super("note30.json");
+    private NoteUniquenessManager() {
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        Note note = objectMapper.readValue(jsonStream, Note.class);
+    public static Set<Note> buildUniqueCollection(Collection<Note> notes,
+                                                  String enrollmentUid,
+                                                  ObjectWithoutUidStore<Note> noteStore) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
+                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
+        List<Note> toPostNotes = noteStore.selectWhereClause(whereClause);
+        noteStore.delete();
 
-        assertThat(note.uid()).isEqualTo("noteUid");
-        assertThat(note.value()).isEqualTo("Note");
-        assertThat(note.storedBy()).isEqualTo("android");
-        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+        Set<Note> uniqueNotes = new HashSet<>();
+        for (Note note : notes) {
+            uniqueNotes.add(note.toBuilder()
+                    .id(null)
+                    .state(State.SYNCED)
+                    .build());
+        }
+
+        for (Note toPostNote : toPostNotes) {
+            uniqueNotes.add(toPostNote.toBuilder()
+                    .id(null)
+                    .build());
+        }
+
+        return uniqueNotes;
     }
 }

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core;
 
 import android.content.Context;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
@@ -92,14 +91,7 @@ public final class D2 {
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
        @NonNull Context context) {
 
-        if (BuildConfig.DEBUG) {
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build());
-        } else {
+        if (!BuildConfig.DEBUG) {
             /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
             when running the StrictMode above. That's why it's in the else clause */
             SSLContextInitializer.initializeSSLContext(context);

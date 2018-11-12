@@ -35,12 +35,12 @@ import java.util.Date;
 
 public final class TrackedEntityDataValueFields {
 
-    private final static String DATA_ELEMENT = "dataElement";
-    private final static String STORED_BY = "storedBy";
-    private final static String VALUE = "value";
-    private final static String CREATED = "created";
-    private final static String LAST_UPDATED = "lastUpdated";
-    private final static String PROVIDED_ELSEWHERE = "providedElsewhere";
+    final static String DATA_ELEMENT = "dataElement";
+    final static String STORED_BY = "storedBy";
+    final static String VALUE = "value";
+    final static String CREATED = "created";
+    final static String LAST_UPDATED = "lastUpdated";
+    final static String PROVIDED_ELSEWHERE = "providedElsewhere";
 
     private static final FieldsHelper<TrackedEntityDataValue> fh = new FieldsHelper<>();
 

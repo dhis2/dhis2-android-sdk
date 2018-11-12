@@ -26,13 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import android.database.Cursor;
 
-import java.util.List;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 
-public interface ProgramStoreInterface extends IdentifiableObjectStore<Program> {
+public class RelationshipTypeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<RelationshipType> {
 
-    List<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
+    @Override
+    public RelationshipType fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return RelationshipType.builder().uid(uid).build();
+    }
 }

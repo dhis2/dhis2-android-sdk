@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
@@ -44,7 +43,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
 
-public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramModel> {
+public class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
@@ -56,7 +55,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
 
-    ProgramHandler(IdentifiableObjectStore<ProgramModel> programStore,
+    ProgramHandler(IdentifiableObjectStore<Program> programStore,
                    ProgramRuleVariableHandler programRuleVariableHandler,
                    SyncHandler<ProgramIndicator> programIndicatorHandler,
                    IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler,
@@ -87,7 +86,7 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
                 ProgramSectionHandler.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter),
                 ProgramOrphanCleaner.create(databaseAdapter),
-                new CollectionCleanerImpl<Program>(ProgramModel.TABLE, databaseAdapter)
+                new CollectionCleanerImpl<Program>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter)
         );
     }
 
@@ -99,7 +98,8 @@ public class ProgramHandler extends IdentifiableHandlerImpl<Program, ProgramMode
         programRuleHandler.handleMany(program.programRules());
         programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());
-        styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(), ProgramModel.TABLE));
+        styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(),
+                ProgramTableInfo.TABLE_INFO.name()));
 
         if (action == HandleAction.Update) {
             orphanCleaner.deleteOrphan(program);

@@ -28,11 +28,36 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.util.List;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramSamples;
+import org.junit.runner.RunWith;
 
-public interface ProgramStoreInterface extends IdentifiableObjectStore<Program> {
+@RunWith(AndroidJUnit4.class)
+public class ProgramStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Program> {
 
-    List<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
+    public ProgramStoreIntegrationShould() {
+        super(ProgramStore.create(DatabaseAdapterFactory.get(false)));
+    }
+
+    @Override
+    protected Program buildObject() {
+        return ProgramSamples.getProgram();
+    }
+
+    @Override
+    protected Program buildObjectWithId() {
+        return ProgramSamples.getProgram().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected Program buildObjectToUpdate() {
+        return ProgramSamples.getProgram().toBuilder()
+                .expiryDays(5)
+                .build();
+    }
 }

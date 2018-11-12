@@ -26,13 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 
 import java.util.List;
 
-public interface ProgramStoreInterface extends IdentifiableObjectStore<Program> {
-
-    List<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
+public final class IgnoreProgramTrackedEntityAttributeListColumnAdapter
+        extends IgnoreColumnAdapter<List<ProgramTrackedEntityAttribute>> {
 }

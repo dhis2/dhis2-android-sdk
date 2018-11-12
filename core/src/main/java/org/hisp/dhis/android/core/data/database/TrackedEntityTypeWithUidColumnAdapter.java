@@ -26,13 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import android.database.Cursor;
 
-import java.util.List;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 
-public interface ProgramStoreInterface extends IdentifiableObjectStore<Program> {
+public class TrackedEntityTypeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityType> {
 
-    List<String> queryWithoutRegistrationProgramUids() throws RuntimeException;
+    @Override
+    public TrackedEntityType fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        return TrackedEntityType.builder().uid(uid).build();
+    }
 }

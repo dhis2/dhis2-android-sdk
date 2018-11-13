@@ -197,7 +197,7 @@ public final class WipeModuleImpl implements WipeModule {
         List<DeletableStore> dataStores = Arrays.asList(
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter),
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
                 DataValueStore.create(databaseAdapter),

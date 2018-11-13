@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -55,7 +56,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private static final int FILL_UP_TO = 100;
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
-    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
@@ -68,7 +69,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
             DHISVersionManager versionManager,
             TrackedEntityAttributeReservedValueStoreInterface store,
-            IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
+            IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             TrackedEntityAttributeStore trackedEntityAttributeStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
@@ -117,8 +118,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void fillReservedValues(String trackedEntityAttributeUid, String organisationUnitUid,
                                     Integer remainingValues) throws D2CallException {
 
-        OrganisationUnitModel organisationUnitModel =
-                this.organisationUnitStore.selectByUid(organisationUnitUid);
+        OrganisationUnit organisationUnitModel = this.organisationUnitStore.selectByUid(organisationUnitUid);
 
         if (organisationUnitModel == null) {
             throw D2CallException.builder()

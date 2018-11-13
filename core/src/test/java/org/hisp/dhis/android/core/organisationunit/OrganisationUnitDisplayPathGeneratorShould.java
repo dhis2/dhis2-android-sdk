@@ -25,14 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,46 +36,44 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.verify;
+import java.io.IOException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class SearchOrganisationUnitHandlerShould {
+public class OrganisationUnitDisplayPathGeneratorShould {
 
     @Mock
-    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private OrganisationUnit grandparent;
 
     @Mock
-    private ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private OrganisationUnit parent;
 
+    @Mock
     private OrganisationUnit organisationUnit;
 
-    private String userUid = "userUid";
-    private String organisationUnitUid = "orgUnitUid";
-
-    private SyncHandlerWithTransformer<OrganisationUnit> handler;
+    private static final String GRANDPARENT_DISPLAY_NAME = "grandparentDisplayName";
+    private static final String PARENT_DISPLAY_NAME = "parentDisplayName";
+    private static final String ORG_UNIT_DISPLAY_NAME = "orgUnitDisplayName";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() throws IOException {
         MockitoAnnotations.initMocks(this);
 
-        organisationUnit = OrganisationUnit.builder().uid(organisationUnitUid).build();
+        when(organisationUnit.ancestors()).thenReturn(Lists.newArrayList(grandparent, parent));
+        when(parent.uid()).thenReturn("parentUid");
 
-        handler = new SearchOrganisationUnitHandler(
-                organisationUnitStore,
-                userOrganisationUnitLinkStore,
-                User.builder().uid(userUid).build());
+        when(grandparent.displayName()).thenReturn(GRANDPARENT_DISPLAY_NAME);
+        when(parent.displayName()).thenReturn(PARENT_DISPLAY_NAME);
+        when(organisationUnit.displayName()).thenReturn(ORG_UNIT_DISPLAY_NAME);
     }
 
     @Test
-    public void persist_organisation_unit_user_link() {
-        UserOrganisationUnitLinkModel linkModel = UserOrganisationUnitLinkModel
-                .builder()
-                .organisationUnit(organisationUnitUid)
-                .user(userUid).root(false)
-                .organisationUnitScope(OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH.toString())
-                .build();
-
-        handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitDisplayPathTransformer());
-        verify(userOrganisationUnitLinkStore).updateOrInsertWhere(linkModel);
+    public void build_display_name_path_from_ancestors() {
+        String expectedDisplayNamePath = "/" + GRANDPARENT_DISPLAY_NAME + "/" + PARENT_DISPLAY_NAME
+                + "/" + ORG_UNIT_DISPLAY_NAME;
+        OrganisationUnitDisplayPathGenerator generator = new OrganisationUnitDisplayPathGenerator();
+        assertThat(generator.generateDisplayPath(organisationUnit)).isEqualTo(expectedDisplayNamePath);
     }
 }

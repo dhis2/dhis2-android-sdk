@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -48,7 +49,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +64,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class OrganisationUnitHandlerShould {
     @Mock
-    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
     private ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
@@ -94,9 +94,9 @@ public class OrganisationUnitHandlerShould {
     @Mock
     private CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
 
+    private OrganisationUnit organisationUnitWithoutGroups;
 
-    @Mock
-    private OrganisationUnit organisationUnit;
+    private OrganisationUnit organisationUnitWithGroups;
 
     @Mock
     private OrganisationUnitGroup organisationUnitGroup;
@@ -107,7 +107,7 @@ public class OrganisationUnitHandlerShould {
     @Mock
     private Program program;
 
-    private OrganisationUnitHandler organisationUnitHandler;
+    private SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler;
 
     private List<OrganisationUnit> organisationUnits;
 
@@ -129,33 +129,43 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitGroupHandler, organisationUnitGroupLinkHandler
                 );
 
-        when(organisationUnit.uid()).thenReturn("test_organisation_unit_uid");
         when(user.uid()).thenReturn("test_user_uid");
-
-        organisationUnits = new ArrayList<>();
-        organisationUnits.add(organisationUnit);
-
         when(program.uid()).thenReturn(programUid);
-        when(organisationUnit.programs()).thenReturn(Collections.singletonList(program));
+
+        when(organisationUnitGroup.uid()).thenReturn("test_organisation_unit_group_uid");
+        List<OrganisationUnitGroup> organisationUnitGroups = Lists.newArrayList(organisationUnitGroup);
+
+        OrganisationUnit.Builder builder = OrganisationUnit.builder()
+                .uid("test_organisation_unit_uid")
+                .programs(Collections.singletonList(program));
+
+        organisationUnitWithoutGroups = builder
+                .build();
+
+        organisationUnitWithGroups = builder
+                .organisationUnitGroups(organisationUnitGroups)
+                .build();
+
+        organisationUnits = Lists.newArrayList(organisationUnitWithGroups);
     }
 
     @Test
-    public void persist_user_organisation_unit_link() throws Exception {
+    public void persist_user_organisation_unit_link() {
         UserOrganisationUnitLinkModel userLinkModel = new UserOrganisationUnitLinkModelBuilder(scope, user)
-                .buildModel(organisationUnit);
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+                .buildModel(organisationUnitWithoutGroups);
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
         verify(userOrganisationUnitLinkStore).updateOrInsertWhere(userLinkModel);
     }
 
     @Test
-    public void persist_program_organisation_unit_link_when_programs_uids() throws Exception {
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+    public void persist_program_organisation_unit_link_when_programs_uids() {
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
         verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(Program.class),
                 any(OrganisationUnitProgramLinkModelBuilder.class));
     }
 
     @Test
-    public void persist_program_organisation_unit_link_when_no_programs_uids() throws Exception {
+    public void persist_program_organisation_unit_link_when_no_programs_uids() {
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
@@ -164,12 +174,12 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitGroupLinkHandler
         );
 
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
         verifyNoMoreInteractions(organisationUnitProgramLinkStore);
     }
 
     @Test
-    public void persist_organisation_unit_groups() throws Exception {
+    public void persist_organisation_unit_groups() {
 
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
@@ -179,7 +189,7 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitGroupHandler, organisationUnitGroupLinkHandler
         );
 
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
         verify(organisationUnitGroupHandler).handleMany(anyListOf(OrganisationUnitGroup.class),
                 any(OrganisationUnitGroupModelBuilder.class));
@@ -187,12 +197,6 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_organisation_unit_organisation_unit_group_link() {
-
-        when(organisationUnitGroup.uid()).thenReturn("test_organisation_unit_group_uid");
-        List<OrganisationUnitGroup> organisationUnitGroups = new ArrayList<>();
-        organisationUnitGroups.add(organisationUnitGroup);
-        when(organisationUnit.organisationUnitGroups()).thenReturn(organisationUnitGroups);
-
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
                 organisationUnitProgramLinkHandler, dataSetDataSetOrganisationUnitLinkHandler,
@@ -201,14 +205,14 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitGroupHandler, organisationUnitGroupLinkHandler
         );
 
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
         verify(organisationUnitGroupLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
                 any(OrganisationUnitOrganisationUnitGroupLinkModelBuilder.class));
     }
 
     @Test
-    public void dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisatio_unit_groups() {
+    public void dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisation_unit_groups() {
 
         organisationUnitHandler = new OrganisationUnitHandler(
                 organisationUnitStore, userOrganisationUnitLinkStore,
@@ -218,7 +222,7 @@ public class OrganisationUnitHandlerShould {
                 organisationUnitGroupHandler, organisationUnitGroupLinkHandler
         );
 
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        organisationUnitHandler.handleMany(Lists.newArrayList(organisationUnitWithoutGroups), new OrganisationUnitDisplayPathTransformer());
 
         verify(organisationUnitGroupLinkHandler, never()).handleMany(anyString(), anyListOf(ObjectWithUid.class),
                 any(OrganisationUnitOrganisationUnitGroupLinkModelBuilder.class));
@@ -226,7 +230,7 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void call_collection_cleaners() {
-        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitModelBuilder());
+        organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
         verify(programCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));
         verify(dataSetCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));

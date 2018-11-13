@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
-import org.hisp.dhis.android.core.dataset.DataSetFields;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields;
 
 public final class UserFields {
     private static final String BIRTHDAY = "birthday";
@@ -95,15 +94,8 @@ public final class UserFields {
             surname, firstName, introduction, employer, interests, languages, email, phoneNumber, nationality,
             deleted,
             userCredentials.with(UserCredentialsFields.allFields),
-            organisationUnits.with(
-                    OrganisationUnit.uid,
-                    OrganisationUnit.path,
-                    OrganisationUnit.programs.with(ObjectWithUid.uid),
-                    OrganisationUnit.dataSets.with(DataSetFields.uid)
-            ),
-            teiSearchOrganisationUnits.with(
-                    OrganisationUnit.uid,
-                    OrganisationUnit.path)
+            organisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
+            teiSearchOrganisationUnits.with(OrganisationUnitFields.teiSearchFieldsInUserCall)
     ).build();
 
     private UserFields() {}

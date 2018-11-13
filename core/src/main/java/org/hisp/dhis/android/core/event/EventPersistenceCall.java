@@ -10,10 +10,9 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitOnDemandCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitOnDemandCall;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.User;
@@ -32,7 +31,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private final Retrofit retrofit;
     private final EventHandler eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
-    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
@@ -43,7 +42,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull Retrofit retrofit,
             @NonNull EventHandler eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
-            @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
+            @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             @NonNull SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory,
             @NonNull Collection<Event> events,
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {

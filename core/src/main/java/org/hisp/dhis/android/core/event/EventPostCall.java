@@ -59,7 +59,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
     @NonNull
     private List<Event> queryEventsToPost() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.TRUE);
+                trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues();
         List<Event> events = eventStore.querySingleEventsToPost();
         int eventSize = events.size();
 
@@ -90,7 +90,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
         return new EventPostCall(
                 retrofit.create(EventService.class),
                 new EventStoreImpl(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter)
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter)
         );
     }
 }

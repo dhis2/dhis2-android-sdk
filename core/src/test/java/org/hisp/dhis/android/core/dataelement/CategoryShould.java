@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,40 +39,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class CategoryShould {
+public class CategoryShould extends BaseObjectShould implements ObjectShould {
+
+    public CategoryShould() {
+        super("category/category.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        Category category = objectMapper.readValue("{\"" +
-                        "lastUpdated\":\"2014-11-19T12:58:52.558\"," +
-                        "\"id\":\"KfdsGBcoiCa\"," +
-                        "\"href\":\"https://play.dhis2.org/demo/api/categories/KfdsGBcoiCa\"," +
-                        "\"created\":\"2011-12-24T12:24:25.155\"," +
-                        "\"name\":\"Births attended by\"," +
-                        "\"shortName\":\"Births attended by\"," +
-                        "\"dataDimensionType\":\"DISAGGREGATION\"," +
-                        "\"dimensionType\":\"CATEGORY\"," +
-                        "\"displayName\":\"Births attended by\"," +
-                        "\"publicAccess\":\"rw------\"," +
-                        "\"displayShortName\":\"Births attended by\"," +
-                        "\"externalAccess\":false," +
-                        "\"dimension\":\"KfdsGBcoiCa\"," +
-                        "\"allItems\":false," +
-                        "\"dataDimension\":false," +
-                        "\"user\":{\"id\":\"GOLswS44mh8\"}," +
-                        "\"translations\":[]," +
-                        "\"categoryCombos\":[{\"id\":\"m2jTvAj5kkm\"}]," +
-                        "\"categoryOptions\":[" +
-                        "{\"id\":\"TNYQzTHdoxL\"}," +
-                        "{\"id\":\"TXGfLxZlInA\"}," +
-                        "{\"id\":\"QgULqw9YDu2\"}," +
-                        "{\"id\":\"OjIOxG7vgna\"}," +
-                        "{\"id\":\"uZUnebiT5DI\"}," +
-                        "{\"id\":\"HTHvCohKoXt\"}]," +
-                        "\"userGroupAccesses\":[]" +
-                        "}",
-                Category.class);
+        Category category = objectMapper.readValue(jsonStream, Category.class);
 
         assertThat(category.uid()).isEqualTo("KfdsGBcoiCa");
         assertThat(category.created()).isEqualTo(

@@ -73,7 +73,7 @@ public class SQLStatementBuilder {
                 tableInfo.hasSortOrder());
     }
 
-    private String commaSeparatedColumns() {
+    public String commaSeparatedColumns() {
         return commaAndSpaceSeparatedArrayValues(columns);
     }
 

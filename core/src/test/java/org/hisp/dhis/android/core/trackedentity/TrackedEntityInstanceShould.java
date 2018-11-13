@@ -58,10 +58,6 @@ public class TrackedEntityInstanceShould extends BaseObjectShould implements Obj
         assertThat(trackedEntityInstance.organisationUnit()).isEqualTo("DiszpKrYNg8");
         assertThat(trackedEntityInstance.trackedEntityType()).isEqualTo("nEenWmSyUEp");
 
-        assertThat(trackedEntityInstance.relationships().get(0).trackedEntityInstanceA()).isEqualTo("Ea0rRdBPAIp");
-        assertThat(trackedEntityInstance.relationships().get(0).trackedEntityInstanceB()).isEqualTo("G1afLIEKt8A");
-        assertThat(trackedEntityInstance.relationships().get(0).uid()).isEqualTo("V2kkHafqs8G");
-
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(0).trackedEntityAttribute()).isEqualTo("gHGyrwKPzej");
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(1).trackedEntityAttribute()).isEqualTo("lZGmxYbs97q");
         assertThat(trackedEntityInstance.trackedEntityAttributeValues().get(2).trackedEntityAttribute()).isEqualTo("zDhUuAYrxNC");

@@ -300,10 +300,6 @@ public class ProgramIndicatorEngine {
         return attributeToAttributeValues;
     }
 
-    private List<TrackedEntityDataValue> getTrackedEntityDataValues(String eventUid) {
-        return trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid);
-    }
-
     private List<Event> getEventsInStage(String enrollmentUid, String eventUid, String programStageUid) {
         List<Event> events;
         if (enrollmentUid == null) {
@@ -320,7 +316,8 @@ public class ProgramIndicatorEngine {
     }
 
     private Event getEventWithValues(Event e) {
-        List<TrackedEntityDataValue> dataValues = getTrackedEntityDataValues(e.uid());
+        List<TrackedEntityDataValue> dataValues =
+                trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(e.uid());
 
         return Event.create(e.uid(), e.enrollmentUid(), e.created(), e.lastUpdated(), e.createdAtClient(),
                 e.lastUpdatedAtClient(), e.program(), e.programStage(), e.organisationUnit(), e.eventDate(),
@@ -375,7 +372,7 @@ public class ProgramIndicatorEngine {
 
     public static ProgramIndicatorEngine create(DatabaseAdapter databaseAdapter) {
         return new ProgramIndicatorEngine(ProgramIndicatorStore.create(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter),
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
                 DataElementStore.create(databaseAdapter),

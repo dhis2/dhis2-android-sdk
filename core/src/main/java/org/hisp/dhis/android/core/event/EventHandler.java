@@ -28,7 +28,7 @@ public class EventHandler {
     }
 
     private boolean isValid(@NonNull Event event) {
-        return event.eventDate()!=null && event.organisationUnit()!=null;
+        return event.organisationUnit() != null;
     }
 
     public void handle(@NonNull Event event) {
@@ -67,7 +67,7 @@ public class EventHandler {
             trackedEntityDataValueHandler.handle(event.uid(),
                     event.trackedEntityDataValues());
         } else {
-            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or event date");
+            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit");
         }
     }
 

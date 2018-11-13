@@ -50,18 +50,18 @@ public final class TrackedEntityDataValueTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String EVENT = "event";
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     EVENT,
+                    TrackedEntityDataValueFields.CREATED,
+                    TrackedEntityDataValueFields.LAST_UPDATED,
                     TrackedEntityDataValueFields.DATA_ELEMENT,
                     TrackedEntityDataValueFields.STORED_BY,
                     TrackedEntityDataValueFields.VALUE,
-                    TrackedEntityDataValueFields.CREATED,
-                    TrackedEntityDataValueFields.LAST_UPDATED,
                     TrackedEntityDataValueFields.PROVIDED_ELSEWHERE
             );
         }

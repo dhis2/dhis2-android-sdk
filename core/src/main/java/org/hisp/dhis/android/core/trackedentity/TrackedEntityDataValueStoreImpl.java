@@ -1,0 +1,174 @@
+/*
+ * Copyright (c) 2017, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.hisp.dhis.android.core.trackedentity;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStoreImpl<TrackedEntityDataValue>
+        implements TrackedEntityDataValueStore {
+
+    private TrackedEntityDataValueStoreImpl(DatabaseAdapter databaseAdapter,
+                                            SQLiteStatement insertStatement,
+                                            SQLiteStatement updateWhereStatement,
+                                            SQLStatementBuilder builder,
+                                            StatementBinder<TrackedEntityDataValue> binder,
+                                            WhereStatementBinder<TrackedEntityDataValue> whereBinder,
+                                            CursorModelFactory<TrackedEntityDataValue> modelFactory) {
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, modelFactory);
+    }
+
+    @Override
+    public int deleteByEventAndDataElementUIds(String eventUid, List<String> dataElementUids) {
+        List<String> argumentValues = new ArrayList<>();
+        argumentValues.add(eventUid);
+        argumentValues.addAll(dataElementUids);
+        String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
+
+        String inArguments = TextUtils.join(",", Collections.nCopies(dataElementUids.size(), "?"));
+
+        return databaseAdapter.delete(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+            TrackedEntityDataValueTableInfo.Columns.EVENT + " = ? AND " +
+                    TrackedEntityDataValueFields.DATA_ELEMENT + " in (" + inArguments + ");", argumentValuesArray);
+    }
+
+    @Override
+    public List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid) {
+        WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid);
+
+        return selectWhereClause(whereClauseBuilder.build());
+    }
+
+    @Override
+    public Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues() {
+
+        String queryStatement = "SELECT " + builder.commaSeparatedColumns() +
+                " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid)" +
+                " WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE');";
+
+        return queryTrackedEntityDataValues(queryStatement);
+    }
+
+    @Override
+    public Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues() {
+
+        String queryStatement = "SELECT " + builder.commaSeparatedColumns() + " FROM (TrackedEntityDataValue" +
+                " INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid " +
+                " INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
+                " INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
+                " WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
+                " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' " +
+                " OR Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE';";
+
+        return queryTrackedEntityDataValues(queryStatement);
+    }
+
+    private Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(String queryStatement) {
+
+        List<TrackedEntityDataValue> dataValueList = selectWhereClause(queryStatement);
+        Map<String, List<TrackedEntityDataValue>> dataValues = new HashMap<>();
+        for (TrackedEntityDataValue dataValue : dataValueList) {
+            if (dataValues.get(dataValue.event()) == null) {
+                dataValues.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
+            }
+
+            dataValues.get(dataValue.event()).add(dataValue);
+        }
+
+        return dataValues;
+    }
+
+    private static final StatementBinder<TrackedEntityDataValue> BINDER
+            = new StatementBinder<TrackedEntityDataValue>() {
+        @Override
+        public void bindToStatement(@NonNull TrackedEntityDataValue o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.event());
+            sqLiteBind(sqLiteStatement, 2, o.created());
+            sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 4, o.dataElement());
+            sqLiteBind(sqLiteStatement, 5, o.storedBy());
+            sqLiteBind(sqLiteStatement, 6, o.value());
+            sqLiteBind(sqLiteStatement, 7, o.providedElsewhere());
+        }
+    };
+
+
+    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<TrackedEntityDataValue>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull TrackedEntityDataValue o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 8, o.event());
+            sqLiteBind(sqLiteStatement, 9, o.dataElement());
+        }
+    };
+
+    private static final CursorModelFactory<TrackedEntityDataValue> FACTORY
+            = new CursorModelFactory<TrackedEntityDataValue>() {
+        @Override
+        public TrackedEntityDataValue fromCursor(Cursor cursor) {
+            return TrackedEntityDataValue.create(cursor);
+        }
+    };
+
+    public static TrackedEntityDataValueStore create(DatabaseAdapter databaseAdapter) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                TrackedEntityDataValueTableInfo.TABLE_INFO.columns());
+
+        return new TrackedEntityDataValueStoreImpl(
+                databaseAdapter,
+                databaseAdapter.compileStatement(statementBuilder.insert()),
+                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                statementBuilder,
+                BINDER,
+                WHERE_UPDATE_BINDER,
+                FACTORY
+        );
+    }
+}

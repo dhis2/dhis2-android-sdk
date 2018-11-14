@@ -6,7 +6,6 @@ import android.util.Log;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
-import static org.hisp.dhis.android.core.event.EventStatus.*;
 
 import java.util.Collection;
 
@@ -30,9 +29,9 @@ public class EventHandler {
 
     private boolean isValid(@NonNull Event event) {
         Boolean validEventDate = event.eventDate() != null ||
-                event.status() == SCHEDULE ||
-                event.status() == SKIPPED ||
-                event.status() == OVERDUE;
+                event.status() == EventStatus.SCHEDULE ||
+                event.status() == EventStatus.SKIPPED ||
+                event.status() == EventStatus.OVERDUE;
 
         return validEventDate && event.organisationUnit() != null;
     }

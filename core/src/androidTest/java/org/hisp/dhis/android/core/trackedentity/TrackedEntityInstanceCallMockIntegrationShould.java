@@ -196,11 +196,15 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         List<Event> downloadedEventsWithoutValues = eventStore.queryAll();
 
-        TrackedEntityDataValueStoreImpl trackedEntityDataValue =
-                new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter()).selectAll();
+        Map<String, List<TrackedEntityDataValue>> downloadedValues = new HashMap<>();
+        for (TrackedEntityDataValue dataValue : dataValueList) {
+            if (downloadedValues.get(dataValue.event()) == null) {
+                downloadedValues.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
+            }
 
-        Map<String, List<TrackedEntityDataValue>> downloadedValues =
-                trackedEntityDataValue.queryTrackedEntityDataValues();
+            downloadedValues.get(dataValue.event()).add(dataValue);
+        }
 
         return createTei(downloadedTei, attValues, downloadedEnrollments.get(teiUid),
                 downloadedEventsWithoutValues, downloadedValues);
@@ -218,13 +222,20 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Enrollment> downloadedEnrollments = new ArrayList<>();
 
         for (Event event : downloadedEventsWithoutValues) {
+            List<TrackedEntityDataValue> trackedEntityDataValuesWithNullIdsAndEvents = new ArrayList<>();
+
+            for (TrackedEntityDataValue trackedEntityDataValue : downloadedValues.get(event.uid())) {
+                trackedEntityDataValuesWithNullIdsAndEvents.add(
+                        trackedEntityDataValue.toBuilder().id(null).event(null).build());
+            }
+
             event = Event.create(
                     event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
+                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
                     event.attributeOptionCombo(),
                     event.trackedEntityInstance());
 

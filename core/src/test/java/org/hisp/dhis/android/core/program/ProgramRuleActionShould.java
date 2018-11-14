@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,36 +38,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramRuleActionShould {
+public class ProgramRuleActionShould extends BaseObjectShould implements ObjectShould {
+
+    public ProgramRuleActionShould() {
+        super("program/program_rule_action.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        ProgramRuleAction programRuleAction = objectMapper.readValue("{\n" +
-                "\"lastUpdated\": \"2015-09-14T22:22:15.458\",\n" +
-                "\"href\": \"https://play.dhis2.org/dev/api/programRuleActions/v434s5YPDcP\",\n" +
-                "\"id\": \"v434s5YPDcP\",\n" +
-                "\"created\": \"2015-09-14T21:17:41.033\",\n" +
-                "\"content\": \"It is suggested that an explanation is provided when the Apgar score is below 4\",\n" +
-                "\"externalAccess\": false,\n" +
-                "\"programRuleActionType\": \"SHOWWARNING\",\n" +
-                "\"access\": {\n" +
-                "\"read\": true,\n" +
-                "\"updateWithSection\": true,\n" +
-                "\"externalize\": false,\n" +
-                "\"delete\": true,\n" +
-                "\"write\": true,\n" +
-                "\"manage\": false\n" +
-                "},\n" +
-                "\"programRule\": {\n" +
-                "\"id\": \"NAgjOfWMXg6\"\n" +
-                "},\n" +
-                "\"dataElement\": {\n" +
-                "\"id\": \"H6uSAMO5WLD\"\n" +
-                "},\n" +
-                "\"translations\": [],\n" +
-                "\"userGroupAccesses\": [],\n" +
-                "\"attributeValues\": []\n" +
-                "}", ProgramRuleAction.class);
+        ProgramRuleAction programRuleAction = objectMapper.readValue(jsonStream, ProgramRuleAction.class);
 
         assertThat(programRuleAction.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-14T22:22:15.458"));

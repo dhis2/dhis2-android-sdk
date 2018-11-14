@@ -1,0 +1,39 @@
+{
+  "optionSets": [
+    {
+      "lastUpdated": "2015-08-06T14:23:38.789",
+      "created": "2014-06-22T10:59:26.564",
+      "name": "Age category",
+      "id": "VQ2lai3OfVG",
+      "displayName": "Age category",
+      "valueType": "TEXT",
+      "version": 1,
+      "options": [
+        {
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "code": "0-14 years",
+          "created": "2014-08-18T12:39:16.000",
+          "name": "0-14 years",
+          "id": "Y1ILwhy5VDY",
+          "sortOrder": 1,
+          "displayName": "0-14 years",
+          "optionSet": {
+            "id": "VQ2lai3OfVG"
+          }
+        },
+        {
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "code": "15-19 years",
+          "created": "2014-08-18T12:39:16.000",
+          "name": "15-19 years",
+          "id": "egT1YqFWsVk",
+          "sortOrder": 2,
+          "displayName": "15-19 years",
+          "optionSet": {
+            "id": "VQ2lai3OfVG"
+          }
+        }
+      ]
+    }
+  ]
+}

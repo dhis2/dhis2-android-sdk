@@ -1,6 +1,8 @@
 package org.hisp.dhis.android.core.enrollment;
 
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.imports.ImportEvent;
 import org.hisp.dhis.android.core.imports.ImportStatus;
@@ -29,6 +31,9 @@ public class EnrollmentImportHandlerShould {
     private EnrollmentStore enrollmentStore;
 
     @Mock
+    private ObjectWithoutUidStore<Note> noteStore;
+
+    @Mock
     private EventImportHandler eventImportHandler;
 
     @Mock
@@ -48,7 +53,7 @@ public class EnrollmentImportHandlerShould {
         MockitoAnnotations.initMocks(this);
 
 
-        enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, eventImportHandler);
+        enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, noteStore, eventImportHandler);
     }
 
     @Test

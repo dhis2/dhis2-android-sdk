@@ -28,39 +28,32 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class ProgramStageSectionHandlerShould {
-    private static final String PROGRAM_STAGE_UID = "test_program_stage_uid";
     private static final String PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid";
-    private static final String DATA_ELEMENT_UID = "test_data_uid";
 
     @Mock
-    private ProgramStageSectionStore programStageSectionStore;
+    private IdentifiableObjectStore<ProgramStageSection> programStageSectionStore;
 
     @Mock
     private SyncHandler<ProgramIndicator> programIndicatorHandler;
@@ -75,11 +68,12 @@ public class ProgramStageSectionHandlerShould {
 
     @Mock
     private ProgramStageSection programStageSection;
-    private List<ProgramStageSection> programStageSections;
 
     @Mock
     private DataElement dataElement;
-    private List<DataElement> dataElements;
+
+    @Mock
+    private List<ProgramIndicator> programIndicators;
 
     // object to test
     private ProgramStageSectionHandler programStageSectionHandler;
@@ -93,196 +87,29 @@ public class ProgramStageSectionHandlerShould {
                 programStageSectionProgramIndicatorLinkHandler, programStageSectionDataElementLinkHandler);
 
         when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
-        programStageSections = new ArrayList<>();
-        programStageSections.add(programStageSection);
-        dataElements = new ArrayList<>(1);
+        List<DataElement> dataElements = new ArrayList<>(1);
         dataElements.add(dataElement);
         when(programStageSection.dataElements()).thenReturn(dataElements);
+        when(programStageSection.programIndicators()).thenReturn(programIndicators);
     }
 
     @Test
-    public void invoke_delete_when_handle_program_stage_section_set_as_deleted() throws Exception {
-        when(programStageSection.deleted()).thenReturn(Boolean.TRUE);
-
-        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
-
-        // verify that delete is called once
-        verify(programStageSectionStore, times(1)).delete(programStageSection.uid());
-
-        // verify that update and insert is never called
-        verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
-
-        verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString());
-
-        // verify that handlers is called once
-        verify(programStageSectionDataElementLinkHandler, times(1)).handleMany(
-                anyString(), anyListOf(DataElement.class), any(OrderedLinkModelBuilder.class)
-        );
-
-        verify(programIndicatorHandler, times(1)).handleMany(
-                anyListOf(ProgramIndicator.class));
-
+    public void handle_program_indicators() {
+        programStageSectionHandler.handle(programStageSection);
+        verify(programIndicatorHandler).handleMany(eq(programIndicators));
     }
 
     @Test
-    public void invoke_only_update_when_handle_program_stage_section_inserted() throws Exception {
-        when(programStageSectionStore.update(
-                anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString())
-        ).thenReturn(1);
-
-        when(programStageSection.dataElements()).thenReturn(dataElements);
-        when(dataElement.uid()).thenReturn(DATA_ELEMENT_UID);
-
-        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
-
-        // verify that update is called once
-        verify(programStageSectionStore, times(1)).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString());
-
-        // verify that insert and delete is never called
-        verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
-
-        verify(programStageSectionStore, never()).delete(anyString());
-
-
-        verify(programStageSectionDataElementLinkHandler, times(1)).handleMany(
-                anyString(),
-                anyListOf(DataElement.class),
-                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
-        );
-
-        verify(programIndicatorHandler, times(1)).handleMany(
-                anyListOf(ProgramIndicator.class));
+    public void handle_program_stage_section_data_element_links() {
+        programStageSectionHandler.handle(programStageSection);
+        verify(programStageSectionDataElementLinkHandler).handleMany(any(String.class), anyListOf(DataElement.class),
+                any(ProgramStageSectionDataElementLinkModelBuilder.class));
     }
 
     @Test
-    public void invoke_update_and_insert_when_handle_program_stage_section_not_inserted() throws Exception {
-        when(programStageSectionStore.update(
-                anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString())
-        ).thenReturn(0);
-
-        when(programStageSection.dataElements()).thenReturn(dataElements);
-        when(dataElement.uid()).thenReturn(DATA_ELEMENT_UID);
-
-        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, programStageSections);
-
-        // verify that update is called once since we update before we insert
-        verify(programStageSectionStore, times(1)).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString());
-
-        // verify that insert is called once
-        verify(programStageSectionStore, times(1)).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
-
-        // verify that delete is never called
-        verify(programStageSectionStore, never()).delete(anyString());
-
-        // verify that handlers is called once
-        verify(programStageSectionDataElementLinkHandler, times(1)).handleMany(
-                anyString(),
-                anyListOf(DataElement.class),
-                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
-        );
-
-        verify(programIndicatorHandler, times(1)).handleMany(
-                anyListOf(ProgramIndicator.class));
-
-    }
-
-    @Test
-    public void do_nothing_when_passing_null_program_stage_uid() throws Exception {
-        programStageSectionHandler.handleProgramStageSection(null, programStageSections);
-
-        // verify that program stage section store is never invoked
-        verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
-
-        verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString());
-
-        verify(programStageSectionStore, never()).delete(anyString());
-
-        verify(programStageSectionDataElementLinkHandler, never()).handleMany(
-                anyString(),
-                anyListOf(DataElement.class),
-                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
-        );
-
-        verify(programIndicatorHandler, never()).handleMany(
-                anyListOf(ProgramIndicator.class));
-    }
-
-    @Test
-    public void do_nothing_when_passing_null_program_stage_section() throws Exception {
-        programStageSectionHandler.handleProgramStageSection(PROGRAM_STAGE_UID, null);
-
-        // verify that program stage section store is never invoked
-        verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
-
-        verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString());
-
-        verify(programStageSectionStore, never()).delete(anyString());
-
-
-        verify(programStageSectionDataElementLinkHandler, never()).handleMany(
-                anyString(),
-                anyListOf(DataElement.class),
-                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
-        );
-
-        verify(programIndicatorHandler, never()).handleMany(
-                anyListOf(ProgramIndicator.class));
-    }
-
-    @Test
-    public void do_nothing_when_passing_null_arguments() throws Exception {
-        programStageSectionHandler.handleProgramStageSection(null, null);
-
-        // verify that program stage section store is never invoked
-        verify(programStageSectionStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class));
-
-        verify(programStageSectionStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyInt(), anyString(),
-                any(ProgramStageSectionRenderingType.class), any(ProgramStageSectionRenderingType.class),
-                anyString());
-
-        verify(programStageSectionStore, never()).delete(anyString());
-
-        verify(programStageSectionDataElementLinkHandler, never()).handleMany(
-                anyString(),
-                anyListOf(DataElement.class),
-                Matchers.<OrderedLinkModelBuilder<DataElement, ProgramStageSectionDataElementLinkModel>>any()
-        );
-
-        verify(programIndicatorHandler, never()).handleMany(
-                anyListOf(ProgramIndicator.class));
+    public void handle_program_stage_section_program_indicator_links() {
+        programStageSectionHandler.handle(programStageSection);
+        verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(String.class), anyListOf(ProgramIndicator.class),
+                any(ProgramStageSectionProgramIndicatorLinkModelBuilder.class));
     }
 }

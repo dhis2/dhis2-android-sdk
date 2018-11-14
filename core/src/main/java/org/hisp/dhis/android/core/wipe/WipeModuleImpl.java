@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleVariableStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageDataElementStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkStore;
-import org.hisp.dhis.android.core.program.ProgramStageSectionStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramStageSectionStore;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
@@ -164,7 +164,7 @@ public final class WipeModuleImpl implements WipeModule {
                 OptionSetStore.create(databaseAdapter),
                 new ProgramStageDataElementStoreImpl(databaseAdapter),
 
-                new ProgramStageSectionStoreImpl(databaseAdapter),
+                ProgramStageSectionStore.create(databaseAdapter),
                 ProgramStageStore.create(databaseAdapter),
                 TrackedEntityTypeStore.create(databaseAdapter),
                 OrganisationUnitProgramLinkStore.create(databaseAdapter),

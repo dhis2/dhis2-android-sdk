@@ -1,0 +1,52 @@
+{
+  "created": "2015-03-31T13:31:09.324",
+  "lastUpdated": "2016-04-06T00:05:57.495",
+  "name": "John Barnes",
+  "id": "DXyJmlo9rge",
+  "displayName": "John Barnes",
+  "firstName": "John",
+  "surname": "Barnes",
+  "email": "john@hmail.com",
+  "userCredentials": {
+    "lastUpdated": "2017-11-29T11:45:37.250",
+    "code": "android",
+    "created": "2015-03-31T13:31:09.206",
+    "name": "John Barnes",
+    "id": "M0fCOxtkURr",
+    "displayName": "John Barnes",
+    "username": "android",
+    "userRoles": [
+      {
+        "id": "Ufph3mGRmMo",
+        "programs": [
+          {
+            "id": "lxAQ7Zs9VYR"
+          }
+        ]
+      }
+    ]
+  },
+  "teiSearchOrganisationUnits": [],
+  "organisationUnits": [
+    {
+      "id": "DiszpKrYNg8",
+      "path": "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8",
+      "programs": [
+        {
+          "id": "lxAQ7Zs9VYR"
+        }
+      ],
+      "dataSets": [
+        {
+          "id": "lyLU2wR22tC"
+        }
+      ],
+      "ancestors": []
+    }
+  ],
+  "dataViewOrganisationUnits": [
+    {
+      "id": "YuQRtpLP10I"
+    }
+  ]
+}

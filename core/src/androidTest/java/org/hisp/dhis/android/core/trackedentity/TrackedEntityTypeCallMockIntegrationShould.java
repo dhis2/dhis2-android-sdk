@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
 import org.junit.After;
@@ -65,9 +65,9 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_types.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_types.json");
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());

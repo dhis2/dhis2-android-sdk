@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,40 +38,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ConstantShould {
+public class ConstantShould extends BaseObjectShould implements ObjectShould {
 
-    /**
-     * Checks whether the parsing from JSON string works as expected. Payload intentionally
-     * contains properties which are not present in the model, in order to check if model
-     * explicitly ignores unknown values.
-     *
-     * @throws IOException if parsing fails.
-     */
+    public ConstantShould() {
+        super("constant/constant.json");
+    }
+
+    @Override
     @Test
-    public void map_json_to_model() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        // parse payload into model instance
-        Constant constant = objectMapper.readValue("{" +
-                "\"created\":\"2013-03-11T16:39:33.083\"," +
-                "\"lastUpdated\":\"2013-03-11T16:39:33.083\"," +
-                "\"name\":\"Pi\"," +
-                "\"href\":\"https://play.dhis2.org/demo/api/constants/bCqvfPR02Im\"," +
-                "\"id\":\"bCqvfPR02Im\"," +
-                "\"displayName\":\"Pi\"," +
-                "\"externalAccess\":false," +
-                "\"value\":3.14," +
-                "\"access\":{" +
-                "\"read\":true," +
-                "\"updateWithSection\":false," +
-                "\"externalize\":false," +
-                "\"delete\":false," +
-                "\"write\":false," +
-                "\"manage\":false}," +
-                "\"userGroupAccesses\":[]," +
-                "\"attributeValues\":[]," +
-                "\"translations\":[]" +
-                "}", Constant.class);
+    public void map_from_json_string() throws IOException, ParseException {
+        Constant constant = objectMapper.readValue(jsonStream, Constant.class);
 
         // we need to make sure that jackson is parsing dates in correct way
         assertThat(constant.created()).isEqualTo(

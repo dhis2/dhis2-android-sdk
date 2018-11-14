@@ -34,21 +34,25 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
-import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
@@ -110,7 +114,15 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         teiStore.insert(teiUid, new Date(), new Date(), null, null, orgunitUid, teiTypeUid, null, null,
                 null);
 
-        ProgramModel program = ProgramModel.builder().uid(programUid).build();
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
+
+        Access access = Access.create(true, null, null, null, null, null,
+                DataAccess.create(true, true));
+        Program program = Program.builder().uid(programUid)
+                .access(access)
+                .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
+                .build();
         ProgramStore.create(databaseAdapter()).insert(program);
 
         ProgramStageModel stage1 = ProgramStageModel.builder().uid(programStage1).program(programUid)
@@ -122,17 +134,17 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         programStageStore.insert(stage1);
         programStageStore.insert(stage2);
 
-        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
-        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
         DataElement de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build();
         DataElement de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build();
         IdentifiableObjectStore<DataElement> dataElementStore = DataElementStore.create(databaseAdapter());
         dataElementStore.insert(de1);
         dataElementStore.insert(de2);
 
-        new TrackedEntityAttributeStoreImpl(databaseAdapter()).insert(attribute1,null,null,null,null,null,null,
-                null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-
+        new TrackedEntityAttributeStoreImpl(databaseAdapter()).insert(attribute1,null,null,null,
+                null,null,null, null,null,null,
+                null,null,null,null,null,null,
+                null,null,null,null,null,
+                null,null);
     }
 
     @Test
@@ -279,8 +291,8 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     private void insertTrackedEntityDataValue(String eventUid, String dataElementUid, String value) {
-        new TrackedEntityDataValueStoreImpl(databaseAdapter()).insert(eventUid,null,null,dataElementUid,null,
-                value,null);
+        new TrackedEntityDataValueStoreImpl(databaseAdapter()).insert(eventUid,null,null,
+                dataElementUid,null, value,null);
     }
 
     private void insertTrackedEntityAttributeValue(String attributeUid, String value) {

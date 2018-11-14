@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModelBuilder;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
@@ -204,7 +204,7 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
                         OrganisationUnitProgramLinkStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<DataSet, DataSetOrganisationUnitLinkModel>(
                         DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-                new CollectionCleanerImpl<ObjectWithUid>(ProgramModel.TABLE, databaseAdapter),
+                new CollectionCleanerImpl<ObjectWithUid>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new CollectionCleanerImpl<ObjectWithUid>(DataSetModel.TABLE, databaseAdapter),
                 new CollectionCleanerImpl<ObjectWithUid>(OrganisationUnitGroupModel.TABLE, databaseAdapter),
                 programUids, dataSetUids, scope, user, OrganisationUnitGroupHandler.create(databaseAdapter),

@@ -41,7 +41,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class RelationshipType29Should extends BaseObjectShould implements ObjectShould {
 
     public RelationshipType29Should() {
-        super("relationship/relationshipType29.json");
+        super("relationship/relationship_type_29.json");
     }
 
     @Override

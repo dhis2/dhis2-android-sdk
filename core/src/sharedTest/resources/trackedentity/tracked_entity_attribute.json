@@ -1,0 +1,46 @@
+{
+  "lastUpdated": "2016-08-04T11:48:56.928",
+  "id": "ruQQnf6rswq",
+  "href": "https://play.dhis2.org/dev/api/trackedEntityAttributes/ruQQnf6rswq",
+  "created": "2014-01-09T19:12:46.551",
+  "name": "TB number",
+  "shortName": "TB number",
+  "programScope": false,
+  "displayInListNoProgram": false,
+  "displayName": "TB number",
+  "pattern": "",
+  "description": "TB number",
+  "displayShortName": "TB number",
+  "externalAccess": false,
+  "sortOrderInListNoProgram": 0,
+  "generated": false,
+  "displayOnVisitSchedule": false,
+  "valueType": "TEXT",
+  "sortOrderInVisitSchedule": 0,
+  "orgunitScope": false,
+  "confidential": false,
+  "displayDescription": "TB number",
+  "dimensionItem": "ruQQnf6rswq",
+  "searchScope": "SEARCH_ORG_UNITS",
+  "unique": false,
+  "inherit": false,
+  "optionSetValue": false,
+  "dimensionItemType": "PROGRAM_ATTRIBUTE",
+  "access": {
+    "read": true,
+    "updateWithSection": false,
+    "externalize": false,
+    "delete": false,
+    "write": false,
+    "manage": false
+  },
+  "user": {
+    "id": "GOLswS44mh8"
+  },
+  "translations": [],
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "optionSet": {
+    "id": "xjA5E9MimMU"
+  }
+}

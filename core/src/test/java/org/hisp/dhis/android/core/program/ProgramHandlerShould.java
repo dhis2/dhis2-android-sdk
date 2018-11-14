@@ -62,7 +62,7 @@ import static org.mockito.Mockito.when;
 public class ProgramHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<ProgramModel> programStore;
+    private IdentifiableObjectStore<Program> programStore;
 
     @Mock
     private ProgramRuleVariableHandler programRuleVariableHandler;
@@ -182,60 +182,60 @@ public class ProgramHandlerShould {
 
     @Test
     public void call_program_tracked_entity_attributes_handler() {
-        programHandler.handle(program, new ProgramModelBuilder());
+        programHandler.handle(program);
         verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class),
                 any(ProgramTrackedEntityAttributeModelBuilder.class));
     }
 
     @Test
     public void call_program_indicator_handler() {
-        programHandler.handle(program, new ProgramModelBuilder());
+        programHandler.handle(program);
         verify(programIndicatorHandler).handleMany(anyListOf(ProgramIndicator.class));
     }
 
     @Test
     public void call_program_rule_handler() {
-        programHandler.handle(program, new ProgramModelBuilder());
+        programHandler.handle(program);
         verify(programRuleHandler).handleMany(programRules);
     }
 
     @Test
     public void call_program_rule_variable_handler() {
-        programHandler.handle(program, new ProgramModelBuilder());
+        programHandler.handle(program);
         verify(programRuleVariableHandler).handleProgramRuleVariables(programRuleVariables);
     }
 
     @Test
     public void call_style_handler() {
-        programHandler.handle(program, new ProgramModelBuilder());
+        programHandler.handle(program);
         verify(styleHandler).handle(same(program.style()), any(ObjectStyleModelBuilder.class));
     }
 
     @Test
     public void call_program_section_handler() {
-        programHandler.handle(program, new ProgramModelBuilder());
+        programHandler.handle(program);
         verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class),
                 any(ProgramSectionModelBuilder.class));
     }
 
     @Test
     public void clean_orphan_options_after_update() {
-        when(programStore.updateOrInsert(any(ProgramModel.class))).thenReturn(HandleAction.Update);
-        programHandler.handle(program, new ProgramModelBuilder());
+        when(programStore.updateOrInsert(any(Program.class))).thenReturn(HandleAction.Update);
+        programHandler.handle(program);
         verify(orphanCleaner).deleteOrphan(program);
     }
 
     @Test
     public void not_clean_orphan_options_after_insert() {
-        when(programStore.updateOrInsert(any(ProgramModel.class))).thenReturn(HandleAction.Insert);
-        programHandler.handle(program, new ProgramModelBuilder());
+        when(programStore.updateOrInsert(any(Program.class))).thenReturn(HandleAction.Insert);
+        programHandler.handle(program);
         verify(orphanCleaner, never()).deleteOrphan(program);
     }
 
     @Test
     public void call_collection_cleaner_when_calling_handle_many() {
         List<Program> programs = Collections.singletonList(program);
-        programHandler.handleMany(programs, new ProgramModelBuilder());
+        programHandler.handleMany(programs);
         verify(collectionCleaner).deleteNotPresent(programs);
     }
 }

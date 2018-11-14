@@ -11,7 +11,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
@@ -39,7 +39,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
@@ -58,13 +58,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
-        dhis2MockServer.enqueueMockResponse("events_1.json");
+        dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
         List<Event> events = eventEndpointCall.call();
 
         EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
 
-        verifyDownloadedEvents("events_1.json");
+        verifyDownloadedEvents("event/events_1.json");
     }
 
     @Test
@@ -75,7 +75,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", pageSize);
 
-        dhis2MockServer.enqueueMockResponse("events_2.json");
+        dhis2MockServer.enqueueMockResponse("event/events_2.json");
 
         List<Event> events = eventEndpointCall.call();
 
@@ -97,13 +97,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
-                "two_events_first_good_second_wrong_foreign_key.json");
+                "event/two_events_first_good_second_wrong_foreign_key.json");
 
         eventEndpointCall.call();
 
         verifyNumberOfDownloadedEvents(1);
         verifyNumberOfDownloadedTrackedEntityDataValue(6);
-        verifyDownloadedEvents("event_1_with_all_data_values.json");
+        verifyDownloadedEvents("event/event_1_with_all_data_values.json");
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -167,7 +167,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private Payload<Event> parseEventResponse(String file) throws IOException {
-        String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
+        String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
                 BaseIdentifiableObject.DATE_FORMAT.raw());

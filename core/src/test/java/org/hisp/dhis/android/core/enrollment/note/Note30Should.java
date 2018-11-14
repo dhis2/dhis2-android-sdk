@@ -40,16 +40,17 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class Note30Should extends BaseObjectShould implements ObjectShould {
 
     public Note30Should() {
-        super("note30.json");
+        super("enrollment/note/note_30.json");
     }
 
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        Note229Compatible note229Compatible = objectMapper.readValue(jsonStream, Note229Compatible.class);
+        Note note = objectMapper.readValue(jsonStream, Note.class);
 
-        assertThat(note229Compatible.value()).isEqualTo("Note");
-        assertThat(note229Compatible.storedBy()).isEqualTo("android");
-        assertThat(note229Compatible.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
+        assertThat(note.uid()).isEqualTo("noteUid");
+        assertThat(note.value()).isEqualTo("Note");
+        assertThat(note.storedBy()).isEqualTo("android");
+        assertThat(note.storedDate()).isEqualTo("2018-03-19T15:20:55.058");
     }
 }

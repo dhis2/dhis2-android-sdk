@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,28 +38,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class EnrollmentShould {
+public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
 
+    public EnrollmentShould() {
+        super("enrollment/enrollment.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        Enrollment enrollment = objectMapper.readValue("{\n " +
-                "    \"trackedEntityType\": \"nEenWmSyUEp\",\n " +
-                "    \"created\": \"2015-03-28T12:27:50.740\",\n " +
-                "    \"orgUnit\": \"Rp268JB6Ne4\",\n " +
-                "    \"program\": \"ur1Edk5Oe2n\",\n " +
-                "    \"trackedEntityInstance\": \"D2dUWKQErfQ\",\n " +
-                "    \"enrollment\": \"BVJQIxoM2o4\",\n " +
-                "    \"lastUpdated\": \"2015-03-28T12:27:50.748\",\n " +
-                "    \"orgUnitName\": \"Adonkia CHP\",\n " +
-                "    \"enrollmentDate\": \"2014-08-07T12:27:50.730\",\n " +
-                "    \"followup\": false,\n " +
-                "    \"incidentDate\": \"2014-07-21T12:27:50.730\",\n " +
-                "    \"status\": \"ACTIVE\",\n " +
-                "    \"notes\": [],\n " +
-                "    \"attributes\": []\n " +
-                "    }",
-                Enrollment.class);
+        Enrollment enrollment = objectMapper.readValue(jsonStream, Enrollment.class);
 
         assertThat(enrollment.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-03-28T12:27:50.740"));

@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.junit.After;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
                 CategoryEndpointCall.FACTORY.create(getGenericCallData(d2), new HashSet<>(
                         Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
 
-        dhis2MockServer.enqueueMockResponse("categories.json");
+        dhis2MockServer.enqueueMockResponse("category/categories.json");
 
         List<Category> categories = callEndpoint.call();
         assertFalse(categories.isEmpty());

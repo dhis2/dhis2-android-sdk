@@ -1,0 +1,36 @@
+{
+  "created": "2015-01-26T13:14:09.957",
+  "lastUpdated": "2015-10-14T13:37:29.904",
+  "name": "Care at Birth",
+  "href": "https://play.dhis2.org/dev/api/programStageSections/bbjzL5gp0NZ",
+  "id": "bbjzL5gp0NZ",
+  "displayName": "Care at Birth",
+  "externalAccess": false,
+  "sortOrder": 0,
+  "programStage": {
+    "id": "PFDfvmGpsR3"
+  },
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "programIndicators": [],
+  "dataElements": [
+    {
+      "id": "Itl05OEupgQ"
+    },
+    {
+      "id": "Mfq2Y9N21KZ"
+    },
+    {
+      "id": "mGHBXrtqSut"
+    }
+  ],
+  "translations": []
+}

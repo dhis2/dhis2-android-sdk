@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,46 +38,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class UserRoleShould {
+public class UserRoleShould extends BaseObjectShould implements ObjectShould {
+
+    public UserRoleShould() {
+        super("user/user_role.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        UserRole userRole = objectMapper.readValue("{\n" +
-                "\n" +
-                "    \"created\": \"2012-11-13T18:10:26.881\",\n" +
-                "    \"lastUpdated\": \"2016-10-12T19:59:11.734\",\n" +
-                "    \"name\": \"Superuser\",\n" +
-                "    \"id\": \"Ufph3mGRmMo\",\n" +
-                "    \"displayName\": \"Superuser\",\n" +
-                "    \"description\": \"Superuser\",\n" +
-                "    \"externalAccess\": false,\n" +
-                "    \"user\": {\n" +
-                "        \"id\": \"GOLswS44mh8\"\n" +
-                "    },\n" +
-                "    \"userGroupAccesses\": [ ],\n" +
-                "    \"attributeValues\": [ ],\n" +
-                "    \"users\": [\n" +
-                "        {\n" +
-                "            \"id\": \"cddnwKV2gm9\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"DXyJmlo9rge\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"oXD88WWSQpR\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"xE7jOejl9FI\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"id\": \"awtnYWiVEd5\"\n" +
-                "        }\n" +
-                "    ],\n" +
-                "    \"translations\": [ ]\n" +
-                "\n" +
-                "}", UserRole.class);
-
+        UserRole userRole = objectMapper.readValue(jsonStream, UserRole.class);
 
         assertThat(userRole.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-12T19:59:11.734"));

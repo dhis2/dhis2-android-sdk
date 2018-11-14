@@ -45,36 +45,38 @@ public final class NoteStore {
 
     private NoteStore() {}
 
-    private static final StatementBinder<NoteModel> BINDER = new StatementBinder<NoteModel>() {
+    private static final StatementBinder<Note> BINDER = new StatementBinder<Note>() {
         @Override
-        public void bindToStatement(@NonNull NoteModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull Note o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.enrollment());
             sqLiteBind(sqLiteStatement, 2, o.value());
             sqLiteBind(sqLiteStatement, 3, o.storedBy());
             sqLiteBind(sqLiteStatement, 4, o.storedDate());
+            sqLiteBind(sqLiteStatement, 5, o.uid());
+            sqLiteBind(sqLiteStatement, 6, o.state());
         }
     };
 
-    private static final WhereStatementBinder<NoteModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<NoteModel>() {
+    private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<Note>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull NoteModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 5, o.enrollment());
-            sqLiteBind(sqLiteStatement, 6, o.value());
-            sqLiteBind(sqLiteStatement, 7, o.storedBy());
-            sqLiteBind(sqLiteStatement, 8, o.storedDate());
+        public void bindToUpdateWhereStatement(@NonNull Note o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 7, o.enrollment());
+            sqLiteBind(sqLiteStatement, 8, o.value());
+            sqLiteBind(sqLiteStatement, 9, o.storedBy());
+            sqLiteBind(sqLiteStatement, 10, o.storedDate());
         }
     };
 
-    private static final CursorModelFactory<NoteModel> FACTORY = new CursorModelFactory<NoteModel>() {
+    private static final CursorModelFactory<Note> FACTORY = new CursorModelFactory<Note>() {
         @Override
-        public NoteModel fromCursor(Cursor cursor) {
-            return NoteModel.create(cursor);
+        public Note fromCursor(Cursor cursor) {
+            return Note.create(cursor);
         }
     };
 
-    public static ObjectWithoutUidStore<NoteModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteModel.TABLE, new NoteModel.Columns(),
+    public static ObjectWithoutUidStore<Note> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteTableInfo.TABLE_INFO,
                 BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

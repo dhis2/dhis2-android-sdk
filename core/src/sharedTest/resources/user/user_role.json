@@ -1,0 +1,32 @@
+{
+  "created": "2012-11-13T18:10:26.881",
+  "lastUpdated": "2016-10-12T19:59:11.734",
+  "name": "Superuser",
+  "id": "Ufph3mGRmMo",
+  "displayName": "Superuser",
+  "description": "Superuser",
+  "externalAccess": false,
+  "user": {
+    "id": "GOLswS44mh8"
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "users": [
+    {
+      "id": "cddnwKV2gm9"
+    },
+    {
+      "id": "DXyJmlo9rge"
+    },
+    {
+      "id": "oXD88WWSQpR"
+    },
+    {
+      "id": "xE7jOejl9FI"
+    },
+    {
+      "id": "awtnYWiVEd5"
+    }
+  ],
+  "translations": []
+}

@@ -1,0 +1,37 @@
+{
+  "code": "BIRTHS",
+  "created": "2011-12-24T12:24:25.203",
+  "lastUpdated": "2016-04-18T16:04:34.745",
+  "name": "Births",
+  "id": "m2jTvAj5kkm",
+  "dataDimensionType": "DISAGGREGATION",
+  "displayName": "Births",
+  "publicAccess": "rw------",
+  "externalAccess": false,
+  "isDefault": false,
+  "skipTotal": false,
+  "user": {
+    "id": "GOLswS44mh8"
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "categoryOptionCombos": [
+    {
+      "id": "b19Ye0TWs1D"
+    },
+    {
+      "id": "YEmiuCcgNQI"
+    },
+    {
+      "id": "vP9xV78M67W"
+    }
+  ],
+  "categories": [
+    {
+      "id": "KfdsGBcoiCa"
+    },
+    {
+      "id": "cX5k9anHEHd"
+    }
+  ]
+}

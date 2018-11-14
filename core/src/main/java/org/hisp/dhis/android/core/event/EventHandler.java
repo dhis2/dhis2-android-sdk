@@ -73,7 +73,7 @@ public class EventHandler {
             trackedEntityDataValueHandler.handle(event.uid(),
                     event.trackedEntityDataValues());
         } else {
-            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit");
+            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or invalid eventDate");
         }
     }
 

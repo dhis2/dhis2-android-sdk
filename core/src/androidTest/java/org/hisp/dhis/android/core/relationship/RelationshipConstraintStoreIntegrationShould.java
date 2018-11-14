@@ -40,7 +40,8 @@ public class RelationshipConstraintStoreIntegrationShould extends
         ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipConstraint> {
 
     public RelationshipConstraintStoreIntegrationShould() {
-        super(RelationshipConstraintStore.create(DatabaseAdapterFactory.get(false)));
+        super(RelationshipConstraintStore.create(DatabaseAdapterFactory.get(false)),
+                RelationshipConstraintTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override

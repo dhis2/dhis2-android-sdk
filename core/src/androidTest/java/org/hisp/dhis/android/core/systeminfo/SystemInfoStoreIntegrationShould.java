@@ -39,7 +39,8 @@ import org.junit.runner.RunWith;
 public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
 
     public SystemInfoStoreIntegrationShould() {
-        super(SystemInfoStore.create(DatabaseAdapterFactory.get(false)));
+        super(SystemInfoStore.create(DatabaseAdapterFactory.get(false)), SystemInfoTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
     @Override

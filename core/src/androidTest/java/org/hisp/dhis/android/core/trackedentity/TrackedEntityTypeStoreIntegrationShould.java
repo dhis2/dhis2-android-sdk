@@ -41,7 +41,7 @@ public class TrackedEntityTypeStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityType> {
 
     public TrackedEntityTypeStoreIntegrationShould() {
-        super(TrackedEntityTypeStore.create(DatabaseAdapterFactory.get(false)));
+        super(TrackedEntityTypeStore.create(DatabaseAdapterFactory.get(false)), TrackedEntityTypeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override

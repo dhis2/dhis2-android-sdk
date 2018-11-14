@@ -28,7 +28,12 @@ public class EventHandler {
     }
 
     private boolean isValid(@NonNull Event event) {
-        return event.organisationUnit() != null;
+        Boolean validEventDate = event.eventDate() != null ||
+                event.status() == EventStatus.SCHEDULE ||
+                event.status() == EventStatus.SKIPPED ||
+                event.status() == EventStatus.OVERDUE;
+
+        return validEventDate && event.organisationUnit() != null;
     }
 
     public void handle(@NonNull Event event) {
@@ -67,7 +72,7 @@ public class EventHandler {
             trackedEntityDataValueHandler.handle(event.uid(),
                     event.trackedEntityDataValues());
         } else {
-            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit");
+            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or invalid eventDate");
         }
     }
 

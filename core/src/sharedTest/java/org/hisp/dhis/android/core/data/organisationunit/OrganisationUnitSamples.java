@@ -35,18 +35,23 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fill
 
 public class OrganisationUnitSamples {
 
-    public static OrganisationUnit getOrganisationUnit(String uid) {
+    public static OrganisationUnit getOrganisationUnit(String uid, long id) {
         OrganisationUnit.Builder builder = OrganisationUnit.builder();
 
         fillNameableProperties(builder);
         return builder
+                .id(id)
                 .uid(uid)
                 .path("test_path")
                 .openingDate(FillPropertiesTestUtils.CREATED)
                 .closedDate(FillPropertiesTestUtils.LAST_UPDATED)
                 .level(100)
-                .parent(OrganisationUnit.builder().uid("test_parent").build())
+                .parent(null)
                 .displayNamePath("/grandpa/dad/me/")
-        .build();
+                .build();
+    }
+
+    public static OrganisationUnit getOrganisationUnit(String uid) {
+        return getOrganisationUnit(uid, 1L);
     }
 }

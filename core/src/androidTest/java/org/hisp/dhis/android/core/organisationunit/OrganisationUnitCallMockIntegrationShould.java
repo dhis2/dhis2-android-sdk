@@ -157,19 +157,19 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(organisationUnitCursor).hasRow("cDw53Ej8rju", "OU_278371", "Afro Arab Clinic",
-                "Afro Arab Clinic", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.518", "Afro Arab Clinic",
-                "Afro Arab Clinic", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju",
-                "2008-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg");
-
         assertThatCursor(organisationUnitCursor).hasRow("Rp268JB6Ne4", "OU_651071", "Adonkia CHP",
                 "Adonkia CHP", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.515", "Adonkia CHP",
                 "Adonkia CHP", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/Rp268JB6Ne4",
-                "2010-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg");
+                "2010-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg", "/Adonkia CHP");
+
+        assertThatCursor(organisationUnitCursor).hasRow("cDw53Ej8rju", "OU_278371", "Afro Arab Clinic",
+                "Afro Arab Clinic", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.518", "Afro Arab Clinic",
+                "Afro Arab Clinic", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju",
+                "2008-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg", "/Afro Arab Clinic");
 
         //Link tables:
-        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "cDw53Ej8rju");
-        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "Rp268JB6Ne4").isExhausted();
+        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "Rp268JB6Ne4");
+        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "cDw53Ej8rju").isExhausted();
 
         assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
                 BaseIdentifiableObject.DATE_FORMAT.format(genericCallData.serverDate()));

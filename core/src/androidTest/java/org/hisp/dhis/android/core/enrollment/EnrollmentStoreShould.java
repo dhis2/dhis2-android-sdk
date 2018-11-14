@@ -126,7 +126,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
-        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT, 1L);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
@@ -204,7 +204,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
         ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
                 RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
         database().insert(ProgramModel.TABLE, null, program);
-        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(deferredOrganisationUnit);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(deferredOrganisationUnit, 11L);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 deferredTrackedEntityInstance, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());

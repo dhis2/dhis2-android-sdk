@@ -35,6 +35,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -81,6 +82,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
 
     @Override
     @Nullable
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     public static Date parseDate(String dateStr) throws ParseException {

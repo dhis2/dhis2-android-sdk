@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
@@ -42,7 +41,7 @@ import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,17 +62,14 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     }
 
     @Override
-    public int deleteByEventAndDataElementUIds(String eventUid, List<String> dataElementUids) {
-        List<String> argumentValues = new ArrayList<>();
-        argumentValues.add(eventUid);
-        argumentValues.addAll(dataElementUids);
-        String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
+    public int deleteByEventAndNotInDataValues(@NonNull String eventUid,
+                                               @NonNull List<String> dataElementUids) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+                .appendNotInKeyStringValues(TrackedEntityDataValueFields.DATA_ELEMENT, dataElementUids)
+                .build();
 
-        String inArguments = TextUtils.join(",", Collections.nCopies(dataElementUids.size(), "?"));
-
-        return databaseAdapter.delete(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-            TrackedEntityDataValueTableInfo.Columns.EVENT + " = ? AND " +
-                    TrackedEntityDataValueFields.DATA_ELEMENT + " in (" + inArguments + ");", argumentValuesArray);
+        return databaseAdapter.delete(TrackedEntityDataValueTableInfo.TABLE_INFO.name(), whereClause, null);
     }
 
     @Override
@@ -87,7 +83,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     @Override
     public Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues() {
 
-        String queryStatement = "SELECT " + builder.commaSeparatedColumns() +
+        String queryStatement = "SELECT TrackedEntityDataValue.* " +
                 " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid)" +
                 " WHERE Event.enrollment ISNULL AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE');";
 
@@ -97,7 +93,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     @Override
     public Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues() {
 
-        String queryStatement = "SELECT " + builder.commaSeparatedColumns() + " FROM (TrackedEntityDataValue" +
+        String queryStatement = "SELECT TrackedEntityDataValue.* FROM (TrackedEntityDataValue" +
                 " INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid " +
                 " INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
                 " INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
@@ -110,7 +106,10 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
 
     private Map<String, List<TrackedEntityDataValue>> queryTrackedEntityDataValues(String queryStatement) {
 
-        List<TrackedEntityDataValue> dataValueList = selectWhereClause(queryStatement);
+        List<TrackedEntityDataValue> dataValueList = new ArrayList<>();
+        Cursor cursor = databaseAdapter.query(queryStatement);
+        addObjectsToCollection(cursor, dataValueList);
+
         Map<String, List<TrackedEntityDataValue>> dataValues = new HashMap<>();
         for (TrackedEntityDataValue dataValue : dataValueList) {
             if (dataValues.get(dataValue.event()) == null) {

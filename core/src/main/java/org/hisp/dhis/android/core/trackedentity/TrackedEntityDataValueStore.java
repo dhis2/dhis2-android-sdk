@@ -32,12 +32,13 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
 
-    int deleteByEventAndDataElementUIds(String eventUid, List<String> dataElementUids);
+    int deleteByEventAndNotInDataValues(String eventUid, List<String> dataElementUids);
 
     List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
 

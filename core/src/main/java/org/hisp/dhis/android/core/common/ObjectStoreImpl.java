@@ -160,7 +160,7 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    private void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
+    public void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();

@@ -1,86 +1,38 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
-public class TrackedEntityDataValueHandler {
+public class TrackedEntityDataValueHandler extends ObjectWithoutUidSyncHandlerImpl<TrackedEntityDataValue> {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
     private TrackedEntityDataValueHandler(TrackedEntityDataValueStore trackedEntityDataValueStore) {
+        super(trackedEntityDataValueStore);
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }
 
-    public void handle(String eventUid,
-            List<TrackedEntityDataValue> dataValues) {
-        if (eventUid == null || dataValues == null) {
-            return;
-        }
-
-        removeNoExistedDataValuesInServer(eventUid, dataValues);
-
-        for (TrackedEntityDataValue dataValue : dataValues) {
-            handle(eventUid, dataValue);
-        }
+    @Override
+    protected void afterCollectionHandled(Collection<TrackedEntityDataValue> trackedEntityDataValues) {
+        removeNotExistingDataValuesInServer(trackedEntityDataValues);
     }
 
-    private void removeNoExistedDataValuesInServer(String eventUid,
-            List<TrackedEntityDataValue> dataValues) {
+    private void removeNotExistingDataValuesInServer(Collection<TrackedEntityDataValue> trackedEntityDataValues) {
+        String eventUid = trackedEntityDataValues.iterator().next().event();
 
-        List<String> uIds = getDataElementUIdsToRemove(eventUid, dataValues);
-
-        if (!uIds.isEmpty()) {
-            trackedEntityDataValueStore.deleteByEventAndDataElementUIds(eventUid, uIds);
-        }
-    }
-
-    private List<String> getDataElementUIdsToRemove(String eventUid,
-            List<TrackedEntityDataValue> dataValues) {
-        List<String> dataElementUIdsToRemove = new ArrayList<>();
-
-        List<TrackedEntityDataValue> dataValuesInDB =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid);
-
-        for (TrackedEntityDataValue dataValue : dataValuesInDB) {
-            if (!existsDataElement(dataValues, dataValue.dataElement())) {
-                dataElementUIdsToRemove.add(dataValue.dataElement());
-            }
+        List<String> dataElementUids = new ArrayList<>();
+        for (TrackedEntityDataValue dataValue : trackedEntityDataValues) {
+            dataElementUids.add(dataValue.dataElement());
         }
 
-        return dataElementUIdsToRemove;
-    }
-
-    private boolean existsDataElement(List<TrackedEntityDataValue> dataValues,
-            String dataElementUid) {
-        for (TrackedEntityDataValue dataValue : dataValues) {
-            if (dataValue.dataElement().equals(dataElementUid)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void handle(String eventUid,
-            TrackedEntityDataValue dataValue) {
-
-        int updatedRow = trackedEntityDataValueStore.update(
-                eventUid, dataValue.created(), dataValue.lastUpdated(), dataValue.dataElement(),
-                dataValue.storedBy(), dataValue.value(), dataValue.providedElsewhere());
-
-        if (updatedRow <= 0) {
-            trackedEntityDataValueStore.insert(
-                    eventUid, dataValue.created(), dataValue.lastUpdated(), dataValue.dataElement(),
-                    dataValue.storedBy(), dataValue.value(), dataValue.providedElsewhere());
-        }
+        trackedEntityDataValueStore.deleteByEventAndNotInDataValues(eventUid, dataElementUids);
     }
 
     public static TrackedEntityDataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityDataValueHandler(
-               new TrackedEntityDataValueStoreImpl(databaseAdapter)
-        );
+        return new TrackedEntityDataValueHandler(TrackedEntityDataValueStoreImpl.create(databaseAdapter));
     }
 }
-

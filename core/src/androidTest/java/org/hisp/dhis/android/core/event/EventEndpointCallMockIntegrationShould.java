@@ -14,6 +14,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -120,10 +122,9 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
-        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(
-                d2.databaseAdapter());
+        TrackedEntityDataValueStore eventStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter());
 
-        int numPersisted = eventStore.countAll();
+        int numPersisted = eventStore.selectAll().size();
 
         assertThat(numPersisted, is(num));
     }
@@ -144,20 +145,25 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         List<Event> downloadedEventsWithoutValues = eventStore.querySingleEvents();
 
-        TrackedEntityDataValueStoreImpl trackedEntityDataValue =
-                new TrackedEntityDataValueStoreImpl(databaseAdapter());
-
-        Map<String, List<TrackedEntityDataValue>> downloadedValues =
-                trackedEntityDataValue.queryTrackedEntityDataValues();
-
+        TrackedEntityDataValueStore trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         for (Event event : downloadedEventsWithoutValues) {
+
+            List<TrackedEntityDataValue> trackedEntityDataValues =
+                    trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(event.uid());
+            List<TrackedEntityDataValue> trackedEntityDataValuesWithNullIdsAndEvents = new ArrayList<>();
+
+            for (TrackedEntityDataValue trackedEntityDataValue : trackedEntityDataValues) {
+                trackedEntityDataValuesWithNullIdsAndEvents.add(
+                        trackedEntityDataValue.toBuilder().id(null).event(null).build());
+            }
+
             event = Event.create(
                     event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
+                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
                     event.attributeOptionCombo(), event.trackedEntityInstance());
 
             downloadedEvents.add(event);

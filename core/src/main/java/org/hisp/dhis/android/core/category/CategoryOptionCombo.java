@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -68,8 +67,6 @@ public abstract class CategoryOptionCombo extends BaseNameableObject implements 
     @JsonProperty()
     @ColumnAdapter(IgnoreCategoryOptionListColumnAdapter.class)
     public abstract List<CategoryOption> categoryOptions();
-
-    public abstract ContentValues toContentValues();
 
     static CategoryOptionCombo create(Cursor cursor) {
         return $AutoValue_CategoryOptionCombo.createFromCursor(cursor);

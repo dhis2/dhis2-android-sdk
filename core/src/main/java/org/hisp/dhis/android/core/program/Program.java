@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -233,8 +232,6 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     static Program create(Cursor cursor) {
         return $AutoValue_Program.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

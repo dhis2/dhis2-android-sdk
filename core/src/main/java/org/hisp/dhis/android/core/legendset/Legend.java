@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -73,8 +72,6 @@ public abstract class Legend extends BaseIdentifiableObject implements Model {
     @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid legendSet();
-
-    public abstract ContentValues toContentValues();
 
     static Legend create(Cursor cursor) {
         return $AutoValue_Legend.createFromCursor(cursor);

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -72,8 +71,6 @@ public abstract class Note extends BaseDataModel implements ObjectWithUidInterfa
     static Note create(Cursor cursor) {
         return $AutoValue_Note.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

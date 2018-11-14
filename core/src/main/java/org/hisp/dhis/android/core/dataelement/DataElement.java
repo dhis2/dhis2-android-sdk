@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -123,8 +122,6 @@ public abstract class DataElement extends BaseNameableObject
     static DataElement create(Cursor cursor) {
         return $AutoValue_DataElement.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

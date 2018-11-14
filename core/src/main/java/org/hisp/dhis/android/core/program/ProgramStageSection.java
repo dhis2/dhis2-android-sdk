@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -104,8 +103,6 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
     static ProgramStageSection create(Cursor cursor) {
         return $AutoValue_ProgramStageSection.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

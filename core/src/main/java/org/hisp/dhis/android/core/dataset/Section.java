@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -100,8 +99,6 @@ public abstract class Section extends BaseIdentifiableObject implements Model {
     static Section create(Cursor cursor) {
         return $AutoValue_Section.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -79,8 +78,6 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
     static Option create(Cursor cursor) {
         return $AutoValue_Option.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

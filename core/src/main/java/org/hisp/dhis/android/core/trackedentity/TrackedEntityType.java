@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -62,8 +61,6 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Mo
     static TrackedEntityType create(Cursor cursor) {
         return $AutoValue_TrackedEntityType.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

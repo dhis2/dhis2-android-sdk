@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -58,7 +57,7 @@ public abstract class TrackedEntityDataValue implements Model {
     @JsonIgnore()
     public abstract Long id();
 
-    @NonNull
+    @Nullable
     @JsonIgnore()
     public abstract String event();
 

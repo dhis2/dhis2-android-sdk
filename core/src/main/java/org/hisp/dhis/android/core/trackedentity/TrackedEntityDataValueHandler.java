@@ -29,7 +29,7 @@ public class TrackedEntityDataValueHandler extends ObjectWithoutUidSyncHandlerIm
             dataElementUids.add(dataValue.dataElement());
         }
 
-        trackedEntityDataValueStore.deleteByEventAndNotInDataValues(eventUid, dataElementUids);
+        trackedEntityDataValueStore.deleteByEventAndNotInDataElements(eventUid, dataElementUids);
     }
 
     public static TrackedEntityDataValueHandler create(DatabaseAdapter databaseAdapter) {

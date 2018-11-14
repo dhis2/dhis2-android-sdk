@@ -38,7 +38,7 @@ import java.util.Map;
 
 public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
 
-    int deleteByEventAndNotInDataValues(String eventUid, List<String> dataElementUids);
+    int deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
 
     List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
 

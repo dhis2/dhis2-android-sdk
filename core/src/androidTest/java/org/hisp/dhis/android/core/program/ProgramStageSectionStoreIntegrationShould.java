@@ -40,7 +40,7 @@ public class ProgramStageSectionStoreIntegrationShould
         extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageSection> {
 
     public ProgramStageSectionStoreIntegrationShould() {
-        super(ProgramStageSectionStore.create(DatabaseAdapterFactory.get(false)));
+        super(ProgramStageSectionStore.create(DatabaseAdapterFactory.get(false)), ProgramStageSectionTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override

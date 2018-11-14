@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.junit.After;
 import org.junit.Before;
@@ -38,16 +40,20 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class ObjectStoreAbstractIntegrationShould<M> {
+public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
 
-    protected M object;
-    protected M objectWithId;
-    protected ObjectStore<M> store;
+    final M object;
+    final M objectWithId;
+    private final ObjectStore<M> store;
+    private final TableInfo tableInfo;
+    private final DatabaseAdapter databaseAdapter;
 
-    ObjectStoreAbstractIntegrationShould(ObjectStore<M> store) {
+    ObjectStoreAbstractIntegrationShould(ObjectStore<M> store, TableInfo tableInfo, DatabaseAdapter databaseAdapter) {
         this.store = store;
         this.object = buildObject();
         this.objectWithId = buildObjectWithId();
+        this.tableInfo = tableInfo;
+        this.databaseAdapter = databaseAdapter;
     }
 
     protected abstract M buildObject();
@@ -66,6 +72,13 @@ public abstract class ObjectStoreAbstractIntegrationShould<M> {
     @Test
     public void insert_and_select_first_object() {
         store.insert(object);
+        M objectFromDb = store.selectFirst();
+        assertThat(objectFromDb).isEqualTo(object);
+    }
+
+    @Test
+    public void insert_as_content_values_and_select_first_object() {
+        databaseAdapter.database().insert(tableInfo.name(), null, object.toContentValues());
         M objectFromDb = store.selectFirst();
         assertThat(objectFromDb).isEqualTo(object);
     }

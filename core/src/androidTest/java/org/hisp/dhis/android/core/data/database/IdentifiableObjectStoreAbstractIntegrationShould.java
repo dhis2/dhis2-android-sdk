@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,14 +40,14 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class IdentifiableObjectStoreAbstractIntegrationShould<M extends ObjectWithUidInterface>
+public abstract class IdentifiableObjectStoreAbstractIntegrationShould<M extends ObjectWithUidInterface & Model>
         extends ObjectStoreAbstractIntegrationShould<M> {
 
     private M objectToUpdate;
-    protected IdentifiableObjectStore<M> store;
+    private IdentifiableObjectStore<M> store;
 
-    public IdentifiableObjectStoreAbstractIntegrationShould(IdentifiableObjectStore<M> store) {
-        super(store);
+    public IdentifiableObjectStoreAbstractIntegrationShould(IdentifiableObjectStore<M> store, TableInfo tableInfo, DatabaseAdapter databaseAdapter) {
+        super(store, tableInfo, databaseAdapter);
         this.store = store;
         this.objectToUpdate = buildObjectToUpdate();
     }

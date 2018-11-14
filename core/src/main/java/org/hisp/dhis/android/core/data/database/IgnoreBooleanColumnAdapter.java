@@ -26,37 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.data.database;
 
-import android.support.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
-import org.junit.runner.RunWith;
-
-@RunWith(AndroidJUnit4.class)
-public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
-
-    public SystemInfoStoreIntegrationShould() {
-        super(SystemInfoStore.create(DatabaseAdapterFactory.get(false)), SystemInfoTableInfo.TABLE_INFO,
-                DatabaseAdapterFactory.get(false));
-    }
-
-    @Override
-    protected SystemInfo buildObject() {
-        return SystemInfoSamples.get1();
-    }
-
-    @Override
-    protected SystemInfo buildObjectToUpdate() {
-        return SystemInfoSamples.get2();
-    }
-
-    @Override
-    protected SystemInfo buildObjectWithId() {
-        return SystemInfoSamples.get1().toBuilder()
-                .id(1L)
-                .build();
-    }
+public final class IgnoreBooleanColumnAdapter extends IgnoreColumnAdapter<Boolean> {
 }

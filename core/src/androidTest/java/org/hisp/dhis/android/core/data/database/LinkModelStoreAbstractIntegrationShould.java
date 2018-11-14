@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.junit.Before;
@@ -44,8 +45,10 @@ public abstract class LinkModelStoreAbstractIntegrationShould<M extends Model>
     private String masterUid;
     protected LinkModelStore<M> store;
 
-    public LinkModelStoreAbstractIntegrationShould(LinkModelStore<M> store) {
-        super(store);
+    public LinkModelStoreAbstractIntegrationShould(LinkModelStore<M> store,
+                                                   TableInfo tableInfo,
+                                                   DatabaseAdapter databaseAdapter) {
+        super(store, tableInfo, databaseAdapter);
         this.store = store;
         this.objectWithOtherMasterUid = buildObjectWithOtherMasterUid();
         this.masterUid = addMasterUid();

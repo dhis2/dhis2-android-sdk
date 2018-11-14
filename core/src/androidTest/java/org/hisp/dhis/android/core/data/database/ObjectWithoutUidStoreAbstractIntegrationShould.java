@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,14 +39,16 @@ import java.io.IOException;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M>
+public abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M extends Model>
         extends ObjectStoreAbstractIntegrationShould<M> {
 
     private M objectToUpdate;
     protected ObjectWithoutUidStore<M> store;
 
-    public ObjectWithoutUidStoreAbstractIntegrationShould(ObjectWithoutUidStore<M> store) {
-        super(store);
+    public ObjectWithoutUidStoreAbstractIntegrationShould(ObjectWithoutUidStore<M> store,
+                                                          TableInfo tableInfo,
+                                                          DatabaseAdapter databaseAdapter) {
+        super(store, tableInfo, databaseAdapter);
         this.store = store;
         this.objectToUpdate = buildObjectToUpdate();
     }

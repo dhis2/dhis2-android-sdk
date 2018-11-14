@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
 
     public IndicatorStoreIntegrationShould() {
-        super(IndicatorStore.create(DatabaseAdapterFactory.get(false)));
+        super(IndicatorStore.create(DatabaseAdapterFactory.get(false)), IndicatorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override

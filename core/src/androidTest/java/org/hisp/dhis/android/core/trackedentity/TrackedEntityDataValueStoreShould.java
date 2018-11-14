@@ -241,9 +241,6 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         Map<String, List<TrackedEntityDataValue>> map =
                 trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
 
-        List<TrackedEntityDataValue> dataValuesByEventUid =
-                trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(EVENT_1);
-
         assertThat(map.size()).isEqualTo(1);
 
         List<TrackedEntityDataValue> dataValues = map.get(EVENT_1);

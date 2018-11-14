@@ -38,7 +38,6 @@ public class IndicatorSamples {
     public static Indicator getIndicator() {
         Indicator.Builder indicatorBuilder = Indicator.builder();
 
-
         fillNameableProperties(indicatorBuilder);
         indicatorBuilder
                 .annualized(false)

@@ -35,14 +35,15 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
 import org.hisp.dhis.android.core.event.EventModel;
-import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
@@ -122,8 +123,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null,
                 TRACKED_ENTITY_UID);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L,
-                ORGANISATION_UNIT);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
 
@@ -141,7 +141,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
                 relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(DataElementModel.TABLE, null, dataElement1);
         database().insert(DataElementModel.TABLE, null, dataElement2);

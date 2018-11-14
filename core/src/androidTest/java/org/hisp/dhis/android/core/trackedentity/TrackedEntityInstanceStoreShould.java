@@ -34,10 +34,12 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 import org.junit.Before;
@@ -91,9 +93,9 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         super.setUp();
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
     }
 
@@ -119,9 +121,9 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
 
         long rowId = trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 deferredOrganisationUnit, deferredTrackedEntity, COORDINATES, FEATURE_TYPE, STATE);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(deferredOrganisationUnit);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(11L, deferredTrackedEntity);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -214,8 +216,8 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
                 ORGANISATION_UNIT, TRACKED_ENTITY, COORDINATES, FEATURE_TYPE, STATE);
 
 
-        database().delete(OrganisationUnitModel.TABLE,
-                OrganisationUnitModel.Columns.UID + "=?", new String[]{
+        database().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID + "=?", new String[]{
                         ORGANISATION_UNIT
                 });
 

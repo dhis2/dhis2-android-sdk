@@ -35,11 +35,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -62,23 +62,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
-    private static final String[] ORGANISATION_UNIT_PROJECTION = {
-            OrganisationUnitModel.Columns.UID,
-            OrganisationUnitModel.Columns.CODE,
-            OrganisationUnitModel.Columns.NAME,
-            OrganisationUnitModel.Columns.DISPLAY_NAME,
-            OrganisationUnitModel.Columns.CREATED,
-            OrganisationUnitModel.Columns.LAST_UPDATED,
-            OrganisationUnitModel.Columns.SHORT_NAME,
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME,
-            OrganisationUnitModel.Columns.DESCRIPTION,
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION,
-            OrganisationUnitModel.Columns.PATH,
-            OrganisationUnitModel.Columns.OPENING_DATE,
-            OrganisationUnitModel.Columns.CLOSED_DATE,
-            OrganisationUnitModel.Columns.LEVEL,
-            OrganisationUnitModel.Columns.PARENT
-    };
     private static String[] USER_ORGANISATION_UNIT_PROJECTION = {
             UserOrganisationUnitLinkModel.Columns.USER,
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
@@ -106,9 +89,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json");
 
-        List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.create("O6uvpzGd5pu",
-                null, null, null, null, null, null, null, null, null, null, "/ImspTQPwCqd/O6uvpzGd5pu", null, null,
-                null, null, null, null, null, false));
+        OrganisationUnit orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build();
+        List<OrganisationUnit> organisationUnits = Collections.singletonList(orgUnit);
         //dependencies for the OrganisationUnitCall:
         OrganisationUnitService organisationUnitService = d2.retrofit().create(OrganisationUnitService.class);
 
@@ -124,9 +106,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         insertProgramWithUid(programUid);
         Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid));
 
-        GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler =
+        SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler =
                 OrganisationUnitHandler.create(databaseAdapter(), programUids, null,
-                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
+                        OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
 
         genericCallData = getGenericCallData(d2);
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
@@ -167,8 +149,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         organisationUnitCall.call();
 
-        Cursor organisationUnitCursor = database().query(OrganisationUnitModel.TABLE,
-                ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
+        Cursor organisationUnitCursor = database().query(OrganisationUnitTableInfo.TABLE_INFO.name(),
+                OrganisationUnitTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
         Cursor userOrganisationUnitCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.legendset.LegendModel;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -134,13 +134,13 @@ public class SQLStatementBuilderShould {
     @Test
     public void generate_create_organisation_unit_table_statement() {
         String createOrganisationUnitTable =
-                SQLStatementBuilder.createNameableModelTable(OrganisationUnitModel.TABLE,
-                        OrganisationUnitModel.Columns.PATH + " TEXT," +
-                                OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
-                                OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
-                                OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
-                                OrganisationUnitModel.Columns.PARENT + " TEXT," +
-                                OrganisationUnitModel.Columns.DISPLAY_NAME_PATH + " TEXT"
+                SQLStatementBuilder.createNameableModelTable(OrganisationUnitTableInfo.TABLE_INFO.name(),
+                        "path TEXT," +
+                                "openingDate TEXT," +
+                                "closedDate TEXT," +
+                                "level INTEGER," +
+                                "parent TEXT," +
+                                "displayNamePath TEXT"
                 );
 
         assertThat(createOrganisationUnitTable).isEqualTo("CREATE TABLE OrganisationUnit (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, path TEXT,openingDate TEXT,closedDate TEXT,level INTEGER,parent TEXT,displayNamePath TEXT);");
@@ -156,8 +156,8 @@ public class SQLStatementBuilderShould {
                                 " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                                 " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
-                                " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
-                                OrganisationUnitModel.Columns.UID + ")" +
+                                " REFERENCES " + OrganisationUnitTableInfo.TABLE_INFO.name() + " (" +
+                                BaseIdentifiableObjectModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                                 " UNIQUE (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ", " +
                                 DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"

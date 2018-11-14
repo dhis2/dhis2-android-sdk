@@ -109,7 +109,7 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
                                                                 Set<String> dataSetUids) {
             SyncHandlerWithTransformer<OrganisationUnit> handler =
                     OrganisationUnitHandler.create(data.databaseAdapter(), programUids, dataSetUids,
-                            OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
+                            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
             return new OrganisationUnitCall(user, data.retrofit().create(OrganisationUnitService.class), data, handler);
         }
     };

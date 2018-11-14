@@ -26,45 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.data.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-public final class OrganisationUnitTableInfo {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-    private OrganisationUnitTableInfo() {
-    }
+public class OrganisationUnitSamples {
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    public static OrganisationUnit getOrganisationUnit(String uid) {
+        OrganisationUnit.Builder builder = OrganisationUnit.builder();
 
-        @Override
-        public String name() {
-            return "OrganisationUnit";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static class Columns extends BaseNameableObjectModel.Columns {
-
-        static final String DISPLAY_NAME_PATH = "displayNamePath";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    OrganisationUnitFields.PATH,
-                    OrganisationUnitFields.OPENING_DATE,
-                    OrganisationUnitFields.CLOSED_DATE,
-                    OrganisationUnitFields.LEVEL,
-                    OrganisationUnitFields.PARENT,
-                    DISPLAY_NAME_PATH
-            );
-        }
+        fillNameableProperties(builder);
+        return builder
+                .uid(uid)
+                .path("test_path")
+                .openingDate(FillPropertiesTestUtils.CREATED)
+                .closedDate(FillPropertiesTestUtils.LAST_UPDATED)
+                .level(100)
+                .parent(OrganisationUnit.builder().uid("test_parent").build())
+                .displayNamePath("/grandpa/dad/me/")
+        .build();
     }
 }

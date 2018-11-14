@@ -31,7 +31,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
@@ -76,7 +75,7 @@ public class OrganisationUnitHandler extends IdentifiableSyncHandlerImpl<Organis
     private final Set<ObjectWithUid> orgUnitLinkedProgramUids;
     private final Set<ObjectWithUid> orgUnitLinkedDataSetUids;
     private final Set<ObjectWithUid> organisationUnitGroupUids;
-    private final OrganisationUnitModel.Scope scope;
+    private final OrganisationUnit.Scope scope;
     private final User user;
 
 
@@ -92,7 +91,7 @@ public class OrganisationUnitHandler extends IdentifiableSyncHandlerImpl<Organis
                             @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner,
                             @Nullable Set<String> programUids,
                             @Nullable Set<String> dataSetUids,
-                            @Nullable OrganisationUnitModel.Scope scope,
+                            @Nullable OrganisationUnit.Scope scope,
                             @Nullable User user,
                             @Nullable GenericHandler<OrganisationUnitGroup,
                                     OrganisationUnitGroupModel> organisationUnitGroupHandler,
@@ -196,7 +195,7 @@ public class OrganisationUnitHandler extends IdentifiableSyncHandlerImpl<Organis
     public static SyncHandlerWithTransformer<OrganisationUnit> create(DatabaseAdapter databaseAdapter,
                                                                       Set<String> programUids,
                                                                       Set<String> dataSetUids,
-                                                                      OrganisationUnitModel.Scope scope,
+                                                                      OrganisationUnit.Scope scope,
                                                                       User user) {
         return new OrganisationUnitHandler(
                 OrganisationUnitStore.create(databaseAdapter),

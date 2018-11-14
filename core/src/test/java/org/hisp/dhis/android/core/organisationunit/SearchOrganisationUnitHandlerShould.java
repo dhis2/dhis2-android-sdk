@@ -76,7 +76,7 @@ public class SearchOrganisationUnitHandlerShould {
                 .builder()
                 .organisationUnit(organisationUnitUid)
                 .user(userUid).root(false)
-                .organisationUnitScope(OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH.toString())
+                .organisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH.toString())
                 .build();
 
         handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitDisplayPathTransformer());

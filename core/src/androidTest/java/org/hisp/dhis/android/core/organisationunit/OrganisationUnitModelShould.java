@@ -33,7 +33,9 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel.Columns;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,8 +71,8 @@ public class OrganisationUnitModelShould {
     @Test
     public void create_model_when_created_from_database_cursor() {
 
-        String[] columnsWithId = Utils.appendInNewArray(new OrganisationUnitModel.Columns().all(),
-                OrganisationUnitModel.Columns.ID);
+        String[] columnsWithId = Utils.appendInNewArray(OrganisationUnitTableInfo.TABLE_INFO.columns().all(),
+                BaseIdentifiableObjectModel.Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
         cursor.addRow(new Object[]{
                 UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME,
@@ -79,7 +81,7 @@ public class OrganisationUnitModelShould {
         });
         cursor.moveToFirst();
 
-        OrganisationUnitModel model = OrganisationUnitModel.create(cursor);
+        OrganisationUnit model = OrganisationUnit.create(cursor);
         cursor.close();
 
         assertThat(model.id()).isEqualTo(ID);
@@ -103,25 +105,7 @@ public class OrganisationUnitModelShould {
 
     @Test
     public void create_content_values_when_created_from_builder() {
-        OrganisationUnitModel model = OrganisationUnitModel.builder()
-                .id(ID)
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(date)
-                .lastUpdated(date)
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .path(PATH)
-                .openingDate(date)
-                .closedDate(date)
-                .parent(PARENT)
-                .level(LEVEL)
-                .displayNamePath(DISPLAY_NAME_PATH)
-                .build();
+        OrganisationUnit model = OrganisationUnitSamples.getOrganisationUnit(UID);
         ContentValues contentValues = model.toContentValues();
 
         assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
@@ -135,11 +119,11 @@ public class OrganisationUnitModelShould {
         assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
         assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
         assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.PATH)).isEqualTo(PATH);
-        assertThat(contentValues.getAsString(Columns.OPENING_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.CLOSED_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.PARENT)).isEqualTo(PARENT);
-        assertThat(contentValues.getAsInteger(Columns.LEVEL)).isEqualTo(LEVEL);
+        assertThat(contentValues.getAsString(OrganisationUnitFields.PATH)).isEqualTo(PATH);
+        assertThat(contentValues.getAsString(OrganisationUnitFields.OPENING_DATE)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(OrganisationUnitFields.CLOSED_DATE)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(OrganisationUnitFields.PARENT)).isEqualTo(PARENT);
+        assertThat(contentValues.getAsInteger(OrganisationUnitFields.LEVEL)).isEqualTo(LEVEL);
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME_PATH)).isEqualTo(DISPLAY_NAME_PATH);
     }
 }

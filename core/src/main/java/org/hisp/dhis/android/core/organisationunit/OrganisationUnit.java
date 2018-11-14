@@ -60,6 +60,11 @@ import java.util.List;
 @JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
 public abstract class OrganisationUnit extends BaseNameableObject implements Model {
 
+    public enum Scope {
+        SCOPE_DATA_CAPTURE,
+        SCOPE_TEI_SEARCH
+    }
+
     // TODO move to base class after whole object refactor
     @Override
     @Nullable

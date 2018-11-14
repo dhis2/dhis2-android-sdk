@@ -111,12 +111,12 @@ public class OrganisationUnitHandlerShould {
 
     private List<OrganisationUnit> organisationUnits;
 
-    private OrganisationUnitModel.Scope scope;
+    private OrganisationUnit.Scope scope;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        scope = OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE;
+        scope = OrganisationUnit.Scope.SCOPE_DATA_CAPTURE;
         String programUid = "test_program_uid";
         Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid));
         String dataSetUid = "test_data_set_uid";

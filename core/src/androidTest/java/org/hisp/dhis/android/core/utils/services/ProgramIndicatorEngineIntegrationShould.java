@@ -37,18 +37,16 @@ import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
@@ -104,7 +102,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
 
         programIndicatorEngine = ProgramIndicatorEngine.create(databaseAdapter());
         
-        OrganisationUnitModel orgunit = OrganisationUnitModel.builder().uid(orgunitUid).build();
+        OrganisationUnit orgunit = OrganisationUnit.builder().uid(orgunitUid).build();
         OrganisationUnitStore.create(databaseAdapter()).insert(orgunit);
 
         TrackedEntityType trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build();

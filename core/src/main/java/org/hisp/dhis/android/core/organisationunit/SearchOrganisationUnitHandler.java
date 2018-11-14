@@ -56,7 +56,7 @@ public class SearchOrganisationUnitHandler extends IdentifiableSyncHandlerImpl<O
     @Override
     protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
         UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
-                OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user);
+                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, user);
 
         userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
     }

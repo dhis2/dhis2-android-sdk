@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -97,8 +96,6 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Mod
     @JsonProperty()
     @ColumnAdapter(IgnoreLegendSetListColumnAdapter.class)
     public abstract List<LegendSet> legendSets();
-
-    public abstract ContentValues toContentValues();
 
     static ProgramIndicator create(Cursor cursor) {
         return $AutoValue_ProgramIndicator.createFromCursor(cursor);

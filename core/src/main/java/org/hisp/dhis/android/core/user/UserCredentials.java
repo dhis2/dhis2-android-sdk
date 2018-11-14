@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -72,8 +71,6 @@ public abstract class UserCredentials extends BaseIdentifiableObject implements 
     @JsonIgnore
     @ColumnAdapter(UserWithUidColumnAdapter.class)
     public abstract User user();
-
-    public abstract ContentValues toContentValues();
 
     static UserCredentials create(Cursor cursor) {
         return $AutoValue_UserCredentials.createFromCursor(cursor);

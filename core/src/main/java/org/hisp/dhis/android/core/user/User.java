@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -123,9 +122,6 @@ public abstract class User extends BaseIdentifiableObject implements Model {
     public static User create(Cursor cursor) {
         return AutoValue_User.createFromCursor(cursor);
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")

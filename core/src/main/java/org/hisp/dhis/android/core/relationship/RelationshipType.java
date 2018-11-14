@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -89,9 +87,6 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     static RelationshipType create(Cursor cursor) {
         return AutoValue_RelationshipType.createFromCursor(cursor);
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

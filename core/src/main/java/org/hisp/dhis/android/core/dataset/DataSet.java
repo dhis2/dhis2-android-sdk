@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -170,8 +169,6 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
     static DataSet create(Cursor cursor) {
         return $AutoValue_DataSet.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

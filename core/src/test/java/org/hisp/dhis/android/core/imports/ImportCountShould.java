@@ -1,26 +1,27 @@
 package org.hisp.dhis.android.core.imports;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class ImportCountShould {
+public class ImportCountShould extends BaseObjectShould implements ObjectShould {
 
+    public ImportCountShould() {
+        super("imports/import_count.json");
+    }
+
+    @Override
     @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        ImportCount importCount = objectMapper.readValue("{\n" +
-                "      \"imported\": 0,\n" +
-                "      \"updated\": 0,\n" +
-                "      \"ignored\": 1,\n" +
-                "      \"deleted\": 0\n" +
-                "    }", ImportCount.class);
+    public void map_from_json_string() throws IOException, ParseException {
+        ImportCount importCount = objectMapper.readValue(jsonStream, ImportCount.class);
 
         assertThat(importCount.imported()).isEqualTo(0);
         assertThat(importCount.updated()).isEqualTo(0);

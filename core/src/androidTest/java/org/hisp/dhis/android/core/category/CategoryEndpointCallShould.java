@@ -43,7 +43,7 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
                 CategoryEndpointCall.FACTORY.create(getGenericCallData(d2), new HashSet<>(
                         Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
 
-        dhis2MockServer.enqueueMockResponse("categories/categories.json");
+        dhis2MockServer.enqueueMockResponse("category/categories.json");
 
         List<Category> categories = callEndpoint.call();
         assertFalse(categories.isEmpty());

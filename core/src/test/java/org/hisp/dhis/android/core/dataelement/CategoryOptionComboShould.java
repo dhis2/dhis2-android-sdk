@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,30 +39,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class CategoryOptionComboShould {
+public class CategoryOptionComboShould extends BaseObjectShould implements ObjectShould {
 
+    public CategoryOptionComboShould() {
+        super("category/category_option_combo.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        CategoryOptionCombo categoryOptionCombo = objectMapper.readValue("{" +
-                        "\"code\":\"COC_358963\"," +
-                        "\"lastUpdated\":\"2011-12-24T12:24:25.319\"," +
-                        "\"id\":\"S34ULMcHMca\"," +
-                        "\"created\":\"2011-12-24T12:24:25.319\"," +
-                        "\"name\":\"0-11m\"," +
-                        "\"shortName\":\"0-11m\"," +
-                        "\"displayName\":\"0-11m\"," +
-                        "\"displayShortName\":\"0-11m\"," +
-                        "\"externalAccess\":false," +
-                        "\"ignoreApproval\":false," +
-                        "\"dimensionItem\":\"S34ULMcHMca\"," +
-                        "\"categoryCombo\":{\"id\":\"t3aNCvHsoSn\"}," +
-                        "\"translations\":[]," +
-                        "\"categoryOptions\":[{\"id\":\"FbLZS3ueWbQ\"}]," +
-                        "\"userGroupAccesses\":[]," +
-                        "\"attributeValues\":[]}",
-                CategoryOptionCombo.class);
+        CategoryOptionCombo categoryOptionCombo = objectMapper.readValue(jsonStream, CategoryOptionCombo.class);
 
         assertThat(categoryOptionCombo.uid()).isEqualTo("S34ULMcHMca");
         assertThat(categoryOptionCombo.code()).isEqualTo("COC_358963");

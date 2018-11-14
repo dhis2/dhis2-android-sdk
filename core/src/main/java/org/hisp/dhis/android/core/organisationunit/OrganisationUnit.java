@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -123,9 +122,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
     public static OrganisationUnit create(Cursor cursor) {
         return AutoValue_OrganisationUnit.createFromCursor(cursor);
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

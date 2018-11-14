@@ -38,6 +38,10 @@ public class OrganisationUnitWithUidColumnAdapter extends IdentifiableObjectColu
     public OrganisationUnit fromCursor(Cursor cursor, String columnName) {
         int columnIndex = cursor.getColumnIndex(columnName);
         String uid = cursor.getString(columnIndex);
-        return OrganisationUnit.builder().uid(uid).build();
+        if (uid == null) {
+            return null;
+        } else {
+            return OrganisationUnit.builder().uid(uid).build();
+        }
     }
 }

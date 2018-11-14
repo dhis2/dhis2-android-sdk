@@ -35,7 +35,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fill
 
 public class OrganisationUnitSamples {
 
-    public static OrganisationUnit getOrganisationUnit(String uid, long id) {
+    public static OrganisationUnit getOrganisationUnit(long id, String uid) {
         OrganisationUnit.Builder builder = OrganisationUnit.builder();
 
         fillNameableProperties(builder);
@@ -52,6 +52,6 @@ public class OrganisationUnitSamples {
     }
 
     public static OrganisationUnit getOrganisationUnit(String uid) {
-        return getOrganisationUnit(uid, 1L);
+        return getOrganisationUnit(1L, uid);
     }
 }

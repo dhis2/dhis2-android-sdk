@@ -121,7 +121,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
 
         long rowId = trackedEntityInstanceStore.insert(UID, date, date, CREATED_AT_CLIENT, LAST_UPDATED_AT_CLIENT,
                 deferredOrganisationUnit, deferredTrackedEntity, COORDINATES, FEATURE_TYPE, STATE);
-        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(deferredOrganisationUnit);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(11L, deferredOrganisationUnit);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(11L, deferredTrackedEntity);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);

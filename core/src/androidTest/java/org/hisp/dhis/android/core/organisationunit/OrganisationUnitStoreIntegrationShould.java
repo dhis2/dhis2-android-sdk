@@ -26,36 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.organisationunit;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import android.support.test.runner.AndroidJUnit4;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
+import org.junit.runner.RunWith;
 
-public class OrganisationUnitSamples {
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OrganisationUnit> {
 
-    public static OrganisationUnit getOrganisationUnit(Long id, String uid) {
-        OrganisationUnit.Builder builder = OrganisationUnit.builder();
+    public OrganisationUnitStoreIntegrationShould() {
+        super(OrganisationUnitStore.create(DatabaseAdapterFactory.get(false)),
+                OrganisationUnitTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
-        fillNameableProperties(builder);
-        return builder
-                .id(id)
-                .uid(uid)
-                .path("test_path")
-                .openingDate(FillPropertiesTestUtils.CREATED)
-                .closedDate(FillPropertiesTestUtils.LAST_UPDATED)
-                .level(100)
-                .parent(null)
-                .displayNamePath("/grandpa/dad/me/")
+    @Override
+    protected OrganisationUnit buildObject() {
+        return OrganisationUnitSamples.getOrganisationUnit(null, "UID");
+    }
+
+    @Override
+    protected OrganisationUnit buildObjectWithId() {
+        return OrganisationUnitSamples.getOrganisationUnit(1L, "UID");
+    }
+
+    @Override
+    protected OrganisationUnit buildObjectToUpdate() {
+        return buildObject().toBuilder()
+                .level(67)
                 .build();
-    }
-
-    public static OrganisationUnit getOrganisationUnit(String uid) {
-        return getOrganisationUnit(1L, uid);
-    }
-
-    public static OrganisationUnit getOrganisationUnit() {
-        return getOrganisationUnit(1L, "UID");
     }
 }

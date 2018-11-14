@@ -66,5 +66,12 @@ public final class TrackedEntityDataValueTableInfo {
             );
         }
 
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    EVENT,
+                    TrackedEntityDataValueFields.DATA_ELEMENT
+            );
+        }
     }
 }

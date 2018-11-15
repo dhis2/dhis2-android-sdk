@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
 import java.util.List;
 import java.util.Set;
@@ -42,9 +41,9 @@ public class UserOrganisationUnitLinkModelBuilder
 
     private final UserOrganisationUnitLinkModel.Builder builder;
     private final User user;
-    OrganisationUnitModel.Scope organisationUnitScope;
+    private final OrganisationUnit.Scope organisationUnitScope;
 
-    public UserOrganisationUnitLinkModelBuilder(OrganisationUnitModel.Scope scope, User user) {
+    public UserOrganisationUnitLinkModelBuilder(OrganisationUnit.Scope scope, User user) {
         this.user = user;
         this.organisationUnitScope = scope;
         this.builder = UserOrganisationUnitLinkModel.builder()

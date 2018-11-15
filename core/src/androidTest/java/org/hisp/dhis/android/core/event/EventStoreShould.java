@@ -36,14 +36,16 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.category.CategoryOptionComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryOptionComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
-import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
@@ -137,7 +139,7 @@ public class EventStoreShould extends AbsStoreTestCase {
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
 
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(TRACKED_ENTITY_INSTANCE,
                 ORGANISATION_UNIT, TRACKED_ENTITY_UID);
@@ -149,7 +151,7 @@ public class EventStoreShould extends AbsStoreTestCase {
                 1L, ATTRIBUTE_OPTION_COMBO_UID
         );
         database().insert(CategoryOptionComboModel.TABLE, null, categoryOptionCombo);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().insert(EnrollmentModel.TABLE, null, enrollment);
@@ -299,8 +301,8 @@ public class EventStoreShould extends AbsStoreTestCase {
                 TRACKED_ENTITY_INSTANCE
         );
 
-        database().delete(OrganisationUnitModel.TABLE,
-                OrganisationUnitModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
+        database().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID + "=?", new String[]{ORGANISATION_UNIT});
 
         Cursor cursor = database().query(EventModel.TABLE, EVENT_PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();

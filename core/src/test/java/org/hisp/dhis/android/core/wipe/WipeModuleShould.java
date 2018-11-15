@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -77,7 +77,7 @@ public class WipeModuleShould {
     private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
     @Mock
-    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
     private ObjectWithoutUidStore<DataValue> dataValueStore;

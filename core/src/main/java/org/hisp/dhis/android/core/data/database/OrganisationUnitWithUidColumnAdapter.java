@@ -26,27 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.indicator;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import android.database.Cursor;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-public class IndicatorSamples {
+public class OrganisationUnitWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OrganisationUnit> {
 
-    public static Indicator getIndicator() {
-        Indicator.Builder indicatorBuilder = Indicator.builder();
-
-        fillNameableProperties(indicatorBuilder);
-        indicatorBuilder
-                .annualized(false)
-                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
-                .numerator("#{a.b}")
-                .numeratorDescription("num descr")
-                .denominator("#{c.d}")
-                .denominatorDescription("den descr")
-                .url("dhis2.org");
-        return indicatorBuilder.build();
+    @Override
+    public OrganisationUnit fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        if (uid == null) {
+            return null;
+        } else {
+            return OrganisationUnit.builder().uid(uid).build();
+        }
     }
 }

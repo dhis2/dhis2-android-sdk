@@ -28,37 +28,11 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-
 import java.util.List;
 
-public class OrganisationUnitModelBuilder extends ModelBuilder<OrganisationUnit, OrganisationUnitModel> {
+class OrganisationUnitDisplayPathGenerator {
 
-    @Override
-    public OrganisationUnitModel buildModel(OrganisationUnit organisationUnit) {
-        OrganisationUnit parent = organisationUnit.parent();
-        return OrganisationUnitModel.builder()
-                .uid(organisationUnit.uid())
-                .code(organisationUnit.code())
-                .name(organisationUnit.name())
-                .displayName(organisationUnit.displayName())
-                .created(organisationUnit.created())
-                .lastUpdated(organisationUnit.lastUpdated())
-                .shortName(organisationUnit.shortName())
-                .displayShortName(organisationUnit.displayShortName())
-                .description(organisationUnit.description())
-                .displayDescription(organisationUnit.displayDescription())
-
-                .path(organisationUnit.path())
-                .openingDate(organisationUnit.openingDate())
-                .closedDate(organisationUnit.closedDate())
-                .parent(parent == null ? null : parent.uid())
-                .level(organisationUnit.level())
-                .displayNamePath(displayNamePath(organisationUnit))
-                .build();
-    }
-
-    private String displayNamePath(OrganisationUnit organisationUnit) {
+    String generateDisplayPath(OrganisationUnit organisationUnit) {
         List<OrganisationUnit> ancestors = organisationUnit.ancestors();
         if (ancestors == null) {
             return "";

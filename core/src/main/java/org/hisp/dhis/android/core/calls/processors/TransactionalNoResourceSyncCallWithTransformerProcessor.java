@@ -26,45 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.calls.processors;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Callable;
 
-public class TrackedEntityAttributeReservedValueModelBuilder extends
-        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+public class TransactionalNoResourceSyncCallWithTransformerProcessor<O> implements CallProcessor<O> {
+    private final DatabaseAdapter databaseAdapter;
+    private final SyncHandlerWithTransformer<O> handler;
+    private final ModelBuilder<O, O> transformer;
 
-    private final TrackedEntityAttributeReservedValueModel.Builder builder;
 
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
-        fillTemporalValidityDate(pattern);
+    public TransactionalNoResourceSyncCallWithTransformerProcessor(DatabaseAdapter databaseAdapter,
+                                                                   SyncHandlerWithTransformer<O> handler,
+                                                                   ModelBuilder<O, O> transformer) {
+        this.databaseAdapter = databaseAdapter;
+        this.handler = handler;
+        this.transformer = transformer;
     }
 
     @Override
-    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
-        return builder
-                .ownerObject(reservedValue.ownerObject())
-                .ownerUid(reservedValue.ownerUid())
-                .key(reservedValue.key())
-                .value(reservedValue.value())
-                .created(reservedValue.created())
-                .expiryDate(reservedValue.expiryDate())
-                .build();
-    }
+    public final void process(final List<O> objectList) throws D2CallException {
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
 
-    private void fillTemporalValidityDate(String pattern) {
-        Date temporalValidityDate;
-        try {
-            temporalValidityDate = new TrackedEntityAttributeReservedValueValidatorHelper()
-                    .getExpiryDateCode(pattern);
-        } catch (IllegalStateException e) {
-            temporalValidityDate = null;
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList, transformer);
+                    return null;
+                }
+            });
         }
-
-        this.builder.temporalValidityDate(temporalValidityDate);
     }
 }

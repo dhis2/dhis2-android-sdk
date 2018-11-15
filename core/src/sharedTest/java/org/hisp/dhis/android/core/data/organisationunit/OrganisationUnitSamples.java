@@ -26,45 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.organisationunit;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-public class TrackedEntityAttributeReservedValueModelBuilder extends
-        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+public class OrganisationUnitSamples {
 
-    private final TrackedEntityAttributeReservedValueModel.Builder builder;
+    public static OrganisationUnit getOrganisationUnit(Long id, String uid) {
+        OrganisationUnit.Builder builder = OrganisationUnit.builder();
 
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
-        fillTemporalValidityDate(pattern);
-    }
-
-    @Override
-    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
+        fillNameableProperties(builder);
         return builder
-                .ownerObject(reservedValue.ownerObject())
-                .ownerUid(reservedValue.ownerUid())
-                .key(reservedValue.key())
-                .value(reservedValue.value())
-                .created(reservedValue.created())
-                .expiryDate(reservedValue.expiryDate())
+                .id(id)
+                .uid(uid)
+                .path("test_path")
+                .openingDate(FillPropertiesTestUtils.CREATED)
+                .closedDate(FillPropertiesTestUtils.LAST_UPDATED)
+                .level(100)
+                .parent(null)
+                .displayNamePath("/grandpa/dad/me/")
                 .build();
     }
 
-    private void fillTemporalValidityDate(String pattern) {
-        Date temporalValidityDate;
-        try {
-            temporalValidityDate = new TrackedEntityAttributeReservedValueValidatorHelper()
-                    .getExpiryDateCode(pattern);
-        } catch (IllegalStateException e) {
-            temporalValidityDate = null;
-        }
+    public static OrganisationUnit getOrganisationUnit(String uid) {
+        return getOrganisationUnit(1L, uid);
+    }
 
-        this.builder.temporalValidityDate(temporalValidityDate);
+    public static OrganisationUnit getOrganisationUnit() {
+        return getOrganisationUnit(1L, "UID");
     }
 }

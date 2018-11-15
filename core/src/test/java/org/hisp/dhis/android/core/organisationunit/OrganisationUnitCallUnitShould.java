@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -127,7 +127,7 @@ public class OrganisationUnitCallUnitShould {
     private GenericCallData genericCallData;
 
     @Mock
-    private GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler;
+    private SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler;
 
     //the call we are testing:
     private OrganisationUnitCall organisationUnitCall;
@@ -208,16 +208,7 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall.call();
 
         assertThat(uidCaptor.getValue()).isEqualTo(organisationUnit.uid());
-        assertThat(fieldsCaptor.getValue().fields()).contains(
-                OrganisationUnit.uid, OrganisationUnit.code, OrganisationUnit.name,
-                OrganisationUnit.displayName, OrganisationUnit.created, OrganisationUnit.lastUpdated,
-                OrganisationUnit.shortName, OrganisationUnit.displayShortName,
-                OrganisationUnit.description, OrganisationUnit.displayDescription,
-                OrganisationUnit.path, OrganisationUnit.openingDate,
-                OrganisationUnit.closedDate, OrganisationUnit.level, OrganisationUnit.deleted,
-                OrganisationUnit.parent.with(OrganisationUnit.uid),
-                OrganisationUnit.programs.with(ObjectWithUid.uid)
-        );
+        assertThat(fieldsCaptor.getValue()).isEqualTo(OrganisationUnitFields.allFields);
         assertThat(descendantsCaptor.getValue()).isTrue();
         assertThat(pagingCaptor.getValue()).isFalse();
     }
@@ -270,7 +261,7 @@ public class OrganisationUnitCallUnitShould {
         verify(transaction, times(1)).setSuccessful();
         verify(transaction, times(1)).end();
 
-        verify(organisationUnitHandler).handleMany(eq(organisationUnits), any(OrganisationUnitModelBuilder.class));
+        verify(organisationUnitHandler).handleMany(eq(organisationUnits), any(ModelBuilder.class));
     }
 
     @Test

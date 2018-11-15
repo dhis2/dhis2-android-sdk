@@ -59,12 +59,8 @@ public class OrganisationUnitTreeShould {
         //create a bunch of dummy Organisation units from the strings:
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
         for (int i = 0, size = uids.length; i < size; i++) {
-            orgUnits.add(OrganisationUnit.create(
-                    uids[i],
-                    null, null, null, null, null, null, null, null, null, null,
-                    paths[i],
-                    null, null, null, null,null, null, null, false
-            ));
+            OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[i]).path(paths[i]).build();
+            orgUnits.add(orgUnit);
         }
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         //assert that: returned uid list does not contain unassigned & root.
@@ -80,11 +76,8 @@ public class OrganisationUnitTreeShould {
     @Test
     public void return_all_root_uids_missing_slashes_when_find_roots() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        orgUnits.add(OrganisationUnit.create(
-                uids[0],
-                null, null, null, null, null, null, null, null, null, null,
-                "RootOrgUnit/Level11",
-                null, null, null, null, null, null, null, false));
+        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("RootOrgUnit/Level11").build();
+        orgUnits.add(orgUnit);
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -98,11 +91,8 @@ public class OrganisationUnitTreeShould {
     @Test
     public void return_all_root_uids_double_slashes_when_find_roots() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        orgUnits.add(OrganisationUnit.create(
-                uids[0],
-                null, null, null, null, null, null, null, null, null, null,
-                "//RootOrgUnit//Level11//",
-                null, null, null, null, null, null, null, false));
+        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("//RootOrgUnit//Level11//").build();
+        orgUnits.add(orgUnit);
 
         Set<String> rootUids = OrganisationUnitTree.findRoots(orgUnits);
         assertThat(rootUids.contains(UNASSIGNED_L12)).isFalse();
@@ -116,11 +106,8 @@ public class OrganisationUnitTreeShould {
     @Test(expected = IllegalArgumentException.class)
     public void return_all_root_uids_null_paths_when_find_roots() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        orgUnits.add(OrganisationUnit.create(
-                uids[0],
-                null, null, null, null, null, null, null, null, null, null,
-                null, //<--passing null path
-                null, null, null, null, null, null, null, false));
+        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path(null).build();
+        orgUnits.add(orgUnit);
 
         OrganisationUnitTree.findRoots(orgUnits);
     }
@@ -134,11 +121,8 @@ public class OrganisationUnitTreeShould {
     @Test(expected = IllegalArgumentException.class)
     public void thrown_illegal_argument_exception_when_find_roots_uids_with_empty_paths() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        orgUnits.add(OrganisationUnit.create(
-                uids[0],
-                null, null, null, null, null, null, null, null, null, null,
-                "", //<--passing empty path
-                null, null, null, null, null, null, null, false));
+        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("").build();
+        orgUnits.add(orgUnit);
 
         OrganisationUnitTree.findRoots(orgUnits);
     }
@@ -146,11 +130,8 @@ public class OrganisationUnitTreeShould {
     @Test
     public void return_root_uids_when_have_not_assigned() {
         List<OrganisationUnit> orgUnits = new ArrayList<>(uids.length);
-        orgUnits.add(OrganisationUnit.create(
-                uids[0],
-                null, null, null, null, null, null, null, null, null, null,
-                "/RootOrgUnit//Level11/",
-                null, null, null, null, null, null, null, false));
+        OrganisationUnit orgUnit = OrganisationUnit.builder().uid(uids[0]).path("/RootOrgUnit//Level11/").build();
+        orgUnits.add(orgUnit);
     }
     @Test
     public void findRoots_shouldReturnRootUids_NullList() {

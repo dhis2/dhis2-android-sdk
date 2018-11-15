@@ -26,27 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.indicator;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.program.Program;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import java.util.List;
 
-public class IndicatorSamples {
-
-    public static Indicator getIndicator() {
-        Indicator.Builder indicatorBuilder = Indicator.builder();
-
-        fillNameableProperties(indicatorBuilder);
-        indicatorBuilder
-                .annualized(false)
-                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
-                .numerator("#{a.b}")
-                .numeratorDescription("num descr")
-                .denominator("#{c.d}")
-                .denominatorDescription("den descr")
-                .url("dhis2.org");
-        return indicatorBuilder.build();
-    }
+public final class IgnoreProgramListAdapter extends IgnoreColumnAdapter<List<Program>> {
 }

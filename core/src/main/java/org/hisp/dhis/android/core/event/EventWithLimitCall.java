@@ -7,7 +7,7 @@ import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreInterface;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
@@ -137,7 +137,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
 
         for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
             if (linkModel.organisationUnitScope().equals(
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
                 organisationUnitUids.add(linkModel.organisationUnit());
             }
         }

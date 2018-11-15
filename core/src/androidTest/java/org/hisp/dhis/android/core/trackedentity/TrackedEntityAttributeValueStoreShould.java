@@ -28,12 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import static com.google.common.truth.Truth.assertThat;
-
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -41,8 +35,9 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +47,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.truth.Truth.assertThat;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
+import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
@@ -85,8 +85,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
         this.store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
 
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L,
-                ORGANIZATION_UNIT);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANIZATION_UNIT);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANIZATION_UNIT, TRACKED_ENTITY);
@@ -96,10 +95,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils
                 .create(1L, TRACKED_ENTITY_ATTRIBUTE, null);
 
-        ContentValues trackedEntityAttribute_2 = CreateTrackedEntityAttributeUtils
-                .create(1L, TRACKED_ENTITY_ATTRIBUTE_2, null);
-
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance_2);

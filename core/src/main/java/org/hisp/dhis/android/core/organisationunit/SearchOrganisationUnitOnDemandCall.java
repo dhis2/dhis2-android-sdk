@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallWithTransformerProcessor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -69,17 +69,17 @@ public final class SearchOrganisationUnitOnDemandCall {
 
                 @Override
                 protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query) {
-                    return service.getSearchOrganisationUnits(OrganisationUnit.allFields,
-                            OrganisationUnit.uid.in(query.uids()), Boolean.FALSE);
+                    return service.getSearchOrganisationUnits(OrganisationUnitFields.allFields,
+                            OrganisationUnitFields.uid.in(query.uids()), Boolean.FALSE);
                 }
             };
         }
 
         CallProcessor<OrganisationUnit> processor(DatabaseAdapter databaseAdapter, User user) {
-            return new TransactionalNoResourceCallProcessor<>(
+            return new TransactionalNoResourceSyncCallWithTransformerProcessor<>(
                     databaseAdapter,
                     SearchOrganisationUnitHandler.create(databaseAdapter, user),
-                    new OrganisationUnitModelBuilder()
+                    new OrganisationUnitDisplayPathTransformer()
             );
         }
     };

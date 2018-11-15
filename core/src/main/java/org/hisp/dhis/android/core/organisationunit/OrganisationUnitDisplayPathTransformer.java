@@ -26,45 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-import java.util.Date;
-
-public class TrackedEntityAttributeReservedValueModelBuilder extends
-        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
-
-    private final TrackedEntityAttributeReservedValueModel.Builder builder;
-
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
-        fillTemporalValidityDate(pattern);
-    }
+class OrganisationUnitDisplayPathTransformer extends ModelBuilder<OrganisationUnit, OrganisationUnit> {
 
     @Override
-    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
-        return builder
-                .ownerObject(reservedValue.ownerObject())
-                .ownerUid(reservedValue.ownerUid())
-                .key(reservedValue.key())
-                .value(reservedValue.value())
-                .created(reservedValue.created())
-                .expiryDate(reservedValue.expiryDate())
-                .build();
-    }
-
-    private void fillTemporalValidityDate(String pattern) {
-        Date temporalValidityDate;
-        try {
-            temporalValidityDate = new TrackedEntityAttributeReservedValueValidatorHelper()
-                    .getExpiryDateCode(pattern);
-        } catch (IllegalStateException e) {
-            temporalValidityDate = null;
-        }
-
-        this.builder.temporalValidityDate(temporalValidityDate);
+    public OrganisationUnit buildModel(OrganisationUnit organisationUnit) {
+        String path = new OrganisationUnitDisplayPathGenerator().generateDisplayPath(organisationUnit);
+        OrganisationUnit.Builder builder = organisationUnit.toBuilder();
+        builder.displayNamePath(path);
+        return builder.build();
     }
 }

@@ -26,27 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.indicator;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+public final class OrganisationUnitTableInfo {
 
-public class IndicatorSamples {
+    private OrganisationUnitTableInfo() {
+    }
 
-    public static Indicator getIndicator() {
-        Indicator.Builder indicatorBuilder = Indicator.builder();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        fillNameableProperties(indicatorBuilder);
-        indicatorBuilder
-                .annualized(false)
-                .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
-                .numerator("#{a.b}")
-                .numeratorDescription("num descr")
-                .denominator("#{c.d}")
-                .denominatorDescription("den descr")
-                .url("dhis2.org");
-        return indicatorBuilder.build();
+        @Override
+        public String name() {
+            return "OrganisationUnit";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseNameableObjectModel.Columns {
+
+        static final String DISPLAY_NAME_PATH = "displayNamePath";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    OrganisationUnitFields.PATH,
+                    OrganisationUnitFields.OPENING_DATE,
+                    OrganisationUnitFields.CLOSED_DATE,
+                    OrganisationUnitFields.LEVEL,
+                    OrganisationUnitFields.PARENT,
+                    DISPLAY_NAME_PATH
+            );
+        }
     }
 }

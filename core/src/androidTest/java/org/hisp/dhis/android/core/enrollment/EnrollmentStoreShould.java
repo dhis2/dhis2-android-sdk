@@ -35,11 +35,13 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.AndroidTestUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel.Columns;
-import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
@@ -124,10 +126,10 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null, relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L, ORGANISATION_UNIT);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
     }
 
@@ -202,10 +204,10 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
         ContentValues program = CreateProgramUtils.create(11L, deferredProgram,
                 RELATIONSHIP_TYPE_UID, null, TRACKED_ENTITY_UID);
         database().insert(ProgramModel.TABLE, null, program);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(11L, deferredOrganisationUnit);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(11L, deferredOrganisationUnit);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 deferredTrackedEntityInstance, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -322,8 +324,8 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
                 STATE
         );
         //Delete OrgUnit:
-        database().delete(OrganisationUnitModel.TABLE,
-                OrganisationUnitModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT});
+        database().delete(OrganisationUnitTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID + " =?", new String[]{ORGANISATION_UNIT});
         //Query for Enrollment:
         Cursor cursor = database().query(TABLE, PROJECTION, null, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();

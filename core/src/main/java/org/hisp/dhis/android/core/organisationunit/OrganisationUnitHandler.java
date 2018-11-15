@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
@@ -59,7 +60,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class OrganisationUnitHandler extends IdentifiableHandlerImpl<OrganisationUnit, OrganisationUnitModel> {
+@SuppressWarnings("PMD.ExcessiveImports")
+public class OrganisationUnitHandler extends IdentifiableSyncHandlerImpl<OrganisationUnit> {
     private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
     private final LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
     private final LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitLinkHandler;
@@ -74,30 +76,29 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
     private final Set<ObjectWithUid> orgUnitLinkedProgramUids;
     private final Set<ObjectWithUid> orgUnitLinkedDataSetUids;
     private final Set<ObjectWithUid> organisationUnitGroupUids;
-    private final OrganisationUnitModel.Scope scope;
+    private final OrganisationUnit.Scope scope;
     private final User user;
 
 
-    public OrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
-                                   @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
-                                           userOrganisationUnitLinkStore,
-                                   @NonNull LinkModelHandler<Program, OrganisationUnitProgramLinkModel>
-                                           organisationUnitProgramLinkHandler,
-                                   @NonNull LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel>
-                                           dataSetOrganisationUnitLinkHandler,
-                                   @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
-                                   @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
-                                   @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner,
-                                   @Nullable Set<String> programUids,
-                                   @Nullable Set<String> dataSetUids,
-                                   @Nullable OrganisationUnitModel.Scope scope,
-                                   @Nullable User user,
-                                   @Nullable GenericHandler<OrganisationUnitGroup,
-                                           OrganisationUnitGroupModel> organisationUnitGroupHandler,
-                                   @NonNull LinkModelHandler<ObjectWithUid,
-                                           OrganisationUnitOrganisationUnitGroupLinkModel>
-                                           organisationUnitGroupLinkHandler
-    ) {
+    OrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
+                            @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
+                                    userOrganisationUnitLinkStore,
+                            @NonNull LinkModelHandler<Program, OrganisationUnitProgramLinkModel>
+                                    organisationUnitProgramLinkHandler,
+                            @NonNull LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel>
+                                    dataSetOrganisationUnitLinkHandler,
+                            @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
+                            @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
+                            @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner,
+                            @Nullable Set<String> programUids,
+                            @Nullable Set<String> dataSetUids,
+                            @Nullable OrganisationUnit.Scope scope,
+                            @Nullable User user,
+                            @Nullable GenericHandler<OrganisationUnitGroup,
+                                    OrganisationUnitGroupModel> organisationUnitGroupHandler,
+                            @NonNull LinkModelHandler<ObjectWithUid,
+                                    OrganisationUnitOrganisationUnitGroupLinkModel>
+                                    organisationUnitGroupLinkHandler) {
 
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
@@ -192,11 +193,11 @@ public class OrganisationUnitHandler extends IdentifiableHandlerImpl<Organisatio
         organisationUnitGroupCollectionCleaner.deleteNotPresent(organisationUnitGroupUids);
     }
 
-    public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter,
-                                                 Set<String> programUids,
-                                                 Set<String> dataSetUids,
-                                                 OrganisationUnitModel.Scope scope,
-                                                 User user) {
+    public static SyncHandlerWithTransformer<OrganisationUnit> create(DatabaseAdapter databaseAdapter,
+                                                                      Set<String> programUids,
+                                                                      Set<String> dataSetUids,
+                                                                      OrganisationUnit.Scope scope,
+                                                                      User user) {
         return new OrganisationUnitHandler(
                 OrganisationUnitStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),

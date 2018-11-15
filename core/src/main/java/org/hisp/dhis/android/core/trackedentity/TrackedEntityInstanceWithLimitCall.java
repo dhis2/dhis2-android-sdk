@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
@@ -128,7 +128,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
 
         for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
             if (linkModel.organisationUnitScope().equals(
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
                 organisationUnitUids.add(linkModel.organisationUnit());
             }
         }

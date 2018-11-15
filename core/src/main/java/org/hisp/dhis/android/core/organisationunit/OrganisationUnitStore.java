@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,31 +46,30 @@ public final class OrganisationUnitStore {
 
     private OrganisationUnitStore() {}
 
-    private static StatementBinder<OrganisationUnitModel> BINDER =
-            new NameableStatementBinder<OrganisationUnitModel>() {
+    private static StatementBinder<OrganisationUnit> BINDER =
+            new NameableStatementBinder<OrganisationUnit>() {
 
         @Override
-        public void bindToStatement(@NonNull OrganisationUnitModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull OrganisationUnit o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.path());
             sqLiteBind(sqLiteStatement, 12, o.openingDate());
             sqLiteBind(sqLiteStatement, 13, o.closedDate());
             sqLiteBind(sqLiteStatement, 14, o.level());
-            sqLiteBind(sqLiteStatement, 15, o.parent());
+            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.parent()));
             sqLiteBind(sqLiteStatement, 16, o.displayNamePath());
         }
     };
 
-    private static final CursorModelFactory<OrganisationUnitModel> FACTORY
-            = new CursorModelFactory<OrganisationUnitModel>() {
+    private static final CursorModelFactory<OrganisationUnit> FACTORY
+            = new CursorModelFactory<OrganisationUnit>() {
         @Override
-        public OrganisationUnitModel fromCursor(Cursor cursor) {
-            return OrganisationUnitModel.create(cursor);
+        public OrganisationUnit fromCursor(Cursor cursor) {
+            return OrganisationUnit.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<OrganisationUnitModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitModel.TABLE,
-                new OrganisationUnitModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

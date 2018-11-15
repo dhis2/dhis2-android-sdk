@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,16 +109,21 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         Cursor cursor = databaseAdapter.query(queryStatement);
         addObjectsToCollection(cursor, dataValueList);
 
-        Map<String, List<TrackedEntityDataValue>> dataValues = new HashMap<>();
+        Map<String, List<TrackedEntityDataValue>> dataValuesMap = new HashMap<>();
         for (TrackedEntityDataValue dataValue : dataValueList) {
-            if (dataValues.get(dataValue.event()) == null) {
-                dataValues.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
-            }
-
-            dataValues.get(dataValue.event()).add(dataValue);
+            addDataValuesToMap(dataValuesMap, dataValue);
         }
 
-        return dataValues;
+        return dataValuesMap;
+    }
+
+    private void addDataValuesToMap(Map<String, List<TrackedEntityDataValue>> dataValuesMap,
+                                    TrackedEntityDataValue dataValue) {
+        if (dataValuesMap.get(dataValue.event()) == null) {
+            dataValuesMap.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
+        }
+
+        dataValuesMap.get(dataValue.event()).add(dataValue);
     }
 
     private static final StatementBinder<TrackedEntityDataValue> BINDER

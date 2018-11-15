@@ -68,6 +68,7 @@ public class PerformanceHintsService {
         return this.organisationUnitStore.count() > organisationUnitThreshold;
     }
 
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public List<Program> getProgramsWithExcessiveProgramRules() {
         // TODO use Program repository when it's ready to retrieve directly program with program rules
         List<Program> programs = programStore.selectAll();

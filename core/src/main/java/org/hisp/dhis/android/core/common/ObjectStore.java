@@ -45,4 +45,6 @@ public interface ObjectStore<M> extends DeletableStore {
     List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
 
     boolean deleteById(@NonNull M m);
+
+    int count();
 }

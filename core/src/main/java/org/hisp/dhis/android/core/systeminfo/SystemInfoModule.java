@@ -35,11 +35,14 @@ public final class SystemInfoModule {
 
     public final DHISVersionManager versionManager;
     public final ReadOnlyObjectRepository<SystemInfo> systemInfo;
+    public final PerformanceHintsService performanceHintsService;
 
     private SystemInfoModule(DHISVersionManager versionManager,
-                             ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+                             ReadOnlyObjectRepository<SystemInfo> systemInfoRepository,
+                             PerformanceHintsService performanceHintsService) {
         this.versionManager = versionManager;
         this.systemInfo = systemInfoRepository;
+        this.performanceHintsService = performanceHintsService;
     }
 
     public static SystemInfoModule create(DatabaseAdapter databaseAdapter) {
@@ -47,6 +50,8 @@ public final class SystemInfoModule {
                 DHISVersionManager.create(databaseAdapter),
                 new ReadOnlyFirstObjectRepositoryImpl<>(
                         SystemInfoStore.create(databaseAdapter)
-                ));
+                ),
+                PerformanceHintsService.create(databaseAdapter)
+        );
     }
 }

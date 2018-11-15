@@ -147,6 +147,10 @@ public class SQLStatementBuilder {
         return  SELECT + commaSeparatedColumns() + FROM + tableName;
     }
 
+    String count() {
+        return SELECT + "COUNT(*)" + FROM + tableName + ";";
+    }
+
     String countWhere(String whereClause) {
         return SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";";
     }

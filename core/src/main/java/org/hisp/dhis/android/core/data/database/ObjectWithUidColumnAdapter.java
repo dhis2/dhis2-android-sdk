@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 public class ObjectWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ObjectWithUid> {
 
     @Override
-    protected ObjectWithUid buildForNonNullUid(String uid) {
+    protected ObjectWithUid build(String uid) {
         return ObjectWithUid.create(uid);
     }
 }

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.user.User;
 public class UserWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<User> {
 
     @Override
-    protected User buildForNonNullUid(String uid) {
+    protected User build(String uid) {
         return User.builder().uid(uid).build();
     }
 }

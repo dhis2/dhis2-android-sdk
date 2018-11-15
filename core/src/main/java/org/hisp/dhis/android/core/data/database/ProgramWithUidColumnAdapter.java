@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.program.Program;
 public class ProgramWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<Program> {
 
     @Override
-    protected Program buildForNonNullUid(String uid) {
+    protected Program build(String uid) {
         return Program.builder().uid(uid).build();
     }
 }

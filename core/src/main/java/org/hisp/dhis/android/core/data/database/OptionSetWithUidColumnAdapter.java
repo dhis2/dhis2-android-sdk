@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.option.OptionSet;
 public class OptionSetWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OptionSet> {
 
     @Override
-    protected OptionSet buildForNonNullUid(String uid) {
+    protected OptionSet build(String uid) {
         return OptionSet.builder().uid(uid).build();
     }
 }

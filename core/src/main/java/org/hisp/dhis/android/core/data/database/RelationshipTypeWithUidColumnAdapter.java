@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipType;
 public class RelationshipTypeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<RelationshipType> {
 
     @Override
-    protected RelationshipType buildForNonNullUid(String uid) {
+    protected RelationshipType build(String uid) {
         return RelationshipType.builder().uid(uid).build();
     }
 }

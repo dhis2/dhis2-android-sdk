@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 public class OrganisationUnitWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OrganisationUnit> {
 
     @Override
-    protected OrganisationUnit buildForNonNullUid(String uid) {
+    protected OrganisationUnit build(String uid) {
         return OrganisationUnit.builder().uid(uid).build();
     }
 }

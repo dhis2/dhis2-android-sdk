@@ -36,6 +36,8 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.UidsHelper;
 
+import io.reactivex.annotations.NonNull;
+
 public abstract class IdentifiableObjectColumnAdapter<O extends ObjectWithUidInterface>
         implements ColumnTypeAdapter<O> {
 
@@ -51,9 +53,9 @@ public abstract class IdentifiableObjectColumnAdapter<O extends ObjectWithUidInt
         if (uid == null) {
             return null;
         } else {
-            return buildForNonNullUid(uid);
+            return build(uid);
         }
     }
 
-    protected abstract O buildForNonNullUid(String uid);
+    protected abstract O build(@NonNull String uid);
 }

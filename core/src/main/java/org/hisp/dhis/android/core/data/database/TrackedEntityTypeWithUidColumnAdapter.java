@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 public class TrackedEntityTypeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityType> {
 
    @Override
-    protected TrackedEntityType buildForNonNullUid(String uid) {
+    protected TrackedEntityType build(String uid) {
         return TrackedEntityType.builder().uid(uid).build();
     }
 }

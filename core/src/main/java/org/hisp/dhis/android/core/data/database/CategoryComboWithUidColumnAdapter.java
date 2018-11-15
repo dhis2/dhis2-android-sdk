@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.category.CategoryCombo;
 public class CategoryComboWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<CategoryCombo> {
 
     @Override
-    protected CategoryCombo buildForNonNullUid(String uid) {
+    protected CategoryCombo build(String uid) {
         return CategoryCombo.builder().uid(uid).build();
     }
 }

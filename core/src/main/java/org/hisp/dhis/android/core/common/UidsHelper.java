@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import android.util.ArrayMap;
-
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Collection;

@@ -37,10 +37,8 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
-import org.hisp.dhis.android.core.program.ProgramStoreInterface;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -53,11 +51,11 @@ public class PerformanceHintsService {
     private final int ORGANISATION_UNIT_THRESHOLD;
     private final int PROGRAM_RULES_PER_PROGRAM_THRESHOLD;
 
-    private PerformanceHintsService(IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                                    ProgramStoreInterface programStore,
-                                    IdentifiableObjectStore<ProgramRule> programRuleStore,
-                                    int organisationUnitThreshold,
-                                    int programRulesPerProgramThreshold) {
+    PerformanceHintsService(IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
+                            IdentifiableObjectStore<Program> programStore,
+                            IdentifiableObjectStore<ProgramRule> programRuleStore,
+                            int organisationUnitThreshold,
+                            int programRulesPerProgramThreshold) {
 
         this.organisationUnitStore = organisationUnitStore;
         this.programStore = programStore;
@@ -74,12 +72,15 @@ public class PerformanceHintsService {
         // TODO use Program repository when it's ready to retrieve directly program with program rules
         List<Program> programs = programStore.selectAll();
         List<ProgramRule> programRules = programRuleStore.selectAll();
-        for (Program program: programs) {
-            program.toBuilder().programRules(Collections.<ProgramRule>emptyList());
+
+        List<Program> programsWithEmptyProgramRules = new ArrayList<>(programs.size());
+        for (Program program : programs) {
+            programsWithEmptyProgramRules.add(program.toBuilder().programRules(new ArrayList<ProgramRule>()).build());
         }
 
-        Map<String, Program> programsMap = UidsHelper.mapByUid(programs);
-        for (ProgramRule rule: programRules) {
+        Map<String, Program> programsMap = UidsHelper.mapByUid(programsWithEmptyProgramRules);
+
+        for (ProgramRule rule : programRules) {
             Program program = programsMap.get(rule.program().uid());
             if (program != null) {
                 program.programRules().add(rule);
@@ -87,7 +88,7 @@ public class PerformanceHintsService {
         }
 
         List<Program> programsWithExcessiveProgramRules = new ArrayList<>();
-        for (Program program: programs) {
+        for (Program program : programsWithEmptyProgramRules) {
             if (program.programRules().size() > PROGRAM_RULES_PER_PROGRAM_THRESHOLD) {
                 programsWithExcessiveProgramRules.add(program);
             }
@@ -100,7 +101,7 @@ public class PerformanceHintsService {
         return !getProgramsWithExcessiveProgramRules().isEmpty();
     }
 
-    public boolean areTherePerformanceVulnerabilities() {
+    public boolean areThereVulnerabilities() {
         return this.areThereExcessiveOrganisationUnits() || areThereProgramsWithExcessiveProgramRules();
     }
 

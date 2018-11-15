@@ -48,8 +48,8 @@ public class PerformanceHintsService {
     private final IdentifiableObjectStore<Program> programStore;
     private final IdentifiableObjectStore<ProgramRule> programRuleStore;
 
-    private final int ORGANISATION_UNIT_THRESHOLD;
-    private final int PROGRAM_RULES_PER_PROGRAM_THRESHOLD;
+    private final int organisationUnitThreshold;
+    private final int programRulesPerProgramThreshold;
 
     PerformanceHintsService(IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
                             IdentifiableObjectStore<Program> programStore,
@@ -60,12 +60,12 @@ public class PerformanceHintsService {
         this.organisationUnitStore = organisationUnitStore;
         this.programStore = programStore;
         this.programRuleStore = programRuleStore;
-        ORGANISATION_UNIT_THRESHOLD = organisationUnitThreshold;
-        PROGRAM_RULES_PER_PROGRAM_THRESHOLD = programRulesPerProgramThreshold;
+        this.organisationUnitThreshold = organisationUnitThreshold;
+        this.programRulesPerProgramThreshold = programRulesPerProgramThreshold;
     }
 
     public boolean areThereExcessiveOrganisationUnits() {
-        return this.organisationUnitStore.count() > ORGANISATION_UNIT_THRESHOLD;
+        return this.organisationUnitStore.count() > organisationUnitThreshold;
     }
 
     public List<Program> getProgramsWithExcessiveProgramRules() {
@@ -89,7 +89,7 @@ public class PerformanceHintsService {
 
         List<Program> programsWithExcessiveProgramRules = new ArrayList<>();
         for (Program program : programsWithEmptyProgramRules) {
-            if (program.programRules().size() > PROGRAM_RULES_PER_PROGRAM_THRESHOLD) {
+            if (program.programRules().size() > programRulesPerProgramThreshold) {
                 programsWithExcessiveProgramRules.add(program);
             }
         }
@@ -105,12 +105,14 @@ public class PerformanceHintsService {
         return this.areThereExcessiveOrganisationUnits() || areThereProgramsWithExcessiveProgramRules();
     }
 
-    static PerformanceHintsService create(DatabaseAdapter databaseAdapter) {
+    static PerformanceHintsService create(DatabaseAdapter databaseAdapter,
+                                          int organisationUnitThreshold,
+                                          int programRulesPerProgramThreshold) {
         return new PerformanceHintsService(
                 OrganisationUnitStore.create(databaseAdapter),
                 ProgramStore.create(databaseAdapter),
                 ProgramRuleStore.create(databaseAdapter),
-                30,
-                30);
+                organisationUnitThreshold,
+                programRulesPerProgramThreshold);
     }
 }

@@ -96,7 +96,7 @@ public final class Utils {
         for (String o: objects) {
             withSingleQuotationMarksArray [i++] = "'" + o + "'";
         }
-        return withSingleQuotationMarksArray ;
+        return withSingleQuotationMarksArray;
     }
 
     private static String commaSeparatedArrayValues(String... values) {

@@ -32,7 +32,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 

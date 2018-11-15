@@ -28,20 +28,12 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 public class OrganisationUnitWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OrganisationUnit> {
 
     @Override
-    public OrganisationUnit fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
-        if (uid == null) {
-            return null;
-        } else {
-            return OrganisationUnit.builder().uid(uid).build();
-        }
+    protected OrganisationUnit buildForNonNullUid(String uid) {
+        return OrganisationUnit.builder().uid(uid).build();
     }
 }

@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.option.OptionSet;
 
 public class OptionSetWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<OptionSet> {
 
     @Override
-    public OptionSet fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
+    protected OptionSet buildForNonNullUid(String uid) {
         return OptionSet.builder().uid(uid).build();
     }
 }

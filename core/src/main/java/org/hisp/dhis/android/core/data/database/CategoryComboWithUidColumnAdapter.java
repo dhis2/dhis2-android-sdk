@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.category.CategoryCombo;
 
 public class CategoryComboWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<CategoryCombo> {
 
     @Override
-    public CategoryCombo fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
+    protected CategoryCombo buildForNonNullUid(String uid) {
         return CategoryCombo.builder().uid(uid).build();
     }
 }

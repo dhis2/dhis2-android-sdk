@@ -28,20 +28,12 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 public class ObjectWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ObjectWithUid> {
 
     @Override
-    public ObjectWithUid fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
-        if (uid == null) {
-            return null;
-        } else {
-            return ObjectWithUid.create(uid);
-        }
+    protected ObjectWithUid buildForNonNullUid(String uid) {
+        return ObjectWithUid.create(uid);
     }
 }

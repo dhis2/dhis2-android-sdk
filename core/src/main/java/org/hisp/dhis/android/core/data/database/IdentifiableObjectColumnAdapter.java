@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
@@ -42,4 +43,17 @@ public abstract class IdentifiableObjectColumnAdapter<O extends ObjectWithUidInt
     public final void toContentValues(ContentValues values, String columnName, O value) {
         values.put(columnName, UidsHelper.getUidOrNull(value));
     }
+
+    @Override
+    public final O fromCursor(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        String uid = cursor.getString(columnIndex);
+        if (uid == null) {
+            return null;
+        } else {
+            return buildForNonNullUid(uid);
+        }
+    }
+
+    protected abstract O buildForNonNullUid(String uid);
 }

@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
 public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityInstance> {
 
     @Override
-    public TrackedEntityInstance fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
+    protected TrackedEntityInstance buildForNonNullUid(String uid) {
         return TrackedEntityInstance.create(uid, null, null, null, null, null,
                 null, null, null, null, null, null,
                 null);

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.maintenance;
 
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
@@ -6,9 +6,14 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;

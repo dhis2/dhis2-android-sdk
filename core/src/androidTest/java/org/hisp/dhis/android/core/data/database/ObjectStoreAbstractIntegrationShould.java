@@ -48,7 +48,9 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
     private final TableInfo tableInfo;
     private final DatabaseAdapter databaseAdapter;
 
-    ObjectStoreAbstractIntegrationShould(ObjectStore<M> store, TableInfo tableInfo, DatabaseAdapter databaseAdapter) {
+    public ObjectStoreAbstractIntegrationShould(ObjectStore<M> store,
+                                                TableInfo tableInfo,
+                                                DatabaseAdapter databaseAdapter) {
         this.store = store;
         this.object = buildObject();
         this.objectWithId = buildObjectWithId();

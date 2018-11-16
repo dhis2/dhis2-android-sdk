@@ -43,10 +43,10 @@ import java.util.List;
 public class ForeignKeyCleaner {
 
     private final DatabaseAdapter databaseAdapter;
-    private final ObjectWithoutUidStore<ForeignKeyViolation> foreignKeyViolationStore;
+    private final ObjectStore<ForeignKeyViolation> foreignKeyViolationStore;
 
     private ForeignKeyCleaner(DatabaseAdapter databaseAdapter,
-                             ObjectWithoutUidStore<ForeignKeyViolation> foreignKeyViolationStore) {
+                              ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
         this.databaseAdapter = databaseAdapter;
         this.foreignKeyViolationStore = foreignKeyViolationStore;
     }

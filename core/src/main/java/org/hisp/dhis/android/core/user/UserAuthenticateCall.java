@@ -133,7 +133,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         } catch (D2CallException d2Exception) {
             if (
                     d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                    d2Exception.errorCode() == D2ErrorCode.SOCKET_TIMEOUT) {
+                    d2Exception.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                    d2Exception.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
                 return loginOffline();
             } else if (d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();

@@ -30,7 +30,12 @@ public class EventHandler {
     }
 
     private boolean isValid(@NonNull Event event) {
-        return event.eventDate()!=null && event.organisationUnit()!=null;
+        Boolean validEventDate = event.eventDate() != null ||
+                event.status() == EventStatus.SCHEDULE ||
+                event.status() == EventStatus.SKIPPED ||
+                event.status() == EventStatus.OVERDUE;
+
+        return validEventDate && event.organisationUnit() != null;
     }
 
     public void handle(@NonNull final Event event) {
@@ -75,7 +80,7 @@ public class EventHandler {
                         }
                     });
         } else {
-            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or event date");
+            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or invalid eventDate");
         }
     }
 

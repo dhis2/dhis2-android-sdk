@@ -206,7 +206,7 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
                       @NonNull EventStatus eventStatus, @Nullable String latitude,
                       @Nullable String longitude, @NonNull String program,
                       @NonNull String programStage, @NonNull String organisationUnit,
-                      @NonNull Date eventDate, @Nullable Date completedDate,
+                      @Nullable Date eventDate, @Nullable Date completedDate,
                       @Nullable Date dueDate, @NonNull State state,
                       @Nullable String attributeOptionCombo,
                       @Nullable String trackedEntityInstance, @NonNull String whereEventUid) {

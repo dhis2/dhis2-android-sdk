@@ -32,16 +32,23 @@ import android.database.Cursor;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.systeminfo.ForeignKeyViolation;
+import org.hisp.dhis.android.core.systeminfo.ForeignKeyViolationStore;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ForeignKeyCleaner {
 
     private final DatabaseAdapter databaseAdapter;
+    private final ObjectWithoutUidStore<ForeignKeyViolation> foreignKeyViolationStore;
 
-    public ForeignKeyCleaner(DatabaseAdapter databaseAdapter) {
+    private ForeignKeyCleaner(DatabaseAdapter databaseAdapter,
+                             ObjectWithoutUidStore<ForeignKeyViolation> foreignKeyViolationStore) {
         this.databaseAdapter = databaseAdapter;
+        this.foreignKeyViolationStore = foreignKeyViolationStore;
     }
 
     public Integer cleanForeignKeyErrors() {
@@ -72,40 +79,113 @@ public class ForeignKeyCleaner {
     }
 
     private void deleteForeignKeyReferencedObject(Cursor errorsCursor) {
-        String tableName = errorsCursor.getString(0);
+        String fromTable = errorsCursor.getString(0);
         String rowId = errorsCursor.getString(1);
-        String referencedTableName = errorsCursor.getString(2);
+        String toTable = errorsCursor.getString(2);
+        String foreignKeyIdNumber = errorsCursor.getString(3);
 
-        String selectStatement = "SELECT * FROM " + tableName + " WHERE ROWID = " + rowId + ";";
-        Cursor objectCursor = databaseAdapter.query(selectStatement);
+        ForeignKeyViolation foreignKeyViolation =
+                getForeignKeyViolation(foreignKeyIdNumber, fromTable, toTable, rowId);
 
-        String uid = null;
-        if (objectCursor.getCount() > 0) {
-            objectCursor.moveToFirst();
-            int uidColumnIndex = objectCursor.getColumnIndex(BaseIdentifiableObjectModel.Columns.UID);
-            if (uidColumnIndex != -1) {
-                uid = objectCursor.getString(uidColumnIndex);
-            }
-        }
-        objectCursor.close();
+        foreignKeyViolationStore.insert(foreignKeyViolation);
 
         List<String> argumentValues = new ArrayList<>();
         argumentValues.add(rowId);
         String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
         String deleteClause = "ROWID = ?;";
-        int rowsAffected = databaseAdapter.delete(tableName, deleteClause, argumentValuesArray);
+        int rowsAffected = databaseAdapter.delete(fromTable, deleteClause, argumentValuesArray);
         if (rowsAffected != 0) {
-            String msg = " was not persisted on " + tableName +
+            String msg = " was not persisted on " + fromTable +
                     " table to avoid Foreign Key constraint error. Target not found on "
-                    + referencedTableName + " table.";
+                    + toTable + " table. " + foreignKeyViolation.toString();
             String warningMsg;
-            if (uid == null) {
+            if (foreignKeyViolation.fromObjectUid() == null) {
                 warningMsg = "An object" + msg;
             } else {
-                warningMsg = "The object " + uid + msg;
+                warningMsg = "The object " + foreignKeyViolation.fromObjectUid() + msg;
             }
             Log.w(this.getClass().getSimpleName(), warningMsg);
         }
+    }
+
+    private ForeignKeyViolation getForeignKeyViolation(String foreignKeyIdNumber, String fromTable, String toTable,
+                                                       String rowId) {
+        Cursor listCursor = databaseAdapter.query("PRAGMA foreign_key_list(" + fromTable + ");");
+
+        ForeignKeyViolation.Builder foreignKeyViolationBuilder = ForeignKeyViolation.builder();
+
+        try {
+            if (listCursor.getCount() > 0) {
+                listCursor.moveToFirst();
+                do {
+                    if (foreignKeyIdNumber.equals(String.valueOf(listCursor.getInt(0)))) {
+                        String fromColumn = listCursor.getString(3);
+
+                        String selectStatement = "SELECT * FROM " + fromTable + " WHERE ROWID = " + rowId + ";";
+                        Cursor objectCursor = databaseAdapter.query(selectStatement);
+
+                        try {
+                            if (objectCursor.getCount() > 0) {
+                                objectCursor.moveToFirst();
+
+                                String uid = null;
+                                int uidColumnIndex = objectCursor.getColumnIndex(
+                                        BaseIdentifiableObjectModel.Columns.UID);
+                                if (uidColumnIndex != -1) {
+                                    uid = objectCursor.getString(uidColumnIndex);
+                                }
+
+                                List<String> columnAndValues = new ArrayList<>();
+                                for (String columnName : objectCursor.getColumnNames()) {
+                                    columnAndValues.add(columnName + ": " +
+                                            getColumnValueAsString(objectCursor, columnName));
+                                }
+
+                                foreignKeyViolationBuilder
+                                        .fromTable(fromTable)
+                                        .toTable(toTable)
+                                        .fromColumn(fromColumn)
+                                        .toColumn(listCursor.getString(4))
+                                        .notFoundValue(getColumnValueAsString(objectCursor, fromColumn))
+                                        .fromObjectRow(Utils.commaAndSpaceSeparatedArrayValues(
+                                                columnAndValues.toArray(new String[objectCursor.getColumnCount()])))
+                                        .fromObjectUid(uid)
+                                        .deletionDate(new Date());
+
+                            }
+                        } finally {
+                            objectCursor.close();
+                        }
+                    }
+
+                } while (listCursor.moveToNext());
+            }
+
+        } finally {
+            listCursor.close();
+        }
+
+        return foreignKeyViolationBuilder.build();
+    }
+
+    private String getColumnValueAsString(Cursor cursor, String columnName) {
+
+        int fromColumnIndex = cursor.getColumnIndex(columnName);
+        int fromColumnType = cursor.getType(fromColumnIndex);
+
+        String columnValue;
+        switch (fromColumnType) {
+            case 1:  columnValue = String.valueOf(cursor.getInt(fromColumnIndex));
+                break;
+            case 2:  columnValue = String.valueOf(cursor.getFloat(fromColumnIndex));;
+                break;
+            case 3:  columnValue = cursor.getString(fromColumnIndex);
+                break;
+            default: columnValue = null;
+                break;
+        }
+
+        return columnValue;
     }
 
     private Cursor getForeignKeyErrorsCursor() {
@@ -117,5 +197,12 @@ public class ForeignKeyCleaner {
 
         cursor.close();
         return null;
+    }
+
+    public static ForeignKeyCleaner create(DatabaseAdapter databaseAdapter) {
+        return new ForeignKeyCleaner(
+                databaseAdapter,
+                ForeignKeyViolationStore.create(databaseAdapter)
+        );
     }
 }

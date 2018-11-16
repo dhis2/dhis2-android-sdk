@@ -53,6 +53,22 @@ public class FieldsHelper<O> {
         return Field.create(BaseIdentifiableObject.UID);
     }
 
+    public Field<O, String> code() {
+        return Field.create(BaseIdentifiableObject.CODE);
+    }
+
+    public Field<O, String> name() {
+        return Field.create(BaseIdentifiableObject.NAME);
+    }
+
+    public Field<O, String> displayName() {
+        return Field.create(BaseIdentifiableObject.DISPLAY_NAME);
+    }
+
+    public Field<O, String> created() {
+        return Field.create(BaseIdentifiableObject.CREATED);
+    }
+
     public Field<O, String> lastUpdated() {
         return Field.create(BaseIdentifiableObject.LAST_UPDATED);
     }
@@ -74,10 +90,10 @@ public class FieldsHelper<O> {
 
     private void addIdentifiableFields(List<Property<O, String>> list) {
         list.add(this.uid());
-        list.add(this.<String>field(BaseIdentifiableObject.CODE));
-        list.add(this.<String>field(BaseIdentifiableObject.NAME));
-        list.add(this.<String>field(BaseIdentifiableObject.DISPLAY_NAME));
-        list.add(this.<String>field(BaseIdentifiableObject.CREATED));
+        list.add(this.code());
+        list.add(this.name());
+        list.add(this.displayName());
+        list.add(this.created());
         list.add(this.lastUpdated());
         list.add(this.deleted());
     }

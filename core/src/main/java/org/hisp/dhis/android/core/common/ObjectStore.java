@@ -30,19 +30,21 @@ package org.hisp.dhis.android.core.common;
 
 import android.support.annotation.NonNull;
 
-import java.util.Set;
+import java.util.List;
 
 public interface ObjectStore<M> extends DeletableStore {
 
     long insert(@NonNull M m) throws RuntimeException;
 
-    Set<M> selectAll();
+    List<M> selectAll();
 
-    Set<M> selectWhereClause(String whereClause);
+    List<M> selectWhereClause(String whereClause);
 
     M selectFirst();
 
-    Set<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
+    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
 
     boolean deleteById(@NonNull M m);
+
+    int count();
 }

@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
 
 import java.util.Date;
 import java.util.List;
@@ -65,7 +66,6 @@ public abstract class Event implements ObjectWithDeleteInterface, ObjectWithUidI
     private static final String DUE_DATE = "dueDate";
     private static final String DELETED = "deleted";
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
-    private static final String ATTRIBUTE_CATEGORY_OPTIONS = "attributeCategoryOptions";
     private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
     private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
 
@@ -82,19 +82,16 @@ public abstract class Event implements ObjectWithDeleteInterface, ObjectWithUidI
     private static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
     private static final Field<Event, Boolean> deleted = Field.create(DELETED);
     private static final Field<Event, String> dueDate = Field.create(DUE_DATE);
-    private static final Field<Event, String> attributeCategoryOptions = Field.create(ATTRIBUTE_CATEGORY_OPTIONS);
     private static final Field<Event, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
 
     private static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
             = NestedField.create(TRACKED_ENTITY_DATA_VALUES);
 
     public static final Fields<Event> allFields = Fields.<Event>builder().fields(
-            attributeCategoryOptions, attributeOptionCombo, uid, created, lastUpdated, completeDate,
+            attributeOptionCombo, uid, created, lastUpdated, completeDate,
             coordinates, dueDate, enrollment, eventDate, eventStatus, organisationUnit, program, programStage,
-            deleted, trackedEntityDataValues.with(TrackedEntityDataValue.allFields)
+            deleted, trackedEntityDataValues.with(TrackedEntityDataValueFields.allFields)
     ).build();
-
-
 
     @JsonProperty(UID)
     public abstract String uid();
@@ -160,10 +157,6 @@ public abstract class Event implements ObjectWithDeleteInterface, ObjectWithUidI
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
     @Nullable
-    @JsonProperty(ATTRIBUTE_CATEGORY_OPTIONS)
-    public abstract String attributeCategoryOptions();
-
-    @Nullable
     @JsonProperty(ATTRIBUTE_OPTION_COMBO)
     public abstract String attributeOptionCombo();
 
@@ -190,13 +183,11 @@ public abstract class Event implements ObjectWithDeleteInterface, ObjectWithUidI
             @JsonProperty(DUE_DATE) Date dueDate,
             @JsonProperty(DELETED) Boolean deleted,
             @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues,
-            @JsonProperty(ATTRIBUTE_CATEGORY_OPTIONS) String attributeCategoryOptions,
             @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo,
             @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance) {
         return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
                 program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
-                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues), attributeCategoryOptions,
+                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues),
                 attributeOptionCombo, trackedEntityInstance);
     }
-
 }

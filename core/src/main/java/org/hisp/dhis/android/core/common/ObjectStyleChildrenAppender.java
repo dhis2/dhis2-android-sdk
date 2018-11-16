@@ -30,10 +30,8 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-import java.util.Collection;
-
 public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface & ObjectWithStyle<O, B>,
-        B extends ObjectWithStyle.Builder<O, B>> implements ChildrenAppender<O> {
+        B extends ObjectWithStyle.Builder<O, B>> extends ChildrenAppender<O> {
 
     private final ObjectStyleStore objectStyleStore;
     private final TableInfo objectWithStyleTableInfo;
@@ -46,12 +44,7 @@ public final class ObjectStyleChildrenAppender<O extends ObjectWithUidInterface 
     }
 
     @Override
-    public void prepareChildren(Collection<O> collection) {
-        // Intentionally empty
-    }
-
-    @Override
-    public O appendChildren(O objectWithStyle) {
+    protected O appendChildren(O objectWithStyle) {
         B builder = objectWithStyle.toBuilder();
         ObjectStyle style = objectStyleStore.getStyle(objectWithStyle, objectWithStyleTableInfo);
         return builder.style(style).build();

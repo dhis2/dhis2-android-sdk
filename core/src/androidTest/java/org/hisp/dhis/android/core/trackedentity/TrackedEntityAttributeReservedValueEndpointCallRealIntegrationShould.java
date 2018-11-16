@@ -7,14 +7,13 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -37,7 +36,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private Call<List<TrackedEntityAttributeReservedValue>> createCall() {
-        OrganisationUnitModel organisationUnit =  OrganisationUnitModel.builder()
+        OrganisationUnit organisationUnit =  OrganisationUnit.builder()
                 .uid("orgUnitUid").code("ORG_UNIT").build();
 
         return TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(getGenericCallData(d2),
@@ -56,7 +55,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         login();
         reservedValueEndpointCall.call();
 
-        Set<TrackedEntityAttributeReservedValueModel> reservedValues = TrackedEntityAttributeReservedValueStore.create(
+        List<TrackedEntityAttributeReservedValueModel> reservedValues = TrackedEntityAttributeReservedValueStore.create(
                 databaseAdapter()).selectAll();
 
         assertThat(reservedValues.size()).isEqualTo(numberToReserve);

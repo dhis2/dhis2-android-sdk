@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
@@ -121,7 +121,6 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Test
     public void have_transactional_no_resource_call_processor() {
         EndpointCall<Program> castedEndpointCall = (EndpointCall<Program>) endpointCall;
-        assertThat(castedEndpointCall.getProcessor()
-                instanceof TransactionalNoResourceCallProcessor).isTrue();
+        assertThat(castedEndpointCall.getProcessor() instanceof TransactionalNoResourceSyncCallProcessor).isTrue();
     }
 }

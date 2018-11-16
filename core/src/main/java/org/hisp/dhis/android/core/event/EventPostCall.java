@@ -11,6 +11,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +49,8 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
         String strategy = "CREATE_AND_UPDATE";
 
-        WebResponse webResponse =
-                new APICallExecutor().executeObjectCall(eventService.postEvents(eventPayload, strategy));
+        WebResponse webResponse = new APICallExecutor().executeObjectCallWithAcceptedErrorCodes(
+                eventService.postEvents(eventPayload, strategy), Collections.singletonList(409), WebResponse.class);
 
         handleWebResponse(webResponse);
         return webResponse;
@@ -58,7 +59,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
     @NonNull
     private List<Event> queryEventsToPost() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.TRUE);
+                trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues();
         List<Event> events = eventStore.querySingleEventsToPost();
         int eventSize = events.size();
 
@@ -72,7 +73,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
                     event.createdAtClient(), event.lastUpdatedAtClient(), event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                    event.attributeCategoryOptions(), event.attributeOptionCombo(), event.trackedEntityInstance()));
+                    event.attributeOptionCombo(), event.trackedEntityInstance()));
         }
 
         return eventRecreated;
@@ -89,7 +90,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
         return new EventPostCall(
                 retrofit.create(EventService.class),
                 new EventStoreImpl(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter)
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter)
         );
     }
 }

@@ -11,6 +11,7 @@ import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
@@ -33,8 +34,14 @@ class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
     protected void afterObjectHandled(Category category, HandleAction handleAction) {
         List<CategoryOption> categoryOptions = category.categoryOptions();
         if (categoryOptions != null) {
-            categoryOptionHandler.handleMany(categoryOptions);
-            categoryCategoryOptionLinkHandler.handleMany(category.uid(), category.categoryOptions(),
+            List<CategoryOption> categoryOptionsWithAccess = new ArrayList<>();
+            for (CategoryOption categoryOption: categoryOptions) {
+                if (categoryOption.access().data().read()) {
+                    categoryOptionsWithAccess.add(categoryOption);
+                }
+            }
+            categoryOptionHandler.handleMany(categoryOptionsWithAccess);
+            categoryCategoryOptionLinkHandler.handleMany(category.uid(), categoryOptionsWithAccess,
                     new CategoryCategoryOptionLinkModelBuilder(category));
         }
     }

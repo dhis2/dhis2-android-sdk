@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -69,8 +68,6 @@ public abstract class IndicatorType extends BaseIdentifiableObject implements Mo
     static IndicatorType create(Cursor cursor) {
         return $AutoValue_IndicatorType.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

@@ -10,10 +10,9 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OldSearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitOnDemandCall;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.User;
@@ -32,8 +31,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private final Retrofit retrofit;
     private final EventHandler eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
-    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
-    private final OldSearchOrganisationUnitCall.Factory organisationUnitCallFactory;
+    private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private final SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     private final Collection<Event> events;
@@ -43,8 +42,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull Retrofit retrofit,
             @NonNull EventHandler eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
-            @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
-            @NonNull OldSearchOrganisationUnitCall.Factory organisationUnitCallFactory,
+            @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
+            @NonNull SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory,
             @NonNull Collection<Event> events,
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
@@ -52,7 +51,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
         this.eventHandler = eventHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitStore = organisationUnitStore;
-        this.organisationUnitCallFactory = organisationUnitCallFactory;
+        this.searchOrganisationUnitOnDemandCallFactory = searchOrganisationUnitOnDemandCallFactory;
         this.events = events;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
@@ -74,9 +73,10 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 if (!searchOrgUnitUids.isEmpty()) {
                     AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
-                    Call<List<OrganisationUnit>> organisationUnitCall = organisationUnitCallFactory.create(
-                            databaseAdapter, retrofit, searchOrgUnitUids,
-                            User.builder().uid(authenticatedUserModel.user()).build());
+                    Call<List<OrganisationUnit>> organisationUnitCall =
+                            searchOrganisationUnitOnDemandCallFactory.create(
+                                databaseAdapter, retrofit, searchOrgUnitUids,
+                                User.builder().uid(authenticatedUserModel.user()).build());
                     executor.executeD2Call(organisationUnitCall);
                 }
 
@@ -107,7 +107,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 EventHandler.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
-                OldSearchOrganisationUnitCall.FACTORY,
+                SearchOrganisationUnitOnDemandCall.FACTORY,
                 events,
                 new ForeignKeyCleaner(databaseAdapter)
         );

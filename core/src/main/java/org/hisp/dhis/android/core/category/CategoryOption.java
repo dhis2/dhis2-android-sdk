@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -40,9 +39,11 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
@@ -68,8 +69,11 @@ public abstract class CategoryOption extends BaseNameableObject implements Model
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
 
-
-    public abstract ContentValues toContentValues();
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(AccessColumnAdapter.class)
+    @ColumnName(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE)
+    public abstract Access access();
 
     static CategoryOption create(Cursor cursor) {
         return $AutoValue_CategoryOption.createFromCursor(cursor);
@@ -89,6 +93,8 @@ public abstract class CategoryOption extends BaseNameableObject implements Model
         public abstract Builder startDate(@Nullable Date startDate);
 
         public abstract Builder endDate(@Nullable Date endDate);
+
+        public abstract Builder access(@Nullable Access access);
 
         abstract CategoryOption autoBuild();
 

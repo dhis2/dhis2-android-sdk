@@ -42,8 +42,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithConstraints;
@@ -76,7 +76,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreT
 
     @Test
     public void get_all_relationship_types_without_children_when_calling_get_set() {
-        Set<RelationshipType> types = relationshipTypeCollectionRepository.getSet();
+        List<RelationshipType> types = relationshipTypeCollectionRepository.get();
         assertThat(types.size()).isEqualTo(2);
 
         for (RelationshipType targetType: types) {
@@ -87,7 +87,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreT
 
     @Test
     public void get_all_relationship_types_with_children_when_calling_get_set_with_children() {
-        Set<RelationshipType> types = relationshipTypeCollectionRepository.getSetWithAllChildren();
+        List<RelationshipType> types = relationshipTypeCollectionRepository.getWithAllChildren();
         assertThat(types.size()).isEqualTo(2);
 
         for (RelationshipType targetType: types) {

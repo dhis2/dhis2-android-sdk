@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.program.ProgramIndicatorModel;
+import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
@@ -79,7 +79,7 @@ public class ProgramIndicatorEngineShould {
     private EnrollmentModel enrollmentModel;
 
     @Mock
-    private ProgramIndicatorModel programIndicator;
+    private ProgramIndicator programIndicator;
 
     @Mock
     private TrackedEntityDataValue value1;
@@ -118,7 +118,7 @@ public class ProgramIndicatorEngineShould {
     private String constantUid1 = "gzlRs2HEGAf";
 
     @Mock
-    private IdentifiableObjectStore<ProgramIndicatorModel> programIndicatorStore;
+    private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
     @Mock
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
     @Mock
@@ -152,11 +152,11 @@ public class ProgramIndicatorEngineShould {
         when(value5.dataElement()).thenReturn(dataElementUid4); //To test repeatable stages
         when(attributeValue.trackedEntityAttribute()).thenReturn(attributeUid);
 
-        when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid1))
+        when(trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(eventUid1))
                 .thenReturn(Arrays.asList(value1, value2, value3));
-        when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid2_1))
+        when(trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(eventUid2_1))
                 .thenReturn(Collections.singletonList(value4));
-        when(trackedEntityDataValueStore.queryTrackedEntityDataValues(eventUid2_2))
+        when(trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(eventUid2_2))
                 .thenReturn(Collections.singletonList(value5));
 
         when(event1.uid()).thenReturn(eventUid1);

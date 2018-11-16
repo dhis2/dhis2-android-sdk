@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.program.ProgramStage;
 
 public class ProgramStageWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ProgramStage> {
 
     @Override
-    public ProgramStage fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
+    protected ProgramStage build(String uid) {
         return ProgramStage.builder().uid(uid).build();
     }
 }

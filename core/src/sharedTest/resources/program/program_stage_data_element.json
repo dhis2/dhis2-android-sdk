@@ -1,0 +1,29 @@
+{
+  "created": "2015-03-27T16:27:19.000",
+  "lastUpdated": "2015-08-06T20:16:48.444",
+  "href": "https://play.dhis2.org/dev/api/programStageDataElements/LfgZNmadu4W",
+  "id": "LfgZNmadu4W",
+  "displayInReports": false,
+  "externalAccess": false,
+  "compulsory": false,
+  "allowProvidedElsewhere": false,
+  "sortOrder": 11,
+  "allowFutureDate": false,
+  "programStage": {
+    "id": "ZzYYXq4fJie"
+  },
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false
+  },
+  "dataElement": {
+    "id": "aei1xRjSU2l"
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "translations": []
+}

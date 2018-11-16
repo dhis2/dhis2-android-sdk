@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.content.ContentValues;
+
 public interface Model {
     Long id();
+    ContentValues toContentValues();
 }

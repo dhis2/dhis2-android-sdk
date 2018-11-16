@@ -35,28 +35,29 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
 import org.hisp.dhis.android.core.event.EventModel;
-import org.hisp.dhis.android.core.organisationunit.CreateOrganisationUnitUtils;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageModel;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel.Columns;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -92,17 +93,18 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     private static final String ENROLLMENT = "test_enrollment";
 
     public static final String[] PROJECTION = {
-            TrackedEntityDataValueModel.Columns.EVENT,
-            TrackedEntityDataValueModel.Columns.CREATED,
-            TrackedEntityDataValueModel.Columns.LAST_UPDATED,
-            TrackedEntityDataValueModel.Columns.DATA_ELEMENT,
-            TrackedEntityDataValueModel.Columns.STORED_BY,
-            TrackedEntityDataValueModel.Columns.VALUE,
-            TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE
+            TrackedEntityDataValueTableInfo.Columns.EVENT,
+            TrackedEntityDataValueFields.CREATED,
+            TrackedEntityDataValueFields.LAST_UPDATED,
+            TrackedEntityDataValueFields.DATA_ELEMENT,
+            TrackedEntityDataValueFields.STORED_BY,
+            TrackedEntityDataValueFields.VALUE,
+            TrackedEntityDataValueFields.PROVIDED_ELSEWHERE
     };
 
     private Date date;
     private String dateString;
+    private TrackedEntityDataValue trackedEntityDataValue;
     private TrackedEntityDataValueStore trackedEntityDataValueStore;
 
     @Before
@@ -113,7 +115,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
 
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(TRACKED_ENTITY_ID,
                 TRACKED_ENTITY_UID);
@@ -122,8 +124,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         ContentValues program = CreateProgramUtils.create(1L, PROGRAM, RELATIONSHIP_TYPE_UID, null,
                 TRACKED_ENTITY_UID);
         ContentValues programStage = CreateProgramStageUtils.create(1L, PROGRAM_STAGE, PROGRAM);
-        ContentValues organisationUnit = CreateOrganisationUnitUtils.createOrgUnit(1L,
-                ORGANISATION_UNIT);
+        OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 TRACKED_ENTITY_INSTANCE, ORGANISATION_UNIT, TRACKED_ENTITY_UID);
 
@@ -141,7 +142,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
                 relationshipType);
         database().insert(ProgramModel.TABLE, null, program);
-        database().insert(OrganisationUnitModel.TABLE, null, organisationUnit);
+        database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(ProgramStageModel.TABLE, null, programStage);
         database().insert(DataElementModel.TABLE, null, dataElement1);
         database().insert(DataElementModel.TABLE, null, dataElement2);
@@ -150,20 +151,22 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(EnrollmentModel.TABLE, null, enrollment);
         database().insert(EventModel.TABLE, null, event1);
         database().insert(EventModel.TABLE, null, event2);
+
+        trackedEntityDataValue = TrackedEntityDataValue.builder()
+                .event(EVENT_1)
+                .created(date)
+                .lastUpdated(date)
+                .dataElement(DATA_ELEMENT_1)
+                .storedBy(STORED_BY)
+                .value(VALUE)
+                .providedElsewhere(PROVIDED_ELSEWHERE)
+                .build();
     }
 
     @Test
     public void insert_tracked_entity_data_value_in_data_base_when_insert() {
-        long rowId = trackedEntityDataValueStore.insert(
-                EVENT_1,
-                date,
-                date,
-                DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+        long rowId = trackedEntityDataValueStore.insert(trackedEntityDataValue);
+        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor).hasRow(
@@ -180,9 +183,14 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
 
     @Test
     public void insert_nullable_tracked_entity_data_value_in_data_base_when_insert_null_fields() {
-        long rowId = trackedEntityDataValueStore.insert(EVENT_1, null, null, DATA_ELEMENT_1, null, null, null);
+        long rowId = trackedEntityDataValueStore.insert(trackedEntityDataValue.toBuilder()
+                .created(null)
+                .lastUpdated(null)
+                .storedBy(null)
+                .value(null)
+                .providedElsewhere(null).build());
 
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -193,18 +201,11 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
 
     @Test
     public void delete_tracked_entity_data_value_when_delete_event_foreign_key() {
-        trackedEntityDataValueStore.insert(
-                EVENT_1,
-                date,
-                date,
-                DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
+        trackedEntityDataValueStore.insert(trackedEntityDataValue);
+
         database().delete(EventModel.TABLE, EventModel.Columns.UID + "=?", new String[]{EVENT_1});
 
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
         cursor.close();
@@ -213,19 +214,12 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     //@Test
     //TODO Pendding test
     public void delete_tracked_entity_data_value_when_delete_data_element_foreign_key() {
-        trackedEntityDataValueStore.insert(
-                EVENT_1,
-                date,
-                date,
-                DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
+        trackedEntityDataValueStore.insert(trackedEntityDataValue);
+
         database().delete(DataElementModel.TABLE, DataElementModel.Columns.UID + "=?",
                 new String[]{DATA_ELEMENT_1});
 
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
         cursor.close();
@@ -233,86 +227,58 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
 
     @Test
     public void return_list_of_tracked_entity_data_value_when_query_tracked_entity_data_value() throws Exception {
-        ContentValues dataValue = new ContentValues();
-        dataValue.put(Columns.CREATED, dateString);
-        dataValue.put(Columns.LAST_UPDATED, dateString);
-        dataValue.put(Columns.PROVIDED_ELSEWHERE, 0);
-        dataValue.put(Columns.STORED_BY, STORED_BY);
-        dataValue.put(Columns.VALUE, VALUE);
-        dataValue.put(Columns.EVENT, EVENT_1);
-        dataValue.put(Columns.DATA_ELEMENT, DATA_ELEMENT_1);
-        database().insert(TrackedEntityDataValueModel.TABLE, null, dataValue);
+        trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
         String[] projection = {Columns.EVENT};
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE, projection,
+        Cursor cursor =
+                database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                        projection,
                 Columns.EVENT + "=?",
                 new String[]{EVENT_1}, null, null, null);
-
-        // verify that TEDV was successfully inserted
         assertThatCursor(cursor).hasRow(EVENT_1).isExhausted();
         cursor.close();
 
         Map<String, List<TrackedEntityDataValue>> map =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.FALSE);
+                trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
 
         assertThat(map.size()).isEqualTo(1);
 
         List<TrackedEntityDataValue> dataValues = map.get(EVENT_1);
         assertThat(dataValues.size()).isEqualTo(1);
 
-        TrackedEntityDataValue trackedEntityDataValue = dataValues.get(0);
-        assertThat(trackedEntityDataValue.created()).isEqualTo(date);
-        assertThat(trackedEntityDataValue.lastUpdated()).isEqualTo(date);
-        assertThat(trackedEntityDataValue.dataElement()).isEqualTo(DATA_ELEMENT_1);
-        assertThat(trackedEntityDataValue.providedElsewhere()).isFalse();
-        assertThat(trackedEntityDataValue.storedBy()).isEqualTo(STORED_BY);
-        assertThat(trackedEntityDataValue.value()).isEqualTo(VALUE);
+        TrackedEntityDataValue trackedEntityDataValueInDB = dataValues.get(0);
+        assertThat(trackedEntityDataValueInDB.created()).isEqualTo(date);
+        assertThat(trackedEntityDataValueInDB.lastUpdated()).isEqualTo(date);
+        assertThat(trackedEntityDataValueInDB.dataElement()).isEqualTo(DATA_ELEMENT_1);
+        assertThat(trackedEntityDataValueInDB.providedElsewhere()).isFalse();
+        assertThat(trackedEntityDataValueInDB.storedBy()).isEqualTo(STORED_BY);
+        assertThat(trackedEntityDataValueInDB.value()).isEqualTo(VALUE);
 
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void throw_illegal_argument_exception_when_insert_tracked_entity_data_value_with_invalid_event() {
-        trackedEntityDataValueStore.insert(
-                "wrong",
-                date,
-                date,
-                DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
+        trackedEntityDataValueStore.insert(trackedEntityDataValue.toBuilder().event("wrong").build());
     }
 
     //@Test(expected = SQLiteConstraintException.class)
     //TODO Pendding test
     public void throw_illegal_argument_exception_wheninsert_tracked_entity_data_value_with_invalid_data_element() {
-        trackedEntityDataValueStore.insert(
-                EVENT_1,
-                date,
-                date,
-                "wrong",
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE
-        );
+        trackedEntityDataValueStore.insert(trackedEntityDataValue.toBuilder().dataElement("wrong").build());
     }
 
     // ToDo: consider introducing conflict resolution strategy
 
     @Test
     public void update_tracked_entity_data_value() {
-        database().insert(TrackedEntityDataValueModel.TABLE, null,
-                CreateTrackedEntityDataValueUtils.create(1L, EVENT_1, DATA_ELEMENT_1));
+        trackedEntityDataValueStore.insert(TrackedEntityDataValue.builder()
+                .id(1L)
+                .event(EVENT_1)
+                .dataElement(DATA_ELEMENT_1).build());
 
-        int updateReturn = trackedEntityDataValueStore.update(EVENT_1,
-                date,
-                date,
-                DATA_ELEMENT_1,
-                STORED_BY,
-                VALUE,
-                PROVIDED_ELSEWHERE);
+        trackedEntityDataValueStore.updateWhere(trackedEntityDataValue);
 
-        Cursor cursor = database().query(TrackedEntityDataValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
 
         assertThatCursor(cursor).hasRow(EVENT_1,
@@ -323,31 +289,24 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
                 VALUE,
                 toInteger(PROVIDED_ELSEWHERE));
         cursor.close();
-
-        assertThat(updateReturn).isEqualTo(1);
     }
 
     @Test
     public void delete_tracked_entity_data_value_by_event_and_data_element_uids() {
-        database().insert(TrackedEntityDataValueModel.TABLE, null,
-                CreateTrackedEntityDataValueUtils.create(1L, EVENT_1, DATA_ELEMENT_1));
+        TrackedEntityDataValue.Builder trackedEntityDataValueBuilder =
+                TrackedEntityDataValue.builder().event(EVENT_1).dataElement(DATA_ELEMENT_1);
 
-        database().insert(TrackedEntityDataValueModel.TABLE, null,
-                CreateTrackedEntityDataValueUtils.create(2L, EVENT_1, DATA_ELEMENT_2));
+        trackedEntityDataValueStore.insert(trackedEntityDataValueBuilder.id(1L).build());
+        trackedEntityDataValueStore.insert(trackedEntityDataValueBuilder.id(2L).dataElement(DATA_ELEMENT_2).build());
+        trackedEntityDataValueStore.insert(trackedEntityDataValueBuilder.id(3L).event(EVENT_2).build());
 
-        database().insert(TrackedEntityDataValueModel.TABLE, null,
-                CreateTrackedEntityDataValueUtils.create(3L, EVENT_2, DATA_ELEMENT_1));
-
-
-        trackedEntityDataValueStore.deleteByEventAndDataElementUIds(EVENT_1,
-                Arrays.asList(DATA_ELEMENT_1, DATA_ELEMENT_2));
+        trackedEntityDataValueStore.deleteByEventAndNotInDataElements(EVENT_1, new ArrayList<String>());
 
         List<TrackedEntityDataValue> dataValuesByEvent =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(EVENT_1);
+                trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(EVENT_1);
 
         Map<String, List<TrackedEntityDataValue>> allDataValues =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(false);
-
+                trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
 
         Assert.assertThat(dataValuesByEvent.size(), is(0));
         Assert.assertThat(allDataValues.get(EVENT_1), is(nullValue()));
@@ -355,13 +314,14 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_illegal_argument_exception_when_insert_null_uid() {
-        trackedEntityDataValueStore.insert(null, date, date, DATA_ELEMENT_1, STORED_BY, VALUE, PROVIDED_ELSEWHERE);
+        trackedEntityDataValueStore.insert(trackedEntityDataValue.toBuilder().event(null).build());
+
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = RuntimeException.class)
     public void throw_illegal_argument_exception_when_insert_null_data_element() {
-        trackedEntityDataValueStore.insert(EVENT_1, date, date, null, STORED_BY, VALUE, PROVIDED_ELSEWHERE);
+        trackedEntityDataValueStore.insert(trackedEntityDataValue.toBuilder().dataElement(null).build());
     }
 }

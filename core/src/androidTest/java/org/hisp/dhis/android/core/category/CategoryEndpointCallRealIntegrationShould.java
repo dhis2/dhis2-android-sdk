@@ -1,6 +1,8 @@
 package org.hisp.dhis.android.core.category;
 
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -9,6 +11,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import static junit.framework.Assert.assertFalse;
@@ -28,7 +31,8 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
     public void call_categories_endpoint() throws Exception {
         d2.logIn(RealServerMother.user, RealServerMother.password).call();
 
-        Call<List<Category>> categoryEndpointCall = CategoryEndpointCall.factory(d2.retrofit()).create(getGenericCallData(d2));
+        Call<List<Category>> categoryEndpointCall = CategoryEndpointCall.FACTORY.create(getGenericCallData(d2),
+                new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));
         List<Category> categories = categoryEndpointCall.call();
 
         assertFalse(categories.isEmpty());

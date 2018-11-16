@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
@@ -39,7 +40,6 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     private String programUid;
     private String programStageUid;
     private String dataElementUid;
-    private String attributeCategoryOption;
     private String attributeOptionCombo;
     private String categoryComboUID;
     private String user = "admin";
@@ -52,13 +52,12 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
 
         eventStore = new EventStoreImpl(databaseAdapter());
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         orgUnitUid = "ImspTQPwCqd";
         programUid = "kla3mAPgvCH";
         programStageUid = "aNLq9ZYoy9W";
         dataElementUid = "b6dOUjAarHD";
-        attributeCategoryOption = "C6nZpLKjEJr";
         attributeOptionCombo = "nvLjum6Xbv5";
         categoryComboUID = "nM3u9s5a52V";
         codeGenerator = new CodeGeneratorImpl();
@@ -78,7 +77,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         downloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
-                dataElementUid, attributeCategoryOption, attributeOptionCombo, null);
+                dataElementUid, attributeOptionCombo, null);
 
         d2.syncSingleEvents().call();
     }
@@ -89,7 +88,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         downloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
-                attributeCategoryOption, attributeOptionCombo, null);
+                attributeOptionCombo, null);
 
         pushDummyEvent();
 
@@ -99,7 +98,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         downloadMetadata();
 
-        downloadEventsBy(categoryComboUID, attributeCategoryOption);
+        downloadEventsBy(categoryComboUID);
 
         assertThatEventPushedIsDownloaded(pushedEvent);
     }
@@ -110,10 +109,10 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         downloadMetadata();
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1, dataElementUid,
-                attributeCategoryOption, attributeOptionCombo, null);
+                attributeOptionCombo, null);
 
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid2, dataElementUid,
-                attributeCategoryOption, attributeOptionCombo, null);
+                attributeOptionCombo, null);
 
         pushDummyEvent();
 
@@ -123,23 +122,31 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         downloadMetadata();
 
-        downloadEventsBy(categoryComboUID, attributeCategoryOption);
+        downloadEventsBy(categoryComboUID);
 
         assertThatEventPushedIsDownloaded(pushedEvent);
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid,
             String programStageUid, String eventUid,
-            String dataElementUid, String attributeCategoryOption, String attributeOptionCombo, String trackedEntityInstance) {
+            String dataElementUid, String attributeOptionCombo, String trackedEntityInstance) {
         eventStore.insert(
                 eventUid, null, new Date(), new Date(), null, null,
                 EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                new Date(), new Date(), new Date(), State.TO_POST, attributeCategoryOption, attributeOptionCombo, trackedEntityInstance
+                new Date(), new Date(), new Date(), State.TO_POST, attributeOptionCombo, trackedEntityInstance
         );
 
-        trackedEntityDataValueStore.insert(
-                eventUid, new Date(), new Date(), dataElementUid, "user_name", "12", Boolean.FALSE
-        );
+        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
+                .event(eventUid)
+                .created(new Date())
+                .lastUpdated(new Date())
+                .dataElement(dataElementUid)
+                .storedBy("user_name")
+                .value("12")
+                .providedElsewhere(Boolean.FALSE)
+                .build();
+
+        trackedEntityDataValueStore.insert(trackedEntityDataValue);
     }
 
     private void assertThatEventPushedIsDownloaded(Event pushedEvent) {
@@ -150,9 +157,9 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         assertTrue(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents));
     }
 
-    private void downloadEventsBy(String categoryComboUID, String categoryOptionUID) throws Exception {
+    private void downloadEventsBy(String categoryComboUID) throws Exception {
         EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), orgUnitUid, 50, categoryComboUID, categoryOptionUID);
+                d2.retrofit(), orgUnitUid, 50, categoryComboUID);
 
         List<Event> events = eventEndpointCall.call();
         eventStore = new EventStoreImpl(databaseAdapter());
@@ -161,7 +168,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
             eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(), event.status(), event.coordinates().latitude().toString(),
                     event.coordinates().longitude().toString(), event.program(), event.programStage(), event.organisationUnit(),
-                    event.eventDate(), event.completedDate(), event.dueDate(), State.SYNCED, event.attributeCategoryOptions(),
+                    event.eventDate(), event.completedDate(), event.dueDate(), State.SYNCED,
                     event.attributeOptionCombo(), event.trackedEntityInstance());
         }
 
@@ -191,9 +198,8 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private boolean verifyPushedEventIsInPullList(Event event, List<Event> eventList) {
         for(Event pullEvent : eventList){
-            if(event.uid().equals(pullEvent.uid()) &&
-                    event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo()) &&
-                    event.attributeCategoryOptions().equals(pullEvent.attributeCategoryOptions())){
+            if (event.uid().equals(pullEvent.uid()) &&
+                    event.attributeOptionCombo().equals(pullEvent.attributeOptionCombo())){
                 return true;
             }
         }

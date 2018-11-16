@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,46 +38,17 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramTrackedEntityAttributeShould {
+public class ProgramTrackedEntityAttributeShould extends BaseObjectShould implements ObjectShould {
 
+    public ProgramTrackedEntityAttributeShould() {
+        super("program/program_tracked_entity_attribute.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        ProgramTrackedEntityAttribute programTrackedEntityAttribute = objectMapper.readValue("{\n" +
-                "\"lastUpdated\": \"2016-10-11T10:41:40.401\",\n" +
-                "\"id\": \"YhqgQ6Iy4c4\",\n" +
-                "\"href\": \"https://play.dhis2.org/dev/api/programTrackedEntityAttributes/YhqgQ6Iy4c4\",\n" +
-                "\"created\": \"2016-10-11T10:41:40.401\",\n" +
-                "\"name\": \"Child Programme Gender\",\n" +
-                "\"shortName\": \"Child Programme Gender\",\n" +
-                "\"displayName\": \"Child Programme Gender\",\n" +
-                "\"mandatory\": false,\n" +
-                "\"displayShortName\": \"Child Programme Gender\",\n" +
-                "\"externalAccess\": false,\n" +
-                "\"valueType\": \"TEXT\",\n" +
-                "\"allowFutureDate\": false,\n" +
-                "\"dimensionItem\": \"IpHINAT79UW.cejWyOfXge6\",\n" +
-                "\"displayInList\": false,\n" +
-                "\"sortOrder\": 1,\n" +
-                "\"dimensionItemType\": \"PROGRAM_ATTRIBUTE\",\n" +
-                "\"access\": {\n" +
-                "\"read\": true,\n" +
-                "\"updateWithSection\": true,\n" +
-                "\"externalize\": false,\n" +
-                "\"delete\": true,\n" +
-                "\"write\": true,\n" +
-                "\"manage\": false\n" +
-                "},\n" +
-                "\"program\": {\n" +
-                "\"id\": \"IpHINAT79UW\"\n" +
-                "},\n" +
-                "\"trackedEntityAttribute\": {\n" +
-                "\"id\": \"cejWyOfXge6\"\n" +
-                "},\n" +
-                "\"translations\": [],\n" +
-                "\"userGroupAccesses\": [],\n" +
-                "\"attributeValues\": []\n" +
-                "}", ProgramTrackedEntityAttribute.class);
+        ProgramTrackedEntityAttribute programTrackedEntityAttribute = objectMapper.readValue(jsonStream,
+                ProgramTrackedEntityAttribute.class);
 
         assertThat(programTrackedEntityAttribute.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2016-10-11T10:41:40.401"));

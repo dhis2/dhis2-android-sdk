@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -59,7 +59,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
 
     // object to test
     private TrackedEntityAttributeReservedValueStoreInterface store;
-    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Before
     public void setUp() throws IOException {
@@ -70,7 +70,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
         Date expiredDate = parseDate("2018-05-12T12:35:36.743");
         Date notExpiredDate = parseDate("2018-05-17T12:35:36.743");
 
-        OrganisationUnitModel organisationUnit = OrganisationUnitModel.builder().uid(orgUnitUid).build();
+        OrganisationUnit organisationUnit = OrganisationUnit.builder().uid(orgUnitUid).build();
         organisationUnitStore = OrganisationUnitStore.create(databaseAdapter());
         organisationUnitStore.insert(organisationUnit);
 
@@ -139,7 +139,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
     }
 
     private void storeContains(TrackedEntityAttributeReservedValueModel value, Boolean contains) {
-        Set<TrackedEntityAttributeReservedValueModel> values = store.selectAll();
+        List<TrackedEntityAttributeReservedValueModel> values = store.selectAll();
         assertThat(values.contains(value), is(contains));
     }
 }

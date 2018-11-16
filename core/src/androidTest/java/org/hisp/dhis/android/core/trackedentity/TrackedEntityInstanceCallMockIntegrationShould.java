@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -41,7 +41,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
 
@@ -62,11 +62,11 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("tracked_entity_instance.json", teiUid);
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
     }
 
     @Test
@@ -79,18 +79,18 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
         trackedEntityInstanceByUidEndPointCall = d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance_with_removed_data.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("tracked_entity_instance_with_removed_data.json",
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_with_removed_data.json",
                 teiUid);
     }
 
@@ -110,7 +110,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
     private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
             throws IOException {
-        String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
+        String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
                 BaseIdentifiableObject.DATE_FORMAT.raw());
@@ -196,11 +196,15 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         List<Event> downloadedEventsWithoutValues = eventStore.queryAll();
 
-        TrackedEntityDataValueStoreImpl trackedEntityDataValue =
-                new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter()).selectAll();
+        Map<String, List<TrackedEntityDataValue>> downloadedValues = new HashMap<>();
+        for (TrackedEntityDataValue dataValue : dataValueList) {
+            if (downloadedValues.get(dataValue.event()) == null) {
+                downloadedValues.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
+            }
 
-        Map<String, List<TrackedEntityDataValue>> downloadedValues =
-                trackedEntityDataValue.queryTrackedEntityDataValues();
+            downloadedValues.get(dataValue.event()).add(dataValue);
+        }
 
         return createTei(downloadedTei, attValues, downloadedEnrollments.get(teiUid),
                 downloadedEventsWithoutValues, downloadedValues);
@@ -218,14 +222,21 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Enrollment> downloadedEnrollments = new ArrayList<>();
 
         for (Event event : downloadedEventsWithoutValues) {
+            List<TrackedEntityDataValue> trackedEntityDataValuesWithNullIdsAndEvents = new ArrayList<>();
+
+            for (TrackedEntityDataValue trackedEntityDataValue : downloadedValues.get(event.uid())) {
+                trackedEntityDataValuesWithNullIdsAndEvents.add(
+                        trackedEntityDataValue.toBuilder().id(null).event(null).build());
+            }
+
             event = Event.create(
                     event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()),
-                    event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
+                    event.attributeOptionCombo(),
                     event.trackedEntityInstance());
 
             if (downloadedEvents.get(event.enrollmentUid()) == null) {

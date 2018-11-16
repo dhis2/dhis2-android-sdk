@@ -45,23 +45,22 @@ public final class LegendSetStore {
 
     private LegendSetStore() {}
 
-    private static StatementBinder<LegendSetModel> BINDER = new IdentifiableStatementBinder<LegendSetModel>() {
+    private static StatementBinder<LegendSet> BINDER = new IdentifiableStatementBinder<LegendSet>() {
         @Override
-        public void bindToStatement(@NonNull LegendSetModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull LegendSet o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.symbolizer());
         }
     };
 
-    private static final CursorModelFactory<LegendSetModel> FACTORY = new CursorModelFactory<LegendSetModel>() {
+    private static final CursorModelFactory<LegendSet> FACTORY = new CursorModelFactory<LegendSet>() {
         @Override
-        public LegendSetModel fromCursor(Cursor cursor) {
-            return LegendSetModel.create(cursor);
+        public LegendSet fromCursor(Cursor cursor) {
+            return LegendSet.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<LegendSetModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, LegendSetModel.TABLE,
-                new LegendSetModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<LegendSet> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, LegendSetTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

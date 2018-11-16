@@ -1,0 +1,30 @@
+{
+  "created": "2015-09-14T21:17:40.841",
+  "lastUpdated": "2015-09-14T22:22:15.383",
+  "name": "Ask for comment for low apgar",
+  "href": "https://play.dhis2.org/dev/api/programRules/NAgjOfWMXg6",
+  "id": "NAgjOfWMXg6",
+  "displayName": "Ask for comment for low apgar",
+  "description": "Show warrning if Apgar is between 0 and 4 and there is no comment provided.",
+  "externalAccess": false,
+  "condition": "#{apgarscore} >= 0 && #{apgarscore} < 4 && #{apgarcomment} == ''",
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false
+  },
+  "program": {
+    "id": "IpHINAT79UW"
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "programRuleActions": [
+    {
+      "id": "v434s5YPDcP"
+    }
+  ],
+  "translations": []
+}

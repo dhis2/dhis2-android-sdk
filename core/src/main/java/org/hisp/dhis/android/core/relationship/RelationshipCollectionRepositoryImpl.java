@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
@@ -122,9 +121,9 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
 
         // TODO Create query to avoid retrieving the whole table
-        Set<RelationshipItemModel> relationshipItemModels = this.relationshipItemStore.selectAll();
+        List<RelationshipItemModel> relationshipItemModels = this.relationshipItemStore.selectAll();
 
-        Set<Relationship> allRelationshipsFromDb = this.store.selectAll();
+        List<Relationship> allRelationshipsFromDb = this.store.selectAll();
 
         List<Relationship> relationships = new ArrayList<>();
 
@@ -171,7 +170,7 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
         return relationships;
     }
 
-    private RelationshipItemModel findRelatedTEI(Set<RelationshipItemModel> items, String relationshipUid,
+    private RelationshipItemModel findRelatedTEI(Collection<RelationshipItemModel> items, String relationshipUid,
                                                  RelationshipConstraintType type) {
         for (RelationshipItemModel item : items) {
             if (relationshipUid.equals(item.relationship()) && item.relationshipItemType() == type) {

@@ -1,0 +1,38 @@
+{
+  "responseType": "ImportSummaries",
+  "status": "SUCCESS",
+  "imported": 1,
+  "updated": 2,
+  "deleted": 3,
+  "ignored": 4,
+  "importSummaries": [
+    {
+      "responseType": "ImportSummary",
+      "status": "SUCCESS",
+      "importCount": {
+        "imported": 0,
+        "updated": 0,
+        "ignored": 0,
+        "deleted": 0
+      },
+      "reference": "xqpUvfxT4PZ"
+    },
+    {
+      "responseType": "ImportSummary",
+      "status": "SUCCESS",
+      "importCount": {
+        "imported": 0,
+        "updated": 0,
+        "ignored": 1,
+        "deleted": 0
+      },
+      "conflicts": [
+        {
+          "object": "bx6fsa0t90x",
+          "value": "value_not_bool"
+        }
+      ],
+      "reference": "DB2DLIEi2sX"
+    }
+  ]
+}

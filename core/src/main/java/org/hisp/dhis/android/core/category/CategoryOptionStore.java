@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.AccessHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -13,7 +14,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class CategoryOptionStore {
+final class CategoryOptionStore {
 
     private CategoryOptionStore() {
     }
@@ -24,10 +25,11 @@ public final class CategoryOptionStore {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.startDate());
             sqLiteBind(sqLiteStatement, 12, o.endDate());
+            sqLiteBind(sqLiteStatement, 13, AccessHelper.getAccessDataWrite(o.access()));
         }
     };
 
-    private static final CursorModelFactory<CategoryOption> FACTORY = new CursorModelFactory<CategoryOption>() {
+    static final CursorModelFactory<CategoryOption> FACTORY = new CursorModelFactory<CategoryOption>() {
         @Override
         public CategoryOption fromCursor(Cursor cursor) {
             return CategoryOption.create(cursor);

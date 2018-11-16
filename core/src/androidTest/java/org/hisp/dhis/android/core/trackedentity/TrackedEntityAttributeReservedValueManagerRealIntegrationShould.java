@@ -34,14 +34,13 @@ import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.Before;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -63,7 +62,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         login();
 
         store = TrackedEntityAttributeReservedValueStore.create(databaseAdapter());
-        IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore =
+        IdentifiableObjectStore<OrganisationUnit> organisationUnitStore =
                 OrganisationUnitStore.create(databaseAdapter());
         TrackedEntityAttributeStore trackedEntityAttributeStore =
                 new TrackedEntityAttributeStoreImpl(databaseAdapter());
@@ -82,7 +81,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         trackedEntityAttributeReservedValues.add(reservedValue2);
         trackedEntityAttributeReservedValues.add(reservedValue3);
 
-        OrganisationUnitModel organisationUnit = OrganisationUnitModel.builder()
+        OrganisationUnit organisationUnit = OrganisationUnit.builder()
                 .uid(organisationUnitUid).code("org_unit_code").build();
 
         organisationUnitStore.insert(organisationUnit);
@@ -168,7 +167,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         d2.popTrackedEntityAttributeReservedValue(ownerUid, "not_stored_organisation_unit_uid");
     }
 
-    private Set<TrackedEntityAttributeReservedValueModel> selectAll() {
+    private List<TrackedEntityAttributeReservedValueModel> selectAll() {
         return store.selectAll();
     }
 

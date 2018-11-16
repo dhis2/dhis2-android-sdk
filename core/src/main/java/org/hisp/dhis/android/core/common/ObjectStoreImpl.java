@@ -35,9 +35,9 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -92,18 +92,25 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public Set<M> selectAll() {
-        Set<M> set = new HashSet<>();
-        addAll(set);
-        return set;
+    public List<M> selectAll() {
+        List<M> list = new ArrayList<>();
+        addAll(list);
+        return list;
     }
 
     @Override
-    public Set<M> selectWhereClause(String whereClause) {
-        Set<M> set = new HashSet<>();
+    public List<M> selectWhereClause(String whereClause) {
+        List<M> list = new ArrayList<>();
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
-        addObjectsToCollection(cursor, set);
-        return set;
+        addObjectsToCollection(cursor, list);
+        return list;
+    }
+
+    public List<M> selectWhereClauseAsList(String whereClause) {
+        List<M> list = new ArrayList<>();
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
+        addObjectsToCollection(cursor, list);
+        return list;
     }
 
     @Override
@@ -143,8 +150,16 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         return m;
     }
 
+    @Override
+    public int count() {
+        return processCount(databaseAdapter.query(builder.count()));
+    }
+
     protected int countWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.countWhere(whereClause));
+        return processCount(databaseAdapter.query(builder.countWhere(whereClause)));
+    }
+
+    private int processCount(Cursor cursor) {
         try {
             cursor.moveToFirst();
             return cursor.getInt(0);
@@ -153,7 +168,7 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    private void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
+    protected void addObjectsToCollection(Cursor cursor, Collection<M> collection) {
         try {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
@@ -172,13 +187,13 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public Set<String> selectStringColumnsWhereClause(String column, String clause) {
+    public List<String> selectStringColumnsWhereClause(String column, String clause) {
         Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
         return mapStringColumnSetFromCursor(cursor);
     }
 
-    Set<String> mapStringColumnSetFromCursor(Cursor cursor) {
-        Set<String> columns = new HashSet<>(cursor.getCount());
+    List<String> mapStringColumnSetFromCursor(Cursor cursor) {
+        List<String> columns = new ArrayList<>(cursor.getCount());
 
         try {
             if (cursor.getCount() > 0) {

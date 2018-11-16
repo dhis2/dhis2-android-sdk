@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.User;
@@ -41,29 +41,28 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class SearchOrganisationUnitHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
     private ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
 
-    @Mock
     private OrganisationUnit organisationUnit;
 
     private String userUid = "userUid";
     private String organisationUnitUid = "orgUnitUid";
 
-    private GenericHandler<OrganisationUnit, OrganisationUnitModel> handler;
+    private SyncHandlerWithTransformer<OrganisationUnit> handler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(organisationUnit.uid()).thenReturn(organisationUnitUid);
+
+        organisationUnit = OrganisationUnit.builder().uid(organisationUnitUid).build();
 
         handler = new SearchOrganisationUnitHandler(
                 organisationUnitStore,
@@ -77,10 +76,10 @@ public class SearchOrganisationUnitHandlerShould {
                 .builder()
                 .organisationUnit(organisationUnitUid)
                 .user(userUid).root(false)
-                .organisationUnitScope(OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH.toString())
+                .organisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH.toString())
                 .build();
 
-        handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitModelBuilder());
+        handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitDisplayPathTransformer());
         verify(userOrganisationUnitLinkStore).updateOrInsertWhere(linkModel);
     }
 }

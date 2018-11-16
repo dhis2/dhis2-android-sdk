@@ -33,20 +33,31 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class SystemInfoModule {
 
+    private final DatabaseAdapter databaseAdapter;
     public final DHISVersionManager versionManager;
     public final ReadOnlyObjectRepository<SystemInfo> systemInfo;
 
-    private SystemInfoModule(DHISVersionManager versionManager,
+    private SystemInfoModule(DatabaseAdapter databaseAdapter,
+                             DHISVersionManager versionManager,
                              ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+        this.databaseAdapter = databaseAdapter;
         this.versionManager = versionManager;
         this.systemInfo = systemInfoRepository;
     }
 
     public static SystemInfoModule create(DatabaseAdapter databaseAdapter) {
         return new SystemInfoModule(
+                databaseAdapter,
                 DHISVersionManager.create(databaseAdapter),
                 new ReadOnlyFirstObjectRepositoryImpl<>(
                         SystemInfoStore.create(databaseAdapter)
-                ));
+                )
+        );
+    }
+
+    public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
+                                                              int programRulesPerProgramThreshold) {
+        return PerformanceHintsService.create(databaseAdapter, organisationUnitThreshold,
+                programRulesPerProgramThreshold);
     }
 }

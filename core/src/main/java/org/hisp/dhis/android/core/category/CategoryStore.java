@@ -14,7 +14,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 
-public final class CategoryStore {
+final class CategoryStore {
 
     private CategoryStore() {}
 
@@ -26,7 +26,7 @@ public final class CategoryStore {
         }
     };
 
-    private static final CursorModelFactory<Category> FACTORY = new CursorModelFactory<Category>() {
+    static final CursorModelFactory<Category> FACTORY = new CursorModelFactory<Category>() {
         @Override
         public Category fromCursor(Cursor cursor) {
             return Category.create(cursor);

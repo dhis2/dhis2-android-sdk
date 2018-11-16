@@ -27,15 +27,18 @@
  */
 package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class NoteHandler {
+public final class NoteHandler extends ObjectWithoutUidSyncHandlerImpl<Note> {
 
-    private NoteHandler() {}
+    private NoteHandler(ObjectWithoutUidStore<Note> store) {
+        super(store);
+    }
 
-    public static GenericHandler<Note, NoteModel> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidHandlerImpl<>(NoteStore.create(databaseAdapter));
+    public static SyncHandler<Note> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(NoteStore.create(databaseAdapter));
     }
 }

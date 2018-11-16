@@ -36,7 +36,6 @@ class TrackedEntityInstanceUtils {
     private static String coordinates = "[9,9]";
     private static FeatureType featureType = FeatureType.POINT;
 
-    private static String validCategoryOptionUid = "xYerKDKCefk"; // Default
     private static String validCategoryComboOptionUid = "HllvX50cXC0"; // Default
 
 
@@ -232,17 +231,23 @@ class TrackedEntityInstanceUtils {
 
     private static Event createValidEvent(String teiUid, String enrollmentUid) {
         return createEvent(teiUid, enrollmentUid, getValidDate(),
-                Collections.singletonList(TrackedEntityDataValue.create(null, null, validNumberDataElementUid,
-                        null, "9", false)));
+                Collections.singletonList(TrackedEntityDataValue.builder()
+                        .dataElement(validNumberDataElementUid)
+                        .value("9")
+                        .providedElsewhere(false)
+                        .build()));
     }
 
     private static Event createValidCompletedEvent(String teiUid, String enrollmentUid) {
         Date refDate = getValidDate();
-        List<TrackedEntityDataValue> values = Collections.singletonList(TrackedEntityDataValue.create(null, null, validNumberDataElementUid,
-                null, "9", false));
+        List<TrackedEntityDataValue> values = Collections.singletonList(TrackedEntityDataValue.builder()
+                .dataElement(validNumberDataElementUid)
+                .value("9")
+                .providedElsewhere(false)
+                .build());
         return Event.create(codeGenerator.generate(), enrollmentUid, refDate, refDate, null, null, validProgramUid,
                 validProgramStageUid, validOrgUnitUid, refDate, EventStatus.COMPLETED, null, null, null, false,
-                values, validCategoryOptionUid, validCategoryComboOptionUid, teiUid);
+                values, validCategoryComboOptionUid, teiUid);
     }
 
     private static Event createFutureEvent(String teiUid, String enrollmentUid) {
@@ -251,24 +256,33 @@ class TrackedEntityInstanceUtils {
 
     private static Event createEventWithInvalidDataElement(String teiUid, String enrollmentUid) {
         return createEvent(teiUid, enrollmentUid, getValidDate(),
-                Collections.singletonList(TrackedEntityDataValue.create(null, null, "invalidUid", null,
-                        "value", false)));
+                Collections.singletonList(TrackedEntityDataValue.builder()
+                        .dataElement("invalidUid")
+                        .value("value")
+                        .providedElsewhere(false)
+                        .build()));
     }
 
     private static Event createEventWithValidAndInvalidDataValue(String teiUid, String enrollmentUid) {
         return createEvent(teiUid, enrollmentUid, getValidDate(),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(null, null, validStringDataElementUid, null,
-                                "some comment", false),
-                        TrackedEntityDataValue.create(null, null, validNumberDataElementUid, null,
-                                "string! invalid value", false)));
+                        TrackedEntityDataValue.builder()
+                                .dataElement(validNumberDataElementUid)
+                                .value("some comment")
+                                .providedElsewhere(false)
+                                .build(),
+                        TrackedEntityDataValue.builder()
+                                .dataElement(validNumberDataElementUid)
+                                .value("string! invalid value")
+                                .providedElsewhere(false)
+                                .build()));
     }
 
     private static Event createEvent(String teiUid, String enrollmentUid, Date refDate,
                                      List<TrackedEntityDataValue> values) {
         return Event.create(codeGenerator.generate(), enrollmentUid, refDate, refDate, null, null, validProgramUid,
                 validProgramStageUid, validOrgUnitUid, refDate, EventStatus.ACTIVE, null, null, null, false,
-                values, validCategoryOptionUid, validCategoryComboOptionUid,
+                values, validCategoryComboOptionUid,
                 teiUid);
     }
 

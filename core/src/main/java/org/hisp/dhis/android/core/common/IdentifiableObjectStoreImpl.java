@@ -34,7 +34,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
@@ -97,12 +97,12 @@ public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterfac
     }
 
     @Override
-    public Set<String> selectUids() throws RuntimeException {
+    public List<String> selectUids() throws RuntimeException {
         Cursor cursor = databaseAdapter.query(statements.selectUids);
         return mapStringColumnSetFromCursor(cursor);
     }
 
-    public Set<String> selectUidsWhere(String whereClause) throws RuntimeException {
+    public List<String> selectUidsWhere(String whereClause) throws RuntimeException {
         Cursor cursor = databaseAdapter.query(builder.selectUidsWhere(whereClause));
         return mapStringColumnSetFromCursor(cursor);
     }

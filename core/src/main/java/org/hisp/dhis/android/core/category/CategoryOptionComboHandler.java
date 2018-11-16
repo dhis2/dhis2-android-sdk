@@ -31,7 +31,7 @@ final class CategoryOptionComboHandler extends IdentifiableSyncHandlerImpl<Categ
 
     public static SyncHandlerWithTransformer<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
         return new CategoryOptionComboHandler(
-                CategoryOptionComboStore.create(databaseAdapter),
+                CategoryOptionComboStoreImpl.create(databaseAdapter),
                 new LinkModelHandlerImpl<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>(
                         CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter)
                 )

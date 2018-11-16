@@ -35,13 +35,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -62,23 +62,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
-    private static final String[] ORGANISATION_UNIT_PROJECTION = {
-            OrganisationUnitModel.Columns.UID,
-            OrganisationUnitModel.Columns.CODE,
-            OrganisationUnitModel.Columns.NAME,
-            OrganisationUnitModel.Columns.DISPLAY_NAME,
-            OrganisationUnitModel.Columns.CREATED,
-            OrganisationUnitModel.Columns.LAST_UPDATED,
-            OrganisationUnitModel.Columns.SHORT_NAME,
-            OrganisationUnitModel.Columns.DISPLAY_SHORT_NAME,
-            OrganisationUnitModel.Columns.DESCRIPTION,
-            OrganisationUnitModel.Columns.DISPLAY_DESCRIPTION,
-            OrganisationUnitModel.Columns.PATH,
-            OrganisationUnitModel.Columns.OPENING_DATE,
-            OrganisationUnitModel.Columns.CLOSED_DATE,
-            OrganisationUnitModel.Columns.LEVEL,
-            OrganisationUnitModel.Columns.PARENT
-    };
     private static String[] USER_ORGANISATION_UNIT_PROJECTION = {
             UserOrganisationUnitLinkModel.Columns.USER,
             UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
@@ -100,15 +83,14 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
-        dhis2MockServer.enqueueMockResponse("admin/organisation_units.json");
+        dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json");
 
-        List<OrganisationUnit> organisationUnits = Collections.singletonList(OrganisationUnit.create("O6uvpzGd5pu",
-                null, null, null, null, null, null, null, null, null, null, "/ImspTQPwCqd/O6uvpzGd5pu", null, null,
-                null, null, null, null, null, false));
+        OrganisationUnit orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build();
+        List<OrganisationUnit> organisationUnits = Collections.singletonList(orgUnit);
         //dependencies for the OrganisationUnitCall:
         OrganisationUnitService organisationUnitService = d2.retrofit().create(OrganisationUnitService.class);
 
@@ -124,9 +106,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         insertProgramWithUid(programUid);
         Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid));
 
-        GenericHandler<OrganisationUnit, OrganisationUnitModel> organisationUnitHandler =
+        SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler =
                 OrganisationUnitHandler.create(databaseAdapter(), programUids, null,
-                        OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE, user);
+                        OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
 
         genericCallData = getGenericCallData(d2);
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
@@ -167,27 +149,27 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         organisationUnitCall.call();
 
-        Cursor organisationUnitCursor = database().query(OrganisationUnitModel.TABLE,
-                ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
+        Cursor organisationUnitCursor = database().query(OrganisationUnitTableInfo.TABLE_INFO.name(),
+                OrganisationUnitTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
         Cursor userOrganisationUnitCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
                 USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
 
         Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(organisationUnitCursor).hasRow("cDw53Ej8rju", "OU_278371", "Afro Arab Clinic",
-                "Afro Arab Clinic", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.518", "Afro Arab Clinic",
-                "Afro Arab Clinic", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju",
-                "2008-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg");
-
         assertThatCursor(organisationUnitCursor).hasRow("Rp268JB6Ne4", "OU_651071", "Adonkia CHP",
                 "Adonkia CHP", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.515", "Adonkia CHP",
                 "Adonkia CHP", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/Rp268JB6Ne4",
-                "2010-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg");
+                "2010-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg", "/Adonkia CHP");
+
+        assertThatCursor(organisationUnitCursor).hasRow("cDw53Ej8rju", "OU_278371", "Afro Arab Clinic",
+                "Afro Arab Clinic", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.518", "Afro Arab Clinic",
+                "Afro Arab Clinic", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju",
+                "2008-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg", "/Afro Arab Clinic");
 
         //Link tables:
-        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "cDw53Ej8rju");
-        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "Rp268JB6Ne4").isExhausted();
+        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "Rp268JB6Ne4");
+        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "cDw53Ej8rju").isExhausted();
 
         assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
                 BaseIdentifiableObject.DATE_FORMAT.format(genericCallData.serverDate()));

@@ -9,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface EventService {
@@ -22,8 +23,8 @@ public interface EventService {
     String PAGE = "page";
     String EVENTS = "events";
     String ATTRIBUTE_CATEGORY_COMBO = "attributeCc";
-    String ATTRIBUTE_CATEGORY_OPTION = "attributeCos";
     String STRATEGY = "strategy";
+    String EVENT_UID = "eventUid";
 
     @POST(EVENTS)
     Call<WebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
@@ -44,6 +45,10 @@ public interface EventService {
             @Query(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<Event> fields,
             @Query(PAGING) Boolean paging, @Query(PAGE) int page,
-            @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo,
-            @Query(ATTRIBUTE_CATEGORY_OPTION) String categoryOption);
+            @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo);
+
+    @GET(EVENTS + "/{" + EVENT_UID + "}")
+    Call<Event> getEvent(
+            @Path(EVENT_UID) String eventUid,
+            @Query(FIELDS) @Which Fields<Event> fields);
 }

@@ -29,11 +29,10 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class TrackedEntityInstanceUidHelperShould {
 
     @Mock
-    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
     private TrackedEntityInstance tei1;
@@ -70,7 +69,7 @@ public class TrackedEntityInstanceUidHelperShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(organisationUnitStore.selectUids()).thenReturn(Sets.newLinkedHashSet("ou1", "ou2"));
+        when(organisationUnitStore.selectUids()).thenReturn(Lists.newArrayList("ou1", "ou2"));
         uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore);
     }
 

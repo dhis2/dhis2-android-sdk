@@ -11,9 +11,10 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
@@ -58,13 +60,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
-        dhis2MockServer.enqueueMockResponse("events_1.json");
+        dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
         List<Event> events = eventEndpointCall.call();
 
         EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
 
-        verifyDownloadedEvents("events_1.json");
+        verifyDownloadedEvents("event/events_1.json");
     }
 
     @Test
@@ -75,7 +77,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", pageSize);
 
-        dhis2MockServer.enqueueMockResponse("events_2.json");
+        dhis2MockServer.enqueueMockResponse("event/events_2.json");
 
         List<Event> events = eventEndpointCall.call();
 
@@ -97,13 +99,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
-                "two_events_first_good_second_wrong_foreign_key.json");
+                "event/two_events_first_good_second_wrong_foreign_key.json");
 
         eventEndpointCall.call();
 
         verifyNumberOfDownloadedEvents(1);
         verifyNumberOfDownloadedTrackedEntityDataValue(6);
-        verifyDownloadedEvents("event_1_with_all_data_values.json");
+        verifyDownloadedEvents("event/event_1_with_all_data_values.json");
     }
 
     private void givenAMetadataInDatabase() throws Exception {
@@ -120,10 +122,9 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
-        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(
-                d2.databaseAdapter());
+        TrackedEntityDataValueStore eventStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter());
 
-        int numPersisted = eventStore.countAll();
+        int numPersisted = eventStore.selectAll().size();
 
         assertThat(numPersisted, is(num));
     }
@@ -144,20 +145,25 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         List<Event> downloadedEventsWithoutValues = eventStore.querySingleEvents();
 
-        TrackedEntityDataValueStoreImpl trackedEntityDataValue =
-                new TrackedEntityDataValueStoreImpl(databaseAdapter());
-
-        Map<String, List<TrackedEntityDataValue>> downloadedValues =
-                trackedEntityDataValue.queryTrackedEntityDataValues();
-
+        TrackedEntityDataValueStore trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         for (Event event : downloadedEventsWithoutValues) {
+
+            List<TrackedEntityDataValue> trackedEntityDataValues =
+                    trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(event.uid());
+            List<TrackedEntityDataValue> trackedEntityDataValuesWithNullIdsAndEvents = new ArrayList<>();
+
+            for (TrackedEntityDataValue trackedEntityDataValue : trackedEntityDataValues) {
+                trackedEntityDataValuesWithNullIdsAndEvents.add(
+                        trackedEntityDataValue.toBuilder().id(null).event(null).build());
+            }
+
             event = Event.create(
                     event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.program(), event.programStage(), event.organisationUnit(),
                     event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
-                    event.dueDate(), event.deleted(), downloadedValues.get(event.uid()), event.attributeCategoryOptions(),
+                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
                     event.attributeOptionCombo(), event.trackedEntityInstance());
 
             downloadedEvents.add(event);
@@ -167,7 +173,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private Payload<Event> parseEventResponse(String file) throws IOException {
-        String expectedEventsResponseJson = new AssetsFileReader().getStringFromFile(file);
+        String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
                 BaseIdentifiableObject.DATE_FORMAT.raw());

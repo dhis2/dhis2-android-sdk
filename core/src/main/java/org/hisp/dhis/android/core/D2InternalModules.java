@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core;
 
+import org.hisp.dhis.android.core.category.CategoryInternalModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
@@ -43,21 +44,24 @@ import retrofit2.Retrofit;
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
     public final RelationshipInternalModule relationshipModule;
+    public final CategoryInternalModule categoryModule;
     public final DataElementInternalModule dataElementModule;
     public final DataValueInternalModule dataValueModule;
 
     public D2InternalModules(SystemInfoInternalModule systemInfo,
                              RelationshipInternalModule relationshipModule,
+                             CategoryInternalModule categoryModule,
                              DataElementInternalModule dataElementModule,
                              DataValueInternalModule dataValueModule) {
         this.systemInfo = systemInfo;
         this.relationshipModule = relationshipModule;
+        this.categoryModule = categoryModule;
         this.dataElementModule = dataElementModule;
         this.dataValueModule = dataValueModule;
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, relationshipModule, dataElementModule, dataValueModule);
+        return Arrays.asList(systemInfo, relationshipModule, categoryModule, dataElementModule, dataValueModule);
     }
 
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
@@ -67,6 +71,7 @@ public final class D2InternalModules {
                 RelationshipInternalModule.create(
                         databaseAdapter,
                         systemInfoInternalModule.publicModule.versionManager),
+                CategoryInternalModule.create(databaseAdapter),
                 DataElementInternalModule.create(databaseAdapter),
                 DataValueInternalModule.create(databaseAdapter)
         );

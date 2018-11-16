@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,26 +46,25 @@ public final class LegendStore {
 
     private LegendStore() {}
 
-    private static StatementBinder<LegendModel> BINDER = new IdentifiableStatementBinder<LegendModel>() {
+    private static StatementBinder<Legend> BINDER = new IdentifiableStatementBinder<Legend>() {
         @Override
-        public void bindToStatement(@NonNull LegendModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull Legend o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.startValue());
             sqLiteBind(sqLiteStatement, 8, o.endValue());
             sqLiteBind(sqLiteStatement, 9, o.color());
-            sqLiteBind(sqLiteStatement, 10, o.legendSet());
+            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.legendSet()));
         }
     };
 
-    private static final CursorModelFactory<LegendModel> FACTORY = new CursorModelFactory<LegendModel>() {
+    private static final CursorModelFactory<Legend> FACTORY = new CursorModelFactory<Legend>() {
         @Override
-        public LegendModel fromCursor(Cursor cursor) {
-            return LegendModel.create(cursor);
+        public Legend fromCursor(Cursor cursor) {
+            return Legend.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<LegendModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, LegendModel.TABLE,
-                new LegendModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<Legend> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, LegendTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

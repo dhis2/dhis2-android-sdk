@@ -40,10 +40,10 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCall;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
-import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +75,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
-    private final IdentifiableObjectStore<DataSetModel> dataSetStore;
+    private final IdentifiableObjectStore<DataSet> dataSetStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
 
@@ -85,7 +86,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                                @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                                @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                        dataSetCompleteRegistrationCallFactory,
-                               @NonNull IdentifiableObjectStore<DataSetModel> dataSetStore,
+                               @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
                                @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
                                @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
         this.databaseAdapter = databaseAdapter;
@@ -113,10 +114,10 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         systemInfo.serverDate(), versionManager);
 
-                Set<String> dataSetUids = Collections.unmodifiableSet(dataSetStore.selectUids());
+                List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
                 Set<String> periodIds = Collections.unmodifiableSet(
                         selectPeriodIds(periodStore.selectAll()));
-                Set<String> organisationUnitUids = Collections.unmodifiableSet(
+                List<String> organisationUnitUids = Collections.unmodifiableList(
                         organisationUnitStore.queryRootOrganisationUnitUids());
 
                 DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
@@ -140,7 +141,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
     }
 
-    private Set<String> selectPeriodIds(Set<PeriodModel> periodModels) {
+    private Set<String> selectPeriodIds(Collection<PeriodModel> periodModels) {
         Set<String> periodIds = new HashSet<>();
 
         for (PeriodModel period : periodModels) {

@@ -28,62 +28,49 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 
 @AutoValue
-public abstract class TrackedEntityType extends BaseNameableObject {
-    private final static String STYLE = "style";
+@JsonDeserialize(builder = AutoValue_TrackedEntityType.Builder.class)
+public abstract class TrackedEntityType extends BaseNameableObject implements Model,
+        ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
 
-    public static final Field<TrackedEntityType, String> uid = Field.create(UID);
-    public static final Field<TrackedEntityType, String> code = Field.create(CODE);
-    public static final Field<TrackedEntityType, String> name = Field.create(NAME);
-    public static final Field<TrackedEntityType, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<TrackedEntityType, String> created = Field.create(CREATED);
-    public static final Field<TrackedEntityType, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<TrackedEntityType, Boolean> deleted = Field.create(DELETED);
-    public static final Field<TrackedEntityType, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<TrackedEntityType, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<TrackedEntityType, String> description = Field.create(DESCRIPTION);
-    public static final Field<TrackedEntityType, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    private static final NestedField<TrackedEntityType, ObjectStyle> style = NestedField.create(STYLE);
-
-    static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, shortName, displayShortName, description,
-            displayDescription, style).build();
-
+    // TODO move to base class after whole object refactor
+    @Override
     @Nullable
-    @JsonProperty(STYLE)
-    public abstract ObjectStyle style();
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
-    @JsonCreator
-    public static TrackedEntityType create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(STYLE) ObjectStyle style,
-            @JsonProperty(DELETED) Boolean deleted) {
+    public static Builder builder() {
+        return new $$AutoValue_TrackedEntityType.Builder();
+    }
 
-        return new AutoValue_TrackedEntityType(
-                uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription, style);
+    static TrackedEntityType create(Cursor cursor) {
+        return $AutoValue_TrackedEntityType.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract TrackedEntityType build();
     }
 }

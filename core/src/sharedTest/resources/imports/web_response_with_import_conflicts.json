@@ -1,0 +1,257 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "Import was successful.",
+  "response": {
+    "responseType": "ImportSummaries",
+    "status": "SUCCESS",
+    "imported": 0,
+    "updated": 2,
+    "deleted": 0,
+    "ignored": 0,
+    "importOptions": {
+      "idSchemes": {},
+      "dryRun": false,
+      "async": false,
+      "importStrategy": "CREATE_AND_UPDATE",
+      "mergeMode": "REPLACE",
+      "skipExistingCheck": false,
+      "sharing": false,
+      "skipNotifications": false,
+      "datasetAllowsPeriods": false,
+      "strictPeriods": false,
+      "strictCategoryOptionCombos": false,
+      "strictAttributeOptionCombos": false,
+      "strictOrganisationUnits": false,
+      "requireCategoryOptionCombo": false,
+      "requireAttributeOptionCombo": false
+    },
+    "importSummaries": [
+      {
+        "responseType": "ImportSummary",
+        "status": "SUCCESS",
+        "importCount": {
+          "imported": 0,
+          "updated": 1,
+          "ignored": 0,
+          "deleted": 0
+        },
+        "reference": "k68SkK5yDH9",
+        "href": "https://play.dhis2.org/dev/api/trackedEntityInstances/k68SkK5yDH9",
+        "enrollments": {
+          "responseType": "ImportSummaries",
+          "status": "SUCCESS",
+          "imported": 0,
+          "updated": 1,
+          "deleted": 0,
+          "ignored": 0,
+          "importSummaries": [
+            {
+              "responseType": "ImportSummary",
+              "status": "SUCCESS",
+              "importCount": {
+                "imported": 0,
+                "updated": 1,
+                "ignored": 0,
+                "deleted": 0
+              },
+              "reference": "q6voWUYNtFz",
+              "events": {
+                "responseType": "ImportSummaries",
+                "status": "SUCCESS",
+                "imported": 0,
+                "updated": 0,
+                "deleted": 0,
+                "ignored": 0,
+                "importSummaries": [
+                  {
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS",
+                    "importCount": {
+                      "imported": 0,
+                      "updated": 0,
+                      "ignored": 0,
+                      "deleted": 0
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "responseType": "ImportSummary",
+        "status": "SUCCESS",
+        "importCount": {
+          "imported": 0,
+          "updated": 1,
+          "ignored": 0,
+          "deleted": 0
+        },
+        "reference": "AHgGHO6ZH9b",
+        "href": "https://play.dhis2.org/dev/api/trackedEntityInstances/AHgGHO6ZH9b",
+        "enrollments": {
+          "responseType": "ImportSummaries",
+          "status": "SUCCESS",
+          "imported": 0,
+          "updated": 1,
+          "deleted": 0,
+          "ignored": 0,
+          "importSummaries": [
+            {
+              "responseType": "ImportSummary",
+              "status": "SUCCESS",
+              "importCount": {
+                "imported": 0,
+                "updated": 1,
+                "ignored": 0,
+                "deleted": 0
+              },
+              "reference": "IalhfSlbLVD",
+              "events": {
+                "responseType": "ImportSummaries",
+                "status": "SUCCESS",
+                "imported": 0,
+                "updated": 0,
+                "deleted": 0,
+                "ignored": 29,
+                "importSummaries": [
+                  {
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS",
+                    "importCount": {
+                      "imported": 0,
+                      "updated": 0,
+                      "ignored": 29,
+                      "deleted": 0
+                    },
+                    "conflicts": [
+                      {
+                        "object": "f2MduVqwPXO",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "IgkWhfPryqt",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "ihgI4dDwUQT",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "KRJeVOPBy6t",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "lsPerCow7QG",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "Ef3ueStqxJj",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "ogBU5CfbAUZ",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "fQMBEt42CSl",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "msiehvzdkh0",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "z8Ay2GaaqpC",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "CtpjtJOlix1",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "VDxTE7l7sc7",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "dGdEEpNb7GW",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "Y35b9mKPwgz",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "qv3Ivgr7qA8",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "ZpvFqxRhFuP",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "GXNUsigphqK",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "zNXca47AaTh",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "uYrt6Rjh0q2",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "BLNHqFdGFRv",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "suMqFd2seuA",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "OKN6ZG1z7pq",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "yqiAt2vL2Oe",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "ZhGKg3ssbmX",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "kSDiqFhUP8P",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "Lh9x3J6EF0g",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "Q5725FPinzH",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "HpC2iqyoMR8",
+                        "value": "value_not_true_only"
+                      },
+                      {
+                        "object": "ROEGWNaasDP",
+                        "value": "value_not_true_only"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

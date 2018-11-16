@@ -118,7 +118,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 AuthenticatedUserStore.create(databaseAdapter),
                 SearchOrganisationUnitOnDemandCall.FACTORY,
                 trackedEntityInstances,
-                new ForeignKeyCleaner(databaseAdapter)
+                ForeignKeyCleaner.create(databaseAdapter)
         );
     }
 }

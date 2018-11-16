@@ -171,7 +171,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 OrganisationUnitCall.FACTORY,
                 SearchOrganisationUnitCall.FACTORY,
                 DataSetParentCall.FACTORY,
-                new ForeignKeyCleaner(databaseAdapter)
+                ForeignKeyCleaner.create(databaseAdapter)
         );
     }
 }

@@ -109,7 +109,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 OrganisationUnitStore.create(databaseAdapter),
                 SearchOrganisationUnitOnDemandCall.FACTORY,
                 events,
-                new ForeignKeyCleaner(databaseAdapter)
+                ForeignKeyCleaner.create(databaseAdapter)
         );
     }
 }

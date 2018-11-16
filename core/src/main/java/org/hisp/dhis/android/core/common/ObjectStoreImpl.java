@@ -150,8 +150,16 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         return m;
     }
 
+    @Override
+    public int count() {
+        return processCount(databaseAdapter.query(builder.count()));
+    }
+
     protected int countWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.countWhere(whereClause));
+        return processCount(databaseAdapter.query(builder.countWhere(whereClause)));
+    }
+
+    private int processCount(Cursor cursor) {
         try {
             cursor.moveToFirst();
             return cursor.getInt(0);

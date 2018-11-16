@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import android.util.ArrayMap;
-
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +64,7 @@ public final class UidsHelper {
     }
 
     public static <O extends ObjectWithUidInterface> Map<String, O> mapByUid(Collection<O> objects) {
-        Map<String, O> map = new ArrayMap<>(objects.size());
+        Map<String, O> map = new HashMap<>(objects.size());
         for (O o: objects) {
             map.put(o.uid(), o);
         }

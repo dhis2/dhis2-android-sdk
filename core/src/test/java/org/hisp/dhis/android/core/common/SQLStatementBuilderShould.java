@@ -204,6 +204,13 @@ public class SQLStatementBuilderShould {
     }
 
     @Test
+    public void generate_count_statement() {
+        assertThat(builder.count()).isEqualTo(
+                "SELECT COUNT(*) FROM Test_Table;"
+        );
+    }
+
+    @Test
     public void generate_select_by_uid_statement() {
         assertThat(builder.selectByUid()).isEqualTo(
                 "SELECT * FROM Test_Table WHERE uid=?;"

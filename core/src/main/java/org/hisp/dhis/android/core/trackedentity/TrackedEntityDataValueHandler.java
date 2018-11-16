@@ -18,12 +18,14 @@ public class TrackedEntityDataValueHandler extends ObjectWithoutUidSyncHandlerIm
 
     @Override
     protected void afterCollectionHandled(Collection<TrackedEntityDataValue> trackedEntityDataValues) {
-        if (!trackedEntityDataValues.isEmpty()) {
-            removeNotExistingDataValuesInServer(trackedEntityDataValues);
-        }
+        removeNotExistingDataValuesInServer(trackedEntityDataValues);
     }
 
     private void removeNotExistingDataValuesInServer(Collection<TrackedEntityDataValue> trackedEntityDataValues) {
+        if (trackedEntityDataValues.isEmpty()) {
+            return;
+        }
+
         String eventUid = trackedEntityDataValues.iterator().next().event();
 
         List<String> dataElementUids = new ArrayList<>();

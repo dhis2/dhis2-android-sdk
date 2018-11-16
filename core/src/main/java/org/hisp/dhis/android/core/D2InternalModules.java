@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.category.CategoryInternalModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
+import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
@@ -47,21 +48,25 @@ public final class D2InternalModules {
     public final CategoryInternalModule categoryModule;
     public final DataElementInternalModule dataElementModule;
     public final DataValueInternalModule dataValueModule;
+    public final MaintenanceInternalModule maintenanceModule;
 
     public D2InternalModules(SystemInfoInternalModule systemInfo,
                              RelationshipInternalModule relationshipModule,
                              CategoryInternalModule categoryModule,
                              DataElementInternalModule dataElementModule,
-                             DataValueInternalModule dataValueModule) {
+                             DataValueInternalModule dataValueModule,
+                             MaintenanceInternalModule maintenanceModule) {
         this.systemInfo = systemInfo;
         this.relationshipModule = relationshipModule;
         this.categoryModule = categoryModule;
         this.dataElementModule = dataElementModule;
         this.dataValueModule = dataValueModule;
+        this.maintenanceModule = maintenanceModule;
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, relationshipModule, categoryModule, dataElementModule, dataValueModule);
+        return Arrays.asList(systemInfo, relationshipModule, categoryModule, dataElementModule, dataValueModule,
+                maintenanceModule);
     }
 
     public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
@@ -73,7 +78,8 @@ public final class D2InternalModules {
                         systemInfoInternalModule.publicModule.versionManager),
                 CategoryInternalModule.create(databaseAdapter),
                 DataElementInternalModule.create(databaseAdapter),
-                DataValueInternalModule.create(databaseAdapter)
+                DataValueInternalModule.create(databaseAdapter),
+                MaintenanceInternalModule.create(databaseAdapter)
         );
     }
 }

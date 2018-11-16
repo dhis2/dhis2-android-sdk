@@ -85,11 +85,7 @@ public final class APICallExecutor {
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
-                if (response.body() == null) {
-                    throw responseException(response);
-                } else {
-                    return response.body();
-                }
+                return processSuccessfulResponse(response);
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher == null) {
@@ -108,6 +104,14 @@ public final class APICallExecutor {
             throw unknownHostException(e);
         } catch (IOException e) {
             throw ioException(e);
+        }
+    }
+
+    private <P> P processSuccessfulResponse(Response<P> response) throws D2CallException {
+        if (response.body() == null) {
+            throw responseException(response);
+        } else {
+            return response.body();
         }
     }
 

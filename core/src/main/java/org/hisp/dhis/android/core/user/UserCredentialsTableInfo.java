@@ -51,8 +51,8 @@ public final class UserCredentialsTableInfo {
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
-        static final String USER = "user";
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
+        public static final String USER = "user";
 
         @Override
         public String[] all() {

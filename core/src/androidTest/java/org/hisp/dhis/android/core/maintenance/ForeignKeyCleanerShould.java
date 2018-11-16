@@ -6,6 +6,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -13,7 +14,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -21,18 +21,19 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
+import org.hisp.dhis.android.core.user.UserModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -99,9 +100,22 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
         List<ForeignKeyViolation> foreignKeyViolationList =
                 ForeignKeyViolationStore.create(d2.databaseAdapter()).selectAll();
 
-        assertThat(foreignKeyViolationList.size(), is(1));
-        assertThat(foreignKeyViolationList.iterator().next().fromObjectUid(), is("user_credential_uid1"));
-        assertThat(foreignKeyViolationList.iterator().next().notFoundValue(), is("no_user_uid"));
+        ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
+                .toTable(UserModel.TABLE)
+                .toColumn(BaseIdentifiableObjectModel.Columns.UID)
+                .fromTable(UserCredentialsTableInfo.TABLE_INFO.name())
+                .fromColumn(UserCredentialsTableInfo.Columns.USER)
+                .notFoundValue("no_user_uid")
+                .fromObjectUid("user_credential_uid1")
+                .build();
+
+        List<ForeignKeyViolation> violationsToCompare = new ArrayList<>();
+        for (ForeignKeyViolation violation : foreignKeyViolationList) {
+            violationsToCompare.add(violation.toBuilder().deletionDate(null).fromObjectRow(null).build());
+        }
+
+        assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));
+        assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));
     }
 
     @Test

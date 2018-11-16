@@ -154,13 +154,13 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     @Test
     public void allow_access_to_category_option_combos_without_children() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
-        assertThat(categoryOptionCombos.size(), is(2));
+        assertThat(categoryOptionCombos.size(), is(3));
     }
 
     @Test
     public void allow_access_to_category_option_combos_with_category_options() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.getWithAllChildren();
-        assertThat(categoryOptionCombos.size(), is(2));
+        assertThat(categoryOptionCombos.size(), is(3));
         for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
             assertThat(categoryOptionCombo.categoryOptions() == null, is(false));
         }

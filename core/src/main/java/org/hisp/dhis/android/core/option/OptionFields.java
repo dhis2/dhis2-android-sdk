@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 public final class OptionFields {
 
     final static String SORT_ORDER = "sortOrder";
-    final static String OPTION_SET = "optionSet";
+    public final static String OPTION_SET = "optionSet";
     final static String STYLE = "style";
 
     private static final FieldsHelper<Option> fh = new FieldsHelper<>();

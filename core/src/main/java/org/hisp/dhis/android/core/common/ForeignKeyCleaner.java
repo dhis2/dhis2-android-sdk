@@ -32,8 +32,8 @@ import android.database.Cursor;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.ForeignKeyViolation;
-import org.hisp.dhis.android.core.systeminfo.ForeignKeyViolationStore;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationStore;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;

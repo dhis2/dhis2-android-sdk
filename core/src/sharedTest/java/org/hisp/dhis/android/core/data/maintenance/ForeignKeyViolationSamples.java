@@ -26,33 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.data.maintenance;
 
-import android.support.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.systeminfo.ForeignKeyViolationSamples;
-import org.junit.runner.RunWith;
+import java.text.ParseException;
+import java.util.Date;
 
-@RunWith(AndroidJUnit4.class)
-public class ForeignKeyViolationStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
+public class ForeignKeyViolationSamples {
 
-    public ForeignKeyViolationStoreIntegrationShould() {
-        super(ForeignKeyViolationStore.create(DatabaseAdapterFactory.get(false)),
-                ForeignKeyViolationTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
-    }
-
-    @Override
-    protected ForeignKeyViolation buildObject() {
-        return ForeignKeyViolationSamples.get();
-    }
-
-    @Override
-    protected ForeignKeyViolation buildObjectWithId() {
-        return ForeignKeyViolationSamples.get().toBuilder()
-                .id(1L)
+    public static ForeignKeyViolation get() {
+        return ForeignKeyViolation.builder()
+                .fromTable("from_table")
+                .fromColumn("from_column")
+                .toTable("to_table")
+                .toColumn("to_column")
+                .notFoundValue("value")
+                .fromObjectUid("uid")
+                .fromObjectRow("from_object_row")
+                .deletionDate(getDate("2017-11-29T11:27:46.935"))
                 .build();
+    }
+
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

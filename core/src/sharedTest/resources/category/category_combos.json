@@ -72,6 +72,22 @@
               "id": "as6ygGvUGNg"
             }
           ]
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:25.319",
+          "code": "COC_4",
+          "created": "2011-12-24T12:24:25.319",
+          "name": "default",
+          "id": "non_existent_category_option_combo_uid",
+          "displayName": "default",
+          "categoryCombo": {
+            "id": "p0KPaWEg3cf"
+          },
+          "categoryOptions": [
+            {
+              "id": "non_existent_category_option_uid"
+            }
+          ]
         }
       ]
     }

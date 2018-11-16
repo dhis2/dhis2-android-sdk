@@ -18,7 +18,9 @@ public class TrackedEntityDataValueHandler extends ObjectWithoutUidSyncHandlerIm
 
     @Override
     protected void afterCollectionHandled(Collection<TrackedEntityDataValue> trackedEntityDataValues) {
-        removeNotExistingDataValuesInServer(trackedEntityDataValues);
+        if (!trackedEntityDataValues.isEmpty()) {
+            removeNotExistingDataValuesInServer(trackedEntityDataValues);
+        }
     }
 
     private void removeNotExistingDataValuesInServer(Collection<TrackedEntityDataValue> trackedEntityDataValues) {

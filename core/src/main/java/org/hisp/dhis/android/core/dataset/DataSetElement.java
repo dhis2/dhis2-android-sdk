@@ -32,12 +32,10 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -48,13 +46,6 @@ import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_DataSetElement.Builder.class)
 public abstract class DataSetElement implements Model {
-
-    // TODO move to base class after whole object refactor
-    @Override
-    @Nullable
-    @ColumnName(BaseModel.Columns.ID)
-    @JsonIgnore()
-    public abstract Long id();
 
     @NonNull
     @JsonProperty()

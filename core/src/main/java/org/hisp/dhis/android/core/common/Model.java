@@ -29,8 +29,16 @@
 package org.hisp.dhis.android.core.common;
 
 import android.content.ContentValues;
+import android.support.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public interface Model {
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
     Long id();
+
     ContentValues toContentValues();
 }

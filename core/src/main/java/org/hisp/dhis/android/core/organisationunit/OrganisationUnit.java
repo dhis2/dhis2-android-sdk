@@ -37,10 +37,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
@@ -63,13 +61,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
         SCOPE_DATA_CAPTURE,
         SCOPE_TEI_SEARCH
     }
-
-    // TODO move to base class after whole object refactor
-    @Override
-    @Nullable
-    @ColumnName(BaseModel.Columns.ID)
-    @JsonIgnore()
-    public abstract Long id();
 
     @Nullable
     @JsonProperty()

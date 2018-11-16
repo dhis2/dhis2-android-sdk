@@ -31,16 +31,13 @@ package org.hisp.dhis.android.core.dataelement;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
@@ -56,13 +53,6 @@ import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 @JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
 public abstract class DataElement extends BaseNameableObject
         implements Model, ObjectWithStyle<DataElement, DataElement.Builder> {
-
-    // TODO move to base class after whole object refactor
-    @Override
-    @Nullable
-    @ColumnName(BaseModel.Columns.ID)
-    @JsonIgnore()
-    public abstract Long id();
 
     @Nullable
     @ColumnAdapter(DbValueTypeColumnAdapter.class)

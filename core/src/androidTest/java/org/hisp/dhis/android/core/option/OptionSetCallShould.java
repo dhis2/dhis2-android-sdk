@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -173,7 +173,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                 } catch (Exception ignored) {
                 }
 
-                ForeignKeyCleaner.create(databaseAdapter()).cleanForeignKeyErrors();
+                ForeignKeyCleanerImpl.create(databaseAdapter()).cleanForeignKeyErrors();
                 return optionSets;
             }
         });

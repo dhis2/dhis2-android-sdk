@@ -156,7 +156,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
                 programRuleCursor1.close();
                 programRuleActionCursor1.close();
 
-                ForeignKeyCleaner foreignKeyCleaner = ForeignKeyCleaner.create(d2.databaseAdapter());
+                ForeignKeyCleaner foreignKeyCleaner = ForeignKeyCleanerImpl.create(d2.databaseAdapter());
                 Integer rowsAffected = foreignKeyCleaner.cleanForeignKeyErrors();
 
                 Truth.assertThat(rowsAffected).isEqualTo(1);
@@ -194,7 +194,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
                 assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(true));
 
-                ForeignKeyCleaner.create(d2.databaseAdapter()).cleanForeignKeyErrors();
+                ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
 
                 assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(false));
                 return null;

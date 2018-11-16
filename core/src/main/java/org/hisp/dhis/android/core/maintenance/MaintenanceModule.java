@@ -31,6 +31,9 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectio
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class MaintenanceModule {
 
     public final ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations;

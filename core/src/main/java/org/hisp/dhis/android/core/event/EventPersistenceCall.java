@@ -5,11 +5,12 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitOnDemandCall;
@@ -109,7 +110,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                 OrganisationUnitStore.create(databaseAdapter),
                 SearchOrganisationUnitOnDemandCall.FACTORY,
                 events,
-                ForeignKeyCleaner.create(databaseAdapter)
+                ForeignKeyCleanerImpl.create(databaseAdapter)
         );
     }
 }

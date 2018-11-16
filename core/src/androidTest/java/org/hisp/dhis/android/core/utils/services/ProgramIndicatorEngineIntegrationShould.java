@@ -56,6 +56,7 @@ import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
@@ -289,8 +290,12 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     private void insertTrackedEntityDataValue(String eventUid, String dataElementUid, String value) {
-        new TrackedEntityDataValueStoreImpl(databaseAdapter()).insert(eventUid,null,null,
-                dataElementUid,null, value,null);
+        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
+                .event(eventUid)
+                .dataElement(dataElementUid)
+                .value(value).build();
+
+        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(trackedEntityDataValue);
     }
 
     private void insertTrackedEntityAttributeValue(String attributeUid, String value) {

@@ -90,6 +90,15 @@ public final class Utils {
         return withBrackets.substring(1, withBrackets.length() - 1);
     }
 
+    public static String[] withSingleQuotationMarksArray(Collection<String> objects) {
+        String[] withSingleQuotationMarksArray = new String[objects.size()];
+        int i = 0;
+        for (String o: objects) {
+            withSingleQuotationMarksArray [i++] = "'" + o + "'";
+        }
+        return withSingleQuotationMarksArray;
+    }
+
     private static String commaSeparatedArrayValues(String... values) {
         return commaAndSpaceSeparatedArrayValues(values).replace(" ", "");
     }

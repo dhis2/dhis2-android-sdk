@@ -28,31 +28,50 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.content.ContentValues;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class TrackedEntityDataValueUtils {
+public final class TrackedEntityDataValueTableInfo {
 
-    // used for timestamps
-    private static final String DATE = "2011-12-24T12:24:25.203";
+    private TrackedEntityDataValueTableInfo() {
+    }
 
-    private static final long ID = 11L;
-    private static final String EVENT = "test_event";
-    private static final String DATA_ELEMENT = "test_dataElement";
-    private static final String STORED_BY = "test_storedBy";
-    private static final String VALUE = "test_value";
-    private static final Boolean PROVIDED_ELSEWHERE = false;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public static ContentValues create(long id) {
+        @Override
+        public String name() {
+            return "TrackedEntityDataValue";
+        }
 
-        ContentValues trackedEntityDataValues = new ContentValues();
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.ID, id);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.EVENT, EVENT);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.CREATED, DATE);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.LAST_UPDATED, DATE);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.DATA_ELEMENT, DATA_ELEMENT);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.STORED_BY, STORED_BY);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.VALUE, VALUE);
-        trackedEntityDataValues.put(TrackedEntityDataValueModel.Columns.PROVIDED_ELSEWHERE, PROVIDED_ELSEWHERE);
-        return trackedEntityDataValues;
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseModel.Columns {
+        public static final String EVENT = "event";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    EVENT,
+                    TrackedEntityDataValueFields.CREATED,
+                    TrackedEntityDataValueFields.LAST_UPDATED,
+                    TrackedEntityDataValueFields.DATA_ELEMENT,
+                    TrackedEntityDataValueFields.STORED_BY,
+                    TrackedEntityDataValueFields.VALUE,
+                    TrackedEntityDataValueFields.PROVIDED_ELSEWHERE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    EVENT,
+                    TrackedEntityDataValueFields.DATA_ELEMENT
+            );
+        }
     }
 }

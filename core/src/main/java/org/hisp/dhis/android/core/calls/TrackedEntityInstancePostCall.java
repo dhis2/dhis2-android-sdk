@@ -121,7 +121,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     @NonNull
     private List<TrackedEntityInstance> queryDataToSync() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.FALSE);
+                trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
         Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.query();
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
@@ -244,7 +244,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter),
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
                 NoteStore.create(databaseAdapter)
         );

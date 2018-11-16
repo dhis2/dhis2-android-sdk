@@ -28,20 +28,32 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.util.Date;
 
-import java.util.List;
-import java.util.Map;
+public final class TrackedEntityDataValueFields {
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
+    final static String DATA_ELEMENT = "dataElement";
+    final static String STORED_BY = "storedBy";
+    final static String VALUE = "value";
+    final static String CREATED = "created";
+    final static String LAST_UPDATED = "lastUpdated";
+    final static String PROVIDED_ELSEWHERE = "providedElsewhere";
 
-    int deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
+    private static final FieldsHelper<TrackedEntityDataValue> fh = new FieldsHelper<>();
 
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
+    public static final Fields<TrackedEntityDataValue> allFields = Fields.<TrackedEntityDataValue>builder()
+            .fields(
+                    fh.<String>field(DATA_ELEMENT),
+                    fh.<String>field(STORED_BY),
+                    fh.<String>field(VALUE),
+                    fh.<Date>field(CREATED),
+                    fh.<Date>field(LAST_UPDATED),
+                    fh.<Boolean>field(PROVIDED_ELSEWHERE)
+            ).build();
 
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
+    private TrackedEntityDataValueFields() {
+    }
 }

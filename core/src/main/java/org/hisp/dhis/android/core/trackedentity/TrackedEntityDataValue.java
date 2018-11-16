@@ -28,71 +28,93 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class TrackedEntityDataValue {
-    private final static String DATA_ELEMENT = "dataElement";
-    private final static String STORED_BY = "storedBy";
-    private final static String VALUE = "value";
-    private final static String CREATED = "created";
-    private final static String LAST_UPDATED = "lastUpdated";
-    private final static String PROVIDED_ELSEWHERE = "providedElsewhere";
+@JsonDeserialize(builder = AutoValue_TrackedEntityDataValue.Builder.class)
+public abstract class TrackedEntityDataValue implements Model {
 
-    private static final Field<TrackedEntityDataValue, String> dataElement = Field.create(DATA_ELEMENT);
-    private static final Field<TrackedEntityDataValue, String> storedBy = Field.create(STORED_BY);
-    private static final Field<TrackedEntityDataValue, String> value = Field.create(VALUE);
-    private static final Field<TrackedEntityDataValue, Date> created = Field.create(CREATED);
-    private static final Field<TrackedEntityDataValue, Date> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<TrackedEntityDataValue, Boolean> providedElsewhere = Field.create(PROVIDED_ELSEWHERE);
-
-    public static final Fields<TrackedEntityDataValue> allFields = Fields.<TrackedEntityDataValue>builder().fields(
-            dataElement, storedBy, value, created, lastUpdated, providedElsewhere).build();
+    // TODO move to base class after whole object refactor
+    @Override
+    @Nullable
+    @ColumnName(BaseModel.Columns.ID)
+    @JsonIgnore()
+    public abstract Long id();
 
     @Nullable
-    @JsonProperty(CREATED)
+    @JsonIgnore()
+    public abstract String event();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(DATA_ELEMENT)
+    @JsonProperty()
     public abstract String dataElement();
 
     @Nullable
-    @JsonProperty(STORED_BY)
+    @JsonProperty()
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty(VALUE)
+    @JsonProperty()
     public abstract String value();
 
     @Nullable
-    @JsonProperty(PROVIDED_ELSEWHERE)
+    @JsonProperty()
     public abstract Boolean providedElsewhere();
 
-    @JsonCreator
-    public static TrackedEntityDataValue create(
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DATA_ELEMENT) String dataElement,
-            @JsonProperty(STORED_BY) String storedBy,
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(PROVIDED_ELSEWHERE) Boolean providedElsewhere
-    ) {
-        return new AutoValue_TrackedEntityDataValue(
-                created, lastUpdated, dataElement, storedBy, value, providedElsewhere
-        );
+    public static Builder builder() {
+        return new $$AutoValue_TrackedEntityDataValue.Builder();
+    }
+
+    static TrackedEntityDataValue create(Cursor cursor) {
+        return $AutoValue_TrackedEntityDataValue.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder id(Long id);
+
+        public abstract Builder event(String event);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract Builder dataElement(String dataElement);
+
+        public abstract Builder storedBy(String storedBy);
+
+        public abstract Builder value(String value);
+
+        public abstract Builder providedElsewhere(Boolean providedElsewhere);
+
+        public abstract TrackedEntityDataValue build();
     }
 }

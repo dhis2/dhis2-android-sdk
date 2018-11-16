@@ -231,14 +231,20 @@ class TrackedEntityInstanceUtils {
 
     private static Event createValidEvent(String teiUid, String enrollmentUid) {
         return createEvent(teiUid, enrollmentUid, getValidDate(),
-                Collections.singletonList(TrackedEntityDataValue.create(null, null, validNumberDataElementUid,
-                        null, "9", false)));
+                Collections.singletonList(TrackedEntityDataValue.builder()
+                        .dataElement(validNumberDataElementUid)
+                        .value("9")
+                        .providedElsewhere(false)
+                        .build()));
     }
 
     private static Event createValidCompletedEvent(String teiUid, String enrollmentUid) {
         Date refDate = getValidDate();
-        List<TrackedEntityDataValue> values = Collections.singletonList(TrackedEntityDataValue.create(null, null, validNumberDataElementUid,
-                null, "9", false));
+        List<TrackedEntityDataValue> values = Collections.singletonList(TrackedEntityDataValue.builder()
+                .dataElement(validNumberDataElementUid)
+                .value("9")
+                .providedElsewhere(false)
+                .build());
         return Event.create(codeGenerator.generate(), enrollmentUid, refDate, refDate, null, null, validProgramUid,
                 validProgramStageUid, validOrgUnitUid, refDate, EventStatus.COMPLETED, null, null, null, false,
                 values, validCategoryComboOptionUid, teiUid);
@@ -250,17 +256,26 @@ class TrackedEntityInstanceUtils {
 
     private static Event createEventWithInvalidDataElement(String teiUid, String enrollmentUid) {
         return createEvent(teiUid, enrollmentUid, getValidDate(),
-                Collections.singletonList(TrackedEntityDataValue.create(null, null, "invalidUid", null,
-                        "value", false)));
+                Collections.singletonList(TrackedEntityDataValue.builder()
+                        .dataElement("invalidUid")
+                        .value("value")
+                        .providedElsewhere(false)
+                        .build()));
     }
 
     private static Event createEventWithValidAndInvalidDataValue(String teiUid, String enrollmentUid) {
         return createEvent(teiUid, enrollmentUid, getValidDate(),
                 Arrays.asList(
-                        TrackedEntityDataValue.create(null, null, validStringDataElementUid, null,
-                                "some comment", false),
-                        TrackedEntityDataValue.create(null, null, validNumberDataElementUid, null,
-                                "string! invalid value", false)));
+                        TrackedEntityDataValue.builder()
+                                .dataElement(validNumberDataElementUid)
+                                .value("some comment")
+                                .providedElsewhere(false)
+                                .build(),
+                        TrackedEntityDataValue.builder()
+                                .dataElement(validNumberDataElementUid)
+                                .value("string! invalid value")
+                                .providedElsewhere(false)
+                                .build()));
     }
 
     private static Event createEvent(String teiUid, String enrollmentUid, Date refDate,

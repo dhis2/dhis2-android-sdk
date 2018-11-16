@@ -54,7 +54,9 @@ import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityInstanceUtils;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.Before;
@@ -417,15 +419,16 @@ public class EventStoreShould extends AbsStoreTestCase {
         dataElement.put(DataElementModel.Columns.UID, dataElementUid);
         database().insert(DataElementModel.TABLE, null, dataElement);
 
-        ContentValues dataValue = new ContentValues();
-        dataValue.put(TrackedEntityDataValueModel.Columns.EVENT, EVENT_UID);
-        dataValue.put(TrackedEntityDataValueModel.Columns.DATA_ELEMENT, dataElementUid);
-        dataValue.put(TrackedEntityDataValueModel.Columns.VALUE, "some_value");
-        database().insert(TrackedEntityDataValueModel.TABLE, null, dataValue);
+        TrackedEntityDataValueStoreImpl.create(databaseAdapter()).insert(
+                TrackedEntityDataValue.builder()
+                        .event(EVENT_UID)
+                        .dataElement(dataElementUid)
+                        .value("some_value")
+                        .build());
 
-        String[] dataValueProjection = {TrackedEntityDataValueModel.Columns.EVENT};
-        Cursor dataValueCursor = database().query(TrackedEntityDataValueModel.TABLE, dataValueProjection,
-                null, null, null, null, null);
+        String[] dataValueProjection = {TrackedEntityDataValueTableInfo.Columns.EVENT};
+        Cursor dataValueCursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
+                dataValueProjection, null, null, null, null, null);
         assertThatCursor(dataValueCursor).hasRow(EVENT_UID).isExhausted();
         dataValueCursor.close();
 

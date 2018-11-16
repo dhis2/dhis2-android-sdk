@@ -26,22 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.trackedentity;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.text.ParseException;
+import java.util.Date;
 
-import java.util.List;
-import java.util.Map;
+public class TrackedEntityDataValueSamples {
 
-public interface TrackedEntityDataValueStore extends ObjectWithoutUidStore<TrackedEntityDataValue> {
+    public static TrackedEntityDataValue get() {
+        return TrackedEntityDataValue.builder()
+                .event("event_uid")
+                .created(getDate("2014-08-20T12:28:56.409"))
+                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+                .dataElement("data_element_uid")
+                .storedBy("username")
+                .value("value")
+                .providedElsewhere(Boolean.TRUE)
+                .build();
+    }
 
-    int deleteByEventAndNotInDataElements(String eventUid, List<String> dataElementUids);
-
-    List<TrackedEntityDataValue> queryTrackedEntityDataValuesByEventUid(@NonNull String eventUid);
-
-    Map<String, List<TrackedEntityDataValue>> querySingleEventsTrackedEntityDataValues();
-
-    Map<String, List<TrackedEntityDataValue>> queryTrackerTrackedEntityDataValues();
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

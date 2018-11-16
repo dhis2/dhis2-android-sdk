@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
@@ -51,7 +52,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
 
         eventStore = new EventStoreImpl(databaseAdapter());
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         orgUnitUid = "ImspTQPwCqd";
         programUid = "kla3mAPgvCH";
@@ -135,9 +136,17 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
                 new Date(), new Date(), new Date(), State.TO_POST, attributeOptionCombo, trackedEntityInstance
         );
 
-        trackedEntityDataValueStore.insert(
-                eventUid, new Date(), new Date(), dataElementUid, "user_name", "12", Boolean.FALSE
-        );
+        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
+                .event(eventUid)
+                .created(new Date())
+                .lastUpdated(new Date())
+                .dataElement(dataElementUid)
+                .storedBy("user_name")
+                .value("12")
+                .providedElsewhere(Boolean.FALSE)
+                .build();
+
+        trackedEntityDataValueStore.insert(trackedEntityDataValue);
     }
 
     private void assertThatEventPushedIsDownloaded(Event pushedEvent) {

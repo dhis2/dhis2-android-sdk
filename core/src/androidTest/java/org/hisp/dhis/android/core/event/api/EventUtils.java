@@ -47,15 +47,31 @@ class EventUtils {
 
     private static List<TrackedEntityDataValue> getValidDataValues() {
         return Lists.newArrayList(
-                TrackedEntityDataValue.create(null, null, validNumberDataElementUid2, null, "40", false),
-                TrackedEntityDataValue.create(null, null, validNumberDataElementUid1, null, "20", false)
+                TrackedEntityDataValue.builder()
+                        .dataElement(validNumberDataElementUid2)
+                        .value("40")
+                        .providedElsewhere(false)
+                        .build(),
+                TrackedEntityDataValue.builder()
+                        .dataElement(validNumberDataElementUid1)
+                        .value("20")
+                        .providedElsewhere(false)
+                        .build()
         );
     }
 
     private static List<TrackedEntityDataValue> getInvalidDataValues() {
         return Lists.newArrayList(
-                TrackedEntityDataValue.create(null, null, validNumberDataElementUid2, null, "string", false),
-                TrackedEntityDataValue.create(null, null, validNumberDataElementUid1, null, "false", false)
+                TrackedEntityDataValue.builder()
+                        .dataElement(validNumberDataElementUid2)
+                        .value("string")
+                        .providedElsewhere(false)
+                        .build(),
+                TrackedEntityDataValue.builder()
+                        .dataElement(validNumberDataElementUid1)
+                        .value("false")
+                        .providedElsewhere(false)
+                        .build()
         );
     }
 

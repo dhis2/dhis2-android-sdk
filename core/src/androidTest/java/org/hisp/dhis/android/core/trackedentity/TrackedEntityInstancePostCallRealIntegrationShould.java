@@ -87,7 +87,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
         eventStore = new EventStoreImpl(databaseAdapter());
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         codeGenerator = new CodeGeneratorImpl();
         orgUnitUid = "DiszpKrYNg8";
@@ -414,9 +414,17 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 refDate, refDate, refDate, State.TO_POST, categoryComboOptionUid, trackedEntityInstanceUid
         );
 
-        trackedEntityDataValueStore.insert(
-                eventUid, refDate, refDate, dataElementUid, "user_name", "12", Boolean.FALSE
-        );
+        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
+                .event(eventUid)
+                .created(refDate)
+                .lastUpdated(refDate)
+                .dataElement(dataElementUid)
+                .storedBy("user_name")
+                .value("12")
+                .providedElsewhere(Boolean.FALSE)
+                .build();
+
+        trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
         trackedEntityAttributeValueStore.insert(
                 "new2", refDate, refDate, trackedEntityAttributeUid,

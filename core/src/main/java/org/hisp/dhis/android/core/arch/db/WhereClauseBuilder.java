@@ -27,14 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.db;
 
+import org.hisp.dhis.android.core.utils.Utils;
+
+import java.util.List;
+
 public class WhereClauseBuilder {
 
     private static final String EQ_STR = " = '";
     private static final String END_STR = "'";
+    private static final String PARENTHESES_END = ")";
 
     private static final String EQ_NUMBER = " = ";
 
     private static final String AND = " AND ";
+    private static final String IN = " IN (";
+    private static final String NOT_IN = " NOT IN (";
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
     private final StringBuilder whereClause = new StringBuilder();
@@ -50,6 +57,16 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendKeyNumberValue(String column, int value) {
         return appendKeyValue(column, value, EQ_NUMBER, "");
+    }
+
+    public WhereClauseBuilder appendNotInKeyStringValues(String column, List<String> values) {
+        String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
+        return appendKeyValue(column, valuesArray, NOT_IN, PARENTHESES_END);
+    }
+
+    public WhereClauseBuilder appendInKeyStringValues(String column, List<String> values) {
+        String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
+        return appendKeyValue(column, valuesArray, IN, PARENTHESES_END);
     }
 
     private WhereClauseBuilder appendKeyValue(String column, Object value, String eq, String end) {

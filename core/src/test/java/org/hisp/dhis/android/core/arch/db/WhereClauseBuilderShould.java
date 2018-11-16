@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.arch.db;
 
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -32,6 +33,24 @@ public class WhereClauseBuilderShould {
                 .appendKeyStringValue("COL2", "VAL2")
                 .build();
         assertThat(whereStatement).isEqualTo("COL1 = 'VAL1' AND COL2 = 'VAL2'");
+    }
+
+    @Test
+    public void build_where_statement_for_not_in_key_values() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendNotInKeyStringValues("COL1", Lists.newArrayList("VAL1", "VAL2"))
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 NOT IN ('VAL1', 'VAL2')");
+    }
+
+    @Test
+    public void build_where_statement_for_in_key_values() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendInKeyStringValues("COL1", Lists.newArrayList("VAL1", "VAL2"))
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 IN ('VAL1', 'VAL2')");
     }
 
     @Test(expected = RuntimeException.class)

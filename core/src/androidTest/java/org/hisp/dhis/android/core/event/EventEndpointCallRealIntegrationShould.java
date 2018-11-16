@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.junit.Before;
 
@@ -83,10 +84,9 @@ public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedTrackedEntityDataValue(int num) {
-        TrackedEntityDataValueStoreImpl eventStore = new TrackedEntityDataValueStoreImpl(
-                d2.databaseAdapter());
+        TrackedEntityDataValueStore trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(d2.databaseAdapter());
 
-        int numPersisted = eventStore.countAll();
+        int numPersisted = trackedEntityDataValueStore.selectAll().size();
 
         assertThat(numPersisted, is(num));
     }

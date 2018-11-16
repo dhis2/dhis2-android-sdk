@@ -28,16 +28,12 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.database.Cursor;
-
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 
 public class RelationshipTypeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<RelationshipType> {
 
     @Override
-    public RelationshipType fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String uid = cursor.getString(columnIndex);
+    protected RelationshipType build(String uid) {
         return RelationshipType.builder().uid(uid).build();
     }
 }

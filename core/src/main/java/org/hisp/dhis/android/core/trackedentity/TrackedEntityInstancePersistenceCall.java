@@ -6,12 +6,13 @@ import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitOnDemandCall;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitOnDemandCall;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.User;
@@ -118,7 +119,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 AuthenticatedUserStore.create(databaseAdapter),
                 SearchOrganisationUnitOnDemandCall.FACTORY,
                 trackedEntityInstances,
-                new ForeignKeyCleaner(databaseAdapter)
+                ForeignKeyCleanerImpl.create(databaseAdapter)
         );
     }
 }

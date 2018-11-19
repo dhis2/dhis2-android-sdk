@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -53,6 +54,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -87,7 +89,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     @Test
     public void persist_option_set_with_options_in_data_base_when_call() throws Exception {
-        d2CallExecutor.executeD2Call(optionSetCall);
+        executeOptionSetCall();
 
         Cursor optionSetCursor = database().query(OptionSetTableInfo.TABLE_INFO.name(),
                 ColumnsArrayUtils.getColumnsWithId(OptionSetTableInfo.TABLE_INFO.columns().all()),
@@ -139,7 +141,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     @Test
     public void return_option_set_after_call() throws Exception {
-        List<OptionSet> optionSetList = d2CallExecutor.executeD2Call(optionSetCall);
+        List<OptionSet> optionSetList = executeOptionSetCall();
 
         assertThat(optionSetList.size()).isEqualTo(1);
 
@@ -156,7 +158,25 @@ public class OptionSetCallShould extends AbsStoreTestCase {
         assertThat(optionSet.version()).isEqualTo(1);
         assertThat(optionSet.valueType()).isEqualTo(ValueType.TEXT);
 
-        assertThat(optionSet.options().size()).isEqualTo(2);
+        assertThat(optionSet.options().size()).isEqualTo(3);
+    }
+
+    private List<OptionSet> executeOptionSetCall() throws Exception{
+        final D2CallExecutor executor = new D2CallExecutor();
+
+        return executor.executeD2CallTransactionally(databaseAdapter(), new Callable<List<OptionSet>>() {
+            @Override
+            public List<OptionSet> call() {
+                List<OptionSet> optionSets = null;
+                try {
+                    optionSets = d2CallExecutor.executeD2Call(optionSetCall);
+                } catch (Exception ignored) {
+                }
+
+                ForeignKeyCleanerImpl.create(databaseAdapter()).cleanForeignKeyErrors();
+                return optionSets;
+            }
+        });
     }
 
     @After

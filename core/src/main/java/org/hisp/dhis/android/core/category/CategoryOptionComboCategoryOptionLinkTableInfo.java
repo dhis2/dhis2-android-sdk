@@ -56,7 +56,7 @@ public final class CategoryOptionComboCategoryOptionLinkTableInfo {
     private CategoryOptionComboCategoryOptionLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
         public static final String CATEGORY_OPTION_COMBO = "categoryOptionCombo";
         public static final String CATEGORY_OPTION = "categoryOption";
 

@@ -25,36 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance;
 
-package org.hisp.dhis.android.core.option;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-public final class OptionFields {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public final class MaintenanceModule {
 
-    final static String SORT_ORDER = "sortOrder";
-    public final static String OPTION_SET = "optionSet";
-    final static String STYLE = "style";
+    public final ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations;
 
-    private static final FieldsHelper<Option> fh = new FieldsHelper<>();
+    private MaintenanceModule(ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations) {
+        this.foreignKeyViolations = foreignKeyViolations;
+    }
 
-    public static final Field<Option, String> uid = fh.uid();
-
-    static final Field<Option, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<Option> allFields = Fields.<Option>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.nestedFieldWithUid(OPTION_SET),
-                    fh.<ObjectStyle>nestedField(STYLE)
-                            .with(ObjectStyleFields.allFields)
-            ).build();
-
-    private OptionFields() {
+    public static MaintenanceModule create(DatabaseAdapter databaseAdapter) {
+        return new MaintenanceModule(
+                new ReadOnlyCollectionRepositoryImpl<>(ForeignKeyViolationStore.create(databaseAdapter))
+        );
     }
 }

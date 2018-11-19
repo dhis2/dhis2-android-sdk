@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
@@ -243,6 +244,10 @@ public final class D2 {
 
     public DataValueModule dataValueModule() {
         return this.internalModules.dataValueModule.publicModule;
+    }
+
+    public MaintenanceModule maintenanceModule() {
+        return this.internalModules.maintenanceModule.publicModule;
     }
 
     public WipeModule wipeModule() {

@@ -26,35 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import android.support.test.runner.AndroidJUnit4;
 
-public final class OptionFields {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
+import org.junit.runner.RunWith;
 
-    final static String SORT_ORDER = "sortOrder";
-    public final static String OPTION_SET = "optionSet";
-    final static String STYLE = "style";
+@RunWith(AndroidJUnit4.class)
+public class ForeignKeyViolationStoreIntegrationShould
+        extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
 
-    private static final FieldsHelper<Option> fh = new FieldsHelper<>();
+    public ForeignKeyViolationStoreIntegrationShould() {
+        super(ForeignKeyViolationStore.create(DatabaseAdapterFactory.get(false)),
+                ForeignKeyViolationTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
-    public static final Field<Option, String> uid = fh.uid();
+    @Override
+    protected ForeignKeyViolation buildObject() {
+        return ForeignKeyViolationSamples.get();
+    }
 
-    static final Field<Option, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<Option> allFields = Fields.<Option>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.nestedFieldWithUid(OPTION_SET),
-                    fh.<ObjectStyle>nestedField(STYLE)
-                            .with(ObjectStyleFields.allFields)
-            ).build();
-
-    private OptionFields() {
+    @Override
+    protected ForeignKeyViolation buildObjectWithId() {
+        return ForeignKeyViolationSamples.get().toBuilder()
+                .id(1L)
+                .build();
     }
 }

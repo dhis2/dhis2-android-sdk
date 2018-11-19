@@ -25,36 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance;
 
-package org.hisp.dhis.android.core.option;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+public final class MaintenanceInternalModule implements WipeableModule {
 
-public final class OptionFields {
+    private final DatabaseAdapter databaseAdapter;
+    public final MaintenanceModule publicModule;
 
-    final static String SORT_ORDER = "sortOrder";
-    public final static String OPTION_SET = "optionSet";
-    final static String STYLE = "style";
+    private MaintenanceInternalModule(DatabaseAdapter databaseAdapter, MaintenanceModule publicModule) {
+        this.databaseAdapter = databaseAdapter;
+        this.publicModule = publicModule;
+    }
 
-    private static final FieldsHelper<Option> fh = new FieldsHelper<>();
+    @Override
+    public void wipeMetadata() {
+        // Without Metadata to wipe
+    }
 
-    public static final Field<Option, String> uid = fh.uid();
+    @Override
+    public void wipeData() {
+        ForeignKeyViolationStore.create(databaseAdapter).delete();
+    }
 
-    static final Field<Option, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<Option> allFields = Fields.<Option>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.nestedFieldWithUid(OPTION_SET),
-                    fh.<ObjectStyle>nestedField(STYLE)
-                            .with(ObjectStyleFields.allFields)
-            ).build();
-
-    private OptionFields() {
+    public static MaintenanceInternalModule create(DatabaseAdapter databaseAdapter) {
+        return new MaintenanceInternalModule(
+                databaseAdapter,
+                MaintenanceModule.create(databaseAdapter)
+        );
     }
 }

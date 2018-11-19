@@ -56,12 +56,14 @@ public final class StoreFactory {
         return objectWithUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder, modelFactory);
     }
 
-    static <I extends BaseModel> ObjectStore<I>
-    objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns, StatementBinder<I> binder,
-                CursorModelFactory<I> modelFactory) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
-        return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(
-                statementBuilder.insert()), statementBuilder, binder, modelFactory);
+    public static <I extends BaseModel> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
+                                                           TableInfo tableInfo,
+                                                           StatementBinder<I> binder,
+                                                           CursorModelFactory<I> modelFactory) {
+        SQLStatementBuilder statementBuilder =
+                new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(), new String[]{});
+        return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
+                statementBuilder, binder, modelFactory);
     }
 
     public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(

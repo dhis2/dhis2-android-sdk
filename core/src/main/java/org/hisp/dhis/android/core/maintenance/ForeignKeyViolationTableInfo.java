@@ -26,35 +26,51 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class OptionFields {
+public final class ForeignKeyViolationTableInfo {
 
-    final static String SORT_ORDER = "sortOrder";
-    public final static String OPTION_SET = "optionSet";
-    final static String STYLE = "style";
+    private ForeignKeyViolationTableInfo() {
+    }
 
-    private static final FieldsHelper<Option> fh = new FieldsHelper<>();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public static final Field<Option, String> uid = fh.uid();
+        @Override
+        public String name() {
+            return "ForeignKeyViolation";
+        }
 
-    static final Field<Option, String> lastUpdated = fh.lastUpdated();
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-    public static final Fields<Option> allFields = Fields.<Option>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.nestedFieldWithUid(OPTION_SET),
-                    fh.<ObjectStyle>nestedField(STYLE)
-                            .with(ObjectStyleFields.allFields)
-            ).build();
+    static class Columns extends BaseModel.Columns {
+        private final static String FROM_TABLE = "fromTable";
+        private final static String FROM_COLUMN = "fromColumn";
+        private final static String TO_TABLE = "toTable";
+        private final static String TO_COLUMN = "toColumn";
+        private final static String NOT_FOUND_VALUE = "notFoundValue";
+        private final static String FROM_OBJECT_UID = "fromObjectUid";
+        private final static String FROM_OBJECT_ROW = "fromObjectRow";
+        private final static String CREATED = "created";
 
-    private OptionFields() {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    FROM_TABLE,
+                    FROM_COLUMN,
+                    TO_TABLE,
+                    TO_COLUMN,
+                    NOT_FOUND_VALUE,
+                    FROM_OBJECT_UID,
+                    FROM_OBJECT_ROW,
+                    CREATED);
+        }
     }
 }

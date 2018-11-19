@@ -26,35 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
-public final class OptionFields {
-
-    final static String SORT_ORDER = "sortOrder";
-    public final static String OPTION_SET = "optionSet";
-    final static String STYLE = "style";
-
-    private static final FieldsHelper<Option> fh = new FieldsHelper<>();
-
-    public static final Field<Option, String> uid = fh.uid();
-
-    static final Field<Option, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<Option> allFields = Fields.<Option>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.nestedFieldWithUid(OPTION_SET),
-                    fh.<ObjectStyle>nestedField(STYLE)
-                            .with(ObjectStyleFields.allFields)
-            ).build();
-
-    private OptionFields() {
-    }
+public interface ForeignKeyCleaner {
+   Integer cleanForeignKeyErrors();
 }

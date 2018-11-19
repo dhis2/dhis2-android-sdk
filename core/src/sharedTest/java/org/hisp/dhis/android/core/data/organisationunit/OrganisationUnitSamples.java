@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.data.organisationunit;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
+import java.text.ParseException;
+
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
 public class OrganisationUnitSamples {
@@ -57,5 +59,46 @@ public class OrganisationUnitSamples {
 
     public static OrganisationUnit getOrganisationUnit() {
         return getOrganisationUnit(1L, "UID");
+    }
+
+    public static OrganisationUnit getAfroArabClinic() throws ParseException {
+        return OrganisationUnit.builder()
+                .uid("cDw53Ej8rju")
+                .code("OU_278371")
+                .name("Afro Arab Clinic")
+                .displayName("Afro Arab Clinic")
+                .created("2012-02-17T15:54:39.987")
+                .lastUpdated("2017-05-22T15:21:48.518")
+                .shortName("Afro Arab Clinic")
+                .displayShortName("Afro Arab Clinic")
+                .description(null)
+                .displayDescription(null)
+                .path("/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju")
+                .openingDate("2008-01-01T00:00:00.000")
+                .level(4)
+                .parent(OrganisationUnit.builder().uid("qtr8GGlm4gg").build())
+                .displayNamePath("/Afro Arab Clinic")
+                .build();
+    }
+
+
+    public static OrganisationUnit getAdonkiaCHP() throws ParseException {
+        return OrganisationUnit.builder()
+                .uid("Rp268JB6Ne4")
+                .code("OU_651071")
+                .name("Adonkia CHP")
+                .displayName("Adonkia CHP")
+                .created("2012-02-17T15:54:39.987")
+                .lastUpdated("2017-05-22T15:21:48.515")
+                .shortName("Adonkia CHP")
+                .displayShortName("Adonkia CHP")
+                .description(null)
+                .displayDescription(null)
+                .path("/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/Rp268JB6Ne4")
+                .openingDate("2010-01-01T00:00:00.000")
+                .level(4)
+                .parent(OrganisationUnit.builder().uid("qtr8GGlm4gg").build())
+                .displayNamePath("/Adonkia CHP")
+                .build();
     }
 }

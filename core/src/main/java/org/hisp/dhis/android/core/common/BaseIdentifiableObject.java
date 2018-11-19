@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -115,7 +116,15 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
 
         public abstract T created(@Nullable Date created);
 
+        public T created(@NonNull String createdStr) throws ParseException {
+            return created(BaseIdentifiableObject.DATE_FORMAT.parse(createdStr));
+        }
+
         public abstract T lastUpdated(@Nullable Date lastUpdated);
+
+        public T lastUpdated(@NonNull String lastUpdatedStr) throws ParseException {
+            return lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(lastUpdatedStr));
+        }
 
         public abstract T deleted(@Nullable Boolean deleted);
     }

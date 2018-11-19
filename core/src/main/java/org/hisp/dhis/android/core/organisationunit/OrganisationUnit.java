@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
@@ -50,6 +51,7 @@ import org.hisp.dhis.android.core.data.database.OrganisationUnitWithUidColumnAda
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -131,7 +133,15 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Mod
 
         public abstract Builder openingDate(Date openingDate);
 
+        public Builder openingDate(@NonNull String openingDateStr) throws ParseException {
+            return openingDate(BaseIdentifiableObject.DATE_FORMAT.parse(openingDateStr));
+        }
+
         public abstract Builder closedDate(Date closedDate);
+
+        public Builder closedDate(@NonNull String closedDateStr) throws ParseException {
+            return closedDate(BaseIdentifiableObject.DATE_FORMAT.parse(closedDateStr));
+        }
 
         public abstract Builder level(Integer level);
 

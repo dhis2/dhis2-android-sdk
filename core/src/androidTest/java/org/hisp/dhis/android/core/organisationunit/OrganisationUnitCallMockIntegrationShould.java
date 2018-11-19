@@ -40,33 +40,35 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
-    private static String[] USER_ORGANISATION_UNIT_PROJECTION = {
-            UserOrganisationUnitLinkModel.Columns.USER,
-            UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-    };
-
     private static String[] RESOURCE_PROJECTION = {
             ResourceModel.Columns.RESOURCE_TYPE,
             ResourceModel.Columns.LAST_SYNCED
@@ -77,6 +79,12 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
     //The return of the organisationUnitCall to be tested:
     private Call<List<OrganisationUnit>> organisationUnitCall;
+
+    private OrganisationUnit expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic();
+    private OrganisationUnit expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP();
+
+    public OrganisationUnitCallMockIntegrationShould() throws ParseException {
+    }
 
     @Before
     @Override
@@ -96,6 +104,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.builder().uid("user_uid").organisationUnits(organisationUnits).build();
+        database().insert(UserModel.TABLE, null, user.toContentValues());
 
         ContentValues userContentValues = new ContentValues();
         userContentValues.put(UserModel.Columns.ID, "user_uid");
@@ -122,60 +131,44 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     }
 
     @Test
-    public void persist_organisation_unit_tree_in_data_base_after_call() throws Exception {
-        //Insert User in the User tables, such that UserOrganisationUnitLink's foreign key is satisfied:
-        ContentValues userContentValues = new ContentValues();
-        userContentValues.put(UserModel.Columns.UID, "user_uid");
-        userContentValues.put(UserModel.Columns.CODE, "code");
-        userContentValues.put(UserModel.Columns.NAME, "name");
-        userContentValues.put(UserModel.Columns.DISPLAY_NAME, "displayName");
-        userContentValues.put(UserModel.Columns.LAST_UPDATED, "dateString");
-        userContentValues.put(UserModel.Columns.CREATED, "dateString");
-        userContentValues.put(UserModel.Columns.BIRTHDAY, "birthday");
-        userContentValues.put(UserModel.Columns.EDUCATION, "education");
-        userContentValues.put(UserModel.Columns.GENDER, "gender");
-        userContentValues.put(UserModel.Columns.JOB_TITLE, "jobTitle");
-        userContentValues.put(UserModel.Columns.SURNAME, "surname");
-        userContentValues.put(UserModel.Columns.FIRST_NAME, "firstName");
-        userContentValues.put(UserModel.Columns.INTRODUCTION, "introduction");
-        userContentValues.put(UserModel.Columns.EMPLOYER, "employer");
-        userContentValues.put(UserModel.Columns.INTERESTS, "interests");
-        userContentValues.put(UserModel.Columns.LANGUAGES, "languages");
-        userContentValues.put(UserModel.Columns.EMAIL, "email");
-        userContentValues.put(UserModel.Columns.PHONE_NUMBER, "phoneNumber");
-        userContentValues.put(UserModel.Columns.NATIONALITY, "nationality");
-        database().insert(UserModel.TABLE, null, userContentValues);
-
-
+    public void persist_organisation_unit_tree() throws Exception {
         organisationUnitCall.call();
 
-        Cursor organisationUnitCursor = database().query(OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
-        Cursor userOrganisationUnitCursor = database().query(UserOrganisationUnitLinkModel.TABLE,
-                USER_ORGANISATION_UNIT_PROJECTION, null, null, null, null, null);
+        IdentifiableObjectStore<OrganisationUnit> organisationUnitStore = OrganisationUnitStore.create(databaseAdapter());
+        OrganisationUnit dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid());
+        OrganisationUnit dbAdonkiaCHP = organisationUnitStore.selectByUid(expectedAdonkiaCHP.uid());
+
+        assertThat(expectedAfroArabicClinic).isEqualTo(dbAfroArabicClinic.toBuilder().id(null).build());
+        assertThat(expectedAdonkiaCHP).isEqualTo(dbAdonkiaCHP.toBuilder().id(null).build());
+    }
+
+    @Test
+    public void persist_organisation_unit_user_links() throws Exception {
+        organisationUnitCall.call();
+
+        UserOrganisationUnitLinkStoreInterface userOrganisationUnitStore = UserOrganisationUnitLinkStore.create(databaseAdapter());
+        List<UserOrganisationUnitLinkModel> linkList = userOrganisationUnitStore.selectAll();
+
+        Set<String> linkOrganisationUnits = new HashSet<>(2);
+        for (UserOrganisationUnitLinkModel linkModel: linkList) {
+            assertThat(linkModel.user()).isEqualTo("user_uid");
+            linkOrganisationUnits.add(linkModel.organisationUnit());
+        }
+
+        assertThat(linkOrganisationUnits.contains(expectedAfroArabicClinic.uid())).isTrue();
+        assertThat(linkOrganisationUnits.contains(expectedAdonkiaCHP.uid())).isTrue();
+    }
+
+    @Test
+    public void update_resource_handler() throws Exception {
+       organisationUnitCall.call();
 
         Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(organisationUnitCursor).hasRow("Rp268JB6Ne4", "OU_651071", "Adonkia CHP",
-                "Adonkia CHP", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.515", "Adonkia CHP",
-                "Adonkia CHP", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/Rp268JB6Ne4",
-                "2010-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg", "/Adonkia CHP");
-
-        assertThatCursor(organisationUnitCursor).hasRow("cDw53Ej8rju", "OU_278371", "Afro Arab Clinic",
-                "Afro Arab Clinic", "2012-02-17T15:54:39.987", "2017-05-22T15:21:48.518", "Afro Arab Clinic",
-                "Afro Arab Clinic", null, null, "/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/cDw53Ej8rju",
-                "2008-01-01T00:00:00.000", null, 4, "qtr8GGlm4gg", "/Afro Arab Clinic");
-
-        //Link tables:
-        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "Rp268JB6Ne4");
-        assertThatCursor(userOrganisationUnitCursor).hasRow("user_uid", "cDw53Ej8rju").isExhausted();
-
         assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
                 BaseIdentifiableObject.DATE_FORMAT.format(genericCallData.serverDate()));
 
-        organisationUnitCursor.close();
-        userOrganisationUnitCursor.close();
         resourceCursor.close();
     }
 
@@ -186,24 +179,4 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         dhis2MockServer.shutdown();
     }
-
-/*//TODO: consider testing these cases when we decide to write more thorough Integration Tests:
-    @Test
-    public void call_shouldReturnCorrectOrganisationUnitModel() {
-    }
-
-    @Test
-    public void call_shouldReturnCorrectOrganisationUnitTreeModel() {
-    }
-        @Test
-    public void call_shouldInsertOrganisationUnitInDatabase() {
-    }
-
-    @Test
-    public void call_shouldUpdateOrganisationUnitInDatabase() {
-    }
-
-    @Test
-    public void call_shouldDeleteOrganisationUnitInDatabase() {
-    }*/
 }

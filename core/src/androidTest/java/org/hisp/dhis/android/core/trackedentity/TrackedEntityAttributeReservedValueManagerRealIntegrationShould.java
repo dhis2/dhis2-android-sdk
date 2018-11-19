@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -67,16 +67,22 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         TrackedEntityAttributeStore trackedEntityAttributeStore =
                 new TrackedEntityAttributeStoreImpl(databaseAdapter());
 
-        GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> handler =
+        SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler =
                 TrackedEntityAttributeReservedValueHandler.create(databaseAdapter());
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
-        TrackedEntityAttributeReservedValue reservedValue1 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid, "key", "value1", CREATED, FUTURE_DATE);
-        TrackedEntityAttributeReservedValue reservedValue2 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid, "key", "value2", CREATED, FUTURE_DATE);
-        TrackedEntityAttributeReservedValue reservedValue3 = TrackedEntityAttributeReservedValue.create(
-                "owner_obj", ownerUid, "key", "value3", CREATED, FUTURE_DATE);
+        TrackedEntityAttributeReservedValue.Builder reservedValueBuilder =
+                TrackedEntityAttributeReservedValue.builder()
+                .ownerObject("owner_obj")
+                .ownerUid(ownerUid)
+                .key("key")
+                .created(CREATED)
+                .expiryDate(FUTURE_DATE);
+
+        TrackedEntityAttributeReservedValue reservedValue1 = reservedValueBuilder.value("value1").build();
+        TrackedEntityAttributeReservedValue reservedValue2 = reservedValueBuilder.value("value2").build();
+        TrackedEntityAttributeReservedValue reservedValue3 = reservedValueBuilder.value("value3").build();
+
         trackedEntityAttributeReservedValues.add(reservedValue1);
         trackedEntityAttributeReservedValues.add(reservedValue2);
         trackedEntityAttributeReservedValues.add(reservedValue3);
@@ -167,7 +173,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         d2.popTrackedEntityAttributeReservedValue(ownerUid, "not_stored_organisation_unit_uid");
     }
 
-    private List<TrackedEntityAttributeReservedValueModel> selectAll() {
+    private List<TrackedEntityAttributeReservedValue> selectAll() {
         return store.selectAll();
     }
 

@@ -55,7 +55,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         login();
         reservedValueEndpointCall.call();
 
-        List<TrackedEntityAttributeReservedValueModel> reservedValues = TrackedEntityAttributeReservedValueStore.create(
+        List<TrackedEntityAttributeReservedValue> reservedValues = TrackedEntityAttributeReservedValueStore.create(
                 databaseAdapter()).selectAll();
 
         assertThat(reservedValues.size()).isEqualTo(numberToReserve);

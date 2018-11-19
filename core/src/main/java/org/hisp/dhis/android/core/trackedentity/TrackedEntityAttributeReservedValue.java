@@ -28,71 +28,88 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class TrackedEntityAttributeReservedValue {
-    private final static String OWNER_OBJECT = "ownerObject";
-    private final static String OWNER_UID = "ownerUid";
-    private final static String KEY = "key";
-    private final static String VALUE = "value";
-    private final static String CREATED = "created";
-    private final static String EXPIRY_DATE = "expiryDate";
-
-    private static final Field<TrackedEntityAttributeReservedValue, String> ownerObject = Field.create(OWNER_OBJECT);
-    private static final Field<TrackedEntityAttributeReservedValue, String> ownerUid = Field.create(OWNER_UID);
-    private static final Field<TrackedEntityAttributeReservedValue, String> key = Field.create(KEY);
-    private static final Field<TrackedEntityAttributeReservedValue, String> value = Field.create(VALUE);
-    private static final Field<TrackedEntityAttributeReservedValue, String> created = Field.create(CREATED);
-    private static final Field<TrackedEntityAttributeReservedValue, String> expiryDate = Field.create(EXPIRY_DATE);
-
-    static final Fields<TrackedEntityAttributeReservedValue> allFields =
-            Fields.<TrackedEntityAttributeReservedValue>builder().fields(
-                    ownerObject, ownerUid, key, value, created, expiryDate).build();
+public abstract class TrackedEntityAttributeReservedValue implements Model {
 
     @Nullable
-    @JsonProperty(OWNER_OBJECT)
+    @JsonProperty()
     public abstract String ownerObject();
 
     @Nullable
-    @JsonProperty(OWNER_UID)
+    @JsonProperty()
     public abstract String ownerUid();
 
     @Nullable
-    @JsonProperty(KEY)
+    @JsonProperty()
     public abstract String key();
 
     @Nullable
-    @JsonProperty(VALUE)
+    @JsonProperty()
     public abstract String value();
 
     @Nullable
-    @JsonProperty(CREATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(EXPIRY_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date expiryDate();
 
-    @JsonCreator
-    public static TrackedEntityAttributeReservedValue create(
-            @JsonProperty(OWNER_OBJECT) String ownerObject,
-            @JsonProperty(OWNER_UID) String ownerUid,
-            @JsonProperty(KEY) String key,
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(EXPIRY_DATE) Date expiryDate) {
+    @Nullable
+    @JsonIgnore()
+    public abstract String organisationUnit();
 
-        return new AutoValue_TrackedEntityAttributeReservedValue(
-                ownerObject, ownerUid, key, value, created, expiryDate);
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date temporalValidityDate();
+
+    public static Builder builder() {
+        return new $$AutoValue_TrackedEntityAttributeReservedValue.Builder();
+    }
+
+    static TrackedEntityAttributeReservedValue create(Cursor cursor) {
+        return $AutoValue_TrackedEntityAttributeReservedValue.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder ownerObject(String ownerObject);
+
+        public abstract Builder ownerUid(String ownerUid);
+
+        public abstract Builder key(String key);
+
+        public abstract Builder value(String value);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder expiryDate(Date expiryDate);
+
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder temporalValidityDate(Date temporalValidityDate);
+
+        public abstract TrackedEntityAttributeReservedValue build();
     }
 }

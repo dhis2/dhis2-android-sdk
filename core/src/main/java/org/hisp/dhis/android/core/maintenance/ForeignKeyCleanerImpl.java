@@ -119,7 +119,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
                 listCursor.moveToFirst();
                 do {
                     if (foreignKeyIdNumber.equals(String.valueOf(listCursor.getInt(0)))) {
-                        foreignKeyViolation = fafa(listCursor, fromTable, toTable, rowId);
+                        foreignKeyViolation = buildViolation(listCursor, fromTable, toTable, rowId);
                     }
 
                 } while (listCursor.moveToNext());
@@ -132,7 +132,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
         return foreignKeyViolation;
     }
 
-    private ForeignKeyViolation fafa(Cursor listCursor, String fromTable, String toTable, String rowId) {
+    private ForeignKeyViolation buildViolation(Cursor listCursor, String fromTable, String toTable, String rowId) {
 
         ForeignKeyViolation.Builder foreignKeyViolationBuilder = ForeignKeyViolation.builder();
 

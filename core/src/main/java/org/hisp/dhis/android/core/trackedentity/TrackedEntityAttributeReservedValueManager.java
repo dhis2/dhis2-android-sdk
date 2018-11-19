@@ -83,7 +83,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     public String getValue(String attribute, String organisationUnitUid) throws D2CallException {
         syncReservedValues(attribute, organisationUnitUid, false);
 
-        TrackedEntityAttributeReservedValueModel reservedValue = store.popOne(attribute, organisationUnitUid);
+        TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, organisationUnitUid);
 
         if (reservedValue == null) {
             throw D2CallException.builder()

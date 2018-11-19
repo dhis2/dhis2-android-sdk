@@ -33,19 +33,19 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.Date;
 
-public class TrackedEntityAttributeReservedValueModelBuilder extends
-        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+public class TrackedEntityAttributeReservedValueModelBuilder
+        extends ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValue> {
 
-    private final TrackedEntityAttributeReservedValueModel.Builder builder;
+    private final TrackedEntityAttributeReservedValue.Builder builder;
 
     TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
+        this.builder = TrackedEntityAttributeReservedValue.builder()
                 .organisationUnit(organisationUnit.uid());
         fillTemporalValidityDate(pattern);
     }
 
     @Override
-    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
+    public TrackedEntityAttributeReservedValue buildModel(TrackedEntityAttributeReservedValue reservedValue) {
         return builder
                 .ownerObject(reservedValue.ownerObject())
                 .ownerUid(reservedValue.ownerUid())

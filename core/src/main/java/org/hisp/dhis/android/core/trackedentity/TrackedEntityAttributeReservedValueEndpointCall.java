@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallWithTransformerProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public final class TrackedEntityAttributeReservedValueEndpointCall {
                 protected CallProcessor<TrackedEntityAttributeReservedValue> processor(
                         GenericCallData data,
                         final TrackedEntityAttributeReservedValueQuery query) {
-                    return new TransactionalNoResourceCallProcessor<>(
+                    return new TransactionalNoResourceSyncCallWithTransformerProcessor<>(
                             data.databaseAdapter(),
                             TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
                             new TrackedEntityAttributeReservedValueModelBuilder(

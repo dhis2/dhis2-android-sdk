@@ -48,10 +48,10 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.pars
 @RunWith(JUnit4.class)
 public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends AbsStoreTestCase {
 
-    private TrackedEntityAttributeReservedValueModel expiredValue;
-    private TrackedEntityAttributeReservedValueModel notExpiredValue;
-    private TrackedEntityAttributeReservedValueModel temporalValidityExpiredValue;
-    private TrackedEntityAttributeReservedValueModel notExpiredTemporalValidityExpiredValue;
+    private TrackedEntityAttributeReservedValue expiredValue;
+    private TrackedEntityAttributeReservedValue notExpiredValue;
+    private TrackedEntityAttributeReservedValue temporalValidityExpiredValue;
+    private TrackedEntityAttributeReservedValue notExpiredTemporalValidityExpiredValue;
 
     private Date serverDate;
     private final String orgUnitUid = "orgu1";
@@ -74,7 +74,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
         organisationUnitStore = OrganisationUnitStore.create(databaseAdapter());
         organisationUnitStore.insert(organisationUnit);
 
-        TrackedEntityAttributeReservedValueModel.Builder builder = TrackedEntityAttributeReservedValueModel.builder()
+        TrackedEntityAttributeReservedValue.Builder builder = TrackedEntityAttributeReservedValue.builder()
                 .ownerObject("owObj")
                 .ownerUid(ownerUid)
                 .key("key")
@@ -127,19 +127,19 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
     @Test
     public void pop_inserted_value() {
         store.insert(notExpiredValue);
-        TrackedEntityAttributeReservedValueModel returnedValue = store.popOne(ownerUid, orgUnitUid);
+        TrackedEntityAttributeReservedValue returnedValue = store.popOne(ownerUid, orgUnitUid);
         assertThat(returnedValue.value(), is(notExpiredValue.value()));
     }
 
     @Test
     public void leave_store_empty_after_pop_only_value() {
         store.insert(notExpiredValue);
-        TrackedEntityAttributeReservedValueModel value = store.popOne(ownerUid, orgUnitUid);
+        TrackedEntityAttributeReservedValue value = store.popOne(ownerUid, orgUnitUid);
         storeContains(value, false);
     }
 
-    private void storeContains(TrackedEntityAttributeReservedValueModel value, Boolean contains) {
-        List<TrackedEntityAttributeReservedValueModel> values = store.selectAll();
+    private void storeContains(TrackedEntityAttributeReservedValue value, Boolean contains) {
+        List<TrackedEntityAttributeReservedValue> values = store.selectAll();
         assertThat(values.contains(value), is(contains));
     }
 }

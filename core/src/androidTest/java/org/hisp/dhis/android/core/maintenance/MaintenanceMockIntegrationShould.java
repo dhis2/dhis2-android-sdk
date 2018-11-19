@@ -51,7 +51,7 @@ public class MaintenanceMockIntegrationShould extends MockIntegrationShould {
 
         List<ForeignKeyViolation> violationsToCompare = new ArrayList<>();
         for (ForeignKeyViolation violation : violations) {
-            violationsToCompare.add(violation.toBuilder().deletionDate(null).fromObjectRow(null).build());
+            violationsToCompare.add(violation.toBuilder().created(null).fromObjectRow(null).build());
         }
 
         assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));

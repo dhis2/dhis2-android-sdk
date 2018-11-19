@@ -166,7 +166,7 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
                         .fromObjectRow(Utils.commaAndSpaceSeparatedArrayValues(
                                 columnAndValues.toArray(new String[objectCursor.getColumnCount()])))
                         .fromObjectUid(uid)
-                        .deletionDate(new Date());
+                        .created(new Date());
 
             }
         } finally {

@@ -55,7 +55,7 @@ public final class ForeignKeyViolationStore {
             sqLiteBind(sqLiteStatement, 5, o.notFoundValue());
             sqLiteBind(sqLiteStatement, 6, o.fromObjectUid());
             sqLiteBind(sqLiteStatement, 7, o.fromObjectRow());
-            sqLiteBind(sqLiteStatement, 8, o.deletionDate());
+            sqLiteBind(sqLiteStatement, 8, o.created());
         }
     };
 

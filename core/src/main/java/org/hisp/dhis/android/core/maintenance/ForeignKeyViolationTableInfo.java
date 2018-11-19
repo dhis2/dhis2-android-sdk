@@ -58,7 +58,7 @@ public final class ForeignKeyViolationTableInfo {
         private final static String NOT_FOUND_VALUE = "notFoundValue";
         private final static String FROM_OBJECT_UID = "fromObjectUid";
         private final static String FROM_OBJECT_ROW = "fromObjectRow";
-        private final static String DELETION_DATE = "deletionDate";
+        private final static String CREATED = "created";
 
         @Override
         public String[] all() {
@@ -70,7 +70,7 @@ public final class ForeignKeyViolationTableInfo {
                     NOT_FOUND_VALUE,
                     FROM_OBJECT_UID,
                     FROM_OBJECT_ROW,
-                    DELETION_DATE);
+                    CREATED);
         }
     }
 }

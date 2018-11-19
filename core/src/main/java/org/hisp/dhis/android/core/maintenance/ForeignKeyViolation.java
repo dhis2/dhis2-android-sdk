@@ -66,7 +66,7 @@ public abstract class ForeignKeyViolation extends BaseModel {
 
     @Nullable
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date deletionDate();
+    public abstract Date created();
 
     @NonNull
     public static ForeignKeyViolation create(Cursor cursor) {
@@ -96,7 +96,7 @@ public abstract class ForeignKeyViolation extends BaseModel {
 
         public abstract Builder fromObjectRow(String fromObjectRow);
 
-        public abstract Builder deletionDate(Date deletionDate);
+        public abstract Builder created(Date created);
 
         public abstract ForeignKeyViolation build();
     }

@@ -45,7 +45,7 @@ public class ForeignKeyViolationSamples {
                 .notFoundValue("value")
                 .fromObjectUid("uid")
                 .fromObjectRow("from_object_row")
-                .deletionDate(getDate("2017-11-29T11:27:46.935"))
+                .created(getDate("2017-11-29T11:27:46.935"))
                 .build();
     }
 

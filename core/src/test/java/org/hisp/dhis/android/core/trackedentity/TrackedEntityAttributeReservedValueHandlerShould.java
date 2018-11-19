@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,7 +37,7 @@ public class TrackedEntityAttributeReservedValueHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        ObjectWithoutUidHandlerImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel>
+        ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeReservedValue>
                 genericHandler = new TrackedEntityAttributeReservedValueHandler(null);
     }
 }

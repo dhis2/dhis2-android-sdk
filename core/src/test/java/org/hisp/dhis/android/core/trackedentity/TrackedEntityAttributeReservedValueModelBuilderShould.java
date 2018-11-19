@@ -46,7 +46,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class TrackedEntityAttributeReservedValueModelBuilderShould extends ModelBuilderAbstractShould<
-    TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+    TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValue> {
 
     @Mock
     private OrganisationUnit organisationUnit;
@@ -59,18 +59,18 @@ public class TrackedEntityAttributeReservedValueModelBuilderShould extends Model
     }
 
     protected TrackedEntityAttributeReservedValue buildPojo() {
-        return TrackedEntityAttributeReservedValue.create(
-                "ownerObject",
-                "ownerUid",
-                "key",
-                "value",
-                CREATED,
-                CREATED
-        );
+        return TrackedEntityAttributeReservedValue.builder()
+                .ownerObject("ownerObject")
+                .ownerUid("ownerUid")
+                .key("key")
+                .value("value")
+                .created(CREATED)
+                .expiryDate(CREATED)
+                .build();
     }
 
     @Override
-    protected ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> modelBuilder() {
+    protected ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValue> modelBuilder() {
         return new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit,  "pattern");
     }
 

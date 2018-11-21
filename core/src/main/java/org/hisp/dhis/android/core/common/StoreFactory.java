@@ -56,7 +56,7 @@ public final class StoreFactory {
         return objectWithUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder, modelFactory);
     }
 
-    public static <I extends BaseModel> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
+    public static <I extends Model> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
                                                            TableInfo tableInfo,
                                                            StatementBinder<I> binder,
                                                            CursorModelFactory<I> modelFactory) {

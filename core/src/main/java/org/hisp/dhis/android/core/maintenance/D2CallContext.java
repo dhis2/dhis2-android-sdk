@@ -26,53 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.maintenance;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import com.google.auto.value.AutoValue;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+@AutoValue
+public abstract class D2CallContext implements ObjectWithUidInterface {
 
-    public static final int VERSION = 33;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
-    }
+    @NonNull
+    public abstract String resourceType();
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    @Nullable
+    public abstract String uid();
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
+    @NonNull
+    public abstract String url();
 
-        db.enableWriteAheadLogging();
+    public static Builder builder() {
+        return new AutoValue_D2CallContext.Builder();
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+
+        public abstract Builder resourceType(String resourceType);
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder url(String url);
+
+        public abstract D2CallContext build();
     }
 }

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -55,7 +55,7 @@ public final class UserCall extends SyncCall<User> {
     }
 
     @Override
-    public User call() throws D2CallException {
+    public User call() throws D2Error {
         setExecuted();
 
         User user = new APICallExecutor().executeObjectCall(userService.getUser(UserFields.allFieldsWithOrgUnit));

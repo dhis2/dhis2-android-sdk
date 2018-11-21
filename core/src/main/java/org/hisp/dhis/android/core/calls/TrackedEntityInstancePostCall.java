@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -91,7 +91,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     }
 
     @Override
-    public WebResponse call() throws D2CallException {
+    public WebResponse call() throws D2Error {
         setExecuted();
 
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();

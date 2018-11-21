@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.calls.processors;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -52,7 +52,7 @@ public class TransactionalNoResourceSyncCallWithTransformerProcessor<O> implemen
     }
 
     @Override
-    public final void process(final List<O> objectList) throws D2CallException {
+    public final void process(final List<O> objectList) throws D2Error {
         if (objectList != null && !objectList.isEmpty()) {
             new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
 

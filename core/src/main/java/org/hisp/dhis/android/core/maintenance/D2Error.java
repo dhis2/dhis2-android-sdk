@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.data.database.IgnoreExceptionAdapter;
 @AutoValue
 public abstract class D2Error extends Exception implements ObjectWithUidInterface, Model {
 
-    @NonNull
+    @Nullable
     public abstract String resourceType();
 
     @Override

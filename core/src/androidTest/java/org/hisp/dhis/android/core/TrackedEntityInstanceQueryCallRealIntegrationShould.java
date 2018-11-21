@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.api.OuMode;
@@ -463,8 +463,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
 
         try {
             d2.queryTrackedEntityInstances(queryBuilder.build()).call();
-            fail("D2CallException was expected but was not thrown");
-        } catch (D2CallException d2e) {
+            fail("D2Error was expected but was not thrown");
+        } catch (D2Error d2e) {
             assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();
         }
     }

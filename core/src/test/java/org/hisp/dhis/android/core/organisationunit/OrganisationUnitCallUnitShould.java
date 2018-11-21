@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ModelBuilder;
@@ -220,7 +220,7 @@ public class OrganisationUnitCallUnitShould {
         try {
             organisationUnitCall.call();
             fail("Expecting an Exception");
-        } catch (D2CallException d2E) {
+        } catch (D2Error d2E) {
             assertThat(d2E.errorCode()).isEqualTo(D2ErrorCode.API_RESPONSE_PROCESS_ERROR);
             verify(databaseAdapter, times(1)).beginNewTransaction();
             verify(transaction, times(1)).end();
@@ -240,7 +240,7 @@ public class OrganisationUnitCallUnitShould {
         try {
             organisationUnitCall.call();
             fail("Call must fail");
-        } catch (D2CallException d2E) {
+        } catch (D2Error d2E) {
             assertThat(d2E.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
             verify(databaseAdapter, times(1)).beginNewTransaction();
             verify(transaction, times(1)).end();
@@ -289,7 +289,7 @@ public class OrganisationUnitCallUnitShould {
             organisationUnitCall.call();
             fail("Expecting an Exception on Consecutive calls");
         } catch (Exception e) {
-            assertThat(D2CallException.class.isInstance(e)).isTrue();
+            assertThat(D2Error.class.isInstance(e)).isTrue();
         }
     }
 

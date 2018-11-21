@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectReposit
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -183,12 +183,12 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 username, password, baseEndpoint + "/api/");
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_d2_call_exception_for_null_username() throws Exception {
         instantiateCall(null, PASSWORD).call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_d2_call_exception_for_null_password() throws Exception {
         instantiateCall(USERNAME, null).call();
     }
@@ -233,7 +233,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException d2e) {
+        } catch (D2Error d2e) {
 
         }
 
@@ -306,7 +306,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             userAuthenticateCall.call();
 
             fail("Invoking call second time should throw exception");
-        } catch (D2CallException illegalStateException) {
+        } catch (D2Error illegalStateException) {
             // swallow exception
         }
     }
@@ -318,14 +318,14 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException ioException) {
+        } catch (D2Error ioException) {
             // swallow exception
         }
 
         assertThat(userAuthenticateCall.isExecuted()).isEqualTo(true);
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         userAuthenticateCall.call();
@@ -361,7 +361,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
             assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
         }
     }
@@ -377,7 +377,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
             assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE);
         }
     }

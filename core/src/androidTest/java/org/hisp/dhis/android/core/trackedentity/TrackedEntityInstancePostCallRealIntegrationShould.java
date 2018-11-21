@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -20,6 +20,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
@@ -252,8 +253,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         try {
             d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
-        } catch (D2CallException e) {
-            assertThat(e.isHttpError()).isTrue();
+        } catch (D2Error e) {
+            assertThat(e.errorComponent()).isEqualTo(D2ErrorComponent.Server);
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
         }
     }

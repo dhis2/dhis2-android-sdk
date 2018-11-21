@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -150,7 +150,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         verifyNoMoreInteractions(service);
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
         when(searchGridCall.execute()).thenReturn(errorResponse);
         call.call();
@@ -165,13 +165,13 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         try {
             call.call();
-            fail("D2CallException was expected but was not thrown");
-        } catch (D2CallException d2e) {
+            fail("D2Error was expected but was not thrown");
+        } catch (D2Error d2e) {
             assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();
         }
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_D2CallException_when_mapper_throws_exception() throws Exception {
         when(mapper.transform(searchGrid)).thenThrow(ParseException.class);
         call.call();

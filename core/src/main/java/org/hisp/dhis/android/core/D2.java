@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -192,7 +192,7 @@ public final class D2 {
 
     @NonNull
     public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
-            throws D2CallException {
+            throws D2Error {
         return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
                 .getValue(attributeUid, organisationUnitUid);
     }

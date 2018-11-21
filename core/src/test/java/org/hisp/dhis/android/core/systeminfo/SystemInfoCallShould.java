@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -126,7 +126,7 @@ public class SystemInfoCallShould {
 
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     @SuppressWarnings("unchecked")
     public void throw_d2_call_exception_on_call_io_exception() throws Exception {
         when(systemInfoCall.execute()).thenThrow(IOException.class);
@@ -141,7 +141,7 @@ public class SystemInfoCallShould {
         try {
             systemInfoSyncCall.call();
             fail("Exception was not thrown");
-        } catch (D2CallException d2CallException) {
+        } catch (D2Error d2Error) {
             verify(databaseAdapter, never()).beginNewTransaction();
             verify(transaction, never()).begin();
             verify(transaction, never()).setSuccessful();
@@ -160,7 +160,7 @@ public class SystemInfoCallShould {
 
         try {
             systemInfoSyncCall.call();
-        } catch(D2CallException d2e) {
+        } catch(D2Error d2e) {
         }
 
         // verify that adapter and handlers was not touched
@@ -183,7 +183,7 @@ public class SystemInfoCallShould {
         try {
             systemInfoSyncCall.call();
             fail("Multiple executions of a call should throw exception");
-        } catch (D2CallException ex) {
+        } catch (D2Error ex) {
             // do nothing
         }
     }
@@ -195,7 +195,7 @@ public class SystemInfoCallShould {
 
         try {
             systemInfoSyncCall.call();
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
             // do nothing
         }
 
@@ -220,7 +220,7 @@ public class SystemInfoCallShould {
 
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_d2_call_exception_when_system_version_different_to_2_29() throws Exception {
         when(systemInfo.version()).thenReturn("2.28");
         when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));

@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 public abstract class SyncCall<C> implements Call<C> {
     private boolean isExecuted;
@@ -41,13 +43,14 @@ public abstract class SyncCall<C> implements Call<C> {
         }
     }
 
-    protected final void setExecuted() throws D2CallException {
+    protected final void setExecuted() throws D2Error {
         synchronized (this) {
             if (isExecuted) {
-                throw D2CallException.builder()
+                throw D2Error.builder()
                         .errorCode(D2ErrorCode.ALREADY_EXECUTED)
                         .errorDescription("Already executed call")
-                        .isHttpError(false).build();
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .build();
             }
             isExecuted = true;
         }

@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.common;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -44,11 +46,11 @@ import retrofit2.Response;
 
 public final class APICallExecutor {
 
-    private final D2CallException.Builder exceptionBuilder = D2CallException
+    private final D2Error.Builder exceptionBuilder = D2Error
             .builder()
-            .isHttpError(true);
+            .errorComponent(D2ErrorComponent.Server);
 
-    public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2CallException {
+    public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2Error {
         try {
             Response<Payload<P>> response = call.execute();
             if (response.isSuccessful()) {
@@ -67,22 +69,22 @@ public final class APICallExecutor {
         }
     }
 
-    public <P> P executeObjectCall(Call<P> call) throws D2CallException {
+    public <P> P executeObjectCall(Call<P> call) throws D2Error {
         return executeObjectCallInternal(call, new ArrayList<Integer>(), null, null);
     }
 
     public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
-                                                         Class<P> errorClass) throws D2CallException {
+                                                         Class<P> errorClass) throws D2Error {
         return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null);
     }
 
     public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
-            throws D2CallException {
+            throws D2Error {
         return executeObjectCallInternal(call, new ArrayList<Integer>(), null, errorCatcher);
     }
 
     private <P> P executeObjectCallInternal(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass,
-                                            APICallErrorCatcher errorCatcher) throws D2CallException {
+                                            APICallErrorCatcher errorCatcher) throws D2Error {
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
@@ -108,7 +110,7 @@ public final class APICallExecutor {
         }
     }
 
-    private <P> P processSuccessfulResponse(Response<P> response) throws D2CallException {
+    private <P> P processSuccessfulResponse(Response<P> response) throws D2Error {
         if (response.body() == null) {
             throw responseException(response);
         } else {
@@ -116,7 +118,7 @@ public final class APICallExecutor {
         }
     }
 
-    private D2CallException responseException(Response<?> response) {
+    private D2Error responseException(Response<?> response) {
         String serverMessage = getServerMessage(response);
         Log.e(this.getClass().getSimpleName(), serverMessage);
         return exceptionBuilder
@@ -150,7 +152,7 @@ public final class APICallExecutor {
         return "No server message";
     }
 
-    private D2CallException socketTimeoutException(SocketTimeoutException e) {
+    private D2Error socketTimeoutException(SocketTimeoutException e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
         return exceptionBuilder
                 .errorCode(D2ErrorCode.SOCKET_TIMEOUT)
@@ -159,7 +161,7 @@ public final class APICallExecutor {
                 .build();
     }
 
-    private D2CallException unknownHostException(UnknownHostException e) {
+    private D2Error unknownHostException(UnknownHostException e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
         return exceptionBuilder
                 .errorCode(D2ErrorCode.UNKNOWN_HOST)
@@ -168,7 +170,7 @@ public final class APICallExecutor {
                 .build();
     }
 
-    private D2CallException ioException(IOException e) {
+    private D2Error ioException(IOException e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
         return exceptionBuilder
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.data.maintenance;
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 public class D2ErrorSamples {

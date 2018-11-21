@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -236,57 +237,57 @@ public class MetadataCallShould extends BaseCallShould {
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_system_info_call_fail() throws Exception {
-        when(systemInfoEndpointCall.call()).thenThrow(d2CallException);
+        when(systemInfoEndpointCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_system_setting_call_fail() throws Exception {
-        when(systemSettingEndpointCall.call()).thenThrow(d2CallException);
+        when(systemSettingEndpointCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_user_call_fail() throws Exception {
-        when(userCall.call()).thenThrow(d2CallException);
+        when(userCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_category_call_fail() throws Exception {
-        when(categoryEndpointCall.call()).thenThrow(d2CallException);
+        when(categoryEndpointCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_category_combo_call_fail() throws Exception {
-        when(categoryComboEndpointCall.call()).thenThrow(d2CallException);
+        when(categoryComboEndpointCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_program_call_fail() throws Exception {
-        when(programParentCall.call()).thenThrow(d2CallException);
+        when(programParentCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_organisation_unit_call_fail() throws Exception {
-        when(organisationUnitEndpointCall.call()).thenThrow(d2CallException);
+        when(organisationUnitEndpointCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_search_organisation_unit_call_fail() throws Exception {
-        when(searchOrganisationUnitCall.call()).thenThrow(d2CallException);
+        when(searchOrganisationUnitCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_dataset_parent_call_fail() throws Exception {
-        when(dataSetParentCall.call()).thenThrow(d2CallException);
+        when(dataSetParentCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

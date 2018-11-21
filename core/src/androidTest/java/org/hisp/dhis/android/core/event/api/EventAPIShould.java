@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.event.api;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -124,7 +124,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         try {
             executor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
             Assert.fail("Should not reach that line");
-        } catch (D2CallException e) {
+        } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
         }
     }
@@ -162,7 +162,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         try {
             executor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
             Assert.fail("Should not reach that line");
-        } catch (D2CallException e) {
+        } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
         }
     }
@@ -233,7 +233,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         try {
             executor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
             Assert.fail("Should not reach that line");
-        } catch (D2CallException e) {
+        } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
         }
     }

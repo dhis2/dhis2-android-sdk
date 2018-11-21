@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -75,14 +75,14 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     }
 
     @Override
-    public List<DataSet> call() throws D2CallException {
+    public List<DataSet> call() throws D2Error {
         setExecuted();
 
         final D2CallExecutor executor = new D2CallExecutor();
 
         return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<DataSet>>() {
             @Override
-            public List<DataSet> call() throws D2CallException {
+            public List<DataSet> call() throws D2Error {
 
                 List<DataSet> dataSets = executor.executeD2Call(dataSetCallFactory.create(genericCallData));
 

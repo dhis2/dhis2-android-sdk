@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.wipe;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
@@ -85,7 +85,7 @@ public final class WipeModuleImpl implements WipeModule {
     }
 
     @Override
-    public Unit wipeEverything() throws D2CallException {
+    public Unit wipeEverything() throws D2Error {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
             public Unit call() {
@@ -98,7 +98,7 @@ public final class WipeModuleImpl implements WipeModule {
     }
 
     @Override
-    public Unit wipeMetadata() throws D2CallException {
+    public Unit wipeMetadata() throws D2Error {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
             public Unit call() {
@@ -110,7 +110,7 @@ public final class WipeModuleImpl implements WipeModule {
     }
 
     @Override
-    public Unit wipeData() throws D2CallException {
+    public Unit wipeData() throws D2Error {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
             public Unit call() {

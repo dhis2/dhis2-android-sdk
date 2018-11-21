@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -58,7 +58,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     }
 
     @Override
-    public Void call() throws D2CallException {
+    public Void call() throws D2Error {
         setExecuted();
 
         final D2CallExecutor executor = new D2CallExecutor();

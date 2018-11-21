@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.After;
@@ -78,7 +79,7 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
         super.tearDown();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     @SuppressWarnings("unchecked")
     public void fail_if_api_call_fails() throws Exception {
         when(retrofitCall.execute()).thenReturn(errorResponse);
@@ -113,7 +114,7 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
         try {
             endpointCall.call();
             fail("Call must fail");
-        } catch (D2CallException d2E) {
+        } catch (D2Error d2E) {
             assertThat(endpointCall.isExecuted()).isTrue();
         }
     }
@@ -123,7 +124,7 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
         endpointCall.call();
         try {
             endpointCall.call();
-        } catch (D2CallException d2E) {
+        } catch (D2Error d2E) {
             assertThat(d2E.errorCode()).isEqualTo(D2ErrorCode.ALREADY_EXECUTED);
         }
     }
@@ -134,7 +135,7 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
         when(retrofitCall.execute()).thenThrow(IOException.class);
         try {
             endpointCall.call();
-        } catch (D2CallException d2E) {
+        } catch (D2Error d2E) {
             assertThat(d2E.errorCode()).isEqualTo(D2ErrorCode.API_RESPONSE_PROCESS_ERROR);
         }
     }

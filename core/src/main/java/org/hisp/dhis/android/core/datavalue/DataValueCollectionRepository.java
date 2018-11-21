@@ -30,10 +30,11 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
         implements ReadWriteCollectionRepository<DataValue> {
@@ -56,12 +57,12 @@ final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryIm
     }
 
     @Override
-    public void add(DataValue dataValue) throws D2CallException {
+    public void add(DataValue dataValue) throws D2Error {
 
         if (dataValueStore.exists(dataValue)) {
-            throw D2CallException
+            throw D2Error
                     .builder()
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                     .errorDescription("Tried to create already existing DataValue: " + dataValue)
                     .build();

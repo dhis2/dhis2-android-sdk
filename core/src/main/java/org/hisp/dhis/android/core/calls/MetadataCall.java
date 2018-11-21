@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryParentUidsHelper;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -124,7 +124,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
-            public Unit call() throws D2CallException {
+            public Unit call() throws D2Error {
                 SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
 
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,

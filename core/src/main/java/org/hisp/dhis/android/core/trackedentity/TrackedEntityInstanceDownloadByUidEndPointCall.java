@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.Fields;
 
@@ -27,7 +27,7 @@ final class TrackedEntityInstanceDownloadByUidEndPointCall extends SyncCall<Trac
     }
 
     @Override
-    public TrackedEntityInstance call() throws D2CallException {
+    public TrackedEntityInstance call() throws D2Error {
         setExecuted();
 
         if (uid == null) {

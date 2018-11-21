@@ -103,13 +103,6 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
 
         public abstract Builder originalException(Exception originalException);
 
-        public Builder context(D2CallContext context) {
-            return this
-                    .resourceType(context.resourceType())
-                    .uid(context.uid())
-                    .url(context.url());
-        }
-
         public abstract D2Error build();
     }
 }

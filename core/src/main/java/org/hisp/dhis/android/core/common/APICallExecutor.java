@@ -138,10 +138,10 @@ public final class APICallExecutor {
     }
 
     private String getUrl(Call<?> call) {
-        if (call.request() != null && call.request().url() != null) {
-            return call.request().url().toString();
-        } else {
+        if (call.request() == null || call.request().url() == null) {
             return null;
+        } else {
+            return call.request().url().toString();
         }
     }
 

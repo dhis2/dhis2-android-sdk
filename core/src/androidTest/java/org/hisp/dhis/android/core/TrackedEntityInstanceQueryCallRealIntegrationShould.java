@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;

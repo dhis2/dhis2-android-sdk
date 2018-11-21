@@ -33,6 +33,8 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+
 @AutoValue
 public abstract class D2CallException extends Exception {
 

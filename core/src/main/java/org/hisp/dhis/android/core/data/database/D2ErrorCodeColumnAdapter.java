@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 public class D2ErrorCodeColumnAdapter extends EnumColumnAdapter<D2ErrorCode> {
     @Override

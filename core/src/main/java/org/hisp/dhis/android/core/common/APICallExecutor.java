@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.common;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;

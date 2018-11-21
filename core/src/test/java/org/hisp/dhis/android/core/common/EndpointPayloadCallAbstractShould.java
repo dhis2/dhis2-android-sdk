@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.After;
 import org.junit.Before;

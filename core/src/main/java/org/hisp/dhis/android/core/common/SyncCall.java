@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 public abstract class SyncCall<C> implements Call<C> {
     private boolean isExecuted;

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.D2ErrorCodeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.D2ErrorComponentColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreExceptionAdapter;
 
 @AutoValue
 public abstract class D2Error extends Exception implements ObjectWithUidInterface, Model {
@@ -68,6 +69,10 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
     @Nullable
     public abstract Integer httpErrorCode();
 
+    @Nullable
+    @ColumnAdapter(IgnoreExceptionAdapter.class)
+    public abstract Exception originalException();
+
     @NonNull
     public static D2Error create(Cursor cursor) {
         return AutoValue_D2Error.createFromCursor(cursor);
@@ -95,6 +100,15 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
         public abstract Builder errorDescription(String description);
 
         public abstract Builder httpErrorCode(Integer httpErrorCode);
+
+        public abstract Builder originalException(Exception originalException);
+
+        public Builder context(D2CallContext context) {
+            return this
+                    .resourceType(context.resourceType())
+                    .uid(context.uid())
+                    .url(context.url());
+        }
 
         public abstract D2Error build();
     }

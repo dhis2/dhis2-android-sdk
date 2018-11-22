@@ -32,6 +32,9 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,14 +44,14 @@ import java.util.concurrent.Callable;
 @SuppressWarnings({"PMD.PreserveStackTrace"})
 public final class D2CallExecutor {
 
-    private final D2CallException.Builder exceptionBuilder = D2CallException
+    private final D2Error.Builder exceptionBuilder = D2Error
             .builder()
-            .isHttpError(false);
+            .errorComponent(D2ErrorComponent.SDK);
 
-    public <C> C executeD2Call(Callable<C> call) throws D2CallException {
+    public <C> C executeD2Call(Callable<C> call) throws D2Error {
         try {
             return call.call();
-        } catch (D2CallException d2e) {
+        } catch (D2Error d2e) {
             throw d2e;
 
         } catch (Exception e) {
@@ -57,7 +60,7 @@ public final class D2CallExecutor {
         }
     }
 
-    public <C> List<C> executeD2Call(Collection<Callable<C>> calls) throws D2CallException {
+    public <C> List<C> executeD2Call(Collection<Callable<C>> calls) throws D2Error {
         List<C> results = new ArrayList<>(calls.size());
         for (Callable<C> call: calls) {
             results.add(executeD2Call(call));
@@ -66,13 +69,13 @@ public final class D2CallExecutor {
     }
 
     public <C> C executeD2CallTransactionally(DatabaseAdapter databaseAdapter, Callable<C> call)
-            throws D2CallException {
+            throws D2Error {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             C response = call.call();
             transaction.setSuccessful();
             return response;
-        } catch (D2CallException d2E) {
+        } catch (D2Error d2E) {
             throw d2E;
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e.toString());

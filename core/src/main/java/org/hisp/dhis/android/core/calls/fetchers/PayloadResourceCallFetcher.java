@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.calls.fetchers;
 
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -50,7 +50,7 @@ public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
     protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
 
     @Override
-    public final List<P> fetch() throws D2CallException {
+    public final List<P> fetch() throws D2Error {
         String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
         return new APICallExecutor().executePayloadCall(getCall(lastUpdated));
     }

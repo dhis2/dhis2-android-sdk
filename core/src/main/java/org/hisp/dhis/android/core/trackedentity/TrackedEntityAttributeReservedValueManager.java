@@ -31,12 +31,13 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
@@ -80,16 +81,17 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
-    public String getValue(String attribute, String organisationUnitUid) throws D2CallException {
+    public String getValue(String attribute, String organisationUnitUid) throws D2Error {
         syncReservedValues(attribute, organisationUnitUid, false);
 
         TrackedEntityAttributeReservedValue reservedValue = store.popOne(attribute, organisationUnitUid);
 
         if (reservedValue == null) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.NO_RESERVED_VALUES)
                     .errorDescription("There are no reserved values")
-                    .isHttpError(false).build();
+                    .errorComponent(D2ErrorComponent.Database)
+                    .build();
         } else {
             return reservedValue.value();
         }
@@ -105,7 +107,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             if (forceFill || remainingValues <= MIN_TO_TRY_FILL) {
                 fillReservedValues(attribute, organisationUnitUid, remainingValues);
             }
-        } catch (D2CallException ignored) {
+        } catch (D2Error ignored) {
             // Synchronization was not successful.
         }
     }
@@ -115,15 +117,15 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     private void fillReservedValues(String trackedEntityAttributeUid, String organisationUnitUid,
-                                    Integer remainingValues) throws D2CallException {
+                                    Integer remainingValues) throws D2Error {
 
         OrganisationUnit organisationUnitModel = this.organisationUnitStore.selectByUid(organisationUnitUid);
 
         if (organisationUnitModel == null) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.ORGANISATION_UNIT_NOT_FOUND)
                     .errorDescription("Organisation unit " + organisationUnitUid + " not found in database")
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.Database)
                     .build();
         }
 

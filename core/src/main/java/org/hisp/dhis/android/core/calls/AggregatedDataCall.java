@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -109,7 +109,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
 
             @Override
-            public Unit call() throws D2CallException {
+            public Unit call() throws D2Error {
                 SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         systemInfo.serverDate(), versionManager);

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+
 import java.io.IOException;
 
 import retrofit2.Response;

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.calls.fetchers;
 
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -52,7 +52,7 @@ public abstract class UidsNoResourceCallFetcher<P> implements CallFetcher<P> {
     protected abstract retrofit2.Call<Payload<P>> getCall(UidsQuery query);
 
     @Override
-    public final List<P> fetch() throws D2CallException {
+    public final List<P> fetch() throws D2Error {
         if (uids.isEmpty()) {
             return Collections.emptyList();
         }

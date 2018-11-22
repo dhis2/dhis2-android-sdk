@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
@@ -108,7 +108,7 @@ public class UserCallShould extends BaseCallShould {
         try {
             userSyncCall.call();
             fail("Call should't succeed");
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
         }
 
         // verify that database was not touched
@@ -142,7 +142,7 @@ public class UserCallShould extends BaseCallShould {
 
         try {
             userSyncCall.call();
-        } catch (D2CallException d2CallException) {
+        } catch (D2Error d2Error) {
             // swallow exception
         }
 

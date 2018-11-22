@@ -26,42 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.resource.ResourceModel;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final GenericCallData data;
-    private final SyncHandler<O> handler;
-    private final ResourceModel.Type resourceType;
-
-    public TransactionalResourceSyncCallProcessor(GenericCallData data,
-                                                  SyncHandler<O> handler,
-                                                  ResourceModel.Type resourceType) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
-    }
-
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
-
-                @Override
-                public Void call() {
-                    handler.handleMany(objectList);
-                    data.handleResource(resourceType);
-                    return null;
-                }
-            });
-        }
-    }
+public enum D2ErrorCode {
+    ALREADY_AUTHENTICATED,
+    ALREADY_EXECUTED,
+    API_UNSUCCESSFUL_RESPONSE,
+    API_INVALID_QUERY,
+    API_RESPONSE_PROCESS_ERROR,
+    BAD_CREDENTIALS,
+    CANT_CREATE_EXISTING_OBJECT,
+    CANT_DELETE_NON_EXISTING_OBJECT,
+    LOGIN_USERNAME_NULL,
+    LOGIN_PASSWORD_NULL,
+    NO_AUTHENTICATED_USER,
+    NO_AUTHENTICATED_USER_OFFLINE,
+    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
+    DIFFERENT_SERVER_OFFLINE,
+    INVALID_DHIS_VERSION,
+    NO_RESERVED_VALUES,
+    ORGANISATION_UNIT_NOT_FOUND,
+    OBJECT_CANT_BE_UPDATED,
+    SEARCH_GRID_PARSE,
+    SOCKET_TIMEOUT,
+    TOO_MANY_ORG_UNITS,
+    TOO_MANY_PERIODS,
+    UNEXPECTED,
+    UNKNOWN_HOST,
+    URL_NOT_FOUND,
+    USER_ACCOUNT_DISABLED,
+    USER_ACCOUNT_LOCKED
 }

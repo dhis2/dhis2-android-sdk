@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -81,7 +81,7 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
 
         return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<Program>>() {
             @Override
-            public List<Program> call() throws D2CallException {
+            public List<Program> call() throws D2Error {
                 List<Program> programs = executor.executeD2Call(programCallFactory.create(genericCallData));
 
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);

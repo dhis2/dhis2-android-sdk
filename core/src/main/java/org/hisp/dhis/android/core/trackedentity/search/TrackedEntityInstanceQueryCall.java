@@ -3,10 +3,11 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -36,7 +37,7 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
     }
 
     @Override
-    public List<TrackedEntityInstance> call() throws D2CallException {
+    public List<TrackedEntityInstance> call() throws D2Error {
         setExecuted();
 
         OuMode mode = query.orgUnitMode();
@@ -51,12 +52,12 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
 
         try {
             searchGrid = new APICallExecutor().executeObjectCall(searchGridCall);
-        } catch (D2CallException d2E) {
+        } catch (D2Error d2E) {
             if (d2E.httpErrorCode() != null && d2E.httpErrorCode() == HttpsURLConnection.HTTP_REQ_TOO_LONG) {
-                throw D2CallException.builder()
+                throw D2Error.builder()
                         .errorCode(D2ErrorCode.TOO_MANY_ORG_UNITS)
                         .errorDescription("Too many org units were selected")
-                        .isHttpError(true)
+                        .errorComponent(D2ErrorComponent.SDK)
                         .httpErrorCode(d2E.httpErrorCode())
                         .build();
             } else {
@@ -67,9 +68,10 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
         try {
             return mapper.transform(searchGrid);
         } catch (ParseException pe) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.SEARCH_GRID_PARSE)
-                    .isHttpError(false).errorDescription("Search Grid mapping exception")
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorDescription("Search Grid mapping exception")
                     .originalException(pe)
                     .build();
         }

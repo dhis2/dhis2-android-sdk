@@ -26,42 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.data.maintenance;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+public class D2ErrorSamples {
 
-public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final GenericCallData data;
-    private final SyncHandler<O> handler;
-    private final ResourceModel.Type resourceType;
-
-    public TransactionalResourceSyncCallProcessor(GenericCallData data,
-                                                  SyncHandler<O> handler,
-                                                  ResourceModel.Type resourceType) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
-    }
-
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
-
-                @Override
-                public Void call() {
-                    handler.handleMany(objectList);
-                    data.handleResource(resourceType);
-                    return null;
-                }
-            });
-        }
+    public static D2Error get() {
+        return D2Error.builder()
+                .resourceType("Program")
+                .uid("test_uid")
+                .url("http://dhis2.org/api/programs/test_uid")
+                .errorComponent(D2ErrorComponent.Server)
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                .errorDescription("Error processing response")
+                .build();
     }
 }

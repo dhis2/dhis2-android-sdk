@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
@@ -49,7 +49,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     }
 
     @Override
-    public List<Event> call() throws D2CallException {
+    public List<Event> call() throws D2Error {
         setExecuted();
 
         return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<List<Event>>() {
@@ -61,7 +61,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         });
     }
 
-    private List<Event> getEvents() throws D2CallException {
+    private List<Event> getEvents() throws D2Error {
         Collection<String> organisationUnitUids;
         List<String> programUids = programStore.queryWithoutRegistrationProgramUids();
         List<Event> events = new ArrayList<>();
@@ -89,7 +89,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
                                             int pageSize,
                                             Collection<String> programUids,
-                                            int globalEventsSize) throws D2CallException {
+                                            int globalEventsSize) throws D2Error {
         List<Event> events = new ArrayList<>();
 
         D2CallExecutor executor = new D2CallExecutor();

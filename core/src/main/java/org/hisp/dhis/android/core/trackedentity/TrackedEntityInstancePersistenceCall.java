@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -62,14 +62,14 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
     }
 
     @Override
-    public Void call() throws D2CallException {
+    public Void call() throws D2Error {
         setExecuted();
 
         final D2CallExecutor executor = new D2CallExecutor();
 
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
             @Override
-            public Void call() throws D2CallException {
+            public Void call() throws D2Error {
                 trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false);
 
                 Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);

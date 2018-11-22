@@ -26,42 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.resource.ResourceModel;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final GenericCallData data;
-    private final SyncHandler<O> handler;
-    private final ResourceModel.Type resourceType;
-
-    public TransactionalResourceSyncCallProcessor(GenericCallData data,
-                                                  SyncHandler<O> handler,
-                                                  ResourceModel.Type resourceType) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
-    }
-
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
-
-                @Override
-                public Void call() {
-                    handler.handleMany(objectList);
-                    data.handleResource(resourceType);
-                    return null;
-                }
-            });
-        }
-    }
+public enum D2ErrorComponent {
+    Server,
+    SDK,
+    Database
 }

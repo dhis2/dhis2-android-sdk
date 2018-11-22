@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -36,7 +36,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
     }
 
     @Override
-    public List<TrackedEntityInstance> call() throws D2CallException {
+    public List<TrackedEntityInstance> call() throws D2Error {
         setExecuted();
 
         if (trackedEntityInstanceUids == null) {

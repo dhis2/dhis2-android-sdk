@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.common;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -43,82 +46,109 @@ import retrofit2.Response;
 
 public final class APICallExecutor {
 
-    private final D2CallException.Builder exceptionBuilder = D2CallException
-            .builder()
-            .isHttpError(true);
+    public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2Error {
+        D2Error.Builder errorBuilder = getCollectionErrorBuilder(call);
 
-    public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2CallException {
         try {
             Response<Payload<P>> response = call.execute();
             if (response.isSuccessful()) {
                 if (response.body() == null) {
-                    throw responseException(response);
+                    throw responseException(errorBuilder, response);
                 } else {
                     return response.body().items();
                 }
             } else {
-                throw responseException(response);
+                throw responseException(errorBuilder, response);
             }
         } catch (SocketTimeoutException e) {
-            throw socketTimeoutException(e);
+            throw socketTimeoutException(errorBuilder, e);
         } catch (IOException e) {
-            throw ioException(e);
+            throw ioException(errorBuilder, e);
         }
     }
 
-    public <P> P executeObjectCall(Call<P> call) throws D2CallException {
+    public <P> P executeObjectCall(Call<P> call) throws D2Error {
         return executeObjectCallInternal(call, new ArrayList<Integer>(), null, null);
     }
 
     public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
-                                                         Class<P> errorClass) throws D2CallException {
+                                                         Class<P> errorClass) throws D2Error {
         return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null);
     }
 
     public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
-            throws D2CallException {
+            throws D2Error {
         return executeObjectCallInternal(call, new ArrayList<Integer>(), null, errorCatcher);
     }
 
-    private <P> P executeObjectCallInternal(Call<P> call, List<Integer> acceptedErrorCodes, Class<P> errorClass,
-                                            APICallErrorCatcher errorCatcher) throws D2CallException {
+    private <P> P executeObjectCallInternal(Call<P> call,
+                                            List<Integer> acceptedErrorCodes,
+                                            Class<P> errorClass,
+                                            APICallErrorCatcher errorCatcher) throws D2Error {
+
+        D2Error.Builder errorBuilder = getObjectErrorBuilder(call);
+
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
-                return processSuccessfulResponse(response);
+                return processSuccessfulResponse(errorBuilder, response);
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher == null) {
-                throw responseException(response);
+                throw responseException(errorBuilder, response);
             } else {
                 D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
                 if (d2ErrorCode == null) {
-                    throw responseException(response);
+                    throw responseException(errorBuilder, response);
                 } else {
-                    throw exceptionBuilder.errorCode(d2ErrorCode).build();
+                    throw errorBuilder.errorCode(d2ErrorCode).build();
                 }
             }
         } catch (SocketTimeoutException e) {
-            throw socketTimeoutException(e);
+            throw socketTimeoutException(errorBuilder, e);
         } catch (UnknownHostException e) {
-            throw unknownHostException(e);
+            throw unknownHostException(errorBuilder, e);
         } catch (IOException e) {
-            throw ioException(e);
+            throw ioException(errorBuilder, e);
         }
     }
 
-    private <P> P processSuccessfulResponse(Response<P> response) throws D2CallException {
+    private <P> P processSuccessfulResponse(D2Error.Builder errorBuilder, Response<P> response) throws D2Error {
         if (response.body() == null) {
-            throw responseException(response);
+            throw responseException(errorBuilder, response);
         } else {
             return response.body();
         }
     }
 
-    private D2CallException responseException(Response<?> response) {
+    private D2Error.Builder getCollectionErrorBuilder(Call<?> call) {
+        return D2Error.builder()
+                .resourceType("TODO") // TODO
+                .uid(null)
+                .url(getUrl(call))
+                .errorComponent(D2ErrorComponent.Server);
+    }
+
+    private D2Error.Builder getObjectErrorBuilder(Call<?> call) {
+        return D2Error.builder()
+                .resourceType("TODO") // TODO
+                .uid("TODO") // TODO
+                .url(getUrl(call))
+                .errorComponent(D2ErrorComponent.Server);
+    }
+
+    private String getUrl(Call<?> call) {
+        if (call.request() == null || call.request().url() == null) {
+            return null;
+        } else {
+            return call.request().url().toString();
+        }
+    }
+
+    private D2Error responseException(D2Error.Builder errorBuilder, Response<?> response) {
         String serverMessage = getServerMessage(response);
         Log.e(this.getClass().getSimpleName(), serverMessage);
-        return exceptionBuilder
+        return errorBuilder
                 .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
                 .httpErrorCode(response.code())
                 .errorDescription("API call failed, response: " + serverMessage)
@@ -149,27 +179,27 @@ public final class APICallExecutor {
         return "No server message";
     }
 
-    private D2CallException socketTimeoutException(SocketTimeoutException e) {
+    private D2Error socketTimeoutException(D2Error.Builder errorBuilder, SocketTimeoutException e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
-        return exceptionBuilder
+        return errorBuilder
                 .errorCode(D2ErrorCode.SOCKET_TIMEOUT)
                 .errorDescription("API call failed due to a SocketTimeoutException.")
                 .originalException(e)
                 .build();
     }
 
-    private D2CallException unknownHostException(UnknownHostException e) {
+    private D2Error unknownHostException(D2Error.Builder errorBuilder, UnknownHostException e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
-        return exceptionBuilder
+        return errorBuilder
                 .errorCode(D2ErrorCode.UNKNOWN_HOST)
                 .errorDescription("API call failed due to UnknownHostException")
                 .originalException(e)
                 .build();
     }
 
-    private D2CallException ioException(IOException e) {
+    private D2Error ioException(D2Error.Builder errorBuilder, IOException e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
-        return exceptionBuilder
+        return errorBuilder
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("API call threw IOException")
                 .originalException(e)

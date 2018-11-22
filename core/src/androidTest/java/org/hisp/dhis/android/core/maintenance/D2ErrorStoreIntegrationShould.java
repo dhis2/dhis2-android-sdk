@@ -26,34 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.maintenance;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    BAD_CREDENTIALS,
-    CANT_CREATE_EXISTING_OBJECT,
-    CANT_DELETE_NON_EXISTING_OBJECT,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_SERVER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    ORGANISATION_UNIT_NOT_FOUND,
-    OBJECT_CANT_BE_UPDATED,
-    SEARCH_GRID_PARSE,
-    SOCKET_TIMEOUT,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    UNEXPECTED,
-    UNKNOWN_HOST,
-    URL_NOT_FOUND,
-    USER_ACCOUNT_DISABLED,
-    USER_ACCOUNT_LOCKED
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<D2Error> {
+
+    public D2ErrorStoreIntegrationShould() {
+        super(D2ErrorStore.create(DatabaseAdapterFactory.get(false)),
+                D2ErrorTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
+
+    @Override
+    protected D2Error buildObject() {
+        return D2ErrorSamples.get();
+    }
+
+    @Override
+    protected D2Error buildObjectWithId() {
+        return D2ErrorSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
 }

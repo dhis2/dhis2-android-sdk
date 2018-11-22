@@ -26,42 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 
-public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
-    private final GenericCallData data;
-    private final SyncHandler<O> handler;
-    private final ResourceModel.Type resourceType;
+public final class D2ErrorTableInfo {
 
-    public TransactionalResourceSyncCallProcessor(GenericCallData data,
-                                                  SyncHandler<O> handler,
-                                                  ResourceModel.Type resourceType) {
-        this.data = data;
-        this.handler = handler;
-        this.resourceType = resourceType;
+    private D2ErrorTableInfo() {
     }
 
-    @Override
-    public final void process(final List<O> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(), new Callable<Void>() {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-                @Override
-                public Void call() {
-                    handler.handleMany(objectList);
-                    data.handleResource(resourceType);
-                    return null;
-                }
-            });
+        @Override
+        public String name() {
+            return "D2Error";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        private static final String RESOURCE_TYPE = "resourceType";
+        private static final String URL = "url";
+        private static final String ERROR_COMPONENT = "errorComponent";
+        private static final String ERROR_CODE = "errorCode";
+        private static final String ERROR_DESCRIPTION = "errorDescription";
+        private static final String HTTP_ERROR_CODE = "httpErrorCode";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    RESOURCE_TYPE,
+                    UID,
+                    URL,
+                    ERROR_COMPONENT,
+                    ERROR_CODE,
+                    ERROR_DESCRIPTION,
+                    HTTP_ERROR_CODE);
         }
     }
 }

@@ -32,8 +32,9 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
             DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery);
 
     @Override
-    public List<DataSetCompleteRegistration> fetch() throws D2CallException {
+    public List<DataSetCompleteRegistration> fetch() throws D2Error {
 
         checkTooManyPeriodIds();
 
@@ -102,11 +103,11 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
         return downloadAllDataSetCompleteRegistrations();
     }
 
-    private void checkTooManyPeriodIds() throws D2CallException {
+    private void checkTooManyPeriodIds() throws D2Error {
 
         if (queryLengthAvailableAfterIncludingPeriodIds < 2 * UID_WITH_COMMA_LENGTH) {
-            throw D2CallException.builder()
-                    .isHttpError(false)
+            throw D2Error.builder()
+                    .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.TOO_MANY_PERIODS)
                     .errorDescription("Too many period ids attached: "
                             + totalPeriodIds.size()
@@ -141,7 +142,7 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
     }
 
     @NonNull
-    private List<DataSetCompleteRegistration> downloadAllDataSetCompleteRegistrations() throws D2CallException {
+    private List<DataSetCompleteRegistration> downloadAllDataSetCompleteRegistrations() throws D2Error {
 
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations = new ArrayList<>();
 
@@ -162,7 +163,7 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
     private List<DataSetCompleteRegistration> downloadDataSetCompleteRegistrationsFor(
             Collection<String> dataSetUids,
             Collection<String> periodUids,
-            Collection<String> organisationUnitUids) throws D2CallException {
+            Collection<String> organisationUnitUids) throws D2Error {
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(dataSetUids, periodUids, organisationUnitUids);

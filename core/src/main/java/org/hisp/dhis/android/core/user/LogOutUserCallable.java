@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.concurrent.Callable;
 
@@ -52,10 +53,10 @@ public class LogOutUserCallable implements Callable<Unit> {
         AuthenticatedUserModel existingUser = this.authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
                     .errorDescription("There is not any authenticated user")
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
 

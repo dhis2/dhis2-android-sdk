@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.calls.processors;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
 
 public interface CallProcessor<P> {
-    void process(List<P> objectList) throws D2CallException;
+    void process(List<P> objectList) throws D2Error;
 }

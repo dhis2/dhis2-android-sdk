@@ -26,47 +26,83 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.maintenance;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-@AutoValue
-public abstract class D2CallException extends Exception {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.D2ErrorCodeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.D2ErrorComponentColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreExceptionAdapter;
 
-    @NonNull
-    public abstract D2ErrorCode errorCode();
+@AutoValue
+public abstract class D2Error extends Exception implements ObjectWithUidInterface, Model {
 
     @Nullable
-    public abstract String errorDescription();
+    public abstract String resourceType();
+
+    @Override
+    @Nullable
+    public abstract String uid();
+
+    @Nullable
+    public abstract String url();
 
     @NonNull
-    public abstract Boolean isHttpError();
+    @ColumnAdapter(D2ErrorComponentColumnAdapter.class)
+    public abstract D2ErrorComponent errorComponent();
+
+    @NonNull
+    @ColumnAdapter(D2ErrorCodeColumnAdapter.class)
+    public abstract D2ErrorCode errorCode();
+
+    @NonNull
+    public abstract String errorDescription();
 
     @Nullable
     public abstract Integer httpErrorCode();
 
     @Nullable
+    @ColumnAdapter(IgnoreExceptionAdapter.class)
     public abstract Exception originalException();
 
-    public static Builder builder() {
-        return new AutoValue_D2CallException.Builder();
+    @NonNull
+    public static D2Error create(Cursor cursor) {
+        return AutoValue_D2Error.createFromCursor(cursor);
     }
 
+    public static Builder builder() {
+        return new AutoValue_D2Error.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
-    public abstract static class Builder {
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder resourceType(String resourceType);
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder url(String url);
+
+        public abstract Builder errorComponent(D2ErrorComponent errorComponent);
+
         public abstract Builder errorCode(D2ErrorCode errorCode);
 
-        public abstract Builder errorDescription(String errorDescription);
-
-        public abstract Builder isHttpError(Boolean isHttpError);
+        public abstract Builder errorDescription(String description);
 
         public abstract Builder httpErrorCode(Integer httpErrorCode);
 
         public abstract Builder originalException(Exception originalException);
 
-        public abstract D2CallException build();
+        public abstract D2Error build();
     }
 }

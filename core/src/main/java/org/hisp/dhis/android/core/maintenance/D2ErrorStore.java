@@ -26,42 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class TransactionalNoResourceCallProcessor<P, M extends Model> implements CallProcessor<P> {
-    private final DatabaseAdapter databaseAdapter;
-    private final GenericHandler<P, M> handler;
-    private final ModelBuilder<P, M> modelBuilder;
+public final class D2ErrorStore {
 
-    public TransactionalNoResourceCallProcessor(DatabaseAdapter databaseAdapter,
-                                                GenericHandler<P, M> handler,
-                                                ModelBuilder<P, M> modelBuilder) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-        this.modelBuilder = modelBuilder;
+    private D2ErrorStore() {
     }
 
-    @Override
-    public final void process(final List<P> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
-
-                @Override
-                public Void call() {
-                    handler.handleMany(objectList, modelBuilder);
-                    return null;
-                }
-            });
+    private static final StatementBinder<D2Error> BINDER = new StatementBinder<D2Error>() {
+        @Override
+        public void bindToStatement(@NonNull D2Error o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.resourceType());
+            sqLiteBind(sqLiteStatement, 2, o.uid());
+            sqLiteBind(sqLiteStatement, 3, o.url());
+            sqLiteBind(sqLiteStatement, 4, o.errorComponent());
+            sqLiteBind(sqLiteStatement, 5, o.errorCode());
+            sqLiteBind(sqLiteStatement, 6, o.errorDescription());
+            sqLiteBind(sqLiteStatement, 7, o.httpErrorCode());
         }
+    };
+
+    private static final CursorModelFactory<D2Error> FACTORY = new CursorModelFactory<D2Error>() {
+        @Override
+        public D2Error fromCursor(Cursor cursor) {
+            return D2Error.create(cursor);
+        }
+    };
+
+    public static ObjectStore<D2Error> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectStore(databaseAdapter, D2ErrorTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

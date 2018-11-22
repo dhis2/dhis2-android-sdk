@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
@@ -49,19 +49,19 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     }
 
     @Override
-    public List<TrackedEntityInstance> call() throws D2CallException {
+    public List<TrackedEntityInstance> call() throws D2Error {
         this.setExecuted();
 
         return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter,
                 new Callable<List<TrackedEntityInstance>>() {
                     @Override
-                    public List<TrackedEntityInstance> call() throws D2CallException {
+                    public List<TrackedEntityInstance> call() throws D2Error {
                         return getTrackedEntityInstances();
                     }
                 });
     }
     
-    private List<TrackedEntityInstance> getTrackedEntityInstances() throws D2CallException {
+    private List<TrackedEntityInstance> getTrackedEntityInstances() throws D2Error {
         Collection<String> organisationUnitUids;
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         TeiQuery.Builder teiQueryBuilder = TeiQuery.Builder.create();
@@ -88,7 +88,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
 
     private List<TrackedEntityInstance> getTrackedEntityInstancesWithPaging(
             TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList)
-            throws D2CallException {
+            throws D2Error {
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         D2CallExecutor executor = new D2CallExecutor();
 

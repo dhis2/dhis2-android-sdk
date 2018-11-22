@@ -7,7 +7,6 @@ import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -139,7 +138,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         executor.executeD2CallTransactionally(d2.databaseAdapter(), new Callable<Void>() {
             @Override
-            public Void call() throws D2CallException {
+            public Void call() throws D2Error {
                 ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()
                         .uid(PROGRAM_RULE_UID).name("Rule").program(program).build());
 
@@ -174,7 +173,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
     }
 
-    private void syncMetadataAndAddFKViolation() throws D2CallException {
+    private void syncMetadataAndAddFKViolation() throws D2Error {
 
         final D2CallExecutor executor = new D2CallExecutor();
 

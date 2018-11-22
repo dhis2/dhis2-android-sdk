@@ -79,11 +79,22 @@ public final class TrackedEntityAttributeReservedValueStore
         return countWhere(where(ownerUid, organisationUnitUid));
     }
 
+    @Override
+    public int count(@NonNull String ownerUid) {
+        return countWhere(where(ownerUid));
+    }
+
     private String where(@NonNull String ownerUid,
                          @NonNull String organisationUnitUid) {
         return new WhereClauseBuilder()
                 .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
                 .appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnitUid)
+                .build();
+    }
+
+    private String where(@NonNull String ownerUid) {
+        return new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
                 .build();
     }
 

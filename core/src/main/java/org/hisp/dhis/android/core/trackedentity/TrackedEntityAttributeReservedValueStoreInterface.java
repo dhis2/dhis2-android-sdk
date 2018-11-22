@@ -42,4 +42,6 @@ public interface TrackedEntityAttributeReservedValueStoreInterface
     TrackedEntityAttributeReservedValue popOne(@NonNull String ownerUid, @NonNull String organisationUnitUid);
 
     int count(@NonNull String ownerUid, @NonNull String organisationUnitUid);
+
+    int count(@NonNull String ownerUid);
 }

@@ -56,10 +56,17 @@ public final class TrackedEntityAttributeReservedValueEndpointCall {
                     return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>() {
                         @Override
                         protected retrofit2.Call<List<TrackedEntityAttributeReservedValue>> getCall() {
-                            return service.generateAndReserve(
-                                    query.trackedEntityAttributeUid(),
-                                    query.numberToReserve(),
-                                    query.organisationUnit().code());
+                            if (query.organisationUnit() == null) {
+                                return service.generateAndReserve(
+                                        query.trackedEntityAttributeUid(),
+                                        query.numberToReserve());
+                            } else {
+                                return service.generateAndReserveWithOrgUnitCode(
+                                        query.trackedEntityAttributeUid(),
+                                        query.numberToReserve(),
+                                        query.organisationUnit().code());
+
+                            }
                         }
                     };
                 }

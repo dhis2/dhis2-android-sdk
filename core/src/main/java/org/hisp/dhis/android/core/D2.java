@@ -198,7 +198,7 @@ public final class D2 {
     }
 
     public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
-                                                         int numberOfValuesToFillUp) {
+                                                         Integer numberOfValuesToFillUp) {
         TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
                 .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
     }

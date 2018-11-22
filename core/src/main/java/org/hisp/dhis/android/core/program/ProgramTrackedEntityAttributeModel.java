@@ -114,6 +114,6 @@ public abstract class ProgramTrackedEntityAttributeModel extends BaseNameableObj
 
         public abstract Builder searchable(@Nullable Boolean searchable);
 
-        abstract ProgramTrackedEntityAttributeModel build();
+        public abstract ProgramTrackedEntityAttributeModel build();
     }
 }

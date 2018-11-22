@@ -53,7 +53,7 @@ public final class TrackedEntityAttributeReservedValueTableInfo {
     public static class Columns extends BaseModel.Columns {
         private final static String OWNER_OBJECT = "ownerObject";
         final static String OWNER_UID = "ownerUid";
-        private final static String KEY = "key";
+        final static String KEY = "key";
         private final static String VALUE = "value";
         private final static String CREATED = "created";
         final static String EXPIRY_DATE = "expiryDate";

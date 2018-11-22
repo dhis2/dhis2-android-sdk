@@ -56,8 +56,8 @@ import retrofit2.Retrofit;
 
 public final class TrackedEntityAttributeReservedValueManager {
 
-    private static final int MIN_TO_TRY_FILL = 50;
-    private static final int FILL_UP_TO = 100;
+    private static final Integer MIN_TO_TRY_FILL = 50;
+    private static final Integer FILL_UP_TO = 100;
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
@@ -123,7 +123,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void syncTrackedEntityAttributeReservedValue(String attribute, Integer numberOfValuesToFillUp) {
         List<OrganisationUnit> organisationUnits = getAttributeWithOUCodeOrgUnits(attribute);
 
-        if (organisationUnits.size() == 0) {
+        if (organisationUnits.isEmpty()) {
             syncReservedValue(attribute, null, numberOfValuesToFillUp);
         } else {
             for (OrganisationUnit organisationUnit : organisationUnits) {
@@ -181,31 +181,30 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     private List<OrganisationUnit> getAttributeWithOUCodeOrgUnits(String attribute) {
+        String join = " INNER JOIN ";
+        String on = " ON";
 
         String queryStatement = "SELECT OrganisationUnit.* FROM (" + OrganisationUnitTableInfo.TABLE_INFO.name() +
-                " INNER JOIN " + OrganisationUnitProgramLinkModel.TABLE + " ON" +
+                join + OrganisationUnitProgramLinkModel.TABLE + on +
                 " OrganisationUnit.uid = OrganisationUnitProgramLink.organisationUnit " +
-                " INNER JOIN " + ProgramTableInfo.TABLE_INFO.name() + " ON" +
+                join + ProgramTableInfo.TABLE_INFO.name() + on +
                 " OrganisationUnitProgramLink.program = Program.uid " +
-                " INNER JOIN " + ProgramTrackedEntityAttributeModel.TABLE + " ON" +
+                join + ProgramTrackedEntityAttributeModel.TABLE + on +
                 " Program.uid = ProgramTrackedEntityAttribute.program " +
-                " INNER JOIN " + TrackedEntityAttributeModel.TABLE + " ON" +
+                join + TrackedEntityAttributeModel.TABLE + on +
                 " TrackedEntityAttribute.uid = ProgramTrackedEntityAttribute.trackedEntityAttribute) " +
                 " WHERE TrackedEntityAttribute.uid = '" + attribute + "'" +
                 " AND TrackedEntityAttribute.pattern LIKE '%ORG_UNIT_CODE%';";
 
         List<OrganisationUnit> organisationUnits = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(queryStatement);
 
-        try {
+        try (Cursor cursor = databaseAdapter.query(queryStatement)) {
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
                     organisationUnits.add(OrganisationUnit.create(cursor));
                 } while (cursor.moveToNext());
             }
-        } finally {
-            cursor.close();
         }
 
         return organisationUnits;
@@ -214,16 +213,16 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void syncAllTrackedEntityAttributeReservedValues(Integer numberOfValuesToFillUp,
                                                              String organisationUnitUid) {
         String selectStatement = generateAllTrackedEntityAttributeReservedValuesSelectStatement(organisationUnitUid);
-        Cursor cursor = databaseAdapter.query(selectStatement);
 
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            do {
-                String ownerUid = cursor.getString(0);
-                syncReservedValues(ownerUid, null, numberOfValuesToFillUp);
-            } while (cursor.moveToNext());
+        try (Cursor cursor = databaseAdapter.query(selectStatement)) {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    String ownerUid = cursor.getString(0);
+                    syncReservedValues(ownerUid, null, numberOfValuesToFillUp);
+                } while (cursor.moveToNext());
+            }
         }
-        cursor.close();
     }
 
     private static String generateAllTrackedEntityAttributeReservedValuesSelectStatement(String organisationUnitUid) {

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -46,6 +47,17 @@ public final class DataSetCompleteRegistrationPostCall extends SyncCall<ImportSu
 
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+    private final APICallExecutor apiCallExecutor;
+
+    private DataSetCompleteRegistrationPostCall(
+            @NonNull DataSetCompleteRegistrationService dataSetCompleteRegistrationService,
+            @NonNull DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
+            @NonNull APICallExecutor apiCallExecutor) {
+
+        this.dataSetCompleteRegistrationService = dataSetCompleteRegistrationService;
+        this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
+        this.apiCallExecutor = apiCallExecutor;
+    }
 
     @Override
     public ImportSummary call() throws Exception {
@@ -64,7 +76,7 @@ public final class DataSetCompleteRegistrationPostCall extends SyncCall<ImportSu
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
                 = new DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations);
 
-        ImportSummary importSummary = new APICallExecutor().executeObjectCall(
+        ImportSummary importSummary = apiCallExecutor.executeObjectCall(
                 dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
                         dataSetCompleteRegistrationPayload));
 
@@ -93,19 +105,13 @@ public final class DataSetCompleteRegistrationPostCall extends SyncCall<ImportSu
                 dataSetCompleteRegistrationPayload, importSummary);
     }
 
-    private DataSetCompleteRegistrationPostCall(
-            @NonNull DataSetCompleteRegistrationService dataSetCompleteRegistrationService,
-            @NonNull DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore) {
-
-        this.dataSetCompleteRegistrationService = dataSetCompleteRegistrationService;
-        this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
-    }
-
     public static DataSetCompleteRegistrationPostCall create(@NonNull DatabaseAdapter databaseAdapter,
                                            @NonNull Retrofit retrofit) {
 
-        return new DataSetCompleteRegistrationPostCall(retrofit.create(DataSetCompleteRegistrationService.class),
-                DataSetCompleteRegistrationStore.create(databaseAdapter));
+        return new DataSetCompleteRegistrationPostCall(
+                retrofit.create(DataSetCompleteRegistrationService.class),
+                DataSetCompleteRegistrationStore.create(databaseAdapter),
+                APICallExecutorImpl.create(databaseAdapter));
     }
 
 }

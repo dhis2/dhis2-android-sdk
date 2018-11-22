@@ -76,7 +76,7 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .withUIds(uIds)
                 .build();
 
-        return EventEndpointCall.create(genericCallData.retrofit(), eventQuery);
+        return EventEndpointCall.create(genericCallData.retrofit(), genericCallData.databaseAdapter(), eventQuery);
     }
 
     private EventEndpointCall givenAEventCallByPagination(int page, int pageCount) {
@@ -87,7 +87,7 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .withPaging(true)
                 .build();
 
-        return EventEndpointCall.create(genericCallData.retrofit(), eventQuery);
+        return EventEndpointCall.create(genericCallData.retrofit(), genericCallData.databaseAdapter(), eventQuery);
     }
 
     private EventEndpointCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
@@ -97,6 +97,6 @@ public class EventEndpointCallShould extends BaseCallShould {
                 .withProgram(program)
                 .build();
 
-        return EventEndpointCall.create(genericCallData.retrofit(), eventQuery);
+        return EventEndpointCall.create(genericCallData.retrofit(), genericCallData.databaseAdapter(), eventQuery);
     }
 }

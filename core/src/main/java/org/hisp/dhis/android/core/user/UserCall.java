@@ -35,21 +35,25 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
 public final class UserCall extends SyncCall<User> {
     private final GenericCallData genericCallData;
+    private final APICallExecutor apiCallExecutor;
     private final UserService userService;
     private final SyncHandler<User> userHandler;
 
     UserCall(GenericCallData genericCallData,
+             APICallExecutor apiCallExecutor,
              UserService userService,
              SyncHandler<User> userHandler) {
         this.genericCallData = genericCallData;
+        this.apiCallExecutor = apiCallExecutor;
         this.userService = userService;
         this.userHandler = userHandler;
     }
@@ -58,7 +62,7 @@ public final class UserCall extends SyncCall<User> {
     public User call() throws D2Error {
         setExecuted();
 
-        User user = new APICallExecutor().executeObjectCall(userService.getUser(UserFields.allFieldsWithOrgUnit));
+        User user = apiCallExecutor.executeObjectCall(userService.getUser(UserFields.allFieldsWithOrgUnit));
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
         try {
             userHandler.handle(user);
@@ -81,6 +85,7 @@ public final class UserCall extends SyncCall<User> {
         public Call<User> create(GenericCallData genericCallData) {
             return new UserCall(
                     genericCallData,
+                    APICallExecutorImpl.create(genericCallData.databaseAdapter()),
                     genericCallData.retrofit().create(UserService.class),
                     UserHandler.create(genericCallData.databaseAdapter())
             );

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -43,13 +44,13 @@ final class ProgramEndpointCall {
     private ProgramEndpointCall() {
     }
 
-    static ListCallFactory<Program> factory(final ProgramService programService) {
+    static ListCallFactory<Program> factory(final ProgramService programService, final APICallExecutor apiCallExecutor) {
         return new ListCallFactoryImpl<Program>() {
 
             @Override
             protected CallFetcher<Program> fetcher(GenericCallData data) {
 
-                return new PayloadNoResourceCallFetcher<Program>() {
+                return new PayloadNoResourceCallFetcher<Program>(apiCallExecutor) {
                     @Override
                     protected retrofit2.Call<Payload<Program>> getCall() {
                         String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -45,32 +46,34 @@ public final class IndicatorTypeEndpointCall {
     private IndicatorTypeEndpointCall() {
     }
 
-    public static final UidsCallFactory<IndicatorType> FACTORY = new UidsCallFactoryImpl<IndicatorType>() {
-        private static final int MAX_UID_LIST_SIZE = 140;
+    public static UidsCallFactory<IndicatorType> factory(final APICallExecutor apiCallExecutor) {
+        return new UidsCallFactoryImpl<IndicatorType>() {
+            private static final int MAX_UID_LIST_SIZE = 140;
 
-        @Override
-        protected CallFetcher<IndicatorType> fetcher(GenericCallData data, Set<String> uids) {
-            final IndicatorTypeService service = data.retrofit().create(IndicatorTypeService.class);
+            @Override
+            protected CallFetcher<IndicatorType> fetcher(GenericCallData data, Set<String> uids) {
+                final IndicatorTypeService service = data.retrofit().create(IndicatorTypeService.class);
 
-            return new UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE) {
+                return new UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
-                @Override
-                protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query) {
-                    return service.getIndicatorTypes(
-                            IndicatorTypeFields.allFields,
-                            IndicatorTypeFields.lastUpdated.gt(null),
-                            IndicatorTypeFields.uid.in(query.uids()),
-                            Boolean.FALSE);
-                }
-            };
-        }
+                    @Override
+                    protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query) {
+                        return service.getIndicatorTypes(
+                                IndicatorTypeFields.allFields,
+                                IndicatorTypeFields.lastUpdated.gt(null),
+                                IndicatorTypeFields.uid.in(query.uids()),
+                                Boolean.FALSE);
+                    }
+                };
+            }
 
-        @Override
-        protected CallProcessor<IndicatorType> processor(GenericCallData data) {
-            return new TransactionalNoResourceSyncCallProcessor<>(
-                    data.databaseAdapter(),
-                    IndicatorTypeHandler.create(data.databaseAdapter())
-            );
-        }
-    };
+            @Override
+            protected CallProcessor<IndicatorType> processor(GenericCallData data) {
+                return new TransactionalNoResourceSyncCallProcessor<>(
+                        data.databaseAdapter(),
+                        IndicatorTypeHandler.create(data.databaseAdapter())
+                );
+            }
+        };
+    }
 }

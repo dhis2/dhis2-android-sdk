@@ -38,6 +38,8 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -124,7 +126,8 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        programEndpointCall = ProgramEndpointCall.factory(d2.retrofit().create(ProgramService.class)).create(
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
+        programEndpointCall = ProgramEndpointCall.factory(d2.retrofit().create(ProgramService.class), apiCallExecutor).create(
                 getGenericCallData(d2));
     }
 

@@ -105,7 +105,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
                 eventQueryBuilder.withPage(paging.page());
 
                 List<Event> pageEvents = executor.executeD2Call(
-                        EventEndpointCall.create(retrofit, eventQueryBuilder.build()));
+                        EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
 
                 if (paging.isLastPage()) {
                     int previousItemsToSkip = pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();

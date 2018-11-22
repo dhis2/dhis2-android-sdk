@@ -36,10 +36,16 @@ import java.util.List;
 
 public abstract class PayloadNoResourceCallFetcher<P> implements CallFetcher<P> {
 
+    private final APICallExecutor apiCallExecutor;
+
+    protected PayloadNoResourceCallFetcher(APICallExecutor apiCallExecutor) {
+        this.apiCallExecutor = apiCallExecutor;
+    }
+
     protected abstract retrofit2.Call<Payload<P>> getCall();
 
     @Override
     public final List<P> fetch() throws D2Error {
-        return new APICallExecutor().executePayloadCall(getCall());
+        return apiCallExecutor.executePayloadCall(getCall());
     }
 }

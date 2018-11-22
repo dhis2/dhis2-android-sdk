@@ -32,6 +32,8 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -152,13 +154,14 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
     public static AggregatedDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                             D2InternalModules internalModules) {
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
         return new AggregatedDataCall(
                 databaseAdapter,
                 retrofit,
                 internalModules.systemInfo.callFactory,
                 internalModules.systemInfo.publicModule.versionManager,
-                DataValueEndpointCall.FACTORY,
-                DataSetCompleteRegistrationCall.FACTORY,
+                DataValueEndpointCall.factory(apiCallExecutor),
+                DataSetCompleteRegistrationCall.factory(apiCallExecutor),
                 DataSetStore.create(databaseAdapter),
                 PeriodStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter));

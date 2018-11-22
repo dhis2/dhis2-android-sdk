@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -25,12 +26,16 @@ public final class EventPostCall extends SyncCall<WebResponse> {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
+    private final APICallExecutor apiCallExecutor;
+
     private EventPostCall(@NonNull EventService eventService,
-                         @NonNull EventStore eventStore,
-                         @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore) {
+                          @NonNull EventStore eventStore,
+                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
+                          @NonNull APICallExecutor apiCallExecutor) {
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
@@ -49,7 +54,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
         String strategy = "CREATE_AND_UPDATE";
 
-        WebResponse webResponse = new APICallExecutor().executeObjectCallWithAcceptedErrorCodes(
+        WebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                 eventService.postEvents(eventPayload, strategy), Collections.singletonList(409), WebResponse.class);
 
         handleWebResponse(webResponse);
@@ -90,7 +95,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
         return new EventPostCall(
                 retrofit.create(EventService.class),
                 new EventStoreImpl(databaseAdapter),
-                TrackedEntityDataValueStoreImpl.create(databaseAdapter)
-        );
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
+                APICallExecutorImpl.create(databaseAdapter));
     }
 }

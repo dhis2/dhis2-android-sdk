@@ -35,15 +35,16 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -63,6 +64,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final APICallExecutor apiCallExecutor;
 
     private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
     private final DHISVersionManager versionManager;
@@ -85,6 +87,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     UserAuthenticateCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull APICallExecutor apiCallExecutor,
             @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull DHISVersionManager versionManager,
             @NonNull UserService userService,
@@ -99,6 +102,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull String apiURL) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.apiCallExecutor = apiCallExecutor;
 
         this.systemInfoCallFactory = systemInfoCallFactory;
         this.versionManager = versionManager;
@@ -128,20 +132,20 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
 
         try {
-            User authenticatedUser = new APICallExecutor().executeObjectCallWithErrorCatcher(authenticateCall,
+            User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
             return loginOnline(authenticatedUser);
-        } catch (D2Error d2Exception) {
+        } catch (D2Error d2Error) {
             if (
-                    d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                    d2Exception.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                    d2Exception.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+                    d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
                 return loginOffline();
-            } else if (d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+            } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
-                throw d2Exception;
+                throw d2Error;
             } else {
-                throw d2Exception;
+                throw d2Error;
             }
         }
     }
@@ -269,6 +273,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         return new UserAuthenticateCall(
                 databaseAdapter,
                 retrofit,
+                APICallExecutorImpl.create(databaseAdapter),
                 internalModules.systemInfo.callFactory,
                 internalModules.systemInfo.publicModule.versionManager,
                 retrofit.create(UserService.class),

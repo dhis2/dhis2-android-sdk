@@ -34,6 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -74,7 +76,8 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         HashSet<String> uids = new HashSet<>(Collections.singletonList(uid));
-        trackedEntityTypeCall = TrackedEntityTypeCall.FACTORY.create(getGenericCallData(d2), uids);
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
+        trackedEntityTypeCall = TrackedEntityTypeCall.factory(apiCallExecutor).create(getGenericCallData(d2), uids);
     }
 
     @Test

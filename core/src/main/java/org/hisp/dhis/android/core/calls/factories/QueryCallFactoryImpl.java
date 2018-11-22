@@ -4,12 +4,19 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
 
 public abstract class QueryCallFactoryImpl<P, Q extends BaseQuery> implements QueryCallFactory<P, Q> {
+
+    protected final APICallExecutor apiCallExecutor;
+
+    protected QueryCallFactoryImpl(APICallExecutor apiCallExecutor) {
+        this.apiCallExecutor = apiCallExecutor;
+    }
 
     @Override
     public final Call<List<P>> create(GenericCallData data, Q query) {

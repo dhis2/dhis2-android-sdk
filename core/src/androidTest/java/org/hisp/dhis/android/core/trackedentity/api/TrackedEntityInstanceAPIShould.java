@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -63,7 +64,7 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
 
         d2 = D2Factory.create(this.serverUrl, databaseAdapter());
 
-        executor = new APICallExecutor();
+        executor = APICallExecutorImpl.create(d2.databaseAdapter());
 
         trackedEntityInstanceService = d2.retrofit().create(TrackedEntityInstanceService.class);
     }

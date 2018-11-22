@@ -73,14 +73,14 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
     private final APICallExecutor apiCallExecutor;
 
 
-    public DataSetCompleteRegistrationCallFetcher(@NonNull Collection<String> dataSetUids,
-                                                  @NonNull Collection<String> periodIds,
-                                                  @NonNull Collection<String> rootOrganisationUnitsUids) {
+    DataSetCompleteRegistrationCallFetcher(@NonNull Collection<String> dataSetUids,
+                                           @NonNull Collection<String> periodIds,
+                                           @NonNull Collection<String> rootOrganisationUnitsUids,
+                                           @NonNull APICallExecutor apiCallExecutor) {
         this.totalDataSetUids = dataSetUids;
         this.totalPeriodIds = periodIds;
         this.totalRootOrganisationUnitsUids = rootOrganisationUnitsUids;
-
-        this.apiCallExecutor = new APICallExecutor();
+        this.apiCallExecutor = apiCallExecutor;
 
         this.queryLengthAvailableAfterIncludingPeriodIds =
                 QUERY_LENTGH_AVAILABLE_FOR_UIDS - getTotalPeriodIdsLengthWithCommas();

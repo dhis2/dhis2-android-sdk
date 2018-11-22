@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.junit.After;
@@ -48,10 +49,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -70,6 +68,9 @@ import static org.mockito.Mockito.when;
 public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     @Mock
     private TrackedEntityInstanceService service;
+
+    @Mock
+    private APICallExecutor apiCallExecutor;
 
     @Mock
     private SearchGridMapper mapper;
@@ -108,11 +109,11 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 .paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);
-        when(searchGridCall.execute()).thenReturn(Response.success(searchGrid));
+        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenReturn(searchGrid);
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
 
         // Metadata call
-        call = new TrackedEntityInstanceQueryCall(service, query, mapper);
+        call = new TrackedEntityInstanceQueryCall(service, query, mapper, apiCallExecutor);
     }
 
     @After
@@ -152,16 +153,14 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
-        when(searchGridCall.execute()).thenReturn(errorResponse);
+        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
         call.call();
     }
 
     @Test()
     public void throw_too_many_org_units_exception_when_request_was_too_long() throws Exception {
-        Response tooLongResponse = Response.error(
-                HttpsURLConnection.HTTP_REQ_TOO_LONG,
-                ResponseBody.create(MediaType.parse("application/json"), "{}"));
-        when(searchGridCall.execute()).thenReturn(tooLongResponse);
+        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
+        when(d2Error.httpErrorCode()).thenReturn(HttpsURLConnection.HTTP_REQ_TOO_LONG);
 
         try {
             call.call();

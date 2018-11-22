@@ -37,6 +37,8 @@ import com.google.common.collect.Sets;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -120,8 +122,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                         OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
 
         genericCallData = getGenericCallData(d2);
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
-                genericCallData, organisationUnitHandler);
+                genericCallData, organisationUnitHandler, apiCallExecutor);
     }
 
     private void insertProgramWithUid(String uid) {

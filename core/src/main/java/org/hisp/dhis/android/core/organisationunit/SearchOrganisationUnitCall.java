@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -54,10 +55,11 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
     private final SyncHandlerWithTransformer<OrganisationUnit> searchOrganisationUnitHandler;
     private final GenericCallData data;
 
-    SearchOrganisationUnitCall(@NonNull User user,
-                 @NonNull OrganisationUnitService organisationUnitService,
-                 @NonNull GenericCallData data,
-                 @NonNull SyncHandlerWithTransformer<OrganisationUnit> searchOrganisationUnitHandler) {
+    private SearchOrganisationUnitCall(@NonNull User user,
+                                       @NonNull OrganisationUnitService organisationUnitService,
+                                       @NonNull GenericCallData data,
+                                       @NonNull SyncHandlerWithTransformer<OrganisationUnit>
+                                               searchOrganisationUnitHandler) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.data = data;
@@ -69,7 +71,7 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
         setExecuted();
 
         final Set<OrganisationUnit> searchOrganisationUnits = new HashSet<>();
-        final APICallExecutor apiExecutor = new APICallExecutor();
+        final APICallExecutor apiExecutor = APICallExecutorImpl.create(data.databaseAdapter());
 
         return new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(),
                 new Callable<List<OrganisationUnit>>() {

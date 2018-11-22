@@ -4,6 +4,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -39,7 +41,8 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         OrganisationUnit organisationUnit =  OrganisationUnit.builder()
                 .uid("orgUnitUid").code("ORG_UNIT").build();
 
-        return TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(getGenericCallData(d2),
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
+        return TrackedEntityAttributeReservedValueEndpointCall.factory(apiCallExecutor).create(getGenericCallData(d2),
                 TrackedEntityAttributeReservedValueQuery.create("xs8A6tQJY0s",
                 numberToReserve, organisationUnit, "pattern"));
     }

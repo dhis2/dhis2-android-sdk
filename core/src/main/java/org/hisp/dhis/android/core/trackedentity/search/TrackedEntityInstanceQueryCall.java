@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -26,14 +28,17 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
     private final TrackedEntityInstanceService service;
     private final TrackedEntityInstanceQuery query;
     private final SearchGridMapper mapper;
+    private final APICallExecutor apiCallExecutor;
 
     TrackedEntityInstanceQueryCall(
             @NonNull TrackedEntityInstanceService service,
             @NonNull TrackedEntityInstanceQuery query,
-            @NonNull SearchGridMapper mapper) {
+            @NonNull SearchGridMapper mapper,
+            APICallExecutor apiCallExecutor) {
         this.service = service;
         this.query = query;
         this.mapper = mapper;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
@@ -51,7 +56,7 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
         SearchGrid searchGrid;
 
         try {
-            searchGrid = new APICallExecutor().executeObjectCall(searchGridCall);
+            searchGrid = apiCallExecutor.executeObjectCall(searchGridCall);
         } catch (D2Error d2E) {
             if (d2E.httpErrorCode() != null && d2E.httpErrorCode() == HttpsURLConnection.HTTP_REQ_TOO_LONG) {
                 throw D2Error.builder()
@@ -77,11 +82,12 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
         }
     }
 
-    public static TrackedEntityInstanceQueryCall create(Retrofit retrofit, TrackedEntityInstanceQuery query) {
+    public static TrackedEntityInstanceQueryCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter,
+                                                        TrackedEntityInstanceQuery query) {
         return new TrackedEntityInstanceQueryCall(
                 retrofit.create(TrackedEntityInstanceService.class),
                 query,
-                new SearchGridMapper()
-        );
+                new SearchGridMapper(),
+                APICallExecutorImpl.create(databaseAdapter));
     }
 }

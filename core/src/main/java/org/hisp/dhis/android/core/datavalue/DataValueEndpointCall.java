@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -45,36 +46,37 @@ public final class DataValueEndpointCall {
     private DataValueEndpointCall() {
     }
 
-    public static final QueryCallFactory<DataValue, DataValueQuery> FACTORY
-            = new QueryCallFactoryImpl<DataValue, DataValueQuery>() {
+    public static final QueryCallFactory<DataValue, DataValueQuery> factory(APICallExecutor apiCallExecutor) {
+        return new QueryCallFactoryImpl<DataValue, DataValueQuery>(apiCallExecutor) {
 
-        private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
+            private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 
-        @Override
-        protected CallFetcher<DataValue> fetcher(GenericCallData data, final DataValueQuery query) {
+            @Override
+            protected CallFetcher<DataValue> fetcher(GenericCallData data, final DataValueQuery query) {
 
-            final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
+                final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
 
-            return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType) {
-                @Override
-                protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
-                    return dataValueService.getDataValues(
-                            DataValueFields.allFields,
-                            DataValueFields.lastUpdated.gt(lastUpdated),
-                            commaSeparatedCollectionValues(query.dataSetUids()),
-                            commaSeparatedCollectionValues(query.periodIds()),
-                            commaSeparatedCollectionValues(query.orgUnitUids()),
-                            Boolean.TRUE,
-                            Boolean.FALSE);
-                }
-            };
-        }
+                return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType, apiCallExecutor) {
+                    @Override
+                    protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
+                        return dataValueService.getDataValues(
+                                DataValueFields.allFields,
+                                DataValueFields.lastUpdated.gt(lastUpdated),
+                                commaSeparatedCollectionValues(query.dataSetUids()),
+                                commaSeparatedCollectionValues(query.periodIds()),
+                                commaSeparatedCollectionValues(query.orgUnitUids()),
+                                Boolean.TRUE,
+                                Boolean.FALSE);
+                    }
+                };
+            }
 
-        @Override
-        protected CallProcessor<DataValue> processor(GenericCallData data, DataValueQuery query) {
+            @Override
+            protected CallProcessor<DataValue> processor(GenericCallData data, DataValueQuery query) {
 
-            return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                    DataValueHandler.create(data.databaseAdapter()));
-        }
-    };
+                return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
+                        DataValueHandler.create(data.databaseAdapter()));
+            }
+        };
+    }
 }

@@ -3,6 +3,8 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.common.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -30,6 +32,8 @@ public final class EventPersistenceCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final APICallExecutor apiCallExecutor;
+
     private final EventHandler eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
@@ -41,6 +45,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private EventPersistenceCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull APICallExecutor apiCallExecutor,
             @NonNull EventHandler eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
@@ -49,6 +54,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.apiCallExecutor = apiCallExecutor;
         this.eventHandler = eventHandler;
         this.authenticatedUserStore = authenticatedUserStore;
         this.organisationUnitStore = organisationUnitStore;
@@ -77,7 +83,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                     Call<List<OrganisationUnit>> organisationUnitCall =
                             searchOrganisationUnitOnDemandCallFactory.create(
                                 databaseAdapter, retrofit, searchOrgUnitUids,
-                                User.builder().uid(authenticatedUserModel.user()).build());
+                                User.builder().uid(authenticatedUserModel.user()).build(), apiCallExecutor);
                     executor.executeD2Call(organisationUnitCall);
                 }
 
@@ -105,6 +111,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
         return new EventPersistenceCall(
                 databaseAdapter,
                 retrofit,
+                APICallExecutorImpl.create(databaseAdapter),
                 EventHandler.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),

@@ -40,11 +40,14 @@ public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
 
     private final ResourceHandler resourceHandler;
     private final ResourceModel.Type resourceType;
+    private final APICallExecutor apiCallExecutor;
 
-    public PayloadResourceCallFetcher(ResourceHandler resourceHandler,
-                                      ResourceModel.Type resourceType) {
+    protected PayloadResourceCallFetcher(ResourceHandler resourceHandler,
+                                         ResourceModel.Type resourceType,
+                                         APICallExecutor apiCallExecutor) {
         this.resourceHandler = resourceHandler;
         this.resourceType = resourceType;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
@@ -52,6 +55,6 @@ public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
     @Override
     public final List<P> fetch() throws D2Error {
         String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
-        return new APICallExecutor().executePayloadCall(getCall(lastUpdated));
+        return apiCallExecutor.executePayloadCall(getCall(lastUpdated));
     }
 }

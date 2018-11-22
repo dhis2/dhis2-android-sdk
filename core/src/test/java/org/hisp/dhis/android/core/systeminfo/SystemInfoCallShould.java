@@ -29,10 +29,11 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.common.APICallExecutor;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
@@ -45,13 +46,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Date;
-
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
@@ -70,6 +65,12 @@ public class SystemInfoCallShould {
 
     @Mock
     private DatabaseAdapter databaseAdapter;
+
+    @Mock
+    private APICallExecutor apiCallExecutor;
+
+    @Mock
+    private D2Error d2Error;
 
     @Mock
     private SyncHandler<SystemInfo> systemInfoHandler;
@@ -103,8 +104,8 @@ public class SystemInfoCallShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         systemInfoSyncCall = new SystemInfoCall(
-                databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler, versionManager
-        );
+                databaseAdapter, systemInfoHandler, systemInfoService, resourceHandler, versionManager,
+                apiCallExecutor);
 
         when(systemInfo.version()).thenReturn("2.29");
         when(systemInfo.serverDate()).thenReturn(serverDate);
@@ -117,7 +118,7 @@ public class SystemInfoCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void return_correct_fields_after_call() throws Exception {
-        when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
+        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
         when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(systemInfoCall);
 
         systemInfoSyncCall.call();
@@ -129,14 +130,14 @@ public class SystemInfoCallShould {
     @Test(expected = D2Error.class)
     @SuppressWarnings("unchecked")
     public void throw_d2_call_exception_on_call_io_exception() throws Exception {
-        when(systemInfoCall.execute()).thenThrow(IOException.class);
+        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenThrow(d2Error);
         systemInfoSyncCall.call();
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void never_invoke_handlers_on_call_io_exception() throws Exception {
-        when(systemInfoCall.execute()).thenThrow(IOException.class);
+    public void never_invoke_handlers_on_call_exception() throws Exception {
+        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenThrow(d2Error);
 
         try {
             systemInfoSyncCall.call();
@@ -153,28 +154,8 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void never_invoke_handlers_if_request_fail() throws Exception {
-        // unauthorized
-        when(systemInfoCall.execute()).thenReturn(Response.<SystemInfo>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
-
-        try {
-            systemInfoSyncCall.call();
-        } catch(D2Error d2e) {
-        }
-
-        // verify that adapter and handlers was not touched
-        verify(databaseAdapter, never()).beginNewTransaction();
-        verify(transaction, never()).end();
-        verify(transaction, never()).setSuccessful();
-
-        verifyNoMoreInteractions(systemInfoHandler);
-        verifyNoMoreInteractions(resourceHandler);
-    }
-
-    @Test
     public void return_true_when_ask_if_is_executed_before_throw_d2_call_exception_on_consecutive_calls() throws Exception {
-        when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
+        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
 
         systemInfoSyncCall.call();
 
@@ -191,7 +172,7 @@ public class SystemInfoCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void return_true_when_ask_if_is_executed_before_exception() throws Exception {
-        when(systemInfoCall.execute()).thenThrow(IOException.class);
+        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenThrow(d2Error);
 
         try {
             systemInfoSyncCall.call();
@@ -211,7 +192,7 @@ public class SystemInfoCallShould {
 
     @Test
     public void invoke_stores_after_successful_call() throws Exception {
-        when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
+        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
 
         systemInfoSyncCall.call();
 
@@ -223,7 +204,7 @@ public class SystemInfoCallShould {
     @Test(expected = D2Error.class)
     public void throw_d2_call_exception_when_system_version_different_to_2_29() throws Exception {
         when(systemInfo.version()).thenReturn("2.28");
-        when(systemInfoCall.execute()).thenReturn(Response.success(systemInfo));
+        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
 
         systemInfoSyncCall.call();
 

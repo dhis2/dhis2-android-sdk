@@ -44,7 +44,8 @@ final class ProgramEndpointCall {
     private ProgramEndpointCall() {
     }
 
-    static ListCallFactory<Program> factory(final ProgramService programService, final APICallExecutor apiCallExecutor) {
+    static ListCallFactory<Program> factory(final ProgramService programService,
+                                            final APICallExecutor apiCallExecutor) {
         return new ListCallFactoryImpl<Program>() {
 
             @Override

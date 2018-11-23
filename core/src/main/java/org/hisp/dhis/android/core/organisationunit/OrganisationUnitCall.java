@@ -80,7 +80,8 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
             public List<OrganisationUnit> call() throws Exception {
                 Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
                 for (String uid : rootOrgUnitUids) {
-                    organisationUnits.addAll(apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
+                    organisationUnits.addAll(apiCallExecutor.executePayloadCall(
+                            getOrganisationUnitAndDescendants(uid)));
                 }
 
                 organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());

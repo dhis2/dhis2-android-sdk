@@ -60,8 +60,11 @@ public final class DataElementEndpointCall {
 
                     @Override
                     protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query) {
-                        return service.getDataElements(DataElementFields.allFields, DataElementFields.uid.in(query.uids()),
-                                DataElementFields.lastUpdated.gt(null), accessReadFilter, query.paging());
+                        return service.getDataElements(DataElementFields.allFields,
+                                DataElementFields.uid.in(query.uids()),
+                                DataElementFields.lastUpdated.gt(null),
+                                accessReadFilter,
+                                query.paging());
                     }
                 };
             }

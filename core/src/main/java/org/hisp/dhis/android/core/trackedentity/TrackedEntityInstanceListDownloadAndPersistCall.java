@@ -47,7 +47,8 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
         D2CallExecutor executor = new D2CallExecutor();
         for (String uid: trackedEntityInstanceUids) {
             Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                    .create(retrofit, APICallExecutorImpl.create(databaseAdapter), uid, TrackedEntityInstance.allFields);
+                    .create(retrofit, APICallExecutorImpl.create(databaseAdapter), uid,
+                            TrackedEntityInstance.allFields);
             teis.add(executor.executeD2Call(teiCall));
         }
 

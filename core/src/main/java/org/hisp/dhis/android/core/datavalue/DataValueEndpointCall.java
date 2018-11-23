@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -46,7 +46,7 @@ public final class DataValueEndpointCall {
     private DataValueEndpointCall() {
     }
 
-    public static final QueryCallFactory<DataValue, DataValueQuery> factory(APICallExecutor apiCallExecutor) {
+    public static QueryCallFactory<DataValue, DataValueQuery> factory(APICallExecutor apiCallExecutor) {
         return new QueryCallFactoryImpl<DataValue, DataValueQuery>(apiCallExecutor) {
 
             private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
@@ -56,7 +56,8 @@ public final class DataValueEndpointCall {
 
                 final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
 
-                return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType, apiCallExecutor) {
+                return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType,
+                        apiCallExecutor) {
                     @Override
                     protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
                         return dataValueService.getDataValues(

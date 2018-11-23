@@ -28,7 +28,6 @@ public class APICallExecutorShould {
 
     @Mock
     private User user;
-
     private List<User> users;
 
     @Mock

@@ -111,7 +111,9 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
             APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
             return new ProgramParentCall(
                     genericCallData,
-                    ProgramEndpointCall.factory(genericCallData.retrofit().create(ProgramService.class), apiCallExecutor),
+                    ProgramEndpointCall.factory(
+                            genericCallData.retrofit().create(ProgramService.class),
+                            apiCallExecutor),
                     ProgramStageEndpointCall.factory(apiCallExecutor),
                     ProgramRuleEndpointCall.factory(apiCallExecutor),
                     TrackedEntityTypeCall.factory(apiCallExecutor),

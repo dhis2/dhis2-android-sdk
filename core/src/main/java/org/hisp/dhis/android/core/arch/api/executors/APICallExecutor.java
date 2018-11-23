@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.api.executors;
 
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;

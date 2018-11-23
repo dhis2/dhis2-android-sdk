@@ -85,6 +85,9 @@ public final class RepoManager {
     }
 
     private static String provideServerUrl(HttpUrl httpUrl) {
+        if(httpUrl.toString().substring(httpUrl.toString().length() - 1).equals("/")){
+            return httpUrl.toString()+"api/";
+        }
         return httpUrl.toString()+"/api/";
     }
 

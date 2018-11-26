@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -44,33 +45,35 @@ public final class TrackedEntityTypeCall {
     private TrackedEntityTypeCall() {
     }
     
-    public static final UidsCallFactory<TrackedEntityType> FACTORY = new UidsCallFactoryImpl<TrackedEntityType>() {
+    public static UidsCallFactory<TrackedEntityType> factory(final APICallExecutor apiCallExecutor) {
+        return new UidsCallFactoryImpl<TrackedEntityType>() {
 
-        private static final int MAX_UID_LIST_SIZE = 140;
+            private static final int MAX_UID_LIST_SIZE = 140;
 
-        @Override
-        protected CallFetcher<TrackedEntityType> fetcher(GenericCallData data, Set<String> uids) {
-            final TrackedEntityTypeService service = data.retrofit().create(TrackedEntityTypeService.class);
+            @Override
+            protected CallFetcher<TrackedEntityType> fetcher(GenericCallData data, Set<String> uids) {
+                final TrackedEntityTypeService service = data.retrofit().create(TrackedEntityTypeService.class);
 
-            return new UidsNoResourceCallFetcher<TrackedEntityType>(uids, MAX_UID_LIST_SIZE) {
-                @Override
-                protected retrofit2.Call<Payload<TrackedEntityType>> getCall(UidsQuery query) {
-                    return service.getTrackedEntityTypes(
-                            TrackedEntityTypeFields.allFields,
-                            TrackedEntityTypeFields.uid.in(query.uids()),
-                            TrackedEntityTypeFields.lastUpdated.gt(null),
-                            Boolean.FALSE
-                    );
-                }
-            };
-        }
+                return new UidsNoResourceCallFetcher<TrackedEntityType>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+                    @Override
+                    protected retrofit2.Call<Payload<TrackedEntityType>> getCall(UidsQuery query) {
+                        return service.getTrackedEntityTypes(
+                                TrackedEntityTypeFields.allFields,
+                                TrackedEntityTypeFields.uid.in(query.uids()),
+                                TrackedEntityTypeFields.lastUpdated.gt(null),
+                                Boolean.FALSE
+                        );
+                    }
+                };
+            }
 
-        @Override
-        protected CallProcessor<TrackedEntityType> processor(GenericCallData data) {
-            return new TransactionalNoResourceSyncCallProcessor<>(
-                    data.databaseAdapter(),
-                    TrackedEntityTypeHandler.create(data.databaseAdapter())
-            );
-        }
-    };
+            @Override
+            protected CallProcessor<TrackedEntityType> processor(GenericCallData data) {
+                return new TransactionalNoResourceSyncCallProcessor<>(
+                        data.databaseAdapter(),
+                        TrackedEntityTypeHandler.create(data.databaseAdapter())
+                );
+            }
+        };
+    }
 }

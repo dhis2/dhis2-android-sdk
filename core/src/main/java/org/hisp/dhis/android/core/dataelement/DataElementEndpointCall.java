@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -45,31 +46,36 @@ public final class DataElementEndpointCall {
 
     private DataElementEndpointCall() {}
 
-    public static final UidsCallFactory<DataElement> FACTORY = new UidsCallFactoryImpl<DataElement>() {
+    public static UidsCallFactory<DataElement> factory(final APICallExecutor apiCallExecutor) {
+        return new UidsCallFactoryImpl<DataElement>() {
 
-        private static final int MAX_UID_LIST_SIZE = 100;
+            private static final int MAX_UID_LIST_SIZE = 100;
 
-        @Override
-        protected CallFetcher<DataElement> fetcher(GenericCallData data, Set<String> uids) {
-            final DataElementService service = data.retrofit().create(DataElementService.class);
+            @Override
+            protected CallFetcher<DataElement> fetcher(GenericCallData data, Set<String> uids) {
+                final DataElementService service = data.retrofit().create(DataElementService.class);
 
-            return new UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE) {
-                String accessReadFilter = "access." + Access.read.eq(true).generateString();
+                return new UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+                    String accessReadFilter = "access." + Access.read.eq(true).generateString();
 
-                @Override
-                protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query) {
-                    return service.getDataElements(DataElementFields.allFields, DataElementFields.uid.in(query.uids()),
-                            DataElementFields.lastUpdated.gt(null), accessReadFilter, query.paging());
-                }
-            };
-        }
+                    @Override
+                    protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query) {
+                        return service.getDataElements(DataElementFields.allFields,
+                                DataElementFields.uid.in(query.uids()),
+                                DataElementFields.lastUpdated.gt(null),
+                                accessReadFilter,
+                                query.paging());
+                    }
+                };
+            }
 
-        @Override
-        protected CallProcessor<DataElement> processor(GenericCallData data) {
-            return new TransactionalNoResourceSyncCallProcessor<>(
-                    data.databaseAdapter(),
-                    DataElementHandler.create(data.databaseAdapter())
-            );
-        }
-    };
+            @Override
+            protected CallProcessor<DataElement> processor(GenericCallData data) {
+                return new TransactionalNoResourceSyncCallProcessor<>(
+                        data.databaseAdapter(),
+                        DataElementHandler.create(data.databaseAdapter())
+                );
+            }
+        };
+    }
 }

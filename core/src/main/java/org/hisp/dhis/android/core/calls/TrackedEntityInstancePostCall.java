@@ -4,7 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -68,6 +69,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final ObjectWithoutUidStore<Note> noteStore;
 
+    private final APICallExecutor apiCallExecutor;
+
     private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
                                           @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
                                           @NonNull RelationshipCollectionRepository relationshipRepository,
@@ -77,7 +80,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                           @NonNull EventStore eventStore,
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                                           @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
-                                          @NonNull ObjectWithoutUidStore<Note> noteStore) {
+                                          @NonNull ObjectWithoutUidStore<Note> noteStore,
+                                          @NonNull APICallExecutor apiCallExecutor) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -88,6 +92,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
         this.noteStore = noteStore;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
@@ -111,7 +116,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
             strategy = "SYNC";
         }
 
-        WebResponse webResponse = new APICallExecutor().executeObjectCallWithAcceptedErrorCodes(
+        WebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                 trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
                 Collections.singletonList(409), WebResponse.class);
         handleWebResponse(webResponse);
@@ -246,7 +251,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 new EventStoreImpl(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
-                NoteStore.create(databaseAdapter)
+                NoteStore.create(databaseAdapter),
+                APICallExecutorImpl.create(databaseAdapter)
         );
     }
 }

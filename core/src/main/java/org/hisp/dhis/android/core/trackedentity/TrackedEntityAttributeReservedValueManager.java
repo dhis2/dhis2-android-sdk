@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -261,6 +262,6 @@ public final class TrackedEntityAttributeReservedValueManager {
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 new TrackedEntityAttributeStoreImpl(databaseAdapter),
-                TrackedEntityAttributeReservedValueEndpointCall.FACTORY);
+                TrackedEntityAttributeReservedValueEndpointCall.factory(APICallExecutorImpl.create(databaseAdapter)));
     }
 }

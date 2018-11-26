@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -28,6 +30,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final APICallExecutor apiCallExecutor;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final TrackedEntityInstanceUidHelper uidsHelper;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
@@ -39,6 +42,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
     private TrackedEntityInstanceRelationshipPersistenceCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull APICallExecutor apiCallExecutor,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull TrackedEntityInstanceUidHelper uidsHelper,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
@@ -47,6 +51,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.apiCallExecutor = apiCallExecutor;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.uidsHelper = uidsHelper;
         this.authenticatedUserStore = authenticatedUserStore;
@@ -74,7 +79,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
                     Call<List<OrganisationUnit>> organisationUnitCall =
                             searchOrganisationUnitOnDemandCallFactory.create(
                                 databaseAdapter, retrofit, searchOrgUnitUids,
-                                User.builder().uid(authenticatedUserModel.user()).build());
+                                User.builder().uid(authenticatedUserModel.user()).build(), apiCallExecutor);
                     executor.executeD2Call(organisationUnitCall);
                 }
 
@@ -93,6 +98,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
         return new TrackedEntityInstanceRelationshipPersistenceCall(
                 databaseAdapter,
                 retrofit,
+                APICallExecutorImpl.create(databaseAdapter),
                 TrackedEntityInstanceHandler.create(databaseAdapter, internalModules),
                 TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),

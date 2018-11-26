@@ -210,7 +210,7 @@ public final class D2 {
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
-        return TrackedEntityInstanceQueryCall.create(retrofit, query);
+        return TrackedEntityInstanceQueryCall.create(retrofit, databaseAdapter, query);
     }
 
     public Callable<WebResponse> syncSingleEvents() {

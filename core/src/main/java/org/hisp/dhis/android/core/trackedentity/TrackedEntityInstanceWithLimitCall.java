@@ -96,7 +96,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
             teiQueryBuilder.withPage(paging.page()).withPageSize(paging.pageSize());
 
             List<TrackedEntityInstance> pageTrackedEntityInstances = executor.executeD2Call(
-                    TrackedEntityInstancesEndpointCall.create(retrofit, teiQueryBuilder.build()));
+                    TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build()));
 
             if (paging.isLastPage()) {
                 int previousItemsToSkip = pageTrackedEntityInstances.size()

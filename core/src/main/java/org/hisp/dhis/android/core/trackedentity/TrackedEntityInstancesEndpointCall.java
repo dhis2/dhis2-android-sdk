@@ -2,7 +2,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -17,12 +19,14 @@ public final class TrackedEntityInstancesEndpointCall extends SyncCall<List<Trac
 
     private final TrackedEntityInstanceService trackedEntityInstanceService;
     private final TeiQuery trackerQuery;
+    private final APICallExecutor apiCallExecutor;
 
     private TrackedEntityInstancesEndpointCall(
             @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-            @NonNull TeiQuery trackerQuery) {
+            @NonNull TeiQuery trackerQuery, APICallExecutor apiCallExecutor) {
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.trackerQuery = trackerQuery;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
@@ -34,12 +38,14 @@ public final class TrackedEntityInstancesEndpointCall extends SyncCall<List<Trac
                 trackerQuery.getOuMode().name(), TrackedEntityInstance.allFields, Boolean.TRUE,
                 trackerQuery.getPage(), trackerQuery.getPageSize(), true);
 
-        return new APICallExecutor().executePayloadCall(call);
+        return apiCallExecutor.executePayloadCall(call);
     }
 
-    public static TrackedEntityInstancesEndpointCall create(Retrofit retrofit, TeiQuery teiQuery) {
+    public static TrackedEntityInstancesEndpointCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter,
+                                                            TeiQuery teiQuery) {
         return new TrackedEntityInstancesEndpointCall(
                 retrofit.create(TrackedEntityInstanceService.class),
-                teiQuery);
+                teiQuery,
+                APICallExecutorImpl.create(databaseAdapter));
     }
 }

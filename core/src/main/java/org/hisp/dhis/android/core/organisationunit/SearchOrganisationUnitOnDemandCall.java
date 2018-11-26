@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallWithTransformerProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -50,22 +51,22 @@ public final class SearchOrganisationUnitOnDemandCall {
 
     public interface Factory {
         Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                            Set<String> uids, User user);
+                                            Set<String> uids, User user, APICallExecutor apiCallExecutor);
     }
 
     public static final Factory FACTORY = new Factory() {
         @Override
         public Call<List<OrganisationUnit>> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                                   Set<String> uids, User user) {
-            return new EndpointCall<>(fetcher(retrofit, uids), processor(databaseAdapter, user));
+                                                   Set<String> uids, User user, APICallExecutor apiCallExecutor) {
+            return new EndpointCall<>(fetcher(retrofit, apiCallExecutor, uids), processor(databaseAdapter, user));
         }
 
         private static final int MAX_UID_LIST_SIZE = 120;
 
-        CallFetcher<OrganisationUnit> fetcher(Retrofit retrofit, Set<String> uids) {
+        CallFetcher<OrganisationUnit> fetcher(Retrofit retrofit, APICallExecutor apiCallExecutor, Set<String> uids) {
             final OrganisationUnitService service = retrofit.create(OrganisationUnitService.class);
 
-            return new UidsNoResourceCallFetcher<OrganisationUnit>(uids, MAX_UID_LIST_SIZE) {
+            return new UidsNoResourceCallFetcher<OrganisationUnit>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
                 @Override
                 protected retrofit2.Call<Payload<OrganisationUnit>> getCall(UidsQuery query) {

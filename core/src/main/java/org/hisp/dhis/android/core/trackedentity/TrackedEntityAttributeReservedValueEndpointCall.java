@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallWithTransformerProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
@@ -41,46 +42,46 @@ public final class TrackedEntityAttributeReservedValueEndpointCall {
     private TrackedEntityAttributeReservedValueEndpointCall() {
     }
 
-    public static final QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> FACTORY =
-            new QueryCallFactoryImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>() {
+    public static QueryCallFactory<TrackedEntityAttributeReservedValue,
+            TrackedEntityAttributeReservedValueQuery> factory(APICallExecutor apiCallExecutor) {
+        return new QueryCallFactoryImpl<TrackedEntityAttributeReservedValue,
+                TrackedEntityAttributeReservedValueQuery>(apiCallExecutor) {
 
-                @Override
-                protected CallFetcher<TrackedEntityAttributeReservedValue> fetcher(
-                        GenericCallData data,
-                        final TrackedEntityAttributeReservedValueQuery query) {
+            @Override
+            protected CallFetcher<TrackedEntityAttributeReservedValue> fetcher(
+                    GenericCallData data,
+                    final TrackedEntityAttributeReservedValueQuery query) {
 
-                    final TrackedEntityAttributeReservedValueService service
-                            = data.retrofit().create(TrackedEntityAttributeReservedValueService.class);
+                final TrackedEntityAttributeReservedValueService service
+                        = data.retrofit().create(TrackedEntityAttributeReservedValueService.class);
 
-                    return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>() {
+                    return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>(apiCallExecutor) {
                         @Override
                         protected retrofit2.Call<List<TrackedEntityAttributeReservedValue>> getCall() {
                             if (query.organisationUnit() == null) {
                                 return service.generateAndReserve(
-                                        query.trackedEntityAttributeUid(),
-                                        query.numberToReserve());
+                                    query.trackedEntityAttributeUid(),
+                                    query.numberToReserve());
                             } else {
                                 return service.generateAndReserveWithOrgUnitCode(
                                         query.trackedEntityAttributeUid(),
                                         query.numberToReserve(),
                                         query.organisationUnit().code());
-
-                            }
-                        }
-                    };
+                    }
+                }};
                 }
 
-                @Override
-                protected CallProcessor<TrackedEntityAttributeReservedValue> processor(
-                        GenericCallData data,
-                        final TrackedEntityAttributeReservedValueQuery query) {
-                    return new TransactionalNoResourceSyncCallWithTransformerProcessor<>(
-                            data.databaseAdapter(),
-                            TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
-                            new TrackedEntityAttributeReservedValueModelBuilder(
-                                    query.organisationUnit(), query.trackedEntityAttributePattern())
-                    );
-                }
-            };
+            @Override
+            protected CallProcessor<TrackedEntityAttributeReservedValue> processor(
+                    GenericCallData data,
+                    final TrackedEntityAttributeReservedValueQuery query) {
+                return new TransactionalNoResourceSyncCallWithTransformerProcessor<>(
+                        data.databaseAdapter(),
+                        TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
+                        new TrackedEntityAttributeReservedValueModelBuilder(
+                                query.organisationUnit(), query.trackedEntityAttributePattern())
+                );
+            }
+        };
+    }
 }

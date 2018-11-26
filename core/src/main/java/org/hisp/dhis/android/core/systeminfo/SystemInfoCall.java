@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -48,24 +49,27 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
     private final DHISVersionManager versionManager;
+    private final APICallExecutor apiCallExecutor;
 
     SystemInfoCall(DatabaseAdapter databaseAdapter,
                    SyncHandler<SystemInfo> systemInfoHandler,
                    SystemInfoService systemInfoService,
                    ResourceHandler resourceHandler,
-                   DHISVersionManager versionManager) {
+                   DHISVersionManager versionManager,
+                   APICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoHandler = systemInfoHandler;
         this.systemInfoService = systemInfoService;
         this.resourceHandler = resourceHandler;
         this.versionManager = versionManager;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
     public SystemInfo call() throws D2Error {
         setExecuted();
 
-        SystemInfo systemInfo = new APICallExecutor().executeObjectCall(
+        SystemInfo systemInfo = apiCallExecutor.executeObjectCall(
                 systemInfoService.getSystemInfo(SystemInfoFields.allFields));
 
         if (DHISVersion.isAllowedVersion(systemInfo.version())) {
@@ -102,7 +106,7 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
                 SystemInfoHandler.create(databaseAdapter),
                 retrofit.create(SystemInfoService.class),
                 ResourceHandler.create(databaseAdapter),
-                versionManager
-        );
+                versionManager,
+                APICallExecutorImpl.create(databaseAdapter));
     }
 }

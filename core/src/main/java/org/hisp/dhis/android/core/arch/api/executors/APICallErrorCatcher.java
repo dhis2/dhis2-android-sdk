@@ -26,26 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.fetchers;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
-import java.util.List;
+import java.io.IOException;
 
-public abstract class PayloadNoResourceCallFetcher<P> implements CallFetcher<P> {
+import retrofit2.Response;
 
-    private final APICallExecutor apiCallExecutor;
-
-    protected PayloadNoResourceCallFetcher(APICallExecutor apiCallExecutor) {
-        this.apiCallExecutor = apiCallExecutor;
-    }
-
-    protected abstract retrofit2.Call<Payload<P>> getCall();
-
-    @Override
-    public final List<P> fetch() throws D2Error {
-        return apiCallExecutor.executePayloadCall(getCall());
-    }
+public interface APICallErrorCatcher {
+    D2ErrorCode catchError(Response<?> response) throws IOException;
 }

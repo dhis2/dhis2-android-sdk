@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.calls.fetchers;
 
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -40,11 +40,14 @@ public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
 
     private final ResourceHandler resourceHandler;
     private final ResourceModel.Type resourceType;
+    private final APICallExecutor apiCallExecutor;
 
-    public PayloadResourceCallFetcher(ResourceHandler resourceHandler,
-                                      ResourceModel.Type resourceType) {
+    protected PayloadResourceCallFetcher(ResourceHandler resourceHandler,
+                                         ResourceModel.Type resourceType,
+                                         APICallExecutor apiCallExecutor) {
         this.resourceHandler = resourceHandler;
         this.resourceType = resourceType;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     protected abstract retrofit2.Call<Payload<P>> getCall(String lastUpdated);
@@ -52,6 +55,6 @@ public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
     @Override
     public final List<P> fetch() throws D2Error {
         String lastUpdated = resourceType == null ? null : resourceHandler.getLastUpdated(resourceType);
-        return new APICallExecutor().executePayloadCall(getCall(lastUpdated));
+        return apiCallExecutor.executePayloadCall(getCall(lastUpdated));
     }
 }

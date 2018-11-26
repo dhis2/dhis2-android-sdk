@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -20,6 +22,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final APICallExecutor apiCallExecutor;
     private final D2InternalModules internalModules;
 
     private final Collection<String> trackedEntityInstanceUids;
@@ -27,10 +30,12 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
     private TrackedEntityInstanceRelationshipDownloadAndPersistCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull APICallExecutor apiCallExecutor,
             @NonNull D2InternalModules internalModules,
             @NonNull Collection<String> trackedEntityInstanceUids) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.apiCallExecutor = apiCallExecutor;
         this.internalModules = internalModules;
         this.trackedEntityInstanceUids = trackedEntityInstanceUids;
     }
@@ -47,7 +52,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
         D2CallExecutor executor = new D2CallExecutor();
         for (String uid: trackedEntityInstanceUids) {
             Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                    .create(retrofit, uid, TrackedEntityInstance.asRelationshipFields);
+                    .create(retrofit, apiCallExecutor, uid, TrackedEntityInstance.asRelationshipFields);
             teis.add(executor.executeD2Call(teiCall));
         }
 
@@ -64,6 +69,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
         return new TrackedEntityInstanceRelationshipDownloadAndPersistCall(
                 databaseAdapter,
                 retrofit,
+                APICallExecutorImpl.create(databaseAdapter),
                 internalModules,
                 trackedEntityInstanceUids
         );

@@ -1,7 +1,8 @@
 package org.hisp.dhis.android.core.event.api;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -37,7 +38,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
     private String strategy;
 
     private D2 d2;
-    private APICallExecutor executor;
+    private APICallExecutor apiCallExecutor;
 
     private EventService eventService;
 
@@ -52,8 +53,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         super.setUp();
 
         d2 = D2Factory.create(this.serverUrl, databaseAdapter());
-
-        executor = new APICallExecutor();
+        apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
 
         eventService = d2.retrofit().create(EventService.class);
     }
@@ -69,7 +69,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent1, validEvent2);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(eventService
+        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
                 .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
@@ -84,8 +84,8 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent1 = executor.executeObjectCall(eventService.getEvent(validEvent1.uid(), Event.allFields));
-        Event serverValidEvent2 = executor.executeObjectCall(eventService.getEvent(validEvent2.uid(), Event.allFields));
+        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), Event.allFields));
+        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), Event.allFields));
 
         assertThat(serverValidEvent1).isNotNull();
         assertThat(serverValidEvent2).isNotNull();
@@ -102,7 +102,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(eventService
+        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
                 .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
@@ -117,12 +117,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = executor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            executor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -140,7 +140,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(eventService
+        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
                 .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
@@ -155,12 +155,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = executor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            executor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -178,7 +178,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent1, validEvent2);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(eventService
+        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
                 .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
@@ -193,8 +193,8 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent1 = executor.executeObjectCall(eventService.getEvent(validEvent1.uid(), Event.allFields));
-        Event serverValidEvent2 = executor.executeObjectCall(eventService.getEvent(validEvent2.uid(), Event.allFields));
+        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), Event.allFields));
+        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), Event.allFields));
 
         assertThat(serverValidEvent1).isNotNull();
         assertThat(serverValidEvent2).isNotNull();
@@ -211,7 +211,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(eventService
+        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
                 .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
@@ -226,12 +226,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = executor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            executor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -249,7 +249,7 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(eventService
+        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
                 .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
 
         assertThat(response.importSummaries().importStatus()).isEqualTo(WARNING);
@@ -264,8 +264,8 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = executor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
-        Event serverInvalidEvent = executor.executeObjectCall(eventService.getEvent(invalidEvent.uid(),
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverInvalidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(),
                 Event.allFields));
 
         assertThat(serverValidEvent).isNotNull();

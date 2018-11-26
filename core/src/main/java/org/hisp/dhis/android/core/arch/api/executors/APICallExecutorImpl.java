@@ -26,14 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.api.executors;
 
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -44,8 +49,16 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public final class APICallExecutor {
+public final class APICallExecutorImpl implements APICallExecutor {
 
+    private final ObjectStore<D2Error> errorStore;
+
+    @VisibleForTesting
+    APICallExecutorImpl(ObjectStore<D2Error> errorStore) {
+        this.errorStore = errorStore;
+    }
+
+    @Override
     public <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2Error {
         D2Error.Builder errorBuilder = getCollectionErrorBuilder(call);
 
@@ -53,29 +66,33 @@ public final class APICallExecutor {
             Response<Payload<P>> response = call.execute();
             if (response.isSuccessful()) {
                 if (response.body() == null) {
-                    throw responseException(errorBuilder, response);
+                    throw storeAndReturn(responseException(errorBuilder, response));
                 } else {
                     return response.body().items();
                 }
             } else {
-                throw responseException(errorBuilder, response);
+                throw storeAndReturn(responseException(errorBuilder, response));
+
             }
         } catch (SocketTimeoutException e) {
-            throw socketTimeoutException(errorBuilder, e);
+            throw storeAndReturn(socketTimeoutException(errorBuilder, e));
         } catch (IOException e) {
-            throw ioException(errorBuilder, e);
+            throw storeAndReturn(ioException(errorBuilder, e));
         }
     }
 
+    @Override
     public <P> P executeObjectCall(Call<P> call) throws D2Error {
         return executeObjectCallInternal(call, new ArrayList<Integer>(), null, null);
     }
 
+    @Override
     public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
                                                          Class<P> errorClass) throws D2Error {
         return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null);
     }
 
+    @Override
     public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
             throws D2Error {
         return executeObjectCallInternal(call, new ArrayList<Integer>(), null, errorCatcher);
@@ -95,27 +112,27 @@ public final class APICallExecutor {
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher == null) {
-                throw responseException(errorBuilder, response);
+                throw storeAndReturn(responseException(errorBuilder, response));
             } else {
                 D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
                 if (d2ErrorCode == null) {
-                    throw responseException(errorBuilder, response);
+                    throw storeAndReturn(responseException(errorBuilder, response));
                 } else {
-                    throw errorBuilder.errorCode(d2ErrorCode).build();
+                    throw storeAndReturn(errorBuilder.errorCode(d2ErrorCode).build());
                 }
             }
         } catch (SocketTimeoutException e) {
-            throw socketTimeoutException(errorBuilder, e);
+            throw storeAndReturn(socketTimeoutException(errorBuilder, e));
         } catch (UnknownHostException e) {
-            throw unknownHostException(errorBuilder, e);
+            throw storeAndReturn(unknownHostException(errorBuilder, e));
         } catch (IOException e) {
-            throw ioException(errorBuilder, e);
+            throw storeAndReturn(ioException(errorBuilder, e));
         }
     }
 
     private <P> P processSuccessfulResponse(D2Error.Builder errorBuilder, Response<P> response) throws D2Error {
         if (response.body() == null) {
-            throw responseException(errorBuilder, response);
+            throw storeAndReturn(responseException(errorBuilder, response));
         } else {
             return response.body();
         }
@@ -204,5 +221,14 @@ public final class APICallExecutor {
                 .errorDescription("API call threw IOException")
                 .originalException(e)
                 .build();
+    }
+
+    private D2Error storeAndReturn(D2Error error) {
+        errorStore.insert(error);
+        return error;
+    }
+
+    public static APICallExecutor create(DatabaseAdapter databaseAdapter) {
+        return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter));
     }
 }

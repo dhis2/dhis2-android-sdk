@@ -26,14 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.io.IOException;
+import java.util.List;
 
-import retrofit2.Response;
+import retrofit2.Call;
 
-public interface APICallErrorCatcher {
-    D2ErrorCode catchError(Response<?> response) throws IOException;
+public interface APICallExecutor {
+
+    <P> List<P> executePayloadCall(Call<Payload<P>> call) throws D2Error;
+
+    <P> P executeObjectCall(Call<P> call) throws D2Error;
+
+    <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call,
+                                                  List<Integer> acceptedErrorCodes,
+                                                  Class<P> errorClass) throws D2Error;
+
+    <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher) throws D2Error;
 }

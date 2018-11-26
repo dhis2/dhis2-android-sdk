@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -108,12 +110,13 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     public static final GenericCallFactory<List<DataSet>> FACTORY = new GenericCallFactory<List<DataSet>>() {
         @Override
         public Call<List<DataSet>> create(GenericCallData genericCallData) {
+            APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
             return new DataSetParentCall(genericCallData,
-                    DataSetEndpointCall.FACTORY,
-                    DataElementEndpointCall.FACTORY,
-                    IndicatorEndpointCall.FACTORY,
-                    IndicatorTypeEndpointCall.FACTORY,
-                    OptionSetCall.factory(genericCallData.retrofit()),
+                    DataSetEndpointCall.factory(apiCallExecutor),
+                    DataElementEndpointCall.factory(apiCallExecutor),
+                    IndicatorEndpointCall.factory(apiCallExecutor),
+                    IndicatorTypeEndpointCall.factory(apiCallExecutor),
+                    OptionSetCall.factory(genericCallData.retrofit(), apiCallExecutor),
                     PeriodHandler.create(genericCallData.databaseAdapter()));
         }
     };

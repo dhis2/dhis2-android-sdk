@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -46,35 +47,37 @@ public final class ProgramStageEndpointCall {
     private ProgramStageEndpointCall() {
     }
 
-    public static final UidsCallFactory<ProgramStage> FACTORY = new UidsCallFactoryImpl<ProgramStage>() {
+    public static UidsCallFactory<ProgramStage> factory(final APICallExecutor apiCallExecutor) {
+        return new UidsCallFactoryImpl<ProgramStage>() {
 
-        private static final int MAX_UID_LIST_SIZE = 64;
+            private static final int MAX_UID_LIST_SIZE = 64;
 
-        @Override
-        protected CallFetcher<ProgramStage> fetcher(GenericCallData data, Set<String> uids) {
-            final ProgramStageService service = data.retrofit().create(ProgramStageService.class);
+            @Override
+            protected CallFetcher<ProgramStage> fetcher(GenericCallData data, Set<String> uids) {
+                final ProgramStageService service = data.retrofit().create(ProgramStageService.class);
 
-            return new UidsNoResourceCallFetcher<ProgramStage>(uids, MAX_UID_LIST_SIZE) {
+                return new UidsNoResourceCallFetcher<ProgramStage>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
-                @Override
-                protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query) {
-                    String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                    return service.getProgramStages(
-                            ProgramStageFields.allFields,
-                            ProgramStageFields.uid.in(query.uids()),
-                            accessDataReadFilter,
-                            Boolean.FALSE);
-                }
-            };
-        }
+                    @Override
+                    protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query) {
+                        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                        return service.getProgramStages(
+                                ProgramStageFields.allFields,
+                                ProgramStageFields.uid.in(query.uids()),
+                                accessDataReadFilter,
+                                Boolean.FALSE);
+                    }
+                };
+            }
 
-        @Override
-        protected CallProcessor<ProgramStage> processor(GenericCallData data) {
-            return new TransactionalNoResourceCallProcessor<>(
-                    data.databaseAdapter(),
-                    ProgramStageHandler.create(data.databaseAdapter(), data.versionManager()),
-                    new ProgramStageModelBuilder()
-            );
-        }
-    };
+            @Override
+            protected CallProcessor<ProgramStage> processor(GenericCallData data) {
+                return new TransactionalNoResourceCallProcessor<>(
+                        data.databaseAdapter(),
+                        ProgramStageHandler.create(data.databaseAdapter(), data.versionManager()),
+                        new ProgramStageModelBuilder()
+                );
+            }
+        };
+    }
 }

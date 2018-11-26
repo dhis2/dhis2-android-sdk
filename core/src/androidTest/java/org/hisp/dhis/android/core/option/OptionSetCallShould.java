@@ -36,6 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -81,7 +83,9 @@ public class OptionSetCallShould extends AbsStoreTestCase {
         uids.add("POc7DkGU3QU");
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-        optionSetCall = OptionSetCall.factory(getGenericCallData(d2).retrofit()).create(getGenericCallData(d2), uids);
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
+        optionSetCall = OptionSetCall.factory(getGenericCallData(d2).retrofit(), apiCallExecutor)
+                .create(getGenericCallData(d2), uids);
 
         d2CallExecutor = new D2CallExecutor();
 

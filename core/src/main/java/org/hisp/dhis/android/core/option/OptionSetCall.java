@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
@@ -46,7 +47,7 @@ public final class OptionSetCall {
 
     private OptionSetCall() {}
 
-    public static UidsCallFactory<OptionSet> factory(Retrofit retrofit) {
+    public static UidsCallFactory<OptionSet> factory(Retrofit retrofit, final APICallExecutor apiCallExecutor) {
 
         final OptionSetService service = retrofit.create(OptionSetService.class);
 
@@ -57,7 +58,7 @@ public final class OptionSetCall {
             @Override
             protected CallFetcher<OptionSet> fetcher(GenericCallData data, Set<String> uids) {
 
-                return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE) {
+                return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
                     @Override
                     protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {

@@ -159,7 +159,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private void downloadEventsBy(String categoryComboUID) throws Exception {
         EventEndpointCall eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), orgUnitUid, 50, categoryComboUID);
+                d2.retrofit(), d2.databaseAdapter(), orgUnitUid, 50, categoryComboUID);
 
         List<Event> events = eventEndpointCall.call();
         eventStore = new EventStoreImpl(databaseAdapter());

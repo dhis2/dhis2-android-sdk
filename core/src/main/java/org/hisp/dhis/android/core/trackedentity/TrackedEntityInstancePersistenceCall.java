@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -28,6 +30,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final APICallExecutor apiCallExecutor;
     private final D2InternalModules internalModules;
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -41,6 +44,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
     private TrackedEntityInstancePersistenceCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull APICallExecutor apiCallExecutor,
             @NonNull D2InternalModules internalModules,
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
@@ -51,6 +55,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.apiCallExecutor = apiCallExecutor;
         this.internalModules = internalModules;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
@@ -80,7 +85,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                     Call<List<OrganisationUnit>> organisationUnitCall =
                             searchOrganisationUnitOnDemandCallFactory.create(
                                 databaseAdapter, retrofit, searchOrgUnitUids,
-                                User.builder().uid(authenticatedUserModel.user()).build());
+                                User.builder().uid(authenticatedUserModel.user()).build(), apiCallExecutor);
                     executor.executeD2Call(organisationUnitCall);
                 }
 
@@ -112,6 +117,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
         return new TrackedEntityInstancePersistenceCall(
                 databaseAdapter,
                 retrofit,
+                APICallExecutorImpl.create(databaseAdapter),
                 internalModules,
                 TrackedEntityInstanceHandler.create(databaseAdapter, internalModules),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),

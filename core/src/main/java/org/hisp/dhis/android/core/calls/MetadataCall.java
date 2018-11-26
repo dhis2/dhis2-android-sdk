@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryParentUidsHelper;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -158,6 +160,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
     public static MetadataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                       D2InternalModules internalModules) {
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
         return new MetadataCall(
                 databaseAdapter,
                 retrofit,
@@ -165,8 +168,8 @@ public class MetadataCall extends SyncCall<Unit> {
                 internalModules.systemInfo.publicModule.versionManager,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
-                CategoryEndpointCall.FACTORY,
-                CategoryComboEndpointCall.FACTORY,
+                CategoryEndpointCall.factory(apiCallExecutor),
+                CategoryComboEndpointCall.factory(apiCallExecutor),
                 new CategoryComboUidsSeeker(databaseAdapter),
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,

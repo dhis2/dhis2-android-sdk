@@ -31,6 +31,7 @@ import android.database.Cursor;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -66,15 +67,19 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final Retrofit retrofit;
     private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
     private final DHISVersionManager versionManager;
+    private final QueryCallFactory<TrackedEntityAttributeReservedValue,
+            TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
 
-    private TrackedEntityAttributeReservedValueManager(
+    TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
             Retrofit retrofit,
             NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
             DHISVersionManager versionManager,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            TrackedEntityAttributeStore trackedEntityAttributeStore) {
+            TrackedEntityAttributeStore trackedEntityAttributeStore,
+            QueryCallFactory<TrackedEntityAttributeReservedValue,
+                    TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.systemInfoCallFactory = systemInfoCallFactory;
@@ -82,6 +87,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.trackedEntityAttributeReservedValueQueryCallFactory = trackedEntityAttributeReservedValueQueryCallFactory;
     }
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
@@ -104,19 +110,13 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     public void syncReservedValues(String attribute, String organisationUnitUid, Integer numberOfValuesToFillUp) {
 
-        if (organisationUnitUid == null) {
-            if (attribute == null) {
-                syncAllTrackedEntityAttributeReservedValues(numberOfValuesToFillUp, null);
-            } else {
-                syncTrackedEntityAttributeReservedValue(attribute, numberOfValuesToFillUp);
-            }
+        if (attribute == null) {
+            syncAllTrackedEntityAttributeReservedValues(numberOfValuesToFillUp, organisationUnitUid);
+        } else if (organisationUnitUid == null) {
+            syncTrackedEntityAttributeReservedValue(attribute, numberOfValuesToFillUp);
         } else {
-            if (attribute == null) {
-                syncAllTrackedEntityAttributeReservedValues(numberOfValuesToFillUp, organisationUnitUid);
-            } else {
-                OrganisationUnit organisationUnit = organisationUnitStore.selectByUid(organisationUnitUid);
-                syncReservedValue(attribute, organisationUnit, numberOfValuesToFillUp);
-            }
+            OrganisationUnit organisationUnit = organisationUnitStore.selectByUid(organisationUnitUid);
+            syncReservedValue(attribute, organisationUnit, numberOfValuesToFillUp);
         }
     }
 
@@ -175,7 +175,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             trackedEntityAttributePattern = "";
         }
 
-        executor.executeD2Call(TrackedEntityAttributeReservedValueEndpointCall.FACTORY.create(genericCallData,
+        executor.executeD2Call(trackedEntityAttributeReservedValueQueryCallFactory.create(genericCallData,
                 TrackedEntityAttributeReservedValueQuery.create(
                         trackedEntityAttributeUid, numberToReserve, organisationUnit, trackedEntityAttributePattern)));
     }
@@ -260,6 +260,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                 internalModules.systemInfo.publicModule.versionManager,
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
-        new TrackedEntityAttributeStoreImpl(databaseAdapter));
+                new TrackedEntityAttributeStoreImpl(databaseAdapter),
+                TrackedEntityAttributeReservedValueEndpointCall.FACTORY);
     }
 }

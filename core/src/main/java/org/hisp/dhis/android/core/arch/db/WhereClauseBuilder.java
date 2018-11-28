@@ -34,6 +34,7 @@ import java.util.List;
 public class WhereClauseBuilder {
 
     private static final String EQ_STR = " = '";
+    private static final String LIKE_STR = " LIKE '";
     private static final String END_STR = "'";
     private static final String PARENTHESES_END = ")";
 
@@ -49,6 +50,10 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
         return appendKeyValue(column, value, EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendKeyLikeStringValue(String column, Object value) {
+        return appendKeyValue(column, value, LIKE_STR, END_STR);
     }
 
     public WhereClauseBuilder appendKeyNumberValue(String column, double value) {

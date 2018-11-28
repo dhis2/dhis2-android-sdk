@@ -26,6 +26,15 @@ public class WhereClauseBuilderShould {
     }
 
     @Test
+    public void build_where_statement_for_one_key_value_pair_with_like_string_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyLikeStringValue("COL", "VAL")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL LIKE 'VAL'");
+    }
+
+    @Test
     public void build_where_statement_for_two_key_value_pairs() {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         String whereStatement = builder

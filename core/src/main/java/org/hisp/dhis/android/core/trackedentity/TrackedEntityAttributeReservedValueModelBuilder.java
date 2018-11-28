@@ -40,7 +40,7 @@ public class TrackedEntityAttributeReservedValueModelBuilder
 
     TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
         this.builder = TrackedEntityAttributeReservedValue.builder()
-                .organisationUnit(organisationUnit.uid());
+                .organisationUnit(organisationUnit == null ? null : organisationUnit.uid());
         fillTemporalValidityDate(pattern);
     }
 

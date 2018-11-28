@@ -40,6 +40,11 @@ public interface TrackedEntityAttributeReservedValueService {
     @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
     Call<List<TrackedEntityAttributeReservedValue>> generateAndReserve(
             @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
+            @Query("numberToReserve") Integer numberToReserve);
+
+    @GET("trackedEntityAttributes/{" + TRACKED_ENTITY_ATTRIBUTE_UID + "}/generateAndReserve")
+    Call<List<TrackedEntityAttributeReservedValue>> generateAndReserveWithOrgUnitCode(
+            @Path(TRACKED_ENTITY_ATTRIBUTE_UID) String trackedEntityAttributeUid,
             @Query("numberToReserve") Integer numberToReserve,
             @Query("ORG_UNIT_CODE") String orgUnitCode);
 }

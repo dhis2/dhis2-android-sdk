@@ -55,16 +55,21 @@ public final class TrackedEntityAttributeReservedValueEndpointCall {
                 final TrackedEntityAttributeReservedValueService service
                         = data.retrofit().create(TrackedEntityAttributeReservedValueService.class);
 
-                return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>(apiCallExecutor) {
-                    @Override
-                    protected retrofit2.Call<List<TrackedEntityAttributeReservedValue>> getCall() {
-                        return service.generateAndReserve(
-                                query.trackedEntityAttributeUid(),
-                                query.numberToReserve(),
-                                query.organisationUnit().code());
+                    return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>(apiCallExecutor) {
+                        @Override
+                        protected retrofit2.Call<List<TrackedEntityAttributeReservedValue>> getCall() {
+                            if (query.organisationUnit() == null) {
+                                return service.generateAndReserve(
+                                    query.trackedEntityAttributeUid(),
+                                    query.numberToReserve());
+                            } else {
+                                return service.generateAndReserveWithOrgUnitCode(
+                                        query.trackedEntityAttributeUid(),
+                                        query.numberToReserve(),
+                                        query.organisationUnit().code());
                     }
-                };
-            }
+                }};
+                }
 
             @Override
             protected CallProcessor<TrackedEntityAttributeReservedValue> processor(

@@ -197,14 +197,10 @@ public final class D2 {
                 .getValue(attributeUid, organisationUnitUid);
     }
 
-    public void syncTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+    public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
+                                                         Integer numberOfValuesToFillUp) {
         TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
-                .forceSyncReservedValues(attributeUid, organisationUnitUid);
-    }
-
-    public void syncAllTrackedEntityAttributeReservedValues() {
-        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
-                .syncAllTrackedEntityAttributeReservedValues();
+                .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
     }
 
     @NonNull

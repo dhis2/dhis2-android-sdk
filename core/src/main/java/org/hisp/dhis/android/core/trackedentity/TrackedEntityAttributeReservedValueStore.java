@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
@@ -70,8 +71,9 @@ public final class TrackedEntityAttributeReservedValueStore
 
     @Override
     public TrackedEntityAttributeReservedValue popOne(@NonNull String ownerUid,
-                                                      @NonNull String organisationUnitUid) {
-        return popOneWhere(where(ownerUid, organisationUnitUid));
+                                                      @Nullable String organisationUnitUid) {
+        String where = organisationUnitUid == null ? where(ownerUid) : where(ownerUid, organisationUnitUid);
+        return popOneWhere(where);
     }
 
     @Override
@@ -79,11 +81,22 @@ public final class TrackedEntityAttributeReservedValueStore
         return countWhere(where(ownerUid, organisationUnitUid));
     }
 
+    @Override
+    public int count(@NonNull String ownerUid) {
+        return countWhere(where(ownerUid));
+    }
+
     private String where(@NonNull String ownerUid,
                          @NonNull String organisationUnitUid) {
         return new WhereClauseBuilder()
                 .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
                 .appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnitUid)
+                .build();
+    }
+
+    private String where(@NonNull String ownerUid) {
+        return new WhereClauseBuilder()
+                .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
                 .build();
     }
 

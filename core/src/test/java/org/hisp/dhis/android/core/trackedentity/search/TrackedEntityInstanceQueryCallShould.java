@@ -45,6 +45,7 @@ import org.mockito.stubbing.OngoingStubbing;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -105,6 +106,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         query = TrackedEntityInstanceQuery.builder().
                 orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE).program("program")
+                .programStartDate(new Date()).programEndDate(new Date())
                 .query("queryStr").attribute(attribute).filter(filter)
                 .paging(false).page(2).pageSize(33).build();
 
@@ -142,6 +144,8 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.orgUnits().get(0) + ";" + query.orgUnits().get(1)),
                 eq(query.orgUnitMode().toString()),
                 eq(query.program()),
+                eq(query.formattedProgramStartDate()),
+                eq(query.formattedProgramEndDate()),
                 eq(query.query()),
                 eq(query.attribute()),
                 eq(query.filter()),
@@ -177,7 +181,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     }
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
-        return when(service.query(anyString(), anyString(), anyString(), anyString(),
+        return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyListOf(String.class), anyListOf(String.class), anyBoolean(), anyInt(), anyInt()));
     }
 }

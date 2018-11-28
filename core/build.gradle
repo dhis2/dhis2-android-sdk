@@ -29,7 +29,6 @@
 apply plugin: "com.android.library"
 apply from: rootProject.file("plugins/android-checkstyle.gradle")
 apply from: rootProject.file("plugins/android-findbugs.gradle")
-apply from: rootProject.file("plugins/android-dexcount.gradle")
 apply from: rootProject.file("plugins/android-pmd.gradle")
 apply from: rootProject.file("plugins/errorprone.gradle")
 

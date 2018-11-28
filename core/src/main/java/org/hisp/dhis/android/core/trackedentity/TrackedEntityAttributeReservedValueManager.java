@@ -93,7 +93,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     @SuppressFBWarnings("DE_MIGHT_IGNORE")
     public String getValue(String attribute, String organisationUnitUid) throws D2Error {
-        OrganisationUnit organisationUnit =
+        OrganisationUnit organisationUnit = organisationUnitUid == null ? null :
                 OrganisationUnitStore.create(databaseAdapter).selectByUid(organisationUnitUid);
         syncReservedValue(attribute, organisationUnit, null);
 

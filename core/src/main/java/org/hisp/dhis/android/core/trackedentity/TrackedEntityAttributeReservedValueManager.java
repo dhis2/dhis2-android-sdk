@@ -184,30 +184,30 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     private List<OrganisationUnit> getAttributeWithOUCodeOrgUnits(String attribute) {
-        String JOIN = " INNER JOIN ";
-        String ON = " ON ";
-        String EQ = " = ";
-        String DOT = ".";
+        String join = " INNER JOIN ";
+        String on = " ON ";
+        String eq = " = ";
+        String dot = ".";
 
-        String oUUid = OrganisationUnitTableInfo.TABLE_INFO.name() + DOT + BaseIdentifiableObjectModel.Columns.UID;
-        String programUid = ProgramTableInfo.TABLE_INFO.name() + DOT + BaseIdentifiableObjectModel.Columns.UID;
-        String oUPLOrganisationUnit = OrganisationUnitProgramLinkModel.TABLE + DOT
+        String oUUid = OrganisationUnitTableInfo.TABLE_INFO.name() + dot + BaseIdentifiableObjectModel.Columns.UID;
+        String programUid = ProgramTableInfo.TABLE_INFO.name() + dot + BaseIdentifiableObjectModel.Columns.UID;
+        String oUPLOrganisationUnit = OrganisationUnitProgramLinkModel.TABLE + dot
                 + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
-        String oUPLProgram = OrganisationUnitProgramLinkModel.TABLE + DOT
+        String oUPLProgram = OrganisationUnitProgramLinkModel.TABLE + dot
                 + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
-        String pTEAProgram = ProgramTrackedEntityAttributeModel.TABLE + DOT
+        String pTEAProgram = ProgramTrackedEntityAttributeModel.TABLE + dot
                 + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
-        String pTEATrackedEntityAttribute = ProgramTrackedEntityAttributeModel.TABLE + DOT
+        String pTEATrackedEntityAttribute = ProgramTrackedEntityAttributeModel.TABLE + dot
                 + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
-        String tEAUid = TrackedEntityAttributeModel.TABLE + DOT + BaseIdentifiableObjectModel.Columns.UID;
-        String tEAPattern = TrackedEntityAttributeModel.TABLE + DOT + TrackedEntityAttributeModel.Columns.PATTERN;
+        String tEAUid = TrackedEntityAttributeModel.TABLE + dot + BaseIdentifiableObjectModel.Columns.UID;
+        String tEAPattern = TrackedEntityAttributeModel.TABLE + dot + TrackedEntityAttributeModel.Columns.PATTERN;
 
         String queryStatement = "SELECT " + OrganisationUnitTableInfo.TABLE_INFO.name() + ".* FROM (" +
                 OrganisationUnitTableInfo.TABLE_INFO.name() +
-                JOIN + OrganisationUnitProgramLinkModel.TABLE + ON + oUUid + EQ + oUPLOrganisationUnit +
-                JOIN + ProgramTableInfo.TABLE_INFO.name() + ON + oUPLProgram + EQ + programUid +
-                JOIN + ProgramTrackedEntityAttributeModel.TABLE + ON + programUid + EQ + pTEAProgram +
-                JOIN + TrackedEntityAttributeModel.TABLE + ON + tEAUid + EQ + pTEATrackedEntityAttribute + ") " +
+                join + OrganisationUnitProgramLinkModel.TABLE + on + oUUid + eq + oUPLOrganisationUnit +
+                join + ProgramTableInfo.TABLE_INFO.name() + on + oUPLProgram + eq + programUid +
+                join + ProgramTrackedEntityAttributeModel.TABLE + on + programUid + eq + pTEAProgram +
+                join + TrackedEntityAttributeModel.TABLE + on + tEAUid + eq + pTEATrackedEntityAttribute + ") " +
                 " WHERE " + new WhereClauseBuilder()
                 .appendKeyStringValue(tEAUid, attribute)
                 .appendKeyLikeStringValue(tEAPattern, "%ORG_UNIT_CODE%").build() + ";";

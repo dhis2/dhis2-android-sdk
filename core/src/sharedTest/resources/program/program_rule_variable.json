@@ -1,0 +1,27 @@
+{
+  "created": "2015-08-07T18:38:12.931",
+  "lastUpdated": "2015-08-07T18:38:12.932",
+  "name": "age",
+  "href": "https://play.dhis2.org/dev/api/programRuleVariables/RycV5uDi66i",
+  "id": "RycV5uDi66i",
+  "displayName": "age",
+  "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
+  "externalAccess": false,
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": false
+  },
+  "program": {
+    "id": "eBAyeGv0exc"
+  },
+  "dataElement": {
+    "id": "qrur9Dvnyt5"
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "translations": []
+}

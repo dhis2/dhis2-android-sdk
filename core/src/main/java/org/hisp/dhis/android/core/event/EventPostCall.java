@@ -2,7 +2,8 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -11,6 +12,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -24,12 +26,16 @@ public final class EventPostCall extends SyncCall<WebResponse> {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
+    private final APICallExecutor apiCallExecutor;
+
     private EventPostCall(@NonNull EventService eventService,
-                         @NonNull EventStore eventStore,
-                         @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore) {
+                          @NonNull EventStore eventStore,
+                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
+                          @NonNull APICallExecutor apiCallExecutor) {
         this.eventService = eventService;
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
@@ -48,8 +54,8 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
         String strategy = "CREATE_AND_UPDATE";
 
-        WebResponse webResponse =
-                new APICallExecutor().executeObjectCall(eventService.postEvents(eventPayload, strategy));
+        WebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                eventService.postEvents(eventPayload, strategy), Collections.singletonList(409), WebResponse.class);
 
         handleWebResponse(webResponse);
         return webResponse;
@@ -58,7 +64,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
     @NonNull
     private List<Event> queryEventsToPost() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.TRUE);
+                trackedEntityDataValueStore.querySingleEventsTrackedEntityDataValues();
         List<Event> events = eventStore.querySingleEventsToPost();
         int eventSize = events.size();
 
@@ -72,7 +78,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
                     event.createdAtClient(), event.lastUpdatedAtClient(), event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.status(), event.coordinates(),
                     event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                    event.attributeCategoryOptions(), event.attributeOptionCombo(), event.trackedEntityInstance()));
+                    event.attributeOptionCombo(), event.trackedEntityInstance()));
         }
 
         return eventRecreated;
@@ -89,7 +95,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
         return new EventPostCall(
                 retrofit.create(EventService.class),
                 new EventStoreImpl(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter)
-        );
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
+                APICallExecutorImpl.create(databaseAdapter));
     }
 }

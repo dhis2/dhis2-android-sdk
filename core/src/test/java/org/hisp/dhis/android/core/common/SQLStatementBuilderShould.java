@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.category.CategoryTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.legendset.LegendModel;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,15 +46,22 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(JUnit4.class)
 public class SQLStatementBuilderShould {
 
-    private SQLStatementBuilder builder;
+    private final static String TABLE_NAME = "Test_Table";
+    private final static String COL_1 = "Test_Column_Name1";
+    private final static String COL_2 = "Test_Column_Name2";
+
+    private final static String[] columns = new String[]{COL_1, COL_2};
+
+    private SQLStatementBuilder builder = new SQLStatementBuilder(TABLE_NAME, columns, columns, false);
+
+    private static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            CategoryTableInfo.TABLE_INFO,
+            COL_1,
+            COL_2);
 
     @Before
     public void setUp() throws IOException {
-        String[] columns = new String[]{
-                "Test_Column_Name1",
-                "Test_Column_Name2"
-        };
-        this.builder = new SQLStatementBuilder("Test_Table", columns, columns);
+
     }
 
     @Test
@@ -125,13 +134,13 @@ public class SQLStatementBuilderShould {
     @Test
     public void generate_create_organisation_unit_table_statement() {
         String createOrganisationUnitTable =
-                SQLStatementBuilder.createNameableModelTable(OrganisationUnitModel.TABLE,
-                        OrganisationUnitModel.Columns.PATH + " TEXT," +
-                                OrganisationUnitModel.Columns.OPENING_DATE + " TEXT," +
-                                OrganisationUnitModel.Columns.CLOSED_DATE + " TEXT," +
-                                OrganisationUnitModel.Columns.LEVEL + " INTEGER," +
-                                OrganisationUnitModel.Columns.PARENT + " TEXT," +
-                                OrganisationUnitModel.Columns.DISPLAY_NAME_PATH + " TEXT"
+                SQLStatementBuilder.createNameableModelTable(OrganisationUnitTableInfo.TABLE_INFO.name(),
+                        "path TEXT," +
+                                "openingDate TEXT," +
+                                "closedDate TEXT," +
+                                "level INTEGER," +
+                                "parent TEXT," +
+                                "displayNamePath TEXT"
                 );
 
         assertThat(createOrganisationUnitTable).isEqualTo("CREATE TABLE OrganisationUnit (_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL UNIQUE, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, path TEXT,openingDate TEXT,closedDate TEXT,level INTEGER,parent TEXT,displayNamePath TEXT);");
@@ -147,8 +156,8 @@ public class SQLStatementBuilderShould {
                                 " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                                 " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
-                                " REFERENCES " + OrganisationUnitModel.TABLE + " (" +
-                                OrganisationUnitModel.Columns.UID + ")" +
+                                " REFERENCES " + OrganisationUnitTableInfo.TABLE_INFO.name() + " (" +
+                                BaseIdentifiableObjectModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                                 " UNIQUE (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ", " +
                                 DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"
@@ -195,9 +204,31 @@ public class SQLStatementBuilderShould {
     }
 
     @Test
+    public void generate_count_statement() {
+        assertThat(builder.count()).isEqualTo(
+                "SELECT COUNT(*) FROM Test_Table;"
+        );
+    }
+
+    @Test
     public void generate_select_by_uid_statement() {
         assertThat(builder.selectByUid()).isEqualTo(
                 "SELECT * FROM Test_Table WHERE uid=?;"
+        );
+    }
+
+    @Test
+    public void generate_select_children_with_link_table() {
+        assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID")).isEqualTo(
+                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID';"
+        );
+    }
+
+    @Test
+    public void generate_select_children_with_link_table_with_sort_order() {
+        SQLStatementBuilder builderWithSortOrder = new SQLStatementBuilder(TABLE_NAME, columns, columns, true);
+        assertThat(builderWithSortOrder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID")).isEqualTo(
+                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID' ORDER BY sortOrder;"
         );
     }
 }

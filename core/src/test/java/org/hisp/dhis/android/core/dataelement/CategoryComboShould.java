@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,37 +39,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class CategoryComboShould {
+public class CategoryComboShould extends BaseObjectShould implements ObjectShould {
 
+    public CategoryComboShould() {
+        super("category/category_combo.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        CategoryCombo combo = objectMapper.readValue("{" +
-                        "\"code\":\"BIRTHS\"," +
-                        "\"created\":\"2011-12-24T12:24:25.203\"," +
-                        "\"lastUpdated\":\"2016-04-18T16:04:34.745\"," +
-                        "\"name\":\"Births\"," +
-                        "\"id\":\"m2jTvAj5kkm\"," +
-                        "\"dataDimensionType\":\"DISAGGREGATION\"," +
-                        "\"displayName\":\"Births\"," +
-                        "\"publicAccess\":\"rw------\"," +
-                        "\"externalAccess\":false," +
-                        "\"isDefault\":false," +
-                        "\"skipTotal\":false," +
-                        "\"user\":{\"id\":\"GOLswS44mh8\"}," +
-                        "\"userGroupAccesses\":[]," +
-                        "\"attributeValues\":[]," +
-                        "\"categoryOptionCombos\":[" +
-                        "{\"id\":\"b19Ye0TWs1D\"}," +
-                        "{\"id\":\"YEmiuCcgNQI\"}," +
-                        "{\"id\":\"vP9xV78M67W\"}]," +
-                        "\"categories\":[" +
-                        "{\"id\":\"KfdsGBcoiCa\"}," +
-                        "{\"id\":\"cX5k9anHEHd\"}" +
-                        "]" +
-                        "}",
-                CategoryCombo.class);
+        CategoryCombo combo = objectMapper.readValue(jsonStream, CategoryCombo.class);
 
         assertThat(combo.uid()).isEqualTo("m2jTvAj5kkm");
         assertThat(combo.code()).isEqualTo("BIRTHS");

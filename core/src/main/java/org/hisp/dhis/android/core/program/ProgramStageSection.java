@@ -28,90 +28,94 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.IgnoreDataElementListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ProgramStageSectionRenderingColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementFields;
 
-import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-public abstract class ProgramStageSection extends BaseIdentifiableObject {
-    private static final String SORT_ORDER = "sortOrder";
-    private static final String PROGRAM_INDICATORS = "programIndicators";
-    private static final String DATA_ELEMENTS = "dataElements";
-    private static final String RENDER_TYPE = "renderType";
-
-    private static final Field<ProgramStageSection, String> uid = Field.create(UID);
-    private static final Field<ProgramStageSection, String> code = Field.create(CODE);
-    private static final Field<ProgramStageSection, String> name = Field.create(NAME);
-    private static final Field<ProgramStageSection, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<ProgramStageSection, String> created = Field.create(CREATED);
-    private static final Field<ProgramStageSection, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<ProgramStageSection, Integer> sortOrder = Field.create(SORT_ORDER);
-    private static final Field<ProgramStageSection, Boolean> deleted = Field.create(DELETED);
-
-    private static final NestedField<ProgramStageSection, ProgramIndicator> programIndicators =
-            NestedField.create(PROGRAM_INDICATORS);
-
-    private static final NestedField<ProgramStageSection, DataElement> dataElements = NestedField.create(DATA_ELEMENTS);
-
-    private static final NestedField<ProgramStageSection, ProgramStageSectionRendering> renderType
-            = NestedField.create(RENDER_TYPE);
-
-    static final Fields<ProgramStageSection> allFields = Fields.<ProgramStageSection>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, sortOrder, deleted,
-            dataElements.with(DataElementFields.uid),
-            programIndicators.with(ProgramIndicator.uid, ProgramIndicator.program.with(ObjectWithUid.uid)),
-            renderType).build();
+@JsonDeserialize(builder = AutoValue_ProgramStageSection.Builder.class)
+public abstract class ProgramStageSection extends BaseIdentifiableObject implements Model {
 
     @Nullable
-    @JsonProperty(SORT_ORDER)
+    @JsonProperty()
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty(PROGRAM_INDICATORS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreProgramIndicatorListAdapter.class)
     public abstract List<ProgramIndicator> programIndicators();
 
     @Nullable
-    @JsonProperty(DATA_ELEMENTS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreDataElementListColumnAdapter.class)
     public abstract List<DataElement> dataElements();
 
     @Nullable
-    @JsonProperty(RENDER_TYPE)
+    @JsonProperty()
+    @ColumnAdapter(ProgramStageSectionRenderingColumnAdapter.class)
     public abstract ProgramStageSectionRendering renderType();
 
-    @JsonCreator
-    public static ProgramStageSection create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SORT_ORDER) Integer sortOrder,
-            @JsonProperty(PROGRAM_INDICATORS) List<ProgramIndicator> programIndicators,
-            @JsonProperty(DATA_ELEMENTS) List<DataElement> dataElements,
-            @JsonProperty(RENDER_TYPE) ProgramStageSectionRendering renderType,
-            @JsonProperty(DELETED) Boolean deleted) {
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programStage();
 
-        return new AutoValue_ProgramStageSection(
-                uid, code, name, displayName, created, lastUpdated, deleted, sortOrder,
-                safeUnmodifiableList(programIndicators),
-                safeUnmodifiableList(dataElements),
-                renderType
-        );
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(ProgramStageSectionRenderingTypeColumnAdapter.class)
+    public abstract ProgramStageSectionRenderingType desktopRenderType();
+
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(ProgramStageSectionRenderingTypeColumnAdapter.class)
+    public abstract ProgramStageSectionRenderingType mobileRenderType();
+
+    public static Builder builder() {
+        return new $$AutoValue_ProgramStageSection.Builder();
+    }
+
+    static ProgramStageSection create(Cursor cursor) {
+        return $AutoValue_ProgramStageSection.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder  extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder sortOrder(Integer sortOrder);
+
+        public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
+
+        public abstract Builder dataElements(List<DataElement> dataElements);
+
+        public abstract Builder renderType(ProgramStageSectionRendering renderType);
+
+        public abstract Builder programStage(ObjectWithUid programStage);
+
+        public abstract Builder desktopRenderType(ProgramStageSectionRenderingType desktopRenderType);
+
+        public abstract Builder mobileRenderType(ProgramStageSectionRenderingType mobileRenderType);
+
+        public abstract ProgramStageSection build();
     }
 }

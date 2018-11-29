@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -39,12 +39,12 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
-public class SearchOrganisationUnitHandler extends IdentifiableHandlerImpl<OrganisationUnit, OrganisationUnitModel> {
+public class SearchOrganisationUnitHandler extends IdentifiableSyncHandlerImpl<OrganisationUnit> {
 
     private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
     private final User user;
 
-    SearchOrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore,
+    SearchOrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
                                   @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
                                           userOrganisationUnitLinkStore,
                                   @NonNull User user) {
@@ -56,7 +56,7 @@ public class SearchOrganisationUnitHandler extends IdentifiableHandlerImpl<Organ
     @Override
     protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
         UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
-                OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH, user);
+                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, user);
 
         userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
     }

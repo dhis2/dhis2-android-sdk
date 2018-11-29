@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
 final class CategoryComboFields {
@@ -38,6 +39,8 @@ final class CategoryComboFields {
     private static final String CATEGORY_OPTION_COMBOS = "categoryOptionCombos";
 
     private static final FieldsHelper<CategoryCombo> fh = new FieldsHelper<>();
+
+    public static final Field<CategoryCombo, String> uid = fh.uid();
 
     public static final Fields<CategoryCombo> allFields = Fields.<CategoryCombo>builder()
             .fields(fh.getIdentifiableFields())

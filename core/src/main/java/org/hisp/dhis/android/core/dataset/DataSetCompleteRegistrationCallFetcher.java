@@ -31,12 +31,14 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -61,9 +63,9 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
 
     private final int queryLengthAvailableAfterIncludingPeriodIds;
 
-    private final Set<String> totalDataSetUids;
-    private final Set<String> totalPeriodIds;
-    private final Set<String> totalRootOrganisationUnitsUids;
+    private final Collection<String> totalDataSetUids;
+    private final Collection<String> totalPeriodIds;
+    private final Collection<String> totalRootOrganisationUnitsUids;
 
     private List<Set<String>> splitDataSetUids;
     private List<Set<String>> splitRootOrganisationUnitsUids;
@@ -71,14 +73,14 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
     private final APICallExecutor apiCallExecutor;
 
 
-    public DataSetCompleteRegistrationCallFetcher(@NonNull Set<String> dataSetUids,
-                                                  @NonNull Set<String> periodIds,
-                                                  @NonNull Set<String> rootOrganisationUnitsUids) {
+    DataSetCompleteRegistrationCallFetcher(@NonNull Collection<String> dataSetUids,
+                                           @NonNull Collection<String> periodIds,
+                                           @NonNull Collection<String> rootOrganisationUnitsUids,
+                                           @NonNull APICallExecutor apiCallExecutor) {
         this.totalDataSetUids = dataSetUids;
         this.totalPeriodIds = periodIds;
         this.totalRootOrganisationUnitsUids = rootOrganisationUnitsUids;
-
-        this.apiCallExecutor = new APICallExecutor();
+        this.apiCallExecutor = apiCallExecutor;
 
         this.queryLengthAvailableAfterIncludingPeriodIds =
                 QUERY_LENTGH_AVAILABLE_FOR_UIDS - getTotalPeriodIdsLengthWithCommas();
@@ -88,7 +90,7 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
             DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery);
 
     @Override
-    public List<DataSetCompleteRegistration> fetch() throws D2CallException {
+    public List<DataSetCompleteRegistration> fetch() throws D2Error {
 
         checkTooManyPeriodIds();
 
@@ -101,11 +103,11 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
         return downloadAllDataSetCompleteRegistrations();
     }
 
-    private void checkTooManyPeriodIds() throws D2CallException {
+    private void checkTooManyPeriodIds() throws D2Error {
 
         if (queryLengthAvailableAfterIncludingPeriodIds < 2 * UID_WITH_COMMA_LENGTH) {
-            throw D2CallException.builder()
-                    .isHttpError(false)
+            throw D2Error.builder()
+                    .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.TOO_MANY_PERIODS)
                     .errorDescription("Too many period ids attached: "
                             + totalPeriodIds.size()
@@ -135,12 +137,12 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
         this.splitDataSetUids = splitUids(totalDataSetUids, dataSetUidsPerSplit);
     }
 
-    private List<Set<String>> splitUids(Set<String> allUids, int maxUidsPerSplit) {
+    private List<Set<String>> splitUids(Collection<String> allUids, int maxUidsPerSplit) {
         return Utils.setPartition(allUids, maxUidsPerSplit);
     }
 
     @NonNull
-    private List<DataSetCompleteRegistration> downloadAllDataSetCompleteRegistrations() throws D2CallException {
+    private List<DataSetCompleteRegistration> downloadAllDataSetCompleteRegistrations() throws D2Error {
 
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations = new ArrayList<>();
 
@@ -159,9 +161,9 @@ public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetc
     }
 
     private List<DataSetCompleteRegistration> downloadDataSetCompleteRegistrationsFor(
-            Set<String> dataSetUids,
-            Set<String> periodUids,
-            Set<String> organisationUnitUids) throws D2CallException {
+            Collection<String> dataSetUids,
+            Collection<String> periodUids,
+            Collection<String> organisationUnitUids) throws D2Error {
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(dataSetUids, periodUids, organisationUnitUids);

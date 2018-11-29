@@ -55,7 +55,7 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     public abstract String displayDescription();
 
     @JsonPOJOBuilder(withPrefix = "")
-    protected static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
+    public static abstract class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
 
         public abstract T shortName(@Nullable String shortName);
 

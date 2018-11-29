@@ -32,6 +32,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
@@ -114,6 +116,8 @@ public class ProgramRuleVariableStoreShould extends AbsStoreTestCase {
         //Create & insert the other foreign keys (progStage, dataElement and trackedEntityAttribute)
         ContentValues programStage = CreateProgramStageUtils.create(ID, PROGRAM_STAGE, PROGRAM);
         database().insert(ProgramStageModel.TABLE, null, programStage);
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
         ContentValues dataElement = CreateDataElementUtils.create(ID, DATA_ELEMENT, null);
         database().insert(DataElementModel.TABLE, null, dataElement);
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(ID,

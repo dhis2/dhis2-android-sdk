@@ -1,0 +1,21 @@
+{
+  "created": "2013-03-11T16:39:33.083",
+  "lastUpdated": "2013-03-11T16:39:33.083",
+  "name": "Pi",
+  "href": "https://play.dhis2.org/demo/api/constants/bCqvfPR02Im",
+  "id": "bCqvfPR02Im",
+  "displayName": "Pi",
+  "externalAccess": false,
+  "value": 3.14,
+  "access": {
+    "read": true,
+    "updateWithSection": false,
+    "externalize": false,
+    "delete": false,
+    "write": false,
+    "manage": false
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "translations": []
+}

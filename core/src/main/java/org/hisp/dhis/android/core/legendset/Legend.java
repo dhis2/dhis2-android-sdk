@@ -28,64 +28,64 @@
 
 package org.hisp.dhis.android.core.legendset;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
-public abstract class Legend extends BaseIdentifiableObject {
-    private final static String START_VALUE = "startValue";
-    private final static String END_VALUE = "endValue";
-    private final static String COLOR = "color";
-
-    private static final Field<Legend, String> uid = Field.create(UID);
-    private static final Field<Legend, String> code = Field.create(CODE);
-    private static final Field<Legend, String> name = Field.create(NAME);
-    private static final Field<Legend, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<Legend, String> created = Field.create(CREATED);
-    private static final Field<Legend, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<Legend, String> deleted = Field.create(DELETED);
-    private static final Field<Legend, Double> startValue = Field.create(START_VALUE);
-    private static final Field<Legend, Double> endValue = Field.create(END_VALUE);
-    private static final Field<Legend, String> color = Field.create(COLOR);
-
-    static final Fields<Legend> allFields = Fields.<Legend>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, startValue, endValue, color).build();
+@JsonDeserialize(builder = AutoValue_Legend.Builder.class)
+public abstract class Legend extends BaseIdentifiableObject implements Model {
 
     @Nullable
-    @JsonProperty(START_VALUE)
+    @JsonProperty()
     public abstract Double startValue();
 
     @Nullable
-    @JsonProperty(END_VALUE)
+    @JsonProperty()
     public abstract Double endValue();
 
     @Nullable
-    @JsonProperty(COLOR)
+    @JsonProperty()
     public abstract String color();
 
-    @JsonCreator
-    static Legend create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(START_VALUE) Double startValue,
-            @JsonProperty(END_VALUE) Double endValue,
-            @JsonProperty(COLOR) String color) {
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid legendSet();
 
-        return new AutoValue_Legend(uid, code, name, displayName, created, lastUpdated, deleted, startValue,
-                endValue, color);
+    static Legend create(Cursor cursor) {
+        return $AutoValue_Legend.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_Legend.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder startValue(Double startValue);
+
+        public abstract Builder endValue(Double endValue);
+
+        public abstract Builder color(String color);
+
+        public abstract Builder legendSet(ObjectWithUid legendSet);
+
+        public abstract Legend build();
     }
 }

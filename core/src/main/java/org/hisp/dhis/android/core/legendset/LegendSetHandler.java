@@ -27,28 +27,31 @@
  */
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet, LegendSetModel> {
+public final class LegendSetHandler extends IdentifiableSyncHandlerImpl<LegendSet> {
 
-    private final GenericHandler<Legend, LegendModel> legendHandler;
+    private final SyncHandlerWithTransformer<Legend> legendHandler;
     private final OrphanCleaner<LegendSet, Legend> legendCleaner;
 
-    LegendSetHandler(IdentifiableObjectStore<LegendSetModel> legendSetStore,
-                     GenericHandler<Legend, LegendModel> legendHandler,
+    LegendSetHandler(IdentifiableObjectStore<LegendSet> legendSetStore,
+                     SyncHandlerWithTransformer<Legend> legendHandler,
                      OrphanCleaner<LegendSet, Legend> legendCleaner) {
         super(legendSetStore);
         this.legendHandler = legendHandler;
         this.legendCleaner = legendCleaner;
     }
 
-    public static GenericHandler<LegendSet, LegendSetModel> create(DatabaseAdapter databaseAdapter) {
+    public static SyncHandler<LegendSet> create(DatabaseAdapter databaseAdapter) {
         return new LegendSetHandler(
                 LegendSetStore.create(databaseAdapter),
                 LegendHandler.create(databaseAdapter),
@@ -57,8 +60,15 @@ public final class LegendSetHandler extends IdentifiableHandlerImpl<LegendSet, L
     }
 
     @Override
-    protected void afterObjectHandled(LegendSet legendSet, HandleAction action) {
-        legendHandler.handleMany(legendSet.legends(), new LegendModelBuilder(legendSet));
+    protected void afterObjectHandled(final LegendSet legendSet, HandleAction action) {
+        legendHandler.handleMany(legendSet.legends(),
+                new ModelBuilder<Legend, Legend>() {
+                    @Override
+                    public Legend buildModel(Legend legend) {
+                        return legend.toBuilder().legendSet(ObjectWithUid.create(legendSet.uid())).build();
+                    }
+                });
+
         if (action == HandleAction.Update) {
             legendCleaner.deleteOrphan(legendSet, legendSet.legends());
         }

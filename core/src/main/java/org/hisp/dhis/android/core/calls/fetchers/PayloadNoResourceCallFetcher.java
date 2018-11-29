@@ -28,18 +28,24 @@
 
 package org.hisp.dhis.android.core.calls.fetchers;
 
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
 
 import java.util.List;
 
 public abstract class PayloadNoResourceCallFetcher<P> implements CallFetcher<P> {
 
+    private final APICallExecutor apiCallExecutor;
+
+    protected PayloadNoResourceCallFetcher(APICallExecutor apiCallExecutor) {
+        this.apiCallExecutor = apiCallExecutor;
+    }
+
     protected abstract retrofit2.Call<Payload<P>> getCall();
 
     @Override
-    public final List<P> fetch() throws D2CallException {
-        return new APICallExecutor().executePayloadCall(getCall());
+    public final List<P> fetch() throws D2Error {
+        return apiCallExecutor.executePayloadCall(getCall());
     }
 }

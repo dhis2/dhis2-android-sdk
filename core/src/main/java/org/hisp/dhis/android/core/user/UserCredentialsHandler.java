@@ -27,45 +27,15 @@
  */
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class UserCredentialsHandler {
-    private final UserCredentialsStore userCredentialsStore;
-
-    public UserCredentialsHandler(UserCredentialsStore userCredentialsStore) {
-        this.userCredentialsStore = userCredentialsStore;
+final class UserCredentialsHandler {
+    private UserCredentialsHandler() {
     }
 
-    public void handleUserCredentials(UserCredentials userCredentials, User user) {
-        if (userCredentials == null || user == null) {
-            return;
-        }
-
-        deleteOrPersistUserCredentials(userCredentials, user);
-    }
-
-    private void deleteOrPersistUserCredentials(UserCredentials userCredentials, User user) {
-        if (isDeleted(userCredentials)) {
-            userCredentialsStore.delete(userCredentials.uid());
-        } else {
-            int updatedRow = userCredentialsStore.update(userCredentials.uid(), userCredentials.code(),
-                    userCredentials.name(), userCredentials.displayName(), userCredentials.created(),
-                    userCredentials.lastUpdated(), userCredentials.username(), user.uid(), userCredentials.uid()
-            );
-
-            if (updatedRow <= 0) {
-                userCredentialsStore.insert(
-                        userCredentials.uid(), userCredentials.code(), userCredentials.name(),
-                        userCredentials.displayName(), userCredentials.created(), userCredentials.lastUpdated(),
-                        userCredentials.username(), user.uid()
-                );
-            }
-        }
-    }
-
-    public static UserCredentialsHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserCredentialsHandler(new UserCredentialsStoreImpl(databaseAdapter));
+    public static SyncHandler<UserCredentials> create(DatabaseAdapter databaseAdapter) {
+        return new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter));
     }
 }

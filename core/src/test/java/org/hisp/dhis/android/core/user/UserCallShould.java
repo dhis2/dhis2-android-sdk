@@ -29,22 +29,16 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
@@ -59,6 +53,9 @@ public class UserCallShould extends BaseCallShould {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private APICallExecutor apiCallExecutor;
 
     @Mock
     private SyncHandler<User> userHandler;
@@ -76,14 +73,13 @@ public class UserCallShould extends BaseCallShould {
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-        userSyncCall = new UserCall(genericCallData, userService, userHandler);
+        userSyncCall = new UserCall(genericCallData, apiCallExecutor, userService, userHandler);
         when(userService.getUser(any(Fields.class))).thenReturn(userCall);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void not_invoke_stores_on_call_io_exception() throws IOException {
-        when(userCall.execute()).thenThrow(IOException.class);
+    public void not_invoke_stores_on_call_io_exception() throws D2Error {
+        when(apiCallExecutor.executeObjectCall(userCall)).thenThrow(d2Error);
 
         try {
             userSyncCall.call();
@@ -101,14 +97,12 @@ public class UserCallShould extends BaseCallShould {
 
     @Test
     public void not_invoke_handler_after_call_failure() throws Exception {
-        // unauthorized
-        when(userCall.execute()).thenReturn(Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                ResponseBody.create(MediaType.parse("application/json"), "{}")));
+        when(apiCallExecutor.executeObjectCall(userCall)).thenThrow(d2Error);
 
         try {
             userSyncCall.call();
             fail("Call should't succeed");
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
         }
 
         // verify that database was not touched
@@ -120,7 +114,7 @@ public class UserCallShould extends BaseCallShould {
 
     @Test
     public void mark_as_executed_on_success() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(apiCallExecutor.executeObjectCall(userCall)).thenReturn(user);
 
         userSyncCall.call();
 
@@ -136,13 +130,12 @@ public class UserCallShould extends BaseCallShould {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void mark_as_executed_on_failure() throws Exception {
-        when(userCall.execute()).thenThrow(IOException.class);
+        when(apiCallExecutor.executeObjectCall(userCall)).thenThrow(d2Error);
 
         try {
             userSyncCall.call();
-        } catch (D2CallException d2CallException) {
+        } catch (D2Error d2Error) {
             // swallow exception
         }
 
@@ -159,7 +152,7 @@ public class UserCallShould extends BaseCallShould {
 
     @Test
     public void invoke_handlers_on_success() throws Exception {
-        when(userCall.execute()).thenReturn(Response.success(user));
+        when(apiCallExecutor.executeObjectCall(userCall)).thenReturn(user);
         userSyncCall.call();
         verify(userHandler).handle(eq(user));
         verify(resourceHandler).handleResource(ResourceModel.Type.USER, serverDate);

@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,23 +38,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class TrackedEntityDataValueShould {
+public class TrackedEntityDataValueShould extends BaseObjectShould implements ObjectShould {
 
+    public TrackedEntityDataValueShould() {
+        super("trackedentity/tracked_entity_data_value.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        TrackedEntityDataValue trackedEntityDataValue = objectMapper.readValue("{\n" +
-                        "\n" +
-                        "    \"lastUpdated\": \"2014-11-15T14:55:23.779\",\n" +
-                        "    \"storedBy\": \"admin\",\n" +
-                        "    \"created\": \"2014-11-15T14:55:23.779\",\n" +
-                        "    \"dataElement\": \"msodh3rEMJa\",\n" +
-                        "    \"value\": \"2013-05-18\",\n" +
-                        "    \"providedElsewhere\": false\n" +
-                        "\n" +
-                        "}",
-                TrackedEntityDataValue.class);
+        TrackedEntityDataValue trackedEntityDataValue = objectMapper.readValue(jsonStream, TrackedEntityDataValue.class);
 
         assertThat(trackedEntityDataValue.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2014-11-15T14:55:23.779"));

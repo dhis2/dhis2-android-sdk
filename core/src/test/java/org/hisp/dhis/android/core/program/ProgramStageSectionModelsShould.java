@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.program;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,7 +41,11 @@ import nl.jqno.equalsverifier.Warning;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class ProgramStageSectionModelsShould {
+public class ProgramStageSectionModelsShould extends BaseObjectShould implements ObjectShould {
+
+    public ProgramStageSectionModelsShould() {
+        super("program/program_stage_section.json");
+    }
 
     @Test
     public void have_the_equals_method_conform_to_contract() {
@@ -51,40 +54,10 @@ public class ProgramStageSectionModelsShould {
                 .verify();
     }
 
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        //Json (modified) from: https://play.dhis2.org/dev/api/programStageSections/bbjzL5gp0NZ.json
-        ProgramStageSection programStageSection = objectMapper.readValue("{\n" +
-                "    \"created\": \"2015-01-26T13:14:09.957\",\n" +
-                "    \"lastUpdated\": \"2015-10-14T13:37:29.904\",\n" +
-                "    \"name\": \"Care at Birth\",\n" +
-                "    \"href\": \"https://play.dhis2.org/dev/api/programStageSections/bbjzL5gp0NZ\",\n" +
-                "    \"id\": \"bbjzL5gp0NZ\",\n" +
-                "    \"displayName\": \"Care at Birth\",\n" +
-                "    \"externalAccess\": false,\n" +
-                "    \"sortOrder\": 0,\n" +
-                "    \"programStage\": {\n" +
-                "        \"id\": \"PFDfvmGpsR3\"\n" +
-                "    },\n" +
-                "    \"access\": {\n" +
-                "        \"read\": true,\n" +
-                "        \"updateWithSection\": true,\n" +
-                "        \"externalize\": false,\n" +
-                "        \"delete\": true,\n" +
-                "        \"write\": true,\n" +
-                "        \"manage\": false\n" +
-                "    },\n" +
-                "    \"userGroupAccesses\": [ ],\n" +
-                "    \"attributeValues\": [ ],\n" +
-                "    \"programIndicators\": [ ],\n" +
-                "    \"dataElements\": [\n" +
-                "        {\n" + "\"id\": \"Itl05OEupgQ\"\n" + "},\n" +
-                "        {\n" + "\"id\": \"Mfq2Y9N21KZ\"\n" + "},\n" +
-                "        {\n" + "\"id\": \"mGHBXrtqSut\"\n" + "}\n" +
-                "    ]," +
-                "    \"translations\": [ ]\n" +
-                "}", ProgramStageSection.class);
+        ProgramStageSection programStageSection = objectMapper.readValue(jsonStream, ProgramStageSection.class);
 
         assertThat(programStageSection.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-10-14T13:37:29.904"));

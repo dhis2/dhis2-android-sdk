@@ -29,19 +29,20 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.Date;
 
 public interface TrackedEntityAttributeReservedValueStoreInterface
-        extends ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> {
+        extends ObjectWithoutUidStore<TrackedEntityAttributeReservedValue> {
 
     void deleteExpired(@NonNull Date serverDate);
 
-    TrackedEntityAttributeReservedValueModel popOne(@NonNull String ownerUid,
-                                                    @NonNull String organisationUnitUid);
+    TrackedEntityAttributeReservedValue popOne(@NonNull String ownerUid, @Nullable String organisationUnitUid);
 
-    int count(@NonNull String ownerUid,
-              @NonNull String organisationUnitUid);
+    int count(@NonNull String ownerUid, @NonNull String organisationUnitUid);
+
+    int count(@NonNull String ownerUid);
 }

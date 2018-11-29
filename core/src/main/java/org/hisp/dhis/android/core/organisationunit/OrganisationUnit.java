@@ -28,129 +28,133 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreDataSetListAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitGroupListAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreOrganisationUnitListAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramListAdapter;
+import org.hisp.dhis.android.core.data.database.OrganisationUnitWithUidColumnAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.program.Program;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-public abstract class OrganisationUnit extends BaseNameableObject {
-    private static final String PARENT = "parent";
-    private static final String PATH = "path";
-    private static final String OPENING_DATE = "openingDate";
-    private static final String CLOSED_DATE = "closedDate";
-    private static final String LEVEL = "level";
-    private static final String PROGRAMS = "programs";
-    private static final String DATA_SETS = "dataSets";
-    private static final String ANCESTORS = "ancestors";
-    private static final String ORGANISATION_UNIT_GROUPS = "organisationUnitGroups";
+@JsonDeserialize(builder = AutoValue_OrganisationUnit.Builder.class)
+public abstract class OrganisationUnit extends BaseNameableObject implements Model {
 
-    public static final Field<OrganisationUnit, String> uid = Field.create(BaseIdentifiableObject.UID);
-    public static final Field<OrganisationUnit, String> code = Field.create(BaseIdentifiableObject.CODE);
-    public static final Field<OrganisationUnit, String> name = Field.create(BaseIdentifiableObject.NAME);
-    public static final Field<OrganisationUnit, String> displayName = Field.create(BaseIdentifiableObject.DISPLAY_NAME);
-    public static final Field<OrganisationUnit, String> created = Field.create(BaseIdentifiableObject.CREATED);
-    public static final Field<OrganisationUnit, String> lastUpdated = Field.create(BaseIdentifiableObject.LAST_UPDATED);
-    public static final Field<OrganisationUnit, String> shortName = Field.create(SHORT_NAME);
-    public static final Field<OrganisationUnit, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-    public static final Field<OrganisationUnit, String> description = Field.create(DESCRIPTION);
-    public static final Field<OrganisationUnit, String> displayDescription = Field.create(DISPLAY_DESCRIPTION);
-    public static final Field<OrganisationUnit, String> path = Field.create(PATH);
-    public static final Field<OrganisationUnit, String> openingDate = Field.create(OPENING_DATE);
-    public static final Field<OrganisationUnit, String> closedDate = Field.create(CLOSED_DATE);
-    public static final Field<OrganisationUnit, String> level = Field.create(LEVEL);
-    public static final Field<OrganisationUnit, Boolean> deleted = Field.create(DELETED);
-    public static final NestedField<OrganisationUnit, OrganisationUnit> parent = NestedField.create(PARENT);
-    public static final NestedField<OrganisationUnit, ObjectWithUid> programs = NestedField.create(PROGRAMS);
-    public static final NestedField<OrganisationUnit, DataSet> dataSets = NestedField.create(DATA_SETS);
-    public static final NestedField<OrganisationUnit, OrganisationUnit> ancestors = NestedField.create(ANCESTORS);
-    private static final NestedField<OrganisationUnit, OrganisationUnitGroup> organisationUnitGroups
-            = NestedField.create(ORGANISATION_UNIT_GROUPS);
+    public enum Scope {
+        SCOPE_DATA_CAPTURE,
+        SCOPE_TEI_SEARCH
+    }
 
-    static final Fields<OrganisationUnit> allFields = Fields.<OrganisationUnit>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, shortName, displayShortName,
-            description, displayDescription, displayDescription, path, openingDate,
-            closedDate, level, deleted, parent.with(uid), programs.with(ObjectWithUid.uid),
-            dataSets.with(DataSet.uid),
-            ancestors.with(OrganisationUnit.uid, OrganisationUnit.displayName),
-            organisationUnitGroups.with(OrganisationUnitGroup.allFields)).build();
-    
     @Nullable
-    @JsonProperty(PARENT)
+    @JsonProperty()
+    @ColumnAdapter(OrganisationUnitWithUidColumnAdapter.class)
     public abstract OrganisationUnit parent();
 
     @Nullable
-    @JsonProperty(PATH)
+    @JsonProperty()
     public abstract String path();
 
     @Nullable
-    @JsonProperty(OPENING_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
-    @JsonProperty(CLOSED_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closedDate();
 
     @Nullable
-    @JsonProperty(LEVEL)
+    @JsonProperty()
     public abstract Integer level();
 
     @Nullable
-    @JsonProperty(PROGRAMS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreProgramListAdapter.class)
     public abstract List<Program> programs();
 
     @Nullable
-    @JsonProperty(DATA_SETS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreDataSetListAdapter.class)
     public abstract List<DataSet> dataSets();
 
     @Nullable
-    @JsonProperty(ANCESTORS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
     public abstract List<OrganisationUnit> ancestors();
 
     @Nullable
-    @JsonProperty(ORGANISATION_UNIT_GROUPS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreOrganisationUnitGroupListAdapter.class)
     public abstract List<OrganisationUnitGroup> organisationUnitGroups();
 
-    @JsonCreator
-    public static OrganisationUnit create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(PARENT) OrganisationUnit parent,
-            @JsonProperty(PATH) String path,
-            @JsonProperty(OPENING_DATE) Date openingDate,
-            @JsonProperty(CLOSED_DATE) Date closedDate,
-            @JsonProperty(LEVEL) Integer level,
-            @JsonProperty(PROGRAMS) List<Program> programs,
-            @JsonProperty(DATA_SETS) List<DataSet> dataSets,
-            @JsonProperty(ANCESTORS) List<OrganisationUnit> ancestors,
-            @JsonProperty(ORGANISATION_UNIT_GROUPS) List<OrganisationUnitGroup> organisationUnitGroups,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_OrganisationUnit(uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription, parent, path, openingDate,
-                closedDate, level, safeUnmodifiableList(programs), safeUnmodifiableList(dataSets),
-                ancestors, organisationUnitGroups);
+    @Nullable
+    @JsonIgnore()
+    public abstract String displayNamePath();
+
+    @NonNull
+    public static OrganisationUnit create(Cursor cursor) {
+        return AutoValue_OrganisationUnit.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnit.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder parent(OrganisationUnit parent);
+
+        public abstract Builder path(String path);
+
+        public abstract Builder openingDate(Date openingDate);
+
+        public Builder openingDate(@NonNull String openingDateStr) throws ParseException {
+            return openingDate(BaseIdentifiableObject.DATE_FORMAT.parse(openingDateStr));
+        }
+
+        public abstract Builder closedDate(Date closedDate);
+
+        public Builder closedDate(@NonNull String closedDateStr) throws ParseException {
+            return closedDate(BaseIdentifiableObject.DATE_FORMAT.parse(closedDateStr));
+        }
+
+        public abstract Builder level(Integer level);
+
+        public abstract Builder programs(List<Program> programs);
+
+        public abstract Builder dataSets(List<DataSet> dataSets);
+
+        public abstract Builder ancestors(List<OrganisationUnit> ancestors);
+
+        public abstract Builder organisationUnitGroups(List<OrganisationUnitGroup> organisationUnitGroups);
+
+        public abstract Builder displayNamePath(String displayNamePath);
+
+        public abstract OrganisationUnit build();
     }
 }

@@ -32,114 +32,93 @@ import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel.Columns;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo.Columns;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitModelShould {
-    private static final long ID = 11L;
     private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
-    private static final String PATH = "test_path";
-    private static final String PARENT = "test_parent";
-    private static final String DISPLAY_NAME_PATH = "/grandpa/dad/me/";
-    private static final int LEVEL = 100;
 
-    private final Date date;
-    private final String dateString;
-
-    public OrganisationUnitModelShould() {
-        this.date = new Date();
-        this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
-    }
+    private final OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(UID);
 
     @Test
     public void create_model_when_created_from_database_cursor() {
 
-        String[] columnsWithId = Utils.appendInNewArray(new OrganisationUnitModel.Columns().all(),
-                OrganisationUnitModel.Columns.ID);
+        String[] columnsWithId = Utils.appendInNewArray(OrganisationUnitTableInfo.TABLE_INFO.columns().all(),
+                BaseIdentifiableObjectModel.Columns.ID);
         MatrixCursor cursor = new MatrixCursor(columnsWithId);
+
         cursor.addRow(new Object[]{
-                UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, SHORT_NAME, DISPLAY_SHORT_NAME,
-                DESCRIPTION, DISPLAY_DESCRIPTION, PATH, dateString, dateString, LEVEL, PARENT,
-                DISPLAY_NAME_PATH, ID
+                UID,
+                organisationUnit.code(),
+                organisationUnit.name(),
+                organisationUnit.displayName(),
+                FillPropertiesTestUtils.CREATED_STR,
+                FillPropertiesTestUtils.LAST_UPDATED_STR,
+                organisationUnit.shortName(),
+                organisationUnit.displayShortName(),
+                organisationUnit.description(),
+                organisationUnit.displayDescription(),
+                organisationUnit.path(),
+                FillPropertiesTestUtils.CREATED_STR,
+                FillPropertiesTestUtils.LAST_UPDATED_STR,
+                organisationUnit.level(),
+                organisationUnit.parent(),
+                organisationUnit.displayNamePath(),
+                organisationUnit.id()
         });
         cursor.moveToFirst();
 
-        OrganisationUnitModel model = OrganisationUnitModel.create(cursor);
+        OrganisationUnit model = OrganisationUnit.create(cursor);
         cursor.close();
 
-        assertThat(model.id()).isEqualTo(ID);
+        assertThat(model.id()).isEqualTo(organisationUnit.id());
         assertThat(model.uid()).isEqualTo(UID);
-        assertThat(model.code()).isEqualTo(CODE);
-        assertThat(model.name()).isEqualTo(NAME);
-        assertThat(model.displayName()).isEqualTo(DISPLAY_NAME);
-        assertThat(model.created()).isEqualTo(date);
-        assertThat(model.lastUpdated()).isEqualTo(date);
-        assertThat(model.shortName()).isEqualTo(SHORT_NAME);
-        assertThat(model.displayShortName()).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(model.description()).isEqualTo(DESCRIPTION);
-        assertThat(model.displayDescription()).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(model.path()).isEqualTo(PATH);
-        assertThat(model.openingDate()).isEqualTo(date);
-        assertThat(model.closedDate()).isEqualTo(date);
-        assertThat(model.parent()).isEqualTo(PARENT);
-        assertThat(model.level()).isEqualTo(LEVEL);
-        assertThat(model.displayNamePath()).isEqualTo(DISPLAY_NAME_PATH);
+        assertThat(model.code()).isEqualTo(organisationUnit.code());
+        assertThat(model.name()).isEqualTo(organisationUnit.name());
+        assertThat(model.displayName()).isEqualTo(organisationUnit.displayName());
+        assertThat(model.created()).isEqualTo(FillPropertiesTestUtils.CREATED);
+        assertThat(model.lastUpdated()).isEqualTo(FillPropertiesTestUtils.LAST_UPDATED);
+        assertThat(model.shortName()).isEqualTo(organisationUnit.shortName());
+        assertThat(model.displayShortName()).isEqualTo(organisationUnit.displayShortName());
+        assertThat(model.description()).isEqualTo(organisationUnit.description());
+        assertThat(model.displayDescription()).isEqualTo(organisationUnit.displayDescription());
+        assertThat(model.path()).isEqualTo(organisationUnit.path());
+        assertThat(model.openingDate()).isEqualTo(FillPropertiesTestUtils.CREATED);
+        assertThat(model.closedDate()).isEqualTo(FillPropertiesTestUtils.LAST_UPDATED);
+        assertThat(model.parent()).isEqualTo(organisationUnit.parent());
+        assertThat(model.level()).isEqualTo(organisationUnit.level());
+        assertThat(model.displayNamePath()).isEqualTo(organisationUnit.displayNamePath());
     }
 
     @Test
     public void create_content_values_when_created_from_builder() {
-        OrganisationUnitModel model = OrganisationUnitModel.builder()
-                .id(ID)
-                .uid(UID)
-                .code(CODE)
-                .name(NAME)
-                .displayName(DISPLAY_NAME)
-                .created(date)
-                .lastUpdated(date)
-                .shortName(SHORT_NAME)
-                .displayShortName(DISPLAY_SHORT_NAME)
-                .description(DESCRIPTION)
-                .displayDescription(DISPLAY_DESCRIPTION)
-                .path(PATH)
-                .openingDate(date)
-                .closedDate(date)
-                .parent(PARENT)
-                .level(LEVEL)
-                .displayNamePath(DISPLAY_NAME_PATH)
-                .build();
+        OrganisationUnit model = OrganisationUnitSamples.getOrganisationUnit(UID);
         ContentValues contentValues = model.toContentValues();
 
-        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsLong(Columns.ID)).isEqualTo(organisationUnit.id());
         assertThat(contentValues.getAsString(Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(DISPLAY_SHORT_NAME);
-        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(DISPLAY_DESCRIPTION);
-        assertThat(contentValues.getAsString(Columns.PATH)).isEqualTo(PATH);
-        assertThat(contentValues.getAsString(Columns.OPENING_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.CLOSED_DATE)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.PARENT)).isEqualTo(PARENT);
-        assertThat(contentValues.getAsInteger(Columns.LEVEL)).isEqualTo(LEVEL);
-        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME_PATH)).isEqualTo(DISPLAY_NAME_PATH);
+        assertThat(contentValues.getAsString(Columns.CODE)).isEqualTo(organisationUnit.code());
+        assertThat(contentValues.getAsString(Columns.NAME)).isEqualTo(organisationUnit.name());
+        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(organisationUnit.displayName());
+        assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(FillPropertiesTestUtils.CREATED_STR);
+        assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(FillPropertiesTestUtils.LAST_UPDATED_STR);
+        assertThat(contentValues.getAsString(Columns.SHORT_NAME)).isEqualTo(organisationUnit.shortName());
+        assertThat(contentValues.getAsString(Columns.DISPLAY_SHORT_NAME)).isEqualTo(organisationUnit.displayShortName());
+        assertThat(contentValues.getAsString(Columns.DESCRIPTION)).isEqualTo(organisationUnit.description());
+        assertThat(contentValues.getAsString(Columns.DISPLAY_DESCRIPTION)).isEqualTo(organisationUnit.displayDescription());
+        assertThat(contentValues.getAsString(OrganisationUnitFields.PATH)).isEqualTo(organisationUnit.path());
+        assertThat(contentValues.getAsString(OrganisationUnitFields.OPENING_DATE)).isEqualTo(FillPropertiesTestUtils.CREATED_STR);
+        assertThat(contentValues.getAsString(OrganisationUnitFields.CLOSED_DATE)).isEqualTo(FillPropertiesTestUtils.LAST_UPDATED_STR);
+        assertThat(contentValues.getAsString(OrganisationUnitFields.PARENT)).isEqualTo(organisationUnit.parent());
+        assertThat(contentValues.getAsInteger(OrganisationUnitFields.LEVEL)).isEqualTo(organisationUnit.level());
+        assertThat(contentValues.getAsString(Columns.DISPLAY_NAME_PATH)).isEqualTo(organisationUnit.displayNamePath());
     }
 }

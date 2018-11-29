@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.data.utils;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
@@ -95,6 +96,25 @@ public class FillPropertiesTestUtils {
 
     public static void fillNameableModelProperties(BaseNameableObjectModel.Builder builder) {
         fillIdentifiableModelProperties(builder);
+        builder
+                .shortName(SHORT_NAME)
+                .displayShortName(DISPLAY_SHORT_NAME)
+                .description(DESCRIPTION)
+                .displayDescription(DISPLAY_DESCRIPTION);
+    }
+
+    public static void fillIdentifiableProperties(BaseIdentifiableObject.Builder builder) {
+        builder
+                .uid(UID)
+                .code(CODE)
+                .name(NAME)
+                .displayName(DISPLAY_NAME)
+                .created(CREATED)
+                .lastUpdated(LAST_UPDATED);
+    }
+
+    public static void fillNameableProperties(BaseNameableObject.Builder builder) {
+        fillIdentifiableProperties(builder);
         builder
                 .shortName(SHORT_NAME)
                 .displayShortName(DISPLAY_SHORT_NAME)

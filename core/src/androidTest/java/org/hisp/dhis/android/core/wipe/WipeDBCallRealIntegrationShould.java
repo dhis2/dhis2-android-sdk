@@ -44,7 +44,7 @@ public class WipeDBCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        EventEndpointCall eventCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
+        EventEndpointCall eventCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
         eventCall.call();
 

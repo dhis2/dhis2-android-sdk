@@ -13,7 +13,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class CategoryCategoryComboLinkStore {
+final class CategoryCategoryComboLinkStore {
 
     private CategoryCategoryComboLinkStore() {}
 
@@ -37,8 +37,7 @@ public final class CategoryCategoryComboLinkStore {
     };
 
     public static LinkModelStore<CategoryCategoryComboLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryComboLinkModel.TABLE,
-                new CategoryCategoryComboLinkModel.Columns(),
-                CategoryCategoryComboLinkModel.Columns.CATEGORY_COMBO, BINDER, FACTORY);
+        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryComboLinkTableInfo.TABLE_INFO,
+                CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO, BINDER, FACTORY);
     }
 }

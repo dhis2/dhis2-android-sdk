@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.junit.After;
 import org.junit.Before;
@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,10 +48,10 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.pars
 @RunWith(JUnit4.class)
 public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends AbsStoreTestCase {
 
-    private TrackedEntityAttributeReservedValueModel expiredValue;
-    private TrackedEntityAttributeReservedValueModel notExpiredValue;
-    private TrackedEntityAttributeReservedValueModel temporalValidityExpiredValue;
-    private TrackedEntityAttributeReservedValueModel notExpiredTemporalValidityExpiredValue;
+    private TrackedEntityAttributeReservedValue expiredValue;
+    private TrackedEntityAttributeReservedValue notExpiredValue;
+    private TrackedEntityAttributeReservedValue temporalValidityExpiredValue;
+    private TrackedEntityAttributeReservedValue notExpiredTemporalValidityExpiredValue;
 
     private Date serverDate;
     private final String orgUnitUid = "orgu1";
@@ -59,7 +59,7 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
 
     // object to test
     private TrackedEntityAttributeReservedValueStoreInterface store;
-    private IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Before
     public void setUp() throws IOException {
@@ -70,11 +70,11 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
         Date expiredDate = parseDate("2018-05-12T12:35:36.743");
         Date notExpiredDate = parseDate("2018-05-17T12:35:36.743");
 
-        OrganisationUnitModel organisationUnit = OrganisationUnitModel.builder().uid(orgUnitUid).build();
+        OrganisationUnit organisationUnit = OrganisationUnit.builder().uid(orgUnitUid).build();
         organisationUnitStore = OrganisationUnitStore.create(databaseAdapter());
         organisationUnitStore.insert(organisationUnit);
 
-        TrackedEntityAttributeReservedValueModel.Builder builder = TrackedEntityAttributeReservedValueModel.builder()
+        TrackedEntityAttributeReservedValue.Builder builder = TrackedEntityAttributeReservedValue.builder()
                 .ownerObject("owObj")
                 .ownerUid(ownerUid)
                 .key("key")
@@ -127,19 +127,19 @@ public class TrackedEntityAttributeReservedValueStoreIntegrationShould extends A
     @Test
     public void pop_inserted_value() {
         store.insert(notExpiredValue);
-        TrackedEntityAttributeReservedValueModel returnedValue = store.popOne(ownerUid, orgUnitUid);
+        TrackedEntityAttributeReservedValue returnedValue = store.popOne(ownerUid, orgUnitUid);
         assertThat(returnedValue.value(), is(notExpiredValue.value()));
     }
 
     @Test
     public void leave_store_empty_after_pop_only_value() {
         store.insert(notExpiredValue);
-        TrackedEntityAttributeReservedValueModel value = store.popOne(ownerUid, orgUnitUid);
+        TrackedEntityAttributeReservedValue value = store.popOne(ownerUid, orgUnitUid);
         storeContains(value, false);
     }
 
-    private void storeContains(TrackedEntityAttributeReservedValueModel value, Boolean contains) {
-        Set<TrackedEntityAttributeReservedValueModel> values = store.selectAll();
+    private void storeContains(TrackedEntityAttributeReservedValue value, Boolean contains) {
+        List<TrackedEntityAttributeReservedValue> values = store.selectAll();
         assertThat(values.contains(value), is(contains));
     }
 }

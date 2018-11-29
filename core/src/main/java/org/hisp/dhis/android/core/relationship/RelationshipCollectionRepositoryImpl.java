@@ -32,19 +32,19 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.PojoBuilder;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
@@ -74,11 +74,11 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     }
 
     @Override
-    public void add(Relationship relationship) throws D2CallException {
+    public void add(Relationship relationship) throws D2Error {
         if (relationshipHandler.doesRelationshipExist(relationship)) {
-            throw D2CallException
+            throw D2Error
                     .builder()
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                     .errorDescription("Tried to create already existing Relationship: " + relationship)
                     .build();
@@ -91,9 +91,9 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
                 relationshipHandler.handle(relationship);
                 setToUpdate(fromStore, fromState, from.elementUid());
             } else {
-                throw D2CallException
+                throw D2Error
                         .builder()
-                        .isHttpError(false)
+                        .errorComponent(D2ErrorComponent.SDK)
                         .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
                         .errorDescription(
                                 "RelationshipItem from doesn't have updatable state: " +
@@ -122,9 +122,9 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
 
         // TODO Create query to avoid retrieving the whole table
-        Set<RelationshipItemModel> relationshipItemModels = this.relationshipItemStore.selectAll();
+        List<RelationshipItemModel> relationshipItemModels = this.relationshipItemStore.selectAll();
 
-        Set<Relationship> allRelationshipsFromDb = this.store.selectAll();
+        List<Relationship> allRelationshipsFromDb = this.store.selectAll();
 
         List<Relationship> relationships = new ArrayList<>();
 
@@ -171,7 +171,7 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
         return relationships;
     }
 
-    private RelationshipItemModel findRelatedTEI(Set<RelationshipItemModel> items, String relationshipUid,
+    private RelationshipItemModel findRelatedTEI(Collection<RelationshipItemModel> items, String relationshipUid,
                                                  RelationshipConstraintType type) {
         for (RelationshipItemModel item : items) {
             if (relationshipUid.equals(item.relationship()) && item.relationshipItemType() == type) {

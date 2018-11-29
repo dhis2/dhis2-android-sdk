@@ -82,12 +82,15 @@ public class StoreWithStateImpl implements StoreWithState {
             state = cursor.getString(0) == null ? null :
                     State.valueOf(State.class, cursor.getString(0));
         }
+        cursor.close();
         return state;
     }
 
     @Override
     public Boolean exists(@NonNull String uid) {
         Cursor cursor = databaseAdapter.query(existsQuery, uid);
-        return cursor.getCount() > 0;
+        int count = cursor.getCount();
+        cursor.close();
+        return count > 0;
     }
 }

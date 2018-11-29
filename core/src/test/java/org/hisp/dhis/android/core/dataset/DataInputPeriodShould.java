@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.SafeDateFormat;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class DataInputPeriodShould extends BaseObjectShould implements ObjectSho
 
         DataInputPeriod dataInputPeriod = objectMapper.readValue(jsonStream, DataInputPeriod.class);
 
-        assertThat(dataInputPeriod.periodUid()).isEqualTo("201801");
+        assertThat(UidsHelper.getUidOrNull(dataInputPeriod.period())).isEqualTo("201801");
         assertThat(dataInputPeriod.openingDate()).isEqualTo(dateFormat.parse("2017-12-31T23:00:00.000"));
         assertThat(dataInputPeriod.closingDate()).isEqualTo(dateFormat.parse("2018-01-09T23:00:00.000"));
     }

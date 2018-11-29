@@ -1,35 +1,40 @@
 package org.hisp.dhis.android.core.category;
 
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.UidsQuery;
 
-import retrofit2.Retrofit;
+import java.util.Set;
 
 public final class CategoryComboEndpointCall {
 
     private CategoryComboEndpointCall() {
     }
 
-    public static ListCallFactory<CategoryCombo> factory(Retrofit retrofit) {
-
-        final CategoryComboService service = retrofit.create(CategoryComboService.class);
-
-        return new ListCallFactoryImpl<CategoryCombo>() {
+    public static UidsCallFactory<CategoryCombo> factory(final APICallExecutor apiCallExecutor) {
+        return new UidsCallFactoryImpl<CategoryCombo>() {
+            private static final int MAX_UID_LIST_SIZE = 130;
 
             @Override
-            protected CallFetcher<CategoryCombo> fetcher(GenericCallData data) {
-                return new PayloadNoResourceCallFetcher<CategoryCombo>() {
+            protected CallFetcher<CategoryCombo> fetcher(GenericCallData data, Set<String> uids) {
+                final CategoryComboService service = data.retrofit().create(CategoryComboService.class);
+
+                return new UidsNoResourceCallFetcher<CategoryCombo>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
                     @Override
-                    protected retrofit2.Call<Payload<CategoryCombo>> getCall() {
-                        return service.getCategoryCombos(CategoryComboFields.allFields, Boolean.FALSE);
+                    protected retrofit2.Call<Payload<CategoryCombo>> getCall(UidsQuery query) {
+                        return service.getCategoryCombos(
+                                CategoryComboFields.allFields,
+                                CategoryComboFields.uid.in(query.uids()),
+                                Boolean.FALSE);
                     }
                 };
             }
@@ -38,7 +43,8 @@ public final class CategoryComboEndpointCall {
             protected CallProcessor<CategoryCombo> processor(GenericCallData data) {
                 return new TransactionalNoResourceSyncCallProcessor<>(
                         data.databaseAdapter(),
-                        CategoryComboHandler.create(data.databaseAdapter()));
+                        CategoryComboHandler.create(data.databaseAdapter())
+                );
             }
         };
     }

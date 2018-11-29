@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.user.User;
@@ -51,14 +52,14 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
 
     private final User user;
     private final OrganisationUnitService organisationUnitService;
-    private final GenericHandler<OrganisationUnit, OrganisationUnitModel> searchOrganisationUnitHandler;
+    private final SyncHandlerWithTransformer<OrganisationUnit> searchOrganisationUnitHandler;
     private final GenericCallData data;
 
-    SearchOrganisationUnitCall(@NonNull User user,
-                 @NonNull OrganisationUnitService organisationUnitService,
-                 @NonNull GenericCallData data,
-                 @NonNull GenericHandler<OrganisationUnit, OrganisationUnitModel>
-                         searchOrganisationUnitHandler) {
+    private SearchOrganisationUnitCall(@NonNull User user,
+                                       @NonNull OrganisationUnitService organisationUnitService,
+                                       @NonNull GenericCallData data,
+                                       @NonNull SyncHandlerWithTransformer<OrganisationUnit>
+                                               searchOrganisationUnitHandler) {
         this.user = user;
         this.organisationUnitService = organisationUnitService;
         this.data = data;
@@ -70,20 +71,20 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
         setExecuted();
 
         final Set<OrganisationUnit> searchOrganisationUnits = new HashSet<>();
-        final APICallExecutor apiExecutor = new APICallExecutor();
+        final APICallExecutor apiExecutor = APICallExecutorImpl.create(data.databaseAdapter());
 
         return new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(),
                 new Callable<List<OrganisationUnit>>() {
                     @Override
                     public List<OrganisationUnit> call() throws Exception {
-                        OrganisationUnitModelBuilder modelBuilder = new OrganisationUnitModelBuilder();
                         Set<String> rootOrgUnitUids = findRoots(user.teiSearchOrganisationUnits());
                         for (String uid : rootOrgUnitUids) {
                             searchOrganisationUnits.addAll(
                                     apiExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
                         }
 
-                        searchOrganisationUnitHandler.handleMany(searchOrganisationUnits, modelBuilder);
+                        searchOrganisationUnitHandler.handleMany(searchOrganisationUnits,
+                                new OrganisationUnitDisplayPathTransformer());
 
                         return new ArrayList<>(searchOrganisationUnits);
                     }
@@ -92,7 +93,7 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(@NonNull String uid) {
         return organisationUnitService.getOrganisationUnitWithDescendants(
-                uid, OrganisationUnit.allFields, true, false);
+                uid, OrganisationUnitFields.allFields, true, false);
     }
 
     public interface Factory {
@@ -103,7 +104,7 @@ public class SearchOrganisationUnitCall extends SyncCall<List<OrganisationUnit>>
             new SearchOrganisationUnitCall.Factory() {
         @Override
         public Call<List<OrganisationUnit>> create(GenericCallData data, User user) {
-            GenericHandler<OrganisationUnit, OrganisationUnitModel> handler =
+            SyncHandlerWithTransformer<OrganisationUnit> handler =
                     SearchOrganisationUnitHandler.create(data.databaseAdapter(), user);
             return new SearchOrganisationUnitCall(user,
                     data.retrofit().create(OrganisationUnitService.class),

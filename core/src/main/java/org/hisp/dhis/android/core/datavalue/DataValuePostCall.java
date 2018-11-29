@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.datavalue;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -45,6 +46,15 @@ public final class DataValuePostCall extends SyncCall<ImportSummary> {
 
     private final DataValueService dataValueService;
     private final DataValueStore dataValueStore;
+    private final APICallExecutor apiCallExecutor;
+
+    private DataValuePostCall(@NonNull DataValueService dataValueService,
+                              @NonNull DataValueStore dataValueSetStore, APICallExecutor apiCallExecutor) {
+
+        this.dataValueService = dataValueService;
+        this.dataValueStore = dataValueSetStore;
+        this.apiCallExecutor = apiCallExecutor;
+    }
 
     @Override
     public ImportSummary call() throws Exception {
@@ -62,7 +72,7 @@ public final class DataValuePostCall extends SyncCall<ImportSummary> {
 
         DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
 
-        ImportSummary importSummary = new APICallExecutor().executeObjectCall(
+        ImportSummary importSummary = apiCallExecutor.executeObjectCall(
                 dataValueService.postDataValues(dataValueSet));
 
         handleImportSummary(dataValueSet, importSummary);
@@ -86,17 +96,12 @@ public final class DataValuePostCall extends SyncCall<ImportSummary> {
         dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
     }
 
-    private DataValuePostCall(@NonNull DataValueService dataValueService,
-                              @NonNull DataValueStore dataValueSetStore) {
-
-        this.dataValueService = dataValueService;
-        this.dataValueStore = dataValueSetStore;
-    }
-
     public static DataValuePostCall create(@NonNull DatabaseAdapter databaseAdapter,
                                      @NonNull Retrofit retrofit) {
 
-        return new DataValuePostCall(retrofit.create(DataValueService.class),
-                                     DataValueStore.create(databaseAdapter));
+        return new DataValuePostCall(
+                retrofit.create(DataValueService.class),
+                DataValueStore.create(databaseAdapter),
+                APICallExecutorImpl.create(databaseAdapter));
     }
 }

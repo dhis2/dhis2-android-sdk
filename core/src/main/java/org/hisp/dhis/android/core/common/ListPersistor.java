@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.maintenance.D2Error;
+
 import java.util.List;
 
 public interface ListPersistor<P> {
-    void persist(List<P> objectList) throws D2CallException;
+    void persist(List<P> objectList) throws D2Error;
 }

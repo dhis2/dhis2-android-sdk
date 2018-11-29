@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields;
 
 public final class UserFields {
     private static final String BIRTHDAY = "birthday";
@@ -87,23 +86,16 @@ public final class UserFields {
             uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle,
             surname, firstName, introduction, employer, interests, languages, email, phoneNumber, nationality,
             deleted,
-            userCredentials.with(UserCredentials.allFields)
+            userCredentials.with(UserCredentialsFields.allFields)
     ).build();
 
     static final Fields<User> allFieldsWithOrgUnit = Fields.<User>builder().fields(
             uid, code, name, displayName, created, lastUpdated, birthday, education, gender, jobTitle,
             surname, firstName, introduction, employer, interests, languages, email, phoneNumber, nationality,
             deleted,
-            userCredentials.with(UserCredentials.allFields),
-            organisationUnits.with(
-                    OrganisationUnit.uid,
-                    OrganisationUnit.path,
-                    OrganisationUnit.programs.with(ObjectWithUid.uid),
-                    OrganisationUnit.dataSets.with(DataSet.uid)
-            ),
-            teiSearchOrganisationUnits.with(
-                    OrganisationUnit.uid,
-                    OrganisationUnit.path)
+            userCredentials.with(UserCredentialsFields.allFields),
+            organisationUnits.with(OrganisationUnitFields.fieldsInUserCall),
+            teiSearchOrganisationUnits.with(OrganisationUnitFields.teiSearchFieldsInUserCall)
     ).build();
 
     private UserFields() {}

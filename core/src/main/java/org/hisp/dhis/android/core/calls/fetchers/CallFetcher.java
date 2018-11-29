@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.calls.fetchers;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
 
 public interface CallFetcher<P> {
-    List<P> fetch() throws D2CallException;
+    List<P> fetch() throws D2Error;
 }

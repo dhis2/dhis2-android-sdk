@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.APICallErrorCatcher;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 import java.io.IOException;
 
@@ -49,6 +49,8 @@ public final class UserAuthenticateCallErrorCatcher implements APICallErrorCatch
             return D2ErrorCode.USER_ACCOUNT_DISABLED;
         } else if (errorResponse.contains("User account is locked")) {
             return D2ErrorCode.USER_ACCOUNT_LOCKED;
+        } else if (response.code() == 404) {
+            return D2ErrorCode.URL_NOT_FOUND;
         }
 
         return null;

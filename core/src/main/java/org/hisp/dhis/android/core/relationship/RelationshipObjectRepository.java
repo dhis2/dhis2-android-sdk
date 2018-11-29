@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Collection;
 
@@ -55,13 +56,13 @@ final class RelationshipObjectRepository extends ReadOnlyIdentifiableObjectRepos
     }
 
     @Override
-    public void delete() throws D2CallException {
+    public void delete() throws D2Error {
         Relationship relationship = getWithAllChildren();
         if (relationship == null) {
-            throw D2CallException
+            throw D2Error
                     .builder()
-                    .isHttpError(false)
-                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.CANT_DELETE_NON_EXISTING_OBJECT)
                     .errorDescription("Tried to delete non existing relationship")
                     .build();
         } else {

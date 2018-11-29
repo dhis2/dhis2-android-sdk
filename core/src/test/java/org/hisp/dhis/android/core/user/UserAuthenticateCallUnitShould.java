@@ -32,13 +32,15 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -53,13 +55,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
+import org.mockito.stubbing.OngoingStubbing;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -68,6 +64,7 @@ import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -79,6 +76,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private APICallExecutor apiCallExecutor;
 
     @Mock
     private SyncHandler<User> userHandler;
@@ -162,7 +162,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(systemInfoCallFactory.create()).thenReturn(systemInfoEndpointCall);
         when(systemInfoEndpointCall.call()).thenReturn(systemInfoFromAPI);
-        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
+        whenAPICall().thenReturn(user);
 
         when(userStore.selectFirst()).thenReturn(loggedUser);
         when(systemInfoRepository.get()).thenReturn(systemInfoFromDb);
@@ -174,28 +174,33 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
                 return transaction;
             }
         });
+
+        when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
     }
 
     private UserAuthenticateCall instantiateCall(String username, String password) {
-        return new UserAuthenticateCall(databaseAdapter, retrofit, systemInfoCallFactory, versionManager,
+        return new UserAuthenticateCall(databaseAdapter, retrofit, apiCallExecutor, systemInfoCallFactory, versionManager,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule,
                 username, password, baseEndpoint + "/api/");
     }
 
-    @Test(expected = D2CallException.class)
+    private OngoingStubbing<User> whenAPICall() throws D2Error {
+        return when(apiCallExecutor.executeObjectCallWithErrorCatcher(same(authenticateAPICall), any(APICallErrorCatcher.class)));
+    }
+
+    @Test(expected = D2Error.class)
     public void throw_d2_call_exception_for_null_username() throws Exception {
         instantiateCall(null, PASSWORD).call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_d2_call_exception_for_null_password() throws Exception {
         instantiateCall(USERNAME, null).call();
     }
 
     @Test
     public void invoke_server_with_correct_parameters_after_call() throws Exception {
-        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
         when(userService.authenticate(
                 credentialsCaptor.capture(), filterCaptor.capture())
         ).thenReturn(authenticateAPICall);
@@ -207,9 +212,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void not_invoke_stores_on_exception_on_call() throws IOException {
-        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+    public void not_invoke_stores_on_exception_on_call() throws D2Error {
+        whenAPICall().thenThrow(d2Error);
 
         try {
             userAuthenticateCall.call();
@@ -227,13 +231,12 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void not_invoke_stores_on_exception_on_request_fail() throws Exception {
-        when(authenticateAPICall.execute()).thenReturn(
-                Response.<User>error(HttpURLConnection.HTTP_UNAUTHORIZED,
-                        ResponseBody.create(MediaType.parse("application/json"), "{}")));
+        whenAPICall().thenThrow(d2Error);
+        when(d2Error.errorCode()).thenReturn(D2ErrorCode.UNEXPECTED);
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException d2e) {
+        } catch (D2Error d2e) {
 
         }
 
@@ -296,8 +299,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Test
     public void thrown_d2_call_exception_on_consecutive_calls() throws Exception {
-        when(authenticateAPICall.execute()).thenReturn(Response.success(user));
-
         userAuthenticateCall.call();
 
         assertThat(userAuthenticateCall.isExecuted()).isEqualTo(true);
@@ -306,7 +307,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             userAuthenticateCall.call();
 
             fail("Invoking call second time should throw exception");
-        } catch (D2CallException illegalStateException) {
+        } catch (D2Error illegalStateException) {
             // swallow exception
         }
     }
@@ -314,18 +315,18 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     @SuppressWarnings("unchecked")
     public void mark_as_executed_when_call_is_failure() throws Exception {
-        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+        whenAPICall().thenThrow(d2Error);
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException ioException) {
+        } catch (D2Error ioException) {
             // swallow exception
         }
 
         assertThat(userAuthenticateCall.isExecuted()).isEqualTo(true);
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_d2_call_exception_state_exception_if_user_already_signed_in() throws Exception {
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
         userAuthenticateCall.call();
@@ -342,9 +343,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void user_login_offline_if_previously_logged() throws Exception {
-        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+        whenAPICall().thenThrow(d2Error);
 
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
@@ -354,22 +354,21 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void throw_d2_exception_if_no_previous_authenticated_user_offline() throws Exception {
-        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+        whenAPICall().thenThrow(d2Error);
+
         when(authenticatedUserStore.selectFirst()).thenReturn(null);
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
             assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE);
         }
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void throw_d2_exception_if_different_authenticated_user_offline() throws Exception {
-        when(authenticateAPICall.execute()).thenThrow(IOException.class);
+        whenAPICall().thenThrow(d2Error);
 
         when(authenticatedUser.credentials()).thenReturn(null);
         when(authenticatedUser.hash()).thenReturn("different_hash");
@@ -377,7 +376,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         try {
             userAuthenticateCall.call();
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
             assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE);
         }
     }

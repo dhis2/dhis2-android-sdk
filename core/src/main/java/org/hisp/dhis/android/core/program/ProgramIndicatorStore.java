@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -46,11 +47,10 @@ public final class ProgramIndicatorStore {
     private ProgramIndicatorStore() {
     }
 
-    private static StatementBinder<ProgramIndicatorModel> BINDER =
-            new NameableStatementBinder<ProgramIndicatorModel>() {
+    private static StatementBinder<ProgramIndicator> BINDER = new NameableStatementBinder<ProgramIndicator>() {
 
                 @Override
-                public void bindToStatement(@NonNull ProgramIndicatorModel o,
+                public void bindToStatement(@NonNull ProgramIndicator o,
                                             @NonNull SQLiteStatement sqLiteStatement) {
                     super.bindToStatement(o, sqLiteStatement);
                     sqLiteBind(sqLiteStatement, 11, o.displayInForm());
@@ -59,20 +59,19 @@ public final class ProgramIndicatorStore {
                     sqLiteBind(sqLiteStatement, 14, o.filter());
                     sqLiteBind(sqLiteStatement, 15, o.decimals());
                     sqLiteBind(sqLiteStatement, 16, o.aggregationType());
-                    sqLiteBind(sqLiteStatement, 17, o.program());
+                    sqLiteBind(sqLiteStatement, 17, UidsHelper.getUidOrNull(o.program()));
                 }
             };
 
-    private static final CursorModelFactory<ProgramIndicatorModel> FACTORY
-            = new CursorModelFactory<ProgramIndicatorModel>() {
+    private static final CursorModelFactory<ProgramIndicator> FACTORY = new CursorModelFactory<ProgramIndicator>() {
         @Override
-        public ProgramIndicatorModel fromCursor(Cursor cursor) {
-            return ProgramIndicatorModel.create(cursor);
+        public ProgramIndicator fromCursor(Cursor cursor) {
+            return ProgramIndicator.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<ProgramIndicatorModel> create(DatabaseAdapter databaseAdapter) {
+    public static IdentifiableObjectStore<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter,
-                ProgramIndicatorModel.TABLE, new ProgramIndicatorModel.Columns().all(), BINDER, FACTORY);
+                ProgramIndicatorTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

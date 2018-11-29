@@ -4,7 +4,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -45,7 +45,7 @@ public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsS
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
@@ -98,7 +98,7 @@ public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsS
         TrackedEntityInstance syncedTrackedEntityInstance =
                 givenASyncedTrackedEntityInstanceInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
         d2.syncDownSyncedTrackedEntityInstances().call();
 
@@ -113,8 +113,8 @@ public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsS
 
         List<TrackedEntityInstance> trackedEntityInstances = givenASyncedTrackedEntityInstancesInDatabase();
 
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance.json");
-        dhis2MockServer.enqueueMockResponse("tracked_entity_instance_2.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_2.json");
 
         d2.syncDownSyncedTrackedEntityInstances().call();
 

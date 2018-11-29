@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -53,10 +53,10 @@ public final class SystemSettingCall extends SyncCall<SystemSetting> {
     }
 
     @Override
-    public SystemSetting call() throws D2CallException {
+    public SystemSetting call() throws D2Error {
         setExecuted();
 
-        SystemSetting setting = new APICallExecutor().executeObjectCall(
+        SystemSetting setting = APICallExecutorImpl.create(data.databaseAdapter()).executeObjectCall(
                 service.getSystemSettings(SystemSetting.allFields));
 
         Transaction transaction = data.databaseAdapter().beginNewTransaction();

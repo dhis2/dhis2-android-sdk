@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
 import org.hisp.dhis.android.core.program.ProgramModel;
@@ -84,105 +84,9 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
-        String response = "{\n" +
-                "\n" +
-                "    \"created\": \"2015-03-31T13:31:09.324\",\n" +
-                "    \"lastUpdated\": \"2017-02-01T14:32:33.771\",\n" +
-                "    \"name\": \"John Barnes\",\n" +
-                "    \"id\": \"DXyJmlo9rge\",\n" +
-                "    \"displayName\": \"John Barnes\",\n" +
-                "    \"firstName\": \"John\",\n" +
-                "    \"surname\": \"Barnes\",\n" +
-                "    \"email\": \"john@hmail.com\",\n" +
-                "    \"userCredentials\": {\n" +
-                "        \"lastUpdated\": \"2017-02-01T14:31:54.370\",\n" +
-                "        \"code\": \"android\",\n" +
-                "        \"created\": \"2015-03-31T13:31:09.206\",\n" +
-                "        \"name\": \"John Traore\",\n" +
-                "        \"id\": \"M0fCOxtkURr\",\n" +
-                "        \"displayName\": \"John Traore\",\n" +
-                "        \"username\": \"android\",\n" +
-                "        \"userRoles\": [\n" +
-                "            {\n" +
-                "                \"id\": \"Ufph3mGRmMo\",\n" +
-                "                \"programs\": [\n" +
-                "                    {\n" +
-                "                        \"id\": \"eBAyeGv0exc\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"IpHINAT79UW\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"WSGAb5XwJ3Y\"\n" +
-                "                    },\n" +
-                "                    {\n" +
-                "                        \"id\": \"ur1Edk5Oe2n\"\n" +
-                "                    }\n" +
-                "                ]\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": \"Euq3XfEIEbx\",\n" +
-                "                \"programs\": [ ]\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": \"cUlTcejWree\",\n" +
-                "                \"programs\": [\n" +
-                "                    {\n" +
-                "                        \"id\": \"ur1Edk5Oe2n\"\n" +
-                "                    }\n" +
-                "                ]\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": \"DRdaVRtwmG5\",\n" +
-                "                \"programs\": [\n" +
-                "                    {\n" +
-                "                        \"id\": \"eBAyeGv0exc\"\n" +
-                "                    }\n" +
-                "                ]\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": \"jRWSNIHdKww\",\n" +
-                "                \"programs\": [ ]\n" +
-                "            },\n" +
-                "            {\n" +
-                "                \"id\": \"txB7vu1w2Pr\",\n" +
-                "                \"programs\": [ ]\n" +
-                "            }\n" +
-                "        ]\n" +
-                "    },\n" +
-                "    \"teiSearchOrganisationUnits\": [\n" +
-                "        {\n" +
-                "            \"id\": \"WAjjFMDJKcx\"\n" +
-                "        }\n" +
-                "    ],\n" +
-                "    \"organisationUnits\": [\n" +
-                "        {\n" +
-                "            \"id\": \"DiszpKrYNg8\",\n" +
-                "            \"programs\": [\n" +
-                "                {\n" +
-                "                    \"id\": \"eBAyeGv0exc\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"IpHINAT79UW\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"WSGAb5XwJ3Y\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"ur1Edk5Oe2n\"\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"id\": \"fDd25txQckK\"\n" +
-                "                }\n" +
-                "            ]\n" +
-                "        }\n" +
-                "    ]\n" +
-                "\n" +
-                "}";
-
-        dhis2MockServer.enqueueMockResponse(200, response);
+        dhis2MockServer.enqueueMockResponse("user/user.json");
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         // ToDo: consider moving this out
@@ -218,7 +122,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 "John Barnes",
                 "John Barnes",
                 "2015-03-31T13:31:09.324",
-                "2017-02-01T14:32:33.771",
+                "2016-04-06T00:05:57.495",
                 null,
                 null,
                 null,
@@ -257,10 +161,10 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         assertThatCursor(userCredentialsCursor).hasRow(
                 "M0fCOxtkURr",
                 "android",
-                "John Traore",
-                "John Traore",
+                "John Barnes",
+                "John Barnes",
                 "2015-03-31T13:31:09.206",
-                "2017-02-01T14:31:54.370",
+                "2017-11-29T11:45:37.250",
                 "android",
                 "DXyJmlo9rge"
         ).isExhausted();

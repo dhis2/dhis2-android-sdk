@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -175,31 +175,31 @@ public class ProgramParentCallShould extends BaseCallShould {
         assertThat(programs.get(0)).isEqualTo(program);
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_program_call_fail() throws Exception {
         whenEndpointCallFails(programEndpointCall);
         programParentCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_program_stage_call_fail() throws Exception {
         whenEndpointCallFails(programStageEndpointCall);
         programParentCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_program_rule_call_fail() throws Exception {
         whenEndpointCallFails(programRuleEndpointCall);
         programParentCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_tracked_entity_types_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityTypeCall);
         programParentCall.call();
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void fail_when_relationship_type_call_fail() throws Exception {
         whenEndpointCallFails(relationshipTypeCall);
         programParentCall.call();

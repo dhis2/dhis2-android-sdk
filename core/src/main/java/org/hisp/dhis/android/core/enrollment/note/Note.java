@@ -28,46 +28,68 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
-public abstract class Note {
-    private final static String VALUE = "value";
-    private final static String STORED_BY = "storedBy";
-    private final static String STORED_DATE = "storedDate";
-
-    private static final Field<Note, String> value = Field.create(VALUE);
-    private static final Field<Note, String> storedBy = Field.create(STORED_BY);
-    private static final Field<Note, String> storedDate= Field.create(STORED_DATE);
-
-    public static final Fields<Note> allFields = Fields.<Note>builder().fields(
-            value, storedBy, storedDate).build();
+@JsonDeserialize(builder = AutoValue_Note.Builder.class)
+public abstract class Note extends BaseDataModel implements ObjectWithUidInterface {
 
     @Nullable
-    @JsonProperty(VALUE)
+    @JsonProperty(NoteFields.UID)
+    public abstract String uid();
+
+    @Nullable
+    @JsonIgnore()
+    public abstract String enrollment();
+
+    @Nullable
+    @JsonProperty()
     public abstract String value();
 
     @Nullable
-    @JsonProperty(STORED_BY)
+    @JsonProperty()
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty(STORED_DATE)
+    @JsonProperty()
     public abstract String storedDate();
 
-    @JsonCreator
-    public static Note create(
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(STORED_BY) String storedBy,
-            @JsonProperty(STORED_DATE) String storedDate) {
+    public static Builder builder() {
+        return new $$AutoValue_Note.Builder();
+    }
 
-        return new AutoValue_Note(value, storedBy, storedDate);
+    static Note create(Cursor cursor) {
+        return $AutoValue_Note.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseDataModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        @JsonProperty(NoteFields.UID)
+        public abstract Builder uid(String uid);
+
+        public abstract Builder enrollment(String enrollment);
+
+        public abstract Builder value(String value);
+
+        public abstract Builder storedBy(String storedBy);
+
+        public abstract Builder storedDate(String storedDate);
+
+        public abstract Note build();
     }
 }

@@ -3,8 +3,10 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 
 import java.util.Collection;
@@ -36,7 +38,7 @@ public class EventHandler {
         return validEventDate && event.organisationUnit() != null;
     }
 
-    public void handle(@NonNull Event event) {
+    public void handle(@NonNull final Event event) {
         if (event == null) {
             return;
         }
@@ -57,7 +59,7 @@ public class EventHandler {
                     event.createdAtClient(), event.lastUpdatedAtClient(),
                     event.status(), latitude, longitude, event.program(), event.programStage(),
                     event.organisationUnit(), event.eventDate(), event.completedDate(),
-                    event.dueDate(), State.SYNCED, event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                    event.dueDate(), State.SYNCED, event.attributeOptionCombo(),
                     event.trackedEntityInstance(), event.uid());
 
             if (updatedRow <= 0) {
@@ -65,12 +67,18 @@ public class EventHandler {
                         event.createdAtClient(), event.lastUpdatedAtClient(),
                         event.status(), latitude, longitude, event.program(), event.programStage(),
                         event.organisationUnit(), event.eventDate(), event.completedDate(),
-                        event.dueDate(), State.SYNCED, event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                        event.dueDate(), State.SYNCED, event.attributeOptionCombo(),
                         event.trackedEntityInstance());
             }
 
-            trackedEntityDataValueHandler.handle(event.uid(),
-                    event.trackedEntityDataValues());
+            trackedEntityDataValueHandler.handleMany(
+                    event.trackedEntityDataValues(),
+                    new ModelBuilder<TrackedEntityDataValue, TrackedEntityDataValue>() {
+                        @Override
+                        public TrackedEntityDataValue buildModel(TrackedEntityDataValue dataValue) {
+                            return dataValue.toBuilder().event(event.uid()).build();
+                        }
+                    });
         } else {
             Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or invalid eventDate");
         }

@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -35,7 +35,7 @@ public final class TrackedEntityInstanceSyncDownCall extends SyncCall<List<Track
     }
 
     @Override
-    public List<TrackedEntityInstance> call() throws D2CallException {
+    public List<TrackedEntityInstance> call() throws D2Error {
         setExecuted();
         Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.querySynced();
         Call<List<TrackedEntityInstance>> call = TrackedEntityInstanceListDownloadAndPersistCall

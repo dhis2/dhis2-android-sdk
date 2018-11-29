@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.junit.Test;
 
@@ -40,58 +39,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class TrackedEntityAttributeShould {
+public class TrackedEntityAttributeShould extends BaseObjectShould implements ObjectShould {
 
+    public TrackedEntityAttributeShould() {
+        super("trackedentity/tracked_entity_attribute.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        TrackedEntityAttribute trackedEntityAttribute = objectMapper.readValue("{\n" +
-                "\n" +
-                "    \"lastUpdated\": \"2016-08-04T11:48:56.928\",\n" +
-                "    \"id\": \"ruQQnf6rswq\",\n" +
-                "    \"href\": \"https://play.dhis2.org/dev/api/trackedEntityAttributes/ruQQnf6rswq\",\n" +
-                "    \"created\": \"2014-01-09T19:12:46.551\",\n" +
-                "    \"name\": \"TB number\",\n" +
-                "    \"shortName\": \"TB number\",\n" +
-                "    \"programScope\": false,\n" +
-                "    \"displayInListNoProgram\": false,\n" +
-                "    \"displayName\": \"TB number\",\n" +
-                "    \"pattern\": \"\",\n" +
-                "    \"description\": \"TB number\",\n" +
-                "    \"displayShortName\": \"TB number\",\n" +
-                "    \"externalAccess\": false,\n" +
-                "    \"sortOrderInListNoProgram\": 0,\n" +
-                "    \"generated\": false,\n" +
-                "    \"displayOnVisitSchedule\": false,\n" +
-                "    \"valueType\": \"TEXT\",\n" +
-                "    \"sortOrderInVisitSchedule\": 0,\n" +
-                "    \"orgunitScope\": false,\n" +
-                "    \"confidential\": false,\n" +
-                "    \"displayDescription\": \"TB number\",\n" +
-                "    \"dimensionItem\": \"ruQQnf6rswq\",\n" +
-                "    \"searchScope\": \"SEARCH_ORG_UNITS\",\n" +
-                "    \"unique\": false,\n" +
-                "    \"inherit\": false,\n" +
-                "    \"optionSetValue\": false,\n" +
-                "    \"dimensionItemType\": \"PROGRAM_ATTRIBUTE\",\n" +
-                "    \"access\": {\n" +
-                "        \"read\": true,\n" +
-                "        \"updateWithSection\": false,\n" +
-                "        \"externalize\": false,\n" +
-                "        \"delete\": false,\n" +
-                "        \"write\": false,\n" +
-                "        \"manage\": false\n" +
-                "    },\n" +
-                "    \"user\": {\n" +
-                "        \"id\": \"GOLswS44mh8\"\n" +
-                "    },\n" +
-                "    \"translations\": [ ],\n" +
-                "    \"userGroupAccesses\": [ ],\n" +
-                "    \"attributeValues\": [ ],\n" +
-                "    \"optionSet\": {\n" +
-                "        \"id\": \"xjA5E9MimMU\"\n" +
-                "     }\n" +
-                "}", TrackedEntityAttribute.class);
+        TrackedEntityAttribute trackedEntityAttribute = objectMapper.readValue(jsonStream, TrackedEntityAttribute.class);
 
         assertThat(trackedEntityAttribute.lastUpdated()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2016-08-04T11:48:56.928"));

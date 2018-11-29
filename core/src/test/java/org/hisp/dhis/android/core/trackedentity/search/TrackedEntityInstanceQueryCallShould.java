@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.junit.After;
@@ -44,14 +45,12 @@ import org.mockito.stubbing.OngoingStubbing;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import okhttp3.MediaType;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Response;
 
 import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -70,6 +69,9 @@ import static org.mockito.Mockito.when;
 public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     @Mock
     private TrackedEntityInstanceService service;
+
+    @Mock
+    private APICallExecutor apiCallExecutor;
 
     @Mock
     private SearchGridMapper mapper;
@@ -104,15 +106,16 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
 
         query = TrackedEntityInstanceQuery.builder().
                 orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE).program("program")
+                .programStartDate(new Date()).programEndDate(new Date())
                 .query("queryStr").attribute(attribute).filter(filter)
                 .paging(false).page(2).pageSize(33).build();
 
         whenServiceQuery().thenReturn(searchGridCall);
-        when(searchGridCall.execute()).thenReturn(Response.success(searchGrid));
+        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenReturn(searchGrid);
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
 
         // Metadata call
-        call = new TrackedEntityInstanceQueryCall(service, query, mapper);
+        call = new TrackedEntityInstanceQueryCall(service, query, mapper, apiCallExecutor);
     }
 
     @After
@@ -141,6 +144,8 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
                 eq(query.orgUnits().get(0) + ";" + query.orgUnits().get(1)),
                 eq(query.orgUnitMode().toString()),
                 eq(query.program()),
+                eq(query.formattedProgramStartDate()),
+                eq(query.formattedProgramEndDate()),
                 eq(query.query()),
                 eq(query.attribute()),
                 eq(query.filter()),
@@ -150,35 +155,33 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         verifyNoMoreInteractions(service);
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_D2CallException_when_service_call_returns_failed_response() throws Exception {
-        when(searchGridCall.execute()).thenReturn(errorResponse);
+        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
         call.call();
     }
 
     @Test()
     public void throw_too_many_org_units_exception_when_request_was_too_long() throws Exception {
-        Response tooLongResponse = Response.error(
-                HttpsURLConnection.HTTP_REQ_TOO_LONG,
-                ResponseBody.create(MediaType.parse("application/json"), "{}"));
-        when(searchGridCall.execute()).thenReturn(tooLongResponse);
+        when(apiCallExecutor.executeObjectCall(searchGridCall)).thenThrow(d2Error);
+        when(d2Error.httpErrorCode()).thenReturn(HttpsURLConnection.HTTP_REQ_TOO_LONG);
 
         try {
             call.call();
-            fail("D2CallException was expected but was not thrown");
-        } catch (D2CallException d2e) {
+            fail("D2Error was expected but was not thrown");
+        } catch (D2Error d2e) {
             assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();
         }
     }
 
-    @Test(expected = D2CallException.class)
+    @Test(expected = D2Error.class)
     public void throw_D2CallException_when_mapper_throws_exception() throws Exception {
         when(mapper.transform(searchGrid)).thenThrow(ParseException.class);
         call.call();
     }
 
     private OngoingStubbing<Call<SearchGrid>> whenServiceQuery() {
-        return when(service.query(anyString(), anyString(), anyString(), anyString(),
+        return when(service.query(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(),
                 anyListOf(String.class), anyListOf(String.class), anyBoolean(), anyInt(), anyInt()));
     }
 }

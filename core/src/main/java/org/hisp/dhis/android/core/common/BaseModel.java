@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.content.ContentValues;
 import android.provider.BaseColumns;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.gabrielittner.auto.value.cursor.ColumnName;
 
 @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
 public abstract class BaseModel implements Model {
@@ -50,14 +45,6 @@ public abstract class BaseModel implements Model {
             return new String[] {};
         }
     }
-
-    @NonNull
-    public abstract ContentValues toContentValues();
-
-    @Override
-    @Nullable
-    @ColumnName(BaseModel.Columns.ID)
-    public abstract Long id();
 
     public static abstract class Builder<T extends Builder> {
         public abstract T id(Long id);

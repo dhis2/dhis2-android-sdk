@@ -2,18 +2,19 @@ package org.hisp.dhis.android.core;
 
 import com.google.common.collect.Lists;
 
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.junit.Before;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -32,7 +33,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
 
 
         List<String> orgUnits = new ArrayList<>();
-        orgUnits.add("O6uvpzGd5pu");
+        orgUnits.add("DiszpKrYNg8");
 
         queryBuilder = TrackedEntityInstanceQuery.builder()
                 .paging(true).page(1).pageSize(50)
@@ -51,6 +52,27 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         login();
 
         TrackedEntityInstanceQuery query = queryBuilder.query("jorge").build();
+        List<TrackedEntityInstance> queryResponse = d2.queryTrackedEntityInstances(query).call();
+        assertThat(queryResponse).isNotEmpty();
+    }
+
+    //@Test
+    public void query_tracked_entity_instances_filter_program_start_date() throws Exception {
+        login();
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        TrackedEntityInstanceQuery query = queryBuilder.programStartDate(cal.getTime()).build();
+        List<TrackedEntityInstance> queryResponse = d2.queryTrackedEntityInstances(query).call();
+        assertThat(queryResponse).isNotEmpty();
+    }
+
+    //@Test
+    public void query_tracked_entity_instances_filter_program_end_date() throws Exception {
+        login();
+
+        Calendar cal = Calendar.getInstance();
+        TrackedEntityInstanceQuery query = queryBuilder.programEndDate(cal.getTime()).build();
         List<TrackedEntityInstance> queryResponse = d2.queryTrackedEntityInstances(query).call();
         assertThat(queryResponse).isNotEmpty();
     }
@@ -463,8 +485,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
 
         try {
             d2.queryTrackedEntityInstances(queryBuilder.build()).call();
-            fail("D2CallException was expected but was not thrown");
-        } catch (D2CallException d2e) {
+            fail("D2Error was expected but was not thrown");
+        } catch (D2Error d2e) {
             assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();
         }
     }

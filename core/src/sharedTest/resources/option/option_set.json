@@ -1,0 +1,39 @@
+{
+  "created": "2014-06-22T10:59:26.564",
+  "lastUpdated": "2015-08-06T14:23:38.789",
+  "name": "Age category",
+  "id": "VQ2lai3OfVG",
+  "displayName": "Age category",
+  "publicAccess": "rw------",
+  "version": 1,
+  "externalAccess": false,
+  "valueType": "TEXT",
+  "access": {
+    "read": true,
+    "updateWithSection": true,
+    "externalize": false,
+    "delete": true,
+    "write": true,
+    "manage": true
+  },
+  "user": {
+    "id": "GOLswS44mh8"
+  },
+  "userGroupAccesses": [],
+  "attributeValues": [],
+  "translations": [],
+  "options": [
+    {
+      "id": "Y1ILwhy5VDY"
+    },
+    {
+      "id": "egT1YqFWsVk"
+    },
+    {
+      "id": "WckXGsyYola"
+    },
+    {
+      "id": "EmQGvSlg0GD"
+    }
+  ]
+}

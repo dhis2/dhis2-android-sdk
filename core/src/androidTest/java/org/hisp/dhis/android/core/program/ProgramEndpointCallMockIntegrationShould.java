@@ -38,11 +38,15 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
+import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
@@ -55,12 +59,13 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     private static String[] PROGRAM_PROJECTION = {
-            ProgramModel.Columns.UID,
+            UID,
             ProgramModel.Columns.CODE,
             ProgramModel.Columns.NAME,
             ProgramModel.Columns.DISPLAY_NAME,
@@ -101,11 +106,11 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
-        dhis2MockServer.enqueueMockResponse("programs_complete.json");
+        dhis2MockServer.enqueueMockResponse("program/programs_complete.json");
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
@@ -121,7 +126,8 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        programEndpointCall = ProgramEndpointCall.factory(d2.retrofit().create(ProgramService.class)).create(
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
+        programEndpointCall = ProgramEndpointCall.factory(d2.retrofit().create(ProgramService.class), apiCallExecutor).create(
                 getGenericCallData(d2));
     }
 
@@ -171,7 +177,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_program_rule_variables_on_call() throws Exception {
         programEndpointCall.call();
         String[] projection = {
-                ProgramRuleVariableModel.Columns.UID,
+                UID,
                 ProgramRuleVariableModel.Columns.CODE,
                 ProgramRuleVariableModel.Columns.NAME,
                 ProgramRuleVariableModel.Columns.DISPLAY_NAME,
@@ -186,7 +192,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         };
 
         Cursor programRuleVariableCursor = database().query(ProgramRuleVariableModel.TABLE, projection,
-                ProgramRuleVariableModel.Columns.UID + "=?", new String[]{"g2GooOydipB"}, null, null, null);
+                UID + "=?", new String[]{"g2GooOydipB"}, null, null, null);
 
         assertThatCursor(programRuleVariableCursor).hasRow(
                 "g2GooOydipB",
@@ -208,7 +214,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_program_tracker_entity_attributes_when_call() throws Exception {
         programEndpointCall.call();
         String[] projection = {
-                ProgramTrackedEntityAttributeModel.Columns.UID,
+                UID,
                 ProgramTrackedEntityAttributeModel.Columns.CODE,
                 ProgramTrackedEntityAttributeModel.Columns.NAME,
                 ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME,
@@ -228,7 +234,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         Cursor programTrackedEntityAttributeCursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
                 projection,
-                ProgramTrackedEntityAttributeModel.Columns.UID + "=?",
+                UID + "=?",
                 new String[]{"l2T72XzBCLd"},
                 null, null, null);
 
@@ -256,7 +262,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_tracked_entity_attribute_when_call() throws Exception {
         programEndpointCall.call();
         String[] projection = {
-                TrackedEntityAttributeModel.Columns.UID,
+                UID,
                 TrackedEntityAttributeModel.Columns.CODE,
                 TrackedEntityAttributeModel.Columns.NAME,
                 TrackedEntityAttributeModel.Columns.DISPLAY_NAME,
@@ -282,7 +288,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         };
 
         Cursor trackedEntityAttributeCursor = database().query(TrackedEntityAttributeModel.TABLE, projection,
-                TrackedEntityAttributeModel.Columns.UID + "=?", new String[]{"w75KJ2mc4zz"}, null, null, null);
+                UID + "=?", new String[]{"w75KJ2mc4zz"}, null, null, null);
 
         assertThatCursor(trackedEntityAttributeCursor).hasRow(
                 "w75KJ2mc4zz",
@@ -315,27 +321,10 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_program_indicators_when_call() throws Exception {
         programEndpointCall.call();
 
-        String[] projection = {
-                ProgramIndicatorModel.Columns.UID,
-                ProgramIndicatorModel.Columns.CODE,
-                ProgramIndicatorModel.Columns.NAME,
-                ProgramIndicatorModel.Columns.DISPLAY_NAME,
-                ProgramIndicatorModel.Columns.CREATED,
-                ProgramIndicatorModel.Columns.LAST_UPDATED,
-                ProgramIndicatorModel.Columns.SHORT_NAME,
-                ProgramIndicatorModel.Columns.DISPLAY_SHORT_NAME,
-                ProgramIndicatorModel.Columns.DESCRIPTION,
-                ProgramIndicatorModel.Columns.DISPLAY_DESCRIPTION,
-                ProgramIndicatorModel.Columns.DISPLAY_IN_FORM,
-                ProgramIndicatorModel.Columns.EXPRESSION,
-                ProgramIndicatorModel.Columns.DIMENSION_ITEM,
-                ProgramIndicatorModel.Columns.FILTER,
-                ProgramIndicatorModel.Columns.DECIMALS,
-                ProgramIndicatorModel.Columns.PROGRAM
-        };
-
-        Cursor programIndicatorCursor = database().query(ProgramIndicatorModel.TABLE, projection,
-                ProgramIndicatorModel.Columns.UID + "=?", new String[]{"rXoaHGAXWy9"}, null, null, null);
+        Cursor programIndicatorCursor = database().query(
+                ProgramIndicatorTableInfo.TABLE_INFO.name(),
+                ProgramIndicatorTableInfo.TABLE_INFO.columns().all(),
+                UID + "=?", new String[]{"rXoaHGAXWy9"}, null, null, null);
         assertThatCursor(programIndicatorCursor).hasRow(
                 "rXoaHGAXWy9",
                 null,
@@ -355,7 +344,49 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                 "rXoaHGAXWy9",
                 null,
                 2,
+                "SUM",
                 "IpHINAT79UW"
+        ).isExhausted();
+    }
+
+    @Test
+    public void persist_legend_sets_when_call() throws Exception {
+        programEndpointCall.call();
+
+        Cursor programIndicatorCursor = database().query(
+                LegendSetTableInfo.TABLE_INFO.name(),
+                LegendSetTableInfo.TABLE_INFO.columns().all(),
+                UID + "=?", new String[]{"TiOkbpGEud4"}, null, null, null);
+        assertThatCursor(programIndicatorCursor).hasRow(
+                "TiOkbpGEud4",
+                "AGE15YINT",
+                "Age 15y interval",
+                "Age 15y interval",
+                "2017-06-02T11:40:33.452",
+                "2017-06-02T11:41:01.999",
+                "color"
+        ).isExhausted();
+    }
+
+    @Test
+    public void persist_legends_when_call() throws Exception {
+        programEndpointCall.call();
+
+        Cursor programIndicatorCursor = database().query(
+                LegendTableInfo.TABLE_INFO.name(),
+                LegendTableInfo.TABLE_INFO.columns().all(),
+                UID + "=?", new String[]{"ZUUGJnvX40X"}, null, null, null);
+        assertThatCursor(programIndicatorCursor).hasRow(
+                "ZUUGJnvX40X",
+                null,
+                "30 - 40",
+                "30 - 40",
+                "2017-06-02T11:40:44.279",
+                "2017-06-02T11:40:44.279",
+                30.5,
+                40,
+                "#d9f0a3",
+                "TiOkbpGEud4"
         ).isExhausted();
     }
 
@@ -363,7 +394,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_program_rules_when_call() throws Exception {
         programEndpointCall.call();
         String[] projection = {
-                ProgramRuleModel.Columns.UID,
+                UID,
                 ProgramRuleModel.Columns.CODE,
                 ProgramRuleModel.Columns.NAME,
                 ProgramRuleModel.Columns.DISPLAY_NAME,
@@ -376,7 +407,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         };
 
         Cursor programRuleCursor = database().query(ProgramRuleModel.TABLE, projection,
-                ProgramRuleModel.Columns.UID + "=?", new String[]{"NAgjOfWMXg6"}, null, null, null);
+                UID + "=?", new String[]{"NAgjOfWMXg6"}, null, null, null);
 
         assertThatCursor(programRuleCursor).hasRow(
                 "NAgjOfWMXg6",
@@ -397,7 +428,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
 
         String[] projection = {
-                ProgramRuleActionModel.Columns.UID,
+                UID,
                 ProgramRuleActionModel.Columns.CODE,
                 ProgramRuleActionModel.Columns.NAME,
                 ProgramRuleActionModel.Columns.DISPLAY_NAME,
@@ -416,7 +447,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         };
 
         Cursor programRuleActionCursor = database().query(ProgramRuleActionModel.TABLE, projection,
-                ProgramRuleActionModel.Columns.UID + "=?", new String[]{"v434s5YPDcP"}, null, null, null);
+                UID + "=?", new String[]{"v434s5YPDcP"}, null, null, null);
 
         assertThatCursor(programRuleActionCursor).hasRow(
                 "v434s5YPDcP",

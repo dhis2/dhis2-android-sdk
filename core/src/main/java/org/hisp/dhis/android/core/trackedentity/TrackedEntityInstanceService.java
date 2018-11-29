@@ -27,6 +27,8 @@ public interface TrackedEntityInstanceService {
     String PAGE = "page";
     String PAGE_SIZE = "pageSize";
     String PROGRAM = "program";
+    String PROGRAM_START_DATE = "programStartDate";
+    String PROGRAM_END_DATE = "programEndDate";
     String INCLUDE_DELETED = "includeDeleted";
     String INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes";
     String FILTER = "filter";
@@ -58,6 +60,8 @@ public interface TrackedEntityInstanceService {
             @Query(OU) String orgUnit,
             @Query(OU_MODE) String orgUnitMode,
             @Query(PROGRAM) String program,
+            @Query(PROGRAM_START_DATE) String programStartDate,
+            @Query(PROGRAM_END_DATE) String programEndDate,
             @Query(QUERY) String query,
             @Query(ATTRIBUTE) List<String> attribute,
             @Query(FILTER) List<String> filter,

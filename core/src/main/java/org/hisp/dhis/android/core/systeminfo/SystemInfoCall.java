@@ -29,12 +29,14 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -47,31 +49,34 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
     private final DHISVersionManager versionManager;
+    private final APICallExecutor apiCallExecutor;
 
     SystemInfoCall(DatabaseAdapter databaseAdapter,
                    SyncHandler<SystemInfo> systemInfoHandler,
                    SystemInfoService systemInfoService,
                    ResourceHandler resourceHandler,
-                   DHISVersionManager versionManager) {
+                   DHISVersionManager versionManager,
+                   APICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoHandler = systemInfoHandler;
         this.systemInfoService = systemInfoService;
         this.resourceHandler = resourceHandler;
         this.versionManager = versionManager;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
-    public SystemInfo call() throws D2CallException {
+    public SystemInfo call() throws D2Error {
         setExecuted();
 
-        SystemInfo systemInfo = new APICallExecutor().executeObjectCall(
+        SystemInfo systemInfo = apiCallExecutor.executeObjectCall(
                 systemInfoService.getSystemInfo(SystemInfoFields.allFields));
 
         if (DHISVersion.isAllowedVersion(systemInfo.version())) {
             versionManager.setVersion(systemInfo.version());
         } else {
-            throw D2CallException.builder()
-                    .isHttpError(false)
+            throw D2Error.builder()
+                    .errorComponent(D2ErrorComponent.SDK)
                     .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
                     .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
                             + "Allowed versions: "
@@ -101,7 +106,7 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
                 SystemInfoHandler.create(databaseAdapter),
                 retrofit.create(SystemInfoService.class),
                 ResourceHandler.create(databaseAdapter),
-                versionManager
-        );
+                versionManager,
+                APICallExecutorImpl.create(databaseAdapter));
     }
 }

@@ -3,14 +3,22 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.NoteStore;
+import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -19,9 +27,9 @@ import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
@@ -59,6 +67,9 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     private final EventStore eventStore;
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final ObjectWithoutUidStore<Note> noteStore;
+
+    private final APICallExecutor apiCallExecutor;
 
     private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
                                           @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
@@ -68,7 +79,9 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                           @NonNull EnrollmentStore enrollmentStore,
                                           @NonNull EventStore eventStore,
                                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+                                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                                          @NonNull ObjectWithoutUidStore<Note> noteStore,
+                                          @NonNull APICallExecutor apiCallExecutor) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -78,10 +91,12 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         this.eventStore = eventStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
+        this.noteStore = noteStore;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
     @Override
-    public WebResponse call() throws D2CallException {
+    public WebResponse call() throws D2Error {
         setExecuted();
 
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
@@ -101,7 +116,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
             strategy = "SYNC";
         }
 
-        WebResponse webResponse = new APICallExecutor().executeObjectCallWithAcceptedErrorCodes(
+        WebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                 trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
                 Collections.singletonList(409), WebResponse.class);
         handleWebResponse(webResponse);
@@ -111,12 +126,16 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
     @NonNull
     private List<TrackedEntityInstance> queryDataToSync() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
-                trackedEntityDataValueStore.queryTrackedEntityDataValues(Boolean.FALSE);
+                trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
         Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.query();
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
+
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
+        List<Note> notes = noteStore.selectWhereClause(whereClause);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
 
@@ -150,17 +169,26 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                                     event.program(), event.programStage(), event.organisationUnit(), event.eventDate(),
                                     event.status(), event.coordinates(),
                                     event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                                    event.attributeCategoryOptions(), event.attributeOptionCombo(),
+                                    event.attributeOptionCombo(),
                                     event.trackedEntityInstance()));
                         }
                     }
+
+                    List<Note> notesForEnrollment = new ArrayList<>();
+                    NoteToPostTransformer transformer = new NoteToPostTransformer(versionManager);
+                    for (Note note : notes) {
+                        if (enrollment.uid().equals(note.enrollment())) {
+                            notesForEnrollment.add(transformer.transform(note));
+                        }
+                    }
+
                     enrollmentsRecreated.add(
                             Enrollment.create(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
                                     enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
                                     enrollment.organisationUnit(), enrollment.program(), enrollment.enrollmentDate(),
                                     enrollment.incidentDate(), enrollment.followUp(), enrollment.enrollmentStatus(),
                                     enrollment.trackedEntityInstance(), enrollment.coordinate(), enrollment.deleted(),
-                                    eventRecreated, enrollment.notes()));
+                                    eventRecreated, notesForEnrollment));
                 }
             }
 
@@ -198,7 +226,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
 
         EnrollmentImportHandler enrollmentImportHandler = new EnrollmentImportHandler(
-                enrollmentStore, eventImportHandler
+                enrollmentStore, noteStore, eventImportHandler
         );
 
         TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler =
@@ -221,8 +249,10 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
                 new EventStoreImpl(databaseAdapter),
-                new TrackedEntityDataValueStoreImpl(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
+                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
+                NoteStore.create(databaseAdapter),
+                APICallExecutorImpl.create(databaseAdapter)
         );
     }
 }

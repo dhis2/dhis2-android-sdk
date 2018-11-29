@@ -3,8 +3,9 @@ package org.hisp.dhis.android.core.trackedentity.api;
 import junit.framework.Assert;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -63,7 +64,7 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
 
         d2 = D2Factory.create(this.serverUrl, databaseAdapter());
 
-        executor = new APICallExecutor();
+        executor = APICallExecutorImpl.create(d2.databaseAdapter());
 
         trackedEntityInstanceService = d2.retrofit().create(TrackedEntityInstanceService.class);
     }
@@ -101,7 +102,7 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
             executor.executeObjectCall(trackedEntityInstanceService
                     .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
             Assert.fail("Should not reach that line");
-        } catch (D2CallException e) {
+        } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
         }
 
@@ -141,7 +142,7 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
             executor.executeObjectCall(trackedEntityInstanceService
                     .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
             Assert.fail("Should not reach that line");
-        } catch (D2CallException e) {
+        } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
         }
 

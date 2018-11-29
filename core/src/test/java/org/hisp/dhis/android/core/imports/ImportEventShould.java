@@ -1,64 +1,32 @@
 package org.hisp.dhis.android.core.imports;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class ImportEventShould {
+public class ImportEventShould extends BaseObjectShould implements ObjectShould {
 
+    public ImportEventShould() {
+        super("imports/import_event.json");
+    }
+
+    @Override
     @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
+    public void map_from_json_string() throws IOException, ParseException {
+        ImportEvent importEvent = objectMapper.readValue(jsonStream, ImportEvent.class);
 
-        ImportEvent importEvent = objectMapper.readValue("{\n" +
-                "                \"responseType\": \"ImportSummaries\",\n" +
-                "                \"status\": \"SUCCESS\",\n" +
-                "                \"imported\": 0,\n" +
-                "                \"updated\": 0,\n" +
-                "                \"deleted\": 0,\n" +
-                "                \"ignored\": 1,\n" +
-                "                \"importSummaries\": [\n" +
-                "                  {\n" +
-                "                    \"responseType\": \"ImportSummary\",\n" +
-                "                    \"status\": \"SUCCESS\",\n" +
-                "                    \"importCount\": {\n" +
-                "                      \"imported\": 0,\n" +
-                "                      \"updated\": 0,\n" +
-                "                      \"ignored\": 0,\n" +
-                "                      \"deleted\": 0\n" +
-                "                    },\n" +
-                "                    \"reference\": \"xqpUvfxT4PZ\"\n" +
-                "                  },\n" +
-                "                  {\n" +
-                "                    \"responseType\": \"ImportSummary\",\n" +
-                "                    \"status\": \"SUCCESS\",\n" +
-                "                    \"importCount\": {\n" +
-                "                      \"imported\": 0,\n" +
-                "                      \"updated\": 0,\n" +
-                "                      \"ignored\": 1,\n" +
-                "                      \"deleted\": 0\n" +
-                "                    },\n" +
-                "                    \"conflicts\": [\n" +
-                "                      {\n" +
-                "                        \"object\": \"bx6fsa0t90x\",\n" +
-                "                        \"value\": \"value_not_bool\"\n" +
-                "                      }\n" +
-                "                    ],\n" +
-                "                    \"reference\": \"DB2DLIEi2sX\"\n" +
-                "                  }\n" +
-                "                ]\n" +
-                "              }", ImportEvent.class);
-
-        assertThat(importEvent.imported()).isEqualTo(0);
-        assertThat(importEvent.updated()).isEqualTo(0);
-        assertThat(importEvent.ignored()).isEqualTo(1);
-        assertThat(importEvent.deleted()).isEqualTo(0);
+        assertThat(importEvent.imported()).isEqualTo(1);
+        assertThat(importEvent.updated()).isEqualTo(2);
+        assertThat(importEvent.deleted()).isEqualTo(3);
+        assertThat(importEvent.ignored()).isEqualTo(4);
 
         assertThat(importEvent.importStatus()).isEqualTo(ImportStatus.SUCCESS);
         assertThat(importEvent.responseType()).isEqualTo("ImportSummaries");

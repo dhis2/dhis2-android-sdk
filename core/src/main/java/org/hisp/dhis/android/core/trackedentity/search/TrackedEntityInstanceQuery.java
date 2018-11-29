@@ -6,13 +6,16 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseQuery;
+import org.hisp.dhis.android.core.common.SafeDateFormat;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
+import java.util.Date;
 import java.util.List;
 
 @AutoValue
 public abstract class TrackedEntityInstanceQuery extends BaseQuery {
 
+    private static final SafeDateFormat QUERY_FORMAT = new SafeDateFormat("yyyy-MM-dd");
 
     @NonNull
     public abstract List<String> orgUnits();
@@ -32,6 +35,20 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     @Nullable
     public abstract List<String> filter();
 
+    @Nullable
+    public abstract Date programStartDate();
+
+    @Nullable
+    public abstract Date programEndDate();
+
+    public String formattedProgramStartDate() {
+        return programStartDate() == null ? null : QUERY_FORMAT.format(programStartDate());
+    }
+
+    public String formattedProgramEndDate() {
+        return programEndDate() == null ? null : QUERY_FORMAT.format(programEndDate());
+    }
+
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQuery.Builder();
     }
@@ -49,6 +66,10 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
         public abstract Builder attribute(List<String> attribute);
 
         public abstract Builder filter(List<String> filter);
+
+        public abstract Builder programStartDate(Date programStartDate);
+
+        public abstract Builder programEndDate(Date programEndDate);
 
         public abstract TrackedEntityInstanceQuery build();
     }

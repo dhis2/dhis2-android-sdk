@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.option;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.junit.Test;
 
@@ -43,7 +42,11 @@ import nl.jqno.equalsverifier.Warning;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class OptionSetShould {
+public class OptionSetShould extends BaseObjectShould implements ObjectShould {
+
+    public OptionSetShould() {
+        super("option/option_set.json");
+    }
 
     @Test
     public void have_the_equals_method_conform_to_contract() {
@@ -52,52 +55,10 @@ public class OptionSetShould {
                 .verify();
     }
 
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        OptionSet optionSet = objectMapper.readValue("{\n" +
-                        "\n" +
-                        "    \"created\": \"2014-06-22T10:59:26.564\",\n" +
-                        "    \"lastUpdated\": \"2015-08-06T14:23:38.789\",\n" +
-                        "    \"name\": \"Age category\",\n" +
-                        "    \"id\": \"VQ2lai3OfVG\",\n" +
-                        "    \"displayName\": \"Age category\",\n" +
-                        "    \"publicAccess\": \"rw------\",\n" +
-                        "    \"version\": 1,\n" +
-                        "    \"externalAccess\": false,\n" +
-                        "    \"valueType\": \"TEXT\",\n" +
-                        "    \"access\": {\n" +
-                        "        \"read\": true,\n" +
-                        "        \"updateWithSection\": true,\n" +
-                        "        \"externalize\": false,\n" +
-                        "        \"delete\": true,\n" +
-                        "        \"write\": true,\n" +
-                        "        \"manage\": true\n" +
-                        "    },\n" +
-                        "    \"user\": {\n" +
-                        "        \"id\": \"GOLswS44mh8\"\n" +
-                        "    },\n" +
-                        "    \"userGroupAccesses\": [ ],\n" +
-                        "    \"attributeValues\": [ ],\n" +
-                        "    \"translations\": [ ],\n" +
-                        "    \"options\": [\n" +
-                        "        {\n" +
-                        "            \"id\": \"Y1ILwhy5VDY\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"egT1YqFWsVk\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"WckXGsyYola\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"id\": \"EmQGvSlg0GD\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "\n" +
-                        "}",
-                OptionSet.class);
+        OptionSet optionSet = objectMapper.readValue(jsonStream, OptionSet.class);
 
         assertThat(optionSet.uid()).isEqualTo("VQ2lai3OfVG");
         assertThat(optionSet.name()).isEqualTo("Age category");

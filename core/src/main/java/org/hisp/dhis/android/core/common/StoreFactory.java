@@ -31,6 +31,10 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 @SuppressWarnings("PMD.UseVarargs")
@@ -52,12 +56,14 @@ public final class StoreFactory {
         return objectWithUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder, modelFactory);
     }
 
-    static <I extends BaseModel> ObjectStore<I>
-    objectStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns, StatementBinder<I> binder,
-                CursorModelFactory<I> modelFactory) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
-        return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(
-                statementBuilder.insert()), statementBuilder, binder, modelFactory);
+    public static <I extends Model> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,
+                                                           TableInfo tableInfo,
+                                                           StatementBinder<I> binder,
+                                                           CursorModelFactory<I> modelFactory) {
+        SQLStatementBuilder statementBuilder =
+                new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(), new String[]{});
+        return new ObjectStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
+                statementBuilder, binder, modelFactory);
     }
 
     public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
@@ -92,5 +98,18 @@ public final class StoreFactory {
                 tableInfo.columns().whereUpdate());
         return new LinkModelStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
                 statementBuilder, masterColumn, binder, modelFactory);
+    }
+
+    public static <P extends ObjectWithUidInterface,
+            C extends ObjectWithUidInterface> LinkModelChildStore<P, C> linkModelChildStore(
+                    DatabaseAdapter databaseAdapter,
+                    TableInfo linkTableInfo,
+                    LinkTableChildProjection linkTableChildProjection,
+                    CursorModelFactory<C> childFactory) {
+        return new LinkModelChildStoreImpl<>(
+                linkTableChildProjection,
+                databaseAdapter,
+                new SQLStatementBuilder(linkTableInfo),
+                new CursorExecutorImpl<>(childFactory));
     }
 }

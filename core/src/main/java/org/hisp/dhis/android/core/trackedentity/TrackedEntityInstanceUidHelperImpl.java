@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 
 import java.util.Collection;
@@ -16,10 +16,10 @@ import java.util.Set;
 
 class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelper {
 
-    private final IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore;
+    private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     TrackedEntityInstanceUidHelperImpl(
-            @NonNull IdentifiableObjectStore<OrganisationUnitModel> organisationUnitStore) {
+            @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore) {
         this.organisationUnitStore = organisationUnitStore;
     }
 

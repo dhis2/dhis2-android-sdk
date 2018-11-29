@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 @SuppressWarnings("PMD.UseUtilityClass")
 public final class TrackedEntityAttributeReservedValueHandler extends
-        ObjectWithoutUidHandlerImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+        ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeReservedValue> {
 
-    TrackedEntityAttributeReservedValueHandler(ObjectWithoutUidStore<TrackedEntityAttributeReservedValueModel> store) {
+    TrackedEntityAttributeReservedValueHandler(ObjectWithoutUidStore<TrackedEntityAttributeReservedValue> store) {
         super(store);
     }
 
-    public static GenericHandler<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel>
+    public static SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue>
     create(DatabaseAdapter databaseAdapter) {
         return new TrackedEntityAttributeReservedValueHandler(
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter));

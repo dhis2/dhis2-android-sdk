@@ -2,12 +2,12 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreInterface;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
@@ -17,6 +17,7 @@ import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +49,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     }
 
     @Override
-    public List<Event> call() throws D2CallException {
+    public List<Event> call() throws D2Error {
         setExecuted();
 
         return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<List<Event>>() {
@@ -60,9 +61,9 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         });
     }
 
-    private List<Event> getEvents() throws D2CallException {
-        Set<String> organisationUnitUids;
-        Set<String> programUids = programStore.queryWithoutRegistrationProgramUids();
+    private List<Event> getEvents() throws D2Error {
+        Collection<String> organisationUnitUids;
+        List<String> programUids = programStore.queryWithoutRegistrationProgramUids();
         List<Event> events = new ArrayList<>();
         EventQuery.Builder eventQueryBuilder = EventQuery.Builder.create();
         int pageSize = eventQueryBuilder.build().getPageSize();
@@ -85,8 +86,10 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         return events;
     }
 
-    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder, int pageSize, Set<String> programUids,
-                                            int globalEventsSize) throws D2CallException {
+    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
+                                            int pageSize,
+                                            Collection<String> programUids,
+                                            int globalEventsSize) throws D2Error {
         List<Event> events = new ArrayList<>();
 
         D2CallExecutor executor = new D2CallExecutor();
@@ -102,7 +105,7 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
                 eventQueryBuilder.withPage(paging.page());
 
                 List<Event> pageEvents = executor.executeD2Call(
-                        EventEndpointCall.create(retrofit, eventQueryBuilder.build()));
+                        EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
 
                 if (paging.isLastPage()) {
                     int previousItemsToSkip = pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();
@@ -128,13 +131,13 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     }
 
     private Set<String> getOrgUnitUids() {
-        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
+        List<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
 
         Set<String> organisationUnitUids = new HashSet<>();
 
         for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
             if (linkModel.organisationUnitScope().equals(
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
                 organisationUnitUids.add(linkModel.organisationUnit());
             }
         }

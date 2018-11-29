@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Model;
 
 public interface ReadWriteObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
-    void delete() throws D2CallException;
+    void delete() throws D2Error;
 }

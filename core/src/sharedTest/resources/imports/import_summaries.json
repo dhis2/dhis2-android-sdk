@@ -1,0 +1,67 @@
+{
+  "responseType": "ImportSummaries",
+  "status": "SUCCESS",
+  "imported": 1,
+  "updated": 2,
+  "deleted": 3,
+  "ignored": 4,
+  "importOptions": {
+    "idSchemes": {},
+    "dryRun": false,
+    "async": false,
+    "importStrategy": "CREATE_AND_UPDATE",
+    "mergeMode": "REPLACE",
+    "skipExistingCheck": false,
+    "sharing": false,
+    "skipNotifications": false,
+    "datasetAllowsPeriods": false,
+    "strictPeriods": false,
+    "strictCategoryOptionCombos": false,
+    "strictAttributeOptionCombos": false,
+    "strictOrganisationUnits": false,
+    "requireCategoryOptionCombo": false,
+    "requireAttributeOptionCombo": false
+  },
+  "importSummaries": [
+    {
+      "responseType": "ImportSummary",
+      "status": "SUCCESS",
+      "importCount": {
+        "imported": 0,
+        "updated": 1,
+        "ignored": 0,
+        "deleted": 0
+      },
+      "reference": "k68SkK5yDH9",
+      "href": "https://play.dhis2.org/dev/api/trackedEntityInstances/k68SkK5yDH9",
+      "enrollments": {
+        "responseType": "ImportSummaries",
+        "status": "SUCCESS",
+        "imported": 0,
+        "updated": 0,
+        "deleted": 0,
+        "ignored": 0
+      }
+    },
+    {
+      "responseType": "ImportSummary",
+      "status": "SUCCESS",
+      "importCount": {
+        "imported": 0,
+        "updated": 1,
+        "ignored": 0,
+        "deleted": 0
+      },
+      "reference": "AHgGHO6ZH9b",
+      "href": "https://play.dhis2.org/dev/api/trackedEntityInstances/AHgGHO6ZH9b",
+      "enrollments": {
+        "responseType": "ImportSummaries",
+        "status": "SUCCESS",
+        "imported": 0,
+        "updated": 0,
+        "deleted": 0,
+        "ignored": 0
+      }
+    }
+  ]
+}

@@ -38,10 +38,8 @@ import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
-import org.hisp.dhis.android.core.datavalue.DataValueModule;
-import org.hisp.dhis.android.core.wipe.WipeModule;
-import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -50,12 +48,14 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
@@ -69,6 +69,8 @@ import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.wipe.WipeModule;
+import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -190,19 +192,15 @@ public final class D2 {
 
     @NonNull
     public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
-            throws D2CallException {
+            throws D2Error {
         return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
                 .getValue(attributeUid, organisationUnitUid);
     }
 
-    public void syncTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid) {
+    public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
+                                                         Integer numberOfValuesToFillUp) {
         TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
-                .forceSyncReservedValues(attributeUid, organisationUnitUid);
-    }
-
-    public void syncAllTrackedEntityAttributeReservedValues() {
-        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
-                .syncAllTrackedEntityAttributeReservedValues();
+                .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
     }
 
     @NonNull
@@ -212,7 +210,7 @@ public final class D2 {
 
     @NonNull
     public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
-        return TrackedEntityInstanceQueryCall.create(retrofit, query);
+        return TrackedEntityInstanceQueryCall.create(retrofit, databaseAdapter, query);
     }
 
     public Callable<WebResponse> syncSingleEvents() {
@@ -232,12 +230,20 @@ public final class D2 {
         return this.internalModules.relationshipModule.publicModule;
     }
 
+    public CategoryModule categoryModule() {
+        return this.internalModules.categoryModule.publicModule;
+    }
+
     public DataElementModule dataElementModule() {
         return this.internalModules.dataElementModule.publicModule;
     }
 
     public DataValueModule dataValueModule() {
         return this.internalModules.dataValueModule.publicModule;
+    }
+
+    public MaintenanceModule maintenanceModule() {
+        return this.internalModules.maintenanceModule.publicModule;
     }
 
     public WipeModule wipeModule() {

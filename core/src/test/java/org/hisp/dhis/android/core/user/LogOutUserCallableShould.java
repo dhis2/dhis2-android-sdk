@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.junit.Before;
@@ -96,7 +96,7 @@ public class LogOutUserCallableShould {
         try {
             logOutUserCallable.call();
             fail("D2Exception must be thrown if no authenticated user");
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Exception) {
             assertThat(d2Exception.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER);
         }
     }

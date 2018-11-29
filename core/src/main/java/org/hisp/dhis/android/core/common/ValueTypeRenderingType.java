@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 public enum ValueTypeRenderingType {
     DEFAULT,
+    AUTOCOMPLETE,
     DROPDOWN,
     VERTICAL_RADIOBUTTONS,
     HORIZONTAL_RADIOBUTTONS,

@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
 import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -40,30 +39,16 @@ import java.text.ParseException;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class CategoryOptionShould {
+public class CategoryOptionShould extends BaseObjectShould implements ObjectShould {
 
+    public CategoryOptionShould() {
+        super("category/category_option.json");
+    }
+
+    @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
-        ObjectMapper objectMapper = Inject.objectMapper();
-        CategoryOption option = objectMapper.readValue("{" +
-                        "\"lastUpdated\":\"2016-08-08T11:17:59.448\"," +
-                        "\"id\":\"cQYFfHX9oIT\"," +
-                        "\"created\":\"2016-08-08T11:17:59.448\"," +
-                        "\"name\":\"Green\"," +
-                        "\"shortName\":\"Green\"," +
-                        "\"displayName\":\"Green\"," +
-                        "\"displayShortName\":\"Green\"," +
-                        "\"startDate\":\"2016-04-01T00:00:00.000\"," +
-                        "\"endDate\":\"2016-05-01T00:00:00.000\"," +
-                        "\"externalAccess\":false," +
-                        "\"dimensionItem\":\"cQYFfHX9oIT\"," +
-                        "\"dimensionItemType\":\"CATEGORY_OPTION\"," +
-                        "\"categories\":[]," +
-                        "\"organisationUnits\":[]," +
-                        "\"categoryOptionCombos\":[]," +
-                        "\"categoryOptionGroups\":[]" +
-                        "}",
-                CategoryOption.class);
+        CategoryOption option = objectMapper.readValue(jsonStream, CategoryOption.class);
 
         assertThat(option.uid()).isEqualTo("cQYFfHX9oIT");
         assertThat(option.created()).isEqualTo(

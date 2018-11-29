@@ -13,7 +13,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class CategoryCategoryOptionLinkStore {
+final class CategoryCategoryOptionLinkStore {
 
     private CategoryCategoryOptionLinkStore() {}
 
@@ -37,8 +37,7 @@ public final class CategoryCategoryOptionLinkStore {
     };
 
     public static LinkModelStore<CategoryCategoryOptionLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryOptionLinkModel.TABLE,
-                new CategoryCategoryOptionLinkModel.Columns(),
+        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
                 CategoryCategoryOptionLinkModel.Columns.CATEGORY, BINDER, FACTORY);
     }
 }

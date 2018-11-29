@@ -6,8 +6,8 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.common.D2CallException;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -20,6 +20,7 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
@@ -73,7 +74,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private String enrollment1Uid;
     private String trackedEntityInstance1Uid;
 
-    private String categoryOptionUid;
     private String categoryComboOptionUid;
 
 
@@ -88,7 +88,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
         eventStore = new EventStoreImpl(databaseAdapter());
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(databaseAdapter());
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         codeGenerator = new CodeGeneratorImpl();
         orgUnitUid = "DiszpKrYNg8";
@@ -101,7 +101,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         coordinates = "[9,9]";
         featureType = FeatureType.POINT;
 
-        categoryOptionUid = "xYerKDKCefk";
         categoryComboOptionUid = "HllvX50cXC0";
         eventUid = codeGenerator.generate();
         enrollmentUid = codeGenerator.generate();
@@ -254,8 +253,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         try {
             d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
-        } catch (D2CallException e) {
-            assertThat(e.isHttpError()).isTrue();
+        } catch (D2Error e) {
+            assertThat(e.errorComponent()).isEqualTo(D2ErrorComponent.Server);
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
         }
     }
@@ -266,7 +265,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.downloadTrackedEntityInstances(5, true).call();
 
         TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.getSet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
 
         // Create a TEI by copying an existing one
         String teiBUid = codeGenerator.generate();
@@ -318,7 +317,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         TrackedEntityInstance t0 = trackedEntityInstances.get(0);
         TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.getSet().iterator().next();
+        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
 
         d2.relationshipModule().relationships.add(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid()));
@@ -343,7 +342,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         ReadOnlyIdentifiableCollectionRepository<RelationshipType> typesRepository = relationshipModule.relationshipTypes;
         RelationshipCollectionRepository relationshipsRepository = relationshipModule.relationships;
 
-        RelationshipType relationshipType = typesRepository.getSet().iterator().next();
+        RelationshipType relationshipType = typesRepository.get().iterator().next();
 
         Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
                 relationshipType.uid());
@@ -413,12 +412,20 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         eventStore.insert(
                 eventUid, enrollmentUid, refDate, refDate, null, null,
                 EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                refDate, refDate, refDate, State.TO_POST, categoryOptionUid, categoryComboOptionUid, trackedEntityInstanceUid
+                refDate, refDate, refDate, State.TO_POST, categoryComboOptionUid, trackedEntityInstanceUid
         );
 
-        trackedEntityDataValueStore.insert(
-                eventUid, refDate, refDate, dataElementUid, "user_name", "12", Boolean.FALSE
-        );
+        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
+                .event(eventUid)
+                .created(refDate)
+                .lastUpdated(refDate)
+                .dataElement(dataElementUid)
+                .storedBy("user_name")
+                .value("12")
+                .providedElsewhere(Boolean.FALSE)
+                .build();
+
+        trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
         trackedEntityAttributeValueStore.insert(
                 "new2", refDate, refDate, trackedEntityAttributeUid,
@@ -484,10 +491,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private boolean verifyEventCategoryAttributes(Event event, Event downloadedEvent) {
-            if(event.uid().equals(downloadedEvent.uid()) && event.attributeOptionCombo().equals(downloadedEvent.attributeOptionCombo()) && event.attributeCategoryOptions().equals(downloadedEvent.attributeCategoryOptions())){
-                return true;
-            }
-        return false;
+        return event.uid().equals(downloadedEvent.uid()) &&
+                event.attributeOptionCombo().equals(downloadedEvent.attributeOptionCombo());
     }
 
     private Date getCurrentDateMinusTwoHoursTenMinutes() {

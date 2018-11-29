@@ -5,7 +5,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
-import org.hisp.dhis.android.core.data.file.AssetsFileReader;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventEndpointCall;
@@ -30,7 +30,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        dhis2MockServer = new Dhis2MockServer(new AssetsFileReader());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
@@ -82,9 +82,9 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAEventInDatabase() throws Exception {
-        EventEndpointCall eventCall = EventCallFactory.create(d2.retrofit(), "DiszpKrYNg8", 0);
+        EventEndpointCall eventCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
-        dhis2MockServer.enqueueMockResponse("events.json");
+        dhis2MockServer.enqueueMockResponse("event/events.json");
 
         List<Event> events = eventCall.call();
 

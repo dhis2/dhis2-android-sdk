@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,5 +92,14 @@ public class UserAuthenticateCallErrorCatcherShould {
         Response response = Response.error(409, ResponseBody.create(null, responseError));
 
         assertThat(catcher.catchError(response)).isEqualTo(null);
+    }
+
+    @Test
+    public void return_bad_url_if_not_found() throws Exception {
+
+        String responseError = "<html><head><title>404 Not Found</title></head><body bgcolor=\"white\"><center><h1>404 Not Found</h1></center><hr><center>nginx/1.14.0</center></body></html>";
+        Response response = Response.error(404, ResponseBody.create(null, responseError));
+
+        assertThat(catcher.catchError(response)).isEqualTo(D2ErrorCode.URL_NOT_FOUND);
     }
 }

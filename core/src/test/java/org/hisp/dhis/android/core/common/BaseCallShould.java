@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.mockito.InOrder;
@@ -82,7 +83,7 @@ public abstract class BaseCallShould {
     protected Transaction transaction;
 
     @Mock
-    protected D2CallException d2CallException;
+    protected D2Error d2Error;
 
     protected Response errorResponse;
 

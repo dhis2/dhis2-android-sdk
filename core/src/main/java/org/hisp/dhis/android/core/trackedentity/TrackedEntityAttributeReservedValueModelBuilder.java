@@ -30,29 +30,22 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
 import java.util.Date;
 
-public class TrackedEntityAttributeReservedValueModelBuilder extends
-        ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueModel> {
+public class TrackedEntityAttributeReservedValueModelBuilder
+        extends ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValue> {
 
-    private final TrackedEntityAttributeReservedValueModel.Builder builder;
+    private final TrackedEntityAttributeReservedValue.Builder builder;
 
     TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
-        fillTemporalValidityDate(pattern);
-    }
-
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnitModel organisationUnit, String pattern) {
-        this.builder = TrackedEntityAttributeReservedValueModel.builder()
-                .organisationUnit(organisationUnit.uid());
+        this.builder = TrackedEntityAttributeReservedValue.builder()
+                .organisationUnit(organisationUnit == null ? null : organisationUnit.uid());
         fillTemporalValidityDate(pattern);
     }
 
     @Override
-    public TrackedEntityAttributeReservedValueModel buildModel(TrackedEntityAttributeReservedValue reservedValue) {
+    public TrackedEntityAttributeReservedValue buildModel(TrackedEntityAttributeReservedValue reservedValue) {
         return builder
                 .ownerObject(reservedValue.ownerObject())
                 .ownerUid(reservedValue.ownerUid())

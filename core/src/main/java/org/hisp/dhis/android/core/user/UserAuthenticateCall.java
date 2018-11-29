@@ -34,16 +34,18 @@ import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
-import org.hisp.dhis.android.core.common.APICallExecutor;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.D2ErrorCode;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -62,6 +64,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final APICallExecutor apiCallExecutor;
 
     private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
     private final DHISVersionManager versionManager;
@@ -84,6 +87,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     UserAuthenticateCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull APICallExecutor apiCallExecutor,
             @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
             @NonNull DHISVersionManager versionManager,
             @NonNull UserService userService,
@@ -98,6 +102,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull String apiURL) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.apiCallExecutor = apiCallExecutor;
 
         this.systemInfoCallFactory = systemInfoCallFactory;
         this.versionManager = versionManager;
@@ -117,7 +122,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     }
 
     @Override
-    public User call() throws D2CallException {
+    public User call() throws D2Error {
         setExecuted();
         throwExceptionIfUsernameNull();
         throwExceptionIfPasswordNull();
@@ -127,24 +132,25 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
 
         try {
-            User authenticatedUser = new APICallExecutor().executeObjectCallWithErrorCatcher(authenticateCall,
+            User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
                     new UserAuthenticateCallErrorCatcher());
             return loginOnline(authenticatedUser);
-        } catch (D2CallException d2Exception) {
+        } catch (D2Error d2Error) {
             if (
-                    d2Exception.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                    d2Exception.errorCode() == D2ErrorCode.SOCKET_TIMEOUT) {
+                    d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
                 return loginOffline();
-            } else if (d2Exception.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+            } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
                 wipeModule.wipeEverything();
-                throw d2Exception;
+                throw d2Error;
             } else {
-                throw d2Exception;
+                throw d2Error;
             }
         }
     }
 
-    private User loginOnline(User authenticatedUser) throws D2CallException {
+    private User loginOnline(User authenticatedUser) throws D2Error {
         if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew()) {
             wipeModule.wipeEverything();
         }
@@ -163,30 +169,30 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         }
     }
 
-    private User loginOffline() throws D2CallException {
+    private User loginOffline() throws D2Error {
         if (wasLoggedAndServerIsNew()) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
                     .errorDescription("Cannot switch servers offline.")
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
 
         AuthenticatedUserModel existingUser = authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE)
                     .errorDescription("No user has been previously authenticated. Cannot login offline.")
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
 
         if (!md5(username, password).equals(existingUser.hash())) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.DIFFERENT_AUTHENTICATED_USER_OFFLINE)
                     .errorDescription("Credentials do not match authenticated user. Cannot switch users offline.")
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
 
@@ -202,33 +208,33 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         return userStore.selectByUid(existingUser.user());
     }
 
-    private void throwExceptionIfUsernameNull() throws D2CallException {
+    private void throwExceptionIfUsernameNull() throws D2Error {
         if (username == null) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.LOGIN_USERNAME_NULL)
                     .errorDescription("Username is null")
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
     }
 
-    private void throwExceptionIfPasswordNull() throws D2CallException {
+    private void throwExceptionIfPasswordNull() throws D2Error {
         if (password == null) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.LOGIN_PASSWORD_NULL)
                     .errorDescription("Password is null")
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
     }
 
-    private void throwExceptionIfAlreadyAuthenticated() throws D2CallException {
+    private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
         AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
         if (authenticatedUser != null && authenticatedUser.credentials() != null) {
-            throw D2CallException.builder()
+            throw D2Error.builder()
                     .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
                     .errorDescription("A user is already authenticated: " + authenticatedUser.user())
-                    .isHttpError(false)
+                    .errorComponent(D2ErrorComponent.SDK)
                     .build();
         }
     }
@@ -267,6 +273,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         return new UserAuthenticateCall(
                 databaseAdapter,
                 retrofit,
+                APICallExecutorImpl.create(databaseAdapter),
                 internalModules.systemInfo.callFactory,
                 internalModules.systemInfo.publicModule.versionManager,
                 retrofit.create(UserService.class),

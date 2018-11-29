@@ -29,7 +29,14 @@ package org.hisp.dhis.android.core.arch.repositories.children;
 
 import java.util.Collection;
 
-public interface ChildrenAppender<M> {
-    void prepareChildren(Collection<M> collection);
-    M appendChildren(M m);
+public abstract class ChildrenAppender<M> {
+
+    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+    protected void prepareChildren(Collection<M> collection) {
+        /* Method is not abstract since empty action is the default action and we don't want it to
+         * be unnecessarily written in every child.
+         */
+    }
+
+    protected abstract M appendChildren(M m);
 }

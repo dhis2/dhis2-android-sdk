@@ -4,7 +4,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -35,7 +36,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
     }
 
     @Override
-    public List<TrackedEntityInstance> call() throws D2CallException {
+    public List<TrackedEntityInstance> call() throws D2Error {
         setExecuted();
 
         if (trackedEntityInstanceUids == null) {
@@ -46,7 +47,8 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
         D2CallExecutor executor = new D2CallExecutor();
         for (String uid: trackedEntityInstanceUids) {
             Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                    .create(retrofit, uid, TrackedEntityInstance.allFields);
+                    .create(retrofit, APICallExecutorImpl.create(databaseAdapter), uid,
+                            TrackedEntityInstance.allFields);
             teis.add(executor.executeD2Call(teiCall));
         }
 

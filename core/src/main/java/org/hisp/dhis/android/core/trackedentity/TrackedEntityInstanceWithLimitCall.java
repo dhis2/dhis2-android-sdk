@@ -3,12 +3,12 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.common.D2CallException;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
@@ -16,6 +16,7 @@ import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,20 +49,20 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     }
 
     @Override
-    public List<TrackedEntityInstance> call() throws D2CallException {
+    public List<TrackedEntityInstance> call() throws D2Error {
         this.setExecuted();
 
         return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter,
                 new Callable<List<TrackedEntityInstance>>() {
                     @Override
-                    public List<TrackedEntityInstance> call() throws D2CallException {
+                    public List<TrackedEntityInstance> call() throws D2Error {
                         return getTrackedEntityInstances();
                     }
                 });
     }
     
-    private List<TrackedEntityInstance> getTrackedEntityInstances() throws D2CallException {
-        Set<String> organisationUnitUids;
+    private List<TrackedEntityInstance> getTrackedEntityInstances() throws D2Error {
+        Collection<String> organisationUnitUids;
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         TeiQuery.Builder teiQueryBuilder = TeiQuery.Builder.create();
         int pageSize = teiQueryBuilder.build().getPageSize();
@@ -87,7 +88,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
 
     private List<TrackedEntityInstance> getTrackedEntityInstancesWithPaging(
             TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList)
-            throws D2CallException {
+            throws D2Error {
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         D2CallExecutor executor = new D2CallExecutor();
 
@@ -95,7 +96,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
             teiQueryBuilder.withPage(paging.page()).withPageSize(paging.pageSize());
 
             List<TrackedEntityInstance> pageTrackedEntityInstances = executor.executeD2Call(
-                    TrackedEntityInstancesEndpointCall.create(retrofit, teiQueryBuilder.build()));
+                    TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build()));
 
             if (paging.isLastPage()) {
                 int previousItemsToSkip = pageTrackedEntityInstances.size()
@@ -121,13 +122,13 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     }
 
     private Set<String> getOrgUnitUids() {
-        Set<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
+        List<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
 
         Set<String> organisationUnitUids = new HashSet<>();
 
         for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
             if (linkModel.organisationUnitScope().equals(
-                    OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE.name())) {
+                    OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
                 organisationUnitUids.add(linkModel.organisationUnit());
             }
         }

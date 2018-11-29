@@ -28,20 +28,16 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.IgnoreDataElementOperandListColumnAdapter;
@@ -54,13 +50,6 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Section.Builder.class)
 public abstract class Section extends BaseIdentifiableObject implements Model {
-
-    // TODO move to base class after whole object refactor
-    @Override
-    @Nullable
-    @ColumnName(BaseModel.Columns.ID)
-    @JsonIgnore()
-    public abstract Long id();
 
     @Nullable
     @JsonProperty()
@@ -100,8 +89,6 @@ public abstract class Section extends BaseIdentifiableObject implements Model {
     static Section create(Cursor cursor) {
         return $AutoValue_Section.createFromCursor(cursor);
     }
-
-    public abstract ContentValues toContentValues();
 
     public abstract Builder toBuilder();
 

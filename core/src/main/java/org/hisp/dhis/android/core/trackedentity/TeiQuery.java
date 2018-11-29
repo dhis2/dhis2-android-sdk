@@ -4,21 +4,21 @@ import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.data.api.OuMode;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class TeiQuery {
 
     private final int page;
     private final int pageSize;
     private final boolean paging;
-    private final Set<String> orgUnits;
+    private final Collection<String> orgUnits;
     private final OuMode ouMode;
 
     @Nullable
-    private final Set<String> uIds;
+    private final Collection<String> uIds;
 
-    public TeiQuery(boolean paging, int page, int pageSize, Set<String> orgUnits, OuMode ouMode) {
+    public TeiQuery(boolean paging, int page, int pageSize, Collection<String> orgUnits, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
@@ -28,7 +28,7 @@ public class TeiQuery {
     }
 
     public TeiQuery(boolean paging, int page, int pageSize,
-                    Set<String> orgUnits, @Nullable Set<String> uIds, OuMode ouMode) {
+                    Collection<String> orgUnits, @Nullable Collection<String> uIds, OuMode ouMode) {
         this.paging = paging;
         this.page = page;
         this.pageSize = pageSize;
@@ -38,7 +38,7 @@ public class TeiQuery {
     }
 
     @Nullable
-    public Set<String> getUIds() {
+    public Collection<String> getUIds() {
         return uIds;
     }
 
@@ -58,7 +58,7 @@ public class TeiQuery {
         return ouMode;
     }
 
-    public Set<String> getOrgUnits() {
+    public Collection<String> getOrgUnits() {
         return orgUnits;
     }
 
@@ -66,10 +66,10 @@ public class TeiQuery {
         private int page = 1;
         private int pageSize = 50;
         private boolean paging;
-        private Set<String> orgUnits;
+        private Collection<String> orgUnits;
         OuMode ouMode = OuMode.SELECTED;
 
-        private Set<String> uIds = new HashSet<>();
+        private Collection<String> uIds = new ArrayList<>();
 
         private Builder() {
         }
@@ -93,12 +93,12 @@ public class TeiQuery {
             return this;
         }
 
-        public TeiQuery.Builder withOrgUnits(Set<String> orgUnits) {
+        public TeiQuery.Builder withOrgUnits(Collection<String> orgUnits) {
             this.orgUnits = orgUnits;
             return this;
         }
 
-        public TeiQuery.Builder withUIds(Set<String> uIds) {
+        public TeiQuery.Builder withUIds(Collection<String> uIds) {
             this.uIds = uIds;
             return this;
         }

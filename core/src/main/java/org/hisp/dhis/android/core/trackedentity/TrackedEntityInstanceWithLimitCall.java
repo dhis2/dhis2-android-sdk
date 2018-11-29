@@ -85,6 +85,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
         return new Unit();
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList) {
         D2CallExecutor executor = new D2CallExecutor();
 

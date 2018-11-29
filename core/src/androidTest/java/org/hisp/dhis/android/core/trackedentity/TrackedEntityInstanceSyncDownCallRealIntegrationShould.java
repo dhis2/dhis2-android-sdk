@@ -10,7 +10,9 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class TrackedEntityInstanceSyncDownCallRealIntegrationShould extends AbsStoreTestCase {
@@ -37,13 +39,18 @@ public class TrackedEntityInstanceSyncDownCallRealIntegrationShould extends AbsS
 
         d2.syncMetaData().call();
 
-        Callable<List<TrackedEntityInstance>> trackedEntityInstanceCall =
-                d2.downloadTrackedEntityInstances(2, false);
-        List<TrackedEntityInstance> teiResponse = trackedEntityInstanceCall.call();
+        d2.downloadTrackedEntityInstances(2, false).call();
 
-        Truth.assertThat(teiResponse.size()).isEqualTo(2);
+        Map<String, TrackedEntityInstance> trackedEntityInstances =
+                new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll();
 
-        store.setState(teiResponse.get(0).uid(), State.TO_UPDATE);
+        Truth.assertThat(trackedEntityInstances.size()).isEqualTo(2);
+
+        Iterator<Map.Entry<String, TrackedEntityInstance>> tEIIterator = trackedEntityInstances.entrySet().iterator();
+
+        TrackedEntityInstance trackedEntityInstance = tEIIterator.next().getValue();
+
+        store.setState(trackedEntityInstance.uid(), State.TO_UPDATE);
 
         Callable<List<TrackedEntityInstance>> syncDownSyncedTrackedEntityInstanceCall =
                 d2.syncDownSyncedTrackedEntityInstances();

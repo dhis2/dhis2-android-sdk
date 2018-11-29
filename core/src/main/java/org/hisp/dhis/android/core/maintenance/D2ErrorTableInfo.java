@@ -59,6 +59,7 @@ public final class D2ErrorTableInfo {
         private static final String ERROR_CODE = "errorCode";
         private static final String ERROR_DESCRIPTION = "errorDescription";
         private static final String HTTP_ERROR_CODE = "httpErrorCode";
+        private static final String CREATED = "created";
 
         @Override
         public String[] all() {
@@ -69,7 +70,8 @@ public final class D2ErrorTableInfo {
                     ERROR_COMPONENT,
                     ERROR_CODE,
                     ERROR_DESCRIPTION,
-                    HTTP_ERROR_CODE);
+                    HTTP_ERROR_CODE,
+                    CREATED);
         }
     }
 }

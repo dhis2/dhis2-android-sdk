@@ -3,11 +3,11 @@ package org.hisp.dhis.android.core;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,8 +29,8 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        List<TrackedEntityInstance> trackedEntityInstances =
-                d2.downloadTrackedEntityInstances(5,  false).call();
-        assertThat(trackedEntityInstances.size() == 5).isTrue();
+        d2.downloadTrackedEntityInstances(5,  false).call();
+
+        assertThat(new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll().size() >= 5).isTrue();
     }
 }

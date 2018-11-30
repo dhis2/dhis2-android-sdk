@@ -86,7 +86,7 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
     }
 
     public static Builder builder() {
-        return new AutoValue_D2Error.Builder().created(new Date());
+        return new AutoValue_D2Error.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -112,6 +112,11 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
 
         public abstract Builder created(Date created);
 
-        public abstract D2Error build();
+        abstract D2Error autoBuild();
+
+        public D2Error build() {
+            this.created(new Date());
+            return autoBuild();
+        }
     }
 }

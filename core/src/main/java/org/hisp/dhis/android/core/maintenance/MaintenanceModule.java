@@ -36,15 +36,25 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class MaintenanceModule {
 
+    private final DatabaseAdapter databaseAdapter;
     public final ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations;
 
-    private MaintenanceModule(ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations) {
+    private MaintenanceModule(DatabaseAdapter databaseAdapter,
+                              ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations) {
         this.foreignKeyViolations = foreignKeyViolations;
+        this.databaseAdapter = databaseAdapter;
     }
 
     public static MaintenanceModule create(DatabaseAdapter databaseAdapter) {
         return new MaintenanceModule(
+                databaseAdapter,
                 new ReadOnlyCollectionRepositoryImpl<>(ForeignKeyViolationStore.create(databaseAdapter))
         );
+    }
+
+    public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
+                                                              int programRulesPerProgramThreshold) {
+        return PerformanceHintsService.create(databaseAdapter, organisationUnitThreshold,
+                programRulesPerProgramThreshold);
     }
 }

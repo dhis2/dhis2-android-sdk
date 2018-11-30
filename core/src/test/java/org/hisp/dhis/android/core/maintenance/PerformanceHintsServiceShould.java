@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.maintenance;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -46,7 +46,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 public class PerformanceHintsServiceShould {
-
 
     @Mock
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;

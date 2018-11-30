@@ -3,11 +3,12 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -15,7 +16,6 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
-public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<TrackedEntityInstance>> {
+public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
 
     private final boolean limitByOrgUnit;
     private final int teiLimit;
@@ -49,21 +49,20 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
     }
 
     @Override
-    public List<TrackedEntityInstance> call() throws D2Error {
+    public Unit call() throws D2Error {
         this.setExecuted();
 
         return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter,
-                new Callable<List<TrackedEntityInstance>>() {
+                new Callable<Unit>() {
                     @Override
-                    public List<TrackedEntityInstance> call() throws D2Error {
+                    public Unit call() {
                         return getTrackedEntityInstances();
                     }
                 });
     }
     
-    private List<TrackedEntityInstance> getTrackedEntityInstances() throws D2Error {
+    private Unit getTrackedEntityInstances() {
         Collection<String> organisationUnitUids;
-        List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         TeiQuery.Builder teiQueryBuilder = TeiQuery.Builder.create();
         int pageSize = teiQueryBuilder.build().getPageSize();
         List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
@@ -75,50 +74,50 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<List<Trac
                 orgUnitWrapper.clear();
                 orgUnitWrapper.add(orgUnitUid);
                 teiQueryBuilder.withOrgUnits(orgUnitWrapper);
-                trackedEntityInstances.addAll(getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList));
+                getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
             }
         } else {
             organisationUnitUids = userOrganisationUnitLinkStore.queryRootOrganisationUnitUids();
             teiQueryBuilder.withOrgUnits(organisationUnitUids).withOuMode(OuMode.DESCENDANTS);
-            trackedEntityInstances = getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
+            getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
         }
 
-        return trackedEntityInstances;
+        return new Unit();
     }
 
-    private List<TrackedEntityInstance> getTrackedEntityInstancesWithPaging(
-            TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList)
-            throws D2Error {
-        List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList) {
         D2CallExecutor executor = new D2CallExecutor();
 
         for (Paging paging : pagingList) {
-            teiQueryBuilder.withPage(paging.page()).withPageSize(paging.pageSize());
 
-            List<TrackedEntityInstance> pageTrackedEntityInstances = executor.executeD2Call(
-                    TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build()));
+            try {
+                teiQueryBuilder.withPage(paging.page()).withPageSize(paging.pageSize());
+                List<TrackedEntityInstance> pageTrackedEntityInstances = executor.executeD2Call(
+                        TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build()));
 
-            if (paging.isLastPage()) {
-                int previousItemsToSkip = pageTrackedEntityInstances.size()
-                        + paging.previousItemsToSkipCount() - paging.pageSize();
-                int toIndex = previousItemsToSkip < 0 ? pageTrackedEntityInstances.size() :
-                        pageTrackedEntityInstances.size() - previousItemsToSkip;
-                trackedEntityInstances.addAll(
-                        pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex));
-            } else {
-                trackedEntityInstances.addAll(pageTrackedEntityInstances);
-            }
+                if (paging.isLastPage()) {
+                    int previousItemsToSkip = pageTrackedEntityInstances.size()
+                            + paging.previousItemsToSkipCount() - paging.pageSize();
+                    int toIndex = previousItemsToSkip < 0 ? pageTrackedEntityInstances.size() :
+                            pageTrackedEntityInstances.size() - previousItemsToSkip;
 
-            if (pageTrackedEntityInstances.size() < paging.pageSize()) {
-                break;
+                    executor.executeD2Call(
+                            TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, internalModules,
+                                    pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)));
+                } else {
+                    executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
+                            internalModules, pageTrackedEntityInstances));
+                }
+
+                if (pageTrackedEntityInstances.size() < paging.pageSize()) {
+                    break;
+                }
+
+            } catch (D2Error ignored) {
+                // The D2Error is ignored so that all calls are executed.
             }
         }
-
-        executor.executeD2Call(
-                TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, internalModules,
-                        trackedEntityInstances));
-
-        return trackedEntityInstances;
     }
 
     private Set<String> getOrgUnitUids() {

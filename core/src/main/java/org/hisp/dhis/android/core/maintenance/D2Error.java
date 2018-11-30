@@ -40,7 +40,10 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.D2ErrorCodeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.D2ErrorComponentColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreExceptionAdapter;
+
+import java.util.Date;
 
 @AutoValue
 public abstract class D2Error extends Exception implements ObjectWithUidInterface, Model {
@@ -73,6 +76,10 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
     @ColumnAdapter(IgnoreExceptionAdapter.class)
     public abstract Exception originalException();
 
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date created();
+
     @NonNull
     public static D2Error create(Cursor cursor) {
         return AutoValue_D2Error.createFromCursor(cursor);
@@ -103,6 +110,13 @@ public abstract class D2Error extends Exception implements ObjectWithUidInterfac
 
         public abstract Builder originalException(Exception originalException);
 
-        public abstract D2Error build();
+        public abstract Builder created(Date created);
+
+        abstract D2Error autoBuild();
+
+        public D2Error build() {
+            this.created(new Date());
+            return autoBuild();
+        }
     }
 }

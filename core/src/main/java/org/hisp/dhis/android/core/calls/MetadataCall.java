@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
@@ -60,6 +61,8 @@ import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.settings.SystemSettingCall;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.user.Authority;
+import org.hisp.dhis.android.core.user.AuthorityEndpointCall;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCall;
 
@@ -78,6 +81,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final DHISVersionManager versionManager;
     private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
     private final GenericCallFactory<User> userCallFactory;
+    private final ListCallFactory<Authority> authorityCallFactory;
     private final UidsCallFactory<Category> categoryCallFactory;
     private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
     private final CategoryComboUidsSeeker categoryComboUidsSeeker;
@@ -93,6 +97,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull DHISVersionManager versionManager,
                         @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
                         @NonNull GenericCallFactory<User> userCallFactory,
+                        @NonNull ListCallFactory<Authority> authorityCallFactory,
                         @NonNull UidsCallFactory<Category> categoryCallFactory,
                         @NonNull UidsCallFactory<CategoryCombo> categoryComboCallFactory,
                         @NonNull CategoryComboUidsSeeker categoryComboUidsSeeker,
@@ -108,6 +113,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.versionManager = versionManager;
         this.systemSettingCallFactory = systemSettingCallFactory;
         this.userCallFactory = userCallFactory;
+        this.authorityCallFactory = authorityCallFactory;
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
         this.categoryComboUidsSeeker = categoryComboUidsSeeker;
@@ -135,6 +141,8 @@ public class MetadataCall extends SyncCall<Unit> {
                 executor.executeD2Call(systemSettingCallFactory.create(genericCallData));
 
                 User user = executor.executeD2Call(userCallFactory.create(genericCallData));
+
+                executor.executeD2Call(authorityCallFactory.create(genericCallData));
 
                 List<Program> programs = executor.executeD2Call(programParentCallFactory.create(genericCallData));
 
@@ -168,6 +176,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 internalModules.systemInfo.publicModule.versionManager,
                 SystemSettingCall.FACTORY,
                 UserCall.FACTORY,
+                AuthorityEndpointCall.factory(apiCallExecutor),
                 CategoryEndpointCall.factory(apiCallExecutor),
                 CategoryComboEndpointCall.factory(apiCallExecutor),
                 new CategoryComboUidsSeeker(databaseAdapter),

@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
+
+import javax.inject.Inject;
 
 public final class RelationshipInternalModule implements WipeableModule {
 
@@ -37,9 +38,10 @@ public final class RelationshipInternalModule implements WipeableModule {
     public final RelationshipModule publicModule;
     public final RelationshipHandler relationshipHandler;
 
-    private RelationshipInternalModule(DatabaseAdapter databaseAdapter,
-                                       RelationshipModule publicModule,
-                                       RelationshipHandler relationshipHandler) {
+    @Inject
+    RelationshipInternalModule(DatabaseAdapter databaseAdapter,
+                               RelationshipModule publicModule,
+                               RelationshipHandler relationshipHandler) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
         this.relationshipHandler = relationshipHandler;
@@ -57,17 +59,5 @@ public final class RelationshipInternalModule implements WipeableModule {
     public void wipeData() {
         RelationshipStore.create(databaseAdapter).delete();
         RelationshipItemStoreImpl.create(databaseAdapter).delete();
-    }
-
-    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter,
-                                                    DHISVersionManager versionManager) {
-        return new RelationshipInternalModule(
-                databaseAdapter,
-                RelationshipModule.create(
-                        databaseAdapter,
-                        RelationshipHandlerImpl.create(databaseAdapter, versionManager)
-                ),
-                RelationshipHandlerImpl.create(databaseAdapter, versionManager)
-        );
     }
 }

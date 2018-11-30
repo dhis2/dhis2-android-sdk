@@ -17,9 +17,6 @@ buildscript {
         // method count plugin
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
 
-        // semantic, static analysis of the source code
-        classpath "net.ltgt.gradle:gradle-errorprone-plugin:0.0.8"
-
         // apt plugin for java
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
 
@@ -70,6 +67,7 @@ ext {
             retrofit        : "2.1.0",
             okhttp          : "3.5.0",
             duktape         : "1.1.0",
+            dagger          : "2.14.1",
 
             // @NonNull, @Nullable
             // annotations for java modules

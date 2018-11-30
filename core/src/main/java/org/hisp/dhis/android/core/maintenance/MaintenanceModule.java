@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.maintenance;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -39,17 +38,10 @@ public final class MaintenanceModule {
     private final DatabaseAdapter databaseAdapter;
     public final ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations;
 
-    private MaintenanceModule(DatabaseAdapter databaseAdapter,
-                              ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations) {
+    MaintenanceModule(DatabaseAdapter databaseAdapter,
+                      ReadOnlyCollectionRepository<ForeignKeyViolation> foreignKeyViolations) {
         this.foreignKeyViolations = foreignKeyViolations;
         this.databaseAdapter = databaseAdapter;
-    }
-
-    public static MaintenanceModule create(DatabaseAdapter databaseAdapter) {
-        return new MaintenanceModule(
-                databaseAdapter,
-                new ReadOnlyCollectionRepositoryImpl<>(ForeignKeyViolationStore.create(databaseAdapter))
-        );
     }
 
     public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,

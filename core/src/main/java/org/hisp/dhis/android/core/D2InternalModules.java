@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
@@ -39,8 +38,6 @@ import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import java.util.Arrays;
 import java.util.List;
-
-import retrofit2.Retrofit;
 
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
@@ -67,19 +64,5 @@ public final class D2InternalModules {
     public List<WipeableModule> getWipeableModules() {
         return Arrays.asList(systemInfo, relationshipModule, categoryModule, dataElementModule, dataValueModule,
                 maintenanceModule);
-    }
-
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter, retrofit);
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                RelationshipInternalModule.create(
-                        databaseAdapter,
-                        systemInfoInternalModule.publicModule.versionManager),
-                CategoryInternalModule.create(databaseAdapter),
-                DataElementInternalModule.create(databaseAdapter),
-                DataValueInternalModule.create(databaseAdapter),
-                MaintenanceInternalModule.create(databaseAdapter)
-        );
     }
 }

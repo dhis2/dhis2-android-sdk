@@ -25,22 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+package org.hisp.dhis.android.core.category;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+import javax.inject.Singleton;
 
-    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
+import dagger.Module;
+import dagger.Provides;
 
-    public final RelationshipCollectionRepository relationships;
+@Module
+public final class CategoryDIModule {
 
-    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
+    @Provides
+    @Singleton
+    CategoryModule module(DatabaseAdapter databaseAdapter) {
+        return new CategoryModule(
+                CategoryCollectionRepository.create(databaseAdapter),
+                CategoryOptionCollectionRepository.create(databaseAdapter),
+                CategoryOptionComboCollectionRepository.create(databaseAdapter),
+                CategoryComboCollectionRepository.create(databaseAdapter)
+        );
     }
 }

@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
+
+import javax.inject.Inject;
 
 import retrofit2.Retrofit;
 
@@ -40,7 +42,8 @@ public final class SystemInfoInternalModule implements WipeableModule {
     private final Retrofit retrofit;
     public final SystemInfoModule publicModule;
 
-    private SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+    @Inject
+    public SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
                                      SystemInfoModule publicModule) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
@@ -62,13 +65,5 @@ public final class SystemInfoInternalModule implements WipeableModule {
     @Override
     public void wipeData() {
         // Without data to wipe
-    }
-
-    public static SystemInfoInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new SystemInfoInternalModule(
-                databaseAdapter,
-                retrofit,
-                SystemInfoModule.create(databaseAdapter)
-        );
     }
 }

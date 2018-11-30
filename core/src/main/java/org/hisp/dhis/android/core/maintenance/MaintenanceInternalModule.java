@@ -30,12 +30,15 @@ package org.hisp.dhis.android.core.maintenance;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
+import javax.inject.Inject;
+
 public final class MaintenanceInternalModule implements WipeableModule {
 
     private final DatabaseAdapter databaseAdapter;
     public final MaintenanceModule publicModule;
 
-    private MaintenanceInternalModule(DatabaseAdapter databaseAdapter, MaintenanceModule publicModule) {
+    @Inject
+    MaintenanceInternalModule(DatabaseAdapter databaseAdapter, MaintenanceModule publicModule) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
     }
@@ -48,12 +51,5 @@ public final class MaintenanceInternalModule implements WipeableModule {
     @Override
     public void wipeData() {
         ForeignKeyViolationStore.create(databaseAdapter).delete();
-    }
-
-    public static MaintenanceInternalModule create(DatabaseAdapter databaseAdapter) {
-        return new MaintenanceInternalModule(
-                databaseAdapter,
-                MaintenanceModule.create(databaseAdapter)
-        );
     }
 }

@@ -25,22 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+package org.hisp.dhis.android.core;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hisp.dhis.android.core.category.CategoryInternalModule;
+import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
+import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
+import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
+import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+import javax.inject.Singleton;
 
-    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
+import dagger.Module;
+import dagger.Provides;
 
-    public final RelationshipCollectionRepository relationships;
+@Module
+final class D2InternalModulesDIModule {
 
-    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
+    @Provides
+    @Singleton
+    D2InternalModules d2InternalModules(SystemInfoInternalModule systemInfoInternalModule,
+                                               RelationshipInternalModule relationshipInternalModule,
+                                               CategoryInternalModule categoryInternalModule,
+                                               DataElementInternalModule dataElementInternalModule,
+                                               DataValueInternalModule dataValueInternalModule,
+                                               MaintenanceInternalModule maintenanceInternalModule) {
+
+        return new D2InternalModules(
+                systemInfoInternalModule,
+                relationshipInternalModule,
+                categoryInternalModule,
+                dataElementInternalModule,
+                dataValueInternalModule,
+                maintenanceInternalModule
+        );
     }
 }

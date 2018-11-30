@@ -34,18 +34,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
+import org.hisp.dhis.android.core.arch.api.retrofit.RetrofitDIModule;
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
@@ -55,6 +56,7 @@ import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
@@ -108,7 +110,14 @@ public final class D2 {
 
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-        this.internalModules = D2InternalModules.create(databaseAdapter, retrofit);
+
+        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
+                .retrofitDIModule(new RetrofitDIModule(retrofit))
+                .build();
+
+
+        this.internalModules = d2DIComponent.internalModules();
         this.wipeModule = WipeModuleImpl.create(databaseAdapter, internalModules);
     }
 

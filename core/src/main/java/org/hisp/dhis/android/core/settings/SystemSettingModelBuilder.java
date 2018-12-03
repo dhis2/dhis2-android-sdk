@@ -38,8 +38,12 @@ import dagger.Reusable;
 @Reusable
 class SystemSettingModelBuilder {
 
+    /**
+     * Empty constructor to add Inject annotation
+     */
     @Inject
     SystemSettingModelBuilder() {
+        /* Empty constructor to add Inject annotation */
     }
 
     List<SystemSettingModel> splitSettings(SystemSetting settings) {

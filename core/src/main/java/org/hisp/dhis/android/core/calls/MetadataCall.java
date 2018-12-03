@@ -140,7 +140,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 User user = userCallFactory.create(genericCallData).call();
 
-                authorityCallFactory.create(genericCallData);
+                authorityCallFactory.create(genericCallData).call();
 
                 List<Program> programs = programParentCallFactory.create(genericCallData).call();
 

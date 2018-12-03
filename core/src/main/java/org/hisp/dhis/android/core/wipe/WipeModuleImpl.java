@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.wipe;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
@@ -29,6 +28,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorTypeStore;
 import org.hisp.dhis.android.core.legendset.LegendSetStore;
 import org.hisp.dhis.android.core.legendset.LegendStore;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupStore;
@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
+import org.hisp.dhis.android.core.user.AuthorityStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
@@ -148,6 +149,7 @@ public final class WipeModuleImpl implements WipeModule {
                 UserCredentialsStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
+                AuthorityStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 new ResourceStoreImpl(databaseAdapter),
                 new UserRoleStoreImpl(databaseAdapter),

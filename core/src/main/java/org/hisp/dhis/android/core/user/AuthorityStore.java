@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-final class AuthorityStore {
+public final class AuthorityStore {
 
     private AuthorityStore() {}
 

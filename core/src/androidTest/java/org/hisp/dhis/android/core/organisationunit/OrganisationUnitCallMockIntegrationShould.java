@@ -35,11 +35,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -169,8 +168,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
-                BaseIdentifiableObject.DATE_FORMAT.format(genericCallData.serverDate()));
+        assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT, serverDate);
 
         resourceCursor.close();
     }

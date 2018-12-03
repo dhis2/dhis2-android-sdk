@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
@@ -70,6 +71,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final Retrofit retrofit;
     private final Downloader<SystemInfo> systemInfoDownloader;
     private final DHISVersionManager versionManager;
+    private final ResourceHandler resourceHandler;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
 
@@ -78,6 +80,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             Retrofit retrofit,
             Downloader<SystemInfo> systemInfoDownloader,
             DHISVersionManager versionManager,
+            ResourceHandler resourceHandler,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             TrackedEntityAttributeStore trackedEntityAttributeStore,
@@ -87,6 +90,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         this.retrofit = retrofit;
         this.systemInfoDownloader = systemInfoDownloader;
         this.versionManager = versionManager;
+        this.resourceHandler = resourceHandler;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -166,10 +170,10 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         D2CallExecutor executor = new D2CallExecutor();
 
-        SystemInfo systemInfo = executor.executeD2Call(systemInfoDownloader.download());
+        executor.executeD2Call(systemInfoDownloader.download());
 
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                systemInfo.serverDate(), versionManager);
+                resourceHandler, versionManager);
 
         String trackedEntityAttributePattern;
         try {
@@ -268,12 +272,14 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,
                                                                     Retrofit retrofit,
+                                                                    ResourceHandler resourceHandler,
                                                                     D2InternalModules internalModules) {
         return new TrackedEntityAttributeReservedValueManager(
                 databaseAdapter,
                 retrofit,
                 internalModules.systemInfo,
                 internalModules.systemInfo.publicModule.versionManager,
+                resourceHandler,
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 new TrackedEntityAttributeStoreImpl(databaseAdapter),

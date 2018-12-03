@@ -155,6 +155,6 @@ public class UserCallShould extends BaseCallShould {
         when(apiCallExecutor.executeObjectCall(userCall)).thenReturn(user);
         userSyncCall.call();
         verify(userHandler).handle(eq(user));
-        verify(resourceHandler).handleResource(ResourceModel.Type.USER, serverDate);
+        verify(resourceHandler).handleResource(ResourceModel.Type.USER);
     }
 }

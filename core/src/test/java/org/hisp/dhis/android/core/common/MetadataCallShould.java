@@ -226,6 +226,7 @@ public class MetadataCallShould extends BaseCallShould {
         metadataCall = new MetadataCall(
                 databaseAdapter,
                 retrofit,
+                resourceHandler,
                 systemInfoCallDownloader,
                 versionManager,
                 systemSettingDownloader,

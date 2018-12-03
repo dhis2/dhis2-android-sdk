@@ -101,7 +101,6 @@ public abstract class BaseCallShould {
 
         when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
         when(genericCallData.retrofit()).thenReturn(retrofit);
-        when(genericCallData.serverDate()).thenReturn(serverDate);
         when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
 
         when(resourceHandler.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(null);

@@ -72,7 +72,7 @@ public final class D2InternalModules {
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataElementModule, dataValueModule,
-                maintenanceModule);
+        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataElementModule,
+                dataValueModule, maintenanceModule);
     }
 }

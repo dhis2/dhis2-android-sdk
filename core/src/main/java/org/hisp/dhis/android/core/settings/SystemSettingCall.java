@@ -36,8 +36,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import javax.inject.Inject;
 
-import dagger.Reusable;
-
 final class SystemSettingCall extends SyncCall<SystemSetting> {
     private final APICallExecutor apiCallExecutor;
     private final DatabaseAdapter databaseAdapter;

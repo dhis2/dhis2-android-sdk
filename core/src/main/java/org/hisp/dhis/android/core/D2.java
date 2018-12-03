@@ -112,7 +112,7 @@ public final class D2 {
 
         D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .APIClientDIModule(new APIClientDIModule(retrofit))
+                .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();
 
 

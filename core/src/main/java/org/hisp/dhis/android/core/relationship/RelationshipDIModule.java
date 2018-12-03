@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;

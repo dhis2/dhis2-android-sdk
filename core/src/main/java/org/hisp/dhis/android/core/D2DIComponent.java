@@ -35,7 +35,7 @@ public interface D2DIComponent {
     @Component.Builder
     interface Builder {
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
-        Builder APIClientDIModule(APIClientDIModule APIClientDIModule);
+        Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder resourceDIModule(ResourceDIModule resourceDIModule);
         Builder systemInfoDIModule(SystemInfoDIModule systemInfoDIModule);
         Builder systemSettingDIModule(SystemSettingDIModule systemSettingDIModule);

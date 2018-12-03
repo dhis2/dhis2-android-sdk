@@ -70,7 +70,7 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public class MetadataCall extends SyncCall<Unit> {
 
     private final DatabaseAdapter databaseAdapter;

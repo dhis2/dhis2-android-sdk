@@ -2,11 +2,12 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreInterface;
@@ -16,7 +17,6 @@ import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
-public final class EventWithLimitCall extends SyncCall<List<Event>> {
+public final class EventWithLimitCall extends SyncCall<Unit> {
     private final int eventLimit;
     private final boolean limitByOrgUnit;
     private final DatabaseAdapter databaseAdapter;
@@ -49,22 +49,22 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
     }
 
     @Override
-    public List<Event> call() throws D2Error {
+    public Unit call() throws D2Error {
         setExecuted();
 
-        return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<List<Event>>() {
+        return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
 
             @Override
-            public List<Event> call() throws Exception {
+            public Unit call() {
                 return getEvents();
             }
         });
     }
 
-    private List<Event> getEvents() throws D2Error {
+    private Unit getEvents() {
         Collection<String> organisationUnitUids;
         List<String> programUids = programStore.queryWithoutRegistrationProgramUids();
-        List<Event> events = new ArrayList<>();
+        int eventsCount = 0;
         EventQuery.Builder eventQueryBuilder = EventQuery.Builder.create();
         int pageSize = eventQueryBuilder.build().getPageSize();
 
@@ -76,58 +76,67 @@ public final class EventWithLimitCall extends SyncCall<List<Event>> {
         }
 
         for (String orgUnitUid : organisationUnitUids) {
-            if (!limitByOrgUnit && events.size() == eventLimit) {
+            if (!limitByOrgUnit && eventsCount == eventLimit) {
                 break;
             }
             eventQueryBuilder.withOrgUnit(orgUnitUid);
-            events.addAll(getEventsWithPaging(eventQueryBuilder, pageSize, programUids, events.size()));
+            eventsCount = eventsCount + getEventsWithPaging(eventQueryBuilder, pageSize, programUids, eventsCount);
         }
 
-        return events;
+        return new Unit();
     }
 
-    private List<Event> getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    private int getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
                                             int pageSize,
                                             Collection<String> programUids,
-                                            int globalEventsSize) throws D2Error {
-        List<Event> events = new ArrayList<>();
-
+                                            int globalEventsSize) {
+        int eventsCount = 0;
         D2CallExecutor executor = new D2CallExecutor();
 
         for (String programUid : programUids) {
-            eventQueryBuilder.withProgram(programUid);
-            int eventLimitForProgram = limitByOrgUnit ? eventLimit -events.size() :
-                    eventLimit - globalEventsSize - events.size();
-            List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, eventLimitForProgram);
+            try {
+                eventQueryBuilder.withProgram(programUid);
+                int eventLimitForProgram = limitByOrgUnit ? eventLimit - eventsCount :
+                        eventLimit - globalEventsSize - eventsCount;
+                List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, eventLimitForProgram);
 
-            for (Paging paging : pagingList) {
-                eventQueryBuilder.withPageSize(paging.pageSize());
-                eventQueryBuilder.withPage(paging.page());
+                for (Paging paging : pagingList) {
+                    eventQueryBuilder.withPageSize(paging.pageSize());
+                    eventQueryBuilder.withPage(paging.page());
 
-                List<Event> pageEvents = executor.executeD2Call(
-                        EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
+                    List<Event> pageEvents = executor.executeD2Call(
+                            EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
 
-                if (paging.isLastPage()) {
-                    int previousItemsToSkip = pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();
-                    int toIndex = previousItemsToSkip < 0 ? pageEvents.size() : pageEvents.size() - previousItemsToSkip;
-                    events.addAll(pageEvents.subList(paging.previousItemsToSkipCount(), toIndex));
-                } else {
-                    events.addAll(pageEvents);
+                    List<Event> eventsToPersist;
+                    if (paging.isLastPage()) {
+                        int previousItemsToSkip =
+                                pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();
+                        int toIndex =
+                                previousItemsToSkip < 0 ? pageEvents.size() : pageEvents.size() - previousItemsToSkip;
+                        eventsToPersist = pageEvents.subList(paging.previousItemsToSkipCount(), toIndex);
+                    } else {
+                        eventsToPersist = pageEvents;
+                    }
+
+                    executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, retrofit, eventsToPersist));
+                    eventsCount = eventsCount + eventsToPersist.size();
+
+                    if (pageEvents.size() < paging.pageSize()) {
+                        break;
+                    }
                 }
 
-                if (pageEvents.size() < paging.pageSize()) {
+                if (eventsCount == eventLimit) {
                     break;
                 }
-            }
 
-            if (events.size() == eventLimit) {
-                break;
+            } catch (D2Error ignored) {
+                // The D2Error is ignored so that all calls are executed.
             }
         }
 
-        executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, retrofit, events));
-
-        return events;
+        return eventsCount;
     }
 
     private Set<String> getOrgUnitUids() {

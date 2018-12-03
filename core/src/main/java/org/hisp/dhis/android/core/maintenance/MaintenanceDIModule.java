@@ -31,16 +31,15 @@ package org.hisp.dhis.android.core.maintenance;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 
 @Module
 public final class MaintenanceDIModule {
 
     @Provides
-    @Singleton
+    @Reusable
     MaintenanceModule create(DatabaseAdapter databaseAdapter) {
         return new MaintenanceModule(
                 databaseAdapter,

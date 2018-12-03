@@ -42,6 +42,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
+
+@Reusable
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
     public final SystemSettingInternalModule systemSetting;

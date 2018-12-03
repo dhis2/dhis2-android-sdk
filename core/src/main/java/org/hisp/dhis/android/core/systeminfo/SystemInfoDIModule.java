@@ -46,8 +46,8 @@ public final class SystemInfoDIModule {
 
     @Provides
     @Singleton
-    DHISVersionManager dhisVersionManager(DatabaseAdapter databaseAdapter) {
-        return new DHISVersionManager(SystemInfoStore.create(databaseAdapter));
+    DHISVersionManager dhisVersionManager(ObjectWithoutUidStore<SystemInfo> store) {
+        return new DHISVersionManager(store);
     }
 
     @Provides

@@ -33,6 +33,9 @@ import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
+
+@Reusable
 public final class DataValueInternalModule implements WipeableModule {
 
     public final DataValueModule publicModule;

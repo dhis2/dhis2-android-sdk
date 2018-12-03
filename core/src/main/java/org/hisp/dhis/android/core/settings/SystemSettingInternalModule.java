@@ -35,6 +35,9 @@ import org.hisp.dhis.android.core.wipe.WipeableModule;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import dagger.Reusable;
+
+@Reusable
 public final class SystemSettingInternalModule implements Downloader<SystemSetting>, WipeableModule {
 
     private final ObjectWithoutUidStore<SystemSettingModel> systemSettingStore;

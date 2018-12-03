@@ -33,10 +33,9 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module
@@ -49,13 +48,12 @@ public class APIClientDIModule {
     }
 
     @Provides
-    @Singleton
     Retrofit retrofit() {
         return retrofit;
     }
 
     @Provides
-    @Singleton
+    @Reusable
     APICallExecutor apiCallExecutor(DatabaseAdapter databaseAdapter) {
         return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter));
     }

@@ -35,12 +35,13 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 
 @Module
 public final class RelationshipDIModule {
 
     @Provides
-    @Singleton
+    @Reusable
     RelationshipHandler relationshipHandler(DatabaseAdapter databaseAdapter,
                                                            DHISVersionManager versionManager) {
         return new RelationshipHandlerImpl(
@@ -53,7 +54,7 @@ public final class RelationshipDIModule {
     }
 
     @Provides
-    @Singleton
+    @Reusable
     RelationshipModule module(DatabaseAdapter databaseAdapter,
                                             RelationshipHandler relationshipHandler) {
         return new RelationshipModule(

@@ -33,6 +33,9 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
+
+@Reusable
 public class ResourceHandler {
     private final ResourceStore resourceStore;
 

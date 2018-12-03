@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
+
 final class SystemSettingCall extends SyncCall<SystemSetting> {
     private final APICallExecutor apiCallExecutor;
     private final DatabaseAdapter databaseAdapter;
@@ -45,10 +47,10 @@ final class SystemSettingCall extends SyncCall<SystemSetting> {
 
     @Inject
     SystemSettingCall(APICallExecutor apiCallExecutor,
-                              DatabaseAdapter databaseAdapter,
-                              SystemSettingHandler handler,
-                              SystemSettingService service,
-                              SystemSettingModelBuilder modelBuilder) {
+                      DatabaseAdapter databaseAdapter,
+                      SystemSettingHandler handler,
+                      SystemSettingService service,
+                      SystemSettingModelBuilder modelBuilder) {
         this.apiCallExecutor = apiCallExecutor;
         this.databaseAdapter = databaseAdapter;
         this.handler = handler;

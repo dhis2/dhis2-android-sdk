@@ -77,7 +77,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
                 getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
             }
         } else {
-            organisationUnitUids = userOrganisationUnitLinkStore.queryRootOrganisationUnitUids();
+            organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
             teiQueryBuilder.withOrgUnits(organisationUnitUids).withOuMode(OuMode.DESCENDANTS);
             getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
         }

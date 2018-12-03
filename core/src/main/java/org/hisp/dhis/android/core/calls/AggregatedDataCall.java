@@ -120,7 +120,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                 Set<String> periodIds = Collections.unmodifiableSet(
                         selectPeriodIds(periodStore.selectAll()));
                 List<String> organisationUnitUids = Collections.unmodifiableList(
-                        organisationUnitStore.queryRootOrganisationUnitUids());
+                        organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 
                 DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 

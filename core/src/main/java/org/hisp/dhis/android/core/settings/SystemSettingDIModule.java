@@ -26,26 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.retrofit;
+package org.hisp.dhis.android.core.settings;
 
-import javax.inject.Singleton;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module
-public class RetrofitDIModule {
+public final class SystemSettingDIModule {
 
-    private final Retrofit retrofit;
-
-    public RetrofitDIModule(Retrofit retrofit) {
-        this.retrofit = retrofit;
+    @Provides
+    @Reusable
+    SystemSettingService service(Retrofit retrofit) {
+        return retrofit.create(SystemSettingService.class);
     }
 
     @Provides
-    @Singleton
-    Retrofit retrofit() {
-        return retrofit;
+    @Reusable
+    ObjectWithoutUidStore<SystemSettingModel> store(DatabaseAdapter databaseAdapter) {
+        return SystemSettingStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    SystemSettingHandler handler(ObjectWithoutUidStore<SystemSettingModel> store) {
+        return new SystemSettingHandlerImpl(store);
     }
 }

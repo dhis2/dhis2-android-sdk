@@ -27,21 +27,19 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
 
 class SystemInfoCall extends SyncCall<SystemInfo> {
     private final DatabaseAdapter databaseAdapter;
@@ -51,6 +49,7 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
     private final DHISVersionManager versionManager;
     private final APICallExecutor apiCallExecutor;
 
+    @Inject
     SystemInfoCall(DatabaseAdapter databaseAdapter,
                    SyncHandler<SystemInfo> systemInfoHandler,
                    SystemInfoService systemInfoService,
@@ -97,16 +96,5 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
         } finally {
             transaction.end();
         }
-    }
-
-    public static Call<SystemInfo> create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                          DHISVersionManager versionManager) {
-        return new SystemInfoCall(
-                databaseAdapter,
-                SystemInfoHandler.create(databaseAdapter),
-                retrofit.create(SystemInfoService.class),
-                ResourceHandler.create(databaseAdapter),
-                versionManager,
-                APICallExecutorImpl.create(databaseAdapter));
     }
 }

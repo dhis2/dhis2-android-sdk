@@ -26,30 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.arch.modules;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.hisp.dhis.android.core.calls.Call;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingModelBuilder {
-
-    @Inject
-    SystemSettingModelBuilder() {
-    }
-
-    List<SystemSettingModel> splitSettings(SystemSetting settings) {
-        SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();
-        SystemSettingModel style = SystemSettingModel.builder().key("style").value(settings.keyStyle()).build();
-
-        List<SystemSettingModel> settingModelList = new ArrayList<>(2);
-        settingModelList.add(flag);
-        settingModelList.add(style);
-
-        return settingModelList;
-    }
+public interface Downloader<O> {
+   Call<O> download();
 }

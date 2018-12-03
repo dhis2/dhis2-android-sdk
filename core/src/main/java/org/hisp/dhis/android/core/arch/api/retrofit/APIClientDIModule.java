@@ -25,17 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+package org.hisp.dhis.android.core.arch.api.retrofit;
+
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 
-final class SystemInfoHandler {
+import javax.inject.Singleton;
 
-    private SystemInfoHandler() {}
+import dagger.Module;
+import dagger.Provides;
+import retrofit2.Retrofit;
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+@Module
+public class APIClientDIModule {
+
+    private final Retrofit retrofit;
+
+    public APIClientDIModule(Retrofit retrofit) {
+        this.retrofit = retrofit;
+    }
+
+    @Provides
+    @Singleton
+    Retrofit retrofit() {
+        return retrofit;
+    }
+
+    @Provides
+    @Singleton
+    APICallExecutor apiCallExecutor(DatabaseAdapter databaseAdapter) {
+        return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter));
     }
 }

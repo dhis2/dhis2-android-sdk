@@ -25,40 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings;
 
-package org.hisp.dhis.android.core;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-import org.hisp.dhis.android.core.category.CategoryInternalModule;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
-import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
-import javax.inject.Singleton;
+public final class SystemSettingInternalModule implements Downloader<SystemSetting>, WipeableModule {
 
-import dagger.Module;
-import dagger.Provides;
+    private final ObjectWithoutUidStore<SystemSettingModel> systemSettingStore;
+    private final Provider<SystemSettingCall> systemSettingCallProvider;
 
-@Module
-final class D2InternalModulesDIModule {
+    @Inject
+    SystemSettingInternalModule(ObjectWithoutUidStore<SystemSettingModel> systemSettingStore,
+                                Provider<SystemSettingCall> systemSettingCallProvider) {
+        this.systemSettingStore = systemSettingStore;
+        this.systemSettingCallProvider = systemSettingCallProvider;
+    }
 
-    @Provides
-    @Singleton
-    D2InternalModules d2InternalModules(SystemInfoInternalModule systemInfoInternalModule,
-                                               RelationshipInternalModule relationshipInternalModule,
-                                               CategoryInternalModule categoryInternalModule,
-                                               DataElementInternalModule dataElementInternalModule,
-                                               DataValueInternalModule dataValueInternalModule,
-                                               MaintenanceInternalModule maintenanceInternalModule) {
+    @Override
+    public Call<SystemSetting> download() {
+        return systemSettingCallProvider.get();
+    }
 
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                relationshipInternalModule,
-                categoryInternalModule,
-                dataElementInternalModule,
-                dataValueInternalModule,
-                maintenanceInternalModule
-        );
+    @Override
+    public void wipeMetadata() {
+        systemSettingStore.delete();
+    }
+
+    @Override
+    public void wipeData() {
+        // Without data to wipe
     }
 }

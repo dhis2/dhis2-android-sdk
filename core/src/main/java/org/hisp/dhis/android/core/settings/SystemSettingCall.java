@@ -28,25 +28,29 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public final class SystemSettingCall extends SyncCall<SystemSetting> {
-    private final GenericCallData data;
+import javax.inject.Inject;
+
+final class SystemSettingCall extends SyncCall<SystemSetting> {
+    private final APICallExecutor apiCallExecutor;
+    private final DatabaseAdapter databaseAdapter;
     private final SystemSettingHandler handler;
     private final SystemSettingService service;
     private final SystemSettingModelBuilder modelBuilder;
 
-    private SystemSettingCall(GenericCallData data,
-                             SystemSettingHandler handler,
-                             SystemSettingService service,
-                             SystemSettingModelBuilder modelBuilder) {
-        this.data = data;
+    @Inject
+    SystemSettingCall(APICallExecutor apiCallExecutor,
+                              DatabaseAdapter databaseAdapter,
+                              SystemSettingHandler handler,
+                              SystemSettingService service,
+                              SystemSettingModelBuilder modelBuilder) {
+        this.apiCallExecutor = apiCallExecutor;
+        this.databaseAdapter = databaseAdapter;
         this.handler = handler;
         this.service = service;
         this.modelBuilder = modelBuilder;
@@ -56,10 +60,9 @@ public final class SystemSettingCall extends SyncCall<SystemSetting> {
     public SystemSetting call() throws D2Error {
         setExecuted();
 
-        SystemSetting setting = APICallExecutorImpl.create(data.databaseAdapter()).executeObjectCall(
-                service.getSystemSettings(SystemSetting.allFields));
+        SystemSetting setting = apiCallExecutor.executeObjectCall(service.getSystemSettings(SystemSetting.allFields));
 
-        Transaction transaction = data.databaseAdapter().beginNewTransaction();
+        Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
             handler.handle(setting, modelBuilder);
@@ -70,18 +73,4 @@ public final class SystemSettingCall extends SyncCall<SystemSetting> {
 
         return setting;
     }
-
-    public static final GenericCallFactory<SystemSetting> FACTORY =
-            new GenericCallFactory<SystemSetting>() {
-
-                @Override
-                public Call<SystemSetting> create(GenericCallData genericCallData) {
-                    return new SystemSettingCall(
-                            genericCallData,
-                            SystemSettingHandlerImpl.create(genericCallData.databaseAdapter()),
-                            genericCallData.retrofit().create(SystemSettingService.class),
-                            new SystemSettingModelBuilder()
-                    );
-                }
-            };
 }

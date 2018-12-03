@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -143,10 +143,10 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<List<OrganisationUnit>> searchOrganisationUnitCall;
 
     @Mock
-    private NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private Downloader<SystemInfo> systemInfoCallDownloader;
 
     @Mock
-    private GenericCallFactory<SystemSetting> systemSettingCallFactory;
+    private Downloader<SystemSetting> systemSettingDownloader;
 
     @Mock
     private GenericCallFactory<User> userCallFactory;
@@ -195,8 +195,8 @@ public class MetadataCallShould extends BaseCallShould {
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         // Call factories
-        when(systemInfoCallFactory.create()).thenReturn(systemInfoEndpointCall);
-        when(systemSettingCallFactory.create(any(GenericCallData.class))).thenReturn(systemSettingEndpointCall);
+        when(systemInfoCallDownloader.download()).thenReturn(systemInfoEndpointCall);
+        when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
         when(authorityCallFactory.create(any(GenericCallData.class))).thenReturn(authorityEndpointCall);
@@ -226,9 +226,9 @@ public class MetadataCallShould extends BaseCallShould {
         metadataCall = new MetadataCall(
                 databaseAdapter,
                 retrofit,
-                systemInfoCallFactory,
+                systemInfoCallDownloader,
                 versionManager,
-                systemSettingCallFactory,
+                systemSettingDownloader,
                 userCallFactory,
                 authorityCallFactory,
                 categoryCallFactory,

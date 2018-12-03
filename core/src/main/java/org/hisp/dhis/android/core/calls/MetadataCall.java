@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -40,9 +42,6 @@ import org.hisp.dhis.android.core.category.CategoryComboEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.category.CategoryEndpointCall;
 import org.hisp.dhis.android.core.category.CategoryParentUidsHelper;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -58,7 +57,6 @@ import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettingCall;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.Authority;
@@ -77,9 +75,9 @@ public class MetadataCall extends SyncCall<Unit> {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
 
-    private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final Downloader<SystemInfo> systemInfoDownloader;
     private final DHISVersionManager versionManager;
-    private final GenericCallFactory<SystemSetting> systemSettingCallFactory;
+    private final Downloader<SystemSetting> systemSettingDownloader;
     private final GenericCallFactory<User> userCallFactory;
     private final ListCallFactory<Authority> authorityCallFactory;
     private final UidsCallFactory<Category> categoryCallFactory;
@@ -93,9 +91,9 @@ public class MetadataCall extends SyncCall<Unit> {
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
-                        @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+                        @NonNull Downloader<SystemInfo> systemInfoDownloader,
                         @NonNull DHISVersionManager versionManager,
-                        @NonNull GenericCallFactory<SystemSetting> systemSettingCallFactory,
+                        @NonNull Downloader<SystemSetting> systemSettingDownloader,
                         @NonNull GenericCallFactory<User> userCallFactory,
                         @NonNull ListCallFactory<Authority> authorityCallFactory,
                         @NonNull UidsCallFactory<Category> categoryCallFactory,
@@ -109,9 +107,9 @@ public class MetadataCall extends SyncCall<Unit> {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
 
-        this.systemInfoCallFactory = systemInfoCallFactory;
+        this.systemInfoDownloader = systemInfoDownloader;
         this.versionManager = versionManager;
-        this.systemSettingCallFactory = systemSettingCallFactory;
+        this.systemSettingDownloader = systemSettingDownloader;
         this.userCallFactory = userCallFactory;
         this.authorityCallFactory = authorityCallFactory;
         this.categoryCallFactory = categoryCallFactory;
@@ -132,32 +130,32 @@ public class MetadataCall extends SyncCall<Unit> {
 
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
-            public Unit call() throws D2Error {
-                SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
+            public Unit call() throws Exception {
+                SystemInfo systemInfo = systemInfoDownloader.download().call();
 
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         systemInfo.serverDate(), versionManager);
 
-                executor.executeD2Call(systemSettingCallFactory.create(genericCallData));
+                systemSettingDownloader.download().call();
 
-                User user = executor.executeD2Call(userCallFactory.create(genericCallData));
+                User user = userCallFactory.create(genericCallData).call();
 
-                executor.executeD2Call(authorityCallFactory.create(genericCallData));
+                authorityCallFactory.create(genericCallData);
 
-                List<Program> programs = executor.executeD2Call(programParentCallFactory.create(genericCallData));
+                List<Program> programs = programParentCallFactory.create(genericCallData).call();
 
-                List<DataSet> dataSets = executor.executeD2Call(dataSetParentCallFactory.create(genericCallData));
+                List<DataSet> dataSets = dataSetParentCallFactory.create(genericCallData).call();
 
-                List<CategoryCombo> categoryCombos = executor.executeD2Call(categoryComboCallFactory.create(
-                        genericCallData, categoryComboUidsSeeker.seekUids()));
+                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(
+                        genericCallData, categoryComboUidsSeeker.seekUids()).call();
 
-                executor.executeD2Call(categoryCallFactory.create(
-                        genericCallData, CategoryParentUidsHelper.getCategoryUids(categoryCombos)));
+                categoryCallFactory.create(genericCallData,
+                        CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
 
-                executor.executeD2Call(organisationUnitCallFactory.create(
-                        genericCallData, user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)));
+                organisationUnitCallFactory.create(
+                        genericCallData, user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
 
-                executor.executeD2Call(searchOrganisationUnitCallFactory.create(genericCallData, user));
+                searchOrganisationUnitCallFactory.create(genericCallData, user).call();
 
                 foreignKeyCleaner.cleanForeignKeyErrors();
 
@@ -172,9 +170,9 @@ public class MetadataCall extends SyncCall<Unit> {
         return new MetadataCall(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.callFactory,
+                internalModules.systemInfo,
                 internalModules.systemInfo.publicModule.versionManager,
-                SystemSettingCall.FACTORY,
+                internalModules.systemSetting,
                 UserCall.FACTORY,
                 AuthorityEndpointCall.factory(apiCallExecutor),
                 CategoryEndpointCall.factory(apiCallExecutor),

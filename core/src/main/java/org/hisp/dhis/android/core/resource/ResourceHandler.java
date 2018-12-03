@@ -31,9 +31,12 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
 
+import javax.inject.Inject;
+
 public class ResourceHandler {
     private final ResourceStore resourceStore;
 
+    @Inject
     public ResourceHandler(ResourceStore resourceStore) {
         this.resourceStore = resourceStore;
     }

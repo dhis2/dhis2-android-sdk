@@ -33,27 +33,34 @@ import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
+import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
+    public final SystemSettingInternalModule systemSetting;
     public final RelationshipInternalModule relationshipModule;
     public final CategoryInternalModule categoryModule;
     public final DataElementInternalModule dataElementModule;
     public final DataValueInternalModule dataValueModule;
     public final MaintenanceInternalModule maintenanceModule;
 
+    @Inject
     public D2InternalModules(SystemInfoInternalModule systemInfo,
+                             SystemSettingInternalModule systemSetting,
                              RelationshipInternalModule relationshipModule,
                              CategoryInternalModule categoryModule,
                              DataElementInternalModule dataElementModule,
                              DataValueInternalModule dataValueModule,
                              MaintenanceInternalModule maintenanceModule) {
         this.systemInfo = systemInfo;
+        this.systemSetting = systemSetting;
         this.relationshipModule = relationshipModule;
         this.categoryModule = categoryModule;
         this.dataElementModule = dataElementModule;
@@ -62,7 +69,7 @@ public final class D2InternalModules {
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, relationshipModule, categoryModule, dataElementModule, dataValueModule,
+        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataElementModule, dataValueModule,
                 maintenanceModule);
     }
 }

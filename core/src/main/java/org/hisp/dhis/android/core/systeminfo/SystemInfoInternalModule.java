@@ -27,35 +27,34 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
-import retrofit2.Retrofit;
-
-public final class SystemInfoInternalModule implements WipeableModule {
+public final class SystemInfoInternalModule implements Downloader<SystemInfo>, WipeableModule {
 
     private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
+    private final Provider<SystemInfoCall> systemInfoCallProvider;
+
     public final SystemInfoModule publicModule;
 
     @Inject
-    public SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                     SystemInfoModule publicModule) {
+    SystemInfoInternalModule(DatabaseAdapter databaseAdapter,
+                             SystemInfoModule publicModule,
+                             Provider<SystemInfoCall> systemInfoCallProvider) {
         this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
         this.publicModule = publicModule;
+        this.systemInfoCallProvider = systemInfoCallProvider;
     }
 
-    public final NoArgumentsCallFactory<SystemInfo> callFactory = new NoArgumentsCallFactory<SystemInfo>() {
-        @Override
-        public Call<SystemInfo> create() {
-            return SystemInfoCall.create(databaseAdapter, retrofit, publicModule.versionManager);
-        }
-    };
+    @Override
+    public Call<SystemInfo> download() {
+        return systemInfoCallProvider.get();
+    }
 
     @Override
     public void wipeMetadata() {

@@ -26,30 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.resource;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-class SystemSettingModelBuilder {
+@Module
+public final class ResourceDIModule {
 
-    @Inject
-    SystemSettingModelBuilder() {
-    }
-
-    List<SystemSettingModel> splitSettings(SystemSetting settings) {
-        SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();
-        SystemSettingModel style = SystemSettingModel.builder().key("style").value(settings.keyStyle()).build();
-
-        List<SystemSettingModel> settingModelList = new ArrayList<>(2);
-        settingModelList.add(flag);
-        settingModelList.add(style);
-
-        return settingModelList;
+    @Provides
+    @Reusable
+    ResourceStore store(DatabaseAdapter databaseAdapter) {
+        return new ResourceStoreImpl(databaseAdapter);
     }
 }

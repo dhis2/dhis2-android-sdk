@@ -5,9 +5,9 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -29,7 +29,7 @@ public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        List<Event> events = d2.downloadSingleEvents(20,  false).call();
-        assertThat(events.size()).isEqualTo(20);
+         d2.downloadSingleEvents(20,  false).call();
+        assertThat(new EventStoreImpl(databaseAdapter()).queryAll().size()).isEqualTo(20);
     }
 }

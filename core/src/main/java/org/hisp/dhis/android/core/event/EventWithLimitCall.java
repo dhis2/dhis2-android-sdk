@@ -71,7 +71,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();
         } else {
-            organisationUnitUids = userOrganisationUnitLinkStore.queryRootOrganisationUnitUids();
+            organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
             eventQueryBuilder.withOuMode(OuMode.DESCENDANTS);
         }
 
@@ -127,7 +127,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
                     }
                 }
 
-                if (eventsCount == eventLimit) {
+                if (globalEventsSize + eventsCount == eventLimit) {
                     break;
                 }
 

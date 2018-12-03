@@ -25,22 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+package org.hisp.dhis.android.core.arch.api.retrofit;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.inject.Singleton;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+import dagger.Module;
+import dagger.Provides;
+import retrofit2.Retrofit;
 
-    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
+@Module
+public class RetrofitDIModule {
 
-    public final RelationshipCollectionRepository relationships;
+    private final Retrofit retrofit;
 
-    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
+    public RetrofitDIModule(Retrofit retrofit) {
+        this.retrofit = retrofit;
+    }
+
+    @Provides
+    @Singleton
+    Retrofit retrofit() {
+        return retrofit;
     }
 }

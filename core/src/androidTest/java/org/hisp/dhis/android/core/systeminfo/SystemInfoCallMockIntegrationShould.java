@@ -33,11 +33,15 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.D2DIComponent;
+import org.hisp.dhis.android.core.DaggerD2DIComponent;
+import org.hisp.dhis.android.core.arch.api.retrofit.RetrofitDIModule;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
@@ -92,8 +96,12 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter(), retrofit);
-        systeminfoCall = systemInfoInternalModule.callFactory.create();
+        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
+                .retrofitDIModule(new RetrofitDIModule(retrofit))
+                .build();
+
+        systeminfoCall = d2DIComponent.internalModules().systemInfo.callFactory.create();
     }
 
     @Test

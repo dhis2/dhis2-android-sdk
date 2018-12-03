@@ -25,22 +25,26 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+package org.hisp.dhis.android.core.data.database;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.inject.Singleton;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+import dagger.Module;
+import dagger.Provides;
 
-    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
+@Module
+public class DatabaseDIModule {
 
-    public final RelationshipCollectionRepository relationships;
+    private final DatabaseAdapter databaseAdapter;
 
-    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
+    public DatabaseDIModule(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+    }
+
+    @Provides
+    @Singleton
+    DatabaseAdapter databaseAdapter() {
+        return databaseAdapter;
     }
 }

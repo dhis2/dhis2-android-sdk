@@ -25,22 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+package org.hisp.dhis.android.core.systeminfo;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+import javax.inject.Singleton;
 
-    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
+import dagger.Module;
+import dagger.Provides;
 
-    public final RelationshipCollectionRepository relationships;
+@Module
+public final class SystemInfoDIModule {
 
-    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
+    @Provides
+    @Singleton
+    DHISVersionManager dhisVersionManager(DatabaseAdapter databaseAdapter) {
+        return new DHISVersionManager(SystemInfoStore.create(databaseAdapter));
+    }
+
+    @Provides
+    @Singleton
+    SystemInfoModule module(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+        return new SystemInfoModule(
+                versionManager,
+                new ReadOnlyFirstObjectRepositoryImpl<>(
+                        SystemInfoStore.create(databaseAdapter)
+                )
+        );
     }
 }

@@ -27,27 +27,16 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public final class SystemInfoModule {
 
     public final DHISVersionManager versionManager;
     public final ReadOnlyObjectRepository<SystemInfo> systemInfo;
 
-    private SystemInfoModule(DHISVersionManager versionManager,
-                             ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+    SystemInfoModule(DHISVersionManager versionManager,
+                     ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
         this.versionManager = versionManager;
         this.systemInfo = systemInfoRepository;
-    }
-
-    public static SystemInfoModule create(DatabaseAdapter databaseAdapter) {
-        return new SystemInfoModule(
-                DHISVersionManager.create(databaseAdapter),
-                new ReadOnlyFirstObjectRepositoryImpl<>(
-                        SystemInfoStore.create(databaseAdapter)
-                )
-        );
     }
 }

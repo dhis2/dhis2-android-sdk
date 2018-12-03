@@ -25,22 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import javax.inject.Singleton;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public final class RelationshipModule {
+import dagger.Module;
+import dagger.Provides;
 
-    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
+@Module
+public final class RelationshipDIModule {
 
-    public final RelationshipCollectionRepository relationships;
+    @Provides
+    @Singleton
+    RelationshipHandler relationshipHandler(DatabaseAdapter databaseAdapter,
+                                                           DHISVersionManager versionManager) {
+        return new RelationshipHandlerImpl(
+                RelationshipStore.create(databaseAdapter),
+                RelationshipItemStoreImpl.create(databaseAdapter),
+                RelationshipItemHandler.create(databaseAdapter),
+                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
+                new RelationshipDHISVersionManager(versionManager)
+        );
+    }
 
-    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
-        this.relationshipTypes = relationshipTypeRepository;
-        this.relationships = relationshipRepository;
+    @Provides
+    @Singleton
+    RelationshipModule module(DatabaseAdapter databaseAdapter,
+                                            RelationshipHandler relationshipHandler) {
+        return new RelationshipModule(
+                RelationshipTypeCollectionRepository.create(databaseAdapter),
+                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
     }
 }

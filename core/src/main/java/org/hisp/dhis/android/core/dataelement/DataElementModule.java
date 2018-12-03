@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -37,12 +36,7 @@ public final class DataElementModule {
 
     public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
 
-    private DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
+    DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
         this.dataElements = dataElementsRepository;
-    }
-
-    public static DataElementModule create(DatabaseAdapter databaseAdapter) {
-        return new DataElementModule(
-                DataElementCollectionRepository.create(databaseAdapter));
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,53 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.user;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+public abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
 
-    public static final int VERSION = 35;
+    private final APICallExecutor apiCallExecutor;
+    private static final List<String> QUERIED_AUTHORITIES = Arrays.asList(
+            "F_ENROLLMENT_CASCADE_DELETE",
+            "F_TEI_CASCADE_DELETE");
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    AuthorityCallFetcher(@NonNull APICallExecutor apiCallExecutor) {
+        this.apiCallExecutor = apiCallExecutor;
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
-    }
+    protected abstract retrofit2.Call<List<String>> getCall();
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    public List<Authority> fetch() throws D2Error {
+        List<String> authoritiesAsStringList = apiCallExecutor.executeObjectCall(getCall());
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        db.enableWriteAheadLogging();
+        return getAuthoritiesFromStringList(authoritiesAsStringList);
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
+    private List<Authority> getAuthoritiesFromStringList(List<String> authoritiesAsStringList) {
+        List<Authority> authorities = new ArrayList<>();
+
+        for (String authority : QUERIED_AUTHORITIES) {
+            if (authoritiesAsStringList.contains(authority)) {
+                authorities.add(Authority.builder().name(authority).build());
+            }
         }
-        return versionMigrations;
+
+        return authorities;
     }
 }

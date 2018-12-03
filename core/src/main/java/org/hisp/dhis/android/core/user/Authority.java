@@ -26,53 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.user;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.support.annotation.NonNull;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_Authority.Builder.class)
+public abstract class Authority implements Model {
 
-    public static final int VERSION = 35;
+    @Nullable
+    @JsonIgnore()
+    public abstract String name();
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    static Authority create(Cursor cursor) {
+        return $AutoValue_Authority.createFromCursor(cursor);
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_Authority.Builder();
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
 
-        db.enableWriteAheadLogging();
-    }
+        public abstract Builder id(Long id);
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
-        }
-        return versionMigrations;
+        public abstract Builder name(String name);
+
+        public abstract Authority build();
     }
 }

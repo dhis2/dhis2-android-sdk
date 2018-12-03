@@ -32,6 +32,7 @@ import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.user.Authority;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserRole;
@@ -93,6 +95,9 @@ public class MetadataCallShould extends BaseCallShould {
     private OrganisationUnit organisationUnit;
 
     @Mock
+    private Authority authority;
+
+    @Mock
     private Category category;
 
     @Mock
@@ -115,6 +120,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private Call<User> userCall;
+
+    @Mock
+    private Call<List<Authority>> authorityEndpointCall;
 
     @Mock
     private Call<List<Category>> categoryEndpointCall;
@@ -142,6 +150,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private GenericCallFactory<User> userCallFactory;
+
+    @Mock
+    private ListCallFactory<Authority> authorityCallFactory;
 
     @Mock
     private UidsCallFactory<Category> categoryCallFactory;
@@ -188,6 +199,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingCallFactory.create(any(GenericCallData.class))).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
+        when(authorityCallFactory.create(any(GenericCallData.class))).thenReturn(authorityEndpointCall);
         when(categoryCallFactory.create(any(GenericCallData.class), anySetOf(String.class))).thenReturn(categoryEndpointCall);
         when(categoryComboCallFactory.create(any(GenericCallData.class), anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),
@@ -200,6 +212,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
         when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
+        when(authorityEndpointCall.call()).thenReturn(Lists.newArrayList(authority));
         when(categoryEndpointCall.call()).thenReturn(Lists.newArrayList(category));
         when(categoryComboEndpointCall.call()).thenReturn(Lists.newArrayList(categoryCombo));
         when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
@@ -217,6 +230,7 @@ public class MetadataCallShould extends BaseCallShould {
                 versionManager,
                 systemSettingCallFactory,
                 userCallFactory,
+                authorityCallFactory,
                 categoryCallFactory,
                 categoryComboCallFactory,
                 categoryComboUidsSeeker,
@@ -252,6 +266,12 @@ public class MetadataCallShould extends BaseCallShould {
     @Test(expected = D2Error.class)
     public void fail_when_user_call_fail() throws Exception {
         when(userCall.call()).thenThrow(d2Error);
+        metadataCall.call();
+    }
+
+    @Test(expected = D2Error.class)
+    public void fail_when_authority_call_fail() throws Exception {
+        when(authorityEndpointCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

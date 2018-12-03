@@ -102,6 +102,7 @@ public class Dhis2MockServer {
         enqueueMockResponse("systeminfo/system_info.json");
         enqueueMockResponse("settings/system_setting.json");
         enqueueMockResponse(userPath);
+        enqueueMockResponse("user/authorities.json");
         enqueueMockResponse("program/programs.json");
         enqueueMockResponse("program/program_stages.json");
         enqueueMockResponse("program/program_rules.json");

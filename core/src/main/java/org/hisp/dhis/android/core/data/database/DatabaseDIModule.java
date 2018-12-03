@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 
@@ -43,7 +41,6 @@ public class DatabaseDIModule {
     }
 
     @Provides
-    @Singleton
     DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
     }

@@ -25,41 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+
+package org.hisp.dhis.android.core.resource;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class CategoryInternalModule implements WipeableModule {
+@Module
+public final class ResourceDIModule {
 
-    private final DatabaseAdapter databaseAdapter;
-    public final CategoryModule publicModule;
-
-    @Inject
-    CategoryInternalModule(DatabaseAdapter databaseAdapter,
-                           CategoryModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
-        this.publicModule = publicModule;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        CategoryStore.create(databaseAdapter).delete();
-        CategoryOptionStore.create(databaseAdapter).delete();
-        CategoryOptionComboStoreImpl.create(databaseAdapter).delete();
-        CategoryCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryComboStore.create(databaseAdapter).delete();
-        CategoryCategoryComboLinkStore.create(databaseAdapter).delete();
-    }
-
-    @Override
-    public void wipeData() {
-        // Without data to wipe
+    @Provides
+    @Reusable
+    ResourceStore store(DatabaseAdapter databaseAdapter) {
+        return new ResourceStoreImpl(databaseAdapter);
     }
 }

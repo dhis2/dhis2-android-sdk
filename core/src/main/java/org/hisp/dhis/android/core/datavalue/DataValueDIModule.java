@@ -30,16 +30,15 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 
 @Module
 public final class DataValueDIModule {
 
     @Provides
-    @Singleton
+    @Reusable
     DataValueModule module(DatabaseAdapter databaseAdapter) {
         return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
     }

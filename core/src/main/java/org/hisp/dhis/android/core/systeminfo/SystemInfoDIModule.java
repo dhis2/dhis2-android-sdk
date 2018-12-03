@@ -28,31 +28,52 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Module
 public final class SystemInfoDIModule {
 
     @Provides
     @Singleton
-    DHISVersionManager dhisVersionManager(DatabaseAdapter databaseAdapter) {
-        return new DHISVersionManager(SystemInfoStore.create(databaseAdapter));
+    DHISVersionManager dhisVersionManager(ObjectWithoutUidStore<SystemInfo> store) {
+        return new DHISVersionManager(store);
     }
 
     @Provides
-    @Singleton
-    SystemInfoModule module(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+    @Reusable
+    SystemInfoModule module(DHISVersionManager versionManager, ObjectWithoutUidStore<SystemInfo> store) {
         return new SystemInfoModule(
                 versionManager,
-                new ReadOnlyFirstObjectRepositoryImpl<>(
-                        SystemInfoStore.create(databaseAdapter)
-                )
+                new ReadOnlyFirstObjectRepositoryImpl<>(store)
         );
+    }
+
+    @Provides
+    @Reusable
+    SystemInfoService service(Retrofit retrofit) {
+        return retrofit.create(SystemInfoService.class);
+    }
+
+    @Provides
+    @Reusable
+    SyncHandler<SystemInfo> handler(ObjectWithoutUidStore<SystemInfo> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
+        return SystemInfoStore.create(databaseAdapter);
     }
 }

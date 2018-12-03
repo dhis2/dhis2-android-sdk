@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -72,7 +72,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
 
-    private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final Downloader<SystemInfo> systemInfoDownloader;
     private final DHISVersionManager versionManager;
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
@@ -83,7 +83,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
     private AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
                                @NonNull Retrofit retrofit,
-                               @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+                               @NonNull Downloader<SystemInfo> systemInfoDownloader,
                                @NonNull DHISVersionManager versionManager,
                                @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                                @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
@@ -93,7 +93,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                                @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
-        this.systemInfoCallFactory = systemInfoCallFactory;
+        this.systemInfoDownloader = systemInfoDownloader;
         this.versionManager = versionManager;
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
@@ -112,7 +112,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
             @Override
             public Unit call() throws D2Error {
-                SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
+                SystemInfo systemInfo = executor.executeD2Call(systemInfoDownloader.download());
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         systemInfo.serverDate(), versionManager);
 
@@ -158,7 +158,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
         return new AggregatedDataCall(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.callFactory,
+                internalModules.systemInfo,
                 internalModules.systemInfo.publicModule.versionManager,
                 DataValueEndpointCall.factory(apiCallExecutor),
                 DataSetCompleteRegistrationCall.factory(apiCallExecutor),

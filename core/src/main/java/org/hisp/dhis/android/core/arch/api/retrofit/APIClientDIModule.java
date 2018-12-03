@@ -26,39 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.arch.api.retrofit;
 
-import org.hisp.dhis.android.core.category.CategoryInternalModule;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
-import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
-
-import javax.inject.Singleton;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Module
-final class D2InternalModulesDIModule {
+public class APIClientDIModule {
+
+    private final Retrofit retrofit;
+
+    public APIClientDIModule(Retrofit retrofit) {
+        this.retrofit = retrofit;
+    }
 
     @Provides
-    @Singleton
-    D2InternalModules d2InternalModules(SystemInfoInternalModule systemInfoInternalModule,
-                                               RelationshipInternalModule relationshipInternalModule,
-                                               CategoryInternalModule categoryInternalModule,
-                                               DataElementInternalModule dataElementInternalModule,
-                                               DataValueInternalModule dataValueInternalModule,
-                                               MaintenanceInternalModule maintenanceInternalModule) {
+    Retrofit retrofit() {
+        return retrofit;
+    }
 
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                relationshipInternalModule,
-                categoryInternalModule,
-                dataElementInternalModule,
-                dataValueInternalModule,
-                maintenanceInternalModule
-        );
+    @Provides
+    @Reusable
+    APICallExecutor apiCallExecutor(DatabaseAdapter databaseAdapter) {
+        return new APICallExecutorImpl(D2ErrorStore.create(databaseAdapter));
     }
 }

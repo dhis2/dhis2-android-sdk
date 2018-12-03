@@ -30,16 +30,15 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import dagger.Reusable;
 
 @Module
 public final class CategoryDIModule {
 
     @Provides
-    @Singleton
+    @Reusable
     CategoryModule module(DatabaseAdapter databaseAdapter) {
         return new CategoryModule(
                 CategoryCollectionRepository.create(databaseAdapter),

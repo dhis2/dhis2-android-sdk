@@ -34,7 +34,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
-import org.hisp.dhis.android.core.arch.api.retrofit.RetrofitDIModule;
+import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
@@ -112,7 +112,7 @@ public final class D2 {
 
         D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
-                .retrofitDIModule(new RetrofitDIModule(retrofit))
+                .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();
 
 

@@ -25,17 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+package org.hisp.dhis.android.core.settings;
+
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class SystemInfoHandler {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    private SystemInfoHandler() {}
+@Module
+public final class SystemSettingDIModule {
 
-    public static SyncHandler<SystemInfo> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(SystemInfoStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    SystemSettingService service(Retrofit retrofit) {
+        return retrofit.create(SystemSettingService.class);
+    }
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<SystemSettingModel> store(DatabaseAdapter databaseAdapter) {
+        return SystemSettingStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    SystemSettingHandler handler(ObjectWithoutUidStore<SystemSettingModel> store) {
+        return new SystemSettingHandlerImpl(store);
     }
 }

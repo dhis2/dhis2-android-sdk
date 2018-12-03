@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.settings.SystemSettingStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -185,7 +184,6 @@ public final class WipeModuleImpl implements WipeModule {
                 LegendSetStore.create(databaseAdapter),
 
                 ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                SystemSettingStore.create(databaseAdapter),
                 SectionStore.create(databaseAdapter),
                 SectionDataElementLinkStore.create(databaseAdapter),
                 SectionGreyedFieldsLinkStore.create(databaseAdapter),

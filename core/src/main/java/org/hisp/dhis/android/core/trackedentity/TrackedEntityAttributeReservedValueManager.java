@@ -32,7 +32,7 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -68,7 +68,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
-    private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final Downloader<SystemInfo> systemInfoDownloader;
     private final DHISVersionManager versionManager;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
@@ -76,7 +76,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
             Retrofit retrofit,
-            NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+            Downloader<SystemInfo> systemInfoDownloader,
             DHISVersionManager versionManager,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
@@ -85,7 +85,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                     TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
-        this.systemInfoCallFactory = systemInfoCallFactory;
+        this.systemInfoDownloader = systemInfoDownloader;
         this.versionManager = versionManager;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
@@ -166,7 +166,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         D2CallExecutor executor = new D2CallExecutor();
 
-        SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
+        SystemInfo systemInfo = executor.executeD2Call(systemInfoDownloader.download());
 
         GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                 systemInfo.serverDate(), versionManager);
@@ -272,7 +272,7 @@ public final class TrackedEntityAttributeReservedValueManager {
         return new TrackedEntityAttributeReservedValueManager(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo.callFactory,
+                internalModules.systemInfo,
                 internalModules.systemInfo.publicModule.versionManager,
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),

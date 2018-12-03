@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -123,7 +123,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private ReadOnlyObjectRepository<SystemInfo> systemInfoRepository;
 
     @Mock
-    private NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private Downloader<SystemInfo> systemInfoDownloader;
 
     @Mock
     private Call<SystemInfo> systemInfoEndpointCall;
@@ -160,7 +160,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
-        when(systemInfoCallFactory.create()).thenReturn(systemInfoEndpointCall);
+        when(systemInfoDownloader.download()).thenReturn(systemInfoEndpointCall);
         when(systemInfoEndpointCall.call()).thenReturn(systemInfoFromAPI);
         whenAPICall().thenReturn(user);
 
@@ -179,7 +179,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     private UserAuthenticateCall instantiateCall(String username, String password) {
-        return new UserAuthenticateCall(databaseAdapter, retrofit, apiCallExecutor, systemInfoCallFactory, versionManager,
+        return new UserAuthenticateCall(databaseAdapter, retrofit, apiCallExecutor, systemInfoDownloader, versionManager,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule,
                 username, password, baseEndpoint + "/api/");

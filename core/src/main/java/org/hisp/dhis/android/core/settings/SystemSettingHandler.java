@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-public interface SystemSettingHandler {
+interface SystemSettingHandler {
     void handle(SystemSetting setting, SystemSettingModelBuilder modelBuilder);
 }

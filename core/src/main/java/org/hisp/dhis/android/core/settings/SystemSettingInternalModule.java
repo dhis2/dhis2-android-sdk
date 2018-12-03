@@ -25,37 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class CategoryInternalModule implements WipeableModule {
+public final class SystemSettingInternalModule implements Downloader<SystemSetting>, WipeableModule {
 
-    private final DatabaseAdapter databaseAdapter;
-    public final CategoryModule publicModule;
+    private final ObjectWithoutUidStore<SystemSettingModel> systemSettingStore;
+    private final Provider<SystemSettingCall> systemSettingCallProvider;
 
     @Inject
-    CategoryInternalModule(DatabaseAdapter databaseAdapter,
-                           CategoryModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
-        this.publicModule = publicModule;
+    SystemSettingInternalModule(ObjectWithoutUidStore<SystemSettingModel> systemSettingStore,
+                                Provider<SystemSettingCall> systemSettingCallProvider) {
+        this.systemSettingStore = systemSettingStore;
+        this.systemSettingCallProvider = systemSettingCallProvider;
+    }
+
+    @Override
+    public Call<SystemSetting> download() {
+        return systemSettingCallProvider.get();
     }
 
     @Override
     public void wipeMetadata() {
-        CategoryStore.create(databaseAdapter).delete();
-        CategoryOptionStore.create(databaseAdapter).delete();
-        CategoryOptionComboStoreImpl.create(databaseAdapter).delete();
-        CategoryCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryComboStore.create(databaseAdapter).delete();
-        CategoryCategoryComboLinkStore.create(databaseAdapter).delete();
+        systemSettingStore.delete();
     }
 
     @Override

@@ -31,11 +31,11 @@ package org.hisp.dhis.android.core.user;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -66,7 +66,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final Retrofit retrofit;
     private final APICallExecutor apiCallExecutor;
 
-    private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
+    private final Downloader<SystemInfo> systemInfoDownloader;
     private final DHISVersionManager versionManager;
 
     // retrofit service
@@ -88,7 +88,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull APICallExecutor apiCallExecutor,
-            @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
+            @NonNull Downloader<SystemInfo> systemInfoDownloader,
             @NonNull DHISVersionManager versionManager,
             @NonNull UserService userService,
             @NonNull SyncHandler<User> userHandler,
@@ -104,7 +104,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.retrofit = retrofit;
         this.apiCallExecutor = apiCallExecutor;
 
-        this.systemInfoCallFactory = systemInfoCallFactory;
+        this.systemInfoDownloader = systemInfoDownloader;
         this.versionManager = versionManager;
         this.userService = userService;
 
@@ -159,7 +159,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         try {
             AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid());
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
-            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoCallFactory.create());
+            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoDownloader.download());
             handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate(),
                     versionManager));
             transaction.setSuccessful();
@@ -274,7 +274,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 databaseAdapter,
                 retrofit,
                 APICallExecutorImpl.create(databaseAdapter),
-                internalModules.systemInfo.callFactory,
+                internalModules.systemInfo,
                 internalModules.systemInfo.publicModule.versionManager,
                 retrofit.create(UserService.class),
                 UserHandler.create(databaseAdapter),

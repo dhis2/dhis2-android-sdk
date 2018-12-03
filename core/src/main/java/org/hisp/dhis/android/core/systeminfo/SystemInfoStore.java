@@ -71,7 +71,7 @@ final class SystemInfoStore {
         }
     };
 
-    public static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
+    static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO,
                 BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }

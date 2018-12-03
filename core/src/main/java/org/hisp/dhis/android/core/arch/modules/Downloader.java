@@ -26,26 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.retrofit;
+package org.hisp.dhis.android.core.arch.modules;
 
-import javax.inject.Singleton;
+import org.hisp.dhis.android.core.calls.Call;
 
-import dagger.Module;
-import dagger.Provides;
-import retrofit2.Retrofit;
-
-@Module
-public class RetrofitDIModule {
-
-    private final Retrofit retrofit;
-
-    public RetrofitDIModule(Retrofit retrofit) {
-        this.retrofit = retrofit;
-    }
-
-    @Provides
-    @Singleton
-    Retrofit retrofit() {
-        return retrofit;
-    }
+public interface Downloader<O> {
+   Call<O> download();
 }

@@ -35,9 +35,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -166,14 +166,13 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     }
 
     private List<OptionSet> executeOptionSetCall() throws Exception{
-        final D2CallExecutor executor = new D2CallExecutor();
 
-        return executor.executeD2CallTransactionally(databaseAdapter(), new Callable<List<OptionSet>>() {
+        return d2CallExecutor.executeD2CallTransactionally(databaseAdapter(), new Callable<List<OptionSet>>() {
             @Override
             public List<OptionSet> call() {
                 List<OptionSet> optionSets = null;
                 try {
-                    optionSets = d2CallExecutor.executeD2Call(optionSetCall);
+                    optionSets = optionSetCall.call();
                 } catch (Exception ignored) {
                 }
 

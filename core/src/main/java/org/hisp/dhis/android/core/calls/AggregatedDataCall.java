@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -115,8 +114,8 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
 
             @Override
-            public Unit call() throws D2Error {
-                executor.executeD2Call(systemInfoDownloader.download());
+            public Unit call() throws Exception {
+                systemInfoDownloader.download().call();
 
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
                         resourceHandler, versionManager);
@@ -129,9 +128,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
                 DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                Call<List<DataValue>> dataValueEndpointCall = dataValueCallFactory
-                        .create(genericCallData, dataValueQuery);
-                executor.executeD2Call(dataValueEndpointCall);
+                dataValueCallFactory.create(genericCallData, dataValueQuery).call();
 
                 DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                         DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
@@ -140,7 +137,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                         dataSetCompleteRegistrationCallFactory.create(genericCallData,
                                 dataSetCompleteRegistrationQuery);
 
-                executor.executeD2Call(dataSetCompleteRegistrationCall);
+                dataSetCompleteRegistrationCall.call();
 
                 return new Unit();
             }

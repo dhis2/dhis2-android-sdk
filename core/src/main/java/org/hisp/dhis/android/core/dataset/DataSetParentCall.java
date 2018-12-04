@@ -84,21 +84,21 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
 
         return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<DataSet>>() {
             @Override
-            public List<DataSet> call() throws D2Error {
+            public List<DataSet> call() throws Exception {
 
-                List<DataSet> dataSets = executor.executeD2Call(dataSetCallFactory.create(genericCallData));
+                List<DataSet> dataSets = dataSetCallFactory.create(genericCallData).call();
 
-                List<DataElement> dataElements = executor.executeD2Call(dataElementCallFactory.create(genericCallData,
-                        DataSetParentUidsHelper.getDataElementUids(dataSets)));
+                List<DataElement> dataElements = dataElementCallFactory.create(genericCallData,
+                        DataSetParentUidsHelper.getDataElementUids(dataSets)).call();
 
-                List<Indicator> indicators = executor.executeD2Call(indicatorCallFactory.create(genericCallData,
-                        DataSetParentUidsHelper.getIndicatorUids(dataSets)));
+                List<Indicator> indicators = indicatorCallFactory.create(genericCallData,
+                        DataSetParentUidsHelper.getIndicatorUids(dataSets)).call();
 
-                executor.executeD2Call(indicatorTypeCallFactory.create(genericCallData,
-                        DataSetParentUidsHelper.getIndicatorTypeUids(indicators)));
+                indicatorTypeCallFactory.create(genericCallData,
+                        DataSetParentUidsHelper.getIndicatorTypeUids(indicators)).call();
 
                 Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
-                executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
+                optionSetCallFactory.create(genericCallData, optionSetUids).call();
 
                 periodHandler.generateAndPersist();
                 

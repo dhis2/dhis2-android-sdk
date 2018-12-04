@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -83,22 +82,22 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
 
         return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<Program>>() {
             @Override
-            public List<Program> call() throws D2Error {
-                List<Program> programs = executor.executeD2Call(programCallFactory.create(genericCallData));
+            public List<Program> call() throws Exception {
+                List<Program> programs = programCallFactory.create(genericCallData).call();
 
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-                List<ProgramStage> programStages = executor.executeD2Call(
-                        programStageCallFactory.create(genericCallData, assignedProgramStageUids));
+                List<ProgramStage> programStages =
+                        programStageCallFactory.create(genericCallData, assignedProgramStageUids).call();
 
-                executor.executeD2Call(programRuleCallFactory.create(genericCallData, UidsHelper.getUids(programs)));
+                programRuleCallFactory.create(genericCallData, UidsHelper.getUids(programs)).call();
 
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-                executor.executeD2Call(trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids));
-                executor.executeD2Call(relationshipTypeCallFactory.create(genericCallData));
+                trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids).call();
+                relationshipTypeCallFactory.create(genericCallData).call();
 
                 Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-                executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
+                optionSetCallFactory.create(genericCallData, optionSetUids).call();
 
                 return programs;
             }

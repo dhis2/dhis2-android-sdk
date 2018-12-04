@@ -84,7 +84,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
                             searchOrganisationUnitOnDemandCallFactory.create(
                                 databaseAdapter, retrofit, searchOrgUnitUids,
                                 User.builder().uid(authenticatedUserModel.user()).build(), apiCallExecutor);
-                    executor.executeD2Call(organisationUnitCall);
+                    organisationUnitCall.call();
                 }
 
                 foreignKeyCleaner.cleanForeignKeyErrors();

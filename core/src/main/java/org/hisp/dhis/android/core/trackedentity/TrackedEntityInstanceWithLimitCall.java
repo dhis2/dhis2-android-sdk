@@ -87,14 +87,12 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
     private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList) {
-        D2CallExecutor executor = new D2CallExecutor();
-
         for (Paging paging : pagingList) {
-
             try {
                 teiQueryBuilder.withPage(paging.page()).withPageSize(paging.pageSize());
-                List<TrackedEntityInstance> pageTrackedEntityInstances = executor.executeD2Call(
-                        TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build()));
+                List<TrackedEntityInstance> pageTrackedEntityInstances =
+                        TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build())
+                                .call();
 
                 if (paging.isLastPage()) {
                     int previousItemsToSkip = pageTrackedEntityInstances.size()
@@ -102,12 +100,12 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
                     int toIndex = previousItemsToSkip < 0 ? pageTrackedEntityInstances.size() :
                             pageTrackedEntityInstances.size() - previousItemsToSkip;
 
-                    executor.executeD2Call(
-                            TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, internalModules,
-                                    pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)));
+                    TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, internalModules,
+                                    pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)
+                    ).call();
                 } else {
-                    executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
-                            internalModules, pageTrackedEntityInstances));
+                    TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
+                            internalModules, pageTrackedEntityInstances).call();
                 }
 
                 if (pageTrackedEntityInstances.size() < paging.pageSize()) {

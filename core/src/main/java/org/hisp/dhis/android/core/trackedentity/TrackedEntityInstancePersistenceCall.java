@@ -74,7 +74,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
 
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
             @Override
-            public Void call() throws D2Error {
+            public Void call() throws Exception {
                 trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false);
 
                 Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
@@ -86,7 +86,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                             searchOrganisationUnitOnDemandCallFactory.create(
                                 databaseAdapter, retrofit, searchOrgUnitUids,
                                 User.builder().uid(authenticatedUserModel.user()).build(), apiCallExecutor);
-                    executor.executeD2Call(organisationUnitCall);
+                    organisationUnitCall.call();
                 }
 
                 if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {

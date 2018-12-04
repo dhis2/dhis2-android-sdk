@@ -118,16 +118,10 @@ public class EnrollmentStoreImpl extends StoreWithStateImpl implements Enrollmen
                     "  Enrollment.state ";
 
     private static final String QUERY_STATEMENT_TO_POST = "SELECT " +
-            FIELDS +
-            "FROM (Enrollment " +
-            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid "
-
-            +
-            ") " +
-            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE'" +
-            " OR TrackedEntityInstance.state = 'TO_DELETE' "
-            +
-            " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Enrollment.state = 'TO_DELETE';";
+            FIELDS + "FROM Enrollment " +
+            "WHERE Enrollment.state = 'TO_POST' " +
+            "OR Enrollment.state = 'TO_UPDATE' " +
+            "OR Enrollment.state = 'TO_DELETE';";
 
     private static final String QUERY_STATEMENT = "SELECT " +
             FIELDS +

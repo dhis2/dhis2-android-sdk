@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
@@ -60,7 +59,7 @@ public final class AuthorityEndpointCall {
 
             @Override
             protected CallProcessor<Authority> processor(GenericCallData data) {
-                return new TransactionalNoResourceSyncCallProcessor<>(
+                return new AuthorityCallProcessor(
                         data.databaseAdapter(),
                         AuthorityHandler.create(data.databaseAdapter()));
             }

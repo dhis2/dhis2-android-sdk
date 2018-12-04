@@ -26,13 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package settings;
+package org.hisp.dhis.android.core.settings;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.settings.SystemSettingModel;
 import org.hisp.dhis.android.core.settings.SystemSettingModel.Columns;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;

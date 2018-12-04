@@ -198,8 +198,8 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, teiLimit,
-                limitByOrgUnit);
+        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler,
+                teiLimit, limitByOrgUnit);
     }
 
     @NonNull

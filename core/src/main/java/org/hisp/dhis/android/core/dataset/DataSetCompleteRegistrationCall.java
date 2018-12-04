@@ -29,63 +29,55 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
 import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataSetCompleteRegistrationCall {
+public final class DataSetCompleteRegistrationCall extends QueryCallFactoryImpl<DataSetCompleteRegistration,
+        DataSetCompleteRegistrationQuery>{
 
-    private DataSetCompleteRegistrationCall() {}
+    public DataSetCompleteRegistrationCall(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+        super(genericCallData, apiCallExecutor);
+    }
 
-    public static QueryCallFactory<DataSetCompleteRegistration,
-            DataSetCompleteRegistrationQuery> factory(APICallExecutor apiCallExecutor) {
+    @Override
+    protected CallFetcher<DataSetCompleteRegistration> fetcher(
+            final DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
 
-        return new QueryCallFactoryImpl<DataSetCompleteRegistration,
-                DataSetCompleteRegistrationQuery>(apiCallExecutor) {
+        final DataSetCompleteRegistrationService dataSetCompleteRegistrationService =
+                data.retrofit().create(DataSetCompleteRegistrationService.class);
 
-            @Override
-            protected CallFetcher<DataSetCompleteRegistration> fetcher(
-                    GenericCallData data,
-                    final DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
-
-                final DataSetCompleteRegistrationService dataSetCompleteRegistrationService =
-                        data.retrofit().create(DataSetCompleteRegistrationService.class);
-
-                return new DataSetCompleteRegistrationCallFetcher(
-                        dataSetCompleteRegistrationQuery.dataSetUids(),
-                        dataSetCompleteRegistrationQuery.periodIds(),
-                        dataSetCompleteRegistrationQuery.rootOrgUnitUids(),
-                        apiCallExecutor) {
-
-                    @Override
-                    protected Call<DataSetCompleteRegistrationPayload> getCall(
-                            DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
-                        return dataSetCompleteRegistrationService.getDataSetCompleteRegistrations(
-                                DataSetCompleteRegistrationFields.allFields,
-                                commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.dataSetUids()),
-                                commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.periodIds()),
-                                commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.rootOrgUnitUids()),
-                                Boolean.TRUE,
-                                Boolean.FALSE);
-                    }
-                };
-            }
+        return new DataSetCompleteRegistrationCallFetcher(
+                dataSetCompleteRegistrationQuery.dataSetUids(),
+                dataSetCompleteRegistrationQuery.periodIds(),
+                dataSetCompleteRegistrationQuery.rootOrgUnitUids(),
+                apiCallExecutor) {
 
             @Override
-            protected CallProcessor<DataSetCompleteRegistration> processor(GenericCallData data,
-                                                                           DataSetCompleteRegistrationQuery query) {
-
-                return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                        DataSetCompleteRegistrationHandler.create(data.databaseAdapter()));
+            protected Call<DataSetCompleteRegistrationPayload> getCall(
+                    DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
+                return dataSetCompleteRegistrationService.getDataSetCompleteRegistrations(
+                        DataSetCompleteRegistrationFields.allFields,
+                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.dataSetUids()),
+                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.periodIds()),
+                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.rootOrgUnitUids()),
+                        Boolean.TRUE,
+                        Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<DataSetCompleteRegistration> processor(DataSetCompleteRegistrationQuery query) {
+
+        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
+                DataSetCompleteRegistrationHandler.create(data.databaseAdapter()));
     }
 }

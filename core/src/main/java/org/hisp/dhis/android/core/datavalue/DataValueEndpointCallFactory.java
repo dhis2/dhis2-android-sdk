@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
@@ -39,45 +38,42 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
+import javax.inject.Inject;
+
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataValueEndpointCall {
+public final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
 
-    private DataValueEndpointCall() {
+    @Inject
+    public DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    public static QueryCallFactory<DataValue, DataValueQuery> factory(APICallExecutor apiCallExecutor) {
-        return new QueryCallFactoryImpl<DataValue, DataValueQuery>(apiCallExecutor) {
+    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 
-            private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
+    @Override
+    protected CallFetcher<DataValue> fetcher(final DataValueQuery query) {
 
+        final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
+
+        return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType, apiCallExecutor) {
             @Override
-            protected CallFetcher<DataValue> fetcher(GenericCallData data, final DataValueQuery query) {
-
-                final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
-
-                return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType,
-                        apiCallExecutor) {
-                    @Override
-                    protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
-                        return dataValueService.getDataValues(
-                                DataValueFields.allFields,
-                                DataValueFields.lastUpdated.gt(lastUpdated),
-                                commaSeparatedCollectionValues(query.dataSetUids()),
-                                commaSeparatedCollectionValues(query.periodIds()),
-                                commaSeparatedCollectionValues(query.orgUnitUids()),
-                                Boolean.TRUE,
-                                Boolean.FALSE);
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<DataValue> processor(GenericCallData data, DataValueQuery query) {
-
-                return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                        DataValueHandler.create(data.databaseAdapter()));
+            protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
+                return dataValueService.getDataValues(
+                        DataValueFields.allFields,
+                        DataValueFields.lastUpdated.gt(lastUpdated),
+                        commaSeparatedCollectionValues(query.dataSetUids()),
+                        commaSeparatedCollectionValues(query.periodIds()),
+                        commaSeparatedCollectionValues(query.orgUnitUids()),
+                        Boolean.TRUE,
+                        Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<DataValue> processor(DataValueQuery query) {
+        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
+                DataValueHandler.create(data.databaseAdapter()));
     }
 }

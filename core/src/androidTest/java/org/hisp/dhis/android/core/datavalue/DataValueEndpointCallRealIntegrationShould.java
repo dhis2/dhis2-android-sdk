@@ -67,7 +67,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
 
     private Call<List<DataValue>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return DataValueEndpointCall.factory(apiCallExecutor).create(getGenericCallData(d2),
+        return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
                 DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));
     }
 

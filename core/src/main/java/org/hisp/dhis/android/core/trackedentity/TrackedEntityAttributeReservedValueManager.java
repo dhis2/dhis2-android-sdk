@@ -48,8 +48,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.ArrayList;
@@ -57,7 +55,6 @@ import java.util.Date;
 import java.util.List;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import retrofit2.Retrofit;
 
 public final class TrackedEntityAttributeReservedValueManager {
 
@@ -68,29 +65,20 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
     private final Downloader<SystemInfo> systemInfoDownloader;
-    private final DHISVersionManager versionManager;
-    private final ResourceHandler resourceHandler;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
 
-    TrackedEntityAttributeReservedValueManager(
+    private TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
-            Retrofit retrofit,
             Downloader<SystemInfo> systemInfoDownloader,
-            DHISVersionManager versionManager,
-            ResourceHandler resourceHandler,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             TrackedEntityAttributeStore trackedEntityAttributeStore,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory) {
         this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
         this.systemInfoDownloader = systemInfoDownloader;
-        this.versionManager = versionManager;
-        this.resourceHandler = resourceHandler;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -172,9 +160,6 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         executor.executeD2Call(systemInfoDownloader.download());
 
-        GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                resourceHandler, versionManager);
-
         String trackedEntityAttributePattern;
         try {
             trackedEntityAttributePattern = trackedEntityAttributeStore.getPattern(trackedEntityAttributeUid);
@@ -182,7 +167,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             trackedEntityAttributePattern = "";
         }
 
-        executor.executeD2Call(trackedEntityAttributeReservedValueQueryCallFactory.create(genericCallData,
+        executor.executeD2Call(trackedEntityAttributeReservedValueQueryCallFactory.create(
                 TrackedEntityAttributeReservedValueQuery.create(
                         trackedEntityAttributeUid, numberToReserve, organisationUnit, trackedEntityAttributePattern)));
     }
@@ -270,19 +255,16 @@ public final class TrackedEntityAttributeReservedValueManager {
         return selectStatement.concat(";");
     }
 
-    public static TrackedEntityAttributeReservedValueManager create(DatabaseAdapter databaseAdapter,
-                                                                    Retrofit retrofit,
-                                                                    ResourceHandler resourceHandler,
+    public static TrackedEntityAttributeReservedValueManager create(GenericCallData data,
                                                                     D2InternalModules internalModules) {
         return new TrackedEntityAttributeReservedValueManager(
-                databaseAdapter,
-                retrofit,
+                data.databaseAdapter(),
                 internalModules.systemInfo,
-                internalModules.systemInfo.publicModule.versionManager,
-                resourceHandler,
-                TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
-                OrganisationUnitStore.create(databaseAdapter),
-                new TrackedEntityAttributeStoreImpl(databaseAdapter),
-                TrackedEntityAttributeReservedValueEndpointCall.factory(APICallExecutorImpl.create(databaseAdapter)));
+                TrackedEntityAttributeReservedValueStore.create(data.databaseAdapter()),
+                OrganisationUnitStore.create(data.databaseAdapter()),
+                new TrackedEntityAttributeStoreImpl(data.databaseAdapter()),
+                new TrackedEntityAttributeReservedValueEndpointCallFactory(data,
+                        APICallExecutorImpl.create(data.databaseAdapter()))
+        );
     }
 }

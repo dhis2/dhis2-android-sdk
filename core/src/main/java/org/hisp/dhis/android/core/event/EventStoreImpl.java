@@ -127,7 +127,7 @@ public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
 
     private static final String QUERY_EVENTS_ATTACHED_TO_ENROLLMENTS = "SELECT " +
             FIELDS + "FROM Event " +
-            "OR Event.state = 'TO_POST' " +
+            "WHERE Event.state = 'TO_POST' " +
             "OR Event.state = 'TO_UPDATE' " +
             "OR Event.state = 'TO_DELETE';";
 

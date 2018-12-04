@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -48,7 +47,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
@@ -63,11 +61,9 @@ import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 public final class UserAuthenticateCall extends SyncCall<User> {
 
     private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
     private final APICallExecutor apiCallExecutor;
 
     private final Downloader<SystemInfo> systemInfoDownloader;
-    private final DHISVersionManager versionManager;
 
     // retrofit service
     private final UserService userService;
@@ -86,10 +82,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
 
     UserAuthenticateCall(
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull Downloader<SystemInfo> systemInfoDownloader,
-            @NonNull DHISVersionManager versionManager,
             @NonNull UserService userService,
             @NonNull SyncHandler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
@@ -101,11 +95,9 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull String password,
             @NonNull String apiURL) {
         this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
         this.apiCallExecutor = apiCallExecutor;
 
         this.systemInfoDownloader = systemInfoDownloader;
-        this.versionManager = versionManager;
         this.userService = userService;
 
         this.userHandler = userHandler;
@@ -159,9 +151,10 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         try {
             AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid());
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
-            SystemInfo systemInfo = new D2CallExecutor().executeD2Call(systemInfoDownloader.download());
-            handleUser(authenticatedUser, GenericCallData.create(databaseAdapter, retrofit, systemInfo.serverDate(),
-                    versionManager));
+
+            new D2CallExecutor().executeD2Call(systemInfoDownloader.download());
+
+            handleUser(authenticatedUser);
             transaction.setSuccessful();
             return authenticatedUser;
         } finally {
@@ -249,11 +242,11 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(apiURL);
     }
 
-    private void handleUser(User user, GenericCallData genericCallData) {
+    private void handleUser(User user) {
         userHandler.handle(user);
-        resourceHandler.handleResource(ResourceModel.Type.USER, genericCallData.serverDate());
-        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS, genericCallData.serverDate());
-        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER, genericCallData.serverDate());
+        resourceHandler.handleResource(ResourceModel.Type.USER);
+        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS);
+        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER);
     }
 
     private AuthenticatedUserModel buildAuthenticatedUserModel(String uid) {
@@ -267,18 +260,17 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     public static UserAuthenticateCall create(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
+            @NonNull ResourceHandler resourceHandler,
             @NonNull D2InternalModules internalModules,
             @NonNull String username,
             @NonNull String password) {
         return new UserAuthenticateCall(
                 databaseAdapter,
-                retrofit,
                 APICallExecutorImpl.create(databaseAdapter),
                 internalModules.systemInfo,
-                internalModules.systemInfo.publicModule.versionManager,
                 retrofit.create(UserService.class),
                 UserHandler.create(databaseAdapter),
-                ResourceHandler.create(databaseAdapter),
+                resourceHandler,
                 AuthenticatedUserStore.create(databaseAdapter),
                 internalModules.systemInfo.publicModule.systemInfo,
                 UserStore.create(databaseAdapter),

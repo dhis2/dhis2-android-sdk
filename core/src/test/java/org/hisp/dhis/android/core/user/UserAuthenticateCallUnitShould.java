@@ -179,7 +179,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     private UserAuthenticateCall instantiateCall(String username, String password) {
-        return new UserAuthenticateCall(databaseAdapter, retrofit, apiCallExecutor, systemInfoDownloader, versionManager,
+        return new UserAuthenticateCall(databaseAdapter, apiCallExecutor, systemInfoDownloader,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule,
                 username, password, baseEndpoint + "/api/");

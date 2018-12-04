@@ -35,25 +35,21 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import java.util.Date;
-
 import retrofit2.Retrofit;
 
 @AutoValue
 public abstract class GenericCallData {
     public abstract DatabaseAdapter databaseAdapter();
-    public abstract ResourceHandler resourceHandler();
     public abstract Retrofit retrofit();
-    public abstract Date serverDate();
+    public abstract ResourceHandler resourceHandler();
     public abstract DHISVersionManager versionManager();
 
     public static GenericCallData create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                         Date serverDate, DHISVersionManager versionManager) {
-        return new AutoValue_GenericCallData(databaseAdapter,
-                ResourceHandler.create(databaseAdapter), retrofit, serverDate, versionManager);
+                                         ResourceHandler resourceHandler, DHISVersionManager versionManager) {
+        return new AutoValue_GenericCallData(databaseAdapter, retrofit, resourceHandler, versionManager);
     }
 
     public void handleResource(ResourceModel.Type type) {
-        resourceHandler().handleResource(type, serverDate());
+        resourceHandler().handleResource(type);
     }
 }

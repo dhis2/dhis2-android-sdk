@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.period.PeriodStore;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -71,6 +72,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
+    private final ResourceHandler resourceHandler;
 
     private final Downloader<SystemInfo> systemInfoDownloader;
     private final DHISVersionManager versionManager;
@@ -83,6 +85,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
     private AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
                                @NonNull Retrofit retrofit,
+                               @NonNull ResourceHandler resourceHandler,
                                @NonNull Downloader<SystemInfo> systemInfoDownloader,
                                @NonNull DHISVersionManager versionManager,
                                @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
@@ -93,6 +96,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                                @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.resourceHandler = resourceHandler;
         this.systemInfoDownloader = systemInfoDownloader;
         this.versionManager = versionManager;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -112,9 +116,10 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
             @Override
             public Unit call() throws D2Error {
-                SystemInfo systemInfo = executor.executeD2Call(systemInfoDownloader.download());
+                executor.executeD2Call(systemInfoDownloader.download());
+
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                        systemInfo.serverDate(), versionManager);
+                        resourceHandler, versionManager);
 
                 List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
                 Set<String> periodIds = Collections.unmodifiableSet(
@@ -152,12 +157,15 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
         return periodIds;
     }
 
-    public static AggregatedDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+    public static AggregatedDataCall create(DatabaseAdapter databaseAdapter,
+                                            Retrofit retrofit,
+                                            ResourceHandler resourceHandler,
                                             D2InternalModules internalModules) {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
         return new AggregatedDataCall(
                 databaseAdapter,
                 retrofit,
+                resourceHandler,
                 internalModules.systemInfo,
                 internalModules.systemInfo.publicModule.versionManager,
                 DataValueEndpointCall.factory(apiCallExecutor),

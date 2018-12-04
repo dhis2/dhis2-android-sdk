@@ -36,6 +36,8 @@ import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
 import org.junit.After;
 import org.junit.Before;
 
@@ -47,6 +49,10 @@ import static com.google.common.truth.Truth.assertThat;
 public abstract class AbsStoreTestCase {
     private SQLiteDatabase sqLiteDatabase;
     private DatabaseAdapter databaseAdapter;
+
+    protected Date serverDate = new Date();
+    protected ResourceHandler resourceHandler;
+
     private String dbName = null;
 
     @Before
@@ -55,6 +61,8 @@ public abstract class AbsStoreTestCase {
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+        resourceHandler = new ResourceHandler(new ResourceStoreImpl(databaseAdapter));
+        resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }
 
@@ -74,7 +82,7 @@ public abstract class AbsStoreTestCase {
 
     protected GenericCallData getGenericCallData(D2 d2) {
         return GenericCallData.create(
-                databaseAdapter(), d2.retrofit(), new Date(), d2.systemInfoModule().versionManager);
+                databaseAdapter(), d2.retrofit(), resourceHandler, d2.systemInfoModule().versionManager);
     }
 
     protected Cursor getCursor(String table, String[] columns) {

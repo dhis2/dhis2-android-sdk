@@ -58,6 +58,7 @@ import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -87,6 +88,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
+    private final ResourceHandler resourceHandler;
     private final D2InternalModules internalModules;
     private final WipeModule wipeModule;
 
@@ -117,6 +119,7 @@ public final class D2 {
 
 
         this.internalModules = d2DIComponent.internalModules();
+        this.resourceHandler = d2DIComponent.resourceHandler();
         this.wipeModule = WipeModuleImpl.create(databaseAdapter, internalModules);
     }
 
@@ -132,7 +135,8 @@ public final class D2 {
 
     @NonNull
     public Callable<User> logIn(@NonNull String username, @NonNull String password) {
-        return UserAuthenticateCall.create(databaseAdapter, retrofit, internalModules, username, password);
+        return UserAuthenticateCall.create(databaseAdapter, retrofit, resourceHandler,
+                internalModules, username, password);
     }
 
     @NonNull
@@ -147,12 +151,12 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(databaseAdapter, retrofit, internalModules);
+        return MetadataCall.create(databaseAdapter, retrofit, resourceHandler, internalModules);
     }
 
     @NonNull
     public Callable<Unit> syncAggregatedData() {
-        return AggregatedDataCall.create(databaseAdapter, retrofit, internalModules);
+        return AggregatedDataCall.create(databaseAdapter, retrofit, resourceHandler, internalModules);
     }
 
     /**
@@ -201,13 +205,14 @@ public final class D2 {
     @NonNull
     public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
             throws D2Error {
-        return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
+        return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit,
+                resourceHandler, internalModules)
                 .getValue(attributeUid, organisationUnitUid);
     }
 
     public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
                                                          Integer numberOfValuesToFillUp) {
-        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
+        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, resourceHandler, internalModules)
                 .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
     }
 

@@ -91,7 +91,8 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
             systemInfoHandler.handle(systemInfo);
-            resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO, systemInfo.serverDate());
+            resourceHandler.setServerDate(systemInfo.serverDate());
+            resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO);
             transaction.setSuccessful();
         } finally {
             transaction.end();

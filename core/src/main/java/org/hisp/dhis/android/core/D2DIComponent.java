@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipDIModule;
 import org.hisp.dhis.android.core.resource.ResourceDIModule;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.settings.SystemSettingDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoDIModule;
 
@@ -31,6 +32,7 @@ import dagger.Component;
 public interface D2DIComponent {
 
     D2InternalModules internalModules();
+    ResourceHandler resourceHandler();
 
     @Component.Builder
     interface Builder {

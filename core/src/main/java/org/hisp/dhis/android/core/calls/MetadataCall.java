@@ -56,6 +56,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
@@ -69,11 +70,12 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Retrofit;
 
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public class MetadataCall extends SyncCall<Unit> {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
+    private final ResourceHandler resourceHandler;
 
     private final Downloader<SystemInfo> systemInfoDownloader;
     private final DHISVersionManager versionManager;
@@ -91,6 +93,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
     public MetadataCall(@NonNull DatabaseAdapter databaseAdapter,
                         @NonNull Retrofit retrofit,
+                        @NonNull ResourceHandler resourceHandler,
                         @NonNull Downloader<SystemInfo> systemInfoDownloader,
                         @NonNull DHISVersionManager versionManager,
                         @NonNull Downloader<SystemSetting> systemSettingDownloader,
@@ -106,6 +109,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
+        this.resourceHandler = resourceHandler;
 
         this.systemInfoDownloader = systemInfoDownloader;
         this.versionManager = versionManager;
@@ -131,10 +135,10 @@ public class MetadataCall extends SyncCall<Unit> {
         return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
             @Override
             public Unit call() throws Exception {
-                SystemInfo systemInfo = systemInfoDownloader.download().call();
+                systemInfoDownloader.download().call();
 
                 GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                        systemInfo.serverDate(), versionManager);
+                        resourceHandler, versionManager);
 
                 systemSettingDownloader.download().call();
 
@@ -164,12 +168,15 @@ public class MetadataCall extends SyncCall<Unit> {
         });
     }
 
-    public static MetadataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
+    public static MetadataCall create(DatabaseAdapter databaseAdapter,
+                                      Retrofit retrofit,
+                                      ResourceHandler resourceHandler,
                                       D2InternalModules internalModules) {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
         return new MetadataCall(
                 databaseAdapter,
                 retrofit,
+                resourceHandler,
                 internalModules.systemInfo,
                 internalModules.systemInfo.publicModule.versionManager,
                 internalModules.systemSetting,

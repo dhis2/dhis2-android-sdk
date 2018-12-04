@@ -68,8 +68,8 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
     
     private Unit getTrackedEntityInstances() throws Exception {
         Collection<String> organisationUnitUids;
-        TeiQuery.Builder teiQueryBuilder = TeiQuery.Builder.create();
-        int pageSize = teiQueryBuilder.build().getPageSize();
+        TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
+        int pageSize = teiQueryBuilder.build().pageSize();
         List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
 
         if (limitByOrgUnit) {
@@ -78,12 +78,12 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
             for (String orgUnitUid : organisationUnitUids) {
                 orgUnitWrapper.clear();
                 orgUnitWrapper.add(orgUnitUid);
-                teiQueryBuilder.withOrgUnits(orgUnitWrapper);
+                teiQueryBuilder.orgUnits(orgUnitWrapper);
                 getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
             }
         } else {
             organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-            teiQueryBuilder.withOrgUnits(organisationUnitUids).withOuMode(OuMode.DESCENDANTS);
+            teiQueryBuilder.orgUnits(organisationUnitUids).ouMode(OuMode.DESCENDANTS);
             getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
         }
 
@@ -98,7 +98,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
 
         for (Paging paging : pagingList) {
             try {
-                teiQueryBuilder.withPage(paging.page()).withPageSize(paging.pageSize());
+                teiQueryBuilder.page(paging.page()).pageSize(paging.pageSize());
                 List<TrackedEntityInstance> pageTrackedEntityInstances =
                         TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build())
                                 .call();

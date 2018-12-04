@@ -1,115 +1,50 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
-public class TeiQuery {
-
-    private final int page;
-    private final int pageSize;
-    private final boolean paging;
-    private final Collection<String> orgUnits;
-    private final OuMode ouMode;
+@AutoValue
+public abstract class TeiQuery extends BaseQuery {
 
     @Nullable
-    private final Collection<String> uIds;
+    public abstract Collection<String> orgUnits();
 
-    public TeiQuery(boolean paging, int page, int pageSize, Collection<String> orgUnits, OuMode ouMode) {
-        this.paging = paging;
-        this.page = page;
-        this.pageSize = pageSize;
-        this.orgUnits = orgUnits;
-        this.ouMode = ouMode;
-        uIds = null;
-    }
-
-    public TeiQuery(boolean paging, int page, int pageSize,
-                    Collection<String> orgUnits, @Nullable Collection<String> uIds, OuMode ouMode) {
-        this.paging = paging;
-        this.page = page;
-        this.pageSize = pageSize;
-        this.orgUnits = orgUnits;
-        this.uIds = uIds;
-        this.ouMode = ouMode;
-    }
+    @NonNull
+    public abstract OuMode ouMode();
 
     @Nullable
-    public Collection<String> getUIds() {
-        return uIds;
+    public abstract String lastUpdatedStartDate();
+
+    @Nullable
+    public abstract Collection<String> uIds();
+
+    public static Builder builder() {
+        return new AutoValue_TeiQuery.Builder()
+                .page(1)
+                .pageSize(DEFAULT_PAGE_SIZE)
+                .paging(true)
+                .ouMode(OuMode.SELECTED)
+                .uIds(Collections.<String>emptyList());
     }
 
-    public int getPage() {
-        return page;
-    }
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseQuery.Builder<Builder> {
+        public abstract Builder orgUnits(Collection<String> orgUnits);
 
-    public int getPageSize() {
-        return pageSize;
-    }
+        public abstract Builder ouMode(OuMode ouMode);
 
-    public boolean isPaging() {
-        return paging;
-    }
+        public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 
-    public OuMode getOuMode() {
-        return ouMode;
-    }
+        public abstract Builder uIds(Collection<String> uIds);
 
-    public Collection<String> getOrgUnits() {
-        return orgUnits;
-    }
-
-    public static class Builder {
-        private int page = 1;
-        private int pageSize = 50;
-        private boolean paging;
-        private Collection<String> orgUnits;
-        OuMode ouMode = OuMode.SELECTED;
-
-        private Collection<String> uIds = new ArrayList<>();
-
-        private Builder() {
-        }
-
-        public static TeiQuery.Builder create() {
-            return new TeiQuery.Builder();
-        }
-
-        public TeiQuery.Builder withPaging(boolean paging) {
-            this.paging = paging;
-            return this;
-        }
-
-        public TeiQuery.Builder withPage(int page) {
-            this.page = page;
-            return this;
-        }
-
-        public TeiQuery.Builder withPageSize(int pageSize) {
-            this.pageSize = pageSize;
-            return this;
-        }
-
-        public TeiQuery.Builder withOrgUnits(Collection<String> orgUnits) {
-            this.orgUnits = orgUnits;
-            return this;
-        }
-
-        public TeiQuery.Builder withUIds(Collection<String> uIds) {
-            this.uIds = uIds;
-            return this;
-        }
-
-        public TeiQuery.Builder withOuMode(OuMode ouMode) {
-            this.ouMode = ouMode;
-            return this;
-        }
-
-        public TeiQuery build() {
-            return new TeiQuery(paging, page, pageSize, orgUnits, uIds, ouMode);
-        }
+        public abstract TeiQuery build();
     }
 }

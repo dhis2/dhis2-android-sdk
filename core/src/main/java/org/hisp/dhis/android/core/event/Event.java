@@ -28,166 +28,179 @@
 
 package org.hisp.dhis.android.core.event;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreCoordinatesAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-public abstract class Event implements ObjectWithDeleteInterface, ObjectWithUidInterface {
-    private static final String UID = "event";
-    private static final String ENROLLMENT_UID = "enrollment";
-    private static final String CREATED = "created";
-    private static final String LAST_UPDATED = "lastUpdated";
-    private static final String CREATED_AT_CLIENT = "createdAtClient";
-    private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-    private static final String STATUS = "status";
-    private static final String COORDINATE = "coordinate";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
-    private static final String ORGANISATION_UNIT = "orgUnit";
-    private static final String EVENT_DATE = "eventDate";
-    private static final String COMPLETE_DATE = "completedDate";
-    private static final String DUE_DATE = "dueDate";
-    private static final String DELETED = "deleted";
-    private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
-    private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
-    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+@JsonDeserialize(builder = AutoValue_Event.Builder.class)
+public abstract class Event implements Model, ObjectWithDeleteInterface, ObjectWithUidInterface {
 
-    static final Field<Event, String> uid = Field.create(UID);
-    private static final Field<Event, String> enrollment = Field.create(ENROLLMENT_UID);
-    private static final Field<Event, String> created = Field.create(CREATED);
-    static final Field<Event, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<Event, EventStatus> eventStatus = Field.create(STATUS);
-    private static final Field<Event, Coordinates> coordinates = Field.create(COORDINATE);
-    private static final Field<Event, String> program = Field.create(PROGRAM);
-    private static final Field<Event, String> programStage = Field.create(PROGRAM_STAGE);
-    private static final Field<Event, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    private static final Field<Event, String> eventDate = Field.create(EVENT_DATE);
-    private static final Field<Event, String> completeDate = Field.create(COMPLETE_DATE);
-    private static final Field<Event, Boolean> deleted = Field.create(DELETED);
-    private static final Field<Event, String> dueDate = Field.create(DUE_DATE);
-    private static final Field<Event, String> attributeOptionCombo = Field.create(ATTRIBUTE_OPTION_COMBO);
-
-    private static final NestedField<Event, TrackedEntityDataValue> trackedEntityDataValues
-            = NestedField.create(TRACKED_ENTITY_DATA_VALUES);
-
-    public static final Fields<Event> allFields = Fields.<Event>builder().fields(
-            attributeOptionCombo, uid, created, lastUpdated, completeDate,
-            coordinates, dueDate, enrollment, eventDate, eventStatus, organisationUnit, program, programStage,
-            deleted, trackedEntityDataValues.with(TrackedEntityDataValueFields.allFields)
-    ).build();
-
-    @JsonProperty(UID)
+    @Override
+    @Nullable
+    @JsonProperty(EventFields.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty(ENROLLMENT_UID)
-    public abstract String enrollmentUid();
+    @JsonProperty()
+    public abstract String enrollment();
 
     @Nullable
-    @JsonProperty(CREATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(CREATED_AT_CLIENT)
+    @JsonIgnore()
     public abstract String createdAtClient();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED_AT_CLIENT)
+    @JsonIgnore()
     public abstract String lastUpdatedAtClient();
 
     @Nullable
-    @JsonProperty(PROGRAM)
+    @JsonProperty()
     public abstract String program();
 
     @Nullable
-    @JsonProperty(PROGRAM_STAGE)
+    @JsonProperty()
     public abstract String programStage();
 
     @Nullable
-    @JsonProperty(ORGANISATION_UNIT)
+    @JsonProperty()
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty(EVENT_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date eventDate();
 
     @Nullable
-    @JsonProperty(STATUS)
+    @JsonProperty()
+    @ColumnAdapter(DbEventStatusColumnAdapter.class)
     public abstract EventStatus status();
 
     @Nullable
-    @JsonProperty(COORDINATE)
-    public abstract Coordinates coordinates();
+    @JsonProperty()
+    @ColumnAdapter(IgnoreCoordinatesAdapter.class)
+    public abstract Coordinates coordinate();
 
     @Nullable
-    @JsonProperty(COMPLETE_DATE)
+    @JsonIgnore()
+    public abstract String latitude();
+
+    @Nullable
+    @JsonIgnore()
+    public abstract String longitude();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completedDate();
 
     @Nullable
-    @JsonProperty(DUE_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date dueDate();
 
     @Nullable
-    @JsonProperty(DELETED)
+    @JsonProperty()
     public abstract Boolean deleted();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_DATA_VALUES)
-    public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
-
-    @Nullable
-    @JsonProperty(ATTRIBUTE_OPTION_COMBO)
+    @JsonProperty()
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_INSTANCE)
+    @JsonIgnore()
     public abstract String trackedEntityInstance();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
+    public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
-    @JsonCreator
-    public static Event create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(ENROLLMENT_UID) String enrollmentUid,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
-            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
-            @JsonProperty(PROGRAM) String program,
-            @JsonProperty(PROGRAM_STAGE) String programStage,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(EVENT_DATE) Date eventDate,
-            @JsonProperty(STATUS) EventStatus eventStatus,
-            @JsonProperty(COORDINATE) Coordinates coordinates,
-            @JsonProperty(COMPLETE_DATE) Date completedDate,
-            @JsonProperty(DUE_DATE) Date dueDate,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(TRACKED_ENTITY_DATA_VALUES) List<TrackedEntityDataValue> dataValues,
-            @JsonProperty(ATTRIBUTE_OPTION_COMBO) String attributeOptionCombo,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance) {
-        return new AutoValue_Event(uid, enrollmentUid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                program, programStage, organisationUnit, eventDate, eventStatus, coordinates,
-                completedDate, dueDate, deleted, safeUnmodifiableList(dataValues),
-                attributeOptionCombo, trackedEntityInstance);
+    public static Builder builder() {
+        return new $$AutoValue_Event.Builder();
+    }
+
+    static Event create(Cursor cursor) {
+        return $AutoValue_Event.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder enrollment(String enrollment);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract Builder createdAtClient(String createdAtClient);
+
+        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+
+        public abstract Builder program(String program);
+
+        public abstract Builder programStage(String programStage);
+
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder eventDate(Date eventDate);
+
+        public abstract Builder status(EventStatus status);
+
+        public abstract Builder coordinate(Coordinates coordinate);
+
+        public abstract Builder latitude(String latitude);
+
+        public abstract Builder longitude(String longitude);
+
+        public abstract Builder completedDate(Date completedDate);
+
+        public abstract Builder dueDate(Date dueDate);
+
+        public abstract Builder deleted(Boolean deleted);
+
+        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
+
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);
+
+        public abstract Event build();
     }
 }

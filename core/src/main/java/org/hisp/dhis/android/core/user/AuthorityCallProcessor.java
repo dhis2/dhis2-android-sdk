@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,41 +28,38 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public final class AuthorityEndpointCall {
+public class AuthorityCallProcessor implements CallProcessor<Authority> {
 
-    private AuthorityEndpointCall() {
+    private final DatabaseAdapter databaseAdapter;
+    private final SyncHandler<Authority> handler;
+
+    AuthorityCallProcessor(DatabaseAdapter databaseAdapter, SyncHandler<Authority> handler) {
+        this.databaseAdapter = databaseAdapter;
+        this.handler = handler;
     }
 
-    public static ListCallFactory<Authority> factory(final APICallExecutor apiCallExecutor) {
-        return new ListCallFactoryImpl<Authority>() {
+    @Override
+    public final void process(final List<Authority> objectList) throws D2Error {
+        AuthorityStore.create(databaseAdapter).delete();
 
-            @Override
-            protected CallFetcher<Authority> fetcher(GenericCallData data) {
-                final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
+        if (objectList != null && !objectList.isEmpty()) {
+            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
 
-                return new AuthorityCallFetcher(apiCallExecutor) {
-                    @Override
-                    protected retrofit2.Call<List<String>> getCall() {
-                        return authorityService.getAuthorities();
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<Authority> processor(GenericCallData data) {
-                return new AuthorityCallProcessor(
-                        data.databaseAdapter(),
-                        AuthorityHandler.create(data.databaseAdapter()));
-            }
-        };
+                @Override
+                public Void call() {
+                    handler.handleMany(objectList);
+                    return null;
+                }
+            });
+        }
     }
 }

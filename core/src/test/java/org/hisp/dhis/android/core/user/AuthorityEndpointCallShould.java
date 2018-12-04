@@ -97,6 +97,6 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     @Test
     public void have_transactional_no_resource_call_processor() {
         EndpointCall<Authority> castedEndpointCall = (EndpointCall<Authority>) endpointCall;
-        assertThat(castedEndpointCall.getProcessor() instanceof TransactionalNoResourceSyncCallProcessor).isTrue();
+        assertThat(castedEndpointCall.getProcessor() instanceof AuthorityCallProcessor).isTrue();
     }
 }

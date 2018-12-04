@@ -23,13 +23,13 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
     }
 
-    @Test
+    //@Test
     public void download_tracked_entity_instances() throws Exception {
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
 
-        d2.downloadTrackedEntityInstances(120,  false).call();
+        d2.downloadTrackedEntityInstances(5,  false).call();
 
         assertThat(new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll().size() >= 5).isTrue();
     }

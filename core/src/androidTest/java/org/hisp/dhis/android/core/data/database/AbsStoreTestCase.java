@@ -53,7 +53,7 @@ public abstract class AbsStoreTestCase {
     protected Date serverDate = new Date();
     protected ResourceHandler resourceHandler;
 
-    private String dbName = "teires";
+    private String dbName = null;
 
     @Before
     public void setUp() throws IOException {

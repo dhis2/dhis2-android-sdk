@@ -28,6 +28,8 @@ import retrofit2.Retrofit;
 
 public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
 
+    private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
+
     private final boolean limitByOrgUnit;
     private final int teiLimit;
     private final DatabaseAdapter databaseAdapter;
@@ -71,6 +73,9 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
         TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
         int pageSize = teiQueryBuilder.build().pageSize();
         List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
+
+        String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
+        teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();
@@ -127,7 +132,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
         }
 
         if (successfulSync) {
-            resourceHandler.handleResource(ResourceModel.Type.TRACKED_ENTITY_INSTANCE);
+            resourceHandler.handleResource(resourceType);
         }
     }
 

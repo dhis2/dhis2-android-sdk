@@ -31,6 +31,9 @@ public abstract class EventQuery extends BaseQuery {
     public abstract CategoryCombo categoryCombo();
 
     @Nullable
+    public abstract String lastUpdatedStartDate();
+
+    @Nullable
     public abstract Collection<String> uIds();
 
     public static Builder builder() {
@@ -53,6 +56,8 @@ public abstract class EventQuery extends BaseQuery {
         public abstract Builder ouMode(OuMode ouMode);
 
         public abstract Builder categoryCombo(CategoryCombo categoryCombo);
+
+        public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 
         public abstract Builder uIds(Collection<String> uIds);
 

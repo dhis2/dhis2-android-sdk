@@ -25,6 +25,7 @@ public interface EventService {
     String ATTRIBUTE_CATEGORY_COMBO = "attributeCc";
     String STRATEGY = "strategy";
     String EVENT_UID = "eventUid";
+    String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
 
     @POST(EVENTS)
     Call<WebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
@@ -37,15 +38,9 @@ public interface EventService {
             @Query(FIELDS) @Which Fields<Event> fields,
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
-            @Query(PAGE_SIZE) int pageSize);
-
-    @GET(EVENTS)
-    Call<Payload<Event>> getEvents(@Query(ORG_UNIT) String orgUnit,
-            @Query(PROGRAM) String program,
-            @Query(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
-            @Query(FIELDS) @Which Fields<Event> fields,
-            @Query(PAGING) Boolean paging, @Query(PAGE) int page,
-            @Query(PAGE_SIZE) int pageSize, @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo);
+            @Query(PAGE_SIZE) int pageSize,
+            @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo,
+            @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate);
 
     @GET(EVENTS + "/{" + EVENT_UID + "}")
     Call<Event> getEvent(

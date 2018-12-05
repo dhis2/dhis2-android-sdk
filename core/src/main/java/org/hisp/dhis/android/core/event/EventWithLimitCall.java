@@ -65,21 +65,21 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
         Collection<String> organisationUnitUids;
         List<String> programUids = programStore.queryWithoutRegistrationProgramUids();
         int eventsCount = 0;
-        EventQuery.Builder eventQueryBuilder = EventQuery.Builder.create();
-        int pageSize = eventQueryBuilder.build().getPageSize();
+        EventQuery.Builder eventQueryBuilder = EventQuery.builder();
+        int pageSize = eventQueryBuilder.build().pageSize();
 
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();
         } else {
             organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-            eventQueryBuilder.withOuMode(OuMode.DESCENDANTS);
+            eventQueryBuilder.ouMode(OuMode.DESCENDANTS);
         }
 
         for (String orgUnitUid : organisationUnitUids) {
             if (!limitByOrgUnit && eventsCount == eventLimit) {
                 break;
             }
-            eventQueryBuilder.withOrgUnit(orgUnitUid);
+            eventQueryBuilder.orgUnit(orgUnitUid);
             eventsCount = eventsCount + getEventsWithPaging(eventQueryBuilder, pageSize, programUids, eventsCount);
         }
 
@@ -96,14 +96,14 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
 
         for (String programUid : programUids) {
             try {
-                eventQueryBuilder.withProgram(programUid);
+                eventQueryBuilder.program(programUid);
                 int eventLimitForProgram = limitByOrgUnit ? eventLimit - eventsCount :
                         eventLimit - globalEventsSize - eventsCount;
                 List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, eventLimitForProgram);
 
                 for (Paging paging : pagingList) {
-                    eventQueryBuilder.withPageSize(paging.pageSize());
-                    eventQueryBuilder.withPage(paging.page());
+                    eventQueryBuilder.pageSize(paging.pageSize());
+                    eventQueryBuilder.page(paging.page());
 
                     List<Event> pageEvents = executor.executeD2Call(
                             EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));

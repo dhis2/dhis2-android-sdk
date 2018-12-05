@@ -13,10 +13,9 @@ public class EventCallFactory {
                                            String orgUnit,
                                            int pageSize) {
 
-        EventQuery eventQuery = EventQuery.Builder
-                .create()
-                .withOrgUnit(orgUnit)
-                .withPageSize(pageSize)
+        EventQuery eventQuery = EventQuery.builder()
+                .orgUnit(orgUnit)
+                .pageSize(pageSize)
                 .build();
 
         return EventEndpointCall.create(retrofit, databaseAdapter, eventQuery);
@@ -33,11 +32,10 @@ public class EventCallFactory {
                 .uid(categoryComboUID)
                 .build();
 
-        EventQuery eventQuery = EventQuery.Builder
-                .create()
-                .withOrgUnit(orgUnit)
-                .withPageSize(pageSize)
-                .withCategoryCombo(categoryCombo)
+        EventQuery eventQuery = EventQuery.builder()
+                .orgUnit(orgUnit)
+                .pageSize(pageSize)
+                .categoryCombo(categoryCombo)
                 .build();
 
         return EventEndpointCall.create(retrofit, databaseAdapter, eventQuery);

@@ -33,6 +33,7 @@ public interface TrackedEntityInstanceService {
     String INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes";
     String FILTER = "filter";
     String STRATEGY = "strategy";
+    String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
 
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<WebResponse> postTrackedEntityInstances(
@@ -53,6 +54,7 @@ public interface TrackedEntityInstanceService {
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize,
+            @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate,
             @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
 
     @GET(TRACKED_ENTITY_INSTANCES + "/query")

@@ -182,7 +182,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
         return organisationUnitUids;
     }
 
-    private class EventsWithPagingResult {
+    private static class EventsWithPagingResult {
         int eventCount;
         boolean successfulSync;
 

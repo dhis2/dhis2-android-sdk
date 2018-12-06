@@ -28,70 +28,19 @@
 
 package org.hisp.dhis.android.core.event;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreWithState;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface EventStore extends DeletableStore, StoreWithState {
-    long insert(@NonNull String uid,
-                @Nullable String enrollmentUid,
-                @NonNull Date created,
-                @NonNull Date lastUpdated,
-                @Nullable String createdAtClient,
-                @Nullable String lastUpdatedAtClient,
-                @NonNull EventStatus status,
-                @Nullable String latitude,
-                @Nullable String longitude,
-                @NonNull String program,
-                @NonNull String programStage,
-                @NonNull String organisationUnit,
-                @Nullable Date eventDate,
-                @Nullable Date completedDate,
-                @Nullable Date dueDate,
-                @NonNull State state,
-                @NonNull String attributeOptionCombo,
-                @Nullable String trackedEntityInstance
-    );
-
-    int update(@NonNull String uid,
-               @Nullable String enrollmentUid,
-               @NonNull Date created,
-               @NonNull Date lastUpdated,
-               @Nullable String createdAtClient,
-               @Nullable String lastUpdatedAtClient,
-               @NonNull EventStatus eventStatus,
-               @Nullable String latitude,
-               @Nullable String longitude,
-               @NonNull String program,
-               @NonNull String programStage,
-               @NonNull String organisationUnit,
-               @Nullable Date eventDate,
-               @Nullable Date completedDate,
-               @Nullable Date dueDate,
-               @NonNull State state,
-               @NonNull String attributeOptionCombo,
-               @Nullable String trackedEntityInstance,
-               @NonNull String whereEventUid
-    );
-
-    int delete(@NonNull String uid);
+public interface EventStore extends IdentifiableObjectStore<Event>, StoreWithState {
 
     Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
 
     List<Event> querySingleEventsToPost();
 
     List<Event> querySingleEvents();
-
-    List<Event> queryAll();
-
-    Event queryByUid(String eventUid);
 
     List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
 }

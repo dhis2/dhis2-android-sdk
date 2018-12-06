@@ -96,9 +96,8 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                 " INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid " +
                 " INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
                 " INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
-                " WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
-                " OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' " +
-                " OR Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE';";
+                " WHERE Event.state = 'TO_POST'" +
+                " OR Event.state = 'TO_UPDATE';";
 
         return queryTrackedEntityDataValues(queryStatement);
     }

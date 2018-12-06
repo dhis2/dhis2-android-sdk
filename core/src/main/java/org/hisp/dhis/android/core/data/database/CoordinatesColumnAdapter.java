@@ -28,7 +28,34 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.Coordinates;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public final class IgnoreCoordinatesAdapter extends IgnoreColumnAdapter<Coordinates> {
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.event.EventTableInfo;
+
+public class CoordinatesColumnAdapter implements ColumnTypeAdapter<Coordinates> {
+
+    @Override
+    public Coordinates fromCursor(Cursor cursor, String columnName) {
+        int latitudeColumnIndex = cursor.getColumnIndex(EventTableInfo.Columns.LATITUDE);
+        String latitude = (latitudeColumnIndex == -1 || cursor.isNull(latitudeColumnIndex)) ?
+                null : cursor.getString(latitudeColumnIndex);
+        int longitudeColumnIndex = cursor.getColumnIndex(EventTableInfo.Columns.LONGITUDE);
+        String longitude = (longitudeColumnIndex == -1 || cursor.isNull(longitudeColumnIndex)) ?
+                null : cursor.getString(longitudeColumnIndex);
+
+        return Coordinates.create(
+                Double.parseDouble(latitude),
+                Double.parseDouble(longitude)
+        );
+    }
+
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Coordinates value) {
+        values.put(EventTableInfo.Columns.LATITUDE, value.latitude());
+        values.put(EventTableInfo.Columns.LONGITUDE, value.longitude());
+    }
 }

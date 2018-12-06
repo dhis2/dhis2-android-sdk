@@ -27,14 +27,14 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class EnrollmentHandler {
     private final DHISVersionManager versionManager;
     private final EnrollmentStore enrollmentStore;
-    private final EventHandler eventHandler;
+    private final SyncHandler<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;
     private final ObjectWithoutUidStore<Note> noteStore;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
     EnrollmentHandler(@NonNull DHISVersionManager versionManager,
                       @NonNull EnrollmentStore enrollmentStore,
-                      @NonNull EventHandler eventHandler,
+                      @NonNull SyncHandler<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull SyncHandler<Note> noteHandler,
                       @NonNull ObjectWithoutUidStore<Note> noteStore) {

@@ -54,6 +54,7 @@ import java.util.Collections;
 import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -74,6 +75,24 @@ public class ProgramIndicatorEngineShould {
 
     @Mock
     private Event event3;
+
+    @Mock
+    private Event event1WithDataValues;
+
+    @Mock
+    private Event event2WithDataValues;
+
+    @Mock
+    private Event event3WithDataValues;
+
+    @Mock
+    private Event.Builder eventBuilder1;
+
+    @Mock
+    private Event.Builder eventBuilder2;
+
+    @Mock
+    private Event.Builder eventBuilder3;
 
     @Mock
     private EnrollmentModel enrollmentModel;
@@ -160,17 +179,40 @@ public class ProgramIndicatorEngineShould {
                 .thenReturn(Collections.singletonList(value5));
 
         when(event1.uid()).thenReturn(eventUid1);
+        when(event1WithDataValues.uid()).thenReturn(eventUid1);
         when(event1.programStage()).thenReturn(programStageUid1);
-        when(eventStore.queryByUid(eventUid1)).thenReturn(event1);
+        when(event1WithDataValues.programStage()).thenReturn(programStageUid1);
+        when(eventStore.selectByUid(eventUid1)).thenReturn(event1);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid1))
                 .thenReturn(Collections.singletonList(event1));
 
+        when(event1.toBuilder()).thenReturn(eventBuilder1);
+        when(eventBuilder1.trackedEntityDataValues(Arrays.asList(value1, value2, value3))).thenReturn(eventBuilder1);
+        when(eventBuilder1.build()).thenReturn(event1WithDataValues);
+        when(event1WithDataValues.trackedEntityDataValues()).thenReturn(Arrays.asList(value1, value2, value3));
+
         when(event2.uid()).thenReturn(eventUid2_1);
+        when(event2WithDataValues.uid()).thenReturn(eventUid2_1);
         when(event2.programStage()).thenReturn(programStageUid2);
+        when(event2WithDataValues.programStage()).thenReturn(programStageUid2);
+
+        when(event2.toBuilder()).thenReturn(eventBuilder2);
+        when(eventBuilder2.trackedEntityDataValues(Collections.singletonList(value4))).thenReturn(eventBuilder2);
+        when(eventBuilder2.build()).thenReturn(event2WithDataValues);
+        when(event2WithDataValues.trackedEntityDataValues()).thenReturn(Collections.singletonList(value4));
+
         when(event3.uid()).thenReturn(eventUid2_2);
+        when(event3WithDataValues.uid()).thenReturn(eventUid2_2);
         when(event3.programStage()).thenReturn(programStageUid2);
-        when(eventStore.queryByUid(eventUid2_1)).thenReturn(event2);
-        when(eventStore.queryByUid(eventUid2_2)).thenReturn(event3);
+        when(event3WithDataValues.programStage()).thenReturn(programStageUid2);
+
+        when(event3.toBuilder()).thenReturn(eventBuilder3);
+        when(eventBuilder3.trackedEntityDataValues(Collections.singletonList(value5))).thenReturn(eventBuilder3);
+        when(eventBuilder3.build()).thenReturn(event3WithDataValues);
+        when(event3WithDataValues.trackedEntityDataValues()).thenReturn(Collections.singletonList(value5));
+
+        when(eventStore.selectByUid(eventUid2_1)).thenReturn(event2);
+        when(eventStore.selectByUid(eventUid2_2)).thenReturn(event3);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Arrays.asList(event2, event3));
 
@@ -353,7 +395,7 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
 
         // Event2 does not exist
-        when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
+        when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.<Event>emptyList());
 
@@ -372,7 +414,7 @@ public class ProgramIndicatorEngineShould {
                 de(programStageUid2, dataElementUid2) + " * 10");
 
         // Event2 does not exist
-        when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
+        when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.<Event>emptyList());
 

@@ -75,7 +75,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
 
-    private AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
+    public AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
                                @NonNull Downloader<SystemInfo> systemInfoDownloader,
                                @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                                @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>

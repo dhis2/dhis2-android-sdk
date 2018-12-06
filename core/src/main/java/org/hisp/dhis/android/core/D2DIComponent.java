@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValueDIModule;
+import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipDIModule;
 import org.hisp.dhis.android.core.resource.ResourceDIModule;
@@ -37,6 +38,7 @@ public interface D2DIComponent {
     D2InternalModules internalModules();
     ResourceHandler resourceHandler();
     GenericCallData genericCallData();
+    AggregatedModule aggregatedModule();
 
     @Component.Builder
     interface Builder {

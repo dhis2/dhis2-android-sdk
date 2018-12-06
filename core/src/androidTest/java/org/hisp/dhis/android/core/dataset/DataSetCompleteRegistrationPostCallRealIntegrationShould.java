@@ -73,7 +73,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
 
         d2.syncMetaData().call();
-        d2.syncAggregatedData().call();
+        d2.aggregated().data().download().call();
 
         DataSetCompleteRegistration dataValueModel
                 = getTestDataSetCompleteRegistrationWith(State.TO_POST);
@@ -94,7 +94,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
 
         d2.syncMetaData().call();
-        d2.syncAggregatedData().call();
+        d2.aggregated().data().download().call();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE);

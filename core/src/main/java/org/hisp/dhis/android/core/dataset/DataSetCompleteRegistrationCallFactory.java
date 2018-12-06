@@ -41,7 +41,7 @@ import retrofit2.Call;
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
 public final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
-        DataSetCompleteRegistrationQuery>{
+        DataSetCompleteRegistrationQuery> {
 
     public DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
         super(genericCallData, apiCallExecutor);

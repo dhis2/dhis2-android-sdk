@@ -33,9 +33,9 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 
+import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class StoreWithStateImpl implements StoreWithState {
@@ -44,19 +44,21 @@ public class StoreWithStateImpl implements StoreWithState {
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
     protected final DatabaseAdapter databaseAdapter;
+    protected final String tableName;
 
     public StoreWithStateImpl(DatabaseAdapter databaseAdapter, String tableName) {
         this.databaseAdapter = databaseAdapter;
+        this.tableName = tableName;
 
         String setStateUpdate = "UPDATE " + tableName + " SET " +
-                Columns.STATE + " =?" +
+                STATE + " =?" +
                 " WHERE " +
-                Columns.UID + " =?;";
+                UID + " =?;";
         this.setStateStatement = databaseAdapter.compileStatement(setStateUpdate);
 
 
-        this.selectStateQuery = "SELECT state FROM " + tableName + " WHERE " + Columns.UID + " =?;";
-        this.existsQuery = "SELECT 1 FROM " + tableName + " WHERE " + Columns.UID + " =?;";
+        this.selectStateQuery = "SELECT state FROM " + tableName + " WHERE " + UID + " =?;";
+        this.existsQuery = "SELECT 1 FROM " + tableName + " WHERE " + UID + " =?;";
 
     }
 
@@ -67,7 +69,7 @@ public class StoreWithStateImpl implements StoreWithState {
         // bind the where argument
         sqLiteBind(setStateStatement, 2, uid);
 
-        int updatedRow = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, setStateStatement);
+        int updatedRow = databaseAdapter.executeUpdateDelete(tableName, setStateStatement);
         setStateStatement.clearBindings();
 
         return updatedRow;

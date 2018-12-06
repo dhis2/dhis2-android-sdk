@@ -179,7 +179,7 @@ public final class WipeModuleImpl implements WipeModule {
                 new EnrollmentStoreImpl(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
-                new EventStoreImpl(databaseAdapter),
+                EventStoreImpl.create(databaseAdapter),
                 DataValueStore.create(databaseAdapter),
                 NoteStore.create(databaseAdapter),
                 TrackedEntityAttributeReservedValueStore.create(databaseAdapter)

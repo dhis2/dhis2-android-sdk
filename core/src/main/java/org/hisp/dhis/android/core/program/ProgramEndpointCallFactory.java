@@ -26,53 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import retrofit2.Call;
+final class ProgramEndpointCallFactory extends ListCallFactoryImpl<Program> {
 
-final class DataSetEndpointCall {
+    private final ProgramService programService;
 
-    private DataSetEndpointCall() {}
+    ProgramEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor, ProgramService programService) {
+        super(data, apiCallExecutor);
+        this.programService = programService;
+    }
 
-    static ListCallFactory<DataSet> factory(final APICallExecutor apiCallExecutor) {
-        return new ListCallFactoryImpl<DataSet>() {
+    @Override
+    protected CallFetcher<Program> fetcher() {
 
-            private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
-
+        return new PayloadNoResourceCallFetcher<Program>(apiCallExecutor) {
             @Override
-            protected CallFetcher<DataSet> fetcher(GenericCallData data) {
-                final DataSetService service = data.retrofit().create(DataSetService.class);
-
-                return new PayloadResourceCallFetcher<DataSet>(data.resourceHandler(), resourceType, apiCallExecutor) {
-
-                    @Override
-                    protected Call<Payload<DataSet>> getCall(String lastUpdated) {
-                        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                        return service.getDataSets(DataSetFields.allFields, accessDataReadFilter, Boolean.FALSE);
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<DataSet> processor(GenericCallData data) {
-                return new TransactionalResourceSyncCallProcessor<>(
-                        data,
-                        DataSetHandler.create(data.databaseAdapter()),
-                        resourceType
-                );
+            protected retrofit2.Call<Payload<Program>> getCall() {
+                String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                return programService.getPrograms(ProgramFields.allFields, accessDataReadFilter, Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<Program> processor() {
+        return new TransactionalNoResourceSyncCallProcessor<>(
+                data.databaseAdapter(),
+                ProgramHandler.create(data.databaseAdapter()));
     }
 }

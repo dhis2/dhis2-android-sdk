@@ -126,13 +126,14 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 User user = userCallFactory.create(genericCallData).call();
 
-                authorityCallFactory.create(genericCallData).call();
+                authorityCallFactory.create().call();
 
                 List<Program> programs = programParentCallFactory.create(genericCallData).call();
 
                 List<DataSet> dataSets = dataSetParentCallFactory.create(genericCallData).call();
 
-                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(categoryComboUidsSeeker.seekUids()).call();
+                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(
+                        categoryComboUidsSeeker.seekUids()).call();
 
                 categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
 
@@ -157,7 +158,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 internalModules.systemInfo,
                 internalModules.systemSetting,
                 UserCall.FACTORY,
-                AuthorityEndpointCall.factory(apiCallExecutor),
+                new AuthorityEndpointCall(genericCallData, apiCallExecutor),
                 new CategoryEndpointCallFactory(genericCallData, apiCallExecutor),
                 new CategoryComboEndpointCallFactory(genericCallData, apiCallExecutor),
                 new CategoryComboUidsSeeker(genericCallData.databaseAdapter()),

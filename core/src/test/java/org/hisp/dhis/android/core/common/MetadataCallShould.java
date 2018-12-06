@@ -195,7 +195,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
         when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
-        when(authorityCallFactory.create(any(GenericCallData.class))).thenReturn(authorityEndpointCall);
+        when(authorityCallFactory.create()).thenReturn(authorityEndpointCall);
         when(categoryCallFactory.create(anySetOf(String.class))).thenReturn(categoryEndpointCall);
         when(categoryComboCallFactory.create(anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),

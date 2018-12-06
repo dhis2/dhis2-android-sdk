@@ -26,46 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-final class ProgramEndpointCall {
+public final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<RelationshipType> {
 
-    private ProgramEndpointCall() {
+    private final ResourceModel.Type resourceType = ResourceModel.Type.RELATIONSHIP_TYPE;
+
+    public RelationshipTypeEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    static ListCallFactory<Program> factory(final ProgramService programService,
-                                            final APICallExecutor apiCallExecutor) {
-        return new ListCallFactoryImpl<Program>() {
+    @Override
+    protected CallFetcher<RelationshipType> fetcher() {
 
+        final RelationshipTypeService service = data.retrofit().create(RelationshipTypeService.class);
+
+        return new PayloadResourceCallFetcher<RelationshipType>(data.resourceHandler(), resourceType,
+                apiCallExecutor) {
             @Override
-            protected CallFetcher<Program> fetcher(GenericCallData data) {
-
-                return new PayloadNoResourceCallFetcher<Program>(apiCallExecutor) {
-                    @Override
-                    protected retrofit2.Call<Payload<Program>> getCall() {
-                        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                        return programService.getPrograms(ProgramFields.allFields, accessDataReadFilter, Boolean.FALSE);
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<Program> processor(GenericCallData data) {
-                return new TransactionalNoResourceSyncCallProcessor<>(
-                        data.databaseAdapter(),
-                        ProgramHandler.create(data.databaseAdapter()));
+            protected retrofit2.Call<Payload<RelationshipType>> getCall(String lastUpdated) {
+                return service.getRelationshipTypes(RelationshipTypeFields.allFields,
+                        RelationshipTypeFields.lastUpdated.gt(lastUpdated), Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<RelationshipType> processor() {
+        return new TransactionalResourceSyncCallProcessor<>(
+                data,
+                RelationshipTypeHandler.create(data.databaseAdapter()),
+                resourceType
+        );
     }
 }

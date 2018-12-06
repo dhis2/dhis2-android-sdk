@@ -31,8 +31,8 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -57,7 +57,6 @@ import retrofit2.Response;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -126,7 +125,7 @@ public class ProgramParentCallShould extends BaseCallShould {
         when(trackedEntityType.uid()).thenReturn("test_tracked_entity_uid");
 
         // Call factories
-        when(programCallFactory.create(same(genericCallData)))
+        when(programCallFactory.create())
                 .thenReturn(programEndpointCall);
         when(programStageCallFactory.create(any(Set.class)))
                 .thenReturn(programStageEndpointCall);
@@ -134,7 +133,7 @@ public class ProgramParentCallShould extends BaseCallShould {
                 .thenReturn(programRuleEndpointCall);
         when(trackedEntityCallFactory.create(any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
-        when(relationshipTypeCallFactory.create(same(genericCallData)))
+        when(relationshipTypeCallFactory.create())
                 .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(any(Set.class)))
                 .thenReturn(optionSetCall);

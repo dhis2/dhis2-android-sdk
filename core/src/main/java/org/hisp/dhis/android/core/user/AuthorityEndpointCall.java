@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -37,32 +36,28 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
 
-public final class AuthorityEndpointCall {
+public final class AuthorityEndpointCall extends ListCallFactoryImpl<Authority> {
 
-    private AuthorityEndpointCall() {
+    public AuthorityEndpointCall(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    public static ListCallFactory<Authority> factory(final APICallExecutor apiCallExecutor) {
-        return new ListCallFactoryImpl<Authority>() {
+    @Override
+    protected CallFetcher<Authority> fetcher() {
+        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
 
+        return new AuthorityCallFetcher(apiCallExecutor) {
             @Override
-            protected CallFetcher<Authority> fetcher(GenericCallData data) {
-                final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
-
-                return new AuthorityCallFetcher(apiCallExecutor) {
-                    @Override
-                    protected retrofit2.Call<List<String>> getCall() {
-                        return authorityService.getAuthorities();
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<Authority> processor(GenericCallData data) {
-                return new AuthorityCallProcessor(
-                        data.databaseAdapter(),
-                        AuthorityHandler.create(data.databaseAdapter()));
+            protected retrofit2.Call<List<String>> getCall() {
+                return authorityService.getAuthorities();
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<Authority> processor() {
+        return new AuthorityCallProcessor(
+                data.databaseAdapter(),
+                AuthorityHandler.create(data.databaseAdapter()));
     }
 }

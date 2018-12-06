@@ -86,7 +86,7 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
             @Override
             public List<DataSet> call() throws Exception {
 
-                List<DataSet> dataSets = dataSetCallFactory.create(genericCallData).call();
+                List<DataSet> dataSets = dataSetCallFactory.create().call();
 
                 List<DataElement> dataElements = dataElementCallFactory.create(
                         DataSetParentUidsHelper.getDataElementUids(dataSets)).call();
@@ -112,7 +112,7 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
         public Call<List<DataSet>> create(GenericCallData genericCallData) {
             APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
             return new DataSetParentCall(genericCallData,
-                    DataSetEndpointCall.factory(apiCallExecutor),
+                    new DataSetEndpointCallFactory(genericCallData, apiCallExecutor),
                     new DataElementEndpointCallFactory(genericCallData, apiCallExecutor),
                     new IndicatorEndpointCallFactory(genericCallData, apiCallExecutor),
                     new IndicatorTypeEndpointCallFactory(genericCallData, apiCallExecutor),

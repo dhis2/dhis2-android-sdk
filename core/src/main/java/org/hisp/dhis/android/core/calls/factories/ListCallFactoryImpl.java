@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core.calls.factories;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
@@ -10,11 +11,19 @@ import java.util.List;
 
 public abstract class ListCallFactoryImpl<P> implements ListCallFactory<P> {
 
-    @Override
-    public final Call<List<P>> create(GenericCallData genericCallData) {
-        return new EndpointCall<>(fetcher(genericCallData), processor(genericCallData));
+    protected final GenericCallData data;
+    protected final APICallExecutor apiCallExecutor;
+
+    protected ListCallFactoryImpl(GenericCallData data, APICallExecutor apiCallExecutor) {
+        this.data = data;
+        this.apiCallExecutor = apiCallExecutor;
     }
 
-    protected abstract CallFetcher<P> fetcher(GenericCallData data);
-    protected abstract CallProcessor<P> processor(GenericCallData data);
+    @Override
+    public final Call<List<P>> create() {
+        return new EndpointCall<>(fetcher(), processor());
+    }
+
+    protected abstract CallFetcher<P> fetcher();
+    protected abstract CallProcessor<P> processor();
 }

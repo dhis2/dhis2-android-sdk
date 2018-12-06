@@ -40,10 +40,10 @@ import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataSetCompleteRegistrationCall extends QueryCallFactoryImpl<DataSetCompleteRegistration,
+public final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationQuery>{
 
-    public DataSetCompleteRegistrationCall(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+    public DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
         super(genericCallData, apiCallExecutor);
     }
 

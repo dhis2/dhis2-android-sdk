@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCall;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCallFactory;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
@@ -143,7 +143,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                 data.databaseAdapter(),
                 internalModules.systemInfo,
                 new DataValueEndpointCallFactory(data, apiCallExecutor),
-                new DataSetCompleteRegistrationCall(data, apiCallExecutor),
+                new DataSetCompleteRegistrationCallFactory(data, apiCallExecutor),
                 DataSetStore.create(data.databaseAdapter()),
                 PeriodStore.create(data.databaseAdapter()),
                 UserOrganisationUnitLinkStore.create(data.databaseAdapter()));

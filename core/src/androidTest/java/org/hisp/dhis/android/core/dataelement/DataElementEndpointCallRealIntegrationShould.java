@@ -3,9 +3,9 @@ package org.hisp.dhis.android.core.dataelement;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -42,15 +42,15 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
         uids.add("FQ2o8UBlcrS");
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return DataElementEndpointCall.factory(apiCallExecutor).create(getGenericCallData(d2), uids);
+        return new DataElementEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(uids);
     }
 
     // @Test
     public void download_data_elements() throws Exception {
         d2.logIn("android", "Android123").call();
 
-        /*  This test won't pass independently of DataElementEndpointCall and
-            CategoryComboEndpointCall, as the foreign keys constraints won't be satisfied.
+        /*  This test won't pass independently of DataElementEndpointCallFactory and
+            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */

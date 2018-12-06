@@ -84,8 +84,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        optionSetCall = OptionSetCall.factory(getGenericCallData(d2).retrofit(), apiCallExecutor)
-                .create(getGenericCallData(d2), uids);
+        optionSetCall = new OptionSetCallFactory(getGenericCallData(d2), apiCallExecutor).create(uids);
 
         d2CallExecutor = new D2CallExecutor();
 

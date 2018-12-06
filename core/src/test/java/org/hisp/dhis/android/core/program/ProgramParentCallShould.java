@@ -128,15 +128,15 @@ public class ProgramParentCallShould extends BaseCallShould {
         // Call factories
         when(programCallFactory.create(same(genericCallData)))
                 .thenReturn(programEndpointCall);
-        when(programStageCallFactory.create(same(genericCallData), any(Set.class)))
+        when(programStageCallFactory.create(any(Set.class)))
                 .thenReturn(programStageEndpointCall);
-        when(programRuleCallFactory.create(same(genericCallData), any(Set.class)))
+        when(programRuleCallFactory.create(any(Set.class)))
                 .thenReturn(programRuleEndpointCall);
-        when(trackedEntityCallFactory.create(same(genericCallData), any(Set.class)))
+        when(trackedEntityCallFactory.create(any(Set.class)))
                 .thenReturn(trackedEntityTypeCall);
         when(relationshipTypeCallFactory.create(same(genericCallData)))
                 .thenReturn(relationshipTypeCall);
-        when(optionSetCallFactory.create(same(genericCallData), any(Set.class)))
+        when(optionSetCallFactory.create(any(Set.class)))
                 .thenReturn(optionSetCall);
 
         // Calls

@@ -27,24 +27,24 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementEndpointCall;
+import org.hisp.dhis.android.core.dataelement.DataElementEndpointCallFactory;
 import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorEndpointCall;
+import org.hisp.dhis.android.core.indicator.IndicatorEndpointCallFactory;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
-import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCall;
+import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCallFactory;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.option.OptionSetCallFactory;
 import org.hisp.dhis.android.core.period.PeriodHandler;
 
 import java.util.List;
@@ -88,17 +88,17 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
 
                 List<DataSet> dataSets = dataSetCallFactory.create(genericCallData).call();
 
-                List<DataElement> dataElements = dataElementCallFactory.create(genericCallData,
+                List<DataElement> dataElements = dataElementCallFactory.create(
                         DataSetParentUidsHelper.getDataElementUids(dataSets)).call();
 
-                List<Indicator> indicators = indicatorCallFactory.create(genericCallData,
+                List<Indicator> indicators = indicatorCallFactory.create(
                         DataSetParentUidsHelper.getIndicatorUids(dataSets)).call();
 
-                indicatorTypeCallFactory.create(genericCallData,
+                indicatorTypeCallFactory.create(
                         DataSetParentUidsHelper.getIndicatorTypeUids(indicators)).call();
 
                 Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
-                optionSetCallFactory.create(genericCallData, optionSetUids).call();
+                optionSetCallFactory.create(optionSetUids).call();
 
                 periodHandler.generateAndPersist();
                 
@@ -113,10 +113,10 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
             APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
             return new DataSetParentCall(genericCallData,
                     DataSetEndpointCall.factory(apiCallExecutor),
-                    DataElementEndpointCall.factory(apiCallExecutor),
-                    IndicatorEndpointCall.factory(apiCallExecutor),
-                    IndicatorTypeEndpointCall.factory(apiCallExecutor),
-                    OptionSetCall.factory(genericCallData.retrofit(), apiCallExecutor),
+                    new DataElementEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new IndicatorEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new IndicatorTypeEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new OptionSetCallFactory(genericCallData, apiCallExecutor),
                     PeriodHandler.create(genericCallData.databaseAdapter()));
         }
     };

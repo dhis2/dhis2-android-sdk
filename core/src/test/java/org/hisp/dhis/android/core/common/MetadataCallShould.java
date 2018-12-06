@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.Authority;
 import org.hisp.dhis.android.core.user.User;
@@ -111,9 +110,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private Call<SystemInfo> systemInfoEndpointCall;
-
-    @Mock
-    private DHISVersionManager versionManager;
 
     @Mock
     private Call<SystemSetting> systemSettingEndpointCall;
@@ -200,8 +196,8 @@ public class MetadataCallShould extends BaseCallShould {
         when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
         when(authorityCallFactory.create(any(GenericCallData.class))).thenReturn(authorityEndpointCall);
-        when(categoryCallFactory.create(any(GenericCallData.class), anySetOf(String.class))).thenReturn(categoryEndpointCall);
-        when(categoryComboCallFactory.create(any(GenericCallData.class), anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
+        when(categoryCallFactory.create(anySetOf(String.class))).thenReturn(categoryEndpointCall);
+        when(categoryComboCallFactory.create(anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),
                 anySetOf(String.class))).thenReturn(organisationUnitEndpointCall);
         when(searchOrganisationUnitCallFactory.create(any(GenericCallData.class), same(user))).thenReturn(
@@ -224,11 +220,8 @@ public class MetadataCallShould extends BaseCallShould {
 
         // Metadata call
         metadataCall = new MetadataCall(
-                databaseAdapter,
-                retrofit,
-                resourceHandler,
+                genericCallData,
                 systemInfoCallDownloader,
-                versionManager,
                 systemSettingDownloader,
                 userCallFactory,
                 authorityCallFactory,

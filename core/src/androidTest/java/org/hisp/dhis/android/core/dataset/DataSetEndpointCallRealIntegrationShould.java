@@ -43,8 +43,8 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
             d2.logIn("android", "Android123").call();
         }
 
-        /*  This test won't pass independently of DataElementEndpointCall and
-            CategoryComboEndpointCall, as the foreign keys constraints won't be satisfied.
+        /*  This test won't pass independently of DataElementEndpointCallFactory and
+            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */

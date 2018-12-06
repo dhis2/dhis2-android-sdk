@@ -154,7 +154,7 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(databaseAdapter, retrofit, resourceHandler, internalModules);
+        return MetadataCall.create(genericCallData, internalModules);
     }
 
     @NonNull

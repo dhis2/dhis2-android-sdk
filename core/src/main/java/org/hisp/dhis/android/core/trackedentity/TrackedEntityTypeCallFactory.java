@@ -25,55 +25,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity;
 
-package org.hisp.dhis.android.core.indicator;
-
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class IndicatorTypeEndpointCall {
+public final class TrackedEntityTypeCallFactory extends UidsCallFactoryImpl<TrackedEntityType> {
 
-    private IndicatorTypeEndpointCall() {
+    private static final int MAX_UID_LIST_SIZE = 140;
+
+    public TrackedEntityTypeCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    public static UidsCallFactory<IndicatorType> factory(final APICallExecutor apiCallExecutor) {
-        return new UidsCallFactoryImpl<IndicatorType>() {
-            private static final int MAX_UID_LIST_SIZE = 140;
 
+    @Override
+    protected CallFetcher<TrackedEntityType> fetcher(Set<String> uids) {
+        final TrackedEntityTypeService service = data.retrofit().create(TrackedEntityTypeService.class);
+
+        return new UidsNoResourceCallFetcher<TrackedEntityType>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
             @Override
-            protected CallFetcher<IndicatorType> fetcher(GenericCallData data, Set<String> uids) {
-                final IndicatorTypeService service = data.retrofit().create(IndicatorTypeService.class);
-
-                return new UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-                    @Override
-                    protected retrofit2.Call<Payload<IndicatorType>> getCall(UidsQuery query) {
-                        return service.getIndicatorTypes(
-                                IndicatorTypeFields.allFields,
-                                IndicatorTypeFields.lastUpdated.gt(null),
-                                IndicatorTypeFields.uid.in(query.uids()),
-                                Boolean.FALSE);
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<IndicatorType> processor(GenericCallData data) {
-                return new TransactionalNoResourceSyncCallProcessor<>(
-                        data.databaseAdapter(),
-                        IndicatorTypeHandler.create(data.databaseAdapter())
+            protected retrofit2.Call<Payload<TrackedEntityType>> getCall(UidsQuery query) {
+                return service.getTrackedEntityTypes(
+                        TrackedEntityTypeFields.allFields,
+                        TrackedEntityTypeFields.uid.in(query.uids()),
+                        TrackedEntityTypeFields.lastUpdated.gt(null),
+                        Boolean.FALSE
                 );
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<TrackedEntityType> processor() {
+        return new TransactionalNoResourceSyncCallProcessor<>(
+                data.databaseAdapter(),
+                TrackedEntityTypeHandler.create(data.databaseAdapter())
+        );
     }
 }

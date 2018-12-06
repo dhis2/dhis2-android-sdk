@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Set;
 
 public interface UidsCallFactory<P> {
-    Call<List<P>> create(GenericCallData genericCallData, Set<String> uids);
+    Call<List<P>> create(Set<String> uids);
 }

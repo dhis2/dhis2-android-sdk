@@ -26,58 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class ProgramStageEndpointCall {
+public final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<DataElement> {
 
-    private ProgramStageEndpointCall() {
+    private static final int MAX_UID_LIST_SIZE = 100;
+
+    public DataElementEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    public static UidsCallFactory<ProgramStage> factory(final APICallExecutor apiCallExecutor) {
-        return new UidsCallFactoryImpl<ProgramStage>() {
+    @Override
+    protected CallFetcher<DataElement> fetcher(Set<String> uids) {
+        final DataElementService service = data.retrofit().create(DataElementService.class);
 
-            private static final int MAX_UID_LIST_SIZE = 64;
-
-            @Override
-            protected CallFetcher<ProgramStage> fetcher(GenericCallData data, Set<String> uids) {
-                final ProgramStageService service = data.retrofit().create(ProgramStageService.class);
-
-                return new UidsNoResourceCallFetcher<ProgramStage>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-                    @Override
-                    protected retrofit2.Call<Payload<ProgramStage>> getCall(UidsQuery query) {
-                        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                        return service.getProgramStages(
-                                ProgramStageFields.allFields,
-                                ProgramStageFields.uid.in(query.uids()),
-                                accessDataReadFilter,
-                                Boolean.FALSE);
-                    }
-                };
-            }
+        return new UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
+            String accessReadFilter = "access." + Access.read.eq(true).generateString();
 
             @Override
-            protected CallProcessor<ProgramStage> processor(GenericCallData data) {
-                return new TransactionalNoResourceCallProcessor<>(
-                        data.databaseAdapter(),
-                        ProgramStageHandler.create(data.databaseAdapter(), data.versionManager()),
-                        new ProgramStageModelBuilder()
-                );
+            protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query) {
+                return service.getDataElements(DataElementFields.allFields,
+                        DataElementFields.uid.in(query.uids()),
+                        DataElementFields.lastUpdated.gt(null),
+                        accessReadFilter,
+                        query.paging());
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<DataElement> processor() {
+        return new TransactionalNoResourceSyncCallProcessor<>(
+                data.databaseAdapter(),
+                DataElementHandler.create(data.databaseAdapter())
+        );
     }
 }

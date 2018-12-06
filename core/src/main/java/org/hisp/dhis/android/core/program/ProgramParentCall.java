@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.option.OptionSetCallFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCallFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -87,17 +87,17 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
 
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
                 List<ProgramStage> programStages =
-                        programStageCallFactory.create(genericCallData, assignedProgramStageUids).call();
+                        programStageCallFactory.create(assignedProgramStageUids).call();
 
-                programRuleCallFactory.create(genericCallData, UidsHelper.getUids(programs)).call();
+                programRuleCallFactory.create(UidsHelper.getUids(programs)).call();
 
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-                trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids).call();
+                trackedEntityTypeCallFactory.create(trackedEntityUids).call();
                 relationshipTypeCallFactory.create(genericCallData).call();
 
                 Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-                optionSetCallFactory.create(genericCallData, optionSetUids).call();
+                optionSetCallFactory.create(optionSetUids).call();
 
                 return programs;
             }
@@ -113,11 +113,11 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                     ProgramEndpointCall.factory(
                             genericCallData.retrofit().create(ProgramService.class),
                             apiCallExecutor),
-                    ProgramStageEndpointCall.factory(apiCallExecutor),
-                    ProgramRuleEndpointCall.factory(apiCallExecutor),
-                    TrackedEntityTypeCall.factory(apiCallExecutor),
+                    new ProgramStageEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new ProgramRuleEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new TrackedEntityTypeCallFactory(genericCallData, apiCallExecutor),
                     RelationshipTypeEndpointCall.factory(apiCallExecutor),
-                    OptionSetCall.factory(genericCallData.retrofit(), apiCallExecutor));
+                    new OptionSetCallFactory(genericCallData, apiCallExecutor));
         }
     };
 }

@@ -26,56 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class DataElementEndpointCall {
+public final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
 
-    private DataElementEndpointCall() {}
+    private static final int MAX_UID_LIST_SIZE = 130;
 
-    public static UidsCallFactory<DataElement> factory(final APICallExecutor apiCallExecutor) {
-        return new UidsCallFactoryImpl<DataElement>() {
+    public OptionSetCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
+    }
 
-            private static final int MAX_UID_LIST_SIZE = 100;
+    @Override
+    protected CallFetcher<OptionSet> fetcher(Set<String> uids) {
 
-            @Override
-            protected CallFetcher<DataElement> fetcher(GenericCallData data, Set<String> uids) {
-                final DataElementService service = data.retrofit().create(DataElementService.class);
+        return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
-                return new UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-                    String accessReadFilter = "access." + Access.read.eq(true).generateString();
-
-                    @Override
-                    protected retrofit2.Call<Payload<DataElement>> getCall(UidsQuery query) {
-                        return service.getDataElements(DataElementFields.allFields,
-                                DataElementFields.uid.in(query.uids()),
-                                DataElementFields.lastUpdated.gt(null),
-                                accessReadFilter,
-                                query.paging());
-                    }
-                };
-            }
+            final OptionSetService service = data.retrofit().create(OptionSetService.class);
 
             @Override
-            protected CallProcessor<DataElement> processor(GenericCallData data) {
-                return new TransactionalNoResourceSyncCallProcessor<>(
-                        data.databaseAdapter(),
-                        DataElementHandler.create(data.databaseAdapter())
-                );
+            protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
+                return service.optionSets(OptionSetFields.allFields, OptionSetFields.uid.in(query.uids()),
+                        null, query.paging());
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<OptionSet> processor() {
+        return new TransactionalNoResourceSyncCallProcessor<>(
+                data.databaseAdapter(),
+                OptionSetHandler.create(data.databaseAdapter())
+        );
     }
 }

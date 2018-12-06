@@ -44,12 +44,12 @@ import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionVal
 
 public final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
 
+    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
+
     @Inject
     public DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
         super(data, apiCallExecutor);
     }
-
-    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 
     @Override
     protected CallFetcher<DataValue> fetcher(final DataValueQuery query) {

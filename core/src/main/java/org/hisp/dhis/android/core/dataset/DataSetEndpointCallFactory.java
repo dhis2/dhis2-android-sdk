@@ -43,11 +43,11 @@ import retrofit2.Call;
 
 final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
 
-    public DataSetEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
+
+    DataSetEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
         super(data, apiCallExecutor);
     }
-
-    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
 
     @Override
     protected CallFetcher<DataSet> fetcher() {

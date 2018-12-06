@@ -54,7 +54,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-public abstract class Event extends BaseDataModel  implements Model, ObjectWithDeleteInterface, ObjectWithUidInterface {
+public abstract class Event extends BaseDataModel implements Model, ObjectWithDeleteInterface, ObjectWithUidInterface {
 
     @Override
     @Nullable
@@ -141,7 +141,7 @@ public abstract class Event extends BaseDataModel  implements Model, ObjectWithD
     public abstract String trackedEntityInstance();
 
     @Nullable
-    @JsonProperty()
+    @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
     @ColumnAdapter(IgnoreTrackedEntityDataValueListColumnAdapter.class)
     public abstract List<TrackedEntityDataValue> trackedEntityDataValues();
 
@@ -160,6 +160,7 @@ public abstract class Event extends BaseDataModel  implements Model, ObjectWithD
     public abstract static class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
+        @JsonProperty(EventFields.UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder enrollment(String enrollment);
@@ -176,6 +177,7 @@ public abstract class Event extends BaseDataModel  implements Model, ObjectWithD
 
         public abstract Builder programStage(String programStage);
 
+        @JsonProperty(EventFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder eventDate(Date eventDate);
@@ -198,6 +200,7 @@ public abstract class Event extends BaseDataModel  implements Model, ObjectWithD
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
+        @JsonProperty(EventFields.TRACKED_ENTITY_DATA_VALUES)
         public abstract Builder trackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues);
 
         public abstract Event build();

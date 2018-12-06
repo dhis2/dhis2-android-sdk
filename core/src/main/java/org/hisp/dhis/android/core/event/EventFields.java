@@ -49,7 +49,7 @@ public final class EventFields {
     static final String COMPLETE_DATE = "completedDate";
     static final String DUE_DATE = "dueDate";
     private static final String DELETED = "deleted";
-    private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
+    static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
     static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
 
     private static FieldsHelper<Event> fh = new FieldsHelper<>();

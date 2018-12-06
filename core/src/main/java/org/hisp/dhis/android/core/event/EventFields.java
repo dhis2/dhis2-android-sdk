@@ -37,20 +37,20 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
 public final class EventFields {
 
     static final String UID = "event";
-    private static final String ENROLLMENT = "enrollment";
-    private static final String CREATED = "created";
-    private static final String LAST_UPDATED = "lastUpdated";
-    private static final String STATUS = "status";
+    static final String ENROLLMENT = "enrollment";
+    static final String CREATED = "created";
+    static final String LAST_UPDATED = "lastUpdated";
+    static final String STATUS = "status";
     private static final String COORDINATE = "coordinate";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
-    private static final String ORGANISATION_UNIT = "orgUnit";
-    private static final String EVENT_DATE = "eventDate";
-    private static final String COMPLETE_DATE = "completedDate";
-    private static final String DUE_DATE = "dueDate";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
+    static final String ORGANISATION_UNIT = "orgUnit";
+    static final String EVENT_DATE = "eventDate";
+    static final String COMPLETE_DATE = "completedDate";
+    static final String DUE_DATE = "dueDate";
     private static final String DELETED = "deleted";
     private static final String TRACKED_ENTITY_DATA_VALUES = "dataValues";
-    private static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+    static final String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
 
     private static FieldsHelper<Event> fh = new FieldsHelper<>();
 

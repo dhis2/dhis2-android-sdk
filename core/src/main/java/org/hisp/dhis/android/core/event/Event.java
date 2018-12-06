@@ -38,16 +38,15 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreCoordinatesAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
-import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Date;
@@ -55,7 +54,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-public abstract class Event implements Model, ObjectWithDeleteInterface, ObjectWithUidInterface {
+public abstract class Event extends BaseDataModel  implements Model, ObjectWithDeleteInterface, ObjectWithUidInterface {
 
     @Override
     @Nullable
@@ -93,7 +92,7 @@ public abstract class Event implements Model, ObjectWithDeleteInterface, ObjectW
     public abstract String programStage();
 
     @Nullable
-    @JsonProperty()
+    @JsonProperty(EventFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
@@ -108,7 +107,7 @@ public abstract class Event implements Model, ObjectWithDeleteInterface, ObjectW
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreCoordinatesAdapter.class)
+    @ColumnAdapter(CoordinatesColumnAdapter.class)
     public abstract Coordinates coordinate();
 
     @Nullable
@@ -158,7 +157,7 @@ public abstract class Event implements Model, ObjectWithDeleteInterface, ObjectW
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder uid(String uid);

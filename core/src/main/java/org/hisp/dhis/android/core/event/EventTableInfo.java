@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -50,7 +51,7 @@ public final class EventTableInfo {
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
+    public static class Columns extends BaseNameableObjectModel.Columns {
         public static final String UID = "uid";
         public static final String CREATED_AT_CLIENT = "createdAtClient";
         public static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
@@ -77,6 +78,7 @@ public final class EventTableInfo {
                     EventFields.EVENT_DATE,
                     EventFields.COMPLETE_DATE,
                     EventFields.DUE_DATE,
+                    BaseDataModel.Columns.STATE,
                     EventFields.ATTRIBUTE_OPTION_COMBO,
                     TRACKED_ENTITY_INSTANCE
             );

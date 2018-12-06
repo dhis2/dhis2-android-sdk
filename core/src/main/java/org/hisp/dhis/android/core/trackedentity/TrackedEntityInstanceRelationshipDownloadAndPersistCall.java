@@ -49,7 +49,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
         }
 
         List<TrackedEntityInstance> teis = new ArrayList<>();
-        D2CallExecutor executor = new D2CallExecutor();
+        D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
         for (String uid: trackedEntityInstanceUids) {
             Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
                     .create(retrofit, apiCallExecutor, uid, TrackedEntityInstance.asRelationshipFields);

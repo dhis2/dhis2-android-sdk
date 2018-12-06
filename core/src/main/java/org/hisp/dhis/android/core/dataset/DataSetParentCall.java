@@ -80,9 +80,9 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     public List<DataSet> call() throws D2Error {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(genericCallData.databaseAdapter());
 
-        return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<DataSet>>() {
+        return executor.executeD2CallTransactionally(new Callable<List<DataSet>>() {
             @Override
             public List<DataSet> call() throws Exception {
 

@@ -96,9 +96,9 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     public Unit call() throws Exception {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return executor.executeD2CallTransactionally(new Callable<Unit>() {
 
             @Override
             public Unit call() throws Exception {

@@ -86,7 +86,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
         optionSetCall = new OptionSetCallFactory(getGenericCallData(d2), apiCallExecutor).create(uids);
 
-        d2CallExecutor = new D2CallExecutor();
+        d2CallExecutor = new D2CallExecutor(databaseAdapter());
 
     }
 
@@ -166,7 +166,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     private List<OptionSet> executeOptionSetCall() throws Exception{
 
-        return d2CallExecutor.executeD2CallTransactionally(databaseAdapter(), new Callable<List<OptionSet>>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<List<OptionSet>>() {
             @Override
             public List<OptionSet> call() {
                 List<OptionSet> optionSets = null;

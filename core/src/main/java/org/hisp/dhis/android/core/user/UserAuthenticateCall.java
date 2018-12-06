@@ -152,7 +152,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid());
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
 
-            new D2CallExecutor().executeD2Call(systemInfoDownloader.download());
+            new D2CallExecutor(databaseAdapter).executeD2Call(systemInfoDownloader.download());
 
             handleUser(authenticatedUser);
             transaction.setSuccessful();

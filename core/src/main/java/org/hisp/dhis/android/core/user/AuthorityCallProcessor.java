@@ -52,7 +52,7 @@ public class AuthorityCallProcessor implements CallProcessor<Authority> {
         AuthorityStore.create(databaseAdapter).delete();
 
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(new Callable<Void>() {
 
                 @Override
                 public Void call() {

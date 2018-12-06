@@ -66,7 +66,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
     public Unit call() throws D2Error {
         setExecuted();
 
-        return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(new Callable<Unit>() {
 
             @Override
             public Unit call() throws Exception {
@@ -120,7 +120,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
                                                        int globalEventsSize) {
         int eventsCount = 0;
         boolean successfulSync = true;
-        D2CallExecutor executor = new D2CallExecutor();
+        D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
         for (String programUid : programUids) {
             try {

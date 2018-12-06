@@ -119,7 +119,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
     @Test
     public void cascade_deletion_on_foreign_key_error() throws Exception {
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(d2.databaseAdapter());
 
         final String PROGRAM_RULE_UID = "program_rule_uid";
 
@@ -136,7 +136,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         final Program program = Program.builder().uid("nonexisent-program").build();
 
-        executor.executeD2CallTransactionally(d2.databaseAdapter(), new Callable<Void>() {
+        executor.executeD2CallTransactionally(new Callable<Void>() {
             @Override
             public Void call() throws D2Error {
                 ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()
@@ -175,9 +175,9 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
     private void syncMetadataAndAddFKViolation() throws D2Error {
 
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(d2.databaseAdapter());
 
-        executor.executeD2CallTransactionally(d2.databaseAdapter(), new Callable<Void>() {
+        executor.executeD2CallTransactionally(new Callable<Void>() {
             @Override
             public Void call() {
                 givenAMetadataInDatabase();

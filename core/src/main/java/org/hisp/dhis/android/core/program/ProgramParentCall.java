@@ -78,9 +78,9 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
     public List<Program> call() throws Exception {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(genericCallData.databaseAdapter());
 
-        return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<Program>>() {
+        return executor.executeD2CallTransactionally(new Callable<List<Program>>() {
             @Override
             public List<Program> call() throws Exception {
                 List<Program> programs = programCallFactory.create().call();

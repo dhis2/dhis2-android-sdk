@@ -35,7 +35,7 @@ public final class EventEndpointCall extends SyncCall<List<Event>> {
         String categoryComboId = eventQuery.categoryCombo() == null ? null : eventQuery.categoryCombo().uid();
 
         Call<Payload<Event>> call = eventService.getEvents(eventQuery.orgUnit(), eventQuery.program(),
-                eventQuery.trackedEntityInstance(), Event.allFields, Boolean.TRUE,
+                eventQuery.trackedEntityInstance(), EventFields.allFields, Boolean.TRUE,
                 eventQuery.page(), eventQuery.pageSize(), categoryComboId, eventQuery.lastUpdatedStartDate());
 
         return apiCallExecutor.executePayloadCall(call);

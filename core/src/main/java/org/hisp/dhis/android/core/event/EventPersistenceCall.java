@@ -2,15 +2,16 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -34,7 +35,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
     private final Retrofit retrofit;
     private final APICallExecutor apiCallExecutor;
 
-    private final EventHandler eventHandler;
+    private final SyncHandler<Event> eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory;
@@ -46,7 +47,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull APICallExecutor apiCallExecutor,
-            @NonNull EventHandler eventHandler,
+            @NonNull SyncHandler<Event> eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             @NonNull SearchOrganisationUnitOnDemandCall.Factory searchOrganisationUnitOnDemandCallFactory,

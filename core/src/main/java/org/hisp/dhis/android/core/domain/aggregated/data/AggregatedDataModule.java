@@ -29,13 +29,15 @@ package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.AggregatedDataCall;
+import org.hisp.dhis.android.core.arch.modules.QueryDownloader;
 import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCallFactory;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
-import org.hisp.dhis.android.core.datavalue.DataValueEndpointCallFactory;
+import org.hisp.dhis.android.core.datavalue.DataValue;
+import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -49,22 +51,28 @@ public final class AggregatedDataModule {
 
     private final GenericCallData genericCallData;
     private final APICallExecutor apiCallExecutor;
+    private final D2CallExecutor d2CallExecutor;
     private final Downloader<SystemInfo> systemInfoDownloader;
+    private final QueryDownloader<DataValue, DataValueQuery> dataValueDownloader;
 
     @Inject
     AggregatedDataModule(GenericCallData genericCallData,
                          APICallExecutor apiCallExecutor,
-                         Downloader<SystemInfo> systemInfoDownloader) {
+                         D2CallExecutor d2CallExecutor,
+                         Downloader<SystemInfo> systemInfoDownloader,
+                         QueryDownloader<DataValue, DataValueQuery> dataValueDownloader) {
         this.genericCallData = genericCallData;
         this.apiCallExecutor = apiCallExecutor;
+        this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
+        this.dataValueDownloader = dataValueDownloader;
     }
 
     public Call<Unit> download() {
         return new AggregatedDataCall(
-                genericCallData.databaseAdapter(),
+                d2CallExecutor,
                 systemInfoDownloader,
-                new DataValueEndpointCallFactory(genericCallData, apiCallExecutor),
+                dataValueDownloader,
                 new DataSetCompleteRegistrationCallFactory(genericCallData, apiCallExecutor),
                 DataSetStore.create(genericCallData.databaseAdapter()),
                 PeriodStore.create(genericCallData.databaseAdapter()),

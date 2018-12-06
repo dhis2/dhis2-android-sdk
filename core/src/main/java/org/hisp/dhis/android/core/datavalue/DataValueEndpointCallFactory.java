@@ -47,7 +47,7 @@ public final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<Dat
     private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 
     @Inject
-    public DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
         super(data, apiCallExecutor);
     }
 

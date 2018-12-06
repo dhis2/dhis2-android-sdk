@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.arch.modules.QueryDownloader;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -41,5 +42,11 @@ public final class DataValueDIModule {
     @Reusable
     DataValueModule module(DatabaseAdapter databaseAdapter) {
         return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
+    }
+
+    @Provides
+    @Reusable
+    QueryDownloader<DataValue, DataValueQuery> downloader(DataValueInternalModule internalModule) {
+        return internalModule;
     }
 }

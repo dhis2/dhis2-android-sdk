@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.domain.aggregated.data;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.arch.modules.QueryDownloader;
 import org.hisp.dhis.android.core.calls.Call;
@@ -44,7 +42,6 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCallFactory;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
@@ -136,12 +133,11 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     }
 
     public static AggregatedDataCall create(GenericCallData data, D2InternalModules internalModules) {
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(data.databaseAdapter());
         return new AggregatedDataCall(
                 new D2CallExecutor(data.databaseAdapter()),
                 internalModules.systemInfo,
                 internalModules.dataValueModule,
-                new DataSetCompleteRegistrationCallFactory(data, apiCallExecutor),
+                internalModules.dataSetModule.dataSetCompleteRegistrationCallFactory,
                 DataSetStore.create(data.databaseAdapter()),
                 PeriodStore.create(data.databaseAdapter()),
                 UserOrganisationUnitLinkStore.create(data.databaseAdapter()));

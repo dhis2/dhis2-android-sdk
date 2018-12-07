@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.domain.aggregated;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class AggregatedInternalModule {
 
     public final AggregatedModule publicModule;

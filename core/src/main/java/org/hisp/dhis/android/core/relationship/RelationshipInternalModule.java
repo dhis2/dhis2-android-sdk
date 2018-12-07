@@ -50,7 +50,7 @@ public final class RelationshipInternalModule implements WipeableModule {
         this.relationshipHandler = relationshipHandler;
     }
 
-    // TODO Include call RelationshipTypeEndpointCall
+    // TODO Include call RelationshipTypeEndpointCallFactory
 
     @Override
     public void wipeMetadata() {

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -89,6 +90,7 @@ public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
     private final ResourceHandler resourceHandler;
+    private final GenericCallData genericCallData;
     private final D2InternalModules internalModules;
     private final WipeModule wipeModule;
 
@@ -120,6 +122,7 @@ public final class D2 {
 
         this.internalModules = d2DIComponent.internalModules();
         this.resourceHandler = d2DIComponent.resourceHandler();
+        this.genericCallData = d2DIComponent.genericCallData();
         this.wipeModule = WipeModuleImpl.create(databaseAdapter, internalModules);
     }
 
@@ -151,12 +154,12 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(databaseAdapter, retrofit, resourceHandler, internalModules);
+        return MetadataCall.create(genericCallData, internalModules);
     }
 
     @NonNull
     public Callable<Unit> syncAggregatedData() {
-        return AggregatedDataCall.create(databaseAdapter, retrofit, resourceHandler, internalModules);
+        return AggregatedDataCall.create(genericCallData, internalModules);
     }
 
     /**
@@ -206,14 +209,13 @@ public final class D2 {
     @NonNull
     public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
             throws D2Error {
-        return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit,
-                resourceHandler, internalModules)
+        return TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
                 .getValue(attributeUid, organisationUnitUid);
     }
 
     public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
                                                          Integer numberOfValuesToFillUp) {
-        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, resourceHandler, internalModules)
+        TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
                 .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
     }
 

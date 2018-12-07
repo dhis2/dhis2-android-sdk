@@ -26,38 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import java.util.List;
+public final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<RelationshipType> {
 
-public final class AuthorityEndpointCall extends ListCallFactoryImpl<Authority> {
+    private final ResourceModel.Type resourceType = ResourceModel.Type.RELATIONSHIP_TYPE;
 
-    public AuthorityEndpointCall(GenericCallData data, APICallExecutor apiCallExecutor) {
+    public RelationshipTypeEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
         super(data, apiCallExecutor);
     }
 
     @Override
-    protected CallFetcher<Authority> fetcher() {
-        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
+    protected CallFetcher<RelationshipType> fetcher() {
 
-        return new AuthorityCallFetcher(apiCallExecutor) {
+        final RelationshipTypeService service = data.retrofit().create(RelationshipTypeService.class);
+
+        return new PayloadResourceCallFetcher<RelationshipType>(data.resourceHandler(), resourceType,
+                apiCallExecutor) {
             @Override
-            protected retrofit2.Call<List<String>> getCall() {
-                return authorityService.getAuthorities();
+            protected retrofit2.Call<Payload<RelationshipType>> getCall(String lastUpdated) {
+                return service.getRelationshipTypes(RelationshipTypeFields.allFields,
+                        RelationshipTypeFields.lastUpdated.gt(lastUpdated), Boolean.FALSE);
             }
         };
     }
 
     @Override
-    protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(
-                data.databaseAdapter(),
-                AuthorityHandler.create(data.databaseAdapter()));
+    protected CallProcessor<RelationshipType> processor() {
+        return new TransactionalResourceSyncCallProcessor<>(
+                data,
+                RelationshipTypeHandler.create(data.databaseAdapter()),
+                resourceType
+        );
     }
 }

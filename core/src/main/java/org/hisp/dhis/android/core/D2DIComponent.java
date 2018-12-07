@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.category.CategoryDIModule;
+import org.hisp.dhis.android.core.common.CommonDIModule;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValueDIModule;
@@ -20,6 +22,7 @@ import dagger.Component;
 @Component(modules = {
         DatabaseDIModule.class,
         APIClientDIModule.class,
+        CommonDIModule.class,
         ResourceDIModule.class,
         SystemInfoDIModule.class,
         SystemSettingDIModule.class,
@@ -33,11 +36,13 @@ public interface D2DIComponent {
 
     D2InternalModules internalModules();
     ResourceHandler resourceHandler();
+    GenericCallData genericCallData();
 
     @Component.Builder
     interface Builder {
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
+        Builder commonDIModule(CommonDIModule commonDIModule);
         Builder resourceDIModule(ResourceDIModule resourceDIModule);
         Builder systemInfoDIModule(SystemInfoDIModule systemInfoDIModule);
         Builder systemSettingDIModule(SystemSettingDIModule systemSettingDIModule);

@@ -26,52 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-public final class RelationshipTypeEndpointCall {
+import retrofit2.Call;
 
-    private RelationshipTypeEndpointCall() {
+final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
+
+    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
+
+    DataSetEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    public static ListCallFactory<RelationshipType> factory(final APICallExecutor apiCallExecutor) {
-        return new ListCallFactoryImpl<RelationshipType>() {
+    @Override
+    protected CallFetcher<DataSet> fetcher() {
+        final DataSetService service = data.retrofit().create(DataSetService.class);
 
-            private final ResourceModel.Type resourceType = ResourceModel.Type.RELATIONSHIP_TYPE;
-
-            @Override
-            protected CallFetcher<RelationshipType> fetcher(GenericCallData data) {
-
-                final RelationshipTypeService service = data.retrofit().create(RelationshipTypeService.class);
-
-                return new PayloadResourceCallFetcher<RelationshipType>(data.resourceHandler(), resourceType,
-                        apiCallExecutor) {
-                    @Override
-                    protected retrofit2.Call<Payload<RelationshipType>> getCall(String lastUpdated) {
-                        return service.getRelationshipTypes(RelationshipTypeFields.allFields,
-                                RelationshipTypeFields.lastUpdated.gt(lastUpdated), Boolean.FALSE);
-                    }
-                };
-            }
+        return new PayloadResourceCallFetcher<DataSet>(data.resourceHandler(), resourceType, apiCallExecutor) {
 
             @Override
-            protected CallProcessor<RelationshipType> processor(GenericCallData data) {
-                return new TransactionalResourceSyncCallProcessor<>(
-                        data,
-                        RelationshipTypeHandler.create(data.databaseAdapter()),
-                        resourceType
-                );
+            protected Call<Payload<DataSet>> getCall(String lastUpdated) {
+                String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
+                return service.getDataSets(DataSetFields.allFields, accessDataReadFilter, Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<DataSet> processor() {
+        return new TransactionalResourceSyncCallProcessor<>(
+                data,
+                DataSetHandler.create(data.databaseAdapter()),
+                resourceType
+        );
     }
 }

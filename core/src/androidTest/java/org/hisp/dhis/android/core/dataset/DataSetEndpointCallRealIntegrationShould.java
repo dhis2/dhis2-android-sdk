@@ -3,9 +3,9 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private Call<List<DataSet>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return DataSetEndpointCall.factory(apiCallExecutor).create(getGenericCallData(d2));
+        return new DataSetEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create();
     }
 
     // @Test
@@ -43,8 +43,8 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
             d2.logIn("android", "Android123").call();
         }
 
-        /*  This test won't pass independently of DataElementEndpointCall and
-            CategoryComboEndpointCall, as the foreign keys constraints won't be satisfied.
+        /*  This test won't pass independently of DataElementEndpointCallFactory and
+            CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.
             To run the test, you will need to disable foreign key support in database in
             DbOpenHelper.java replacing 'foreign_keys = ON' with 'foreign_keys = OFF' and
             uncomment the @Test tag */

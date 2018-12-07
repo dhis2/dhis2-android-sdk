@@ -24,60 +24,60 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+
+import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataValueEndpointCall {
+public final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
+        DataSetCompleteRegistrationQuery> {
 
-    private DataValueEndpointCall() {
+    public DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+        super(genericCallData, apiCallExecutor);
     }
 
-    public static QueryCallFactory<DataValue, DataValueQuery> factory(APICallExecutor apiCallExecutor) {
-        return new QueryCallFactoryImpl<DataValue, DataValueQuery>(apiCallExecutor) {
+    @Override
+    protected CallFetcher<DataSetCompleteRegistration> fetcher(
+            final DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
 
-            private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
+        final DataSetCompleteRegistrationService dataSetCompleteRegistrationService =
+                data.retrofit().create(DataSetCompleteRegistrationService.class);
 
-            @Override
-            protected CallFetcher<DataValue> fetcher(GenericCallData data, final DataValueQuery query) {
-
-                final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
-
-                return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType,
-                        apiCallExecutor) {
-                    @Override
-                    protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
-                        return dataValueService.getDataValues(
-                                DataValueFields.allFields,
-                                DataValueFields.lastUpdated.gt(lastUpdated),
-                                commaSeparatedCollectionValues(query.dataSetUids()),
-                                commaSeparatedCollectionValues(query.periodIds()),
-                                commaSeparatedCollectionValues(query.orgUnitUids()),
-                                Boolean.TRUE,
-                                Boolean.FALSE);
-                    }
-                };
-            }
+        return new DataSetCompleteRegistrationCallFetcher(
+                dataSetCompleteRegistrationQuery.dataSetUids(),
+                dataSetCompleteRegistrationQuery.periodIds(),
+                dataSetCompleteRegistrationQuery.rootOrgUnitUids(),
+                apiCallExecutor) {
 
             @Override
-            protected CallProcessor<DataValue> processor(GenericCallData data, DataValueQuery query) {
-
-                return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                        DataValueHandler.create(data.databaseAdapter()));
+            protected Call<DataSetCompleteRegistrationPayload> getCall(
+                    DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
+                return dataSetCompleteRegistrationService.getDataSetCompleteRegistrations(
+                        DataSetCompleteRegistrationFields.allFields,
+                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.dataSetUids()),
+                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.periodIds()),
+                        commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.rootOrgUnitUids()),
+                        Boolean.TRUE,
+                        Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<DataSetCompleteRegistration> processor(DataSetCompleteRegistrationQuery query) {
+
+        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
+                DataSetCompleteRegistrationHandler.create(data.databaseAdapter()));
     }
 }

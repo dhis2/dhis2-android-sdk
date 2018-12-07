@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.option.OptionSetCallFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCallFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCallFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -83,21 +83,21 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
         return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<Program>>() {
             @Override
             public List<Program> call() throws Exception {
-                List<Program> programs = programCallFactory.create(genericCallData).call();
+                List<Program> programs = programCallFactory.create().call();
 
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
                 List<ProgramStage> programStages =
-                        programStageCallFactory.create(genericCallData, assignedProgramStageUids).call();
+                        programStageCallFactory.create(assignedProgramStageUids).call();
 
-                programRuleCallFactory.create(genericCallData, UidsHelper.getUids(programs)).call();
+                programRuleCallFactory.create(UidsHelper.getUids(programs)).call();
 
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-                trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids).call();
-                relationshipTypeCallFactory.create(genericCallData).call();
+                trackedEntityTypeCallFactory.create(trackedEntityUids).call();
+                relationshipTypeCallFactory.create().call();
 
                 Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-                optionSetCallFactory.create(genericCallData, optionSetUids).call();
+                optionSetCallFactory.create(optionSetUids).call();
 
                 return programs;
             }
@@ -110,14 +110,13 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
             APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
             return new ProgramParentCall(
                     genericCallData,
-                    ProgramEndpointCall.factory(
-                            genericCallData.retrofit().create(ProgramService.class),
-                            apiCallExecutor),
-                    ProgramStageEndpointCall.factory(apiCallExecutor),
-                    ProgramRuleEndpointCall.factory(apiCallExecutor),
-                    TrackedEntityTypeCall.factory(apiCallExecutor),
-                    RelationshipTypeEndpointCall.factory(apiCallExecutor),
-                    OptionSetCall.factory(genericCallData.retrofit(), apiCallExecutor));
+                    new ProgramEndpointCallFactory(genericCallData, apiCallExecutor,
+                            genericCallData.retrofit().create(ProgramService.class)),
+                    new ProgramStageEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new ProgramRuleEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new TrackedEntityTypeCallFactory(genericCallData, apiCallExecutor),
+                    new RelationshipTypeEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new OptionSetCallFactory(genericCallData, apiCallExecutor));
         }
     };
 }

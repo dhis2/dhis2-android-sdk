@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.After;
 import org.junit.Before;
@@ -69,7 +68,7 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
         super.setUp();
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        endpointCall = AuthorityEndpointCall.factory(apiCallExecutor).create(genericCallData);
+        endpointCall = new AuthorityEndpointCall(genericCallData, apiCallExecutor).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(authorityService.getAuthorities()).thenReturn(retrofitCall);

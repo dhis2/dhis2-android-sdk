@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,53 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.common.DataAccess;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import retrofit2.Call;
+import javax.inject.Inject;
 
-final class DataSetEndpointCall {
+import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-    private DataSetEndpointCall() {}
+public final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
 
-    static ListCallFactory<DataSet> factory(final APICallExecutor apiCallExecutor) {
-        return new ListCallFactoryImpl<DataSet>() {
+    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 
-            private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
+    @Inject
+    public DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
+    }
 
+    @Override
+    protected CallFetcher<DataValue> fetcher(final DataValueQuery query) {
+
+        final DataValueService dataValueService = data.retrofit().create(DataValueService.class);
+
+        return new PayloadResourceCallFetcher<DataValue>(data.resourceHandler(), resourceType, apiCallExecutor) {
             @Override
-            protected CallFetcher<DataSet> fetcher(GenericCallData data) {
-                final DataSetService service = data.retrofit().create(DataSetService.class);
-
-                return new PayloadResourceCallFetcher<DataSet>(data.resourceHandler(), resourceType, apiCallExecutor) {
-
-                    @Override
-                    protected Call<Payload<DataSet>> getCall(String lastUpdated) {
-                        String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                        return service.getDataSets(DataSetFields.allFields, accessDataReadFilter, Boolean.FALSE);
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<DataSet> processor(GenericCallData data) {
-                return new TransactionalResourceSyncCallProcessor<>(
-                        data,
-                        DataSetHandler.create(data.databaseAdapter()),
-                        resourceType
-                );
+            protected retrofit2.Call<Payload<DataValue>> getCall(String lastUpdated) {
+                return dataValueService.getDataValues(
+                        DataValueFields.allFields,
+                        DataValueFields.lastUpdated.gt(lastUpdated),
+                        commaSeparatedCollectionValues(query.dataSetUids()),
+                        commaSeparatedCollectionValues(query.periodIds()),
+                        commaSeparatedCollectionValues(query.orgUnitUids()),
+                        Boolean.TRUE,
+                        Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<DataValue> processor(DataValueQuery query) {
+        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
+                DataValueHandler.create(data.databaseAdapter()));
     }
 }

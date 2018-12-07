@@ -26,54 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class IndicatorEndpointCall {
+public final class ProgramRuleEndpointCallFactory extends UidsCallFactoryImpl<ProgramRule> {
 
-    private IndicatorEndpointCall() {
+    // TODO calculate
+    private static final int MAX_UID_LIST_SIZE = 64;
+
+    public ProgramRuleEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    public static UidsCallFactory<Indicator> factory(final APICallExecutor apiCallExecutor) {
-        return new UidsCallFactoryImpl<Indicator>() {
-            private static final int MAX_UID_LIST_SIZE = 100;
+    @Override
+    protected CallFetcher<ProgramRule> fetcher(Set<String> uids) {
+        final ProgramRuleService service = data.retrofit().create(ProgramRuleService.class);
+
+        return new UidsNoResourceCallFetcher<ProgramRule>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
             @Override
-            protected CallFetcher<Indicator> fetcher(GenericCallData data, Set<String> uids) {
-                final IndicatorService indicatorService = data.retrofit().create(IndicatorService.class);
-
-                return new UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-                    @Override
-                    protected retrofit2.Call<Payload<Indicator>> getCall(UidsQuery query) {
-                        return indicatorService.getIndicators(
-                                IndicatorFields.allFields,
-                                IndicatorFields.lastUpdated.gt(null),
-                                IndicatorFields.uid.in(query.uids()),
-                                Boolean.FALSE);
-                    }
-                };
-            }
-
-            @Override
-            protected CallProcessor<Indicator> processor(GenericCallData data) {
-                return new TransactionalNoResourceSyncCallProcessor<>(
-                        data.databaseAdapter(),
-                        IndicatorHandler.create(data.databaseAdapter())
-                );
+            protected retrofit2.Call<Payload<ProgramRule>> getCall(UidsQuery query) {
+                String programUidsFilterStr = "program." + ObjectWithUid.uid.in(query.uids()).generateString();
+                return service.getProgramRules(
+                        ProgramRuleFields.allFields,
+                        programUidsFilterStr,
+                        Boolean.FALSE);
             }
         };
+    }
+
+    @Override
+    protected CallProcessor<ProgramRule> processor() {
+        return new TransactionalNoResourceSyncCallProcessor<>(
+                data.databaseAdapter(),
+                ProgramRuleHandler.create(data.databaseAdapter())
+        );
     }
 }

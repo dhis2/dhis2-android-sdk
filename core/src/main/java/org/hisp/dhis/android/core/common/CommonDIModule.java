@@ -26,38 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import java.util.List;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-public final class AuthorityEndpointCall extends ListCallFactoryImpl<Authority> {
+@Module
+public class CommonDIModule {
 
-    public AuthorityEndpointCall(GenericCallData data, APICallExecutor apiCallExecutor) {
-        super(data, apiCallExecutor);
-    }
-
-    @Override
-    protected CallFetcher<Authority> fetcher() {
-        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
-
-        return new AuthorityCallFetcher(apiCallExecutor) {
-            @Override
-            protected retrofit2.Call<List<String>> getCall() {
-                return authorityService.getAuthorities();
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(
-                data.databaseAdapter(),
-                AuthorityHandler.create(data.databaseAdapter()));
+    @Provides
+    @Reusable
+    GenericCallData genericCallData(DatabaseAdapter databaseAdapter,
+                                    Retrofit retrofit,
+                                    ResourceHandler resourceHandler,
+                                    DHISVersionManager versionManager) {
+        return GenericCallData.create(databaseAdapter, retrofit, resourceHandler, versionManager);
     }
 }

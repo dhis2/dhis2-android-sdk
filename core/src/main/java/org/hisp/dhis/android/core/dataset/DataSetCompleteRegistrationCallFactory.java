@@ -36,19 +36,14 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-@Reusable
-public final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
+final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationQuery> {
 
-    @Inject
-    public DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+    DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
         super(genericCallData, apiCallExecutor);
     }
 

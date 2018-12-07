@@ -25,39 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
+package org.hisp.dhis.android.core.period;
+
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class DataSetInternalModule implements WipeableModule {
+@Module
+public final class PeriodDIModule {
 
-    private final DatabaseAdapter databaseAdapter;
-
-    @Inject
-    DataSetInternalModule(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        DataInputPeriodLinkStore.create(databaseAdapter).delete();
-        DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter).delete();
-        DataSetDataElementLinkStore.create(databaseAdapter).delete();
-        DataSetOrganisationUnitLinkStore.create(databaseAdapter).delete();
-        DataSetStore.create(databaseAdapter).delete();
-        SectionDataElementLinkStore.create(databaseAdapter).delete();
-        SectionStore.create(databaseAdapter).delete();
-        SectionGreyedFieldsLinkStore.create(databaseAdapter).delete();
-    }
-
-    @Override
-    public void wipeData() {
-        DataSetCompleteRegistrationStore.create(databaseAdapter).delete();
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<PeriodModel> store(DatabaseAdapter databaseAdapter) {
+        return PeriodStore.create(databaseAdapter);
     }
 }

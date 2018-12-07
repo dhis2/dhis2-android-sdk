@@ -25,39 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class DataSetInternalModule implements WipeableModule {
+@Module
+public final class DataSetDIModule {
 
-    private final DatabaseAdapter databaseAdapter;
-
-    @Inject
-    DataSetInternalModule(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<DataSet> dataSetStore(DatabaseAdapter databaseAdapter) {
+        return DataSetStore.create(databaseAdapter);
     }
 
-    @Override
-    public void wipeMetadata() {
-        DataInputPeriodLinkStore.create(databaseAdapter).delete();
-        DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter).delete();
-        DataSetDataElementLinkStore.create(databaseAdapter).delete();
-        DataSetOrganisationUnitLinkStore.create(databaseAdapter).delete();
-        DataSetStore.create(databaseAdapter).delete();
-        SectionDataElementLinkStore.create(databaseAdapter).delete();
-        SectionStore.create(databaseAdapter).delete();
-        SectionGreyedFieldsLinkStore.create(databaseAdapter).delete();
-    }
-
-    @Override
-    public void wipeData() {
-        DataSetCompleteRegistrationStore.create(databaseAdapter).delete();
+    @Provides
+    @Reusable
+    QueryCallFactory<DataSetCompleteRegistration,DataSetCompleteRegistrationQuery>
+    dataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+        return new DataSetCompleteRegistrationCallFactory(genericCallData, apiCallExecutor);
     }
 }

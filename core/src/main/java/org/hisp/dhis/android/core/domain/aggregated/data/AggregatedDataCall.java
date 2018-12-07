@@ -29,13 +29,11 @@ package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.arch.modules.QueryDownloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -43,13 +41,10 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
-import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.period.PeriodModel;
-import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
 import java.util.Collection;
@@ -58,6 +53,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class AggregatedDataCall extends SyncCall<Unit> {
@@ -72,14 +69,15 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
 
-    public AggregatedDataCall(@NonNull D2CallExecutor d2CallExecutor,
-                              @NonNull Downloader<SystemInfo> systemInfoDownloader,
-                              @NonNull QueryDownloader<DataValue, DataValueQuery> dataValueDownloader,
-                              @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-                                       dataSetCompleteRegistrationCallFactory,
-                              @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
-                              @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
-                              @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
+    @Inject
+    AggregatedDataCall(@NonNull D2CallExecutor d2CallExecutor,
+                       @NonNull Downloader<SystemInfo> systemInfoDownloader,
+                       @NonNull QueryDownloader<DataValue, DataValueQuery> dataValueDownloader,
+                       @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
+                               dataSetCompleteRegistrationCallFactory,
+                       @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
+                       @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
+                       @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.dataValueDownloader = dataValueDownloader;
@@ -130,16 +128,5 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
             periodIds.add(period.periodId());
         }
         return periodIds;
-    }
-
-    public static AggregatedDataCall create(GenericCallData data, D2InternalModules internalModules) {
-        return new AggregatedDataCall(
-                new D2CallExecutor(data.databaseAdapter()),
-                internalModules.systemInfo,
-                internalModules.dataValueModule,
-                internalModules.dataSetModule.dataSetCompleteRegistrationCallFactory,
-                DataSetStore.create(data.databaseAdapter()),
-                PeriodStore.create(data.databaseAdapter()),
-                UserOrganisationUnitLinkStore.create(data.databaseAdapter()));
     }
 }

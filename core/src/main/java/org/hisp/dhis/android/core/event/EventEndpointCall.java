@@ -2,13 +2,12 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
 
@@ -33,19 +32,11 @@ public final class EventEndpointCall extends SyncCall<List<Event>> {
     public List<Event> call() throws D2Error {
         setExecuted();
 
-        Call<Payload<Event>> call;
+        String categoryComboId = eventQuery.categoryCombo() == null ? null : eventQuery.categoryCombo().uid();
 
-        if (eventQuery.getCategoryCombo() == null) {
-            call = eventService.getEvents(eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                    eventQuery.getTrackedEntityInstance(), Event.allFields, Boolean.TRUE,
-                    eventQuery.getPage(), eventQuery.getPageSize());
-        } else {
-            CategoryCombo categoryCombo =  eventQuery.getCategoryCombo();
-
-            call = eventService.getEvents(eventQuery.getOrgUnit(), eventQuery.getProgram(),
-                    eventQuery.getTrackedEntityInstance(), Event.allFields, Boolean.TRUE,
-                    eventQuery.getPage(), eventQuery.getPageSize(), categoryCombo.uid());
-        }
+        Call<Payload<Event>> call = eventService.getEvents(eventQuery.orgUnit(), eventQuery.program(),
+                eventQuery.trackedEntityInstance(), Event.allFields, Boolean.TRUE,
+                eventQuery.page(), eventQuery.pageSize(), categoryComboId, eventQuery.lastUpdatedStartDate());
 
         return apiCallExecutor.executePayloadCall(call);
     }

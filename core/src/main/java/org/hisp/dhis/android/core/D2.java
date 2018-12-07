@@ -183,7 +183,8 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
-        return EventWithLimitCall.create(databaseAdapter, retrofit, eventLimit, limitByOrgUnit);
+        return EventWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler, eventLimit,
+                limitByOrgUnit);
     }
 
     @NonNull

@@ -41,7 +41,7 @@ public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
                 event.status() == EventStatus.SKIPPED ||
                 event.status() == EventStatus.OVERDUE;
 
-        return validEventDate && event.organisationUnit() != null;
+        return !validEventDate || event.organisationUnit() == null;
     }
 
     public static SyncHandler<Event> create(DatabaseAdapter databaseAdapter) {

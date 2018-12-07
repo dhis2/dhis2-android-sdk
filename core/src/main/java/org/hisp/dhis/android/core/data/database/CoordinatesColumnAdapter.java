@@ -55,7 +55,9 @@ public class CoordinatesColumnAdapter implements ColumnTypeAdapter<Coordinates> 
 
     @Override
     public void toContentValues(ContentValues values, String columnName, Coordinates value) {
-        values.put(EventTableInfo.Columns.LATITUDE, value.latitude());
-        values.put(EventTableInfo.Columns.LONGITUDE, value.longitude());
+        if (value != null) {
+            values.put(EventTableInfo.Columns.LATITUDE, value.latitude());
+            values.put(EventTableInfo.Columns.LONGITUDE, value.longitude());
+        }
     }
 }

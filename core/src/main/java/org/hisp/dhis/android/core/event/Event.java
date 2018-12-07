@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
@@ -111,14 +112,6 @@ public abstract class Event extends BaseDataModel implements Model, ObjectWithDe
     public abstract Coordinates coordinate();
 
     @Nullable
-    @JsonIgnore()
-    public abstract String latitude();
-
-    @Nullable
-    @JsonIgnore()
-    public abstract String longitude();
-
-    @Nullable
     @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completedDate();
@@ -130,6 +123,7 @@ public abstract class Event extends BaseDataModel implements Model, ObjectWithDe
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable
@@ -185,10 +179,6 @@ public abstract class Event extends BaseDataModel implements Model, ObjectWithDe
         public abstract Builder status(EventStatus status);
 
         public abstract Builder coordinate(Coordinates coordinate);
-
-        public abstract Builder latitude(String latitude);
-
-        public abstract Builder longitude(String longitude);
 
         public abstract Builder completedDate(Date completedDate);
 

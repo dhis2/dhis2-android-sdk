@@ -33,6 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CoordinateHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
@@ -125,8 +126,8 @@ public class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> 
             sqLiteBind(sqLiteStatement, 5, o.createdAtClient());
             sqLiteBind(sqLiteStatement, 6, o.lastUpdatedAtClient());
             sqLiteBind(sqLiteStatement, 7, o.status());
-            sqLiteBind(sqLiteStatement, 8, o.latitude());
-            sqLiteBind(sqLiteStatement, 9, o.longitude());
+            sqLiteBind(sqLiteStatement, 8, CoordinateHelper.getLatitude(o.coordinate()));
+            sqLiteBind(sqLiteStatement, 9, CoordinateHelper.getLongitude(o.coordinate()));
             sqLiteBind(sqLiteStatement, 10, o.program());
             sqLiteBind(sqLiteStatement, 11, o.programStage());
             sqLiteBind(sqLiteStatement, 12, o.organisationUnit());

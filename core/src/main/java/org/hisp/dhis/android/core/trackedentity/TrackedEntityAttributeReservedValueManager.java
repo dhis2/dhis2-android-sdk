@@ -156,7 +156,7 @@ public final class TrackedEntityAttributeReservedValueManager {
     private void fillReservedValues(String trackedEntityAttributeUid, OrganisationUnit organisationUnit,
                                     Integer numberToReserve) throws D2Error {
 
-        D2CallExecutor executor = new D2CallExecutor();
+        D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
         executor.executeD2Call(systemInfoDownloader.download());
 

@@ -59,7 +59,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
     public Unit call() throws D2Error {
         this.setExecuted();
 
-        return new D2CallExecutor().executeD2CallTransactionally(databaseAdapter,
+        return new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(
                 new Callable<Unit>() {
                     @Override
                     public Unit call() throws Exception {

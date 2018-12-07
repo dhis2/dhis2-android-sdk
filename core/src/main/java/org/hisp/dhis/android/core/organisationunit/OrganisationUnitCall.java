@@ -74,7 +74,7 @@ public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
 
         final Set<OrganisationUnit> organisationUnits = new HashSet<>();
 
-        return new D2CallExecutor().executeD2CallTransactionally(data.databaseAdapter(),
+        return new D2CallExecutor(data.databaseAdapter()).executeD2CallTransactionally(
                 new Callable<List<OrganisationUnit>>() {
             @Override
             public List<OrganisationUnit> call() throws Exception {

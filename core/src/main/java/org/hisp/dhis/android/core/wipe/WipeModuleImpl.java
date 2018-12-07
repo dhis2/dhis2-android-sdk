@@ -66,19 +66,17 @@ import java.util.concurrent.Callable;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class WipeModuleImpl implements WipeModule {
-    private final DatabaseAdapter databaseAdapter;
-
     @NonNull
     private final List<DeletableStore> metadataStores;
     private final List<DeletableStore> dataStores;
     private final List<WipeableModule> wipeableModules;
-    private final D2CallExecutor executor = new D2CallExecutor();
+    private final D2CallExecutor d2CallExecutor;
 
-    WipeModuleImpl(@NonNull DatabaseAdapter databaseAdapter,
-                   @NonNull List<DeletableStore> metadataStores,
+    WipeModuleImpl(@NonNull List<DeletableStore> metadataStores,
                    @NonNull List<DeletableStore> dataStores,
+                   @NonNull D2CallExecutor d2CallExecutor,
                    List<WipeableModule> wipeableModules) {
-        this.databaseAdapter = databaseAdapter;
+        this.d2CallExecutor = d2CallExecutor;
         this.metadataStores = metadataStores;
         this.dataStores = dataStores;
         this.wipeableModules = wipeableModules;
@@ -86,7 +84,7 @@ public final class WipeModuleImpl implements WipeModule {
 
     @Override
     public Unit wipeEverything() throws D2Error {
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() {
                 wipeMetadataInternal();
@@ -99,7 +97,7 @@ public final class WipeModuleImpl implements WipeModule {
 
     @Override
     public Unit wipeMetadata() throws D2Error {
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() {
                 wipeMetadataInternal();
@@ -111,7 +109,7 @@ public final class WipeModuleImpl implements WipeModule {
 
     @Override
     public Unit wipeData() throws D2Error {
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() {
                 wipeDataInternal();
@@ -206,6 +204,7 @@ public final class WipeModuleImpl implements WipeModule {
                 DataSetCompleteRegistrationStore.create(databaseAdapter)
         );
 
-        return new WipeModuleImpl(databaseAdapter, metadataStores, dataStores, internalModules.getWipeableModules());
+        return new WipeModuleImpl(metadataStores, dataStores, new D2CallExecutor(databaseAdapter),
+                internalModules.getWipeableModules());
     }
 }

@@ -40,7 +40,7 @@ public final class TrackedEntityInstanceSyncDownCall extends SyncCall<List<Track
         Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.querySynced();
         Call<List<TrackedEntityInstance>> call = TrackedEntityInstanceListDownloadAndPersistCall
                 .create(databaseAdapter, retrofit, internalModules, trackedEntityInstances.keySet());
-        return new D2CallExecutor().executeD2Call(call);
+        return new D2CallExecutor(databaseAdapter).executeD2Call(call);
     }
 
     public static TrackedEntityInstanceSyncDownCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,

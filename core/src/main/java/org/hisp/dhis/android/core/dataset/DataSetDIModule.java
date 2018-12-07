@@ -49,7 +49,7 @@ public final class DataSetDIModule {
 
     @Provides
     @Reusable
-    QueryCallFactory<DataSetCompleteRegistration,DataSetCompleteRegistrationQuery>
+    QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
     dataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
         return new DataSetCompleteRegistrationCallFactory(genericCallData, apiCallExecutor);
     }

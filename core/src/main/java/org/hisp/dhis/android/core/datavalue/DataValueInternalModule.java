@@ -28,32 +28,25 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.modules.QueryDownloader;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class DataValueInternalModule implements WipeableModule, QueryDownloader<DataValue, DataValueQuery> {
+public final class DataValueInternalModule implements WipeableModule {
 
     public final DataValueModule publicModule;
 
     private final DatabaseAdapter databaseAdapter;
-    private final DataValueEndpointCallFactory dataValueEndpointCallFactory;
 
     @Inject
     DataValueInternalModule(DatabaseAdapter databaseAdapter,
-                            DataValueModule publicModule,
-                            DataValueEndpointCallFactory dataValueEndpointCallFactory) {
+                            DataValueModule publicModule) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
-        this.dataValueEndpointCallFactory = dataValueEndpointCallFactory;
     }
 
     @Override
@@ -64,10 +57,5 @@ public final class DataValueInternalModule implements WipeableModule, QueryDownl
     @Override
     public void wipeData() {
         DataValueStore.create(databaseAdapter).delete();
-    }
-
-    @Override
-    public Call<List<DataValue>> download(DataValueQuery query) {
-        return dataValueEndpointCallFactory.create(query);
     }
 }

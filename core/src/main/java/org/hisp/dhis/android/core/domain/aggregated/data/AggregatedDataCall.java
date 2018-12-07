@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.domain.aggregated.data;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.arch.modules.QueryDownloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -57,12 +56,12 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public final class AggregatedDataCall extends SyncCall<Unit> {
+final class AggregatedDataCall extends SyncCall<Unit> {
 
     private final D2CallExecutor d2CallExecutor;
 
     private final Downloader<SystemInfo> systemInfoDownloader;
-    private final QueryDownloader<DataValue, DataValueQuery> dataValueDownloader;
+    private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
     private final IdentifiableObjectStore<DataSet> dataSetStore;
@@ -72,7 +71,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     @Inject
     AggregatedDataCall(@NonNull D2CallExecutor d2CallExecutor,
                        @NonNull Downloader<SystemInfo> systemInfoDownloader,
-                       @NonNull QueryDownloader<DataValue, DataValueQuery> dataValueDownloader,
+                       @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
                        @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
@@ -80,7 +79,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                        @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
-        this.dataValueDownloader = dataValueDownloader;
+        this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
         this.dataSetStore = dataSetStore;
         this.periodStore = periodStore;
@@ -105,7 +104,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
 
                 DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                dataValueDownloader.download(dataValueQuery).call();
+                dataValueCallFactory.create(dataValueQuery).call();
 
                 DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                         DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);

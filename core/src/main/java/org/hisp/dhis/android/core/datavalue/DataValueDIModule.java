@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.modules.QueryDownloader;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -46,7 +48,8 @@ public final class DataValueDIModule {
 
     @Provides
     @Reusable
-    QueryDownloader<DataValue, DataValueQuery> downloader(DataValueInternalModule internalModule) {
-        return internalModule;
+    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
+                                                                     APICallExecutor apiCallExecutor) {
+        return new DataValueEndpointCallFactory(data, apiCallExecutor);
     }
 }

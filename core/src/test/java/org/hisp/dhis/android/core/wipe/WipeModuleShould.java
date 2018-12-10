@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.wipe;
 
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStore;
@@ -102,7 +103,7 @@ public class WipeModuleShould {
         List<DeletableStore> dataStoreList = new ArrayList<>();
         dataStoreList.add(dataValueStore);
         dataStoreList.add(trackedEntityAttributeStore);
-        wipeModule = new WipeModuleImpl(databaseAdapter, metadataStoreList, dataStoreList,
+        wipeModule = new WipeModuleImpl(metadataStoreList, dataStoreList, new D2CallExecutor(databaseAdapter),
                 new ArrayList<WipeableModule>());
     }
 

@@ -31,7 +31,20 @@ package org.hisp.dhis.android.core.settings;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class SystemSettingModelBuilder {
+
+    /**
+     * Empty constructor to add Inject annotation
+     */
+    @Inject
+    SystemSettingModelBuilder() {
+        /* Empty constructor to add Inject annotation */
+    }
 
     List<SystemSettingModel> splitSettings(SystemSetting settings) {
         SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();

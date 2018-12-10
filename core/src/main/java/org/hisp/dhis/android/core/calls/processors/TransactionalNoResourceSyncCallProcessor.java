@@ -49,7 +49,7 @@ public class TransactionalNoResourceSyncCallProcessor<O> implements CallProcesso
     @Override
     public final void process(final List<O> objectList) throws D2Error {
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor().executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(new Callable<Void>() {
 
                 @Override
                 public Void call() {

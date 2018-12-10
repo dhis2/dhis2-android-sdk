@@ -197,7 +197,7 @@ public class SystemInfoCallShould {
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler).handle(systemInfo);
-        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
+        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO));
 
     }
 
@@ -209,6 +209,6 @@ public class SystemInfoCallShould {
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler).handle(systemInfo);
-        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO), any(Date.class));
+        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO));
     }
 }

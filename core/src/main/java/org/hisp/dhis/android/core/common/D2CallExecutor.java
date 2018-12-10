@@ -36,17 +36,26 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
 @SuppressWarnings({"PMD.PreserveStackTrace"})
+@Reusable
 public final class D2CallExecutor {
 
     private final D2Error.Builder exceptionBuilder = D2Error
             .builder()
             .errorComponent(D2ErrorComponent.SDK);
+
+    private final DatabaseAdapter databaseAdapter;
+
+    @Inject
+    public D2CallExecutor(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
+    }
 
     public <C> C executeD2Call(Callable<C> call) throws D2Error {
         try {
@@ -60,15 +69,7 @@ public final class D2CallExecutor {
         }
     }
 
-    public <C> List<C> executeD2Call(Collection<Callable<C>> calls) throws D2Error {
-        List<C> results = new ArrayList<>(calls.size());
-        for (Callable<C> call: calls) {
-            results.add(executeD2Call(call));
-        }
-        return results;
-    }
-
-    public <C> C executeD2CallTransactionally(DatabaseAdapter databaseAdapter, Callable<C> call)
+    public <C> C executeD2CallTransactionally(Callable<C> call)
             throws D2Error {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {

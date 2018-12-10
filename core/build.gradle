@@ -31,7 +31,6 @@ apply from: rootProject.file("plugins/android-checkstyle.gradle")
 apply from: rootProject.file("plugins/android-findbugs.gradle")
 apply from: rootProject.file("plugins/android-dexcount.gradle")
 apply from: rootProject.file("plugins/android-pmd.gradle")
-apply from: rootProject.file("plugins/errorprone.gradle")
 
 def configuration = rootProject.ext.configuration
 def libraries = rootProject.ext.libraries
@@ -106,6 +105,10 @@ dependencies {
     // annotation processor which hoops up into compilation process
     provided "com.google.auto.value:auto-value:${libraries.autovalue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
+
+    // Dagger
+    compile "com.google.dagger:dagger:${libraries.dagger}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${libraries.dagger}"
 
     // Jackson
     compile "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"

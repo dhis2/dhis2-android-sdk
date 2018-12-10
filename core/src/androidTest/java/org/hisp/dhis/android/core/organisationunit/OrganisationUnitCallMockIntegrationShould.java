@@ -35,13 +35,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -77,7 +76,6 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private GenericCallData genericCallData;
 
     //The return of the organisationUnitCall to be tested:
     private Call<List<OrganisationUnit>> organisationUnitCall;
@@ -121,10 +119,9 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 OrganisationUnitHandler.create(databaseAdapter(), programUids, null,
                         OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
 
-        genericCallData = getGenericCallData(d2);
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
         organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
-                genericCallData, organisationUnitHandler, apiCallExecutor);
+                getGenericCallData(d2), organisationUnitHandler, apiCallExecutor);
     }
 
     private void insertProgramWithUid(String uid) {
@@ -170,7 +167,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
         assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
-                BaseIdentifiableObject.DATE_FORMAT.format(genericCallData.serverDate()));
+                BaseIdentifiableObject.dateToDateStr(serverDate));
 
         resourceCursor.close();
     }

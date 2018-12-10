@@ -55,6 +55,7 @@ public final class D2ErrorStore {
             sqLiteBind(sqLiteStatement, 5, o.errorCode());
             sqLiteBind(sqLiteStatement, 6, o.errorDescription());
             sqLiteBind(sqLiteStatement, 7, o.httpErrorCode());
+            sqLiteBind(sqLiteStatement, 8, o.created());
         }
     };
 

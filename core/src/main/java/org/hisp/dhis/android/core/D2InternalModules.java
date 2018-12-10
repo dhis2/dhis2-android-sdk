@@ -29,34 +29,41 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
+import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import java.util.Arrays;
 import java.util.List;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
 
+import dagger.Reusable;
+
+@Reusable
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
+    public final SystemSettingInternalModule systemSetting;
     public final RelationshipInternalModule relationshipModule;
     public final CategoryInternalModule categoryModule;
     public final DataElementInternalModule dataElementModule;
     public final DataValueInternalModule dataValueModule;
     public final MaintenanceInternalModule maintenanceModule;
 
+    @Inject
     public D2InternalModules(SystemInfoInternalModule systemInfo,
+                             SystemSettingInternalModule systemSetting,
                              RelationshipInternalModule relationshipModule,
                              CategoryInternalModule categoryModule,
                              DataElementInternalModule dataElementModule,
                              DataValueInternalModule dataValueModule,
                              MaintenanceInternalModule maintenanceModule) {
         this.systemInfo = systemInfo;
+        this.systemSetting = systemSetting;
         this.relationshipModule = relationshipModule;
         this.categoryModule = categoryModule;
         this.dataElementModule = dataElementModule;
@@ -65,21 +72,7 @@ public final class D2InternalModules {
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, relationshipModule, categoryModule, dataElementModule, dataValueModule,
-                maintenanceModule);
-    }
-
-    public static D2InternalModules create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter, retrofit);
-        return new D2InternalModules(
-                systemInfoInternalModule,
-                RelationshipInternalModule.create(
-                        databaseAdapter,
-                        systemInfoInternalModule.publicModule.versionManager),
-                CategoryInternalModule.create(databaseAdapter),
-                DataElementInternalModule.create(databaseAdapter),
-                DataValueInternalModule.create(databaseAdapter),
-                MaintenanceInternalModule.create(databaseAdapter)
-        );
+        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataElementModule,
+                dataValueModule, maintenanceModule);
     }
 }

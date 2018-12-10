@@ -27,18 +27,26 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
 import java.util.Date;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class ResourceHandler {
     private final ResourceStore resourceStore;
+    private Date serverDate;
 
+    @Inject
     public ResourceHandler(ResourceStore resourceStore) {
         this.resourceStore = resourceStore;
     }
 
-    public void handleResource(ResourceModel.Type resourceType, Date serverDate) {
+    public void setServerDate(Date serverDate) {
+        this.serverDate = new Date(serverDate.getTime());
+    }
+
+    public void handleResource(ResourceModel.Type resourceType) {
         if (resourceType == null || serverDate == null) {
             return;
         }
@@ -56,9 +64,5 @@ public class ResourceHandler {
      */
     public String getLastUpdated(ResourceModel.Type type) {
         return resourceStore.getLastUpdated(type);
-    }
-
-    public static ResourceHandler create(DatabaseAdapter databaseAdapter) {
-        return new ResourceHandler(new ResourceStoreImpl(databaseAdapter));
     }
 }

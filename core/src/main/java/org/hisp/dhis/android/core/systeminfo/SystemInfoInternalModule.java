@@ -27,48 +27,45 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
-public final class SystemInfoInternalModule implements WipeableModule {
+import dagger.Reusable;
 
-    private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
+@Reusable
+public final class SystemInfoInternalModule implements Downloader<SystemInfo>, WipeableModule {
+
+    private final ObjectWithoutUidStore<SystemInfo> systemInfoStore;
+    private final Provider<SystemInfoCall> systemInfoCallProvider;
+
     public final SystemInfoModule publicModule;
 
-    private SystemInfoInternalModule(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                     SystemInfoModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
+    @Inject
+    SystemInfoInternalModule(ObjectWithoutUidStore<SystemInfo> systemInfoStore,
+                             SystemInfoModule publicModule,
+                             Provider<SystemInfoCall> systemInfoCallProvider) {
+        this.systemInfoStore = systemInfoStore;
         this.publicModule = publicModule;
+        this.systemInfoCallProvider = systemInfoCallProvider;
     }
 
-    public final NoArgumentsCallFactory<SystemInfo> callFactory = new NoArgumentsCallFactory<SystemInfo>() {
-        @Override
-        public Call<SystemInfo> create() {
-            return SystemInfoCall.create(databaseAdapter, retrofit, publicModule.versionManager);
-        }
-    };
+    @Override
+    public Call<SystemInfo> download() {
+        return systemInfoCallProvider.get();
+    }
 
     @Override
     public void wipeMetadata() {
-        SystemInfoStore.create(databaseAdapter).delete();
+        systemInfoStore.delete();
     }
 
     @Override
     public void wipeData() {
         // Without data to wipe
-    }
-
-    public static SystemInfoInternalModule create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new SystemInfoInternalModule(
-                databaseAdapter,
-                retrofit,
-                SystemInfoModule.create(databaseAdapter)
-        );
     }
 }

@@ -6,8 +6,6 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -20,6 +18,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship;
@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -310,12 +311,15 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     public void create_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        List<TrackedEntityInstance> trackedEntityInstances =
-                d2.downloadTrackedEntityInstances(5,  false).call();
-        assertThat(trackedEntityInstances.size() == 5).isTrue();
+        d2.downloadTrackedEntityInstances(5,  false).call();
+        Map<String, TrackedEntityInstance> trackedEntityInstances =
+                new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll();
+        assertThat(trackedEntityInstances.size() >= 5).isTrue();
 
-        TrackedEntityInstance t0 = trackedEntityInstances.get(0);
-        TrackedEntityInstance t1 = trackedEntityInstances.get(1);
+        Iterator<Map.Entry<String, TrackedEntityInstance>> tEIIterator = trackedEntityInstances.entrySet().iterator();
+
+        TrackedEntityInstance t0 = tEIIterator.next().getValue();
+        TrackedEntityInstance t1 = tEIIterator.next().getValue();
 
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
 
@@ -331,12 +335,15 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     public void create_and_delete_tei_to_tei_relationship() throws Exception {
         downloadMetadata();
 
-        List<TrackedEntityInstance> trackedEntityInstances =
-                d2.downloadTrackedEntityInstances(10,  false).call();
+        d2.downloadTrackedEntityInstances(10,  false).call();
+        Map<String, TrackedEntityInstance> trackedEntityInstances =
+                new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll();
         assertThat(trackedEntityInstances.size() == 10).isTrue();
 
-        TrackedEntityInstance t0 = trackedEntityInstances.get(5);
-        TrackedEntityInstance t1 = trackedEntityInstances.get(6);
+        Iterator<Map.Entry<String, TrackedEntityInstance>> tEIIterator = trackedEntityInstances.entrySet().iterator();
+
+        TrackedEntityInstance t0 = tEIIterator.next().getValue();
+        TrackedEntityInstance t1 = tEIIterator.next().getValue();
 
         RelationshipModule relationshipModule = d2.relationshipModule();
         ReadOnlyIdentifiableCollectionRepository<RelationshipType> typesRepository = relationshipModule.relationshipTypes;

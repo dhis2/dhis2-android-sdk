@@ -34,9 +34,9 @@ public final class TrackedEntityInstancesEndpointCall extends SyncCall<List<Trac
         setExecuted();
 
         Call<Payload<TrackedEntityInstance>> call = trackedEntityInstanceService.getTrackedEntityInstances(
-                Utils.joinCollectionWithSeparator(trackerQuery.getOrgUnits(), ";"),
-                trackerQuery.getOuMode().name(), TrackedEntityInstance.allFields, Boolean.TRUE,
-                trackerQuery.getPage(), trackerQuery.getPageSize(), true);
+                Utils.joinCollectionWithSeparator(trackerQuery.orgUnits(), ";"),
+                trackerQuery.ouMode().name(), TrackedEntityInstance.allFields, Boolean.TRUE,
+                trackerQuery.page(), trackerQuery.pageSize(), trackerQuery.lastUpdatedStartDate(), true);
 
         return apiCallExecutor.executePayloadCall(call);
     }

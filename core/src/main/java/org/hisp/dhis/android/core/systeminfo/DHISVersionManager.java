@@ -28,14 +28,12 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
 public class DHISVersionManager {
 
     private DHISVersion version;
 
-    private DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
+    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
         SystemInfo systemInfoModel = systemInfoStore.selectFirst();
 
         if (systemInfoModel != null && systemInfoModel.version() != null) {
@@ -57,9 +55,5 @@ public class DHISVersionManager {
 
     void setVersion(String versionStr) {
         this.version = DHISVersion.getValue(versionStr);
-    }
-
-    static DHISVersionManager create(DatabaseAdapter databaseAdapter) {
-        return new DHISVersionManager(SystemInfoStore.create(databaseAdapter));
     }
 }

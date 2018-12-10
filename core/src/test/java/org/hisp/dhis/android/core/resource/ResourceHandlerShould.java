@@ -63,8 +63,9 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_null_resource() throws Exception {
-        resourceHandler.handleResource(null, serverDate);
+    public void do_nothing_when_passing_null_resource() {
+        resourceHandler.setServerDate(serverDate);
+        resourceHandler.handleResource(null);
 
         // verify that store is never called
         verify(resourceStore, never()).insert(anyString(), any(Date.class));
@@ -72,8 +73,8 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void do_nothing_when_passing_null_server_date() throws Exception {
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, null);
+    public void do_nothing_when_not_passing_server_date() {
+        resourceHandler.handleResource(ResourceModel.Type.PROGRAM);
 
         // verify that store is never called
         verify(resourceStore, never()).insert(anyString(), any(Date.class));
@@ -81,10 +82,11 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void invoke_only_update_when_handle_resource_updatable() throws Exception {
+    public void invoke_only_update_when_handle_resource_updatable() {
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
 
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
+        resourceHandler.setServerDate(serverDate);
+        resourceHandler.handleResource(ResourceModel.Type.PROGRAM);
 
         verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
 
@@ -93,10 +95,11 @@ public class ResourceHandlerShould {
     }
 
     @Test
-    public void invoke_update_and_insert_when_handle_resource_not_inserted() throws Exception {
+    public void invoke_update_and_insert_when_handle_resource_not_inserted() {
         when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
 
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM, serverDate);
+        resourceHandler.setServerDate(serverDate);
+        resourceHandler.handleResource(ResourceModel.Type.PROGRAM);
 
         // verify that insert is called once
         verify(resourceStore, times(1)).insert(anyString(), any(Date.class));

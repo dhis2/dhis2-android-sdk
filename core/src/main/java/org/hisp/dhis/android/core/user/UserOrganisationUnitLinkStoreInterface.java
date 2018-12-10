@@ -34,5 +34,5 @@ import java.util.List;
 
 public interface UserOrganisationUnitLinkStoreInterface extends ObjectWithoutUidStore<UserOrganisationUnitLinkModel> {
 
-    List<String> queryRootOrganisationUnitUids() throws RuntimeException;
+    List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
 }

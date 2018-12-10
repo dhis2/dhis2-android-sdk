@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -39,15 +38,9 @@ public final class RelationshipModule {
 
     public final RelationshipCollectionRepository relationships;
 
-    private RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
+    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
                                RelationshipCollectionRepository relationshipRepository) {
         this.relationshipTypes = relationshipTypeRepository;
         this.relationships = relationshipRepository;
-    }
-
-    public static RelationshipModule create(DatabaseAdapter databaseAdapter, RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
     }
 }

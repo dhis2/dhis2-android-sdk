@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.calls.factories.NoArgumentsCallFactory;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -44,15 +43,14 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCall;
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCallFactory;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.dataset.DataSetStore;
 import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.datavalue.DataValueEndpointCall;
+import org.hisp.dhis.android.core.datavalue.DataValueEndpointCallFactory;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.period.PeriodStore;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
@@ -64,16 +62,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import retrofit2.Retrofit;
-
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class AggregatedDataCall extends SyncCall<Unit> {
 
-    private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
 
-    private final NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory;
-    private final DHISVersionManager versionManager;
+    private final Downloader<SystemInfo> systemInfoDownloader;
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
@@ -82,9 +76,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
 
     private AggregatedDataCall(@NonNull DatabaseAdapter databaseAdapter,
-                               @NonNull Retrofit retrofit,
-                               @NonNull NoArgumentsCallFactory<SystemInfo> systemInfoCallFactory,
-                               @NonNull DHISVersionManager versionManager,
+                               @NonNull Downloader<SystemInfo> systemInfoDownloader,
                                @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                                @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                        dataSetCompleteRegistrationCallFactory,
@@ -92,9 +84,7 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
                                @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
                                @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
         this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
-        this.systemInfoCallFactory = systemInfoCallFactory;
-        this.versionManager = versionManager;
+        this.systemInfoDownloader = systemInfoDownloader;
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
         this.dataSetStore = dataSetStore;
@@ -106,36 +96,31 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
     public Unit call() throws Exception {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return executor.executeD2CallTransactionally(new Callable<Unit>() {
 
             @Override
-            public Unit call() throws D2Error {
-                SystemInfo systemInfo = executor.executeD2Call(systemInfoCallFactory.create());
-                GenericCallData genericCallData = GenericCallData.create(databaseAdapter, retrofit,
-                        systemInfo.serverDate(), versionManager);
+            public Unit call() throws Exception {
+                systemInfoDownloader.download().call();
 
                 List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
                 Set<String> periodIds = Collections.unmodifiableSet(
                         selectPeriodIds(periodStore.selectAll()));
                 List<String> organisationUnitUids = Collections.unmodifiableList(
-                        organisationUnitStore.queryRootOrganisationUnitUids());
+                        organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 
                 DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                Call<List<DataValue>> dataValueEndpointCall = dataValueCallFactory
-                        .create(genericCallData, dataValueQuery);
-                executor.executeD2Call(dataValueEndpointCall);
+                dataValueCallFactory.create(dataValueQuery).call();
 
                 DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                         DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
                 Call<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
-                        dataSetCompleteRegistrationCallFactory.create(genericCallData,
-                                dataSetCompleteRegistrationQuery);
+                        dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
 
-                executor.executeD2Call(dataSetCompleteRegistrationCall);
+                dataSetCompleteRegistrationCall.call();
 
                 return new Unit();
             }
@@ -152,18 +137,15 @@ public final class AggregatedDataCall extends SyncCall<Unit> {
         return periodIds;
     }
 
-    public static AggregatedDataCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                            D2InternalModules internalModules) {
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
+    public static AggregatedDataCall create(GenericCallData data, D2InternalModules internalModules) {
+        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(data.databaseAdapter());
         return new AggregatedDataCall(
-                databaseAdapter,
-                retrofit,
-                internalModules.systemInfo.callFactory,
-                internalModules.systemInfo.publicModule.versionManager,
-                DataValueEndpointCall.factory(apiCallExecutor),
-                DataSetCompleteRegistrationCall.factory(apiCallExecutor),
-                DataSetStore.create(databaseAdapter),
-                PeriodStore.create(databaseAdapter),
-                UserOrganisationUnitLinkStore.create(databaseAdapter));
+                data.databaseAdapter(),
+                internalModules.systemInfo,
+                new DataValueEndpointCallFactory(data, apiCallExecutor),
+                new DataSetCompleteRegistrationCallFactory(data, apiCallExecutor),
+                DataSetStore.create(data.databaseAdapter()),
+                PeriodStore.create(data.databaseAdapter()),
+                UserOrganisationUnitLinkStore.create(data.databaseAdapter()));
     }
 }

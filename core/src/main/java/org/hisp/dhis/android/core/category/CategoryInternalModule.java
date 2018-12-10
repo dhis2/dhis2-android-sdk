@@ -30,13 +30,19 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class CategoryInternalModule implements WipeableModule {
 
     private final DatabaseAdapter databaseAdapter;
     public final CategoryModule publicModule;
 
-    private CategoryInternalModule(DatabaseAdapter databaseAdapter,
-                                   CategoryModule publicModule) {
+    @Inject
+    CategoryInternalModule(DatabaseAdapter databaseAdapter,
+                           CategoryModule publicModule) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
     }
@@ -55,12 +61,5 @@ public final class CategoryInternalModule implements WipeableModule {
     @Override
     public void wipeData() {
         // Without data to wipe
-    }
-
-    public static CategoryInternalModule create(DatabaseAdapter databaseAdapter) {
-        return new CategoryInternalModule(
-                databaseAdapter,
-                CategoryModule.create(databaseAdapter)
-        );
     }
 }

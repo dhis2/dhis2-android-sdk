@@ -71,30 +71,27 @@ public class EventEndpointCallShould extends BaseCallShould {
             uIds.add("uid" + i);
         }
 
-        EventQuery eventQuery = EventQuery.Builder
-                .create()
-                .withUIds(uIds)
+        EventQuery eventQuery = EventQuery.builder()
+                .uIds(uIds)
                 .build();
 
         return EventEndpointCall.create(genericCallData.retrofit(), genericCallData.databaseAdapter(), eventQuery);
     }
 
     private EventEndpointCall givenAEventCallByPagination(int page, int pageCount) {
-        EventQuery eventQuery = EventQuery.Builder
-                .create()
-                .withPage(page)
-                .withPageSize(pageCount)
-                .withPaging(true)
+        EventQuery eventQuery = EventQuery.builder()
+                .page(page)
+                .pageSize(pageCount)
+                .paging(true)
                 .build();
 
         return EventEndpointCall.create(genericCallData.retrofit(), genericCallData.databaseAdapter(), eventQuery);
     }
 
     private EventEndpointCall givenAEventCallByOrgUnitAndProgram(String orgUnit, String program) {
-        EventQuery eventQuery = EventQuery.Builder
-                .create()
-                .withOrgUnit(orgUnit)
-                .withProgram(program)
+        EventQuery eventQuery = EventQuery.builder()
+                .orgUnit(orgUnit)
+                .program(program)
                 .build();
 
         return EventEndpointCall.create(genericCallData.retrofit(), genericCallData.databaseAdapter(), eventQuery);

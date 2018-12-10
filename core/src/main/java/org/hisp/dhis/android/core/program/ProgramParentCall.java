@@ -27,23 +27,22 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetCall;
+import org.hisp.dhis.android.core.option.OptionSetCallFactory;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCall;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCallFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeCallFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -79,26 +78,26 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
     public List<Program> call() throws Exception {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(genericCallData.databaseAdapter());
 
-        return executor.executeD2CallTransactionally(genericCallData.databaseAdapter(), new Callable<List<Program>>() {
+        return executor.executeD2CallTransactionally(new Callable<List<Program>>() {
             @Override
-            public List<Program> call() throws D2Error {
-                List<Program> programs = executor.executeD2Call(programCallFactory.create(genericCallData));
+            public List<Program> call() throws Exception {
+                List<Program> programs = programCallFactory.create().call();
 
                 Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-                List<ProgramStage> programStages = executor.executeD2Call(
-                        programStageCallFactory.create(genericCallData, assignedProgramStageUids));
+                List<ProgramStage> programStages =
+                        programStageCallFactory.create(assignedProgramStageUids).call();
 
-                executor.executeD2Call(programRuleCallFactory.create(genericCallData, UidsHelper.getUids(programs)));
+                programRuleCallFactory.create(UidsHelper.getUids(programs)).call();
 
                 Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-                executor.executeD2Call(trackedEntityTypeCallFactory.create(genericCallData, trackedEntityUids));
-                executor.executeD2Call(relationshipTypeCallFactory.create(genericCallData));
+                trackedEntityTypeCallFactory.create(trackedEntityUids).call();
+                relationshipTypeCallFactory.create().call();
 
                 Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-                executor.executeD2Call(optionSetCallFactory.create(genericCallData, optionSetUids));
+                optionSetCallFactory.create(optionSetUids).call();
 
                 return programs;
             }
@@ -111,14 +110,13 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
             APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
             return new ProgramParentCall(
                     genericCallData,
-                    ProgramEndpointCall.factory(
-                            genericCallData.retrofit().create(ProgramService.class),
-                            apiCallExecutor),
-                    ProgramStageEndpointCall.factory(apiCallExecutor),
-                    ProgramRuleEndpointCall.factory(apiCallExecutor),
-                    TrackedEntityTypeCall.factory(apiCallExecutor),
-                    RelationshipTypeEndpointCall.factory(apiCallExecutor),
-                    OptionSetCall.factory(genericCallData.retrofit(), apiCallExecutor));
+                    new ProgramEndpointCallFactory(genericCallData, apiCallExecutor,
+                            genericCallData.retrofit().create(ProgramService.class)),
+                    new ProgramStageEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new ProgramRuleEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new TrackedEntityTypeCallFactory(genericCallData, apiCallExecutor),
+                    new RelationshipTypeEndpointCallFactory(genericCallData, apiCallExecutor),
+                    new OptionSetCallFactory(genericCallData, apiCallExecutor));
         }
     };
 }

@@ -27,25 +27,30 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class RelationshipInternalModule implements WipeableModule {
 
     private final DatabaseAdapter databaseAdapter;
     public final RelationshipModule publicModule;
     public final RelationshipHandler relationshipHandler;
 
-    private RelationshipInternalModule(DatabaseAdapter databaseAdapter,
-                                       RelationshipModule publicModule,
-                                       RelationshipHandler relationshipHandler) {
+    @Inject
+    RelationshipInternalModule(DatabaseAdapter databaseAdapter,
+                               RelationshipModule publicModule,
+                               RelationshipHandler relationshipHandler) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
         this.relationshipHandler = relationshipHandler;
     }
 
-    // TODO Include call RelationshipTypeEndpointCall
+    // TODO Include call RelationshipTypeEndpointCallFactory
 
     @Override
     public void wipeMetadata() {
@@ -57,17 +62,5 @@ public final class RelationshipInternalModule implements WipeableModule {
     public void wipeData() {
         RelationshipStore.create(databaseAdapter).delete();
         RelationshipItemStoreImpl.create(databaseAdapter).delete();
-    }
-
-    public static RelationshipInternalModule create(DatabaseAdapter databaseAdapter,
-                                                    DHISVersionManager versionManager) {
-        return new RelationshipInternalModule(
-                databaseAdapter,
-                RelationshipModule.create(
-                        databaseAdapter,
-                        RelationshipHandlerImpl.create(databaseAdapter, versionManager)
-                ),
-                RelationshipHandlerImpl.create(databaseAdapter, versionManager)
-        );
     }
 }

@@ -99,7 +99,9 @@ public class TrackedEntityInstanceStoreImpl extends StoreWithStateImpl implement
 
     private static final String QUERY_STATEMENT_TO_POST =
             QUERY_STATEMENT +
-                    " WHERE state = 'TO_POST' OR state = 'TO_UPDATE' OR state = 'TO_DELETE'";
+                    "WHERE state = 'TO_POST' " +
+                    "OR state = 'TO_UPDATE' " +
+                    "OR state = 'TO_DELETE'";
 
     private static final String QUERY_STATEMENT_SYNCED =
             QUERY_STATEMENT +

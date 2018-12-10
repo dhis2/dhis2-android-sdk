@@ -27,15 +27,21 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class DataElementInternalModule implements WipeableModule {
 
     private final DatabaseAdapter databaseAdapter;
     public final DataElementModule publicModule;
 
-    private DataElementInternalModule(DatabaseAdapter databaseAdapter,
+    @Inject
+    DataElementInternalModule(DatabaseAdapter databaseAdapter,
                                       DataElementModule publicModule) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
@@ -50,12 +56,5 @@ public final class DataElementInternalModule implements WipeableModule {
     @Override
     public void wipeData() {
         // Without data to wipe
-    }
-
-    public static DataElementInternalModule create(DatabaseAdapter databaseAdapter) {
-        return new DataElementInternalModule(
-                databaseAdapter,
-                DataElementModule.create(databaseAdapter)
-        );
     }
 }

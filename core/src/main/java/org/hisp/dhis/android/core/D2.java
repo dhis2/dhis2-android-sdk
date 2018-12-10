@@ -34,29 +34,32 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
+import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
-import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -86,6 +89,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
+    private final ResourceHandler resourceHandler;
+    private final GenericCallData genericCallData;
     private final D2InternalModules internalModules;
     private final WipeModule wipeModule;
 
@@ -108,7 +113,16 @@ public final class D2 {
 
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
-        this.internalModules = D2InternalModules.create(databaseAdapter, retrofit);
+
+        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
+                .apiClientDIModule(new APIClientDIModule(retrofit))
+                .build();
+
+
+        this.internalModules = d2DIComponent.internalModules();
+        this.resourceHandler = d2DIComponent.resourceHandler();
+        this.genericCallData = d2DIComponent.genericCallData();
         this.wipeModule = WipeModuleImpl.create(databaseAdapter, internalModules);
     }
 
@@ -124,7 +138,8 @@ public final class D2 {
 
     @NonNull
     public Callable<User> logIn(@NonNull String username, @NonNull String password) {
-        return UserAuthenticateCall.create(databaseAdapter, retrofit, internalModules, username, password);
+        return UserAuthenticateCall.create(databaseAdapter, retrofit, resourceHandler,
+                internalModules, username, password);
     }
 
     @NonNull
@@ -139,12 +154,12 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(databaseAdapter, retrofit, internalModules);
+        return MetadataCall.create(genericCallData, internalModules);
     }
 
     @NonNull
     public Callable<Unit> syncAggregatedData() {
-        return AggregatedDataCall.create(databaseAdapter, retrofit, internalModules);
+        return AggregatedDataCall.create(genericCallData, internalModules);
     }
 
     /**
@@ -170,8 +185,9 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<List<Event>> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
-        return EventWithLimitCall.create(databaseAdapter, retrofit, eventLimit, limitByOrgUnit);
+    public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
+        return EventWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler, eventLimit,
+                limitByOrgUnit);
     }
 
     @NonNull
@@ -185,21 +201,21 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, teiLimit,
-                limitByOrgUnit);
+    public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
+        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler,
+                teiLimit, limitByOrgUnit);
     }
 
     @NonNull
     public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
             throws D2Error {
-        return TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
+        return TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
                 .getValue(attributeUid, organisationUnitUid);
     }
 
     public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
                                                          Integer numberOfValuesToFillUp) {
-        TrackedEntityAttributeReservedValueManager.create(databaseAdapter, retrofit, internalModules)
+        TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
                 .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
     }
 

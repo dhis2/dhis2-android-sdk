@@ -33,11 +33,15 @@ import android.support.test.runner.AndroidJUnit4;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.D2DIComponent;
+import org.hisp.dhis.android.core.DaggerD2DIComponent;
+import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
@@ -59,7 +63,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
 
     private MockWebServer mockWebServer;
-    private Call<SystemInfo> systeminfoCall;
+    private Downloader<SystemInfo> systemInfoDownloaderModule;
 
     private SystemInfo systemInfoFromAPI = SystemInfoSamples.get1();
     private SystemInfo systemInfoFromDB = SystemInfoSamples.get2();
@@ -92,13 +96,17 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 .addConverterFactory(FieldsConverterFactory.create())
                 .build();
 
-        SystemInfoInternalModule systemInfoInternalModule = SystemInfoInternalModule.create(databaseAdapter(), retrofit);
-        systeminfoCall = systemInfoInternalModule.callFactory.create();
+        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
+                .apiClientDIModule(new APIClientDIModule(retrofit))
+                .build();
+
+        systemInfoDownloaderModule = d2DIComponent.internalModules().systemInfo;
     }
 
     @Test
     public void persist_system_info_when_call() throws Exception {
-        systeminfoCall.call();
+        systemInfoDownloaderModule.download().call();
         Cursor systemInfoCursor = getCursor();
         assertSystemInfoInCursor(systemInfoCursor, systemInfoFromAPI);
     }
@@ -109,7 +117,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         Cursor cursorPreCall = getCursor();
         assertSystemInfoInCursor(cursorPreCall, systemInfoFromDB);
 
-        systeminfoCall.call();
+        systemInfoDownloaderModule.download().call();
         Cursor cursorPostCall = getCursor();
         assertSystemInfoInCursor(cursorPostCall, systemInfoFromAPI);
     }

@@ -11,9 +11,8 @@ public class EventQueryShould {
 
     @Test
     public void create_event_query_successfully() {
-        EventQuery eventQuery = EventQuery.Builder
-                .create()
-                .withPageSize(50)
+        EventQuery eventQuery = EventQuery.builder()
+                .pageSize(50)
                 .build();
 
         assertThat(eventQuery, is(not(nullValue())));

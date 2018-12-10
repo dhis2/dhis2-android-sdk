@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
@@ -37,11 +35,7 @@ public final class DataValueModule {
 
     public final DataValueCollectionRepository dataValues;
 
-    private DataValueModule(DataValueCollectionRepository dataValueCollectionRepository) {
+    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository) {
         this.dataValues = dataValueCollectionRepository;
-    }
-
-    public static DataValueModule create(DatabaseAdapter databaseAdapter) {
-        return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
     }
 }

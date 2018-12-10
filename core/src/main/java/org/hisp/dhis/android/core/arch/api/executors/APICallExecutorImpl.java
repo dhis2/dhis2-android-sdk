@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.executors;
 
-import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
@@ -53,8 +52,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
     private final ObjectStore<D2Error> errorStore;
 
-    @VisibleForTesting
-    APICallExecutorImpl(ObjectStore<D2Error> errorStore) {
+    public APICallExecutorImpl(ObjectStore<D2Error> errorStore) {
         this.errorStore = errorStore;
     }
 

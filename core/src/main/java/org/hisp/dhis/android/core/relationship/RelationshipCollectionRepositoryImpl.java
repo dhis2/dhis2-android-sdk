@@ -181,7 +181,7 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
         return null;
     }
 
-    static RelationshipCollectionRepositoryImpl create(DatabaseAdapter databaseAdapter,
+    static RelationshipCollectionRepository create(DatabaseAdapter databaseAdapter,
                                                        RelationshipHandler relationshipHandler) {
         RelationshipItemStore itemStore = RelationshipItemStoreImpl.create(databaseAdapter);
         PojoBuilder<RelationshipItem, RelationshipItemModel> itemPojoBuilder = new RelationshipItemPojoBuilder();

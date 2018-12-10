@@ -3,7 +3,6 @@ package org.hisp.dhis.android.core.wipe;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
@@ -29,6 +28,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorTypeStore;
 import org.hisp.dhis.android.core.legendset.LegendSetStore;
 import org.hisp.dhis.android.core.legendset.LegendStore;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.OptionSetStore;
 import org.hisp.dhis.android.core.option.OptionStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupStore;
@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
-import org.hisp.dhis.android.core.settings.SystemSettingStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
@@ -55,6 +54,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
+import org.hisp.dhis.android.core.user.AuthorityStore;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserRoleStoreImpl;
@@ -66,19 +66,17 @@ import java.util.concurrent.Callable;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public final class WipeModuleImpl implements WipeModule {
-    private final DatabaseAdapter databaseAdapter;
-
     @NonNull
     private final List<DeletableStore> metadataStores;
     private final List<DeletableStore> dataStores;
     private final List<WipeableModule> wipeableModules;
-    private final D2CallExecutor executor = new D2CallExecutor();
+    private final D2CallExecutor d2CallExecutor;
 
-    WipeModuleImpl(@NonNull DatabaseAdapter databaseAdapter,
-                   @NonNull List<DeletableStore> metadataStores,
+    WipeModuleImpl(@NonNull List<DeletableStore> metadataStores,
                    @NonNull List<DeletableStore> dataStores,
+                   @NonNull D2CallExecutor d2CallExecutor,
                    List<WipeableModule> wipeableModules) {
-        this.databaseAdapter = databaseAdapter;
+        this.d2CallExecutor = d2CallExecutor;
         this.metadataStores = metadataStores;
         this.dataStores = dataStores;
         this.wipeableModules = wipeableModules;
@@ -86,7 +84,7 @@ public final class WipeModuleImpl implements WipeModule {
 
     @Override
     public Unit wipeEverything() throws D2Error {
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() {
                 wipeMetadataInternal();
@@ -99,7 +97,7 @@ public final class WipeModuleImpl implements WipeModule {
 
     @Override
     public Unit wipeMetadata() throws D2Error {
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() {
                 wipeMetadataInternal();
@@ -111,7 +109,7 @@ public final class WipeModuleImpl implements WipeModule {
 
     @Override
     public Unit wipeData() throws D2Error {
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() {
                 wipeDataInternal();
@@ -148,6 +146,7 @@ public final class WipeModuleImpl implements WipeModule {
                 UserCredentialsStore.create(databaseAdapter),
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
+                AuthorityStore.create(databaseAdapter),
                 OrganisationUnitStore.create(databaseAdapter),
                 new ResourceStoreImpl(databaseAdapter),
                 new UserRoleStoreImpl(databaseAdapter),
@@ -183,7 +182,6 @@ public final class WipeModuleImpl implements WipeModule {
                 LegendSetStore.create(databaseAdapter),
 
                 ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                SystemSettingStore.create(databaseAdapter),
                 SectionStore.create(databaseAdapter),
                 SectionDataElementLinkStore.create(databaseAdapter),
                 SectionGreyedFieldsLinkStore.create(databaseAdapter),
@@ -206,6 +204,7 @@ public final class WipeModuleImpl implements WipeModule {
                 DataSetCompleteRegistrationStore.create(databaseAdapter)
         );
 
-        return new WipeModuleImpl(databaseAdapter, metadataStores, dataStores, internalModules.getWipeableModules());
+        return new WipeModuleImpl(metadataStores, dataStores, new D2CallExecutor(databaseAdapter),
+                internalModules.getWipeableModules());
     }
 }

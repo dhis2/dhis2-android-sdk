@@ -3,14 +3,14 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -64,11 +64,11 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
     public Void call() throws D2Error {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor();
+        final D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        return executor.executeD2CallTransactionally(databaseAdapter, new Callable<Void>() {
+        return executor.executeD2CallTransactionally(new Callable<Void>() {
             @Override
-            public Void call() throws D2Error {
+            public Void call() throws Exception {
                 trackedEntityInstanceHandler.handleMany(trackedEntityInstances, true);
 
                 Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
@@ -80,7 +80,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
                             searchOrganisationUnitOnDemandCallFactory.create(
                                 databaseAdapter, retrofit, searchOrgUnitUids,
                                 User.builder().uid(authenticatedUserModel.user()).build(), apiCallExecutor);
-                    executor.executeD2Call(organisationUnitCall);
+                    organisationUnitCall.call();
                 }
 
                 foreignKeyCleaner.cleanForeignKeyErrors();

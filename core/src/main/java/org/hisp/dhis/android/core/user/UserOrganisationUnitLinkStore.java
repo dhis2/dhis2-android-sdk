@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
@@ -101,8 +102,10 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
     }
 
     @Override
-    public List<String> queryRootOrganisationUnitUids() throws RuntimeException {
+    public List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException {
         return selectStringColumnsWhereClause(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-                        UserOrganisationUnitLinkModel.Columns.ROOT + " = 1");
+                        UserOrganisationUnitLinkModel.Columns.ROOT + " = 1 " + "AND "
+                                + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " = '"
+                                + OrganisationUnit.Scope.SCOPE_DATA_CAPTURE + "'");
     }
 }

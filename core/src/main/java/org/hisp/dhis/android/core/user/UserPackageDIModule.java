@@ -35,6 +35,7 @@ import retrofit2.Retrofit;
 
 @Module(includes = {
         AuthenticatedUserEntityDIModule.class,
+        AuthorityEntityDIModule.class,
         UserCredentialsEntityDIModule.class,
         UserEntityDIModule.class,
         UserOrganisationUnitLinkEntityDIModule.class

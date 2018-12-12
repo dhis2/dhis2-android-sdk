@@ -36,7 +36,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Query;
 
-public interface UserService {
+interface UserService {
 
     @GET("me")
     Call<User> authenticate(@Header("Authorization") String credentials,

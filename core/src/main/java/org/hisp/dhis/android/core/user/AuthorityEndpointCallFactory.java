@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
@@ -43,9 +44,14 @@ import dagger.Reusable;
 @Reusable
 final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> {
 
+    private final SyncHandler<Authority> handler;
+
     @Inject
-    AuthorityEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    AuthorityEndpointCallFactory(GenericCallData data,
+                                 APICallExecutor apiCallExecutor,
+                                 SyncHandler<Authority> handler) {
         super(data, apiCallExecutor);
+        this.handler = handler;
     }
 
     @Override
@@ -62,8 +68,6 @@ final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> 
 
     @Override
     protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(
-                data.databaseAdapter(),
-                AuthorityHandler.create(data.databaseAdapter()));
+        return new AuthorityCallProcessor(data.databaseAdapter(), handler);
     }
 }

@@ -35,7 +35,7 @@ import java.io.IOException;
 
 import retrofit2.Response;
 
-public final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
 
     @Override
     public D2ErrorCode catchError(Response<?> response) throws IOException {

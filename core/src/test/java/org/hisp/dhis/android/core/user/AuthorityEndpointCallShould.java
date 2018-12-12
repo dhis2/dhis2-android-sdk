@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
@@ -54,6 +55,9 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     private AuthorityService authorityService;
 
     @Mock
+    private SyncHandler<Authority> handler;
+
+    @Mock
     private retrofit2.Call<List<String>> retrofitCall;
 
     @Mock
@@ -68,7 +72,7 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
         super.setUp();
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        endpointCall = new AuthorityEndpointCallFactory(genericCallData, apiCallExecutor).create();
+        endpointCall = new AuthorityEndpointCallFactory(genericCallData, apiCallExecutor, handler).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(authorityService.getAuthorities()).thenReturn(retrofitCall);

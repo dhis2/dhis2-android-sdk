@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -30,14 +30,25 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class AuthorityHandler {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private AuthorityHandler() {
+@Module
+public final class AuthorityEntityDIModule {
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<Authority> store(DatabaseAdapter databaseAdapter) {
+        return AuthorityStore.create(databaseAdapter);
     }
 
-    public static SyncHandler<Authority> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(AuthorityStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    SyncHandler<Authority> handler(ObjectWithoutUidStore<Authority> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

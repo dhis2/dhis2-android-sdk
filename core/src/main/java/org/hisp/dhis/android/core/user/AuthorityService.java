@@ -33,7 +33,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface AuthorityService {
+interface AuthorityService {
 
     @GET("me/authorization")
     Call<List<String>> getAuthorities();

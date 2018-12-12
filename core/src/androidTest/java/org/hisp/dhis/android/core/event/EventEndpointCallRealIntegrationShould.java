@@ -64,7 +64,7 @@ public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private boolean verifyAtLeastOneEventWithOptionCombo() {
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+        EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
         for(Event event : downloadedEvents){
@@ -76,7 +76,7 @@ public class EventEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedEvents(int numEvents) {
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+        EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 

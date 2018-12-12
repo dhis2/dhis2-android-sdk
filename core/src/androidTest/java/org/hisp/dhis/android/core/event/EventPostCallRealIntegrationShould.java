@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.event;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.State;
@@ -51,7 +52,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         super.setUp();
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
 
-        eventStore = new EventStoreImpl(databaseAdapter());
+        eventStore = EventStoreImpl.create(databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         orgUnitUid = "ImspTQPwCqd";
@@ -130,11 +131,12 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     private void createDummyDataToPost(String orgUnitUid, String programUid,
             String programStageUid, String eventUid,
             String dataElementUid, String attributeOptionCombo, String trackedEntityInstance) {
-        eventStore.insert(
-                eventUid, null, new Date(), new Date(), null, null,
-                EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                new Date(), new Date(), new Date(), State.TO_POST, attributeOptionCombo, trackedEntityInstance
-        );
+
+        eventStore.insert(Event.builder().uid(eventUid).created(new Date()).lastUpdated(new Date())
+                .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
+                .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(new Date())
+                .completedDate(new Date()).dueDate(new Date()).state(State.TO_POST)
+                .attributeOptionCombo(attributeOptionCombo).trackedEntityInstance(trackedEntityInstance).build());
 
         TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
                 .event(eventUid)
@@ -150,8 +152,6 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void assertThatEventPushedIsDownloaded(Event pushedEvent) {
-        eventStore = new EventStoreImpl(databaseAdapter());
-
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
         assertTrue(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents));
@@ -162,23 +162,17 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
                 d2.retrofit(), d2.databaseAdapter(), orgUnitUid, 50, categoryComboUID);
 
         List<Event> events = eventEndpointCall.call();
-        eventStore = new EventStoreImpl(databaseAdapter());
 
         for (Event event : events) {
-            eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(), event.status(), event.coordinates().latitude().toString(),
-                    event.coordinates().longitude().toString(), event.program(), event.programStage(), event.organisationUnit(),
-                    event.eventDate(), event.completedDate(), event.dueDate(), State.SYNCED,
-                    event.attributeOptionCombo(), event.trackedEntityInstance());
+            eventStore.insert(event);
         }
 
         assertThat(events.isEmpty()).isFalse();
     }
 
     private Event getEventFromDB() {
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
         Event event = null;
-        List<Event> storedEvents = eventStore.queryAll();
+        List<Event> storedEvents = eventStore.selectAll();
         for(Event storedEvent : storedEvents) {
             if(storedEvent.uid().equals(eventUid1)) {
                 event = storedEvent;

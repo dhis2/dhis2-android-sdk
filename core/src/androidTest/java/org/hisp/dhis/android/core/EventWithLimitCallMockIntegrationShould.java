@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +56,7 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
 
         d2.downloadSingleEvents(eventLimitByOrgUnit, false).call();
 
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+        EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 

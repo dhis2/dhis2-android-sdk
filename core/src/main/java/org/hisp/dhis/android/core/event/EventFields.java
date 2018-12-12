@@ -59,7 +59,6 @@ public final class EventFields {
                     fh.<String>field(ENROLLMENT),
                     fh.<String>field(CREATED),
                     fh.<String>field(LAST_UPDATED),
-                    fh.<String>field(UID),
                     fh.<EventStatus>field(STATUS),
                     fh.<Coordinates>field(COORDINATE),
                     fh.<String>field(PROGRAM),

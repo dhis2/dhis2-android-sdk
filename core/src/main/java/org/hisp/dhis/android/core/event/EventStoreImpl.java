@@ -48,7 +48,9 @@ import java.util.Map;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> implements EventStore {
+public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> implements EventStore {
+
+    private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment ISNULL";
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementWrapper statementWrapper,
@@ -57,8 +59,6 @@ public class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> 
                            CursorModelFactory<Event> modelFactory) {
         super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
     }
-
-    private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment ISNULL";
 
     @Override
             public Map<String, List<  Event>> queryEventsAttachedToEnrollmentToPost() {

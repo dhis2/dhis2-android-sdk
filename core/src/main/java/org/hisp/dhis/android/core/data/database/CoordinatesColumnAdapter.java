@@ -41,10 +41,10 @@ public class CoordinatesColumnAdapter implements ColumnTypeAdapter<Coordinates> 
     @Override
     public Coordinates fromCursor(Cursor cursor, String columnName) {
         int latitudeColumnIndex = cursor.getColumnIndex(EventTableInfo.Columns.LATITUDE);
-        Double latitude = (latitudeColumnIndex == -1 || cursor.isNull(latitudeColumnIndex)) ?
+        Double latitude = latitudeColumnIndex == -1 || cursor.isNull(latitudeColumnIndex) ?
                 null : Double.parseDouble(cursor.getString(latitudeColumnIndex));
         int longitudeColumnIndex = cursor.getColumnIndex(EventTableInfo.Columns.LONGITUDE);
-        Double longitude = (longitudeColumnIndex == -1 || cursor.isNull(longitudeColumnIndex)) ?
+        Double longitude = longitudeColumnIndex == -1 || cursor.isNull(longitudeColumnIndex) ?
                 null : Double.parseDouble(cursor.getString(longitudeColumnIndex));
 
         return latitude == null && longitude == null ? null : Coordinates.create(latitude, longitude);

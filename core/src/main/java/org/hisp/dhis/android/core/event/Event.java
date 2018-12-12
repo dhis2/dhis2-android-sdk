@@ -40,7 +40,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
@@ -55,7 +54,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_Event.Builder.class)
-public abstract class Event extends BaseDataModel implements Model, ObjectWithDeleteInterface, ObjectWithUidInterface {
+public abstract class Event extends BaseDataModel implements ObjectWithDeleteInterface, ObjectWithUidInterface {
 
     @Override
     @Nullable

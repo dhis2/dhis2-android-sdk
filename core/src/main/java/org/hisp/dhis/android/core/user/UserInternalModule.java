@@ -32,27 +32,31 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class UserInternalModule implements WipeableModule {
+public final class UserInternalModule implements WipeableModule, UserDownloadModule {
 
     private final DatabaseAdapter databaseAdapter;
     public final UserModule publicModule;
 
-    // TODO delete after migrating MetadataCall to Dagger
-    public final Provider<Call<User>> userCallProvider;
+    private final Provider<UserCall> userCallProvider;
+    private final AuthorityEndpointCallFactory authorityEndpointCallFactory;
 
     @Inject
     UserInternalModule(DatabaseAdapter databaseAdapter,
                        UserModule publicModule,
-                       Provider<Call<User>> userCallProvider) {
+                       Provider<UserCall> userCallProvider,
+                       AuthorityEndpointCallFactory authorityEndpointCallFactory) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
         this.userCallProvider = userCallProvider;
+        this.authorityEndpointCallFactory = authorityEndpointCallFactory;
     }
 
     @Override
@@ -68,5 +72,15 @@ public final class UserInternalModule implements WipeableModule {
     @Override
     public void wipeData() {
         // No data to wipe
+    }
+
+    @Override
+    public Call<User> downloadUser() {
+        return userCallProvider.get();
+    }
+
+    @Override
+    public Call<List<Authority>> downloadAuthority() {
+        return authorityEndpointCallFactory.create();
     }
 }

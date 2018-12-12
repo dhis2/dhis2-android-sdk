@@ -53,6 +53,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         reservedValueEndpointCall.call();
     }
 
+    // @Test
     public void download_and_persist_reserved_values() throws Exception {
         login();
         reservedValueEndpointCall.call();

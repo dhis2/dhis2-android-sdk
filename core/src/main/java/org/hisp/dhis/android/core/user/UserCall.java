@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import javax.inject.Inject;
 
-public final class UserCall extends SyncCall<User> {
+final class UserCall extends SyncCall<User> {
     private final GenericCallData genericCallData;
     private final APICallExecutor apiCallExecutor;
     private final UserService userService;

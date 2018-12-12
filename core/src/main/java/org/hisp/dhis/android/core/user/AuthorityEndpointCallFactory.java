@@ -28,27 +28,42 @@
 
 package org.hisp.dhis.android.core.user;
 
-import dagger.Module;
-import dagger.Provides;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.common.GenericCallData;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        AuthenticatedUserEntityDIModule.class,
-        UserCredentialsEntityDIModule.class,
-        UserEntityDIModule.class,
-        UserOrganisationUnitLinkEntityDIModule.class
-})
-public final class UserPackageDIModule {
+@Reusable
+final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> {
 
-    @Provides
-    @Reusable
-    UserService service(Retrofit retrofit) {
-        return retrofit.create(UserService.class);
+    @Inject
+    AuthorityEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+        super(data, apiCallExecutor);
     }
 
-    @Provides
-    UserDownloadModule downloadModule(UserInternalModule internalModule) {
-        return internalModule;
+    @Override
+    protected CallFetcher<Authority> fetcher() {
+        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
+
+        return new AuthorityCallFetcher(apiCallExecutor) {
+            @Override
+            protected retrofit2.Call<List<String>> getCall() {
+                return authorityService.getAuthorities();
+            }
+        };
+    }
+
+    @Override
+    protected CallProcessor<Authority> processor() {
+        return new AuthorityCallProcessor(
+                data.databaseAdapter(),
+                AuthorityHandler.create(data.databaseAdapter()));
     }
 }

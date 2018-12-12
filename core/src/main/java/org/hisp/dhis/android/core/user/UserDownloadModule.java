@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,36 +28,11 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.calls.Call;
 
 import java.util.List;
 
-public final class AuthorityEndpointCall extends ListCallFactoryImpl<Authority> {
-
-    public AuthorityEndpointCall(GenericCallData data, APICallExecutor apiCallExecutor) {
-        super(data, apiCallExecutor);
-    }
-
-    @Override
-    protected CallFetcher<Authority> fetcher() {
-        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
-
-        return new AuthorityCallFetcher(apiCallExecutor) {
-            @Override
-            protected retrofit2.Call<List<String>> getCall() {
-                return authorityService.getAuthorities();
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(
-                data.databaseAdapter(),
-                AuthorityHandler.create(data.databaseAdapter()));
-    }
+public interface UserDownloadModule {
+    Call<User> downloadUser();
+    Call<List<Authority>> downloadAuthority();
 }

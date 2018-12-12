@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -57,14 +56,11 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.Authority;
-import org.hisp.dhis.android.core.user.AuthorityEndpointCall;
 import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserDownloadModule;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import javax.inject.Provider;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public class MetadataCall extends SyncCall<Unit> {
@@ -73,8 +69,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
     private final Downloader<SystemInfo> systemInfoDownloader;
     private final Downloader<SystemSetting> systemSettingDownloader;
-    private final Provider<Call<User>> userCallProvider;
-    private final ListCallFactory<Authority> authorityCallFactory;
+    private final UserDownloadModule userDownloadModule;
     private final UidsCallFactory<Category> categoryCallFactory;
     private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
     private final CategoryComboUidsSeeker categoryComboUidsSeeker;
@@ -87,8 +82,7 @@ public class MetadataCall extends SyncCall<Unit> {
     public MetadataCall(@NonNull GenericCallData genericCallData,
                         @NonNull Downloader<SystemInfo> systemInfoDownloader,
                         @NonNull Downloader<SystemSetting> systemSettingDownloader,
-                        @NonNull Provider<Call<User>> userCallProvider,
-                        @NonNull ListCallFactory<Authority> authorityCallFactory,
+                        @NonNull UserDownloadModule userDownloadModule,
                         @NonNull UidsCallFactory<Category> categoryCallFactory,
                         @NonNull UidsCallFactory<CategoryCombo> categoryComboCallFactory,
                         @NonNull CategoryComboUidsSeeker categoryComboUidsSeeker,
@@ -100,8 +94,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.genericCallData = genericCallData;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
-        this.userCallProvider = userCallProvider;
-        this.authorityCallFactory = authorityCallFactory;
+        this.userDownloadModule = userDownloadModule;
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
         this.categoryComboUidsSeeker = categoryComboUidsSeeker;
@@ -125,9 +118,9 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 systemSettingDownloader.download().call();
 
-                User user = userCallProvider.get().call();
+                User user = userDownloadModule.downloadUser().call();
 
-                authorityCallFactory.create().call();
+                userDownloadModule.downloadAuthority().call();
 
                 List<Program> programs = programParentCallFactory.create(genericCallData).call();
 
@@ -158,8 +151,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 genericCallData,
                 internalModules.systemInfo,
                 internalModules.systemSetting,
-                internalModules.userModule.userCallProvider,
-                new AuthorityEndpointCall(genericCallData, apiCallExecutor),
+                internalModules.userModule,
                 new CategoryEndpointCallFactory(genericCallData, apiCallExecutor),
                 new CategoryComboEndpointCallFactory(genericCallData, apiCallExecutor),
                 new CategoryComboUidsSeeker(genericCallData.databaseAdapter()),

@@ -25,31 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated.data;
 
-package org.hisp.dhis.android.core.datavalue;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.Unit;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
 
-@Module
-public final class DataValueDIModule {
+@Reusable
+public final class AggregatedDataModule {
 
-    @Provides
-    @Reusable
-    DataValueModule module(DatabaseAdapter databaseAdapter) {
-        return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
+    private final Provider<AggregatedDataCall> aggregatedDataCallProvider;
+
+    @Inject
+    AggregatedDataModule(Provider<AggregatedDataCall> aggregatedDataCallProvider) {
+        this.aggregatedDataCallProvider = aggregatedDataCallProvider;
     }
 
-    @Provides
-    @Reusable
-    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
-                                                                     APICallExecutor apiCallExecutor) {
-        return new DataValueEndpointCallFactory(data, apiCallExecutor);
+    public Call<Unit> download() {
+        return aggregatedDataCallProvider.get();
     }
 }

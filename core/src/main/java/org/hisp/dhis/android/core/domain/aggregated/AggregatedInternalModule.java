@@ -25,31 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.domain.aggregated;
 
-package org.hisp.dhis.android.core.datavalue;
+import javax.inject.Inject;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Module
-public final class DataValueDIModule {
+@Reusable
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+public final class AggregatedInternalModule {
 
-    @Provides
-    @Reusable
-    DataValueModule module(DatabaseAdapter databaseAdapter) {
-        return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
-    }
+    public final AggregatedModule publicModule;
 
-    @Provides
-    @Reusable
-    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
-                                                                     APICallExecutor apiCallExecutor) {
-        return new DataValueEndpointCallFactory(data, apiCallExecutor);
+    @Inject
+    AggregatedInternalModule(AggregatedModule publicModule) {
+        this.publicModule = publicModule;
     }
 }

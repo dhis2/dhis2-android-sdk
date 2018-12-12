@@ -26,11 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -38,18 +39,18 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class DataValueDIModule {
+public final class DataSetDIModule {
 
     @Provides
     @Reusable
-    DataValueModule module(DatabaseAdapter databaseAdapter) {
-        return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
+    IdentifiableObjectStore<DataSet> dataSetStore(DatabaseAdapter databaseAdapter) {
+        return DataSetStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
-                                                                     APICallExecutor apiCallExecutor) {
-        return new DataValueEndpointCallFactory(data, apiCallExecutor);
+    QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
+    dataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+        return new DataSetCompleteRegistrationCallFactory(genericCallData, apiCallExecutor);
     }
 }

@@ -35,7 +35,6 @@ import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.calls.AggregatedDataCall;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
@@ -52,6 +51,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
+import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.ImportSummary;
@@ -93,6 +93,7 @@ public final class D2 {
     private final GenericCallData genericCallData;
     private final D2InternalModules internalModules;
     private final WipeModule wipeModule;
+    private final D2DIComponent d2DIComponent;
 
     @VisibleForTesting
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
@@ -114,7 +115,7 @@ public final class D2 {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
 
-        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
+        this.d2DIComponent = DaggerD2DIComponent.builder()
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();
@@ -158,8 +159,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Unit> syncAggregatedData() {
-        return AggregatedDataCall.create(genericCallData, internalModules);
+    public AggregatedModule aggregatedModule() {
+        return d2DIComponent.aggregatedModule();
     }
 
     /**

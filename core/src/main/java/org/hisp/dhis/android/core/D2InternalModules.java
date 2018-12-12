@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
+import org.hisp.dhis.android.core.dataset.DataSetInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
@@ -50,6 +51,7 @@ public final class D2InternalModules {
     public final SystemSettingInternalModule systemSetting;
     public final RelationshipInternalModule relationshipModule;
     public final CategoryInternalModule categoryModule;
+    public final DataSetInternalModule dataSetModule;
     public final DataElementInternalModule dataElementModule;
     public final DataValueInternalModule dataValueModule;
     public final MaintenanceInternalModule maintenanceModule;
@@ -59,6 +61,7 @@ public final class D2InternalModules {
                              SystemSettingInternalModule systemSetting,
                              RelationshipInternalModule relationshipModule,
                              CategoryInternalModule categoryModule,
+                             DataSetInternalModule dataSetModule,
                              DataElementInternalModule dataElementModule,
                              DataValueInternalModule dataValueModule,
                              MaintenanceInternalModule maintenanceModule) {
@@ -66,13 +69,14 @@ public final class D2InternalModules {
         this.systemSetting = systemSetting;
         this.relationshipModule = relationshipModule;
         this.categoryModule = categoryModule;
+        this.dataSetModule = dataSetModule;
         this.dataElementModule = dataElementModule;
         this.dataValueModule = dataValueModule;
         this.maintenanceModule = maintenanceModule;
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataElementModule,
-                dataValueModule, maintenanceModule);
+        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataSetModule,
+                dataElementModule, dataValueModule, maintenanceModule);
     }
 }

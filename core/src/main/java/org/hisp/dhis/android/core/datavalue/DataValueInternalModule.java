@@ -44,7 +44,7 @@ public final class DataValueInternalModule implements WipeableModule {
 
     @Inject
     DataValueInternalModule(DatabaseAdapter databaseAdapter,
-                                    DataValueModule publicModule) {
+                            DataValueModule publicModule) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
     }

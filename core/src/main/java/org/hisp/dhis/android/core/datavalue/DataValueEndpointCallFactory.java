@@ -38,16 +38,13 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-import javax.inject.Inject;
-
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
+final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
 
     private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
 
-    @Inject
-    public DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
         super(data, apiCallExecutor);
     }
 

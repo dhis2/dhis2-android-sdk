@@ -9,15 +9,6 @@ import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataset.DataInputPeriodLinkStore;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationStore;
-import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkStore;
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkStore;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.dataset.DataSetStore;
-import org.hisp.dhis.android.core.dataset.SectionDataElementLinkStore;
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkStore;
-import org.hisp.dhis.android.core.dataset.SectionStore;
 import org.hisp.dhis.android.core.datavalue.DataValueStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.enrollment.note.NoteStore;
@@ -168,9 +159,6 @@ public final class WipeModuleImpl implements WipeModule {
                 TrackedEntityTypeStore.create(databaseAdapter),
                 OrganisationUnitProgramLinkStore.create(databaseAdapter),
 
-                DataSetStore.create(databaseAdapter),
-                DataSetDataElementLinkStore.create(databaseAdapter),
-                DataSetOrganisationUnitLinkStore.create(databaseAdapter),
                 IndicatorStore.create(databaseAdapter),
 
                 IndicatorTypeStore.create(databaseAdapter),
@@ -182,12 +170,6 @@ public final class WipeModuleImpl implements WipeModule {
                 LegendSetStore.create(databaseAdapter),
 
                 ProgramIndicatorLegendSetLinkStore.create(databaseAdapter),
-                SectionStore.create(databaseAdapter),
-                SectionDataElementLinkStore.create(databaseAdapter),
-                SectionGreyedFieldsLinkStore.create(databaseAdapter),
-                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
-                DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter),
-                DataInputPeriodLinkStore.create(databaseAdapter),
                 OrganisationUnitGroupStore.create(databaseAdapter),
                 OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)
         );
@@ -200,8 +182,7 @@ public final class WipeModuleImpl implements WipeModule {
                 new EventStoreImpl(databaseAdapter),
                 DataValueStore.create(databaseAdapter),
                 NoteStore.create(databaseAdapter),
-                TrackedEntityAttributeReservedValueStore.create(databaseAdapter),
-                DataSetCompleteRegistrationStore.create(databaseAdapter)
+                TrackedEntityAttributeReservedValueStore.create(databaseAdapter)
         );
 
         return new WipeModuleImpl(metadataStores, dataStores, new D2CallExecutor(databaseAdapter),

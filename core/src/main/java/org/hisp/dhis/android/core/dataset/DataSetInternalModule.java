@@ -25,31 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset;
 
-package org.hisp.dhis.android.core.datavalue;
-
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class DataValueDIModule {
+@Reusable
+public final class DataSetInternalModule implements WipeableModule {
 
-    @Provides
-    @Reusable
-    DataValueModule module(DatabaseAdapter databaseAdapter) {
-        return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
+    private final DatabaseAdapter databaseAdapter;
+
+    @Inject
+    DataSetInternalModule(DatabaseAdapter databaseAdapter) {
+        this.databaseAdapter = databaseAdapter;
     }
 
-    @Provides
-    @Reusable
-    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
-                                                                     APICallExecutor apiCallExecutor) {
-        return new DataValueEndpointCallFactory(data, apiCallExecutor);
+    @Override
+    public void wipeMetadata() {
+        DataInputPeriodLinkStore.create(databaseAdapter).delete();
+        DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter).delete();
+        DataSetDataElementLinkStore.create(databaseAdapter).delete();
+        DataSetOrganisationUnitLinkStore.create(databaseAdapter).delete();
+        DataSetStore.create(databaseAdapter).delete();
+        SectionDataElementLinkStore.create(databaseAdapter).delete();
+        SectionStore.create(databaseAdapter).delete();
+        SectionGreyedFieldsLinkStore.create(databaseAdapter).delete();
+    }
+
+    @Override
+    public void wipeData() {
+        DataSetCompleteRegistrationStore.create(databaseAdapter).delete();
     }
 }

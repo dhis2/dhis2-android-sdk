@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -61,6 +62,12 @@ public final class SystemInfoDIModule {
 
     @Provides
     @Reusable
+    Downloader<SystemInfo> downloader(SystemInfoInternalModule internalModule) {
+        return internalModule;
+    }
+
+    @Provides
+    @Reusable
     SystemInfoService service(Retrofit retrofit) {
         return retrofit.create(SystemInfoService.class);
     }
@@ -73,7 +80,7 @@ public final class SystemInfoDIModule {
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
+    ObjectWithoutUidStore<SystemInfo> store(DatabaseAdapter databaseAdapter) {
         return SystemInfoStore.create(databaseAdapter);
     }
 }

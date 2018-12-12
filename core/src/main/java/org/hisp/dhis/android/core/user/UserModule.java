@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,13 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,38 +39,25 @@ import javax.inject.Provider;
 import dagger.Reusable;
 
 @Reusable
-public final class UserInternalModule implements WipeableModule {
+public final class UserModule {
 
-    private final DatabaseAdapter databaseAdapter;
-    public final UserModule publicModule;
-
-    // TODO delete when Dagger migration is finished
-    public final Provider<Call<User>> userCallProvider;
-    public final SyncHandler<User> userHandler;
+    private final Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider;
+    private final Provider<LogOutUserCallable> logoutCallCallProvider;
 
     @Inject
-    UserInternalModule(DatabaseAdapter databaseAdapter,
-                       UserModule publicModule,
-                       Provider<Call<User>> userCallProvider,
-                       SyncHandler<User> userHandler) {
-        this.databaseAdapter = databaseAdapter;
-        this.publicModule = publicModule;
-        this.userCallProvider = userCallProvider;
-        this.userHandler = userHandler;
+    UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
+               Provider<LogOutUserCallable> logoutCallCallProvider) {
+        this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
+        this.logoutCallCallProvider = logoutCallCallProvider;
     }
 
-    @Override
-    public void wipeMetadata() {
-        UserStore.create(databaseAdapter).delete();
-        UserCredentialsStore.create(databaseAdapter).delete();
-        UserOrganisationUnitLinkStore.create(databaseAdapter).delete();
-        AuthenticatedUserStore.create(databaseAdapter).delete();
-        AuthorityStore.create(databaseAdapter).delete();
-        new UserRoleStoreImpl(databaseAdapter).delete();
+    @NonNull
+    public Callable<Unit> logOut() {
+        return logoutCallCallProvider.get();
     }
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    @NonNull
+    public Callable<Boolean> isLogged() {
+        return isUserLoggedInCallProvider.get();
     }
 }

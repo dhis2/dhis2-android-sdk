@@ -39,7 +39,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     // @Test
     public void download_data_sets() throws Exception {
-        if (!d2.isUserLoggedIn().call()) {
+        if (!d2.userModule().isLogged().call()) {
             d2.logIn("android", "Android123").call();
         }
 

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -82,5 +83,11 @@ public final class UserDIModule {
     @Reusable
     IdentifiableObjectStore<UserCredentials> userCredentialsStore(DatabaseAdapter databaseAdapter) {
         return UserCredentialsStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore(DatabaseAdapter databaseAdapter) {
+        return AuthenticatedUserStore.create(databaseAdapter);
     }
 }

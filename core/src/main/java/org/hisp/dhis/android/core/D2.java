@@ -67,10 +67,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
-import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
-import org.hisp.dhis.android.core.user.LogOutUserCallable;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserAuthenticateCall;
+import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
@@ -144,13 +143,8 @@ public final class D2 {
     }
 
     @NonNull
-    public Callable<Boolean> isUserLoggedIn() {
-       return IsUserLoggedInCallable.create(databaseAdapter);
-    }
-
-    @NonNull
-    public Callable<Unit> logout() {
-        return LogOutUserCallable.create(databaseAdapter);
+    public UserModule userModule() {
+        return internalModules.userModule.publicModule;
     }
 
     @NonNull

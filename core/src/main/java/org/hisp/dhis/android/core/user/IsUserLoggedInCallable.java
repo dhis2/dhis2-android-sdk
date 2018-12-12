@@ -31,26 +31,24 @@ package org.hisp.dhis.android.core.user;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.concurrent.Callable;
 
-public final class IsUserLoggedInCallable implements Callable<Boolean> {
+import javax.inject.Inject;
+
+final class IsUserLoggedInCallable implements Callable<Boolean> {
 
     @NonNull
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
 
+    @Inject
     IsUserLoggedInCallable(@NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public Boolean call() {
         AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
         return authenticatedUser != null && authenticatedUser.credentials() != null;
-    }
-
-    public static IsUserLoggedInCallable create(DatabaseAdapter databaseAdapter) {
-        return new IsUserLoggedInCallable(AuthenticatedUserStore.create(databaseAdapter));
     }
 }

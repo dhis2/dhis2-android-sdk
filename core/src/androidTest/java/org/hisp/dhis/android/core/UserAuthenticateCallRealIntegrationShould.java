@@ -25,7 +25,7 @@ public class UserAuthenticateCallRealIntegrationShould extends AbsStoreTestCase 
 
         d2.syncMetaData().call();
 
-        d2.logout().call();
+        d2.userModule().logOut().call();
         d2.logIn("android", "Android123").call();
     }
 
@@ -35,7 +35,7 @@ public class UserAuthenticateCallRealIntegrationShould extends AbsStoreTestCase 
 
         d2.syncMetaData().call();
 
-        d2.logout().call();
+        d2.userModule().logOut().call();
         d2.logIn("admin", "district").call();
     }
 
@@ -49,7 +49,7 @@ public class UserAuthenticateCallRealIntegrationShould extends AbsStoreTestCase 
 
         d2 = D2Factory.create("https://play.dhis2.org/android-current/api/", databaseAdapter());
 
-        d2.logout().call();
+        d2.userModule().logOut().call();
         d2.logIn("android", "Android123").call();
     }
 }

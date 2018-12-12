@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import javax.inject.Inject;
 
@@ -45,6 +46,11 @@ class UserHandler extends IdentifiableSyncHandlerImpl<User> {
                 SyncHandler<UserCredentials> userCredentialsHandler) {
         super(userStore);
         this.userCredentialsHandler = userCredentialsHandler;
+    }
+
+    public static UserHandler create(DatabaseAdapter databaseAdapter) {
+        return new UserHandler(UserStore.create(databaseAdapter),
+                new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter)));
     }
 
     @Override

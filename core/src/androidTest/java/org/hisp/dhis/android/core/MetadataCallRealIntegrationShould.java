@@ -80,7 +80,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
     public void response_successful_on_login_logout_and_login() throws Exception {
         d2.logIn("android", "Android123").call();
 
-        d2.logout().call();
+        d2.userModule().logOut().call();
 
         d2.logIn("android", "Android123").call();
     }

@@ -16,7 +16,7 @@ import org.hisp.dhis.android.core.resource.ResourceDIModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.settings.SystemSettingDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoDIModule;
-import org.hisp.dhis.android.core.user.UserDIModule;
+import org.hisp.dhis.android.core.user.UserPackageDIModule;
 
 import javax.inject.Singleton;
 
@@ -36,7 +36,7 @@ import dagger.Component;
         DataElementDIModule.class,
         DataValueDIModule.class,
         PeriodDIModule.class,
-        UserDIModule.class,
+        UserPackageDIModule.class,
         MaintenanceDIModule.class}
 )
 public interface D2DIComponent {
@@ -60,7 +60,7 @@ public interface D2DIComponent {
         Builder dataElementDIModule(DataElementDIModule dataElementDIModule);
         Builder dataValueDIModule(DataValueDIModule dataValueDIModule);
         Builder periodDIModule(PeriodDIModule periodDIModule);
-        Builder userDIModule(UserDIModule userDIModule);
+        Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         Builder maintenanceDIModule(MaintenanceDIModule maintenanceDIModule);
         D2DIComponent build();
     }

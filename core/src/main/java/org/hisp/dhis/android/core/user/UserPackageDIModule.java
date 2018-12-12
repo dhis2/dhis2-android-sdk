@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,44 +29,29 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Reusable
-public final class UserInternalModule implements WipeableModule {
+@Module(includes = {
+        AuthenticatedUserEntityDIModule.class,
+        UserCredentialsEntityDIModule.class,
+        UserEntityDIModule.class,
+        UserOrganisationUnitLinkEntityDIModule.class
+})
+public final class UserPackageDIModule {
 
-    private final DatabaseAdapter databaseAdapter;
-    public final UserModule publicModule;
-
-    // TODO delete after migrating MetadataCall to Dagger
-    public final Provider<Call<User>> userCallProvider;
-
-    @Inject
-    UserInternalModule(DatabaseAdapter databaseAdapter,
-                       UserModule publicModule,
-                       Provider<Call<User>> userCallProvider) {
-        this.databaseAdapter = databaseAdapter;
-        this.publicModule = publicModule;
-        this.userCallProvider = userCallProvider;
+    @Provides
+    @Reusable
+    Call<User> call(UserCall userCall) {
+        return userCall;
     }
 
-    @Override
-    public void wipeMetadata() {
-        UserStore.create(databaseAdapter).delete();
-        UserCredentialsStore.create(databaseAdapter).delete();
-        UserOrganisationUnitLinkStore.create(databaseAdapter).delete();
-        AuthenticatedUserStore.create(databaseAdapter).delete();
-        AuthorityStore.create(databaseAdapter).delete();
-        new UserRoleStoreImpl(databaseAdapter).delete();
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    @Provides
+    @Reusable
+    UserService service(Retrofit retrofit) {
+        return retrofit.create(UserService.class);
     }
 }

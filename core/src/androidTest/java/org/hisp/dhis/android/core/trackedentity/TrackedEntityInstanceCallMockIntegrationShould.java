@@ -151,7 +151,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                         enrollment.organisationUnit(), enrollment.program(),
                         enrollment.enrollmentDate(), enrollment.incidentDate(),
                         enrollment.followUp(),
-                        enrollment.enrollmentStatus(), trackedEntityInstance.uid(),
+                        enrollment.status(), trackedEntityInstance.uid(),
                         enrollment.coordinate(),
                         enrollment.deleted(), expectedEvents.get(enrollment.uid()), enrollment.notes());
 
@@ -251,7 +251,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                     enrollment.organisationUnit(), enrollment.program(),
                     enrollment.enrollmentDate(), enrollment.incidentDate(),
                     enrollment.followUp(),
-                    enrollment.enrollmentStatus(), downloadedTei.uid(), enrollment.coordinate(),
+                    enrollment.status(), downloadedTei.uid(), enrollment.coordinate(),
                     enrollment.deleted(), downloadedEvents.get(enrollment.uid()), enrollment.notes());
 
             downloadedEnrollments.add(enrollment);

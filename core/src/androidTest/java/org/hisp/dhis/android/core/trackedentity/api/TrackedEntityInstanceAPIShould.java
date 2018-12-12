@@ -501,7 +501,7 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
                 .getTrackedEntityInstance(completedEnrollment.uid(), TrackedEntityInstance.allFields, true));
 
         assertThat(serverValidTEI1.enrollments().size()).isEqualTo(1);
-        assertThat(serverValidTEI1.enrollments().get(0).enrollmentStatus()).isEqualTo(EnrollmentStatus.COMPLETED);
+        assertThat(serverValidTEI1.enrollments().get(0).status()).isEqualTo(EnrollmentStatus.COMPLETED);
         assertThat(serverValidTEI1.enrollments().get(0).events().size()).isEqualTo(1);
         assertThat(serverValidTEI1.enrollments().get(0).events().get(0).trackedEntityDataValues().size()).isEqualTo(1);
         assertThat(serverValidTEI1.enrollments().get(0).events().get(0).status()).isEqualTo(EventStatus.COMPLETED);

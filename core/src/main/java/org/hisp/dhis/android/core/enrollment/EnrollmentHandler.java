@@ -79,7 +79,7 @@ public class EnrollmentHandler {
                     enrollment.organisationUnit(),
                     enrollment.program(), enrollment.enrollmentDate(),
                     enrollment.incidentDate(),
-                    enrollment.followUp(), enrollment.enrollmentStatus(),
+                    enrollment.followUp(), enrollment.status(),
                     enrollment.trackedEntityInstance(),
                     latitude, longitude,
                     State.SYNCED, enrollment.uid());
@@ -91,7 +91,7 @@ public class EnrollmentHandler {
                         enrollment.organisationUnit(), enrollment.program(),
                         enrollment.enrollmentDate(),
                         enrollment.incidentDate(), enrollment.followUp(),
-                        enrollment.enrollmentStatus(),
+                        enrollment.status(),
                         enrollment.trackedEntityInstance(), latitude, longitude,
                         State.SYNCED);
             }

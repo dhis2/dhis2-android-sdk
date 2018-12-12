@@ -59,7 +59,7 @@ public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
         assertThat(enrollment.enrollmentDate()).isEqualTo("2014-08-07T12:27:50.730");
         assertThat(enrollment.incidentDate()).isEqualTo("2014-07-21T12:27:50.730");
         assertThat(enrollment.followUp()).isEqualTo(false);
-        assertThat(enrollment.enrollmentStatus()).isEqualTo(EnrollmentStatus.ACTIVE);
+        assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.ACTIVE);
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
     }
 }

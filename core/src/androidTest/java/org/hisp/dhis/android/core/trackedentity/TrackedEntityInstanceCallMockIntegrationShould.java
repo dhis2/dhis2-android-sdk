@@ -15,6 +15,7 @@ import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.junit.After;
@@ -135,11 +136,11 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         for (Enrollment enrollment : trackedEntityInstance.enrollments()) {
             for (Event event : enrollment.events()) {
                 if (!event.deleted()) {
-                    if (expectedEvents.get(event.enrollmentUid()) == null) {
-                        expectedEvents.put(event.enrollmentUid(), new ArrayList<Event>());
+                    if (expectedEvents.get(event.enrollment()) == null) {
+                        expectedEvents.put(event.enrollment(), new ArrayList<Event>());
                     }
 
-                    expectedEvents.get(event.enrollmentUid()).add(event);
+                    expectedEvents.get(event.enrollment()).add(event);
 
                 }
             }
@@ -192,9 +193,14 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         Map<String, List<Enrollment>> downloadedEnrollments = enrollmentStore.queryAll();
 
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+        EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 
-        List<Event> downloadedEventsWithoutValues = eventStore.queryAll();
+        List<Event> downloadedEventsWithoutValues = eventStore.selectAll();
+        List<Event> downloadedEventsWithoutValuesAndDeleteFalse = new ArrayList<>();
+        for (Event event : downloadedEventsWithoutValues) {
+            downloadedEventsWithoutValuesAndDeleteFalse.add(
+                    event.toBuilder().deleted(false).build());
+        }
 
         List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter()).selectAll();
         Map<String, List<TrackedEntityDataValue>> downloadedValues = new HashMap<>();
@@ -207,7 +213,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         }
 
         return createTei(downloadedTei, attValues, downloadedEnrollments.get(teiUid),
-                downloadedEventsWithoutValues, downloadedValues);
+                downloadedEventsWithoutValuesAndDeleteFalse, downloadedValues);
     }
 
     private TrackedEntityInstance createTei(TrackedEntityInstance downloadedTei,
@@ -229,21 +235,13 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                         trackedEntityDataValue.toBuilder().id(null).event(null).build());
             }
 
-            event = Event.create(
-                    event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(),
-                    event.program(), event.programStage(), event.organisationUnit(),
-                    event.eventDate(), event.status(), event.coordinates(),
-                    event.completedDate(),
-                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
-                    event.attributeOptionCombo(),
-                    event.trackedEntityInstance());
+            event = event.toBuilder().trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build();
 
-            if (downloadedEvents.get(event.enrollmentUid()) == null) {
-                downloadedEvents.put(event.enrollmentUid(), new ArrayList<Event>());
+            if (downloadedEvents.get(event.enrollment()) == null) {
+                downloadedEvents.put(event.enrollment(), new ArrayList<Event>());
             }
 
-            downloadedEvents.get(event.enrollmentUid()).add(event);
+            downloadedEvents.get(event.enrollment()).add(event);
         }
 
         for (Enrollment enrollment : downloadedEnrollmentsWithoutEvents) {

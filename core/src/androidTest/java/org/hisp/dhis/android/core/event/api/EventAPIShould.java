@@ -3,15 +3,16 @@ package org.hisp.dhis.android.core.event.api;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventFields;
 import org.hisp.dhis.android.core.event.EventPayload;
 import org.hisp.dhis.android.core.event.EventService;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -84,8 +85,8 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), Event.allFields));
-        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), Event.allFields));
+        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), EventFields.allFields));
+        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), EventFields.allFields));
 
         assertThat(serverValidEvent1).isNotNull();
         assertThat(serverValidEvent2).isNotNull();
@@ -117,12 +118,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -155,12 +156,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -193,8 +194,8 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), Event.allFields));
-        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), Event.allFields));
+        Event serverValidEvent1 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent1.uid(), EventFields.allFields));
+        Event serverValidEvent2 = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent2.uid(), EventFields.allFields));
 
         assertThat(serverValidEvent1).isNotNull();
         assertThat(serverValidEvent2).isNotNull();
@@ -226,12 +227,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), EventFields.allFields));
 
         assertThat(serverValidEvent).isNotNull();
 
         try {
-            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), Event.allFields));
+            apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(), EventFields.allFields));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -264,9 +265,10 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         }
 
         // Check server status
-        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(), Event.allFields));
+        Event serverValidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(validEvent.uid(),
+                EventFields.allFields));
         Event serverInvalidEvent = apiCallExecutor.executeObjectCall(eventService.getEvent(invalidEvent.uid(),
-                Event.allFields));
+                EventFields.allFields));
 
         assertThat(serverValidEvent).isNotNull();
         assertThat(serverValidEvent.trackedEntityDataValues().size()).isEqualTo(2);

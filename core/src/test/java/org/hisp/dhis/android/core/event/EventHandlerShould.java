@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -71,6 +69,8 @@ public class EventHandlerShould {
     @Test
     public void invoke_update_and_insert_when_handle_event_not_inserted() throws Exception {
         when(eventStore.updateOrInsert(any(Event.class))).thenReturn(HandleAction.Insert);
+        when(event.organisationUnit()).thenReturn("org_unit_uid");
+        when(event.status()).thenReturn(EventStatus.SCHEDULE);
 
         eventHandler.handle(event);
 

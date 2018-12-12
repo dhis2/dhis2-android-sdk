@@ -77,7 +77,7 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
-        d2.aggregated().data().download().call();
+        d2.aggregatedModule().data().download().call();
     }
 
     //@Test
@@ -85,10 +85,10 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
-        d2.aggregated().data().download().call();
+        d2.aggregatedModule().data().download().call();
 
         d2.syncMetaData().call();
-        d2.aggregated().data().download().call();
+        d2.aggregatedModule().data().download().call();
     }
 
     @Test

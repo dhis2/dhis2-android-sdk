@@ -159,7 +159,7 @@ public final class D2 {
     }
 
     @NonNull
-    public AggregatedModule aggregated() {
+    public AggregatedModule aggregatedModule() {
         return d2DIComponent.aggregatedModule();
     }
 

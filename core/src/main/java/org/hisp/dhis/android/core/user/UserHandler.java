@@ -31,20 +31,20 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+class UserHandler extends IdentifiableSyncHandlerImpl<User> {
     private final SyncHandler<UserCredentials> userCredentialsHandler;
 
+    @Inject
     UserHandler(IdentifiableObjectStore<User> userStore,
                 SyncHandler<UserCredentials> userCredentialsHandler) {
         super(userStore);
         this.userCredentialsHandler = userCredentialsHandler;
-    }
-
-    public static UserHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserHandler(UserStore.create(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter));
     }
 
     @Override

@@ -51,7 +51,7 @@ public final class DataValueInternalModule implements WipeableModule {
 
     @Override
     public void wipeMetadata() {
-        // Without metadata to wipe
+        // No metadata to wipe
     }
 
     @Override

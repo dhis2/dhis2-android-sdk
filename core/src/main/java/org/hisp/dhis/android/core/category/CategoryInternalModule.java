@@ -60,6 +60,6 @@ public final class CategoryInternalModule implements WipeableModule {
 
     @Override
     public void wipeData() {
-        // Without data to wipe
+        // No data to wipe
     }
 }

@@ -60,10 +60,11 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.Authority;
 import org.hisp.dhis.android.core.user.AuthorityEndpointCall;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserCall;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import javax.inject.Provider;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public class MetadataCall extends SyncCall<Unit> {
@@ -72,7 +73,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
     private final Downloader<SystemInfo> systemInfoDownloader;
     private final Downloader<SystemSetting> systemSettingDownloader;
-    private final GenericCallFactory<User> userCallFactory;
+    private final Provider<Call<User>> userCallProvider;
     private final ListCallFactory<Authority> authorityCallFactory;
     private final UidsCallFactory<Category> categoryCallFactory;
     private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
@@ -86,7 +87,7 @@ public class MetadataCall extends SyncCall<Unit> {
     public MetadataCall(@NonNull GenericCallData genericCallData,
                         @NonNull Downloader<SystemInfo> systemInfoDownloader,
                         @NonNull Downloader<SystemSetting> systemSettingDownloader,
-                        @NonNull GenericCallFactory<User> userCallFactory,
+                        @NonNull Provider<Call<User>> userCallProvider,
                         @NonNull ListCallFactory<Authority> authorityCallFactory,
                         @NonNull UidsCallFactory<Category> categoryCallFactory,
                         @NonNull UidsCallFactory<CategoryCombo> categoryComboCallFactory,
@@ -99,7 +100,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.genericCallData = genericCallData;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
-        this.userCallFactory = userCallFactory;
+        this.userCallProvider = userCallProvider;
         this.authorityCallFactory = authorityCallFactory;
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
@@ -124,7 +125,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 systemSettingDownloader.download().call();
 
-                User user = userCallFactory.create(genericCallData).call();
+                User user = userCallProvider.get().call();
 
                 authorityCallFactory.create().call();
 
@@ -157,7 +158,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 genericCallData,
                 internalModules.systemInfo,
                 internalModules.systemSetting,
-                UserCall.FACTORY,
+                internalModules.userModule.userCallProvider,
                 new AuthorityEndpointCall(genericCallData, apiCallExecutor),
                 new CategoryEndpointCallFactory(genericCallData, apiCallExecutor),
                 new CategoryComboEndpointCallFactory(genericCallData, apiCallExecutor),

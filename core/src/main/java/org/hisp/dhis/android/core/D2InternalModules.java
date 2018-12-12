@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
+import org.hisp.dhis.android.core.user.UserInternalModule;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import java.util.Arrays;
@@ -54,6 +55,7 @@ public final class D2InternalModules {
     public final DataSetInternalModule dataSetModule;
     public final DataElementInternalModule dataElementModule;
     public final DataValueInternalModule dataValueModule;
+    public final UserInternalModule userModule;
     public final MaintenanceInternalModule maintenanceModule;
 
     @Inject
@@ -64,6 +66,7 @@ public final class D2InternalModules {
                              DataSetInternalModule dataSetModule,
                              DataElementInternalModule dataElementModule,
                              DataValueInternalModule dataValueModule,
+                             UserInternalModule userModule,
                              MaintenanceInternalModule maintenanceModule) {
         this.systemInfo = systemInfo;
         this.systemSetting = systemSetting;
@@ -72,11 +75,20 @@ public final class D2InternalModules {
         this.dataSetModule = dataSetModule;
         this.dataElementModule = dataElementModule;
         this.dataValueModule = dataValueModule;
+        this.userModule = userModule;
         this.maintenanceModule = maintenanceModule;
     }
 
     public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataSetModule,
-                dataElementModule, dataValueModule, maintenanceModule);
+        return Arrays.asList(
+                systemInfo,
+                systemSetting,
+                relationshipModule,
+                categoryModule,
+                dataSetModule,
+                dataElementModule,
+                dataValueModule,
+                userModule,
+                maintenanceModule);
     }
 }

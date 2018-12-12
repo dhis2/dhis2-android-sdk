@@ -269,7 +269,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 APICallExecutorImpl.create(databaseAdapter),
                 internalModules.systemInfo,
                 retrofit.create(UserService.class),
-                UserHandler.create(databaseAdapter),
+                internalModules.userModule.userHandler,
                 resourceHandler,
                 AuthenticatedUserStore.create(databaseAdapter),
                 internalModules.systemInfo.publicModule.systemInfo,

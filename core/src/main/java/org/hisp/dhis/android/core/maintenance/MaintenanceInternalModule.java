@@ -48,7 +48,7 @@ public final class MaintenanceInternalModule implements WipeableModule {
 
     @Override
     public void wipeMetadata() {
-        // Without Metadata to wipe
+        // No metadata to wipe
     }
 
     @Override

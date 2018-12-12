@@ -62,6 +62,6 @@ public final class SystemSettingInternalModule implements Downloader<SystemSetti
 
     @Override
     public void wipeData() {
-        // Without data to wipe
+        // No data to wipe
     }
 }

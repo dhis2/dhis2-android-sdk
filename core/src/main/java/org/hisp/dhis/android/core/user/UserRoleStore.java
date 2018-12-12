@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.DeletableStore;
 
 import java.util.Date;
 
-public interface UserRoleStore extends DeletableStore {
+interface UserRoleStore extends DeletableStore {
     long insert(
             @NonNull String uid,
             @Nullable String code,

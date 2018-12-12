@@ -28,18 +28,59 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Module
 public final class UserDIModule {
 
     @Provides
     @Reusable
-    UserOrganisationUnitLinkStoreInterface store(DatabaseAdapter databaseAdapter) {
+    UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore(DatabaseAdapter databaseAdapter) {
         return UserOrganisationUnitLinkStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<User> userStore(DatabaseAdapter databaseAdapter) {
+        return UserStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    SyncHandler<User> handler(UserHandler userHandler) {
+        return userHandler;
+    }
+
+    @Provides
+    @Reusable
+    Call<User> call(UserCall userCall) {
+        return userCall;
+    }
+
+    @Provides
+    @Reusable
+    UserService service(Retrofit retrofit) {
+        return retrofit.create(UserService.class);
+    }
+
+    @Provides
+    @Reusable
+    public static SyncHandler<UserCredentials> create(IdentifiableObjectStore<UserCredentials> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<UserCredentials> userCredentialsStore(DatabaseAdapter databaseAdapter) {
+        return UserCredentialsStore.create(databaseAdapter);
     }
 }

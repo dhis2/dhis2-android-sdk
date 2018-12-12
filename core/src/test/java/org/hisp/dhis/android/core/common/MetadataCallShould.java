@@ -63,6 +63,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Provider;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.same;
@@ -145,7 +147,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Downloader<SystemSetting> systemSettingDownloader;
 
     @Mock
-    private GenericCallFactory<User> userCallFactory;
+    private Provider<Call<User>> userCallProvider;
 
     @Mock
     private ListCallFactory<Authority> authorityCallFactory;
@@ -193,7 +195,7 @@ public class MetadataCallShould extends BaseCallShould {
         // Call factories
         when(systemInfoCallDownloader.download()).thenReturn(systemInfoEndpointCall);
         when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
-        when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
+        when(userCallProvider.get()).thenReturn(userCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
         when(authorityCallFactory.create()).thenReturn(authorityEndpointCall);
         when(categoryCallFactory.create(anySetOf(String.class))).thenReturn(categoryEndpointCall);
@@ -223,7 +225,7 @@ public class MetadataCallShould extends BaseCallShould {
                 genericCallData,
                 systemInfoCallDownloader,
                 systemSettingDownloader,
-                userCallFactory,
+                userCallProvider,
                 authorityCallFactory,
                 categoryCallFactory,
                 categoryComboCallFactory,

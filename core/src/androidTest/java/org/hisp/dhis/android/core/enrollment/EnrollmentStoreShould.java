@@ -437,7 +437,7 @@ public class EnrollmentStoreShould extends AbsStoreTestCase {
         assertThatCursor(cursor).hasRow(UID).isExhausted();
         cursor.close();
 
-        Map<String, List<Enrollment>> map = store.query();
+        Map<String, List<Enrollment>> map = store.queryEnrollmentsToPost();
         assertThat(map.size()).isEqualTo(1);
 
         List<Enrollment> enrollments = map.get(TRACKED_ENTITY_INSTANCE);

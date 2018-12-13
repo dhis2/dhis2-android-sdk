@@ -128,7 +128,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
                 trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
-        Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.query();
+        Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.queryEnrollmentsToPost();
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();

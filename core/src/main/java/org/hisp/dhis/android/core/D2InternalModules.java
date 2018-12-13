@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.dataset.DataSetInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;

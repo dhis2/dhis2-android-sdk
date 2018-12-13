@@ -11,8 +11,6 @@ import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
-import org.hisp.dhis.android.core.option.OptionSetTableInfo;
-import org.hisp.dhis.android.core.option.OptionTableInfo;
 import org.hisp.dhis.android.core.period.PeriodModel;
 
 import javax.inject.Inject;
@@ -32,9 +30,6 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO.name(),
-                OptionSetTableInfo.TABLE_INFO.name(),
-
                 IndicatorTableInfo.TABLE_INFO.name(),
                 IndicatorTypeTableInfo.TABLE_INFO.name(),
                 DataSetIndicatorLinkModel.TABLE,

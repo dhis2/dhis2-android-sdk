@@ -5,9 +5,6 @@ import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
 import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo;
-import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
@@ -29,12 +26,7 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeMetadata() {
-        tableWiper.wipeTables(
-                IndicatorTableInfo.TABLE_INFO.name(),
-                IndicatorTypeTableInfo.TABLE_INFO.name(),
-                DataSetIndicatorLinkModel.TABLE,
-
-                PeriodModel.TABLE,
+        tableWiper.wipeTables(PeriodModel.TABLE,
                 ObjectStyleTableInfo.TABLE_INFO.name(),
                 ValueTypeDeviceRenderingModel.TABLE,
                 LegendTableInfo.TABLE_INFO.name(),

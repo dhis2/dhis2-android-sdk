@@ -77,7 +77,7 @@ public class TrackedEntityInstanceHandler {
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
             if (enrollments != null) {
-                enrollmentHandler.handle(enrollments);
+                enrollmentHandler.handleMany(enrollments);
             }
 
             List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();

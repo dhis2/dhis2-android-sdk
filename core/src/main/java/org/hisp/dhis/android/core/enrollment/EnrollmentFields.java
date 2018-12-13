@@ -64,7 +64,6 @@ public final class EnrollmentFields {
                     fh.<String>field(ENROLLMENT_DATE),
                     fh.<String>field(INCIDENT_DATE),
                     fh.<String>field(FOLLOW_UP),
-                    fh.<String>field(STATUS),
                     fh.<EnrollmentStatus>field(STATUS),
                     fh.<Boolean>field(DELETED),
                     fh.<String>field(TRACKED_ENTITY_INSTANCE),

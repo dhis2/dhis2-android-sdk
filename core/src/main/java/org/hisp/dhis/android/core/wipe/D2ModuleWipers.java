@@ -34,9 +34,11 @@ import org.hisp.dhis.android.core.dataelement.DataElementModuleWiper;
 import org.hisp.dhis.android.core.dataset.DataSetModuleWiper;
 import org.hisp.dhis.android.core.datavalue.DataValueModuleWiper;
 import org.hisp.dhis.android.core.indicator.IndicatorModuleWiper;
+import org.hisp.dhis.android.core.legendset.LegendSetModuleWiper;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModuleWiper;
 import org.hisp.dhis.android.core.option.OptionModuleWiper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleWiper;
+import org.hisp.dhis.android.core.period.PeriodModuleWiper;
 import org.hisp.dhis.android.core.program.ProgramModuleWiper;
 import org.hisp.dhis.android.core.relationship.RelationshipModuleWiper;
 import org.hisp.dhis.android.core.resource.ResourceModuleWiper;
@@ -73,6 +75,8 @@ final class D2ModuleWipers {
                    OptionModuleWiper option,
                    IndicatorModuleWiper indicator,
                    CommonModuleWiper common,
+                   PeriodModuleWiper period,
+                   LegendSetModuleWiper legendSet,
                    D2StoresWithoutModuleModuleWiper storesWithoutModule) {
 
         this.wipers = Arrays.asList(
@@ -92,6 +96,8 @@ final class D2ModuleWipers {
                 option,
                 indicator,
                 common,
+                period,
+                legendSet,
                 storesWithoutModule);
     }
 }

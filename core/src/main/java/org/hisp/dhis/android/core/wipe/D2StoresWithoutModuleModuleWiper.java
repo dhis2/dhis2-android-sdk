@@ -3,16 +3,11 @@ package org.hisp.dhis.android.core.wipe;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
 import org.hisp.dhis.android.core.event.EventTableInfo;
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
-import org.hisp.dhis.android.core.legendset.LegendTableInfo;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
-import org.hisp.dhis.android.core.period.PeriodModel;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
-@SuppressWarnings("PMD.ExcessiveImports")
 @Reusable
 final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     private final TableWiper tableWiper;
@@ -24,11 +19,7 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeMetadata() {
-        tableWiper.wipeTables(PeriodModel.TABLE,
-                LegendTableInfo.TABLE_INFO.name(),
-                LegendSetTableInfo.TABLE_INFO.name(),
-                ProgramIndicatorLegendSetLinkModel.TABLE
-        );
+        // No metadata to wipe
     }
 
     @Override

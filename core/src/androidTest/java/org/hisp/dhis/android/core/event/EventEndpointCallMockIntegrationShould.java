@@ -141,9 +141,9 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         TrackedEntityDataValueStore trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
-        for (Long i = 0L; i < downloadedEventsWithoutValues.size(); ++i) {
+        for (int i = 0; i < downloadedEventsWithoutValues.size(); ++i) {
 
-            Event event = downloadedEventsWithoutValues.get(i.intValue());
+            Event event = downloadedEventsWithoutValues.get(i);
 
             List<TrackedEntityDataValue> trackedEntityDataValues =
                     trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(event.uid());

@@ -13,10 +13,6 @@ import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
@@ -53,7 +49,6 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
                 ResourceModel.TABLE,
                 ProgramTableInfo.TABLE_INFO.name(),
                 TrackedEntityAttributeModel.TABLE,
@@ -72,7 +67,6 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
                 ProgramStageModel.TABLE,
 
                 TrackedEntityTypeTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
                 IndicatorTableInfo.TABLE_INFO.name(),
                 IndicatorTypeTableInfo.TABLE_INFO.name(),
                 DataSetIndicatorLinkModel.TABLE,
@@ -83,9 +77,7 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
                 LegendTableInfo.TABLE_INFO.name(),
                 LegendSetTableInfo.TABLE_INFO.name(),
 
-                ProgramIndicatorLegendSetLinkModel.TABLE,
-                OrganisationUnitGroupModel.TABLE,
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE
+                ProgramIndicatorLegendSetLinkModel.TABLE
         );
     }
 

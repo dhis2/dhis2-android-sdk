@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.wipe.TableWiper;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class DataSetInternalModule implements WipeableModule {
+public final class DataSetInternalModule implements ModuleWiper {
 
     private final TableWiper tableWiper;
 

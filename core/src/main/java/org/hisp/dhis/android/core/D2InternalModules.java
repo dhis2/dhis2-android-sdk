@@ -37,10 +37,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 import org.hisp.dhis.android.core.user.UserInternalModule;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
-import java.util.Arrays;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -77,18 +73,5 @@ public final class D2InternalModules {
         this.dataValueModule = dataValueModule;
         this.userModule = userModule;
         this.maintenanceModule = maintenanceModule;
-    }
-
-    public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(
-                systemInfo,
-                systemSetting,
-                relationshipModule,
-                categoryModule,
-                dataSetModule,
-                dataElementModule,
-                dataValueModule,
-                userModule,
-                maintenanceModule);
     }
 }

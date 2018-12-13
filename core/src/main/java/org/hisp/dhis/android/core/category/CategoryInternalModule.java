@@ -27,41 +27,17 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.wipe.TableWiper;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class CategoryInternalModule implements WipeableModule {
+public final class CategoryInternalModule {
 
-    private final TableWiper tableWiper;
     public final CategoryModule publicModule;
 
     @Inject
-    CategoryInternalModule(TableWiper tableWiper,
-                           CategoryModule publicModule) {
-        this.tableWiper = tableWiper;
+    CategoryInternalModule(CategoryModule publicModule) {
         this.publicModule = publicModule;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                CategoryTableInfo.TABLE_INFO,
-                CategoryOptionTableInfo.TABLE_INFO,
-                CategoryOptionComboTableInfo.TABLE_INFO,
-                CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
-                CategoryComboTableInfo.TABLE_INFO,
-                CategoryCategoryComboLinkTableInfo.TABLE_INFO
-        );
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
     }
 }

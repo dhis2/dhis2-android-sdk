@@ -103,8 +103,8 @@ public class WipeModuleShould {
         List<DeletableStore> dataStoreList = new ArrayList<>();
         dataStoreList.add(dataValueStore);
         dataStoreList.add(trackedEntityAttributeStore);
-        wipeModule = new WipeModuleImpl(metadataStoreList, dataStoreList, new D2CallExecutor(databaseAdapter),
-                new ArrayList<WipeableModule>());
+        wipeModule = new WipeModuleImpl(new D2CallExecutor(databaseAdapter), new ArrayList<ModuleWiper>(),
+                metadataStoreList, dataStoreList);
     }
 
     @Test

@@ -27,35 +27,17 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.wipe.TableWiper;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class DataElementInternalModule implements WipeableModule {
+public final class DataElementInternalModule {
 
-    private final TableWiper tableWiper;
     public final DataElementModule publicModule;
 
     @Inject
-    DataElementInternalModule(TableWiper tableWiper,
-                              DataElementModule publicModule) {
-        this.tableWiper = tableWiper;
+    DataElementInternalModule(DataElementModule publicModule) {
         this.publicModule = publicModule;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                DataElementTableInfo.TABLE_INFO,
-                DataElementOperandTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
     }
 }

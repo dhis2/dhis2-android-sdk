@@ -27,42 +27,20 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.wipe.TableWiper;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class RelationshipInternalModule implements WipeableModule {
+public final class RelationshipInternalModule {
 
-    private final TableWiper tableWiper;
     public final RelationshipModule publicModule;
     public final RelationshipHandler relationshipHandler;
 
     @Inject
-    RelationshipInternalModule(TableWiper tableWiper,
-                               RelationshipModule publicModule,
+    RelationshipInternalModule(RelationshipModule publicModule,
                                RelationshipHandler relationshipHandler) {
-        this.tableWiper = tableWiper;
         this.publicModule = publicModule;
         this.relationshipHandler = relationshipHandler;
-    }
-
-    // TODO Include call RelationshipTypeEndpointCallFactory
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                RelationshipTypeTableInfo.TABLE_INFO,
-                RelationshipConstraintTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                RelationshipModel.TABLE,
-                RelationshipItemModel.TABLE);
     }
 }

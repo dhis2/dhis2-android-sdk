@@ -25,28 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
+package org.hisp.dhis.android.core.wipe;
+
+import org.hisp.dhis.android.core.category.CategoryModuleWiper;
+import org.hisp.dhis.android.core.dataelement.DataElementModuleWiper;
+import org.hisp.dhis.android.core.dataset.DataSetModuleWiper;
+import org.hisp.dhis.android.core.datavalue.DataValueModuleWiper;
+import org.hisp.dhis.android.core.maintenance.MaintenanceModuleWiper;
+import org.hisp.dhis.android.core.relationship.RelationshipModuleWiper;
+import org.hisp.dhis.android.core.settings.SystemSettingModuleWiper;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleWiper;
+import org.hisp.dhis.android.core.user.UserModuleWiper;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingInternalModule implements Downloader<SystemSetting> {
-
-    private final Provider<SystemSettingCall> systemSettingCallProvider;
+final class D2ModuleWipers {
+    final List<ModuleWiper> wipers;
 
     @Inject
-    SystemSettingInternalModule(Provider<SystemSettingCall> systemSettingCallProvider) {
-        this.systemSettingCallProvider = systemSettingCallProvider;
-    }
+    D2ModuleWipers(SystemInfoModuleWiper systemInfo,
+                   SystemSettingModuleWiper systemSetting,
+                   RelationshipModuleWiper relationship,
+                   CategoryModuleWiper category,
+                   DataSetModuleWiper dataSet,
+                   DataElementModuleWiper dataElement,
+                   DataValueModuleWiper dataValue,
+                   UserModuleWiper user,
+                   MaintenanceModuleWiper maintenance) {
 
-    @Override
-    public Call<SystemSetting> download() {
-        return systemSettingCallProvider.get();
+        this.wipers = Arrays.asList(
+                systemInfo,
+                systemSetting,
+                relationship,
+                category,
+                dataSet,
+                dataElement,
+                dataValue,
+                user,
+                maintenance);
     }
 }

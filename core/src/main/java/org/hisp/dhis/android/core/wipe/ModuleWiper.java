@@ -25,28 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
+package org.hisp.dhis.android.core.wipe;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import dagger.Reusable;
-
-@Reusable
-public final class SystemSettingInternalModule implements Downloader<SystemSetting> {
-
-    private final Provider<SystemSettingCall> systemSettingCallProvider;
-
-    @Inject
-    SystemSettingInternalModule(Provider<SystemSettingCall> systemSettingCallProvider) {
-        this.systemSettingCallProvider = systemSettingCallProvider;
-    }
-
-    @Override
-    public Call<SystemSetting> download() {
-        return systemSettingCallProvider.get();
-    }
+public interface ModuleWiper {
+   void wipeMetadata();
+   void wipeData();
 }

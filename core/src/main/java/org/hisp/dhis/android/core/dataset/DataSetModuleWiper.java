@@ -25,28 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingInternalModule implements Downloader<SystemSetting> {
+public final class DataSetModuleWiper implements ModuleWiper {
 
-    private final Provider<SystemSettingCall> systemSettingCallProvider;
+    private final TableWiper tableWiper;
 
     @Inject
-    SystemSettingInternalModule(Provider<SystemSettingCall> systemSettingCallProvider) {
-        this.systemSettingCallProvider = systemSettingCallProvider;
+    DataSetModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
     @Override
-    public Call<SystemSetting> download() {
-        return systemSettingCallProvider.get();
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                DataInputPeriodTableInfo.TABLE_INFO.name(),
+                DataSetCompulsoryDataElementOperandLinkModel.TABLE,
+                DataSetDataElementLinkModel.TABLE,
+                DataSetOrganisationUnitLinkModel.TABLE,
+                DataSetTableInfo.TABLE_INFO.name(),
+                SectionDataElementLinkModel.TABLE,
+                SectionTableInfo.TABLE_INFO.name(),
+                SectionGreyedFieldsLinkModel.TABLE
+        );
+    }
+
+    @Override
+    public void wipeData() {
+        tableWiper.wipeTable(DataSetCompleteRegistrationTableInfo.TABLE_INFO);
     }
 }

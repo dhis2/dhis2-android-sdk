@@ -28,7 +28,23 @@
 
 package org.hisp.dhis.android.core.wipe;
 
-public interface WipeableModule {
-   void wipeMetadata();
-   void wipeData();
+import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module()
+public final class WipeDIModule {
+
+    @Provides
+    @Reusable
+    WipeModule d2Wiper(DatabaseAdapter databaseAdapter,
+                       D2CallExecutor d2CallExecutor,
+                       D2ModuleWipers moduleWipers) {
+        D2StoresWithoutModule storesWithoutModule = new D2StoresWithoutModule(databaseAdapter);
+        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers, storesWithoutModule.metadataStores,
+                storesWithoutModule.dataStores);
+    }
 }

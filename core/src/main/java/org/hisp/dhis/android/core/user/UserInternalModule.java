@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.wipe.TableWiper;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import java.util.List;
 
@@ -40,40 +38,20 @@ import javax.inject.Provider;
 import dagger.Reusable;
 
 @Reusable
-public final class UserInternalModule implements WipeableModule, UserDownloadModule {
+public final class UserInternalModule implements UserDownloadModule {
 
-    private final TableWiper tableWiper;
     public final UserModule publicModule;
 
     private final Provider<UserCall> userCallProvider;
     private final AuthorityEndpointCallFactory authorityEndpointCallFactory;
 
     @Inject
-    UserInternalModule(TableWiper tableWiper,
-                       UserModule publicModule,
+    UserInternalModule(UserModule publicModule,
                        Provider<UserCall> userCallProvider,
                        AuthorityEndpointCallFactory authorityEndpointCallFactory) {
-        this.tableWiper = tableWiper;
         this.publicModule = publicModule;
         this.userCallProvider = userCallProvider;
         this.authorityEndpointCallFactory = authorityEndpointCallFactory;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                UserModel.TABLE,
-                UserCredentialsTableInfo.TABLE_INFO.name(),
-                UserOrganisationUnitLinkModel.TABLE,
-                AuthenticatedUserModel.TABLE,
-                AuthorityTableInfo.TABLE_INFO.name(),
-                UserRoleModel.TABLE
-        );
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
     }
 
     @Override

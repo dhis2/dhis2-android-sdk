@@ -72,7 +72,6 @@ import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 import org.hisp.dhis.android.core.wipe.WipeModule;
-import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 
 import java.util.Collection;
 import java.util.List;
@@ -91,7 +90,6 @@ public final class D2 {
     private final ResourceHandler resourceHandler;
     private final GenericCallData genericCallData;
     private final D2InternalModules internalModules;
-    private final WipeModule wipeModule;
     private final D2DIComponent d2DIComponent;
 
     @VisibleForTesting
@@ -123,7 +121,6 @@ public final class D2 {
         this.internalModules = d2DIComponent.internalModules();
         this.resourceHandler = d2DIComponent.resourceHandler();
         this.genericCallData = d2DIComponent.genericCallData();
-        this.wipeModule = WipeModuleImpl.create(databaseAdapter, internalModules);
     }
 
     @NonNull
@@ -139,7 +136,7 @@ public final class D2 {
     @NonNull
     public Callable<User> logIn(@NonNull String username, @NonNull String password) {
         return UserAuthenticateCall.create(databaseAdapter, retrofit, resourceHandler,
-                internalModules, username, password);
+                internalModules, wipeModule(), username, password);
     }
 
     @NonNull
@@ -258,7 +255,7 @@ public final class D2 {
     }
 
     public WipeModule wipeModule() {
-        return wipeModule;
+        return this.d2DIComponent.wipeModule();
     }
 
     public static class Builder {

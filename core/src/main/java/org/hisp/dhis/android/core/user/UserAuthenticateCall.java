@@ -49,7 +49,6 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.wipe.WipeModule;
-import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -262,6 +261,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull Retrofit retrofit,
             @NonNull ResourceHandler resourceHandler,
             @NonNull D2InternalModules internalModules,
+            @NonNull WipeModule wipeModule,
             @NonNull String username,
             @NonNull String password) {
         return new UserAuthenticateCall(
@@ -274,7 +274,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
                 AuthenticatedUserStore.create(databaseAdapter),
                 internalModules.systemInfo.publicModule.systemInfo,
                 UserStore.create(databaseAdapter),
-                WipeModuleImpl.create(databaseAdapter, internalModules),
+                wipeModule,
                 username,
                 password,
                 retrofit.baseUrl().toString()

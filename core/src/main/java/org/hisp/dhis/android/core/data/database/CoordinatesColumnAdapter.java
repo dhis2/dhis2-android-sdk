@@ -26,20 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-import java.util.List;
-import java.util.Map;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-public interface EventStore extends IdentifiableObjectWithStateStore<Event> {
+import org.hisp.dhis.android.core.common.Coordinates;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
+public class CoordinatesColumnAdapter implements ColumnTypeAdapter<Coordinates> {
 
-    List<Event> querySingleEventsToPost();
+    @Override
+    public Coordinates fromCursor(Cursor cursor, String columnName) {
+        int latitudeColumnIndex = cursor.getColumnIndex(EventTableInfo.Columns.LATITUDE);
+        Double latitude = latitudeColumnIndex == -1 || cursor.isNull(latitudeColumnIndex) ?
+                null : Double.parseDouble(cursor.getString(latitudeColumnIndex));
+        int longitudeColumnIndex = cursor.getColumnIndex(EventTableInfo.Columns.LONGITUDE);
+        Double longitude = longitudeColumnIndex == -1 || cursor.isNull(longitudeColumnIndex) ?
+                null : Double.parseDouble(cursor.getString(longitudeColumnIndex));
 
-    List<Event> querySingleEvents();
+        return latitude == null && longitude == null ? null : Coordinates.create(latitude, longitude);
+    }
 
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Coordinates value) {
+        if (value != null) {
+            values.put(EventTableInfo.Columns.LATITUDE, value.latitude());
+            values.put(EventTableInfo.Columns.LONGITUDE, value.longitude());
+        }
+    }
 }

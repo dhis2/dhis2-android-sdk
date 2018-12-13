@@ -26,20 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
-
-import java.util.List;
-import java.util.Map;
-
-public interface EventStore extends IdentifiableObjectWithStateStore<Event> {
-
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
-
-    List<Event> querySingleEventsToPost();
-
-    List<Event> querySingleEvents();
-
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
+public interface IdentifiableObjectWithStateStore<O extends ObjectWithUidInterface>
+        extends IdentifiableObjectStore<O>, StoreWithState {
 }

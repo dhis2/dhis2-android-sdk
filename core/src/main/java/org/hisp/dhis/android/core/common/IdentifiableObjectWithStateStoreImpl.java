@@ -32,31 +32,33 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.common.BaseDataModel.Columns.STATE;
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class StoreWithStateImpl implements StoreWithState {
+public class IdentifiableObjectWithStateStoreImpl<M extends Model & ObjectWithUidInterface>
+        extends IdentifiableObjectStoreImpl<M> implements IdentifiableObjectWithStateStore<M> {
 
     private final String selectStateQuery;
     private final String existsQuery;
     private final SQLiteStatement setStateStatement;
-    protected final DatabaseAdapter databaseAdapter;
     protected final String tableName;
 
-    public StoreWithStateImpl(DatabaseAdapter databaseAdapter, String tableName) {
-        this.databaseAdapter = databaseAdapter;
-        this.tableName = tableName;
+    public IdentifiableObjectWithStateStoreImpl(DatabaseAdapter databaseAdapter,
+                                                SQLStatementWrapper statements,
+                                                SQLStatementBuilder builder, StatementBinder<M> binder,
+                                                CursorModelFactory<M> modelFactory) {
+        super(databaseAdapter, statements, builder, binder, modelFactory);
+        this.tableName = builder.tableName;
 
         String setStateUpdate = "UPDATE " + tableName + " SET " +
                 STATE + " =?" +
                 " WHERE " +
                 UID + " =?;";
         this.setStateStatement = databaseAdapter.compileStatement(setStateUpdate);
-
-
         this.selectStateQuery = "SELECT state FROM " + tableName + " WHERE " + UID + " =?;";
         this.existsQuery = "SELECT 1 FROM " + tableName + " WHERE " + UID + " =?;";
 

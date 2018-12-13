@@ -74,11 +74,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
             Event event = events.get(i);
             List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
 
-            eventRecreated.add(Event.create(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(), event.program(), event.programStage(),
-                    event.organisationUnit(), event.eventDate(), event.status(), event.coordinates(),
-                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                    event.attributeOptionCombo(), event.trackedEntityInstance()));
+            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
         }
 
         return eventRecreated;
@@ -94,7 +90,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
     public static EventPostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
         return new EventPostCall(
                 retrofit.create(EventService.class),
-                new EventStoreImpl(databaseAdapter),
+                EventStoreImpl.create(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 APICallExecutorImpl.create(databaseAdapter));
     }

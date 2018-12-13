@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -87,7 +88,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
-        eventStore = new EventStoreImpl(databaseAdapter());
+        eventStore = EventStoreImpl.create(databaseAdapter());
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
@@ -371,7 +372,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         Enrollment enrollment = enrollmentStore.queryAll().values().iterator().next().get(0);
 
-        Event event = eventStore.queryAll().get(0);
+        Event event = eventStore.selectFirst();
         String eventUid = event.uid();
 
         trackedEntityInstanceStore.setState(tei.uid(), State.TO_UPDATE);
@@ -385,7 +386,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
 
         Boolean deleted = true;
-        for (Event eventToCheck : eventStore.queryAll()) {
+        for (Event eventToCheck : eventStore.selectAll()) {
             if (eventToCheck.uid().equals(eventUid)) {
                 deleted = false;
             }
@@ -416,11 +417,14 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 trackedEntityInstanceUid, "10.33", "12.231", State.TO_POST
         );
 
-        eventStore.insert(
-                eventUid, enrollmentUid, refDate, refDate, null, null,
-                EventStatus.ACTIVE, "13.21", "12.21", programUid, programStageUid, orgUnitUid,
-                refDate, refDate, refDate, State.TO_POST, categoryComboOptionUid, trackedEntityInstanceUid
-        );
+        Event event = Event.builder()
+                .uid(eventUid).enrollment(enrollmentUid).created(refDate).lastUpdated(refDate)
+                .status(EventStatus.ACTIVE).coordinate(Coordinates.create(13.21, 12.21)).program(programUid)
+                .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
+                .completedDate(refDate).state(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
+                .trackedEntityInstance(trackedEntityInstanceUid).build();
+
+        eventStore.insert(event);
 
         TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
                 .event(eventUid)
@@ -476,9 +480,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private Event getEventsFromDb(String eventUid) {
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
         Event event = null;
-        List<Event> storedEvents = eventStore.queryAll();
+        List<Event> storedEvents = eventStore.selectAll();
         for(Event storedEvent : storedEvents) {
             if(storedEvent.uid().equals(eventUid)) {
                 event = storedEvent;

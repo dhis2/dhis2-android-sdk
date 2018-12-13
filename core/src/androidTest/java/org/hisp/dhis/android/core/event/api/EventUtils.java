@@ -34,9 +34,11 @@ class EventUtils {
                                      String orgunitUid, List<TrackedEntityDataValue> dataValues,
                                      String attributeOptionComboUid) {
 
-        return Event.create(codeGenerator.generate(), enrollmentUid, date, date, null, null, programUid,
-                programStageUid, orgunitUid, date, EventStatus.ACTIVE, null, null, null, false, dataValues,
-                attributeOptionComboUid, null);
+        return Event.builder()
+                .uid(codeGenerator.generate()).enrollment(enrollmentUid).created(date).lastUpdated(date)
+                .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
+                .eventDate(date).status(EventStatus.ACTIVE).trackedEntityDataValues(dataValues)
+                .attributeOptionCombo(attributeOptionComboUid).build();
     }
 
     static Event createValidEvent() {

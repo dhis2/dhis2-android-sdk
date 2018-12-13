@@ -255,7 +255,7 @@ public class ProgramIndicatorEngine {
                 }
 
                 if (EVENT_DATE.equals(uid) && event != null) {
-                    Event targetEvent = eventStore.queryByUid(event);
+                    Event targetEvent = eventStore.selectByUid(event);
                     date = targetEvent.eventDate();
                 }
 
@@ -303,7 +303,7 @@ public class ProgramIndicatorEngine {
     private List<Event> getEventsInStage(String enrollmentUid, String eventUid, String programStageUid) {
         List<Event> events;
         if (enrollmentUid == null) {
-            events = Collections.singletonList(eventStore.queryByUid(eventUid));
+            events = Collections.singletonList(eventStore.selectByUid(eventUid));
         } else {
             events = eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid);
         }
@@ -319,10 +319,7 @@ public class ProgramIndicatorEngine {
         List<TrackedEntityDataValue> dataValues =
                 trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(e.uid());
 
-        return Event.create(e.uid(), e.enrollmentUid(), e.created(), e.lastUpdated(), e.createdAtClient(),
-                e.lastUpdatedAtClient(), e.program(), e.programStage(), e.organisationUnit(), e.eventDate(),
-                e.status(), e.coordinates(), e.completedDate(), e.dueDate(), e.deleted(), dataValues,
-                e.attributeOptionCombo(), e.trackedEntityInstance());
+        return e.toBuilder().trackedEntityDataValues(dataValues).build();
     }
 
     private TrackedEntityDataValue evaluateDataElementInStage(String deId,
@@ -374,7 +371,7 @@ public class ProgramIndicatorEngine {
         return new ProgramIndicatorEngine(ProgramIndicatorStore.create(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
-                new EventStoreImpl(databaseAdapter),
+                EventStoreImpl.create(databaseAdapter),
                 DataElementStore.create(databaseAdapter),
                 ConstantStore.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter));

@@ -164,13 +164,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                             Event event = eventsForEnrollment.get(j);
                             List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
 
-                            eventRecreated.add(Event.create(event.uid(), event.enrollmentUid(), event.created(),
-                                    event.lastUpdated(), event.createdAtClient(), event.lastUpdatedAtClient(),
-                                    event.program(), event.programStage(), event.organisationUnit(), event.eventDate(),
-                                    event.status(), event.coordinates(),
-                                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                                    event.attributeOptionCombo(),
-                                    event.trackedEntityInstance()));
+                            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
                         }
                     }
 
@@ -248,7 +242,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
-                new EventStoreImpl(databaseAdapter),
+                EventStoreImpl.create(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
                 NoteStore.create(databaseAdapter),

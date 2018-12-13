@@ -67,7 +67,7 @@ final class RelationshipItemElementStoreSelectorImpl implements RelationshipItem
         return new RelationshipItemElementStoreSelectorImpl(
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 new EnrollmentStoreImpl(databaseAdapter),
-                new EventStoreImpl(databaseAdapter)
+                EventStoreImpl.create(databaseAdapter)
         );
     }
 }

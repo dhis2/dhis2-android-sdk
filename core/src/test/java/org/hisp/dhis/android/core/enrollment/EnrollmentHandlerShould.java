@@ -35,7 +35,7 @@ public class EnrollmentHandlerShould {
     private EnrollmentStore enrollmentStore;
 
     @Mock
-    private EventHandler eventHandler;
+    private SyncHandler<Event> eventHandler;
 
     @Mock
     private SyncHandler<Note> noteHandler;

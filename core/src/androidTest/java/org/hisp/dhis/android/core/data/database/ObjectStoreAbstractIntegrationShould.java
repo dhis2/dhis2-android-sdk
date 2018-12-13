@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.database;
 
+import android.content.ContentValues;
+
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
@@ -80,7 +82,9 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
 
     @Test
     public void insert_as_content_values_and_select_first_object() {
-        databaseAdapter.database().insert(tableInfo.name(), null, object.toContentValues());
+        long rowsInserted = databaseAdapter.database()
+                .insert(tableInfo.name(), null, object.toContentValues());
+        assertThat(rowsInserted).isEqualTo(1);
         M objectFromDb = store.selectFirst();
         assertThat(objectFromDb).isEqualTo(object);
     }

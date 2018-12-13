@@ -25,21 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common;
 
-package org.hisp.dhis.android.core.event;
+public final class CoordinateHelper {
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+    private CoordinateHelper() {}
 
-import java.util.List;
-import java.util.Map;
+    public static Double getLatitude(Coordinates coordinates) {
+        return coordinates == null ? null : coordinates.latitude();
+    }
 
-public interface EventStore extends IdentifiableObjectWithStateStore<Event> {
-
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
-
-    List<Event> querySingleEventsToPost();
-
-    List<Event> querySingleEvents();
-
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
+    public static Double getLongitude(Coordinates coordinates) {
+        return coordinates == null ? null : coordinates.longitude();
+    }
 }

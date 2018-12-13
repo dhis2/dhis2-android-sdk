@@ -1,92 +1,52 @@
 package org.hisp.dhis.android.core.event;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 
-import java.util.Collection;
-
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class EventHandler {
-    private final EventStore eventStore;
+public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
     private final TrackedEntityDataValueHandler trackedEntityDataValueHandler;
 
-    EventHandler(EventStore eventStore,
-            TrackedEntityDataValueHandler trackedEntityDataValueHandler) {
-        this.eventStore = eventStore;
+    EventHandler(EventStore eventStore, TrackedEntityDataValueHandler trackedEntityDataValueHandler) {
+        super(eventStore);
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
     }
 
-    public void handleMany(@NonNull Collection<Event> events) {
-        for (Event event : events) {
-            handle(event);
+    @Override
+    protected void afterObjectHandled(Event event, HandleAction action) {
+        final String eventUid = event.uid();
+        trackedEntityDataValueHandler.handleMany(event.trackedEntityDataValues(),
+                new ModelBuilder<TrackedEntityDataValue, TrackedEntityDataValue>() {
+                    @Override
+                    public TrackedEntityDataValue buildModel(TrackedEntityDataValue dataValue) {
+                        return dataValue.toBuilder().event(eventUid).build();
+                    }
+                });
+
+        if (action == HandleAction.Delete) {
+            Log.d(this.getClass().getSimpleName(), eventUid + " with no org. unit, invalid eventDate or deleted");
         }
     }
 
-    private boolean isValid(@NonNull Event event) {
+    @Override
+    protected boolean deleteIfCondition(Event event) {
         Boolean validEventDate = event.eventDate() != null ||
                 event.status() == EventStatus.SCHEDULE ||
                 event.status() == EventStatus.SKIPPED ||
                 event.status() == EventStatus.OVERDUE;
 
-        return validEventDate && event.organisationUnit() != null;
+        return !validEventDate || event.organisationUnit() == null;
     }
 
-    public void handle(@NonNull final Event event) {
-        if (event == null) {
-            return;
-        }
-
-        if (isDeleted(event)) {
-            eventStore.delete(event.uid());
-        } else if (isValid(event)) {
-            String latitude = null;
-            String longitude = null;
-
-            if (event.coordinates() != null) {
-                latitude = event.coordinates().latitude().toString();
-                longitude = event.coordinates().longitude().toString();
-            }
-
-
-            int updatedRow = eventStore.update(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(),
-                    event.status(), latitude, longitude, event.program(), event.programStage(),
-                    event.organisationUnit(), event.eventDate(), event.completedDate(),
-                    event.dueDate(), State.SYNCED, event.attributeOptionCombo(),
-                    event.trackedEntityInstance(), event.uid());
-
-            if (updatedRow <= 0) {
-                eventStore.insert(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                        event.createdAtClient(), event.lastUpdatedAtClient(),
-                        event.status(), latitude, longitude, event.program(), event.programStage(),
-                        event.organisationUnit(), event.eventDate(), event.completedDate(),
-                        event.dueDate(), State.SYNCED, event.attributeOptionCombo(),
-                        event.trackedEntityInstance());
-            }
-
-            trackedEntityDataValueHandler.handleMany(
-                    event.trackedEntityDataValues(),
-                    new ModelBuilder<TrackedEntityDataValue, TrackedEntityDataValue>() {
-                        @Override
-                        public TrackedEntityDataValue buildModel(TrackedEntityDataValue dataValue) {
-                            return dataValue.toBuilder().event(event.uid()).build();
-                        }
-                    });
-        } else {
-            Log.d(this.getClass().getSimpleName(), event.uid() + " with no org. unit or invalid eventDate");
-        }
-    }
-
-    public static EventHandler create(DatabaseAdapter databaseAdapter) {
+    public static SyncHandler<Event> create(DatabaseAdapter databaseAdapter) {
         return new EventHandler(
-                new EventStoreImpl(databaseAdapter),
+                EventStoreImpl.create(databaseAdapter),
                 TrackedEntityDataValueHandler.create(databaseAdapter)
         );
     }

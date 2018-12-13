@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventFields;
 
 import java.util.Date;
 import java.util.List;
@@ -86,7 +87,7 @@ public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWit
 
     public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder().fields(
             uid, created, lastUpdated, coordinate, enrollmentDate, incidentDate, enrollmentStatus,
-            followUp, program, organisationUnit, trackedEntityInstance, deleted, events.with(Event.allFields),
+            followUp, program, organisationUnit, trackedEntityInstance, deleted, events.with(EventFields.allFields),
             notes.with(NoteFields.all)
     ).build();
 

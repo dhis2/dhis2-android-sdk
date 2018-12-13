@@ -28,18 +28,38 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
+import org.junit.runner.RunWith;
 
-public interface EventStore extends IdentifiableObjectWithStateStore<Event> {
+@RunWith(AndroidJUnit4.class)
+public class EventStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Event> {
 
-    Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
+    public EventStoreIntegrationShould() {
+        super(EventStoreImpl.create(DatabaseAdapterFactory.get(false)),
+                EventTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
-    List<Event> querySingleEventsToPost();
+    @Override
+    protected Event buildObject() {
+        return EventSamples.get();
+    }
 
-    List<Event> querySingleEvents();
+    @Override
+    protected Event buildObjectWithId() {
+        return EventSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
 
-    List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
+    @Override
+    protected Event buildObjectToUpdate() {
+        return EventSamples.get().toBuilder()
+                .state(State.SYNCED)
+                .build();
+    }
 }

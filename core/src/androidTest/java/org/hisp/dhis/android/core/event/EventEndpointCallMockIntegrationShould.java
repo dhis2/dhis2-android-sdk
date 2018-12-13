@@ -33,6 +33,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
+    private EventStore eventStore;
 
     @Override
     @Before
@@ -42,6 +43,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        eventStore = EventStoreImpl.create(databaseAdapter());
     }
 
     @Override
@@ -81,9 +83,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
 
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
-        List<Event> downloadedEvents = eventStore.queryAll();
+        List<Event> downloadedEvents = eventStore.selectAll();
 
         assertThat(downloadedEvents.size(), is(pageSize));
     }
@@ -112,8 +112,6 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedEvents(int numEvents) {
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
         assertThat(downloadedEvents.size(), is(numEvents));
@@ -139,13 +137,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     private List<Event> getDownloadedEvents() {
         List<Event> downloadedEvents = new ArrayList<>();
 
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
         List<Event> downloadedEventsWithoutValues = eventStore.querySingleEvents();
 
         TrackedEntityDataValueStore trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
-        for (Event event : downloadedEventsWithoutValues) {
+        for (int i = 0; i < downloadedEventsWithoutValues.size(); ++i) {
+
+            Event event = downloadedEventsWithoutValues.get(i);
 
             List<TrackedEntityDataValue> trackedEntityDataValues =
                     trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(event.uid());
@@ -156,15 +154,10 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                         trackedEntityDataValue.toBuilder().id(null).event(null).build());
             }
 
-            event = Event.create(
-                    event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(),
-                    event.program(), event.programStage(), event.organisationUnit(),
-                    event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
-                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
-                    event.attributeOptionCombo(), event.trackedEntityInstance());
-
-            downloadedEvents.add(event);
+            downloadedEvents.add(event.toBuilder()
+                    .id(null)
+                    .deleted(false)
+                    .trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build());
         }
 
         return downloadedEvents;

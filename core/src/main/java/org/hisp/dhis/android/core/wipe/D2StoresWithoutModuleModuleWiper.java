@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.wipe;
 
-import org.hisp.dhis.android.core.common.ObjectStyleTableInfo;
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
 import org.hisp.dhis.android.core.event.EventTableInfo;
@@ -27,11 +25,8 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(PeriodModel.TABLE,
-                ObjectStyleTableInfo.TABLE_INFO.name(),
-                ValueTypeDeviceRenderingModel.TABLE,
                 LegendTableInfo.TABLE_INFO.name(),
                 LegendSetTableInfo.TABLE_INFO.name(),
-
                 ProgramIndicatorLegendSetLinkModel.TABLE
         );
     }

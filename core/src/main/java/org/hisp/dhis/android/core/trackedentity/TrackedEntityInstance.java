@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipFields;
@@ -85,7 +86,7 @@ public abstract class TrackedEntityInstance implements ObjectWithUidInterface, O
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
             relationships.with(RelationshipFields.allFields),
             trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
-            enrollment.with(Enrollment.allFields), coordinates, featureType
+            enrollment.with(EnrollmentFields.allFields), coordinates, featureType
     ).build();
 
     static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()

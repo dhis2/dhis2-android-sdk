@@ -54,8 +54,8 @@ public final class EnrollmentModuleWiper implements ModuleWiper {
     @Override
     public void wipeData() {
         tableWiper.wipeTables(
-                EnrollmentModel.TABLE,
-                NoteTableInfo.TABLE_INFO.name()
+                EnrollmentTableInfo.TABLE_INFO,
+                NoteTableInfo.TABLE_INFO
         );
     }
 }

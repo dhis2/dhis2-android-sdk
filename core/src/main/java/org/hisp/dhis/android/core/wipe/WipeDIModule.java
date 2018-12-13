@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,11 +39,7 @@ public final class WipeDIModule {
 
     @Provides
     @Reusable
-    WipeModule d2Wiper(DatabaseAdapter databaseAdapter,
-                       D2CallExecutor d2CallExecutor,
-                       D2ModuleWipers moduleWipers) {
-        D2StoresWithoutModule storesWithoutModule = new D2StoresWithoutModule(databaseAdapter);
-        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers, storesWithoutModule.metadataStores,
-                storesWithoutModule.dataStores);
+    WipeModule d2Wiper(D2CallExecutor d2CallExecutor, D2ModuleWipers moduleWipers) {
+        return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers);
     }
 }

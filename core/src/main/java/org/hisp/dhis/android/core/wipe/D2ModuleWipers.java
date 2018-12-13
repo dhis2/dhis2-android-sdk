@@ -58,7 +58,8 @@ final class D2ModuleWipers {
                    DataElementModuleWiper dataElement,
                    DataValueModuleWiper dataValue,
                    UserModuleWiper user,
-                   MaintenanceModuleWiper maintenance) {
+                   MaintenanceModuleWiper maintenance,
+                   D2StoresWithoutModuleModuleWiper storesWithoutModule) {
 
         this.wipers = Arrays.asList(
                 systemInfo,
@@ -69,6 +70,7 @@ final class D2ModuleWipers {
                 dataElement,
                 dataValue,
                 user,
-                maintenance);
+                maintenance,
+                storesWithoutModule);
     }
 }

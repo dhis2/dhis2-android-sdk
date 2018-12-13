@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.DeletableStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -12,17 +11,11 @@ final class WipeModuleImpl implements WipeModule {
 
     private final D2CallExecutor d2CallExecutor;
     private final List<ModuleWiper> moduleWipers;
-    private final List<DeletableStore> metadataStores;
-    private final List<DeletableStore> dataStores;
 
     WipeModuleImpl(D2CallExecutor d2CallExecutor,
-                   List<ModuleWiper> moduleWipers,
-                   List<DeletableStore> metadataStores,
-                   List<DeletableStore> dataStores) {
+                   List<ModuleWiper> moduleWipers) {
         this.d2CallExecutor = d2CallExecutor;
         this.moduleWipers = moduleWipers;
-        this.metadataStores = metadataStores;
-        this.dataStores = dataStores;
     }
 
     @Override
@@ -63,20 +56,12 @@ final class WipeModuleImpl implements WipeModule {
     }
 
     private void wipeMetadataInternal() {
-        for (DeletableStore deletableStore : metadataStores) {
-            deletableStore.delete();
-        }
-
         for (ModuleWiper moduleWiper : moduleWipers) {
             moduleWiper.wipeMetadata();
         }
     }
 
     private void wipeDataInternal() {
-        for (DeletableStore deletableStore : dataStores) {
-            deletableStore.delete();
-        }
-
         for (ModuleWiper moduleWiper : moduleWipers) {
             moduleWiper.wipeData();
         }

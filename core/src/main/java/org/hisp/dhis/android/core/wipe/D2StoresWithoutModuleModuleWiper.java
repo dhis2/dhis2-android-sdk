@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.wipe;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
-import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 
 import javax.inject.Inject;
@@ -25,9 +23,7 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeData() {
         tableWiper.wipeTables(
-                EnrollmentModel.TABLE,
-                EventTableInfo.TABLE_INFO.name(),
-                NoteTableInfo.TABLE_INFO.name()
+                EventTableInfo.TABLE_INFO.name()
         );
     }
 }

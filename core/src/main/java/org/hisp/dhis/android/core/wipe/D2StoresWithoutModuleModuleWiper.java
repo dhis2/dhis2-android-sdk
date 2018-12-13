@@ -24,7 +24,6 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLin
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
@@ -49,7 +48,6 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                ResourceModel.TABLE,
                 ProgramTableInfo.TABLE_INFO.name(),
                 TrackedEntityAttributeModel.TABLE,
                 ProgramTrackedEntityAttributeModel.TABLE,

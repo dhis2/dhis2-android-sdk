@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueModuleWiper;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModuleWiper;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleWiper;
 import org.hisp.dhis.android.core.relationship.RelationshipModuleWiper;
+import org.hisp.dhis.android.core.resource.ResourceModuleWiper;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleWiper;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleWiper;
 import org.hisp.dhis.android.core.user.UserModuleWiper;
@@ -61,6 +62,7 @@ final class D2ModuleWipers {
                    UserModuleWiper user,
                    MaintenanceModuleWiper maintenance,
                    OrganisationUnitModuleWiper organisationUnit,
+                   ResourceModuleWiper resource,
                    D2StoresWithoutModuleModuleWiper storesWithoutModule) {
 
         this.wipers = Arrays.asList(
@@ -74,6 +76,7 @@ final class D2ModuleWipers {
                 user,
                 maintenance,
                 organisationUnit,
+                resource,
                 storesWithoutModule);
     }
 }

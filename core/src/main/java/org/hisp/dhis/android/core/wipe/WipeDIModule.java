@@ -39,7 +39,7 @@ public final class WipeDIModule {
 
     @Provides
     @Reusable
-    WipeModule d2Wiper(D2CallExecutor d2CallExecutor, D2ModuleWipers moduleWipers) {
+    WipeModule wipeModule(D2CallExecutor d2CallExecutor, D2ModuleWipers moduleWipers) {
         return new WipeModuleImpl(d2CallExecutor, moduleWipers.wipers);
     }
 }

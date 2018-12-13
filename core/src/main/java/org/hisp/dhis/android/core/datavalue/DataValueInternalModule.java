@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
@@ -38,14 +38,13 @@ import dagger.Reusable;
 @Reusable
 public final class DataValueInternalModule implements WipeableModule {
 
+    private final TableWiper tableWiper;
     public final DataValueModule publicModule;
 
-    private final DatabaseAdapter databaseAdapter;
-
     @Inject
-    DataValueInternalModule(DatabaseAdapter databaseAdapter,
+    DataValueInternalModule(TableWiper tableWiper,
                             DataValueModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
+        this.tableWiper = tableWiper;
         this.publicModule = publicModule;
     }
 
@@ -56,6 +55,6 @@ public final class DataValueInternalModule implements WipeableModule {
 
     @Override
     public void wipeData() {
-        DataValueStore.create(databaseAdapter).delete();
+        tableWiper.wipeTable(DataValueTableInfo.TABLE_INFO);
     }
 }

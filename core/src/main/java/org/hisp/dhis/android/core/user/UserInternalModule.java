@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import java.util.List;
@@ -42,18 +42,18 @@ import dagger.Reusable;
 @Reusable
 public final class UserInternalModule implements WipeableModule, UserDownloadModule {
 
-    private final DatabaseAdapter databaseAdapter;
+    private final TableWiper tableWiper;
     public final UserModule publicModule;
 
     private final Provider<UserCall> userCallProvider;
     private final AuthorityEndpointCallFactory authorityEndpointCallFactory;
 
     @Inject
-    UserInternalModule(DatabaseAdapter databaseAdapter,
+    UserInternalModule(TableWiper tableWiper,
                        UserModule publicModule,
                        Provider<UserCall> userCallProvider,
                        AuthorityEndpointCallFactory authorityEndpointCallFactory) {
-        this.databaseAdapter = databaseAdapter;
+        this.tableWiper = tableWiper;
         this.publicModule = publicModule;
         this.userCallProvider = userCallProvider;
         this.authorityEndpointCallFactory = authorityEndpointCallFactory;
@@ -61,12 +61,14 @@ public final class UserInternalModule implements WipeableModule, UserDownloadMod
 
     @Override
     public void wipeMetadata() {
-        UserStore.create(databaseAdapter).delete();
-        UserCredentialsStore.create(databaseAdapter).delete();
-        UserOrganisationUnitLinkStore.create(databaseAdapter).delete();
-        AuthenticatedUserStore.create(databaseAdapter).delete();
-        AuthorityStore.create(databaseAdapter).delete();
-        new UserRoleStoreImpl(databaseAdapter).delete();
+        tableWiper.wipeTables(
+                UserModel.TABLE,
+                UserCredentialsTableInfo.TABLE_INFO.name(),
+                UserOrganisationUnitLinkModel.TABLE,
+                AuthenticatedUserModel.TABLE,
+                AuthorityTableInfo.TABLE_INFO.name(),
+                UserRoleModel.TABLE
+        );
     }
 
     @Override

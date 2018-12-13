@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
@@ -37,20 +37,21 @@ import dagger.Reusable;
 @Reusable
 public final class DataElementInternalModule implements WipeableModule {
 
-    private final DatabaseAdapter databaseAdapter;
+    private final TableWiper tableWiper;
     public final DataElementModule publicModule;
 
     @Inject
-    DataElementInternalModule(DatabaseAdapter databaseAdapter,
-                                      DataElementModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
+    DataElementInternalModule(TableWiper tableWiper,
+                              DataElementModule publicModule) {
+        this.tableWiper = tableWiper;
         this.publicModule = publicModule;
     }
 
     @Override
     public void wipeMetadata() {
-        DataElementStore.create(databaseAdapter).delete();
-        DataElementOperandStore.create(databaseAdapter).delete();
+        tableWiper.wipeTables(
+                DataElementTableInfo.TABLE_INFO,
+                DataElementOperandTableInfo.TABLE_INFO);
     }
 
     @Override

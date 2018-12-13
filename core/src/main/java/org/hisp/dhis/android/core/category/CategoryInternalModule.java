@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
@@ -37,25 +37,27 @@ import dagger.Reusable;
 @Reusable
 public final class CategoryInternalModule implements WipeableModule {
 
-    private final DatabaseAdapter databaseAdapter;
+    private final TableWiper tableWiper;
     public final CategoryModule publicModule;
 
     @Inject
-    CategoryInternalModule(DatabaseAdapter databaseAdapter,
+    CategoryInternalModule(TableWiper tableWiper,
                            CategoryModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
+        this.tableWiper = tableWiper;
         this.publicModule = publicModule;
     }
 
     @Override
     public void wipeMetadata() {
-        CategoryStore.create(databaseAdapter).delete();
-        CategoryOptionStore.create(databaseAdapter).delete();
-        CategoryOptionComboStoreImpl.create(databaseAdapter).delete();
-        CategoryCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryComboStore.create(databaseAdapter).delete();
-        CategoryCategoryComboLinkStore.create(databaseAdapter).delete();
+        tableWiper.wipeTables(
+                CategoryTableInfo.TABLE_INFO,
+                CategoryOptionTableInfo.TABLE_INFO,
+                CategoryOptionComboTableInfo.TABLE_INFO,
+                CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+                CategoryComboTableInfo.TABLE_INFO,
+                CategoryCategoryComboLinkTableInfo.TABLE_INFO
+        );
     }
 
     @Override

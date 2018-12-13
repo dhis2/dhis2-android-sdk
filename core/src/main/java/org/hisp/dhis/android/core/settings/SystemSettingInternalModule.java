@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
@@ -40,13 +40,13 @@ import dagger.Reusable;
 @Reusable
 public final class SystemSettingInternalModule implements Downloader<SystemSetting>, WipeableModule {
 
-    private final ObjectWithoutUidStore<SystemSettingModel> systemSettingStore;
+    private final TableWiper tableWiper;
     private final Provider<SystemSettingCall> systemSettingCallProvider;
 
     @Inject
-    SystemSettingInternalModule(ObjectWithoutUidStore<SystemSettingModel> systemSettingStore,
+    SystemSettingInternalModule(TableWiper tableWiper,
                                 Provider<SystemSettingCall> systemSettingCallProvider) {
-        this.systemSettingStore = systemSettingStore;
+        this.tableWiper = tableWiper;
         this.systemSettingCallProvider = systemSettingCallProvider;
     }
 
@@ -57,7 +57,7 @@ public final class SystemSettingInternalModule implements Downloader<SystemSetti
 
     @Override
     public void wipeMetadata() {
-        systemSettingStore.delete();
+        tableWiper.wipeTable(SystemSettingModel.TABLE);
     }
 
     @Override

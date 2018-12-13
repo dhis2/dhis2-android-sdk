@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipModuleWiper;
 import org.hisp.dhis.android.core.resource.ResourceModuleWiper;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleWiper;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleWiper;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModuleWiper;
 import org.hisp.dhis.android.core.user.UserModuleWiper;
 
 import java.util.Arrays;
@@ -65,6 +66,7 @@ final class D2ModuleWipers {
                    OrganisationUnitModuleWiper organisationUnit,
                    ResourceModuleWiper resource,
                    ProgramModuleWiper program,
+                   TrackedEntityModuleWiper trackedEntity,
                    D2StoresWithoutModuleModuleWiper storesWithoutModule) {
 
         this.wipers = Arrays.asList(
@@ -80,6 +82,7 @@ final class D2ModuleWipers {
                 organisationUnit,
                 resource,
                 program,
+                trackedEntity,
                 storesWithoutModule);
     }
 }

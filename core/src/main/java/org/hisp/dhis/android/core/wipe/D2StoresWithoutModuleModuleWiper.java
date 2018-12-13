@@ -14,12 +14,6 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 import org.hisp.dhis.android.core.period.PeriodModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 
 import javax.inject.Inject;
 
@@ -38,12 +32,9 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                TrackedEntityAttributeModel.TABLE,
-
                 OptionTableInfo.TABLE_INFO.name(),
                 OptionSetTableInfo.TABLE_INFO.name(),
 
-                TrackedEntityTypeTableInfo.TABLE_INFO.name(),
                 IndicatorTableInfo.TABLE_INFO.name(),
                 IndicatorTypeTableInfo.TABLE_INFO.name(),
                 DataSetIndicatorLinkModel.TABLE,
@@ -61,14 +52,9 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeData() {
         tableWiper.wipeTables(
-                TrackedEntityInstanceModel.TABLE,
                 EnrollmentModel.TABLE,
-                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                TrackedEntityAttributeValueModel.TABLE,
                 EventTableInfo.TABLE_INFO.name(),
-
-                NoteTableInfo.TABLE_INFO.name(),
-                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name()
+                NoteTableInfo.TABLE_INFO.name()
         );
     }
 }

@@ -61,47 +61,54 @@ final class D2ModuleWipers {
     final List<ModuleWiper> wipers;
 
     @Inject
-    D2ModuleWipers(SystemInfoModuleWiper systemInfo,
-                   SystemSettingModuleWiper systemSetting,
-                   RelationshipModuleWiper relationship,
-                   CategoryModuleWiper category,
-                   DataSetModuleWiper dataSet,
-                   DataElementModuleWiper dataElement,
-                   DataValueModuleWiper dataValue,
-                   UserModuleWiper user,
-                   MaintenanceModuleWiper maintenance,
-                   OrganisationUnitModuleWiper organisationUnit,
-                   ResourceModuleWiper resource,
-                   ProgramModuleWiper program,
-                   TrackedEntityModuleWiper trackedEntity,
-                   OptionModuleWiper option,
-                   IndicatorModuleWiper indicator,
-                   CommonModuleWiper common,
-                   PeriodModuleWiper period,
-                   LegendSetModuleWiper legendSet,
-                   EnrollmentModuleWiper enrollment,
-                   EventModuleWiper event) {
+    D2ModuleWipers(
+            CategoryModuleWiper category,
+            CommonModuleWiper common,
+            DataElementModuleWiper dataElement,
+            DataSetModuleWiper dataSet,
+            DataValueModuleWiper dataValue,
+
+            EnrollmentModuleWiper enrollment,
+            EventModuleWiper event,
+            IndicatorModuleWiper indicator,
+            LegendSetModuleWiper legendSet,
+            MaintenanceModuleWiper maintenance,
+
+            OptionModuleWiper option,
+            OrganisationUnitModuleWiper organisationUnit,
+            PeriodModuleWiper period,
+            ProgramModuleWiper program,
+            RelationshipModuleWiper relationship,
+
+            ResourceModuleWiper resource,
+            SystemInfoModuleWiper systemInfo,
+            SystemSettingModuleWiper systemSetting,
+            UserModuleWiper user,
+            TrackedEntityModuleWiper trackedEntity) {
 
         this.wipers = Arrays.asList(
+                category,
+                common,
+                dataElement,
+                dataSet,
+                dataValue,
+
+                enrollment,
+                event,
+                indicator,
+                legendSet,
+                maintenance,
+
+                option,
+                organisationUnit,
+                period,
+                program,
+                relationship,
+
+                resource,
                 systemInfo,
                 systemSetting,
-                relationship,
-                category,
-                dataSet,
-                dataElement,
-                dataValue,
                 user,
-                maintenance,
-                organisationUnit,
-                resource,
-                program,
-                trackedEntity,
-                option,
-                indicator,
-                common,
-                period,
-                legendSet,
-                enrollment,
-                event);
+                trackedEntity);
     }
 }

@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreWithState;
+import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
 
 import java.util.List;
 import java.util.Map;
 
-public interface EventStore extends IdentifiableObjectStore<Event>, StoreWithState {
+public interface EventStore extends IdentifiableObjectWithStateStore<Event> {
 
     Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost();
 

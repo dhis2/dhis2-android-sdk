@@ -28,24 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.NonNull;
-
-import java.util.List;
-
 public interface IdentifiableObjectWithStateStore<O extends ObjectWithUidInterface>
-        extends ObjectStore<O>, StoreWithState {
-
-    void delete(@NonNull String uid) throws RuntimeException;
-
-    void deleteIfExists(@NonNull String uid) throws RuntimeException;
-
-    void update(@NonNull O o) throws RuntimeException;
-
-    HandleAction updateOrInsert(@NonNull O o) throws RuntimeException;
-
-    List<String> selectUids() throws RuntimeException;
-
-    List<String> selectUidsWhere(String whereClause) throws RuntimeException;
-
-    O selectByUid(String uid) throws RuntimeException;
+        extends IdentifiableObjectStore<O>, StoreWithState {
 }

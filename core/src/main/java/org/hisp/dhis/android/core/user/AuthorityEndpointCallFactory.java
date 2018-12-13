@@ -28,31 +28,46 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.common.GenericCallData;
 
-import java.io.IOException;
+import java.util.List;
 
-import retrofit2.Response;
+import javax.inject.Inject;
 
-final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+import dagger.Reusable;
+
+@Reusable
+final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> {
+
+    private final SyncHandler<Authority> handler;
+
+    @Inject
+    AuthorityEndpointCallFactory(GenericCallData data,
+                                 APICallExecutor apiCallExecutor,
+                                 SyncHandler<Authority> handler) {
+        super(data, apiCallExecutor);
+        this.handler = handler;
+    }
 
     @Override
-    public D2ErrorCode catchError(Response<?> response) throws IOException {
+    protected CallFetcher<Authority> fetcher() {
+        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
 
-        String errorResponse = response.errorBody().string();
+        return new AuthorityCallFetcher(apiCallExecutor) {
+            @Override
+            protected retrofit2.Call<List<String>> getCall() {
+                return authorityService.getAuthorities();
+            }
+        };
+    }
 
-        if (errorResponse.contains("LDAP authentication is not configured") ||
-                errorResponse.contains("Bad credentials")) {
-            return D2ErrorCode.BAD_CREDENTIALS;
-        } else if (errorResponse.contains("User is disabled")) {
-            return D2ErrorCode.USER_ACCOUNT_DISABLED;
-        } else if (errorResponse.contains("User account is locked")) {
-            return D2ErrorCode.USER_ACCOUNT_LOCKED;
-        } else if (response.code() == 404) {
-            return D2ErrorCode.URL_NOT_FOUND;
-        }
-
-        return null;
+    @Override
+    protected CallProcessor<Authority> processor() {
+        return new AuthorityCallProcessor(data.databaseAdapter(), handler);
     }
 }

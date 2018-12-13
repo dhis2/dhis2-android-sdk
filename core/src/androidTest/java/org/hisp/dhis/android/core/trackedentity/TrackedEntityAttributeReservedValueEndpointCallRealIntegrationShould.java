@@ -65,7 +65,7 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     }
 
     private void login() throws Exception {
-        if (!d2.isUserLoggedIn().call()) {
+        if (!d2.userModule().isLogged().call()) {
             d2.logIn(RealServerMother.user, RealServerMother.password).call();
         }
     }

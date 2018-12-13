@@ -28,31 +28,27 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.io.IOException;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import retrofit2.Response;
+@Module
+public final class UserCredentialsEntityDIModule {
 
-final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<UserCredentials> store(DatabaseAdapter databaseAdapter) {
+        return UserCredentialsStore.create(databaseAdapter);
+    }
 
-    @Override
-    public D2ErrorCode catchError(Response<?> response) throws IOException {
-
-        String errorResponse = response.errorBody().string();
-
-        if (errorResponse.contains("LDAP authentication is not configured") ||
-                errorResponse.contains("Bad credentials")) {
-            return D2ErrorCode.BAD_CREDENTIALS;
-        } else if (errorResponse.contains("User is disabled")) {
-            return D2ErrorCode.USER_ACCOUNT_DISABLED;
-        } else if (errorResponse.contains("User account is locked")) {
-            return D2ErrorCode.USER_ACCOUNT_LOCKED;
-        } else if (response.code() == 404) {
-            return D2ErrorCode.URL_NOT_FOUND;
-        }
-
-        return null;
+    @Provides
+    @Reusable
+    public static SyncHandler<UserCredentials> handler(IdentifiableObjectStore<UserCredentials> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

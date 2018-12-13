@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class UserStore {
+final class UserStore {
     private UserStore() {}
 
     private static StatementBinder<User> BINDER = new IdentifiableStatementBinder<User>() {

@@ -31,15 +31,15 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 
-public class UserRoleHandler {
+class UserRoleHandler {
     private final UserRoleStore userRoleStore;
 
 
-    public UserRoleHandler(UserRoleStore userRoleStore) {
+    UserRoleHandler(UserRoleStore userRoleStore) {
         this.userRoleStore = userRoleStore;
     }
 
-    public void handleUserRoles(List<UserRole> userRoles) {
+    void handleUserRoles(List<UserRole> userRoles) {
         if (userRoles == null) {
             return;
         }

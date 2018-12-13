@@ -25,17 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-final class UserCredentialsHandler {
-    private UserCredentialsHandler() {
+@Module(includes = {
+        AuthenticatedUserEntityDIModule.class,
+        AuthorityEntityDIModule.class,
+        UserCredentialsEntityDIModule.class,
+        UserEntityDIModule.class,
+        UserOrganisationUnitLinkEntityDIModule.class
+})
+public final class UserPackageDIModule {
+
+    @Provides
+    @Reusable
+    UserService service(Retrofit retrofit) {
+        return retrofit.create(UserService.class);
     }
 
-    public static SyncHandler<UserCredentials> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter));
+    @Provides
+    UserDownloadModule downloadModule(UserInternalModule internalModule) {
+        return internalModule;
     }
 }

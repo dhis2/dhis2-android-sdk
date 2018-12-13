@@ -66,6 +66,6 @@ public final class SystemInfoInternalModule implements Downloader<SystemInfo>, W
 
     @Override
     public void wipeData() {
-        // Without data to wipe
+        // No data to wipe
     }
 }

@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
+abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
 
     private final APICallExecutor apiCallExecutor;
     private static final List<String> QUERIED_AUTHORITIES = Arrays.asList(

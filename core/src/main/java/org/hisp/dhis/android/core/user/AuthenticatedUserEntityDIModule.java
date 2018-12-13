@@ -28,36 +28,19 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public final class AuthorityEndpointCall extends ListCallFactoryImpl<Authority> {
+@Module
+public final class AuthenticatedUserEntityDIModule {
 
-    public AuthorityEndpointCall(GenericCallData data, APICallExecutor apiCallExecutor) {
-        super(data, apiCallExecutor);
-    }
-
-    @Override
-    protected CallFetcher<Authority> fetcher() {
-        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
-
-        return new AuthorityCallFetcher(apiCallExecutor) {
-            @Override
-            protected retrofit2.Call<List<String>> getCall() {
-                return authorityService.getAuthorities();
-            }
-        };
-    }
-
-    @Override
-    protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(
-                data.databaseAdapter(),
-                AuthorityHandler.create(data.databaseAdapter()));
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore(DatabaseAdapter databaseAdapter) {
+        return AuthenticatedUserStore.create(databaseAdapter);
     }
 }

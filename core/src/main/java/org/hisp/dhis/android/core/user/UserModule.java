@@ -25,34 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
+import org.hisp.dhis.android.core.common.Unit;
 
-import retrofit2.Response;
+import java.util.concurrent.Callable;
 
-final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
+import javax.inject.Inject;
+import javax.inject.Provider;
 
-    @Override
-    public D2ErrorCode catchError(Response<?> response) throws IOException {
+import dagger.Reusable;
 
-        String errorResponse = response.errorBody().string();
+@Reusable
+public final class UserModule {
 
-        if (errorResponse.contains("LDAP authentication is not configured") ||
-                errorResponse.contains("Bad credentials")) {
-            return D2ErrorCode.BAD_CREDENTIALS;
-        } else if (errorResponse.contains("User is disabled")) {
-            return D2ErrorCode.USER_ACCOUNT_DISABLED;
-        } else if (errorResponse.contains("User account is locked")) {
-            return D2ErrorCode.USER_ACCOUNT_LOCKED;
-        } else if (response.code() == 404) {
-            return D2ErrorCode.URL_NOT_FOUND;
-        }
+    private final Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider;
+    private final Provider<LogOutUserCallable> logoutCallCallProvider;
 
-        return null;
+    @Inject
+    UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
+               Provider<LogOutUserCallable> logoutCallCallProvider) {
+        this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
+        this.logoutCallCallProvider = logoutCallCallProvider;
+    }
+
+    @NonNull
+    public Callable<Unit> logOut() {
+        return logoutCallCallProvider.get();
+    }
+
+    @NonNull
+    public Callable<Boolean> isLogged() {
+        return isUserLoggedInCallProvider.get();
     }
 }

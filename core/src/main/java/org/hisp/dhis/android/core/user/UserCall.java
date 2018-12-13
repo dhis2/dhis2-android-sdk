@@ -32,22 +32,22 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-public final class UserCall extends SyncCall<User> {
+import javax.inject.Inject;
+
+final class UserCall extends SyncCall<User> {
     private final GenericCallData genericCallData;
     private final APICallExecutor apiCallExecutor;
     private final UserService userService;
     private final SyncHandler<User> userHandler;
 
+    @Inject
     UserCall(GenericCallData genericCallData,
              APICallExecutor apiCallExecutor,
              UserService userService,
@@ -78,17 +78,4 @@ public final class UserCall extends SyncCall<User> {
         }
         return user;
     }
-
-    public static final GenericCallFactory<User> FACTORY = new GenericCallFactory<User>() {
-
-        @Override
-        public Call<User> create(GenericCallData genericCallData) {
-            return new UserCall(
-                    genericCallData,
-                    APICallExecutorImpl.create(genericCallData.databaseAdapter()),
-                    genericCallData.retrofit().create(UserService.class),
-                    UserHandler.create(genericCallData.databaseAdapter())
-            );
-        }
-    };
 }

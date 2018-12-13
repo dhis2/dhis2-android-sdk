@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,34 +25,62 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.maintenance;
 
+package org.hisp.dhis.android.core.user;
+
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.wipe.WipeableModule;
 
+import java.util.List;
+
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class MaintenanceInternalModule implements WipeableModule {
+public final class UserInternalModule implements WipeableModule, UserDownloadModule {
 
     private final DatabaseAdapter databaseAdapter;
-    public final MaintenanceModule publicModule;
+    public final UserModule publicModule;
+
+    private final Provider<UserCall> userCallProvider;
+    private final AuthorityEndpointCallFactory authorityEndpointCallFactory;
 
     @Inject
-    MaintenanceInternalModule(DatabaseAdapter databaseAdapter, MaintenanceModule publicModule) {
+    UserInternalModule(DatabaseAdapter databaseAdapter,
+                       UserModule publicModule,
+                       Provider<UserCall> userCallProvider,
+                       AuthorityEndpointCallFactory authorityEndpointCallFactory) {
         this.databaseAdapter = databaseAdapter;
         this.publicModule = publicModule;
+        this.userCallProvider = userCallProvider;
+        this.authorityEndpointCallFactory = authorityEndpointCallFactory;
     }
 
     @Override
     public void wipeMetadata() {
-        // No metadata to wipe
+        UserStore.create(databaseAdapter).delete();
+        UserCredentialsStore.create(databaseAdapter).delete();
+        UserOrganisationUnitLinkStore.create(databaseAdapter).delete();
+        AuthenticatedUserStore.create(databaseAdapter).delete();
+        AuthorityStore.create(databaseAdapter).delete();
+        new UserRoleStoreImpl(databaseAdapter).delete();
     }
 
     @Override
     public void wipeData() {
-        ForeignKeyViolationStore.create(databaseAdapter).delete();
+        // No data to wipe
+    }
+
+    @Override
+    public Call<User> downloadUser() {
+        return userCallProvider.get();
+    }
+
+    @Override
+    public Call<List<Authority>> downloadAuthority() {
+        return authorityEndpointCallFactory.create();
     }
 }

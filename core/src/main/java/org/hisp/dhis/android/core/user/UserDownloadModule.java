@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,18 +28,11 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.calls.Call;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
 
-@Module
-public final class UserDIModule {
-
-    @Provides
-    @Reusable
-    UserOrganisationUnitLinkStoreInterface store(DatabaseAdapter databaseAdapter) {
-        return UserOrganisationUnitLinkStore.create(databaseAdapter);
-    }
+public interface UserDownloadModule {
+    Call<User> downloadUser();
+    Call<List<Authority>> downloadAuthority();
 }

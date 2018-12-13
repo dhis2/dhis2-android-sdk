@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.Authority;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
+import org.hisp.dhis.android.core.user.UserDownloadModule;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.junit.After;
 import org.junit.Before;
@@ -145,10 +145,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Downloader<SystemSetting> systemSettingDownloader;
 
     @Mock
-    private GenericCallFactory<User> userCallFactory;
-
-    @Mock
-    private ListCallFactory<Authority> authorityCallFactory;
+    private UserDownloadModule userDownloadModule;
 
     @Mock
     private UidsCallFactory<Category> categoryCallFactory;
@@ -193,9 +190,9 @@ public class MetadataCallShould extends BaseCallShould {
         // Call factories
         when(systemInfoCallDownloader.download()).thenReturn(systemInfoEndpointCall);
         when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
-        when(userCallFactory.create(any(GenericCallData.class))).thenReturn(userCall);
+        when(userDownloadModule.downloadUser()).thenReturn(userCall);
+        when(userDownloadModule.downloadAuthority()).thenReturn(authorityEndpointCall);
         when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
-        when(authorityCallFactory.create()).thenReturn(authorityEndpointCall);
         when(categoryCallFactory.create(anySetOf(String.class))).thenReturn(categoryEndpointCall);
         when(categoryComboCallFactory.create(anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),
@@ -223,8 +220,7 @@ public class MetadataCallShould extends BaseCallShould {
                 genericCallData,
                 systemInfoCallDownloader,
                 systemSettingDownloader,
-                userCallFactory,
-                authorityCallFactory,
+                userDownloadModule,
                 categoryCallFactory,
                 categoryComboCallFactory,
                 categoryComboUidsSeeker,

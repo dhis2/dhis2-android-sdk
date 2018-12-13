@@ -42,7 +42,7 @@ import java.util.Date;
 @SuppressWarnings({
         "PMD.AvoidDuplicateLiterals"
 })
-public class UserRoleStoreImpl implements UserRoleStore {
+class UserRoleStoreImpl implements UserRoleStore {
 
     private static final String INSERT_STATEMENT = "INSERT INTO " + UserRoleModel.TABLE + "( " +
             Columns.UID + ", " +
@@ -72,7 +72,7 @@ public class UserRoleStoreImpl implements UserRoleStore {
 
     private final DatabaseAdapter databaseAdapter;
 
-    public UserRoleStoreImpl(DatabaseAdapter databaseAdapter) {
+    UserRoleStoreImpl(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
         this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);

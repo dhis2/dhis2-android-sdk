@@ -43,7 +43,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.logout().call();
+        d2.userModule().logOut().call();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
         assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
@@ -63,7 +63,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        d2.logout().call();
+        d2.userModule().logOut().call();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
@@ -83,7 +83,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     //@Test
     public void response_successful_on_login_logout_and_login() throws Exception {
         d2.logIn("android", "Android123").call();
-        d2.logout().call();
+        d2.userModule().logOut().call();
         d2.logIn("android", "Android123").call();
     }
 }

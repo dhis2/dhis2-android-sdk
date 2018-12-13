@@ -14,16 +14,6 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.option.OptionSetTableInfo;
 import org.hisp.dhis.android.core.option.OptionTableInfo;
 import org.hisp.dhis.android.core.period.PeriodModel;
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo;
-import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
-import org.hisp.dhis.android.core.program.ProgramRuleModel;
-import org.hisp.dhis.android.core.program.ProgramRuleVariableModel;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementModel;
-import org.hisp.dhis.android.core.program.ProgramStageModel;
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkModel;
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
@@ -48,21 +38,10 @@ final class D2StoresWithoutModuleModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
                 TrackedEntityAttributeModel.TABLE,
-                ProgramTrackedEntityAttributeModel.TABLE,
-
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-                ProgramRuleActionModel.TABLE,
-                ProgramRuleModel.TABLE,
 
                 OptionTableInfo.TABLE_INFO.name(),
                 OptionSetTableInfo.TABLE_INFO.name(),
-                ProgramStageDataElementModel.TABLE,
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageModel.TABLE,
 
                 TrackedEntityTypeTableInfo.TABLE_INFO.name(),
                 IndicatorTableInfo.TABLE_INFO.name(),

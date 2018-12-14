@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,9 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.wipe;
+package org.hisp.dhis.android.core.legendset;
 
-public interface WipeableModule {
-   void wipeMetadata();
-   void wipeData();
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class LegendSetModuleWiper implements ModuleWiper {
+
+    private final TableWiper tableWiper;
+
+    @Inject
+    LegendSetModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
+    }
+
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTables(
+                LegendTableInfo.TABLE_INFO.name(),
+                LegendSetTableInfo.TABLE_INFO.name(),
+                ProgramIndicatorLegendSetLinkModel.TABLE);
+    }
+
+    @Override
+    public void wipeData() {
+        // No metadata to wipe
+    }
 }

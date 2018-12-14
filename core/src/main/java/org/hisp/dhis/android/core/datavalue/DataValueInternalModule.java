@@ -28,34 +28,17 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class DataValueInternalModule implements WipeableModule {
+public final class DataValueInternalModule {
 
     public final DataValueModule publicModule;
 
-    private final DatabaseAdapter databaseAdapter;
-
     @Inject
-    DataValueInternalModule(DatabaseAdapter databaseAdapter,
-                            DataValueModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
+    DataValueInternalModule(DataValueModule publicModule) {
         this.publicModule = publicModule;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        DataValueStore.create(databaseAdapter).delete();
     }
 }

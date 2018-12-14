@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -38,18 +36,15 @@ import javax.inject.Provider;
 import dagger.Reusable;
 
 @Reusable
-public final class SystemInfoInternalModule implements Downloader<SystemInfo>, WipeableModule {
+public final class SystemInfoInternalModule implements Downloader<SystemInfo> {
 
-    private final ObjectWithoutUidStore<SystemInfo> systemInfoStore;
     private final Provider<SystemInfoCall> systemInfoCallProvider;
 
     public final SystemInfoModule publicModule;
 
     @Inject
-    SystemInfoInternalModule(ObjectWithoutUidStore<SystemInfo> systemInfoStore,
-                             SystemInfoModule publicModule,
+    SystemInfoInternalModule(SystemInfoModule publicModule,
                              Provider<SystemInfoCall> systemInfoCallProvider) {
-        this.systemInfoStore = systemInfoStore;
         this.publicModule = publicModule;
         this.systemInfoCallProvider = systemInfoCallProvider;
     }
@@ -57,15 +52,5 @@ public final class SystemInfoInternalModule implements Downloader<SystemInfo>, W
     @Override
     public Call<SystemInfo> download() {
         return systemInfoCallProvider.get();
-    }
-
-    @Override
-    public void wipeMetadata() {
-        systemInfoStore.delete();
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
     }
 }

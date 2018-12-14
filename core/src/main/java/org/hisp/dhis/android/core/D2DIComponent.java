@@ -17,6 +17,8 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.settings.SystemSettingDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoDIModule;
 import org.hisp.dhis.android.core.user.UserPackageDIModule;
+import org.hisp.dhis.android.core.wipe.WipeDIModule;
+import org.hisp.dhis.android.core.wipe.WipeModule;
 
 import javax.inject.Singleton;
 
@@ -37,7 +39,8 @@ import dagger.Component;
         DataValueDIModule.class,
         PeriodDIModule.class,
         UserPackageDIModule.class,
-        MaintenanceDIModule.class}
+        MaintenanceDIModule.class,
+        WipeDIModule.class}
 )
 public interface D2DIComponent {
 
@@ -45,6 +48,7 @@ public interface D2DIComponent {
     ResourceHandler resourceHandler();
     GenericCallData genericCallData();
     AggregatedModule aggregatedModule();
+    WipeModule wipeModule();
 
     @Component.Builder
     interface Builder {
@@ -62,6 +66,7 @@ public interface D2DIComponent {
         Builder periodDIModule(PeriodDIModule periodDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         Builder maintenanceDIModule(MaintenanceDIModule maintenanceDIModule);
+        Builder wipeDIModule(WipeDIModule wipeDIModule);
         D2DIComponent build();
     }
 }

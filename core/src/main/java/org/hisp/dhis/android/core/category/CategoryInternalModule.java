@@ -27,39 +27,17 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class CategoryInternalModule implements WipeableModule {
+public final class CategoryInternalModule {
 
-    private final DatabaseAdapter databaseAdapter;
     public final CategoryModule publicModule;
 
     @Inject
-    CategoryInternalModule(DatabaseAdapter databaseAdapter,
-                           CategoryModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
+    CategoryInternalModule(CategoryModule publicModule) {
         this.publicModule = publicModule;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        CategoryStore.create(databaseAdapter).delete();
-        CategoryOptionStore.create(databaseAdapter).delete();
-        CategoryOptionComboStoreImpl.create(databaseAdapter).delete();
-        CategoryCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryComboStore.create(databaseAdapter).delete();
-        CategoryCategoryComboLinkStore.create(databaseAdapter).delete();
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
     }
 }

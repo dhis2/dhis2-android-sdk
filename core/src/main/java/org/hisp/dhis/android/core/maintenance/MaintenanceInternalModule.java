@@ -27,32 +27,17 @@
  */
 package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class MaintenanceInternalModule implements WipeableModule {
+public final class MaintenanceInternalModule {
 
-    private final DatabaseAdapter databaseAdapter;
     public final MaintenanceModule publicModule;
 
     @Inject
-    MaintenanceInternalModule(DatabaseAdapter databaseAdapter, MaintenanceModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
+    MaintenanceInternalModule(MaintenanceModule publicModule) {
         this.publicModule = publicModule;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        // No metadata to wipe
-    }
-
-    @Override
-    public void wipeData() {
-        ForeignKeyViolationStore.create(databaseAdapter).delete();
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,28 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
+package org.hisp.dhis.android.core.enrollment;
+
+import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingInternalModule implements Downloader<SystemSetting> {
+public final class EnrollmentModuleWiper implements ModuleWiper {
 
-    private final Provider<SystemSettingCall> systemSettingCallProvider;
+    private final TableWiper tableWiper;
 
     @Inject
-    SystemSettingInternalModule(Provider<SystemSettingCall> systemSettingCallProvider) {
-        this.systemSettingCallProvider = systemSettingCallProvider;
+    EnrollmentModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
     @Override
-    public Call<SystemSetting> download() {
-        return systemSettingCallProvider.get();
+    public void wipeMetadata() {
+        // No metadata to wipe
+    }
+
+    @Override
+    public void wipeData() {
+        tableWiper.wipeTables(
+                EnrollmentModel.TABLE,
+                NoteTableInfo.TABLE_INFO.name()
+        );
     }
 }

@@ -25,15 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.imports.ImportSummary;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+package org.hisp.dhis.android.core.datavalue;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.common.GenericCallData;
 
-public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
-    void add(M m) throws D2Error;
-    Callable<ImportSummary> upload() throws D2Error;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
+
+@Module(includes = {DataValueEntityDIModule.class})
+public final class DataValuePackageDIModule {
+
+    @Provides
+    @Reusable
+    DataValueModule module(ReadWriteCollectionRepository<DataValue> collectionRepository) {
+        return new DataValueModule(collectionRepository);
+    }
+
+    @Provides
+    @Reusable
+    DataValueService service(Retrofit retrofit) {
+        return retrofit.create(DataValueService.class);
+    }
+
+
+    @Provides
+    @Reusable
+    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
+                                                                     APICallExecutor apiCallExecutor) {
+        return new DataValueEndpointCallFactory(data, apiCallExecutor);
+    }
 }

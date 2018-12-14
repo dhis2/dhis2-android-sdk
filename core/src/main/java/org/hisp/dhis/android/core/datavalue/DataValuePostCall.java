@@ -31,25 +31,28 @@ package org.hisp.dhis.android.core.datavalue;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.Callable;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
 
-public final class DataValuePostCall extends SyncCall<ImportSummary> {
+import dagger.Reusable;
+
+@Reusable
+final class DataValuePostCall implements Callable<ImportSummary> {
 
     private final DataValueService dataValueService;
     private final DataValueStore dataValueStore;
     private final APICallExecutor apiCallExecutor;
 
-    private DataValuePostCall(@NonNull DataValueService dataValueService,
-                              @NonNull DataValueStore dataValueSetStore, APICallExecutor apiCallExecutor) {
+    @Inject
+    DataValuePostCall(@NonNull DataValueService dataValueService,
+                      @NonNull DataValueStore dataValueSetStore,
+                      APICallExecutor apiCallExecutor) {
 
         this.dataValueService = dataValueService;
         this.dataValueStore = dataValueSetStore;
@@ -58,9 +61,6 @@ public final class DataValuePostCall extends SyncCall<ImportSummary> {
 
     @Override
     public ImportSummary call() throws Exception {
-
-        setExecuted();
-
         Collection<DataValue> toPostDataValues = new ArrayList<>();
 
         appendPostableDataValues(toPostDataValues);
@@ -94,14 +94,5 @@ public final class DataValuePostCall extends SyncCall<ImportSummary> {
                 new DataValueImportHandler(dataValueStore);
 
         dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
-    }
-
-    public static DataValuePostCall create(@NonNull DatabaseAdapter databaseAdapter,
-                                     @NonNull Retrofit retrofit) {
-
-        return new DataValuePostCall(
-                retrofit.create(DataValueService.class),
-                DataValueStore.create(databaseAdapter),
-                APICallExecutorImpl.create(databaseAdapter));
     }
 }

@@ -28,14 +28,21 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
 public final class DataValueModule {
 
-    public final DataValueCollectionRepository dataValues;
+    public final ReadWriteCollectionRepository<DataValue> dataValues;
 
-    DataValueModule(DataValueCollectionRepository dataValueCollectionRepository) {
+    @Inject
+    DataValueModule(ReadWriteCollectionRepository<DataValue> dataValueCollectionRepository) {
         this.dataValues = dataValueCollectionRepository;
     }
 }

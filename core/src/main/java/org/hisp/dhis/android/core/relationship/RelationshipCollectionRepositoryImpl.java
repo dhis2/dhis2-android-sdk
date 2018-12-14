@@ -32,19 +32,21 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.PojoBuilder;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
@@ -101,6 +103,15 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
                         .build();
             }
         }
+    }
+
+    @Override
+    public Callable<ImportSummary> upload() throws D2Error {
+        throw D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.NOT_IMPLEMENTED)
+                .errorDescription("Not yet implemented")
+                .build();
     }
 
     @Override

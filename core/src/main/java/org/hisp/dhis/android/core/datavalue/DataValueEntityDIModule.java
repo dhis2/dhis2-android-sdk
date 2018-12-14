@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -38,18 +38,23 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class DataValueDIModule {
+public final class DataValueEntityDIModule {
 
     @Provides
     @Reusable
-    DataValueModule module(DatabaseAdapter databaseAdapter) {
-        return new DataValueModule(DataValueCollectionRepository.create(databaseAdapter));
+    DataValueStore store(DatabaseAdapter databaseAdapter) {
+        return DataValueStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
-                                                                     APICallExecutor apiCallExecutor) {
-        return new DataValueEndpointCallFactory(data, apiCallExecutor);
+    SyncHandler<DataValue> handler(DataValueStore dataValueStore) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(dataValueStore);
+    }
+
+    @Provides
+    @Reusable
+    ReadWriteCollectionRepository<DataValue> collectionRepository(DataValueCollectionRepository repositoryImpl) {
+        return repositoryImpl;
     }
 }

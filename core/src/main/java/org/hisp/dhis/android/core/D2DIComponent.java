@@ -7,7 +7,7 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementDIModule;
 import org.hisp.dhis.android.core.dataset.DataSetDIModule;
-import org.hisp.dhis.android.core.datavalue.DataValueDIModule;
+import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceDIModule;
 import org.hisp.dhis.android.core.period.PeriodDIModule;
@@ -36,7 +36,7 @@ import dagger.Component;
         CategoryDIModule.class,
         DataSetDIModule.class,
         DataElementDIModule.class,
-        DataValueDIModule.class,
+        DataValuePackageDIModule.class,
         PeriodDIModule.class,
         UserPackageDIModule.class,
         MaintenanceDIModule.class,
@@ -62,7 +62,7 @@ public interface D2DIComponent {
         Builder categoryDIModule(CategoryDIModule categoryDIModule);
         Builder dataSetDIModule(DataSetDIModule dataSetDIModule);
         Builder dataElementDIModule(DataElementDIModule dataElementDIModule);
-        Builder dataValueDIModule(DataValueDIModule dataValueDIModule);
+        Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);
         Builder periodDIModule(PeriodDIModule periodDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         Builder maintenanceDIModule(MaintenanceDIModule maintenanceDIModule);

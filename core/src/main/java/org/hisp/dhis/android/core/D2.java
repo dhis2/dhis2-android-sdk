@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
@@ -79,8 +78,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-// ToDo: handle corner cases when user initially has been signed in, but later was locked (or
-// password has changed)
 @SuppressWarnings({"PMD.ExcessiveImports"})
 public final class D2 {
     private final Retrofit retrofit;
@@ -90,9 +87,7 @@ public final class D2 {
     private final D2InternalModules internalModules;
     private final D2DIComponent d2DIComponent;
 
-    @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
-       @NonNull Context context) {
+    private D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
 
         if (BuildConfig.DEBUG) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields;
 
-public final class UserFields {
+final class UserFields {
     private static final String BIRTHDAY = "birthday";
     private static final String EDUCATION = "education";
     private static final String GENDER = "gender";

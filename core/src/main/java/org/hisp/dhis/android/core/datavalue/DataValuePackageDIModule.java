@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.GenericCallData;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,8 +54,7 @@ public final class DataValuePackageDIModule {
 
     @Provides
     @Reusable
-    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(GenericCallData data,
-                                                                     APICallExecutor apiCallExecutor) {
-        return new DataValueEndpointCallFactory(data, apiCallExecutor);
+    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(DataValueEndpointCallFactory callFactoryImpl) {
+        return callFactoryImpl;
     }
 }

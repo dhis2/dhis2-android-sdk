@@ -54,7 +54,8 @@ public final class SystemInfoDIModule {
 
     @Provides
     @Reusable
-    SystemInfoModule module(DHISVersionManager versionManager, ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+    SystemInfoModule module(DHISVersionManager versionManager,
+                            ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
         return new SystemInfoModule(versionManager, systemInfoRepository);
     }
 

@@ -56,7 +56,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     public void downloadUpdateAndSyncTei() throws Exception {
-        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
         d2.syncMetaData().call();
 

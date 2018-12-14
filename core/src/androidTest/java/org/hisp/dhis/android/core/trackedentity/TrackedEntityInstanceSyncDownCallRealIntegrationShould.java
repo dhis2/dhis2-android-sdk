@@ -35,7 +35,7 @@ public class TrackedEntityInstanceSyncDownCallRealIntegrationShould extends AbsS
 
     //@Test
     public void sync_down_synced_tracked_entity_instances() throws Exception {
-        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
         d2.syncMetaData().call();
 

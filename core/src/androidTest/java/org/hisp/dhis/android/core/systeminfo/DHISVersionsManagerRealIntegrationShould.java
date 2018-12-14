@@ -26,7 +26,7 @@ public class DHISVersionsManagerRealIntegrationShould extends AbsStoreTestCase {
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
-        d2.logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").call();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_29);
         assertThat(versionManager.is2_29()).isTrue();
         assertThat(versionManager.is2_30()).isFalse();
@@ -39,7 +39,7 @@ public class DHISVersionsManagerRealIntegrationShould extends AbsStoreTestCase {
 
         DHISVersionManager versionManager = d2.systemInfoModule().versionManager;
 
-        d2.logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").call();
         assertThat(versionManager.getVersion()).isEqualTo(DHISVersion.V2_30);
         assertThat(versionManager.is2_29()).isFalse();
         assertThat(versionManager.is2_30()).isTrue();

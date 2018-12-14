@@ -73,7 +73,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
 
     private void givenALoginInDatabase() throws Exception {
         dhis2MockServer.enqueueLoginResponses();
-        d2.logIn("user", "password").call();
+        d2.userModule().logIn("user", "password").call();
     }
 
     private void givenAMetadataInDatabase() throws Exception {

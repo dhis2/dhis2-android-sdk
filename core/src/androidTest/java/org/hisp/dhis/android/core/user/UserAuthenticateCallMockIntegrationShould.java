@@ -117,7 +117,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         dhis2MockServer.enqueueMockResponse("user/user.json");
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
 
-        authenticateUserCall = d2.logIn("test_user", "test_password");
+        authenticateUserCall = d2.userModule().logIn("test_user", "test_password");
     }
 
     @Test

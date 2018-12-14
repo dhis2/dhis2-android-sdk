@@ -67,8 +67,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserAuthenticateCall;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 import org.hisp.dhis.android.core.wipe.WipeModule;
@@ -131,12 +129,6 @@ public final class D2 {
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
-    }
-
-    @NonNull
-    public Callable<User> logIn(@NonNull String username, @NonNull String password) {
-        return UserAuthenticateCall.create(databaseAdapter, retrofit, resourceHandler,
-                internalModules, wipeModule(), username, password);
     }
 
     @NonNull

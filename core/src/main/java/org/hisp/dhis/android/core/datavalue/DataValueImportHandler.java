@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.imports.ImportSummary;
 
 class DataValueImportHandler {
 
-    private DataValueStore dataValueStore;
+    private final DataValueStore dataValueStore;
 
     DataValueImportHandler(DataValueStore dataValueStore) {
         this.dataValueStore = dataValueStore;

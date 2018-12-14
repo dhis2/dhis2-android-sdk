@@ -41,7 +41,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public interface DataValueService {
+interface DataValueService {
     @GET("dataValueSets")
     Call<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
                                            @Query("filter") @Where Filter<DataValue, String> lastUpdated,

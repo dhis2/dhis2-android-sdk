@@ -34,16 +34,16 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
-public class DataValueImportHandler {
+class DataValueImportHandler {
 
-    DataValueStore dataValueStore;
+    private DataValueStore dataValueStore;
 
-    public DataValueImportHandler(DataValueStore dataValueStore) {
+    DataValueImportHandler(DataValueStore dataValueStore) {
         this.dataValueStore = dataValueStore;
     }
 
-    public void handleImportSummary(@NonNull DataValueSet dataValueSet,
-                                    @NonNull ImportSummary importSummary) {
+    void handleImportSummary(@NonNull DataValueSet dataValueSet,
+                             @NonNull ImportSummary importSummary) {
 
         if (importSummary == null || dataValueSet == null) {
             return;

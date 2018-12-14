@@ -46,7 +46,7 @@ import java.util.Collection;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
+class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
@@ -106,7 +106,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         }
     };
 
-    public Collection<DataValue> getDataValuesWithState(State state) {
+    Collection<DataValue> getDataValuesWithState(State state) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(DataValue.Columns.STATE, state.name()).build();
         return selectWhereClause(whereClause);

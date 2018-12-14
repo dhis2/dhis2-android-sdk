@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -54,7 +54,8 @@ public final class DataValueEntityDIModule {
 
     @Provides
     @Reusable
-    ReadWriteCollectionRepository<DataValue> collectionRepository(DataValueCollectionRepository repositoryImpl) {
+    ReadWriteWithUploadCollectionRepository<DataValue> collectionRepository(
+            DataValueCollectionRepository repositoryImpl) {
         return repositoryImpl;
     }
 }

@@ -28,12 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-
-import java.util.concurrent.Callable;
 
 public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
     void add(M m) throws D2Error;
-    Callable<ImportSummary> upload() throws D2Error;
 }

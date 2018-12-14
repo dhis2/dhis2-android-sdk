@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 
 import javax.inject.Inject;
 
@@ -39,10 +39,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class DataValueModule {
 
-    public final ReadWriteCollectionRepository<DataValue> dataValues;
+    public final ReadWriteWithUploadCollectionRepository<DataValue> dataValues;
 
     @Inject
-    DataValueModule(ReadWriteCollectionRepository<DataValue> dataValueCollectionRepository) {
+    DataValueModule(ReadWriteWithUploadCollectionRepository<DataValue> dataValueCollectionRepository) {
         this.dataValues = dataValueCollectionRepository;
     }
 }

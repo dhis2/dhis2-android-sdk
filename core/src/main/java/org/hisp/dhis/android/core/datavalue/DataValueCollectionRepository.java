@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.datavalue;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -45,7 +46,7 @@ import dagger.Reusable;
 
 @Reusable
 final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
-        implements ReadWriteCollectionRepository<DataValue> {
+        implements ReadWriteWithUploadCollectionRepository<DataValue> {
 
     private final DataValueStore dataValueStore;
     private final SyncHandler<DataValue> dataValueHandler;

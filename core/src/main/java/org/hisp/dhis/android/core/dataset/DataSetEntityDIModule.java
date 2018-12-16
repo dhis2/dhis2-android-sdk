@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -39,18 +37,17 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class DataSetDIModule {
+public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<DataSet> dataSetStore(DatabaseAdapter databaseAdapter) {
+    IdentifiableObjectStore<DataSet> store(DatabaseAdapter databaseAdapter) {
         return DataSetStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-    dataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
-        return new DataSetCompleteRegistrationCallFactory(genericCallData, apiCallExecutor);
+    SyncHandler<DataSet> handler(DatabaseAdapter databaseAdapter) {
+        return DataSetHandler.create(databaseAdapter);
     }
 }

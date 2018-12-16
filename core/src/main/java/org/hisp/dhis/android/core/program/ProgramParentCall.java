@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetCallFactory;
+import org.hisp.dhis.android.core.option.OptionSetHandler;
+import org.hisp.dhis.android.core.option.OptionSetService;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeEndpointCallFactory;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -116,7 +118,9 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
                     new ProgramRuleEndpointCallFactory(genericCallData, apiCallExecutor),
                     new TrackedEntityTypeCallFactory(genericCallData, apiCallExecutor),
                     new RelationshipTypeEndpointCallFactory(genericCallData, apiCallExecutor),
-                    new OptionSetCallFactory(genericCallData, apiCallExecutor));
+                    new OptionSetCallFactory(genericCallData, apiCallExecutor,
+                            genericCallData.retrofit().create(OptionSetService.class),
+                            OptionSetHandler.create(genericCallData.databaseAdapter())));
         }
     };
 }

@@ -27,32 +27,28 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementEndpointCallFactory;
 import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.indicator.IndicatorEndpointCallFactory;
 import org.hisp.dhis.android.core.indicator.IndicatorType;
-import org.hisp.dhis.android.core.indicator.IndicatorTypeEndpointCallFactory;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetCallFactory;
 import org.hisp.dhis.android.core.period.PeriodHandler;
 
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public final class DataSetParentCall extends SyncCall<List<DataSet>> {
-    private final GenericCallData genericCallData;
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class DataSetParentCall extends SyncCall<List<DataSet>> {
+    private final D2CallExecutor d2CallExecutor;
     private final ListCallFactory<DataSet> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;
@@ -60,14 +56,15 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
     private final PeriodHandler periodHandler;
 
-    private DataSetParentCall(GenericCallData genericCallData,
-                              ListCallFactory<DataSet> dataSetCallFactory,
-                              UidsCallFactory<DataElement> dataElementCallFactory,
-                              UidsCallFactory<Indicator> indicatorCallFactory,
-                              UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
-                              UidsCallFactory<OptionSet> optionSetCallFactory,
-                              PeriodHandler periodHandler) {
-        this.genericCallData = genericCallData;
+    @Inject
+    DataSetParentCall(D2CallExecutor d2CallExecutor,
+                      ListCallFactory<DataSet> dataSetCallFactory,
+                      UidsCallFactory<DataElement> dataElementCallFactory,
+                      UidsCallFactory<Indicator> indicatorCallFactory,
+                      UidsCallFactory<IndicatorType> indicatorTypeCallFactory,
+                      UidsCallFactory<OptionSet> optionSetCallFactory,
+                      PeriodHandler periodHandler) {
+        this.d2CallExecutor = d2CallExecutor;
         this.dataSetCallFactory = dataSetCallFactory;
         this.dataElementCallFactory = dataElementCallFactory;
         this.indicatorCallFactory = indicatorCallFactory;
@@ -80,9 +77,7 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
     public List<DataSet> call() throws D2Error {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor(genericCallData.databaseAdapter());
-
-        return executor.executeD2CallTransactionally(new Callable<List<DataSet>>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<List<DataSet>>() {
             @Override
             public List<DataSet> call() throws Exception {
 
@@ -101,23 +96,9 @@ public final class DataSetParentCall extends SyncCall<List<DataSet>> {
                 optionSetCallFactory.create(optionSetUids).call();
 
                 periodHandler.generateAndPersist();
-                
+
                 return dataSets;
             }
         });
     }
-
-    public static final GenericCallFactory<List<DataSet>> FACTORY = new GenericCallFactory<List<DataSet>>() {
-        @Override
-        public Call<List<DataSet>> create(GenericCallData genericCallData) {
-            APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
-            return new DataSetParentCall(genericCallData,
-                    new DataSetEndpointCallFactory(genericCallData, apiCallExecutor),
-                    new DataElementEndpointCallFactory(genericCallData, apiCallExecutor),
-                    new IndicatorEndpointCallFactory(genericCallData, apiCallExecutor),
-                    new IndicatorTypeEndpointCallFactory(genericCallData, apiCallExecutor),
-                    new OptionSetCallFactory(genericCallData, apiCallExecutor),
-                    PeriodHandler.create(genericCallData.databaseAdapter()));
-        }
-    };
 }

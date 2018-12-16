@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
@@ -40,20 +41,32 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
 
     private static final int MAX_UID_LIST_SIZE = 130;
 
-    public OptionSetCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final OptionSetService service;
+    private final SyncHandler<OptionSet> handler;
+
+    @Inject
+    public OptionSetCallFactory(GenericCallData data,
+                                APICallExecutor apiCallExecutor,
+                                OptionSetService service,
+                                SyncHandler<OptionSet> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<OptionSet> fetcher(Set<String> uids) {
 
         return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-            final OptionSetService service = data.retrofit().create(OptionSetService.class);
 
             @Override
             protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
@@ -67,7 +80,6 @@ public final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
     protected CallProcessor<OptionSet> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                OptionSetHandler.create(data.databaseAdapter())
-        );
+                handler);
     }
 }

@@ -34,7 +34,8 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private Call<List<DataSet>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return new DataSetEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create();
+        return new DataSetEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, d2.retrofit().create(DataSetService.class),
+                DataSetHandler.create(databaseAdapter())).create();
     }
 
     // @Test

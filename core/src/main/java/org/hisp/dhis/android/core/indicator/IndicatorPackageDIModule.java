@@ -25,32 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.indicator;
 
-import java.util.List;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Reusable
-public class PeriodHandler {
-    private final ObjectWithoutUidStore<PeriodModel> store;
-    private final ParentPeriodGenerator generator;
+@Module(includes = {IndicatorEntityDIModule.class, IndicatorTypeEntityDIModule.class})
+public final class IndicatorPackageDIModule {
 
-    @Inject
-    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    @Provides
+    @Reusable
+    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
+        return impl;
     }
 
-    public List<PeriodModel> generateAndPersist() {
-        List<PeriodModel> periods = generator.generatePeriods();
-        for (PeriodModel p : periods) {
-            store.updateOrInsertWhere(p);
-        }
-        return periods;
+    @Provides
+    @Reusable
+    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    IndicatorService indicatorService(Retrofit retrofit) {
+        return retrofit.create(IndicatorService.class);
+    }
+
+    @Provides
+    @Reusable
+    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
+        return retrofit.create(IndicatorTypeService.class);
     }
 }

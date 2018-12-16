@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
@@ -40,17 +41,30 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class IndicatorTypeEndpointCallFactory extends UidsCallFactoryImpl<IndicatorType> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class IndicatorTypeEndpointCallFactory extends UidsCallFactoryImpl<IndicatorType> {
 
     private static final int MAX_UID_LIST_SIZE = 140;
 
-    public IndicatorTypeEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final IndicatorTypeService service;
+    private final SyncHandler<IndicatorType> handler;
+
+    @Inject
+    IndicatorTypeEndpointCallFactory(GenericCallData data,
+                                            APICallExecutor apiCallExecutor,
+                                            IndicatorTypeService service,
+                                            SyncHandler<IndicatorType> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<IndicatorType> fetcher(Set<String> uids) {
-        final IndicatorTypeService service = data.retrofit().create(IndicatorTypeService.class);
 
         return new UidsNoResourceCallFetcher<IndicatorType>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
@@ -69,7 +83,6 @@ public final class IndicatorTypeEndpointCallFactory extends UidsCallFactoryImpl<
     protected CallProcessor<IndicatorType> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                IndicatorTypeHandler.create(data.databaseAdapter())
-        );
+                handler);
     }
 }

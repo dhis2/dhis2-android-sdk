@@ -5,12 +5,14 @@ import org.hisp.dhis.android.core.category.CategoryDIModule;
 import org.hisp.dhis.android.core.common.CommonDIModule;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
-import org.hisp.dhis.android.core.dataelement.DataElementDIModule;
-import org.hisp.dhis.android.core.dataset.DataSetDIModule;
+import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
+import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceDIModule;
-import org.hisp.dhis.android.core.period.PeriodDIModule;
+import org.hisp.dhis.android.core.option.OptionPackageDIModule;
+import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipDIModule;
 import org.hisp.dhis.android.core.resource.ResourceDIModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -34,10 +36,12 @@ import dagger.Component;
         SystemSettingDIModule.class,
         RelationshipDIModule.class,
         CategoryDIModule.class,
-        DataSetDIModule.class,
-        DataElementDIModule.class,
+        DataSetPackageDIModule.class,
+        DataElementPackageDIModule.class,
         DataValuePackageDIModule.class,
-        PeriodDIModule.class,
+        IndicatorPackageDIModule.class,
+        OptionPackageDIModule.class,
+        PeriodPackageDIModule.class,
         UserPackageDIModule.class,
         MaintenanceDIModule.class,
         WipeDIModule.class}
@@ -60,10 +64,12 @@ public interface D2DIComponent {
         Builder systemSettingDIModule(SystemSettingDIModule systemSettingDIModule);
         Builder relationshipDIModule(RelationshipDIModule relationshipDIModule);
         Builder categoryDIModule(CategoryDIModule categoryDIModule);
-        Builder dataSetDIModule(DataSetDIModule dataSetDIModule);
-        Builder dataElementDIModule(DataElementDIModule dataElementDIModule);
+        Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);
+        Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);
-        Builder periodDIModule(PeriodDIModule periodDIModule);
+        Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
+        Builder optionPackageDIModule(OptionPackageDIModule optionPackageDIModule);
+        Builder periodPackageDIModule(PeriodPackageDIModule periodPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         Builder maintenanceDIModule(MaintenanceDIModule maintenanceDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);

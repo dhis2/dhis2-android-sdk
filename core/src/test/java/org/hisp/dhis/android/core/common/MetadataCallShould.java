@@ -166,7 +166,7 @@ public class MetadataCallShould extends BaseCallShould {
     private SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
 
     @Mock
-    private GenericCallFactory<List<DataSet>> dataSetParentCallFactory;
+    private Downloader<List<DataSet>> dataSetDownloader;
 
     @Mock
     private ForeignKeyCleaner foreignKeyCleaner;
@@ -199,7 +199,7 @@ public class MetadataCallShould extends BaseCallShould {
                 anySetOf(String.class))).thenReturn(organisationUnitEndpointCall);
         when(searchOrganisationUnitCallFactory.create(any(GenericCallData.class), same(user))).thenReturn(
                 searchOrganisationUnitCall);
-        when(dataSetParentCallFactory.create(any(GenericCallData.class))).thenReturn(dataSetParentCall);
+        when(dataSetDownloader.download()).thenReturn(dataSetParentCall);
 
         // Calls
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
@@ -227,7 +227,7 @@ public class MetadataCallShould extends BaseCallShould {
                 programParentCallFactory,
                 organisationUnitCallFactory,
                 searchOrganisationUnitCallFactory,
-                dataSetParentCallFactory,
+                dataSetDownloader,
                 foreignKeyCleaner);
     }
 

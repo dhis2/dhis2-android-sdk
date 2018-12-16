@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
@@ -41,17 +42,30 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<DataElement> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<DataElement> {
 
     private static final int MAX_UID_LIST_SIZE = 100;
 
-    public DataElementEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final DataElementService service;
+    private final SyncHandler<DataElement> handler;
+
+    @Inject
+    DataElementEndpointCallFactory(GenericCallData data,
+                                   APICallExecutor apiCallExecutor,
+                                   DataElementService service,
+                                   SyncHandler<DataElement> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<DataElement> fetcher(Set<String> uids) {
-        final DataElementService service = data.retrofit().create(DataElementService.class);
 
         return new UidsNoResourceCallFetcher<DataElement>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
             String accessReadFilter = "access." + Access.read.eq(true).generateString();
@@ -71,7 +85,6 @@ public final class DataElementEndpointCallFactory extends UidsCallFactoryImpl<Da
     protected CallProcessor<DataElement> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                DataElementHandler.create(data.databaseAdapter())
-        );
+                handler);
     }
 }

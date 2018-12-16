@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
+class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
     static final int DAILY_PERIODS = 60;
     static final int WEEKLY_PERIODS = 13;

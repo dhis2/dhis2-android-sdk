@@ -25,17 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.option;
 
-public final class IndicatorTypeHandler {
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 
-    private IndicatorTypeHandler() {}
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    public static SyncHandler<IndicatorType> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(IndicatorTypeStore.create(databaseAdapter));
+@Module(includes = {OptionSetEntityDIModule.class})
+public final class OptionPackageDIModule {
+
+    @Provides
+    @Reusable
+    UidsCallFactory<OptionSet> optionSetCallFactory(OptionSetCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OptionSetService service(Retrofit retrofit) {
+        return retrofit.create(OptionSetService.class);
     }
 }

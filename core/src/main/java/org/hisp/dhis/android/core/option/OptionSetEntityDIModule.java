@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.option;
 
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -37,17 +38,19 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class OptionSetEntityDIModule {
+public final class OptionSetEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<OptionSet> {
 
+    @Override
     @Provides
     @Reusable
-    IdentifiableObjectStore<OptionSet> store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableObjectStore<OptionSet> store(DatabaseAdapter databaseAdapter) {
         return OptionSetStore.create(databaseAdapter);
     }
 
+    @Override
     @Provides
     @Reusable
-    SyncHandler<OptionSet> handler(DatabaseAdapter databaseAdapter) {
+    public SyncHandler<OptionSet> handler(DatabaseAdapter databaseAdapter) {
         return OptionSetHandler.create(databaseAdapter);
     }
 }

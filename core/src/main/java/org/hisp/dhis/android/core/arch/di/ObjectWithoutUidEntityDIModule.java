@@ -26,25 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.arch.di;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class CategoryDIModule {
-
-    @Provides
-    @Reusable
-    CategoryModule module(DatabaseAdapter databaseAdapter) {
-        return new CategoryModule(
-                CategoryCollectionRepository.create(databaseAdapter),
-                CategoryOptionCollectionRepository.create(databaseAdapter),
-                CategoryOptionComboCollectionRepository.create(databaseAdapter),
-                CategoryComboCollectionRepository.create(databaseAdapter)
-        );
-    }
+public interface ObjectWithoutUidEntityDIModule<O> extends ObjectWithoutUidStoreProvider<O> {
+    SyncHandler<O> handler(ObjectWithoutUidStore<O> store);
 }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.indicator;
 
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -38,17 +39,19 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class IndicatorEntityDIModule {
+public final class IndicatorEntityDIModule implements IdentifiableEntityDIModule<Indicator> {
 
+    @Override
     @Provides
     @Reusable
-    IdentifiableObjectStore<Indicator> store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableObjectStore<Indicator> store(DatabaseAdapter databaseAdapter) {
         return IndicatorStore.create(databaseAdapter);
     }
 
+    @Override
     @Provides
     @Reusable
-    SyncHandler<Indicator> handler(IdentifiableObjectStore<Indicator> store) {
+    public SyncHandler<Indicator> handler(IdentifiableObjectStore<Indicator> store) {
         return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

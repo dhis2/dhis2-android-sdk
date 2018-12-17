@@ -26,20 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.arch.di;
 
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class ResourceDIModule {
-
-    @Provides
-    @Reusable
-    ResourceStore store(DatabaseAdapter databaseAdapter) {
-        return new ResourceStoreImpl(databaseAdapter);
-    }
+public interface IdentifiableStoreProvider<O extends ObjectWithUidInterface> {
+    IdentifiableObjectStore<O> store(DatabaseAdapter databaseAdapter);
 }

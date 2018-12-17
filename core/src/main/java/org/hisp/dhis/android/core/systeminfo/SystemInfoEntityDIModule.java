@@ -26,11 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
+import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidEntityDIModule;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -38,19 +39,19 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class DataSetEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<DataSet> {
+public final class SystemInfoEntityDIModule implements ObjectWithoutUidEntityDIModule<SystemInfo> {
 
     @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<DataSet> store(DatabaseAdapter databaseAdapter) {
-        return DataSetStore.create(databaseAdapter);
+    public ObjectWithoutUidStore<SystemInfo> store(DatabaseAdapter databaseAdapter) {
+        return SystemInfoStore.create(databaseAdapter);
     }
 
     @Override
     @Provides
     @Reusable
-    public SyncHandler<DataSet> handler(DatabaseAdapter databaseAdapter) {
-        return DataSetHandler.create(databaseAdapter);
+    public SyncHandler<SystemInfo> handler(ObjectWithoutUidStore<SystemInfo> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

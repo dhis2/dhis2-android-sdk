@@ -26,24 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class MaintenanceDIModule {
+public final class RelationshipEntityDIModule {
 
     @Provides
     @Reusable
-    MaintenanceModule create(DatabaseAdapter databaseAdapter) {
-        return new MaintenanceModule(
-                databaseAdapter,
-                new ReadOnlyCollectionRepositoryImpl<>(ForeignKeyViolationStore.create(databaseAdapter))
+    RelationshipHandler relationshipHandler(DatabaseAdapter databaseAdapter,
+                                            DHISVersionManager versionManager) {
+        return new RelationshipHandlerImpl(
+                RelationshipStore.create(databaseAdapter),
+                RelationshipItemStoreImpl.create(databaseAdapter),
+                RelationshipItemHandler.create(databaseAdapter),
+                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
+                new RelationshipDHISVersionManager(versionManager)
         );
     }
 }

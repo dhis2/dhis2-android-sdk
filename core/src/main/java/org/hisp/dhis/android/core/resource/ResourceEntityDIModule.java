@@ -26,34 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
 @Module
-public final class SystemSettingDIModule {
+public final class ResourceEntityDIModule {
 
     @Provides
     @Reusable
-    SystemSettingService service(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
-    }
-
-    @Provides
-    @Reusable
-    ObjectWithoutUidStore<SystemSettingModel> store(DatabaseAdapter databaseAdapter) {
-        return SystemSettingStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    SystemSettingHandler handler(ObjectWithoutUidStore<SystemSettingModel> store) {
-        return new SystemSettingHandlerImpl(store);
+    ResourceStore store(DatabaseAdapter databaseAdapter) {
+        return new ResourceStoreImpl(databaseAdapter);
     }
 }

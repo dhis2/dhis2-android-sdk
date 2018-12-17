@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -37,11 +38,12 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class UserEntityDIModule {
+public final class UserEntityDIModule implements IdentifiableStoreProvider<User> {
 
+    @Override
     @Provides
     @Reusable
-    IdentifiableObjectStore<User> store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableObjectStore<User> store(DatabaseAdapter databaseAdapter) {
         return UserStore.create(databaseAdapter);
     }
 

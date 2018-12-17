@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -36,11 +37,12 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class AuthenticatedUserEntityDIModule {
+public final class AuthenticatedUserEntityDIModule implements ObjectWithoutUidStoreProvider<AuthenticatedUserModel> {
 
+    @Override
     @Provides
     @Reusable
-    ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore(DatabaseAdapter databaseAdapter) {
+    public ObjectWithoutUidStore<AuthenticatedUserModel> store(DatabaseAdapter databaseAdapter) {
         return AuthenticatedUserStore.create(databaseAdapter);
     }
 }

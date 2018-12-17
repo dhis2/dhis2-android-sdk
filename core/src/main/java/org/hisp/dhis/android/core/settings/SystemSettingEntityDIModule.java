@@ -26,26 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.settings;
 
+import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
 @Module
-public class CommonDIModule {
+public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreProvider<SystemSettingModel> {
+
+    @Override
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<SystemSettingModel> store(DatabaseAdapter databaseAdapter) {
+        return SystemSettingStore.create(databaseAdapter);
+    }
 
     @Provides
     @Reusable
-    GenericCallData genericCallData(DatabaseAdapter databaseAdapter,
-                                    Retrofit retrofit,
-                                    ResourceHandler resourceHandler,
-                                    DHISVersionManager versionManager) {
-        return GenericCallData.create(databaseAdapter, retrofit, resourceHandler, versionManager);
+    SystemSettingHandler handler(ObjectWithoutUidStore<SystemSettingModel> store) {
+        return new SystemSettingHandlerImpl(store);
     }
 }

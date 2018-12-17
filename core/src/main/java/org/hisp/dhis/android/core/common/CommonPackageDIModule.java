@@ -26,37 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Module
-public final class RelationshipDIModule {
+public class CommonPackageDIModule {
 
     @Provides
     @Reusable
-    RelationshipHandler relationshipHandler(DatabaseAdapter databaseAdapter,
-                                                           DHISVersionManager versionManager) {
-        return new RelationshipHandlerImpl(
-                RelationshipStore.create(databaseAdapter),
-                RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemHandler.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                new RelationshipDHISVersionManager(versionManager)
-        );
-    }
-
-    @Provides
-    @Reusable
-    RelationshipModule module(DatabaseAdapter databaseAdapter,
-                                            RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
+    GenericCallData genericCallData(DatabaseAdapter databaseAdapter,
+                                    Retrofit retrofit,
+                                    ResourceHandler resourceHandler,
+                                    DHISVersionManager versionManager) {
+        return GenericCallData.create(databaseAdapter, retrofit, resourceHandler, versionManager);
     }
 }

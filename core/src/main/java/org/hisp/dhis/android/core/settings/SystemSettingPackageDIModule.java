@@ -26,31 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
-
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.settings;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Module
-public final class DataSetEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<DataSet> {
+@Module(includes = {SystemSettingEntityDIModule.class})
+public final class SystemSettingPackageDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<DataSet> store(DatabaseAdapter databaseAdapter) {
-        return DataSetStore.create(databaseAdapter);
-    }
-
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<DataSet> handler(DatabaseAdapter databaseAdapter) {
-        return DataSetHandler.create(databaseAdapter);
+    SystemSettingService service(Retrofit retrofit) {
+        return retrofit.create(SystemSettingService.class);
     }
 }

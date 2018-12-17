@@ -74,8 +74,8 @@ public final class EnrollmentTableInfo {
                     EnrollmentFields.FOLLOW_UP,
                     EnrollmentFields.STATUS,
                     EnrollmentFields.TRACKED_ENTITY_INSTANCE,
-                    LONGITUDE,
                     LATITUDE,
+                    LONGITUDE,
                     BaseDataModel.Columns.STATE
             );
         }

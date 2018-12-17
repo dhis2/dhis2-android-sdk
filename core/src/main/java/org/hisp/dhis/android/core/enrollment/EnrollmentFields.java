@@ -47,7 +47,7 @@ public final class EnrollmentFields {
     static final String INCIDENT_DATE = "incidentDate";
     static final String FOLLOW_UP = "followup";
     static final String STATUS = "status";
-    static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     private static final String COORDINATE = "coordinate";
     private static final String DELETED = "deleted";
     private static final String EVENTS = "events";

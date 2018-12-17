@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
@@ -101,6 +102,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
     @Nullable
     @JsonProperty(EnrollmentFields.FOLLOW_UP)
+    @ColumnName(EnrollmentFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
@@ -182,23 +184,4 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
         public abstract Enrollment build();
     }
-
-    /*public static Enrollment create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
-            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(PROGRAM) String program,
-            @JsonProperty(ENROLLMENT_DATE) Date enrollmentDate,
-            @JsonProperty(INCIDENT_DATE) Date incidentDate,
-            @JsonProperty(FOLLOW_UP) Boolean followUp,
-            @JsonProperty(ENROLLMENT_STATUS) EnrollmentStatus enrollmentStatus,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
-            @JsonProperty(COORDINATE) Coordinates coordinate,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(EVENTS) List<Event> events,
-            @JsonProperty(NOTES) List<Note> notes) {
-    }*/
 }

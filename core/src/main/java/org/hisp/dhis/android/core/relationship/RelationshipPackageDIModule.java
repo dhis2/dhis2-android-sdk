@@ -29,32 +29,18 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
-@Module
+@Module(includes = {RelationshipEntityDIModule.class})
 public final class RelationshipPackageDIModule {
 
     @Provides
     @Reusable
-    RelationshipHandler relationshipHandler(DatabaseAdapter databaseAdapter,
-                                                           DHISVersionManager versionManager) {
-        return new RelationshipHandlerImpl(
-                RelationshipStore.create(databaseAdapter),
-                RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemHandler.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                new RelationshipDHISVersionManager(versionManager)
-        );
-    }
-
-    @Provides
-    @Reusable
     RelationshipModule module(DatabaseAdapter databaseAdapter,
-                                            RelationshipHandler relationshipHandler) {
+                              RelationshipHandler relationshipHandler) {
         return new RelationshipModule(
                 RelationshipTypeCollectionRepository.create(databaseAdapter),
                 RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));

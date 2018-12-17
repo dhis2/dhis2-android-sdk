@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -38,17 +39,19 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class UserCredentialsEntityDIModule {
+public final class UserCredentialsEntityDIModule implements IdentifiableEntityDIModule<UserCredentials> {
 
+    @Override
     @Provides
     @Reusable
-    IdentifiableObjectStore<UserCredentials> store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableObjectStore<UserCredentials> store(DatabaseAdapter databaseAdapter) {
         return UserCredentialsStore.create(databaseAdapter);
     }
 
+    @Override
     @Provides
     @Reusable
-    public static SyncHandler<UserCredentials> handler(IdentifiableObjectStore<UserCredentials> store) {
+    public SyncHandler<UserCredentials> handler(IdentifiableObjectStore<UserCredentials> store) {
         return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

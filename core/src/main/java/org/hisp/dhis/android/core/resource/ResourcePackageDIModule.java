@@ -28,18 +28,8 @@
 
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
 import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
 
-@Module
+@Module(includes = {ResourceEntityDIModule.class})
 public final class ResourcePackageDIModule {
-
-    @Provides
-    @Reusable
-    ResourceStore store(DatabaseAdapter databaseAdapter) {
-        return new ResourceStoreImpl(databaseAdapter);
-    }
 }

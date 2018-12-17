@@ -26,31 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.arch.di;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class DataSetEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<DataSet> {
-
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<DataSet> store(DatabaseAdapter databaseAdapter) {
-        return DataSetStore.create(databaseAdapter);
-    }
-
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<DataSet> handler(DatabaseAdapter databaseAdapter) {
-        return DataSetHandler.create(databaseAdapter);
-    }
+public interface ObjectWithoutUidStoreProvider<O> {
+    ObjectWithoutUidStore<O> store(DatabaseAdapter databaseAdapter);
 }

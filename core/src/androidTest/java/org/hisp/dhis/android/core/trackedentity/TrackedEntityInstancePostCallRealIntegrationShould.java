@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -12,6 +13,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
@@ -87,7 +89,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2= D2Factory.create(RealServerMother.url, databaseAdapter());
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
-        enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
         eventStore = EventStoreImpl.create(databaseAdapter());
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
@@ -370,7 +372,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
 
-        Enrollment enrollment = enrollmentStore.queryAll().values().iterator().next().get(0);
+        Enrollment enrollment = enrollmentStore.selectFirst();
 
         Event event = eventStore.selectFirst();
         String eventUid = event.uid();
@@ -411,11 +413,13 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         trackedEntityInstanceStore.insert(trackedEntityInstanceUid, refDate, refDate, null,
                 null, orgUnitUid, trackedEntityUid, coordinates, featureType, State.TO_POST);
 
-        enrollmentStore.insert(
-                enrollmentUid, refDate, refDate, null, null, orgUnitUid, programUid, refDate,
-                refDate, Boolean.FALSE, EnrollmentStatus.ACTIVE,
-                trackedEntityInstanceUid, "10.33", "12.231", State.TO_POST
-        );
+        Enrollment enrollment = Enrollment.builder()
+                .uid(enrollmentUid).created(refDate).lastUpdated(refDate).organisationUnit(orgUnitUid)
+                .program(programUid).incidentDate(refDate).enrollmentDate(refDate).followUp(Boolean.FALSE)
+                .status(EnrollmentStatus.ACTIVE).trackedEntityInstance(trackedEntityInstanceUid)
+                .coordinate(Coordinates.create(10.33, 12.231)).state(State.TO_POST).build();
+
+        enrollmentStore.insert(enrollment);
 
         Event event = Event.builder()
                 .uid(eventUid).enrollment(enrollmentUid).created(refDate).lastUpdated(refDate)
@@ -468,10 +472,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private Enrollment getEnrollmentsByTrackedEntityInstanceFromDb(String trackedEntityInstanceUid) {
-        EnrollmentStoreImpl enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
         Enrollment enrollment = null;
-        Map<String, List<Enrollment>> storedEnrollmentsByTrackedEntityInstance = enrollmentStore.queryAll();
-        for(Enrollment storedEnrollment : storedEnrollmentsByTrackedEntityInstance.get(trackedEntityInstanceUid)) {
+        List<Enrollment> storedEnrollments = enrollmentStore.selectWhereClause(new WhereClauseBuilder()
+                .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build());
+        for (Enrollment storedEnrollment : storedEnrollments) {
             if(storedEnrollment.uid().equals(enrollmentUid)) {
                 enrollment = storedEnrollment;
             }

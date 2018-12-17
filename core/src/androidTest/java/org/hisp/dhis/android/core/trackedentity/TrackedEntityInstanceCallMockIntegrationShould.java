@@ -7,13 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -145,15 +149,10 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                 }
             }
             if (!enrollment.deleted()) {
-                enrollment = Enrollment.create(
-                        enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                        enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                        enrollment.organisationUnit(), enrollment.program(),
-                        enrollment.enrollmentDate(), enrollment.incidentDate(),
-                        enrollment.followUp(),
-                        enrollment.status(), trackedEntityInstance.uid(),
-                        enrollment.coordinate(),
-                        enrollment.deleted(), expectedEvents.get(enrollment.uid()), enrollment.notes());
+                enrollment = enrollment.toBuilder()
+                        .trackedEntityInstance(trackedEntityInstance.uid())
+                        .events(expectedEvents.get(enrollment.uid()))
+                        .build();
 
                 expectedEnrollments.add(enrollment);
             }
@@ -189,9 +188,15 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         downloadedTei = teiStore.queryAll().get(teiUid);
 
-        EnrollmentStoreImpl enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
 
-        Map<String, List<Enrollment>> downloadedEnrollments = enrollmentStore.queryAll();
+        List<Enrollment> downloadedEnrollments = enrollmentStore.selectWhereClause(new WhereClauseBuilder()
+                .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, teiUid).build());
+        List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
+        for (Enrollment enrollment : downloadedEnrollments) {
+            downloadedEnrollmentsWithoutIdAndDeleteFalse.add(
+                    enrollment.toBuilder().id(null).deleted(false).notes(new ArrayList<Note>()).build());
+        }
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 
@@ -212,7 +217,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             downloadedValues.get(dataValue.event()).add(dataValue);
         }
 
-        return createTei(downloadedTei, attValues, downloadedEnrollments.get(teiUid),
+        return createTei(downloadedTei, attValues, downloadedEnrollmentsWithoutIdAndDeleteFalse,
                 downloadedEventsWithoutValuesAndDeleteFalse, downloadedValues);
     }
 
@@ -245,14 +250,10 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         }
 
         for (Enrollment enrollment : downloadedEnrollmentsWithoutEvents) {
-            enrollment = Enrollment.create(
-                    enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                    enrollment.organisationUnit(), enrollment.program(),
-                    enrollment.enrollmentDate(), enrollment.incidentDate(),
-                    enrollment.followUp(),
-                    enrollment.status(), downloadedTei.uid(), enrollment.coordinate(),
-                    enrollment.deleted(), downloadedEvents.get(enrollment.uid()), enrollment.notes());
+            enrollment = enrollment.toBuilder()
+                    .trackedEntityInstance(downloadedTei.uid())
+                    .events(downloadedEvents.get(enrollment.uid()))
+                    .build();
 
             downloadedEnrollments.add(enrollment);
         }

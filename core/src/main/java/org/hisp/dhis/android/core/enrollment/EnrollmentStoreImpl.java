@@ -47,7 +47,8 @@ import java.util.Map;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class EnrollmentStoreImpl extends IdentifiableObjectWithStateStoreImpl<Enrollment> implements EnrollmentStore {
+public final class EnrollmentStoreImpl
+        extends IdentifiableObjectWithStateStoreImpl<Enrollment> implements EnrollmentStore {
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementWrapper statementWrapper,

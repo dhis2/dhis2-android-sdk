@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -262,8 +263,9 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     private void createEnrollment(Date enrollmentDate, Date incidentDate) {
-        new EnrollmentStoreImpl(databaseAdapter()).insert(enrollmentUid,null,null,null,null,orgunitUid,
-                programUid,enrollmentDate,incidentDate,null,null,teiUid,null,null,null);
+        Enrollment enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
+                .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid).build();
+        EnrollmentStoreImpl.create(databaseAdapter()).insert(enrollment);
     }
 
     private void createEvent(String eventUid, String programStageUid, Date eventDate, Date lastUpdated) {

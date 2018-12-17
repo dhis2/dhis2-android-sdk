@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
@@ -38,18 +39,30 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
-public final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<RelationshipType> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<RelationshipType> {
 
     private final ResourceModel.Type resourceType = ResourceModel.Type.RELATIONSHIP_TYPE;
 
-    public RelationshipTypeEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final RelationshipTypeService service;
+    private final SyncHandler<RelationshipType> handler;
+
+    @Inject
+    RelationshipTypeEndpointCallFactory(GenericCallData data,
+                                        APICallExecutor apiCallExecutor,
+                                        RelationshipTypeService service,
+                                        SyncHandler<RelationshipType> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<RelationshipType> fetcher() {
-
-        final RelationshipTypeService service = data.retrofit().create(RelationshipTypeService.class);
 
         return new PayloadResourceCallFetcher<RelationshipType>(data.resourceHandler(), resourceType,
                 apiCallExecutor) {
@@ -65,7 +78,7 @@ public final class RelationshipTypeEndpointCallFactory extends ListCallFactoryIm
     protected CallProcessor<RelationshipType> processor() {
         return new TransactionalResourceSyncCallProcessor<>(
                 data,
-                RelationshipTypeHandler.create(data.databaseAdapter()),
+                handler,
                 resourceType
         );
     }

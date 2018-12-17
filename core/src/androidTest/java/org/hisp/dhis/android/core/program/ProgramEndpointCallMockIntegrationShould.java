@@ -128,7 +128,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
         programEndpointCall = new ProgramEndpointCallFactory(getGenericCallData(d2), apiCallExecutor,
-                d2.retrofit().create(ProgramService.class)).create();
+                d2.retrofit().create(ProgramService.class), ProgramHandler.create(databaseAdapter())).create();
     }
 
     @Test

@@ -26,40 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        RelationshipEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
-})
-public final class RelationshipPackageDIModule {
+@Module
+public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreProvider<TrackedEntityType> {
 
+    @Override
     @Provides
     @Reusable
-    RelationshipModule module(DatabaseAdapter databaseAdapter,
-                              RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
+    public IdentifiableObjectStore<TrackedEntityType> store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityTypeStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    ListCallFactory<RelationshipType> relationshipCallFactory(RelationshipTypeEndpointCallFactory impl) {
+    public SyncHandler<TrackedEntityType> handler(TrackedEntityTypeHandler impl) {
         return impl;
-    }
-
-    @Provides
-    @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
     }
 }

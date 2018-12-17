@@ -33,11 +33,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -77,7 +78,10 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
 
         HashSet<String> uids = new HashSet<>(Collections.singletonList(uid));
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        trackedEntityTypeCall = new TrackedEntityTypeCallFactory(getGenericCallData(d2), apiCallExecutor).create(uids);
+        TrackedEntityTypeHandler handler = new TrackedEntityTypeHandler(TrackedEntityTypeStore.create(databaseAdapter()),
+                ObjectStyleHandler.create(databaseAdapter()));
+        trackedEntityTypeCall = new TrackedEntityTypeCallFactory(getGenericCallData(d2), apiCallExecutor,
+                d2.retrofit().create(TrackedEntityTypeService.class), handler).create(uids);
     }
 
     @Test

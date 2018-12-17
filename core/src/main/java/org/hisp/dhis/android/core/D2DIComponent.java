@@ -13,11 +13,13 @@ import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
 import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
+import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
-import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.user.UserPackageDIModule;
 import org.hisp.dhis.android.core.wipe.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
@@ -41,10 +43,12 @@ import dagger.Component;
         MaintenancePackageDIModule.class,
         OptionPackageDIModule.class,
         PeriodPackageDIModule.class,
+        ProgramPackageDIModule.class,
         RelationshipPackageDIModule.class,
         ResourcePackageDIModule.class,
         SystemInfoPackageDIModule.class,
         SystemSettingPackageDIModule.class,
+        TrackedEntityPackageDIModule.class,
         UserPackageDIModule.class}
 )
 public interface D2DIComponent {
@@ -70,10 +74,12 @@ public interface D2DIComponent {
         Builder maintenancePackageDIModule(MaintenancePackageDIModule maintenancePackageDIModule);
         Builder optionPackageDIModule(OptionPackageDIModule optionPackageDIModule);
         Builder periodPackageDIModule(PeriodPackageDIModule periodPackageDIModule);
+        Builder programPackageDIModule(ProgramPackageDIModule programPackageDIModule);
         Builder relationshipDIModule(RelationshipPackageDIModule relationshipPackageDIModule);
         Builder resourcePackageDIModule(ResourcePackageDIModule resourcePackageDIModule);
         Builder systemInfoPackageDIModule(SystemInfoPackageDIModule systemInfoPackageDIModule);
         Builder systemSettingPackageDIModule(SystemSettingPackageDIModule systemSettingPackageDIModule);
+        Builder trackedEntityPackageDIModule(TrackedEntityPackageDIModule trackedEntityPackageDIModule);
         Builder userPackageDIModule(UserPackageDIModule userPackageDIModule);
         D2DIComponent build();
     }

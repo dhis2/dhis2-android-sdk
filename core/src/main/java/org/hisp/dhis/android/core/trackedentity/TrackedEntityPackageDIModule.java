@@ -26,10 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,29 +36,19 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        RelationshipEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
+        TrackedEntityTypeEntityDIModule.class
 })
-public final class RelationshipPackageDIModule {
+public final class TrackedEntityPackageDIModule {
 
     @Provides
     @Reusable
-    RelationshipModule module(DatabaseAdapter databaseAdapter,
-                              RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
-    }
-
-    @Provides
-    @Reusable
-    ListCallFactory<RelationshipType> relationshipCallFactory(RelationshipTypeEndpointCallFactory impl) {
+    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
+    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
+        return retrofit.create(TrackedEntityTypeService.class);
     }
 }

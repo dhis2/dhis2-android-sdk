@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
@@ -38,13 +39,24 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class ProgramEndpointCallFactory extends ListCallFactoryImpl<Program> {
 
-    private final ProgramService programService;
+    private final ProgramService service;
+    private final SyncHandler<Program> handler;
 
-    ProgramEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor, ProgramService programService) {
+    @Inject
+    ProgramEndpointCallFactory(GenericCallData data,
+                               APICallExecutor apiCallExecutor,
+                               ProgramService service,
+                               SyncHandler<Program> handler) {
         super(data, apiCallExecutor);
-        this.programService = programService;
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
@@ -54,7 +66,7 @@ final class ProgramEndpointCallFactory extends ListCallFactoryImpl<Program> {
             @Override
             protected retrofit2.Call<Payload<Program>> getCall() {
                 String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                return programService.getPrograms(ProgramFields.allFields, accessDataReadFilter, Boolean.FALSE);
+                return service.getPrograms(ProgramFields.allFields, accessDataReadFilter, Boolean.FALSE);
             }
         };
     }
@@ -62,7 +74,6 @@ final class ProgramEndpointCallFactory extends ListCallFactoryImpl<Program> {
     @Override
     protected CallProcessor<Program> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(),
-                ProgramHandler.create(data.databaseAdapter()));
+                data.databaseAdapter(), handler);
     }
 }

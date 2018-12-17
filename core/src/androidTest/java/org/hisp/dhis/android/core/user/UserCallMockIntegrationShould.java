@@ -103,7 +103,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
                 .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
                 .build();
 
-        userCall = d2DIComponent.internalModules().userModule.downloadUser();
+        userCall = d2DIComponent.internalModules().user.downloadUser();
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);

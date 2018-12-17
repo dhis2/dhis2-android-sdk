@@ -28,38 +28,30 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        RelationshipEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
-})
-public final class RelationshipPackageDIModule {
+@Module
+public final class RelationshipTypeEntityDIModule
+        implements IdentifiableEntityFromDatabaseAdapterDIModule<RelationshipType> {
 
+    @Override
     @Provides
     @Reusable
-    RelationshipModule module(DatabaseAdapter databaseAdapter,
-                              RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
+    public IdentifiableObjectStore<RelationshipType> store(DatabaseAdapter databaseAdapter) {
+        return RelationshipTypeStore.create(databaseAdapter);
     }
 
+    @Override
     @Provides
     @Reusable
-    ListCallFactory<RelationshipType> relationshipCallFactory(RelationshipTypeEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
+    public SyncHandler<RelationshipType> handler(DatabaseAdapter databaseAdapter) {
+        return RelationshipTypeHandler.create(databaseAdapter);
     }
 }

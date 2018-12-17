@@ -32,7 +32,6 @@ import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -157,7 +156,7 @@ public class MetadataCallShould extends BaseCallShould {
     private CategoryComboUidsSeeker categoryComboUidsSeeker;
 
     @Mock
-    private GenericCallFactory<List<Program>> programParentCallFactory;
+    private Downloader<List<Program>> programParentCallFactory;
 
     @Mock
     private OrganisationUnitCall.Factory organisationUnitCallFactory;
@@ -192,7 +191,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
         when(userDownloadModule.downloadUser()).thenReturn(userCall);
         when(userDownloadModule.downloadAuthority()).thenReturn(authorityEndpointCall);
-        when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
+        when(programParentCallFactory.download()).thenReturn(programParentCall);
         when(categoryCallFactory.create(anySetOf(String.class))).thenReturn(categoryEndpointCall);
         when(categoryComboCallFactory.create(anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),

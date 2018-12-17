@@ -131,7 +131,7 @@ public class TrackedEntityInstanceHandler {
                                                       D2InternalModules internalModules) {
         return new TrackedEntityInstanceHandler(
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationshipModule.relationshipHandler,
+                internalModules.relationship.relationshipHandler,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityAttributeValueHandler.create(databaseAdapter),
                 EnrollmentHandler.create(databaseAdapter, internalModules.systemInfo.publicModule.versionManager),

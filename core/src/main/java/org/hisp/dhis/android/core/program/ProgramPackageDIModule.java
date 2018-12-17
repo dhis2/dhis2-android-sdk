@@ -26,10 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,29 +37,45 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        RelationshipEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
+        ProgramEntityDIModule.class,
+        ProgramRuleEntityDIModule.class,
+        ProgramStageEntityDIModule.class
 })
-public final class RelationshipPackageDIModule {
+public final class ProgramPackageDIModule {
 
     @Provides
     @Reusable
-    RelationshipModule module(DatabaseAdapter databaseAdapter,
-                              RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
-    }
-
-    @Provides
-    @Reusable
-    ListCallFactory<RelationshipType> relationshipCallFactory(RelationshipTypeEndpointCallFactory impl) {
+    ListCallFactory<Program> programCallFactory(ProgramEndpointCallFactory impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
+    UidsCallFactory<ProgramRule> programRuleCallFactory(ProgramRuleEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    UidsCallFactory<ProgramStage> programStageCallFactory(ProgramStageEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    ProgramRuleService programRuleService(Retrofit retrofit) {
+        return retrofit.create(ProgramRuleService.class);
+    }
+
+    @Provides
+    @Reusable
+    ProgramService programService(Retrofit retrofit) {
+        return retrofit.create(ProgramService.class);
+    }
+
+    @Provides
+    @Reusable
+    ProgramStageService programStageService(Retrofit retrofit) {
+        return retrofit.create(ProgramStageService.class);
     }
 }

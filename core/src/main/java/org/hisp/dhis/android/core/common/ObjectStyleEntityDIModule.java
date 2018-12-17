@@ -26,40 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        RelationshipEntityDIModule.class,
-        RelationshipTypeEntityDIModule.class
-})
-public final class RelationshipPackageDIModule {
+@Module
+public final class ObjectStyleEntityDIModule implements ObjectWithoutUidStoreProvider<ObjectStyle> {
 
+    @Override
     @Provides
     @Reusable
-    RelationshipModule module(DatabaseAdapter databaseAdapter,
-                              RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
+    public ObjectWithoutUidStore<ObjectStyle> store(DatabaseAdapter databaseAdapter) {
+        return ObjectStyleStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    ListCallFactory<RelationshipType> relationshipCallFactory(RelationshipTypeEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    RelationshipTypeService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(RelationshipTypeService.class);
+    public SyncHandlerWithTransformer<ObjectStyle> handler(ObjectWithoutUidStore<ObjectStyle> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

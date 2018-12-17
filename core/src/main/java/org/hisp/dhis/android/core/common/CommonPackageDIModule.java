@@ -37,7 +37,7 @@ import dagger.Provides;
 import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module
+@Module(includes = {ObjectStyleEntityDIModule.class})
 public class CommonPackageDIModule {
 
     @Provides

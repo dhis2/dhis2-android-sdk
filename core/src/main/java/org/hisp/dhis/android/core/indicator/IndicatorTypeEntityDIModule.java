@@ -25,32 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.indicator;
 
-import java.util.List;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public class PeriodHandler {
-    private final ObjectWithoutUidStore<PeriodModel> store;
-    private final ParentPeriodGenerator generator;
+@Module
+public final class IndicatorTypeEntityDIModule {
 
-    @Inject
-    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<IndicatorType> store(DatabaseAdapter databaseAdapter) {
+        return IndicatorTypeStore.create(databaseAdapter);
     }
 
-    public List<PeriodModel> generateAndPersist() {
-        List<PeriodModel> periods = generator.generatePeriods();
-        for (PeriodModel p : periods) {
-            store.updateOrInsertWhere(p);
-        }
-        return periods;
+    @Provides
+    @Reusable
+    SyncHandler<IndicatorType> handler(IdentifiableObjectStore<IndicatorType> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

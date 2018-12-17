@@ -25,32 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public class PeriodHandler {
-    private final ObjectWithoutUidStore<PeriodModel> store;
-    private final ParentPeriodGenerator generator;
+@Module
+public final class PeriodPackageDIModule {
 
-    @Inject
-    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<PeriodModel> store(DatabaseAdapter databaseAdapter) {
+        return PeriodStore.create(databaseAdapter);
     }
 
-    public List<PeriodModel> generateAndPersist() {
-        List<PeriodModel> periods = generator.generatePeriods();
-        for (PeriodModel p : periods) {
-            store.updateOrInsertWhere(p);
-        }
-        return periods;
+    @Provides
+    @Reusable
+    ParentPeriodGenerator parentPeriodGenerator() {
+        return ParentPeriodGeneratorImpl.create();
     }
 }

@@ -42,7 +42,10 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
         uids.add("FQ2o8UBlcrS");
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return new DataElementEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(uids);
+        DataElementService service = d2.retrofit().create(DataElementService.class);
+
+        return new DataElementEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, service,
+                DataElementHandler.create(databaseAdapter())).create(uids);
     }
 
     // @Test

@@ -25,9 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.calls.Call;
 
 import java.util.List;
 
@@ -36,21 +37,17 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class PeriodHandler {
-    private final ObjectWithoutUidStore<PeriodModel> store;
-    private final ParentPeriodGenerator generator;
+public final class DataSetInternalModule implements Downloader<List<DataSet>> {
+
+    private final DataSetParentCall dataSetParentCall;
 
     @Inject
-    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    DataSetInternalModule(DataSetParentCall dataSetParentCall) {
+        this.dataSetParentCall = dataSetParentCall;
     }
 
-    public List<PeriodModel> generateAndPersist() {
-        List<PeriodModel> periods = generator.generatePeriods();
-        for (PeriodModel p : periods) {
-            store.updateOrInsertWhere(p);
-        }
-        return periods;
+    @Override
+    public Call<List<DataSet>> download() {
+        return dataSetParentCall;
     }
 }

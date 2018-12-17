@@ -47,7 +47,6 @@ import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetParentCall;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
@@ -76,7 +75,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final GenericCallFactory<List<Program>> programParentCallFactory;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
-    private final GenericCallFactory<List<DataSet>> dataSetParentCallFactory;
+    private final Downloader<List<DataSet>> dataSetDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     public MetadataCall(@NonNull GenericCallData genericCallData,
@@ -89,7 +88,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory,
-                        @NonNull GenericCallFactory<List<DataSet>> dataSetParentCallFactory,
+                        @NonNull Downloader<List<DataSet>> dataSetDownloader,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.genericCallData = genericCallData;
         this.systemInfoDownloader = systemInfoDownloader;
@@ -101,7 +100,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.programParentCallFactory = programParentCallFactory;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
-        this.dataSetParentCallFactory = dataSetParentCallFactory;
+        this.dataSetDownloader = dataSetDownloader;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
@@ -124,7 +123,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 List<Program> programs = programParentCallFactory.create(genericCallData).call();
 
-                List<DataSet> dataSets = dataSetParentCallFactory.create(genericCallData).call();
+                List<DataSet> dataSets = dataSetDownloader.download().call();
 
                 List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(
                         categoryComboUidsSeeker.seekUids()).call();
@@ -158,7 +157,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 ProgramParentCall.FACTORY,
                 OrganisationUnitCall.FACTORY,
                 SearchOrganisationUnitCall.FACTORY,
-                DataSetParentCall.FACTORY,
+                internalModules.dataSet,
                 ForeignKeyCleanerImpl.create(genericCallData.databaseAdapter())
         );
     }

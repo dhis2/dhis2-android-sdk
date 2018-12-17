@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
 import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
+import org.hisp.dhis.android.core.dataset.DataSetInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
@@ -47,6 +48,7 @@ public final class D2InternalModules {
     public final SystemSettingInternalModule systemSetting;
     public final RelationshipInternalModule relationshipModule;
     final CategoryInternalModule categoryModule;
+    public final DataSetInternalModule dataSet;
     final DataElementInternalModule dataElementModule;
     final DataValueInternalModule dataValueModule;
     public final UserInternalModule userModule;
@@ -57,6 +59,7 @@ public final class D2InternalModules {
                              SystemSettingInternalModule systemSetting,
                              RelationshipInternalModule relationshipModule,
                              CategoryInternalModule categoryModule,
+                             DataSetInternalModule dataSet,
                              DataElementInternalModule dataElementModule,
                              DataValueInternalModule dataValueModule,
                              UserInternalModule userModule,
@@ -65,6 +68,7 @@ public final class D2InternalModules {
         this.systemSetting = systemSetting;
         this.relationshipModule = relationshipModule;
         this.categoryModule = categoryModule;
+        this.dataSet = dataSet;
         this.dataElementModule = dataElementModule;
         this.dataValueModule = dataValueModule;
         this.userModule = userModule;

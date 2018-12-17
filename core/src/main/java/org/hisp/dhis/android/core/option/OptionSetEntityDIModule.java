@@ -26,9 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -36,11 +37,17 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class PeriodDIModule {
+public final class OptionSetEntityDIModule {
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<PeriodModel> store(DatabaseAdapter databaseAdapter) {
-        return PeriodStore.create(databaseAdapter);
+    IdentifiableObjectStore<OptionSet> store(DatabaseAdapter databaseAdapter) {
+        return OptionSetStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    SyncHandler<OptionSet> handler(DatabaseAdapter databaseAdapter) {
+        return OptionSetHandler.create(databaseAdapter);
     }
 }

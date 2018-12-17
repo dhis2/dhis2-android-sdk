@@ -25,17 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+package org.hisp.dhis.android.core.dataelement;
+
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class IndicatorHandler {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    private IndicatorHandler() {}
+@Module(includes = {DataElementEntityDIModule.class})
+public final class DataElementPackageDIModule {
 
-    public static SyncHandler<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(IndicatorStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    DataElementModule module(DatabaseAdapter databaseAdapter) {
+        return new DataElementModule(
+                DataElementCollectionRepository.create(databaseAdapter));
+    }
+
+    @Provides
+    @Reusable
+    UidsCallFactory<DataElement> dataElementEndpointCallFactory(DataElementEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    DataElementService service(Retrofit retrofit) {
+        return retrofit.create(DataElementService.class);
     }
 }

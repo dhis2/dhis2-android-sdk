@@ -36,7 +36,7 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class RelationshipDIModule {
+public final class RelationshipPackageDIModule {
 
     @Provides
     @Reusable

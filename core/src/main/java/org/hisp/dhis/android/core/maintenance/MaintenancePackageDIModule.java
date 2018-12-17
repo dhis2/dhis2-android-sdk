@@ -26,8 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource;
+package org.hisp.dhis.android.core.maintenance;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -35,11 +36,14 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ResourceDIModule {
+public final class MaintenancePackageDIModule {
 
     @Provides
     @Reusable
-    ResourceStore store(DatabaseAdapter databaseAdapter) {
-        return new ResourceStoreImpl(databaseAdapter);
+    MaintenanceModule create(DatabaseAdapter databaseAdapter) {
+        return new MaintenanceModule(
+                databaseAdapter,
+                new ReadOnlyCollectionRepositoryImpl<>(ForeignKeyViolationStore.create(databaseAdapter))
+        );
     }
 }

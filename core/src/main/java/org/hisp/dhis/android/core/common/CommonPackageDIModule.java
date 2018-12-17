@@ -38,7 +38,7 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module
-public class CommonDIModule {
+public class CommonPackageDIModule {
 
     @Provides
     @Reusable

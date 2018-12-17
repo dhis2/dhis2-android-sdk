@@ -35,7 +35,7 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class CategoryDIModule {
+public final class CategoryPackageDIModule {
 
     @Provides
     @Reusable

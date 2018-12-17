@@ -26,10 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,23 +44,48 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module
-public final class SystemSettingDIModule {
+public final class SystemInfoPackageDIModule {
 
     @Provides
-    @Reusable
-    SystemSettingService service(Retrofit retrofit) {
-        return retrofit.create(SystemSettingService.class);
+    @Singleton
+    DHISVersionManager dhisVersionManager(ObjectWithoutUidStore<SystemInfo> store) {
+        return new DHISVersionManager(store);
     }
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<SystemSettingModel> store(DatabaseAdapter databaseAdapter) {
-        return SystemSettingStore.create(databaseAdapter);
+    SystemInfoModule module(DHISVersionManager versionManager,
+                            ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+        return new SystemInfoModule(versionManager, systemInfoRepository);
     }
 
     @Provides
     @Reusable
-    SystemSettingHandler handler(ObjectWithoutUidStore<SystemSettingModel> store) {
-        return new SystemSettingHandlerImpl(store);
+    ReadOnlyObjectRepository<SystemInfo> systemInfoRepository(ObjectWithoutUidStore<SystemInfo> store) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    Downloader<SystemInfo> downloader(SystemInfoInternalModule internalModule) {
+        return internalModule;
+    }
+
+    @Provides
+    @Reusable
+    SystemInfoService service(Retrofit retrofit) {
+        return retrofit.create(SystemInfoService.class);
+    }
+
+    @Provides
+    @Reusable
+    SyncHandler<SystemInfo> handler(ObjectWithoutUidStore<SystemInfo> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<SystemInfo> store(DatabaseAdapter databaseAdapter) {
+        return SystemInfoStore.create(databaseAdapter);
     }
 }

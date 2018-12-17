@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -151,10 +152,10 @@ public class TrackedEntityDataValueStoreIntegrationShould
                 null, "organisation_unit_uid", "tei_type", null,
                 null, State.TO_POST);
 
-        EnrollmentStore enrollmentStore = new EnrollmentStoreImpl(DatabaseAdapterFactory.get(false));
-        enrollmentStore.insert("enrollment", null, null, null,null,
-                "organisation_unit", "program", null, null, null,
-                null, "tei_uid", null, null, State.TO_POST);
+        EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(DatabaseAdapterFactory.get(false));
+        Enrollment enrollment = Enrollment.builder().uid("enrollment").organisationUnit("organisation_unit")
+                .program("program").trackedEntityInstance("tei_uid").state(State.TO_POST).build();
+        enrollmentStore.insert(enrollment);
 
         EventStore eventStore = EventStoreImpl.create(DatabaseAdapterFactory.get(false));
         eventStore.insert(EventSamples.get().toBuilder().uid("event_1").state(State.TO_POST).build());

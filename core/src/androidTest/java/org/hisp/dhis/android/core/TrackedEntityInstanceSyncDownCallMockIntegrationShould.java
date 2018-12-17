@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.core;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -7,6 +8,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.period.FeatureType;
@@ -51,7 +53,7 @@ public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsS
 
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         resourceStore = new ResourceStoreImpl(databaseAdapter());
-        enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
     }
 
     @Override
@@ -133,16 +135,15 @@ public class TrackedEntityInstanceSyncDownCallMockIntegrationShould extends AbsS
         String lastUpdated = resourceStore.getLastUpdated(
                 ResourceModel.Type.TRACKED_ENTITY_INSTANCE);
 
-        Map<String, List<Enrollment>> enrollmentsMap = enrollmentStore.queryAll();
-
         assertThat(syncedInDatabase.size(), is(syncedExpected.size()));
         assertThat(lastUpdated, is(nullValue()));
         assertThat(toPostInDatabase.size(), is(toPostExpected.size()));
 
         for (TrackedEntityInstance trackedEntityInstance : syncedExpected) {
             assertThat(syncedInDatabase.containsKey(trackedEntityInstance.uid()), is(true));
-            assertThat(enrollmentsMap.get(trackedEntityInstance.uid()), is(notNullValue()));
-
+            List<Enrollment> enrollmentList = enrollmentStore.selectWhereClause(new WhereClauseBuilder()
+                    .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.uid()).build());
+            assertThat(enrollmentList, is(notNullValue()));
         }
 
         for (TrackedEntityInstance trackedEntityInstance : toPostExpected) {

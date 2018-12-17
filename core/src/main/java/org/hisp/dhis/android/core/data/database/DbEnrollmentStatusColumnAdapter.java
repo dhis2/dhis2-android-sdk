@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 
-import java.util.List;
-import java.util.Map;
+public class DbEnrollmentStatusColumnAdapter extends EnumColumnAdapter<EnrollmentStatus> {
 
-public interface EnrollmentStore extends IdentifiableObjectWithStateStore<Enrollment> {
-
-    Map<String, List<Enrollment>> queryEnrollmentsToPost();
+    @Override
+    protected Class<EnrollmentStatus> getEnumClass() {
+        return EnrollmentStatus.class;
+    }
 }

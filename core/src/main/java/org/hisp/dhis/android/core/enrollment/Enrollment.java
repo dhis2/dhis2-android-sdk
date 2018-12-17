@@ -28,153 +28,160 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbEnrollmentStatusColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreEventListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteFields;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventFields;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-public abstract class Enrollment implements ObjectWithDeleteInterface, ObjectWithUidInterface {
-    private static final String UID = "enrollment";
-    private static final String CREATED = "created";
-    private static final String LAST_UPDATED = "lastUpdated";
-    private static final String CREATED_AT_CLIENT = "createdAtClient";
-    private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-    private static final String ORGANISATION_UNIT = "orgUnit";
-    private static final String PROGRAM = "program";
-    private static final String ENROLLMENT_DATE = "enrollmentDate";
-    private static final String INCIDENT_DATE = "incidentDate";
-    private static final String FOLLOW_UP = "followup";
-    private static final String ENROLLMENT_STATUS = "status";
-    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    private static final String COORDINATE = "coordinate";
-    private static final String DELETED = "deleted";
-    private static final String EVENTS = "events";
-    private static final String NOTES = "notes";
+@JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
+public abstract class Enrollment extends BaseDataModel implements ObjectWithDeleteInterface, ObjectWithUidInterface {
 
-    private static final Field<Enrollment, String> uid = Field.create(UID);
-    private static final Field<Enrollment, String> created = Field.create(CREATED);
-    private static final Field<Enrollment, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<Enrollment, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    private static final Field<Enrollment, String> program = Field.create(PROGRAM);
-    private static final Field<Enrollment, String> enrollmentDate = Field.create(ENROLLMENT_DATE);
-    private static final Field<Enrollment, String> incidentDate = Field.create(INCIDENT_DATE);
-    private static final Field<Enrollment, String> followUp = Field.create(FOLLOW_UP);
-    private static final Field<Enrollment, String> enrollmentStatus = Field.create(ENROLLMENT_STATUS);
-    private static final Field<Enrollment, Boolean> deleted = Field.create(DELETED);
-    private static final Field<Enrollment, String> trackedEntityInstance = Field.create(TRACKED_ENTITY_INSTANCE);
-    private static final Field<Enrollment, Coordinates> coordinate = Field.create(COORDINATE);
-
-    private static final NestedField<Enrollment, Event> events = NestedField.create(EVENTS);
-    private static final NestedField<Enrollment, Note> notes = NestedField.create(NOTES);
-
-    public static final Fields<Enrollment> allFields = Fields.<Enrollment>builder().fields(
-            uid, created, lastUpdated, coordinate, enrollmentDate, incidentDate, enrollmentStatus,
-            followUp, program, organisationUnit, trackedEntityInstance, deleted, events.with(EventFields.allFields),
-            notes.with(NoteFields.all)
-    ).build();
-
-    @JsonProperty(UID)
+    @Override
+    @Nullable
+    @JsonProperty(EnrollmentFields.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty(CREATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(CREATED_AT_CLIENT)
+    @JsonIgnore()
     public abstract String createdAtClient();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED_AT_CLIENT)
+    @JsonIgnore()
     public abstract String lastUpdatedAtClient();
 
     @Nullable
-    @JsonProperty(ORGANISATION_UNIT)
+    @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty(PROGRAM)
+    @JsonProperty()
     public abstract String program();
 
     @Nullable
-    @JsonProperty(ENROLLMENT_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date enrollmentDate();
 
     @Nullable
-    @JsonProperty(INCIDENT_DATE)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date incidentDate();
 
     @Nullable
-    @JsonProperty(FOLLOW_UP)
+    @JsonProperty(EnrollmentFields.FOLLOW_UP)
+    @ColumnName(EnrollmentFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
-    @JsonProperty(ENROLLMENT_STATUS)
-    public abstract EnrollmentStatus enrollmentStatus();
+    @ColumnAdapter(DbEnrollmentStatusColumnAdapter.class)
+    public abstract EnrollmentStatus status();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_INSTANCE)
+    @JsonIgnore()
     public abstract String trackedEntityInstance();
 
     @Nullable
-    @JsonProperty(COORDINATE)
+    @ColumnAdapter(CoordinatesColumnAdapter.class)
     public abstract Coordinates coordinate();
 
     @Nullable
-    @JsonProperty(DELETED)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable
-    @JsonProperty(EVENTS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreEventListColumnAdapter.class)
     public abstract List<Event> events();
 
     @Nullable
-    @JsonProperty(NOTES)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
     public abstract List<Note> notes();
 
-    @JsonCreator
-    public static Enrollment create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
-            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(PROGRAM) String program,
-            @JsonProperty(ENROLLMENT_DATE) Date enrollmentDate,
-            @JsonProperty(INCIDENT_DATE) Date incidentDate,
-            @JsonProperty(FOLLOW_UP) Boolean followUp,
-            @JsonProperty(ENROLLMENT_STATUS) EnrollmentStatus enrollmentStatus,
-            @JsonProperty(TRACKED_ENTITY_INSTANCE) String trackedEntityInstance,
-            @JsonProperty(COORDINATE) Coordinates coordinate,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(EVENTS) List<Event> events,
-            @JsonProperty(NOTES) List<Note> notes) {
-        return new AutoValue_Enrollment(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, program, enrollmentDate, incidentDate, followUp, enrollmentStatus,
-                trackedEntityInstance, coordinate, deleted, safeUnmodifiableList(events), notes);
+    public static Builder builder() {
+        return new $$AutoValue_Enrollment.Builder();
     }
 
+    static Enrollment create(Cursor cursor) {
+        return $AutoValue_Enrollment.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        @JsonProperty(EnrollmentFields.UID)
+        public abstract Builder uid(String uid);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract Builder createdAtClient(String createdAtClient);
+
+        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+
+        @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder program(String program);
+
+        public abstract Builder enrollmentDate(Date enrollmentDate);
+
+        public abstract Builder incidentDate(Date incidentDate);
+
+        @JsonProperty(EnrollmentFields.FOLLOW_UP)
+        public abstract Builder followUp(Boolean followUp);
+
+        public abstract Builder status(EnrollmentStatus status);
+
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder coordinate(Coordinates coordinate);
+
+        public abstract Builder deleted(Boolean deleted);
+
+        public abstract Builder events(List<Event> events);
+
+        public abstract Builder notes(List<Note> notes);
+
+        public abstract Enrollment build();
+    }
 }

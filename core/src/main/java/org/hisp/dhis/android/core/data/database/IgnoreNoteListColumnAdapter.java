@@ -26,14 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 
 import java.util.List;
-import java.util.Map;
 
-public interface EnrollmentStore extends IdentifiableObjectWithStateStore<Enrollment> {
-
-    Map<String, List<Enrollment>> queryEnrollmentsToPost();
+public final class IgnoreNoteListColumnAdapter extends IgnoreColumnAdapter<List<Note>> {
 }

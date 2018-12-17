@@ -3,11 +3,10 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -25,6 +24,7 @@ import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
@@ -128,7 +128,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
                 trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
-        Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.query();
+        Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.queryEnrollmentsToPost();
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
@@ -176,13 +176,10 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                         }
                     }
 
-                    enrollmentsRecreated.add(
-                            Enrollment.create(enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                                    enrollment.organisationUnit(), enrollment.program(), enrollment.enrollmentDate(),
-                                    enrollment.incidentDate(), enrollment.followUp(), enrollment.enrollmentStatus(),
-                                    enrollment.trackedEntityInstance(), enrollment.coordinate(), enrollment.deleted(),
-                                    eventRecreated, notesForEnrollment));
+                    enrollmentsRecreated.add(enrollment.toBuilder()
+                            .events(eventRecreated)
+                            .notes(notesForEnrollment)
+                            .build());
                 }
             }
 
@@ -241,7 +238,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 internalModules.relationshipModule.publicModule.relationships,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
-                new EnrollmentStoreImpl(databaseAdapter),
+                EnrollmentStoreImpl.create(databaseAdapter),
                 EventStoreImpl.create(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
                 new TrackedEntityAttributeValueStoreImpl(databaseAdapter),

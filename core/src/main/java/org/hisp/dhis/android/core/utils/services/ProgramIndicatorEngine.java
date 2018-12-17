@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.constant.ConstantStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
@@ -173,7 +173,7 @@ public class ProgramIndicatorEngine {
         int zeroPosValueCount = 0;
 
         Map<String, List<Event>> cachedEvents = new HashMap<>();
-        EnrollmentModel cachedEnrollment = null;
+        Enrollment cachedEnrollment = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
         Date currentDate = new Date();
@@ -216,7 +216,7 @@ public class ProgramIndicatorEngine {
 
                 if (uid != null) {
                     if (cachedEnrollment == null) {
-                        cachedEnrollment = enrollmentStore.queryByUid(enrollment);
+                        cachedEnrollment = enrollmentStore.selectByUid(enrollment);
                         attributeToAttributeValues = getTrackedEntityAttributeValues(cachedEnrollment
                                 .trackedEntityInstance());
                     }
@@ -244,7 +244,7 @@ public class ProgramIndicatorEngine {
 
                 if (enrollment != null) { //in case of single event without reg
                     if (cachedEnrollment == null) {
-                        cachedEnrollment = enrollmentStore.queryByUid(enrollment);
+                        cachedEnrollment = enrollmentStore.selectByUid(enrollment);
                     }
 
                     if (ENROLLMENT_DATE.equals(uid)) {
@@ -370,7 +370,7 @@ public class ProgramIndicatorEngine {
     public static ProgramIndicatorEngine create(DatabaseAdapter databaseAdapter) {
         return new ProgramIndicatorEngine(ProgramIndicatorStore.create(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
-                new EnrollmentStoreImpl(databaseAdapter),
+                EnrollmentStoreImpl.create(databaseAdapter),
                 EventStoreImpl.create(databaseAdapter),
                 DataElementStore.create(databaseAdapter),
                 ConstantStore.create(databaseAdapter),

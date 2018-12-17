@@ -2,11 +2,12 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteHandler;
@@ -20,13 +21,9 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class EnrollmentHandler {
+public class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
     private final DHISVersionManager versionManager;
-    private final EnrollmentStore enrollmentStore;
     private final SyncHandler<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;
     private final ObjectWithoutUidStore<Note> noteStore;
@@ -38,64 +35,17 @@ public class EnrollmentHandler {
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull SyncHandler<Note> noteHandler,
                       @NonNull ObjectWithoutUidStore<Note> noteStore) {
+        super(enrollmentStore);
         this.versionManager = versionManager;
-        this.enrollmentStore = enrollmentStore;
         this.eventHandler = eventHandler;
         this.noteHandler = noteHandler;
         this.noteStore = noteStore;
         this.eventOrphanCleaner = eventOrphanCleaner;
     }
 
-    public void handle(@NonNull List<Enrollment> enrollments) {
-
-        if (enrollments != null && !enrollments.isEmpty()) {
-            int size = enrollments.size();
-
-            for (int i = 0; i < size; i++) {
-                Enrollment enrollment = enrollments.get(i);
-                handle(enrollment);
-            }
-        }
-    }
-
-    private void handle(@NonNull Enrollment enrollment) {
-        if (enrollment == null) {
-            return;
-        }
-
-        if (isDeleted(enrollment)) {
-            enrollmentStore.delete(enrollment.uid());
-        } else {
-            String latitude = null;
-            String longitude = null;
-            if (enrollment.coordinate() != null) {
-                latitude = enrollment.coordinate().latitude().toString();
-                longitude = enrollment.coordinate().longitude().toString();
-            }
-
-            int updatedRow = enrollmentStore.update(enrollment.uid(), enrollment.created(),
-                    enrollment.lastUpdated(),
-                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                    enrollment.organisationUnit(),
-                    enrollment.program(), enrollment.enrollmentDate(),
-                    enrollment.incidentDate(),
-                    enrollment.followUp(), enrollment.enrollmentStatus(),
-                    enrollment.trackedEntityInstance(),
-                    latitude, longitude,
-                    State.SYNCED, enrollment.uid());
-
-            if (updatedRow <= 0) {
-                enrollmentStore.insert(enrollment.uid(), enrollment.created(),
-                        enrollment.lastUpdated(),
-                        enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                        enrollment.organisationUnit(), enrollment.program(),
-                        enrollment.enrollmentDate(),
-                        enrollment.incidentDate(), enrollment.followUp(),
-                        enrollment.enrollmentStatus(),
-                        enrollment.trackedEntityInstance(), latitude, longitude,
-                        State.SYNCED);
-            }
-
+    @Override
+    protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
+        if (action != HandleAction.Delete) {
             eventHandler.handleMany(enrollment.events());
 
             Collection<Note> notes = new ArrayList<>();
@@ -105,16 +55,16 @@ public class EnrollmentHandler {
                     notes.add(transformer.transform(note));
                 }
             }
-
             noteHandler.handleMany(NoteUniquenessManager.buildUniqueCollection(notes, enrollment.uid(), noteStore));
         }
+
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
     }
 
     public static EnrollmentHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
         return new EnrollmentHandler(
                 versionManager,
-                new EnrollmentStoreImpl(databaseAdapter),
+                EnrollmentStoreImpl.create(databaseAdapter),
                 EventHandler.create(databaseAdapter),
                 new DataOrphanCleanerImpl<Enrollment, Event>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
                         EventModel.Columns.STATE, databaseAdapter),

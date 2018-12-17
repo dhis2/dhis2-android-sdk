@@ -28,12 +28,38 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
+import org.junit.runner.RunWith;
 
-public interface EnrollmentStore extends IdentifiableObjectWithStateStore<Enrollment> {
+@RunWith(AndroidJUnit4.class)
+public class EnrollmentStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Enrollment> {
 
-    Map<String, List<Enrollment>> queryEnrollmentsToPost();
+    public EnrollmentStoreIntegrationShould() {
+        super(EnrollmentStoreImpl.create(DatabaseAdapterFactory.get(false)),
+                EnrollmentTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
+
+    @Override
+    protected Enrollment buildObject() {
+        return EnrollmentSamples.get();
+    }
+
+    @Override
+    protected Enrollment buildObjectWithId() {
+        return EnrollmentSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected Enrollment buildObjectToUpdate() {
+        return EnrollmentSamples.get().toBuilder()
+                .state(State.SYNCED)
+                .build();
+    }
 }

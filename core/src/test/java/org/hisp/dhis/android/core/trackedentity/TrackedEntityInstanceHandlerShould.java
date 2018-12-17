@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollection;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -105,7 +107,7 @@ public class TrackedEntityInstanceHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
                 any(State.class));
         verify(trackedEntityAttributeValueHandler, never()).handle(any(String.class), any(ArrayList.class));
-        verify(enrollmentHandler, never()).handle(any(ArrayList.class));
+        verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
     }
 
@@ -129,7 +131,7 @@ public class TrackedEntityInstanceHandlerShould {
                 any(String.class), any(ArrayList.class));
 
         // verify that enrollment handler is never called
-        verify(enrollmentHandler, never()).handle(any(ArrayList.class));
+        verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
 
         verify(enrollmentCleaner, times(1))
                 .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
@@ -159,7 +161,7 @@ public class TrackedEntityInstanceHandlerShould {
                 any(String.class), any(ArrayList.class));
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
+        verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class));
 
         verify(enrollmentCleaner, times(1))
                 .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
@@ -192,7 +194,7 @@ public class TrackedEntityInstanceHandlerShould {
                 any(String.class), any(ArrayList.class));
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handle(any(ArrayList.class));
+        verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class));
 
         verify(enrollmentCleaner, times(1))
                 .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));

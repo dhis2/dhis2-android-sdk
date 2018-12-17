@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -54,7 +54,6 @@ import java.util.Collections;
 import java.util.Date;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -95,7 +94,7 @@ public class ProgramIndicatorEngineShould {
     private Event.Builder eventBuilder3;
 
     @Mock
-    private EnrollmentModel enrollmentModel;
+    private Enrollment enrollment;
 
     @Mock
     private ProgramIndicator programIndicator;
@@ -216,9 +215,9 @@ public class ProgramIndicatorEngineShould {
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Arrays.asList(event2, event3));
 
-        when(enrollmentModel.uid()).thenReturn(enrollmentUid);
-        when(enrollmentModel.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
-        when(enrollmentStore.queryByUid(enrollmentUid)).thenReturn(enrollmentModel);
+        when(enrollment.uid()).thenReturn(enrollmentUid);
+        when(enrollment.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
+        when(enrollmentStore.selectByUid(enrollmentUid)).thenReturn(enrollment);
 
         when(dataElement.valueType()).thenReturn(ValueType.NUMBER);
         when(dataElementStore.selectByUid(dataElementUid1)).thenReturn(dataElement);
@@ -300,7 +299,7 @@ public class ProgramIndicatorEngineShould {
         when(programIndicator.expression()).thenReturn(var("enrollment_date"));
 
         Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
-        when(enrollmentModel.enrollmentDate()).thenReturn(enrollmentDate);
+        when(enrollment.enrollmentDate()).thenReturn(enrollmentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 
@@ -312,7 +311,7 @@ public class ProgramIndicatorEngineShould {
         when(programIndicator.expression()).thenReturn(var("incident_date"));
 
         Date incidentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
-        when(enrollmentModel.incidentDate()).thenReturn(incidentDate);
+        when(enrollment.incidentDate()).thenReturn(incidentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 

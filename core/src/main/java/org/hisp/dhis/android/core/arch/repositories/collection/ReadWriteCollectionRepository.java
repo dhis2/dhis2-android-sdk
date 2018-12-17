@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 public interface ReadWriteCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
     void add(M m) throws D2Error;

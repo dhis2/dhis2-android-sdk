@@ -28,32 +28,37 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
-        implements ReadWriteCollectionRepository<DataValue> {
+        implements ReadWriteWithUploadCollectionRepository<DataValue> {
 
     private final DataValueStore dataValueStore;
-    private final DataValueHandler dataValueHandler;
+    private final SyncHandler<DataValue> dataValueHandler;
+    private final DataValuePostCall postCall;
 
-    private DataValueCollectionRepository(DataValueStore dataValueStore,
-                                          DataValueHandler dataValueHandler) {
+    @Inject
+    DataValueCollectionRepository(DataValueStore dataValueStore,
+                                  SyncHandler<DataValue> dataValueHandler,
+                                  DataValuePostCall postCall) {
         super(dataValueStore);
         this.dataValueHandler = dataValueHandler;
         this.dataValueStore = dataValueStore;
-    }
-
-    static DataValueCollectionRepository create(DatabaseAdapter databaseAdapter) {
-
-        return new DataValueCollectionRepository(DataValueStore.create(databaseAdapter),
-                DataValueHandler.create(databaseAdapter));
-
+        this.postCall = postCall;
     }
 
     @Override
@@ -71,4 +76,8 @@ final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryIm
         dataValueHandler.handle(dataValue.toBuilder().state(State.TO_POST).build());
     }
 
+    @Override
+    public Callable<ImportSummary> upload() {
+        return postCall;
+    }
 }

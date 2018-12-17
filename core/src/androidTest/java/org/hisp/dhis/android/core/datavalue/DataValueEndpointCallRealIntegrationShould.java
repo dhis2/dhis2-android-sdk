@@ -34,6 +34,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -67,7 +69,9 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
 
     private Call<List<DataValue>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
+        SyncHandler<DataValue> dataValueHandler =  new ObjectWithoutUidSyncHandlerImpl<>(
+                DataValueStore.create(databaseAdapter()));
+        return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, dataValueHandler).create(
                 DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));
     }
 

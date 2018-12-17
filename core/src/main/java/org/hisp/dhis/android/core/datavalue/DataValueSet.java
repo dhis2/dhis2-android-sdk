@@ -33,11 +33,11 @@ import java.util.Collection;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public class DataValueSet {
+class DataValueSet {
 
     public Collection<DataValue> dataValues;
 
-    public DataValueSet(Collection<DataValue> dataValues) {
+    DataValueSet(Collection<DataValue> dataValues) {
         this.dataValues = dataValues;
     }
 }

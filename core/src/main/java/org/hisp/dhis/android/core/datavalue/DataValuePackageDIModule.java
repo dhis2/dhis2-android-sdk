@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,18 +28,25 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 
-public final class DataValueHandler
-        extends ObjectWithoutUidSyncHandlerImpl<DataValue> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    private DataValueHandler(DataValueStore store) {
-        super(store);
+@Module(includes = {DataValueEntityDIModule.class})
+public final class DataValuePackageDIModule {
+
+    @Provides
+    @Reusable
+    DataValueService service(Retrofit retrofit) {
+        return retrofit.create(DataValueService.class);
     }
 
-    public static DataValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataValueHandler(DataValueStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory(DataValueEndpointCallFactory callFactoryImpl) {
+        return callFactoryImpl;
     }
-
 }

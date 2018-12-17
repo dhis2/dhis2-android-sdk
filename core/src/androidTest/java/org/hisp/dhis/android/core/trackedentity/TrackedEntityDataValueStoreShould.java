@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
 import org.hisp.dhis.android.core.dataelement.DataElementModel;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -148,7 +148,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(DataElementModel.TABLE, null, dataElement2);
         database().insert(TrackedEntityInstanceModel.TABLE, null,
                 trackedEntityInstance);
-        database().insert(EnrollmentModel.TABLE, null, enrollment);
+        database().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
         database().insert(EventModel.TABLE, null, event1);
         database().insert(EventModel.TABLE, null, event2);
 

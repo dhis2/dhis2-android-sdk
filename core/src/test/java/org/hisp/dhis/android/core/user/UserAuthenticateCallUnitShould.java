@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.retrofit.APIUrlProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
@@ -42,7 +43,6 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 import org.junit.Before;
@@ -56,6 +56,8 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
+
+import java.util.concurrent.Callable;
 
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -102,6 +104,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private User user;
 
     @Mock
+    private User anotherUser;
+
+    @Mock
     private User loggedUser;
 
     @Mock
@@ -109,9 +114,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
     @Mock
     private SystemInfo systemInfoFromDb;
-
-    @Mock
-    private DHISVersionManager versionManager;
 
     @Mock
     private AuthenticatedUserModel authenticatedUser;
@@ -131,10 +133,11 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Mock
     private WipeModule wipeModule;
 
-    private String baseEndpoint;
+    @Mock
+    private APIUrlProvider apiUrlProvider;
 
     // call we are testing
-    private Call<User> userAuthenticateCall;
+    private Callable<User> userAuthenticateCall;
 
     private static final String USERNAME = "test_username";
     private static final String UID = "test_uid";
@@ -145,18 +148,19 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
-
         when(user.uid()).thenReturn(UID);
         when(loggedUser.uid()).thenReturn(UID);
         when(systemInfoFromAPI.serverDate()).thenReturn(serverDate);
+
+        when(anotherUser.uid()).thenReturn("anotherUserUid");
 
         when(authenticatedUser.user()).thenReturn(UID);
         when(authenticatedUser.credentials()).thenReturn(base64(USERNAME, PASSWORD));
         when(authenticatedUser.hash()).thenReturn(md5(USERNAME, PASSWORD));
 
-        baseEndpoint = "https://dhis-instance.org";
+        String baseEndpoint = "https://dhis-instance.org";
         when(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint);
+        when(systemInfoFromDb.contextPath()).thenReturn(baseEndpoint);
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
@@ -175,14 +179,18 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             }
         });
 
+        when(apiUrlProvider.getAPIUrl()).thenReturn(baseEndpoint + "/api/");
+
         when(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT);
+
+        userAuthenticateCall = instantiateCall(USERNAME, PASSWORD);
     }
 
-    private UserAuthenticateCall instantiateCall(String username, String password) {
-        return new UserAuthenticateCall(databaseAdapter, apiCallExecutor, systemInfoDownloader,
+    private Callable<User> instantiateCall(String username, String password) {
+        return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor, systemInfoDownloader,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule,
-                username, password, baseEndpoint + "/api/");
+                apiUrlProvider).getCall(username, password);
     }
 
     private OngoingStubbing<User> whenAPICall() throws D2Error {
@@ -257,14 +265,28 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     @Test
     public void not_wipe_db_when_no_previous_user_or_system_info() throws Exception {
         userAuthenticateCall.call();
+
+        verify(wipeModule, never()).wipeEverything();
+        verifySuccess();
+    }
+
+    @Test
+    public void not_wipe_db_when_previously_same_user() throws Exception {
+        when(userStore.selectFirst()).thenReturn(user);
+
+        userAuthenticateCall.call();
+
         verify(wipeModule, never()).wipeEverything();
         verifySuccess();
     }
 
     @Test
     public void wipe_db_when_previously_another_user() throws Exception {
+        when(userStore.selectFirst()).thenReturn(anotherUser);
+
         userAuthenticateCall.call();
-        verify(wipeModule, never()).wipeEverything();
+
+        verify(wipeModule).wipeEverything();
         verifySuccess();
     }
 
@@ -279,15 +301,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     @Test
-    public void not_wipe_db_when_previously_same_user() throws Exception {
-
-        userAuthenticateCall.call();
-
-        verify(wipeModule, never()).wipeEverything();
-        verifySuccess();
-    }
-
-    @Test
     public void wipe_db_when_previously_different_user() throws Exception {
         when(loggedUser.uid()).thenReturn("previous_user");
 
@@ -295,35 +308,6 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         verify(wipeModule).wipeEverything();
         verifySuccess();
-    }
-
-    @Test
-    public void thrown_d2_call_exception_on_consecutive_calls() throws Exception {
-        userAuthenticateCall.call();
-
-        assertThat(userAuthenticateCall.isExecuted()).isEqualTo(true);
-
-        try {
-            userAuthenticateCall.call();
-
-            fail("Invoking call second time should throw exception");
-        } catch (D2Error illegalStateException) {
-            // swallow exception
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mark_as_executed_when_call_is_failure() throws Exception {
-        whenAPICall().thenThrow(d2Error);
-
-        try {
-            userAuthenticateCall.call();
-        } catch (D2Error ioException) {
-            // swallow exception
-        }
-
-        assertThat(userAuthenticateCall.isExecuted()).isEqualTo(true);
     }
 
     @Test(expected = D2Error.class)

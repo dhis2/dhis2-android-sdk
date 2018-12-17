@@ -33,7 +33,7 @@ public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase 
 
     //@Test
     public void call_categories_endpoint() throws Exception {
-        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
         Call<List<Category>> categoryEndpointCall = new CategoryEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
                 new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));

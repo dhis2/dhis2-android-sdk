@@ -186,7 +186,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void downloadMetadata() throws Exception {
-        d2.logIn(user, password).call();
+        d2.userModule().logIn(user, password).call();
         d2.syncMetaData().call();
     }
 

@@ -36,7 +36,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
 
     //@Test
     public void download_categories_combos_and_relatives() throws Exception {
-        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
         d2.databaseAdapter().database().setForeignKeyConstraintsEnabled(false);
 

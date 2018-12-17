@@ -25,47 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.concurrent.Callable;
+package org.hisp.dhis.android.core.arch.api.retrofit;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Reusable
-public final class UserModule {
+public class APIUrlProvider {
 
-    private final Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider;
-    private final Provider<LogOutUserCallable> logoutCallCallProvider;
-    private final UserAuthenticateCallFactory loginCallFactory;
+    private final Retrofit retrofit;
 
     @Inject
-    UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
-               Provider<LogOutUserCallable> logoutCallCallProvider,
-               UserAuthenticateCallFactory loginCallFactory) {
-        this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
-        this.logoutCallCallProvider = logoutCallCallProvider;
-        this.loginCallFactory = loginCallFactory;
+    public APIUrlProvider(Retrofit retrofit) {
+        this.retrofit = retrofit;
     }
 
-    @NonNull
-    public Callable<User> logIn(String username, String password) {
-        return loginCallFactory.getCall(username, password);
-    }
-
-    @NonNull
-    public Callable<Unit> logOut() {
-        return logoutCallCallProvider.get();
-    }
-
-    @NonNull
-    public Callable<Boolean> isLogged() {
-        return isUserLoggedInCallProvider.get();
+    public String getAPIUrl() {
+        return retrofit.baseUrl().toString();
     }
 }

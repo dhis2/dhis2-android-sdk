@@ -29,6 +29,9 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class SystemInfoModule {
 
     public final DHISVersionManager versionManager;

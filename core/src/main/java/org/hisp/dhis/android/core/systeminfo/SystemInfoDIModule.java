@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -53,11 +54,15 @@ public final class SystemInfoDIModule {
 
     @Provides
     @Reusable
-    SystemInfoModule module(DHISVersionManager versionManager, ObjectWithoutUidStore<SystemInfo> store) {
-        return new SystemInfoModule(
-                versionManager,
-                new ReadOnlyFirstObjectRepositoryImpl<>(store)
-        );
+    SystemInfoModule module(DHISVersionManager versionManager,
+                            ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+        return new SystemInfoModule(versionManager, systemInfoRepository);
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyObjectRepository<SystemInfo> systemInfoRepository(ObjectWithoutUidStore<SystemInfo> store) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
     }
 
     @Provides

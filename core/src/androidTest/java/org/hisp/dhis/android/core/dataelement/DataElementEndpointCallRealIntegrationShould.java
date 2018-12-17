@@ -47,7 +47,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
 
     // @Test
     public void download_data_elements() throws Exception {
-        d2.logIn("android", "Android123").call();
+        d2.userModule().logIn("android", "Android123").call();
 
         /*  This test won't pass independently of DataElementEndpointCallFactory and
             CategoryComboEndpointCallFactory, as the foreign keys constraints won't be satisfied.

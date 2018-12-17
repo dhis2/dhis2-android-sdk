@@ -30,16 +30,14 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.api.retrofit.APIUrlProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -50,21 +48,25 @@ import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 import static okhttp3.Credentials.basic;
 import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 import static org.hisp.dhis.android.core.utils.UserUtils.md5;
 
-public final class UserAuthenticateCall extends SyncCall<User> {
+@Reusable
+final class UserAuthenticateCallFactory {
 
     private final DatabaseAdapter databaseAdapter;
     private final APICallExecutor apiCallExecutor;
 
     private final Downloader<SystemInfo> systemInfoDownloader;
 
-    // retrofit service
     private final UserService userService;
 
     private final SyncHandler<User> userHandler;
@@ -74,12 +76,10 @@ public final class UserAuthenticateCall extends SyncCall<User> {
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
 
-    // username and password of candidate
-    private final String username;
-    private final String password;
-    private final String apiURL;
+    private final APIUrlProvider apiUrlProvider;
 
-    UserAuthenticateCall(
+    @Inject
+    UserAuthenticateCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
             @NonNull Downloader<SystemInfo> systemInfoDownloader,
@@ -90,9 +90,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
             @NonNull ReadOnlyObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
-            @NonNull String username,
-            @NonNull String password,
-            @NonNull String apiURL) {
+            @NonNull APIUrlProvider apiUrlProvider) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
@@ -106,49 +104,51 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         this.userStore = userStore;
         this.wipeModule = wipeModule;
 
-        this.username = username;
-        this.password = password;
-
-        this.apiURL = apiURL;
+        this.apiUrlProvider = apiUrlProvider;
     }
 
-    @Override
-    public User call() throws D2Error {
-        setExecuted();
-        throwExceptionIfUsernameNull();
-        throwExceptionIfPasswordNull();
-        throwExceptionIfAlreadyAuthenticated();
+    public Callable<User> getCall(final String username, final String password) {
+        return new Callable<User>() {
 
-        Call<User> authenticateCall =
-                userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
+            @Override
+            public User call() throws Exception {
+                throwExceptionIfUsernameNull(username);
+                throwExceptionIfPasswordNull(password);
+                throwExceptionIfAlreadyAuthenticated();
 
-        try {
-            User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
-                    new UserAuthenticateCallErrorCatcher());
-            return loginOnline(authenticatedUser);
-        } catch (D2Error d2Error) {
-            if (
-                    d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
-                return loginOffline();
-            } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-                wipeModule.wipeEverything();
-                throw d2Error;
-            } else {
-                throw d2Error;
+                Call<User> authenticateCall =
+                        userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
+
+                try {
+                    User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
+                            new UserAuthenticateCallErrorCatcher());
+                    return loginOnline(authenticatedUser, username, password);
+                } catch (D2Error d2Error) {
+                    if (
+                            d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+                        return loginOffline(username, password);
+                    } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+                        wipeModule.wipeEverything();
+                        throw d2Error;
+                    } else {
+                        throw d2Error;
+                    }
+                }
             }
-        }
+        };
     }
 
-    private User loginOnline(User authenticatedUser) throws D2Error {
+    private User loginOnline(User authenticatedUser, String username, String password) throws D2Error {
         if (wasLoggedAndUserIsNew(authenticatedUser) || wasLoggedAndServerIsNew()) {
             wipeModule.wipeEverything();
         }
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid());
+            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid(),
+                    username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
 
             new D2CallExecutor(databaseAdapter).executeD2Call(systemInfoDownloader.download());
@@ -161,7 +161,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         }
     }
 
-    private User loginOffline() throws D2Error {
+    private User loginOffline(String username, String password) throws D2Error {
         if (wasLoggedAndServerIsNew()) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
@@ -190,7 +190,8 @@ public final class UserAuthenticateCall extends SyncCall<User> {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(existingUser.user());
+            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(existingUser.user(),
+                    username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
             transaction.setSuccessful();
         } finally {
@@ -200,7 +201,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         return userStore.selectByUid(existingUser.user());
     }
 
-    private void throwExceptionIfUsernameNull() throws D2Error {
+    private void throwExceptionIfUsernameNull(String username) throws D2Error {
         if (username == null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.LOGIN_USERNAME_NULL)
@@ -210,7 +211,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         }
     }
 
-    private void throwExceptionIfPasswordNull() throws D2Error {
+    private void throwExceptionIfPasswordNull(String password) throws D2Error {
         if (password == null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.LOGIN_PASSWORD_NULL)
@@ -238,7 +239,7 @@ public final class UserAuthenticateCall extends SyncCall<User> {
 
     private boolean wasLoggedAndServerIsNew() {
         SystemInfo lastSystemInfo = systemInfoRepository.get();
-        return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(apiURL);
+        return lastSystemInfo != null && !(lastSystemInfo.contextPath() + "/api/").equals(apiUrlProvider.getAPIUrl());
     }
 
     private void handleUser(User user) {
@@ -248,36 +249,11 @@ public final class UserAuthenticateCall extends SyncCall<User> {
         resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER);
     }
 
-    private AuthenticatedUserModel buildAuthenticatedUserModel(String uid) {
+    private AuthenticatedUserModel buildAuthenticatedUserModel(String uid, String username, String password) {
         return AuthenticatedUserModel.builder()
                 .user(uid)
                 .credentials(base64(username, password))
                 .hash(md5(username, password))
                 .build();
-    }
-
-    public static UserAuthenticateCall create(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull D2InternalModules internalModules,
-            @NonNull WipeModule wipeModule,
-            @NonNull String username,
-            @NonNull String password) {
-        return new UserAuthenticateCall(
-                databaseAdapter,
-                APICallExecutorImpl.create(databaseAdapter),
-                internalModules.systemInfo,
-                retrofit.create(UserService.class),
-                UserHandler.create(databaseAdapter),
-                resourceHandler,
-                AuthenticatedUserStore.create(databaseAdapter),
-                internalModules.systemInfo.publicModule.systemInfo,
-                UserStore.create(databaseAdapter),
-                wipeModule,
-                username,
-                password,
-                retrofit.baseUrl().toString()
-        );
     }
 }

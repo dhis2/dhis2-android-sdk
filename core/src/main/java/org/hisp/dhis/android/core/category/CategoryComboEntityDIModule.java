@@ -26,10 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.modules;
+package org.hisp.dhis.android.core.category;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public interface Downloader<O> {
-   Callable<O> download();
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class CategoryComboEntityDIModule implements IdentifiableStoreProvider<CategoryCombo> {
+
+    @Override
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<CategoryCombo> store(DatabaseAdapter databaseAdapter) {
+        return CategoryComboStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public SyncHandler<CategoryCombo> handler(CategoryComboHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<CategoryCombo, CategoryOptionCombo> orphanCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(CategoryOptionComboModel.TABLE,
+                CategoryOptionComboModel.Columns.CATEGORY_COMBO, databaseAdapter);
+    }
 }

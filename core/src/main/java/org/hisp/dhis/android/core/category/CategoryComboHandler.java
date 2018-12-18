@@ -9,17 +9,20 @@ import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
 
     private final SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
     private final OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
     private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
 
+    @Inject
     CategoryComboHandler(
             @NonNull IdentifiableObjectStore<CategoryCombo> store,
             @NonNull SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler,
@@ -47,17 +50,5 @@ class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
         if (action == HandleAction.Update) {
             categoryOptionCleaner.deleteOrphan(combo, combo.categoryOptionCombos());
         }
-    }
-
-    public static IdentifiableSyncHandlerImpl<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        return new CategoryComboHandler(
-                CategoryComboStore.create(databaseAdapter),
-                CategoryOptionComboHandler.create(databaseAdapter),
-                new OrderedLinkModelHandlerImpl<Category, CategoryCategoryComboLinkModel>(
-                        CategoryCategoryComboLinkStore.create(databaseAdapter)
-                ),
-                new OrphanCleanerImpl<CategoryCombo, CategoryOptionCombo>(CategoryOptionComboModel.TABLE,
-                        CategoryOptionComboModel.Columns.CATEGORY_COMBO, databaseAdapter)
-        );
     }
 }

@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -47,7 +48,7 @@ public final class ProgramInternalModule implements Downloader<List<Program>> {
     }
 
     @Override
-    public Call<List<Program>> download() {
+    public Callable<List<Program>> download() {
         return programParentCall;
     }
 }

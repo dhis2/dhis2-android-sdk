@@ -28,13 +28,23 @@
 
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
-@Module
+@Module(includes = {
+        CategoryEntityDIModule.class,
+        CategoryCategoryComboEntityDIModule.class,
+        CategoryCategoryOptionEntityDIModule.class,
+        CategoryComboEntityDIModule.class,
+        CategoryOptionEntityDIModule.class,
+        CategoryOptionComboEntityDIModule.class,
+        CategoryOptionComboCategoryOptionEntityDIModule.class
+})
 public final class CategoryPackageDIModule {
 
     @Provides
@@ -46,5 +56,29 @@ public final class CategoryPackageDIModule {
                 CategoryOptionComboCollectionRepository.create(databaseAdapter),
                 CategoryComboCollectionRepository.create(databaseAdapter)
         );
+    }
+
+    @Provides
+    @Reusable
+    CategoryService categoryService(Retrofit retrofit) {
+        return retrofit.create(CategoryService.class);
+    }
+
+    @Provides
+    @Reusable
+    CategoryComboService categoryComboService(Retrofit retrofit) {
+        return retrofit.create(CategoryComboService.class);
+    }
+
+    @Provides
+    @Reusable
+    UidsCallFactory<Category> categoryCallFactory(CategoryEndpointCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    UidsCallFactory<CategoryCombo> categoryComboCallFactory(CategoryComboEndpointCallFactory impl) {
+        return impl;
     }
 }

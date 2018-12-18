@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import android.support.annotation.VisibleForTesting;
-
-import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -40,28 +40,37 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class CategoryInternalModule implements Downloader<Unit> {
+class CategoryParentCall implements Callable<Unit> {
 
-    public final CategoryModule publicModule;
-    private final CategoryParentCall categoryParentCall;
+    private final D2CallExecutor d2CallExecutor;
 
-    @VisibleForTesting
-    final UidsCallFactory<Category> categoryCallFactory;
-    final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private final UidsCallFactory<Category> categoryCallFactory;
+    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private final CategoryComboUidsSeeker categoryComboUidsSeeker;
 
     @Inject
-    CategoryInternalModule(CategoryModule publicModule,
-                           CategoryParentCall categoryParentCall,
-                           UidsCallFactory<Category> categoryCallFactory,
-                           UidsCallFactory<CategoryCombo> categoryComboCallFactory) {
-        this.publicModule = publicModule;
-        this.categoryParentCall = categoryParentCall;
+    CategoryParentCall(D2CallExecutor d2CallExecutor,
+                              UidsCallFactory<Category> categoryCallFactory,
+                              UidsCallFactory<CategoryCombo> categoryComboCallFactory,
+                              CategoryComboUidsSeeker categoryComboUidsSeeker) {
+        this.d2CallExecutor = d2CallExecutor;
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
+        this.categoryComboUidsSeeker = categoryComboUidsSeeker;
     }
 
     @Override
-    public Callable<Unit> download() {
-        return categoryParentCall;
+    public Unit call() throws Exception {
+
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
+            @Override
+            public Unit call() throws Exception {
+                Set<String> comboUids = categoryComboUidsSeeker.seekUids();
+                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
+                categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
+
+                return new Unit();
+            }
+        });
     }
 }

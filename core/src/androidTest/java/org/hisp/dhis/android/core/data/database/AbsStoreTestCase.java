@@ -35,6 +35,9 @@ import android.support.test.InstrumentationRegistry;
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2DIComponent;
+import org.hisp.dhis.android.core.DaggerD2DIComponent;
+import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceStoreImpl;
@@ -88,5 +91,12 @@ public abstract class AbsStoreTestCase {
     protected Cursor getCursor(String table, String[] columns) {
         return sqLiteDatabase.query(table, columns,
                 null, null, null, null, null);
+    }
+
+    protected D2DIComponent getD2DIComponent(D2 d2) {
+        return DaggerD2DIComponent.builder()
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
+                .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
+                .build();
     }
 }

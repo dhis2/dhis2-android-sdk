@@ -26,10 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.modules;
+package org.hisp.dhis.android.core.category;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public interface Downloader<O> {
-   Callable<O> download();
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class CategoryOptionEntityDIModule implements IdentifiableEntityDIModule<CategoryOption> {
+
+    @Override
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<CategoryOption> store(DatabaseAdapter databaseAdapter) {
+        return CategoryOptionStore.create(databaseAdapter);
+    }
+
+    @Override
+    @Provides
+    @Reusable
+    public SyncHandler<CategoryOption> handler(IdentifiableObjectStore<CategoryOption> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
+    }
 }

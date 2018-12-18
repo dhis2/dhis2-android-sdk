@@ -31,12 +31,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class CategoryParentUidsHelper {
+final class CategoryParentUidsHelper {
 
     private CategoryParentUidsHelper() {
     }
 
-    public static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
+    static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
         Set<String> uids = new HashSet<>();
         for (CategoryCombo categoryCombo : categoryCombos) {
             List<Category> categories = categoryCombo.categories();

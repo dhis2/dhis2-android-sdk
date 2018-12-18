@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
 
 import java.util.List;
 import java.util.concurrent.Callable;

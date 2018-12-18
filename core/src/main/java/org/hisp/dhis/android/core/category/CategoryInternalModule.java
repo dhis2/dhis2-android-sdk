@@ -38,6 +38,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class CategoryInternalModule implements Downloader<Unit> {
@@ -46,7 +47,11 @@ public final class CategoryInternalModule implements Downloader<Unit> {
     private final CategoryParentCall categoryParentCall;
 
     @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UidsCallFactory<Category> categoryCallFactory;
+
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
 
     @Inject

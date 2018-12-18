@@ -15,17 +15,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 
 public class SmsRepositoryImpl implements SmsRepository {
 
-    private static final int SMS_SENDING_TIMEOUT_SECONDS = 5 * 60;
     private static final String TAG = SmsRepository.class.getSimpleName();
     private static final String SMS_KEY = "sms_key";
     private Context context;
     private String sendSmsAction;
+    private boolean totalConfirmed = false;
 
     public SmsRepositoryImpl(Context context) {
         this.context = context;
@@ -33,25 +34,39 @@ public class SmsRepositoryImpl implements SmsRepository {
     }
 
     @Override
-    public Observable<SmsSendingStatus> sendSms(String number, String contents) {
+    public void confirmTotalCount() {
+        totalConfirmed = true;
+    }
+
+    @Override
+    public Observable<SmsSendingState> sendSms(String number, String contents, int sendingTimeoutSeconds) {
         return Observable.create(
-                (ObservableOnSubscribe<SmsSendingStatus>) e -> executeSmsSending(e, number, contents)
+                (ObservableOnSubscribe<SmsSendingState>) e -> executeSmsSending(e, number, contents, sendingTimeoutSeconds)
         ).doOnError(throwable ->
                 Log.e(TAG, throwable.getClass().getSimpleName(), throwable)
         );
     }
 
-    private void executeSmsSending(ObservableEmitter<SmsSendingStatus> e, String number, String contents) {
+    @Override
+    public Completable listenToConfirmationSms(int waitingTimeoutSeconds) {
+        // TODO another task
+        return null;
+    }
+
+    private void executeSmsSending(ObservableEmitter<SmsSendingState> e, String number, String contents, int timeoutSeconds) {
+        ArrayList<String> parts = generateSmsParts(contents);
+        int totalMessages = parts.size();
+        if (!askForTotalCountConfirmation(e, totalMessages)) return;
+
         final long timeStarted = System.currentTimeMillis();
-        StateReceiver stateReceiver = new StateReceiver(timeStarted);
+        StateReceiver stateReceiver = new StateReceiver(timeStarted, timeoutSeconds);
         context.registerReceiver(stateReceiver, new IntentFilter(sendSmsAction));
         int sentNumber = 0;
-        int totalMessages = sendSmsToOS(stateReceiver, number, contents);
-        e.onNext(new SmsSendingStatus(sentNumber, totalMessages, false));
+        sendSmsToOS(stateReceiver, number, contents, parts);
+        e.onNext(new SmsSendingState(State.SENDING, 0, totalMessages));
 
-        //FIXME any maximum number of total messages? or popup to ask?
-        //FIXME waiting loop will just finish when disposed (UI disconnected). Should also work on db in background?
-        while (stateReceiver.smsResultsWaiting() > 0 && !stateReceiver.isError() && timeLeft(timeStarted) > 0 && !e.isDisposed()) {
+        while (stateReceiver.smsResultsWaiting() > 0 && !stateReceiver.isError() &&
+                timeLeft(timeStarted, timeoutSeconds) > 0 && !e.isDisposed()) {
             // wait until timeout passes, response comes, or request disposed
             try {
                 Thread.sleep(500);
@@ -63,20 +78,47 @@ public class SmsRepositoryImpl implements SmsRepository {
             int currentSentNumber = totalMessages - stateReceiver.smsResultsWaiting();
             if (currentSentNumber != sentNumber) {
                 sentNumber = currentSentNumber;
-                e.onNext(new SmsSendingStatus(sentNumber, totalMessages, false));
+                e.onNext(new SmsSendingState(State.SENDING, sentNumber, totalMessages));
             }
         }
         unregisterReceiver(stateReceiver);
-        if (stateReceiver.smsResultsWaiting() > 0 || stateReceiver.isError()) {
-            e.onError(new RuntimeException("SMS sending failed"));
-        } else {
-            e.onComplete();
+
+        if (e.isDisposed()) {
+            return;
         }
-        // TODO should also listen to the confirmation sms
+        if (stateReceiver.smsResultsWaiting() == 0 && !stateReceiver.isError()) {
+            e.onNext(new SmsSendingState(State.ALL_SENT, totalMessages, totalMessages));
+            e.onComplete();
+        } else if (stateReceiver.isError()) {
+            e.onError(new ReceivedErrorException(stateReceiver.getErrorCode()));
+        } else {
+            e.onError(new TimeoutException());
+        }
     }
 
-    private long timeLeft(long timeStarted) {
-        return SMS_SENDING_TIMEOUT_SECONDS * 1000 + timeStarted - System.currentTimeMillis();
+    private ArrayList<String> generateSmsParts(String text) {
+        SmsManager sms = SmsManager.getDefault();
+        return sms.divideMessage(text);
+    }
+
+    /**
+     * @return true if should continue execution
+     */
+    private boolean askForTotalCountConfirmation(ObservableEmitter<SmsSendingState> e, int totalMessages) {
+        e.onNext(new SmsSendingState(SmsRepository.State.WAITING_TOTAL_CONFIRMATION, 0, totalMessages));
+        while (!totalConfirmed && !e.isDisposed()) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ie) {
+                e.onError(ie);
+                return false;
+            }
+        }
+        return totalConfirmed;
+    }
+
+    private long timeLeft(long timeStarted, int sendingTimeoutSeconds) {
+        return sendingTimeoutSeconds * 1000 + timeStarted - System.currentTimeMillis();
     }
 
     private void unregisterReceiver(StateReceiver stateReceiver) {
@@ -93,10 +135,8 @@ public class SmsRepositoryImpl implements SmsRepository {
      * @param number   String The phone number the sms should be sent to.
      * @param contents String The message that should be sent.
      */
-    private int sendSmsToOS(StateReceiver stateReceiver, String number, String contents) {
+    private void sendSmsToOS(StateReceiver stateReceiver, String number, String contents, ArrayList<String> parts) {
         SmsManager sms = SmsManager.getDefault();
-        ArrayList<String> parts = sms.divideMessage(contents);
-
         int uniqueIntentId = contents.hashCode();
         String uniqueKeyPrefix = uniqueIntentId + "_" + UUID.randomUUID().toString();
         ArrayList<PendingIntent> sentMessagePIs = new ArrayList<>();
@@ -113,16 +153,18 @@ public class SmsRepositoryImpl implements SmsRepository {
         }
 
         sms.sendMultipartTextMessage(number, null, parts, sentMessagePIs, null);
-        return parts.size();
     }
 
     private class StateReceiver extends BroadcastReceiver {
         private HashSet<String> smsResultsWaiting = new HashSet<>();
         private long timeStarted;
+        private int timeoutSeconds;
         private boolean error = false;
+        private int errorCode;
 
-        public StateReceiver(long timeStarted) {
+        public StateReceiver(long timeStarted, int timeoutSeconds) {
             this.timeStarted = timeStarted;
+            this.timeoutSeconds = timeoutSeconds;
         }
 
         void addSmsKey(String smsKey) {
@@ -135,9 +177,8 @@ public class SmsRepositoryImpl implements SmsRepository {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (timeLeft(timeStarted) < 0) {
-                // checking in case if this broadcast receiver wasn't properly unregistered
-                // and still receives intents
+            if (timeLeft(timeStarted, timeoutSeconds) < 0 || error) {
+                // not interested, killing receiver
                 unregisterReceiver(this);
                 return;
             }
@@ -158,12 +199,17 @@ public class SmsRepositoryImpl implements SmsRepository {
                     smsResultsWaiting.remove(smsKey);
                     break;
                 default:
+                    errorCode = resultCode;
                     error = true;
             }
         }
 
         public boolean isError() {
             return error;
+        }
+
+        public int getErrorCode() {
+            return errorCode;
         }
     }
 }

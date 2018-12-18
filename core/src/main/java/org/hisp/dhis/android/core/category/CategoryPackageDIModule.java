@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -46,17 +45,6 @@ import retrofit2.Retrofit;
         CategoryOptionComboCategoryOptionEntityDIModule.class
 })
 public final class CategoryPackageDIModule {
-
-    @Provides
-    @Reusable
-    CategoryModule module(DatabaseAdapter databaseAdapter) {
-        return new CategoryModule(
-                CategoryCollectionRepository.create(databaseAdapter),
-                CategoryOptionCollectionRepository.create(databaseAdapter),
-                CategoryOptionComboCollectionRepository.create(databaseAdapter),
-                CategoryComboCollectionRepository.create(databaseAdapter)
-        );
-    }
 
     @Provides
     @Reusable

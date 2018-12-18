@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,5 +49,11 @@ public final class CategoryOptionComboEntityDIModule {
     @Reusable
     public SyncHandlerWithTransformer<CategoryOptionCombo> handler(CategoryOptionComboHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> repository(DatabaseAdapter databaseAdapter) {
+        return CategoryOptionComboCollectionRepository.create(databaseAdapter);
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -51,5 +52,11 @@ public final class CategoryEntityDIModule implements IdentifiableStoreProvider<C
     @Reusable
     public SyncHandler<Category> handler(CategoryHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<Category> repository(DatabaseAdapter databaseAdapter) {
+        return CategoryCollectionRepository.create(databaseAdapter);
     }
 }

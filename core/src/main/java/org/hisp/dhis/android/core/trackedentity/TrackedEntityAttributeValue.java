@@ -35,9 +35,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
@@ -55,10 +57,12 @@ public abstract class TrackedEntityAttributeValue implements Model {
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable

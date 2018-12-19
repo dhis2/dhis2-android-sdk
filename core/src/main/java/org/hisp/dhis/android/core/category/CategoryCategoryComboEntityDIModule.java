@@ -25,29 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+package org.hisp.dhis.android.core.category;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class ProgramInternalModule implements Downloader<List<Program>> {
+@Module
+public final class CategoryCategoryComboEntityDIModule {
 
-    private final ProgramParentCall programParentCall;
-
-    @Inject
-    ProgramInternalModule(ProgramParentCall programParentCall) {
-        this.programParentCall = programParentCall;
-    }
-
-    @Override
-    public Callable<List<Program>> download() {
-        return programParentCall;
+    @Provides
+    @Reusable
+    OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel>
+    categoryCategoryOptionLinkHandler(DatabaseAdapter databaseAdapter) {
+        return new OrderedLinkModelHandlerImpl<>(CategoryCategoryComboLinkStore.create(databaseAdapter)
+        );
     }
 }

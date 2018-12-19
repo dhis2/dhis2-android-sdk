@@ -25,29 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+package org.hisp.dhis.android.core.category;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class ProgramInternalModule implements Downloader<List<Program>> {
-
-    private final ProgramParentCall programParentCall;
-
-    @Inject
-    ProgramInternalModule(ProgramParentCall programParentCall) {
-        this.programParentCall = programParentCall;
-    }
+@Module
+public final class CategoryComboEntityDIModule implements IdentifiableStoreProvider<CategoryCombo> {
 
     @Override
-    public Callable<List<Program>> download() {
-        return programParentCall;
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<CategoryCombo> store(DatabaseAdapter databaseAdapter) {
+        return CategoryComboStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public SyncHandler<CategoryCombo> handler(CategoryComboHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<CategoryCombo, CategoryOptionCombo> orphanCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(CategoryOptionComboModel.TABLE,
+                CategoryOptionComboModel.Columns.CATEGORY_COMBO, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repository(DatabaseAdapter databaseAdapter) {
+        return CategoryComboCollectionRepository.create(databaseAdapter);
     }
 }

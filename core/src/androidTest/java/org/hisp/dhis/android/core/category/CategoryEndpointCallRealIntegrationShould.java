@@ -21,21 +21,19 @@ import static junit.framework.Assert.assertFalse;
 public class CategoryEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
-    private APICallExecutor apiCallExecutor;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-        apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
     }
 
     //@Test
     public void call_categories_endpoint() throws Exception {
         d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
-        Call<List<Category>> categoryEndpointCall = new CategoryEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
+        Call<List<Category>> categoryEndpointCall = getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(
                 new HashSet<>(Lists.newArrayList("cX5k9anHEHd")));
         List<Category> categories = categoryEndpointCall.call();
 

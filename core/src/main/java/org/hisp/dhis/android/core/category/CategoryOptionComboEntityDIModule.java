@@ -25,29 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+package org.hisp.dhis.android.core.category;
 
-import java.util.List;
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class ProgramInternalModule implements Downloader<List<Program>> {
+@Module
+public final class CategoryOptionComboEntityDIModule {
 
-    private final ProgramParentCall programParentCall;
-
-    @Inject
-    ProgramInternalModule(ProgramParentCall programParentCall) {
-        this.programParentCall = programParentCall;
+    @Provides
+    @Reusable
+    public CategoryOptionComboStore store(DatabaseAdapter databaseAdapter) {
+        return CategoryOptionComboStoreImpl.create(databaseAdapter);
     }
 
-    @Override
-    public Callable<List<Program>> download() {
-        return programParentCall;
+    @Provides
+    @Reusable
+    public SyncHandlerWithTransformer<CategoryOptionCombo> handler(CategoryOptionComboHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> repository(DatabaseAdapter databaseAdapter) {
+        return CategoryOptionComboCollectionRepository.create(databaseAdapter);
     }
 }

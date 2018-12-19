@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.modules;
 
-import org.hisp.dhis.android.core.calls.Call;
+import java.util.concurrent.Callable;
 
 public interface Downloader<O> {
-   Call<O> download();
+   Callable<O> download();
 }

@@ -35,14 +35,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.DaggerD2DIComponent;
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
@@ -98,12 +94,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
-                .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
-                .build();
-
-        userCall = d2DIComponent.internalModules().user.downloadUser();
+        userCall = getD2DIComponent(d2).internalModules().user.downloadUser();
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);

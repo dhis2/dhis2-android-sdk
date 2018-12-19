@@ -28,14 +28,9 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
@@ -61,6 +56,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
@@ -96,12 +92,6 @@ public class MetadataCallShould extends BaseCallShould {
     private Authority authority;
 
     @Mock
-    private Category category;
-
-    @Mock
-    private CategoryCombo categoryCombo;
-
-    @Mock
     private Program program;
 
     @Mock
@@ -120,10 +110,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<List<Authority>> authorityEndpointCall;
 
     @Mock
-    private Call<List<Category>> categoryEndpointCall;
-
-    @Mock
-    private Call<List<CategoryCombo>> categoryComboEndpointCall;
+    private Callable<Unit> categoryDownloadCall;
 
     @Mock
     private Call<List<Program>> programParentCall;
@@ -147,13 +134,7 @@ public class MetadataCallShould extends BaseCallShould {
     private UserDownloadModule userDownloadModule;
 
     @Mock
-    private UidsCallFactory<Category> categoryCallFactory;
-
-    @Mock
-    private UidsCallFactory<CategoryCombo> categoryComboCallFactory;
-
-    @Mock
-    private CategoryComboUidsSeeker categoryComboUidsSeeker;
+    private Downloader<Unit> categoryDownloader;
 
     @Mock
     private Downloader<List<Program>> programParentCallFactory;
@@ -192,8 +173,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(userDownloadModule.downloadUser()).thenReturn(userCall);
         when(userDownloadModule.downloadAuthority()).thenReturn(authorityEndpointCall);
         when(programParentCallFactory.download()).thenReturn(programParentCall);
-        when(categoryCallFactory.create(anySetOf(String.class))).thenReturn(categoryEndpointCall);
-        when(categoryComboCallFactory.create(anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
+        when(categoryDownloader.download()).thenReturn(categoryDownloadCall);
         when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),
                 anySetOf(String.class))).thenReturn(organisationUnitEndpointCall);
         when(searchOrganisationUnitCallFactory.create(any(GenericCallData.class), same(user))).thenReturn(
@@ -205,14 +185,11 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
         when(authorityEndpointCall.call()).thenReturn(Lists.newArrayList(authority));
-        when(categoryEndpointCall.call()).thenReturn(Lists.newArrayList(category));
-        when(categoryComboEndpointCall.call()).thenReturn(Lists.newArrayList(categoryCombo));
+        when(categoryDownloadCall.call()).thenReturn(new Unit());
         when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
         when(organisationUnitEndpointCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(searchOrganisationUnitCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(dataSetParentCall.call()).thenReturn(Lists.newArrayList(dataSet));
-        when(categoryComboUidsSeeker.seekUids()).thenReturn(
-                Sets.newHashSet(Lists.newArrayList("category_combo_uid")));
 
         // Metadata call
         metadataCall = new MetadataCall(
@@ -220,9 +197,7 @@ public class MetadataCallShould extends BaseCallShould {
                 systemInfoCallDownloader,
                 systemSettingDownloader,
                 userDownloadModule,
-                categoryCallFactory,
-                categoryComboCallFactory,
-                categoryComboUidsSeeker,
+                categoryDownloader,
                 programParentCallFactory,
                 organisationUnitCallFactory,
                 searchOrganisationUnitCallFactory,
@@ -265,14 +240,8 @@ public class MetadataCallShould extends BaseCallShould {
     }
 
     @Test(expected = D2Error.class)
-    public void fail_when_category_call_fail() throws Exception {
-        when(categoryEndpointCall.call()).thenThrow(d2Error);
-        metadataCall.call();
-    }
-
-    @Test(expected = D2Error.class)
-    public void fail_when_category_combo_call_fail() throws Exception {
-        when(categoryComboEndpointCall.call()).thenThrow(d2Error);
+    public void fail_when_category_download_call_fail() throws Exception {
+        when(categoryDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

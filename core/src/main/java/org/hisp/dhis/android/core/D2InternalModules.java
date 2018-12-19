@@ -48,7 +48,7 @@ public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
     public final SystemSettingInternalModule systemSetting;
     public final RelationshipInternalModule relationship;
-    final CategoryInternalModule category;
+    public final CategoryInternalModule category;
     public final DataSetInternalModule dataSet;
     final DataElementInternalModule dataElement;
     final DataValueInternalModule dataValue;

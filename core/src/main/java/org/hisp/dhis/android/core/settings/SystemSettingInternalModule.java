@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -46,7 +47,7 @@ public final class SystemSettingInternalModule implements Downloader<SystemSetti
     }
 
     @Override
-    public Call<SystemSetting> download() {
+    public Callable<SystemSetting> download() {
         return systemSettingCallProvider.get();
     }
 }

@@ -30,16 +30,7 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboEndpointCallFactory;
-import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
-import org.hisp.dhis.android.core.category.CategoryEndpointCallFactory;
-import org.hisp.dhis.android.core.category.CategoryParentUidsHelper;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -67,9 +58,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final Downloader<SystemInfo> systemInfoDownloader;
     private final Downloader<SystemSetting> systemSettingDownloader;
     private final UserDownloadModule userDownloadModule;
-    private final UidsCallFactory<Category> categoryCallFactory;
-    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
-    private final CategoryComboUidsSeeker categoryComboUidsSeeker;
+    private final Downloader<Unit> categoryDownloader;
     private final Downloader<List<Program>> programDownloader;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
@@ -80,9 +69,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull Downloader<SystemInfo> systemInfoDownloader,
                         @NonNull Downloader<SystemSetting> systemSettingDownloader,
                         @NonNull UserDownloadModule userDownloadModule,
-                        @NonNull UidsCallFactory<Category> categoryCallFactory,
-                        @NonNull UidsCallFactory<CategoryCombo> categoryComboCallFactory,
-                        @NonNull CategoryComboUidsSeeker categoryComboUidsSeeker,
+                        @NonNull Downloader<Unit> categoryDownloader,
                         @NonNull Downloader<List<Program>> programDownloader,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory,
@@ -92,9 +79,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
         this.userDownloadModule = userDownloadModule;
-        this.categoryCallFactory = categoryCallFactory;
-        this.categoryComboCallFactory = categoryComboCallFactory;
-        this.categoryComboUidsSeeker = categoryComboUidsSeeker;
+        this.categoryDownloader = categoryDownloader;
         this.programDownloader = programDownloader;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
@@ -123,10 +108,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 List<DataSet> dataSets = dataSetDownloader.download().call();
 
-                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(
-                        categoryComboUidsSeeker.seekUids()).call();
-
-                categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
+                categoryDownloader.download().call();
 
                 organisationUnitCallFactory.create(
                         genericCallData, user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
@@ -142,16 +124,13 @@ public class MetadataCall extends SyncCall<Unit> {
 
     public static MetadataCall create(GenericCallData genericCallData,
                                       D2InternalModules internalModules) {
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
 
         return new MetadataCall(
                 genericCallData,
                 internalModules.systemInfo,
                 internalModules.systemSetting,
                 internalModules.user,
-                new CategoryEndpointCallFactory(genericCallData, apiCallExecutor),
-                new CategoryComboEndpointCallFactory(genericCallData, apiCallExecutor),
-                new CategoryComboUidsSeeker(genericCallData.databaseAdapter()),
+                internalModules.category,
                 internalModules.program,
                 OrganisationUnitCall.FACTORY,
                 SearchOrganisationUnitCall.FACTORY,

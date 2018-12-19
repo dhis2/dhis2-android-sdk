@@ -28,21 +28,24 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
-    private TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
-                                     SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
+    @Inject
+    TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
+                             SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(trackedEntityTypeStore);
         this.styleHandler = styleHandler;
     }
@@ -51,11 +54,5 @@ public final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<
     protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
         styleHandler.handle(trackedEntityType.style(), new ObjectStyleModelBuilder(trackedEntityType.uid(),
                 TrackedEntityTypeTableInfo.TABLE_INFO.name()));
-    }
-
-    public static SyncHandler<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityTypeHandler(
-                TrackedEntityTypeStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
     }
 }

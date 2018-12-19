@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -52,7 +51,6 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
 import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.User;
@@ -72,7 +70,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final UidsCallFactory<Category> categoryCallFactory;
     private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
     private final CategoryComboUidsSeeker categoryComboUidsSeeker;
-    private final GenericCallFactory<List<Program>> programParentCallFactory;
+    private final Downloader<List<Program>> programDownloader;
     private final OrganisationUnitCall.Factory organisationUnitCallFactory;
     private final SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
     private final Downloader<List<DataSet>> dataSetDownloader;
@@ -85,7 +83,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull UidsCallFactory<Category> categoryCallFactory,
                         @NonNull UidsCallFactory<CategoryCombo> categoryComboCallFactory,
                         @NonNull CategoryComboUidsSeeker categoryComboUidsSeeker,
-                        @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
+                        @NonNull Downloader<List<Program>> programDownloader,
                         @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
                         @NonNull SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory,
                         @NonNull Downloader<List<DataSet>> dataSetDownloader,
@@ -97,7 +95,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
         this.categoryComboUidsSeeker = categoryComboUidsSeeker;
-        this.programParentCallFactory = programParentCallFactory;
+        this.programDownloader = programDownloader;
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
         this.dataSetDownloader = dataSetDownloader;
@@ -121,7 +119,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 userDownloadModule.downloadAuthority().call();
 
-                List<Program> programs = programParentCallFactory.create(genericCallData).call();
+                List<Program> programs = programDownloader.download().call();
 
                 List<DataSet> dataSets = dataSetDownloader.download().call();
 
@@ -150,11 +148,11 @@ public class MetadataCall extends SyncCall<Unit> {
                 genericCallData,
                 internalModules.systemInfo,
                 internalModules.systemSetting,
-                internalModules.userModule,
+                internalModules.user,
                 new CategoryEndpointCallFactory(genericCallData, apiCallExecutor),
                 new CategoryComboEndpointCallFactory(genericCallData, apiCallExecutor),
                 new CategoryComboUidsSeeker(genericCallData.databaseAdapter()),
-                ProgramParentCall.FACTORY,
+                internalModules.program,
                 OrganisationUnitCall.FACTORY,
                 SearchOrganisationUnitCall.FACTORY,
                 internalModules.dataSet,

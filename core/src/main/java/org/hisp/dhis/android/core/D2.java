@@ -127,7 +127,7 @@ public final class D2 {
 
     @NonNull
     public UserModule userModule() {
-        return internalModules.userModule.publicModule;
+        return internalModules.user.publicModule;
     }
 
     @NonNull
@@ -210,23 +210,23 @@ public final class D2 {
     }
 
     public RelationshipModule relationshipModule() {
-        return this.internalModules.relationshipModule.publicModule;
+        return this.internalModules.relationship.publicModule;
     }
 
     public CategoryModule categoryModule() {
-        return this.internalModules.categoryModule.publicModule;
+        return this.internalModules.category.publicModule;
     }
 
     public DataElementModule dataElementModule() {
-        return this.internalModules.dataElementModule.publicModule;
+        return this.internalModules.dataElement.publicModule;
     }
 
     public DataValueModule dataValueModule() {
-        return this.internalModules.dataValueModule.publicModule;
+        return this.internalModules.dataValue.publicModule;
     }
 
     public MaintenanceModule maintenanceModule() {
-        return this.internalModules.maintenanceModule.publicModule;
+        return this.internalModules.maintenance.publicModule;
     }
 
     public WipeModule wipeModule() {

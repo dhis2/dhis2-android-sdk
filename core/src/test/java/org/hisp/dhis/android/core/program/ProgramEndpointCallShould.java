@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
@@ -62,6 +63,9 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Mock
     private ProgramService programService;
 
+    @Mock
+    private SyncHandler<Program> programHandler;
+
     @Captor
     private ArgumentCaptor<Fields<Program>> fieldsCaptor;
 
@@ -83,7 +87,8 @@ public class ProgramEndpointCallShould extends BaseCallShould {
         super.setUp();
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        endpointCall = new ProgramEndpointCallFactory(genericCallData, apiCallExecutor, programService).create();
+        endpointCall = new ProgramEndpointCallFactory(genericCallData, apiCallExecutor,
+                programService, programHandler).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(any(Fields.class), anyString(), anyBoolean())

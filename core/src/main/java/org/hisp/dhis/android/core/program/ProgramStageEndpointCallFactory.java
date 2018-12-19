@@ -36,22 +36,36 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<ProgramStage> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 
-    public ProgramStageEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final ProgramStageService service;
+    private final GenericHandler<ProgramStage, ProgramStageModel> handler;
+
+    @Inject
+    ProgramStageEndpointCallFactory(GenericCallData data,
+                                    APICallExecutor apiCallExecutor,
+                                    ProgramStageService service,
+                                    GenericHandler<ProgramStage, ProgramStageModel> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<ProgramStage> fetcher(Set<String> uids) {
-        final ProgramStageService service = data.retrofit().create(ProgramStageService.class);
 
         return new UidsNoResourceCallFetcher<ProgramStage>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
@@ -71,7 +85,7 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
     protected CallProcessor<ProgramStage> processor() {
         return new TransactionalNoResourceCallProcessor<>(
                 data.databaseAdapter(),
-                ProgramStageHandler.create(data.databaseAdapter(), data.versionManager()),
+                handler,
                 new ProgramStageModelBuilder()
         );
     }

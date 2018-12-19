@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
 
-public class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
+class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
 
     private final ProgramRuleVariableHandler programRuleVariableHandler;
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;

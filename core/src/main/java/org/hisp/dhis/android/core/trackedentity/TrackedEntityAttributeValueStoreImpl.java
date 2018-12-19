@@ -86,16 +86,16 @@ public class TrackedEntityAttributeValueStoreImpl
     }
 
     @Override
-    public boolean deleteByInstanceAndAttributes(@NonNull String trackedEntityInstanceUid,
-                                             @NonNull List<String> trackedEntityAttributeUids) {
+    public void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
+                                                   @NonNull List<String> trackedEntityAttributeUids) {
         String deleteWhereQuery = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                         trackedEntityInstanceUid)
-                .appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                .appendNotInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                         trackedEntityAttributeUids)
                 .build();
 
-        return deleteWhereClause(deleteWhereQuery);
+        deleteWhereClause(deleteWhereQuery);
     }
 
     private List<TrackedEntityAttributeValue> trackedEntityAttributeValueListFromQuery(String query) {

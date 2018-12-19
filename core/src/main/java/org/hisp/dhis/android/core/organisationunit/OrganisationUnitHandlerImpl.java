@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
+class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
         implements OrganisationUnitHandler {
     private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
     private final LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;

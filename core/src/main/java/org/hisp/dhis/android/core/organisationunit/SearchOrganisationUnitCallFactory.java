@@ -62,7 +62,7 @@ class SearchOrganisationUnitCallFactory {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    public Callable<List<OrganisationUnit>> create(final User user) {
+    Callable<List<OrganisationUnit>> create(final User user) {
         return new Callable<List<OrganisationUnit>>() {
             @Override
             public List<OrganisationUnit> call() throws Exception {

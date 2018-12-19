@@ -42,7 +42,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
+class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
     implements SearchOrganisationUnitHandler {
 
     private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;

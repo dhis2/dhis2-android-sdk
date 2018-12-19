@@ -27,40 +27,45 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.user.User;
+import android.support.annotation.NonNull;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class OrganisationUnitInternalModule implements OrganisationUnitDownloadModule {
+public class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
+    implements SearchOrganisationUnitHandler {
 
-    private final OrganisationUnitParentCallFactory parentCallFactory;
-    private final SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitCallFactory;
+    private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private User user;
 
     @Inject
-    OrganisationUnitInternalModule(OrganisationUnitParentCallFactory parentCallFactory,
-                                   SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitCallFactory) {
-        this.parentCallFactory = parentCallFactory;
-        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
+    SearchOrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
+                                      @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
+                                          userOrganisationUnitLinkStore) {
+        super(organisationUnitStore);
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
     }
 
     @Override
-    public Callable<Unit> download(User user, Collection<Program> programs, Collection<DataSet> dataSets) {
-        return parentCallFactory.call(user, programs, dataSets);
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
-    public Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user) {
-        return searchOrganisationUnitCallFactory.create(uids, user);
+    protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
+        UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
+                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, user);
+
+        userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
     }
 }

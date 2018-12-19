@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -35,11 +37,24 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class OrganisationUnitEntityDIModule {
+public final class OrganisationUnitEntityDIModule implements IdentifiableStoreProvider<OrganisationUnit> {
+
+    @Override
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<OrganisationUnit> store(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitStore.create(databaseAdapter);
+    }
 
     @Provides
     @Reusable
     public OrganisationUnitHandler handler(DatabaseAdapter databaseAdapter) {
         return OrganisationUnitHandlerImpl.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public SearchOrganisationUnitHandler searchHandler(SearchOrganisationUnitHandlerImpl impl) {
+        return impl;
     }
 }

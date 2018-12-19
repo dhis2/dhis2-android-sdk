@@ -64,7 +64,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         List<Event> events = eventEndpointCall.call();
 
-        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
+        EventPersistenceCall.create(databaseAdapter(), getD2DIComponent(d2).internalModules(), events).call();
 
         verifyDownloadedEvents("event/events_1.json");
     }
@@ -81,7 +81,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         List<Event> events = eventEndpointCall.call();
 
-        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
+        EventPersistenceCall.create(databaseAdapter(), getD2DIComponent(d2).internalModules(), events).call();
 
         List<Event> downloadedEvents = eventStore.selectAll();
 

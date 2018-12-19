@@ -34,7 +34,8 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        OrganisationUnitEntityDIModule.class
+        OrganisationUnitEntityDIModule.class,
+        UserOrganisationUnitEntityDIModule.class
 })
 public final class OrganisationUnitPackageDIModule {
 

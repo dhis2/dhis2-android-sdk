@@ -32,7 +32,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.ArrayList;
@@ -50,16 +49,16 @@ import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.f
 @Reusable
 class SearchOrganisationUnitCallFactory {
 
-    private final DatabaseAdapter databaseAdapter;
-    private final OrganisationUnitService organisationUnitService;
+    private final SearchOrganisationUnitHandler handler;
+    private final OrganisationUnitService service;
     private final APICallExecutor apiCallExecutor;
 
     @Inject
-    SearchOrganisationUnitCallFactory(@NonNull DatabaseAdapter databaseAdapter,
-                                              @NonNull OrganisationUnitService organisationUnitService,
-                                              @NonNull APICallExecutor apiCallExecutor) {
-        this.databaseAdapter = databaseAdapter;
-        this.organisationUnitService = organisationUnitService;
+    SearchOrganisationUnitCallFactory(@NonNull SearchOrganisationUnitHandler handler,
+                                      @NonNull OrganisationUnitService service,
+                                      @NonNull APICallExecutor apiCallExecutor) {
+        this.handler = handler;
+        this.service = service;
         this.apiCallExecutor = apiCallExecutor;
     }
 
@@ -74,8 +73,8 @@ class SearchOrganisationUnitCallFactory {
                             apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
                 }
 
-                SearchOrganisationUnitHandler.create(databaseAdapter, user).handleMany(searchOrganisationUnits,
-                        new OrganisationUnitDisplayPathTransformer());
+                handler.setUser(user);
+                handler.handleMany(searchOrganisationUnits, new OrganisationUnitDisplayPathTransformer());
 
                 return new ArrayList<>(searchOrganisationUnits);
             }
@@ -83,7 +82,7 @@ class SearchOrganisationUnitCallFactory {
     }
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(@NonNull String uid) {
-        return organisationUnitService.getOrganisationUnitWithDescendants(
+        return service.getOrganisationUnitWithDescendants(
                 uid, OrganisationUnitFields.allFields, true, false);
     }
 }

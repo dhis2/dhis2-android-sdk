@@ -42,6 +42,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private final ProgramStoreInterface programStore;
+    private final D2InternalModules d2InternalModules;
 
     private EventWithLimitCall(
             @NonNull DatabaseAdapter databaseAdapter,
@@ -50,6 +51,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
             @NonNull ResourceHandler resourceHandler,
             @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
             @NonNull ProgramStoreInterface programStore,
+            @NonNull D2InternalModules d2InternalModules,
             int eventLimit,
             boolean limitByOrgUnit) {
         this.databaseAdapter = databaseAdapter;
@@ -60,6 +62,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
         this.programStore = programStore;
         this.eventLimit = eventLimit;
         this.limitByOrgUnit = limitByOrgUnit;
+        this.d2InternalModules = d2InternalModules;
     }
 
     @Override
@@ -147,7 +150,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
                         eventsToPersist = pageEvents;
                     }
 
-                    executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, retrofit, eventsToPersist));
+                    executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, d2InternalModules, eventsToPersist));
                     eventsCount = eventsCount + eventsToPersist.size();
 
                     if (pageEvents.size() < paging.pageSize()) {
@@ -202,8 +205,8 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
                 resourceHandler,
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 ProgramStore.create(databaseAdapter),
+                internalModules,
                 eventLimit,
-                limitByOrgUnit
-        );
+                limitByOrgUnit);
     }
 }

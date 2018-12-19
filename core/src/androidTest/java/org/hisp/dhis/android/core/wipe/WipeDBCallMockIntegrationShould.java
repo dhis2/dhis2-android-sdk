@@ -88,7 +88,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
 
         List<Event> events = eventCall.call();
 
-        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
+        EventPersistenceCall.create(databaseAdapter(), getD2DIComponent(d2).internalModules(), events).call();
 
         assertThat(events.isEmpty(), is(false));
     }

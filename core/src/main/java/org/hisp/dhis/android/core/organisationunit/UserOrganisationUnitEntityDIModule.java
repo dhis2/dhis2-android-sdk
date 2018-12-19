@@ -25,42 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
-
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class OrganisationUnitInternalModule implements OrganisationUnitDownloadModule {
+@Module
+public final class UserOrganisationUnitEntityDIModule {
 
-    private final OrganisationUnitParentCallFactory parentCallFactory;
-    private final SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitCallFactory;
-
-    @Inject
-    OrganisationUnitInternalModule(OrganisationUnitParentCallFactory parentCallFactory,
-                                   SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitCallFactory) {
-        this.parentCallFactory = parentCallFactory;
-        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
-    }
-
-    @Override
-    public Callable<Unit> download(User user, Collection<Program> programs, Collection<DataSet> dataSets) {
-        return parentCallFactory.call(user, programs, dataSets);
-    }
-
-    @Override
-    public Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user) {
-        return searchOrganisationUnitCallFactory.create(uids, user);
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<UserOrganisationUnitLinkModel> store(DatabaseAdapter databaseAdapter) {
+        return UserOrganisationUnitLinkStore.create(databaseAdapter);
     }
 }

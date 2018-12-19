@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
-import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -52,9 +51,9 @@ public class TrackedEntityAttributeValueStoreImpl
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue> implements TrackedEntityAttributeValueStore {
 
     private TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter,
-                                SQLStatementWrapper statementWrapper,
                                 SQLStatementBuilder builder) {
-        super(databaseAdapter, statementWrapper.insert, statementWrapper.update, builder,
+        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()),
+                databaseAdapter.compileStatement(builder.updateWhere()), builder,
                 BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 
@@ -149,11 +148,9 @@ public class TrackedEntityAttributeValueStoreImpl
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.columns());
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
 
         return new TrackedEntityAttributeValueStoreImpl(
                 databaseAdapter,
-                statementWrapper,
                 statementBuilder
         );
     }

@@ -150,7 +150,8 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
                         eventsToPersist = pageEvents;
                     }
 
-                    executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, d2InternalModules, eventsToPersist));
+                    executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, d2InternalModules,
+                            eventsToPersist));
                     eventsCount = eventsCount + eventsToPersist.size();
 
                     if (pageEvents.size() < paging.pageSize()) {

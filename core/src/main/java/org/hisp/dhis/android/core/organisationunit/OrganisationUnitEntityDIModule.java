@@ -25,13 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.user.User;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Set;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-interface OrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
-    void setData(Set<String> programUids, Set<String> dataSetUids, User user);
+@Module
+public final class OrganisationUnitEntityDIModule {
+
+    @Provides
+    @Reusable
+    public OrganisationUnitHandler handler(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitHandlerImpl.create(databaseAdapter);
+    }
 }

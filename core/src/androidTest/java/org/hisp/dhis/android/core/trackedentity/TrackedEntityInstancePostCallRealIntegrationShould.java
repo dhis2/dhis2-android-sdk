@@ -91,7 +91,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
         eventStore = EventStoreImpl.create(databaseAdapter());
-        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
+        trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter());
         trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
         codeGenerator = new CodeGeneratorImpl();
@@ -442,10 +442,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        trackedEntityAttributeValueStore.insert(
-                "new2", refDate, refDate, trackedEntityAttributeUid,
-                trackedEntityInstanceUid
-        );
+        TrackedEntityAttributeValue trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
+                .value("new2").created(refDate).lastUpdated(refDate).trackedEntityAttribute(trackedEntityAttributeUid)
+                .trackedEntityInstance(trackedEntityInstanceUid).build();
+
+        trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue);
     }
 
     private void assertPushAndDownloadTrackedEntityInstances(

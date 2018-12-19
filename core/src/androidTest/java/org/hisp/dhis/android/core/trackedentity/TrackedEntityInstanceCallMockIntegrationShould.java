@@ -178,10 +178,14 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         TrackedEntityInstance downloadedTei;
 
         TrackedEntityAttributeValueStore teiAttributeValuesStore =
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
+                TrackedEntityAttributeValueStoreImpl.create(databaseAdapter());
 
-        Map<String, List<TrackedEntityAttributeValue>> attValues =
-                teiAttributeValuesStore.queryAll();
+        List<TrackedEntityAttributeValue> attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid);
+        List<TrackedEntityAttributeValue> attValuesWithoutIdAndTEI = new ArrayList<>();
+        for (TrackedEntityAttributeValue trackedEntityAttributeValue : attValues) {
+            attValuesWithoutIdAndTEI.add(
+                    trackedEntityAttributeValue.toBuilder().id(null).trackedEntityInstance(null).build());
+        }
 
         TrackedEntityInstanceStoreImpl teiStore =
                 new TrackedEntityInstanceStoreImpl(databaseAdapter());
@@ -217,16 +221,15 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             downloadedValues.get(dataValue.event()).add(dataValue);
         }
 
-        return createTei(downloadedTei, attValues, downloadedEnrollmentsWithoutIdAndDeleteFalse,
+        return createTei(downloadedTei, attValuesWithoutIdAndTEI, downloadedEnrollmentsWithoutIdAndDeleteFalse,
                 downloadedEventsWithoutValuesAndDeleteFalse, downloadedValues);
     }
 
     private TrackedEntityInstance createTei(TrackedEntityInstance downloadedTei,
-            Map<String, List<TrackedEntityAttributeValue>> attValues,
-            List<Enrollment> downloadedEnrollmentsWithoutEvents,
-            List<Event> downloadedEventsWithoutValues,
-            Map<String, List<TrackedEntityDataValue>> downloadedValues) {
-
+                                            List<TrackedEntityAttributeValue> attValuesWithoutIdAndTEI,
+                                            List<Enrollment> downloadedEnrollmentsWithoutEvents,
+                                            List<Event> downloadedEventsWithoutValues,
+                                            Map<String, List<TrackedEntityDataValue>> downloadedValues) {
 
         Map<String, List<Event>> downloadedEvents = new HashMap<>();
 
@@ -268,7 +271,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                 downloadedTei.uid(), downloadedTei.created(), downloadedTei.lastUpdated(),
                 downloadedTei.createdAtClient(), downloadedTei.lastUpdatedAtClient(),
                 downloadedTei.organisationUnit(), downloadedTei.trackedEntityType(), downloadedTei.coordinates(),
-                downloadedTei.featureType(), downloadedTei.deleted(), attValues.get(downloadedTei.uid()),
+                downloadedTei.featureType(), downloadedTei.deleted(), attValuesWithoutIdAndTEI,
                 relationships, downloadedEnrollments);
 
         return downloadedTei;

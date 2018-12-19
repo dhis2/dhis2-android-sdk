@@ -51,9 +51,9 @@ class TrackedEntityInstanceUtils {
                 attributes, relationships, enrollments);
     }
 
-    private static TrackedEntityAttributeValue createTrackedEntityAttributeValue(String attributeUid,
-                                                                          String value) {
-        return TrackedEntityAttributeValue.create(attributeUid, value, null, null);
+    private static TrackedEntityAttributeValue createTrackedEntityAttributeValue(String attributeUid, String value) {
+
+        return TrackedEntityAttributeValue.builder().value(value).trackedEntityAttribute(attributeUid).build();
     }
 
     static TrackedEntityInstance createValidTrackedEntityInstance() {

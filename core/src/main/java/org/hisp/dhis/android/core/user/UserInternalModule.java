@@ -28,39 +28,34 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.calls.Call;
+import android.support.annotation.VisibleForTesting;
 
-import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
 public final class UserInternalModule implements UserDownloadModule {
 
     public final UserModule publicModule;
+    private final UserParentCall userParentCall;
 
-    private final Provider<UserCall> userCallProvider;
-    private final AuthorityEndpointCallFactory authorityEndpointCallFactory;
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    final UserCall userCall;
 
     @Inject
-    UserInternalModule(UserModule publicModule,
-                       Provider<UserCall> userCallProvider,
-                       AuthorityEndpointCallFactory authorityEndpointCallFactory) {
+    UserInternalModule(UserModule publicModule, UserParentCall userParentCall, UserCall userCall) {
         this.publicModule = publicModule;
-        this.userCallProvider = userCallProvider;
-        this.authorityEndpointCallFactory = authorityEndpointCallFactory;
+        this.userParentCall = userParentCall;
+        this.userCall = userCall;
     }
 
     @Override
-    public Call<User> downloadUser() {
-        return userCallProvider.get();
-    }
-
-    @Override
-    public Call<List<Authority>> downloadAuthority() {
-        return authorityEndpointCallFactory.create();
+    public Callable<User> downloadUserAndAuthority() {
+        return userParentCall;
     }
 }

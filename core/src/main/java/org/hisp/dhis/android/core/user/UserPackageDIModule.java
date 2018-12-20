@@ -44,8 +44,14 @@ public final class UserPackageDIModule {
 
     @Provides
     @Reusable
-    UserService service(Retrofit retrofit) {
+    UserService userService(Retrofit retrofit) {
         return retrofit.create(UserService.class);
+    }
+
+    @Provides
+    @Reusable
+    AuthorityService authorityService(Retrofit retrofit) {
+        return retrofit.create(AuthorityService.class);
     }
 
     @Provides

@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -40,7 +39,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import java.util.concurrent.Callable;
+
 import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -66,7 +66,7 @@ public class UserCallShould extends BaseCallShould {
     @Mock
     private User user;
 
-    private Call<User> userSyncCall;
+    private Callable<User> userSyncCall;
 
     @Override
     @Before
@@ -110,44 +110,6 @@ public class UserCallShould extends BaseCallShould {
         verify(transaction, never()).setSuccessful();
         verify(transaction, never()).end();
         verify(userHandler, never()).handle(eq(user));
-    }
-
-    @Test
-    public void mark_as_executed_on_success() throws Exception {
-        when(apiCallExecutor.executeObjectCall(userCall)).thenReturn(user);
-
-        userSyncCall.call();
-
-        assertThat(userSyncCall.isExecuted()).isEqualTo(true);
-
-        try {
-            userSyncCall.call();
-
-            fail("Two calls to the userSyncCall should throw exception");
-        } catch (Exception exception) {
-            // ignore exception
-        }
-    }
-
-    @Test
-    public void mark_as_executed_on_failure() throws Exception {
-        when(apiCallExecutor.executeObjectCall(userCall)).thenThrow(d2Error);
-
-        try {
-            userSyncCall.call();
-        } catch (D2Error d2Error) {
-            // swallow exception
-        }
-
-        assertThat(userSyncCall.isExecuted()).isEqualTo(true);
-
-        try {
-            userSyncCall.call();
-
-            fail("Two calls to the userSyncCall should throw exception");
-        } catch (Exception exception) {
-            // ignore exception
-        }
     }
 
     @Test

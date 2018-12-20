@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.calls.Call;
-
-import java.util.List;
+import java.util.concurrent.Callable;
 
 public interface UserDownloadModule {
-    Call<User> downloadUser();
-    Call<List<Authority>> downloadAuthority();
+    Callable<User> downloadUserAndAuthority();
 }

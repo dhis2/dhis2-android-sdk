@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModul
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.Authority;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserDownloadModule;
@@ -87,9 +86,6 @@ public class MetadataCallShould extends BaseCallShould {
     private OrganisationUnit organisationUnit;
 
     @Mock
-    private Authority authority;
-
-    @Mock
     private Program program;
 
     @Mock
@@ -105,9 +101,6 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<User> userCall;
 
     @Mock
-    private Call<List<Authority>> authorityEndpointCall;
-
-    @Mock
     private Callable<Unit> categoryDownloadCall;
 
     @Mock
@@ -118,9 +111,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private Callable<Unit> organisationUnitDownloadCall;
-
-    @Mock
-    private Call<List<OrganisationUnit>> searchOrganisationUnitCall;
 
     @Mock
     private Downloader<SystemInfo> systemInfoCallDownloader;
@@ -165,8 +155,7 @@ public class MetadataCallShould extends BaseCallShould {
         // Call factories
         when(systemInfoCallDownloader.download()).thenReturn(systemInfoEndpointCall);
         when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
-        when(userDownloadModule.downloadUser()).thenReturn(userCall);
-        when(userDownloadModule.downloadAuthority()).thenReturn(authorityEndpointCall);
+        when(userDownloadModule.downloadUserAndAuthority()).thenReturn(userCall);
         when(programParentCallFactory.download()).thenReturn(programParentCall);
         when(categoryDownloader.download()).thenReturn(categoryDownloadCall);
         when(organisationUnitDownloadModule.download(same(user), anySetOf(Program.class),
@@ -177,7 +166,6 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
         when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
-        when(authorityEndpointCall.call()).thenReturn(Lists.newArrayList(authority));
         when(categoryDownloadCall.call()).thenReturn(new Unit());
         when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
         when(dataSetParentCall.call()).thenReturn(Lists.newArrayList(dataSet));
@@ -220,12 +208,6 @@ public class MetadataCallShould extends BaseCallShould {
     @Test(expected = D2Error.class)
     public void fail_when_user_call_fail() throws Exception {
         when(userCall.call()).thenThrow(d2Error);
-        metadataCall.call();
-    }
-
-    @Test(expected = D2Error.class)
-    public void fail_when_authority_call_fail() throws Exception {
-        when(authorityEndpointCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

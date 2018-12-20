@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.dataset.DataSetInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalModule;
 import org.hisp.dhis.android.core.program.ProgramInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
@@ -53,6 +54,7 @@ public final class D2InternalModules {
     final DataElementInternalModule dataElement;
     final DataValueInternalModule dataValue;
     public final ProgramInternalModule program;
+    public final OrganisationUnitInternalModule organisationUnit;
     public final UserInternalModule user;
     final MaintenanceInternalModule maintenance;
 
@@ -65,6 +67,7 @@ public final class D2InternalModules {
                              DataElementInternalModule dataElement,
                              DataValueInternalModule dataValue,
                              ProgramInternalModule program,
+                             OrganisationUnitInternalModule organisationUnit,
                              UserInternalModule user,
                              MaintenanceInternalModule maintenance) {
         this.systemInfo = systemInfo;
@@ -75,6 +78,7 @@ public final class D2InternalModules {
         this.dataElement = dataElement;
         this.dataValue = dataValue;
         this.program = program;
+        this.organisationUnit = organisationUnit;
         this.user = user;
         this.maintenance = maintenance;
     }

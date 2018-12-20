@@ -27,11 +27,40 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-interface OrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
-    void setData(Set<String> programUids, Set<String> dataSetUids, User user);
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class OrganisationUnitInternalModule implements OrganisationUnitDownloadModule {
+
+    private final OrganisationUnitParentCallFactory parentCallFactory;
+    private final SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitCallFactory;
+
+    @Inject
+    OrganisationUnitInternalModule(OrganisationUnitParentCallFactory parentCallFactory,
+                                   SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitCallFactory) {
+        this.parentCallFactory = parentCallFactory;
+        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
+    }
+
+    @Override
+    public Callable<Unit> download(User user, Collection<Program> programs, Collection<DataSet> dataSets) {
+        return parentCallFactory.call(user, programs, dataSets);
+    }
+
+    @Override
+    public Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user) {
+        return searchOrganisationUnitCallFactory.create(uids, user);
+    }
 }

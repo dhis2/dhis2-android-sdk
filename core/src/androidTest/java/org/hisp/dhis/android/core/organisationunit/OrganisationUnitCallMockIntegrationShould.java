@@ -37,8 +37,6 @@ import com.google.common.collect.Sets;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -64,6 +62,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -78,7 +77,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     private Dhis2MockServer dhis2MockServer;
 
     //The return of the organisationUnitCall to be tested:
-    private Call<List<OrganisationUnit>> organisationUnitCall;
+    private Callable<List<OrganisationUnit>> organisationUnitCall;
 
     private OrganisationUnit expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic();
     private OrganisationUnit expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP();
@@ -115,13 +114,12 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         insertProgramWithUid(programUid);
         Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid));
 
-        SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler =
-                OrganisationUnitHandler.create(databaseAdapter(), programUids, null,
-                        OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
+        OrganisationUnitHandler organisationUnitHandler =
+                OrganisationUnitHandlerImpl.create(databaseAdapter());
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
-                getGenericCallData(d2), organisationUnitHandler, apiCallExecutor);
+        organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
+                organisationUnitHandler, apiCallExecutor, resourceHandler).create(user, programUids, null);
     }
 
     private void insertProgramWithUid(String uid) {

@@ -30,8 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public class OrganisationUnitGroupModelBuilder
-        extends ModelBuilder<OrganisationUnitGroup, OrganisationUnitGroupModel> {
+class OrganisationUnitGroupModelBuilder extends ModelBuilder<OrganisationUnitGroup, OrganisationUnitGroupModel> {
 
     @Override
     public OrganisationUnitGroupModel buildModel(OrganisationUnitGroup section) {

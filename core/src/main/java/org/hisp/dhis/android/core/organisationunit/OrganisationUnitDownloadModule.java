@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,13 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
-interface OrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
-    void setData(Set<String> programUids, Set<String> dataSetUids, User user);
+public interface OrganisationUnitDownloadModule {
+    Callable<Unit> download(User user, Collection<Program> programs, Collection<DataSet> dataSets);
+    Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user);
 }

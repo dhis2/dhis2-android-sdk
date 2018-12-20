@@ -27,59 +27,45 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import android.support.annotation.NonNull;
+
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 
-import static org.mockito.Mockito.verify;
+import javax.inject.Inject;
 
-@RunWith(JUnit4.class)
-public class SearchOrganisationUnitHandlerShould {
+import dagger.Reusable;
 
-    @Mock
-    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+@Reusable
+class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
+    implements SearchOrganisationUnitHandler {
 
-    @Mock
-    private ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private User user;
 
-    private OrganisationUnit organisationUnit;
-
-    private String organisationUnitUid = "orgUnitUid";
-
-    private SearchOrganisationUnitHandler handler;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        organisationUnit = OrganisationUnit.builder().uid(organisationUnitUid).build();
-
-        handler = new SearchOrganisationUnitHandlerImpl(
-                organisationUnitStore,
-                userOrganisationUnitLinkStore);
+    @Inject
+    SearchOrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
+                                      @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
+                                          userOrganisationUnitLinkStore) {
+        super(organisationUnitStore);
+        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
     }
 
-    @Test
-    public void persist_organisation_unit_user_link() {
-        String userUid = "userUid";
-        UserOrganisationUnitLinkModel linkModel = UserOrganisationUnitLinkModel
-                .builder()
-                .organisationUnit(organisationUnitUid)
-                .user(userUid).root(false)
-                .organisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH.toString())
-                .build();
+    @Override
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-        handler.setUser(User.builder().uid(userUid).build());
-        handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitDisplayPathTransformer());
-        verify(userOrganisationUnitLinkStore).updateOrInsertWhere(linkModel);
+    @Override
+    protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
+        UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
+                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, user);
+
+        userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
     }
 }

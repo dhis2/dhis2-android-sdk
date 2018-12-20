@@ -27,11 +27,45 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.concurrent.Callable;
 
-interface OrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
-    void setData(Set<String> programUids, Set<String> dataSetUids, User user);
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+class OrganisationUnitParentCallFactory {
+
+    private final OrganisationUnitCallFactory organisationUnitCallFactory;
+    private final SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory;
+
+    @Inject
+    OrganisationUnitParentCallFactory(OrganisationUnitCallFactory organisationUnitCallFactory,
+                                      SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory) {
+        this.organisationUnitCallFactory = organisationUnitCallFactory;
+        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
+    }
+
+    public Callable<Unit> call(final User user,
+                               final Collection<Program> programs,
+                               final Collection<DataSet> dataSets) {
+
+        return new Callable<Unit>() {
+            @Override
+            public Unit call() throws Exception {
+                organisationUnitCallFactory.create(
+                        user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
+                searchOrganisationUnitCallFactory.create(user).call();
+
+                return new Unit();
+            }
+        };
+    }
 }

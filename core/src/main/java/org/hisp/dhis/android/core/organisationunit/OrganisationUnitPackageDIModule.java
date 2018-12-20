@@ -25,13 +25,23 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.user.User;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-import java.util.Set;
+@Module(includes = {
+        OrganisationUnitEntityDIModule.class,
+        UserOrganisationUnitEntityDIModule.class
+})
+public final class OrganisationUnitPackageDIModule {
 
-interface OrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
-    void setData(Set<String> programUids, Set<String> dataSetUids, User user);
+    @Provides
+    @Reusable
+    OrganisationUnitService service(Retrofit retrofit) {
+        return retrofit.create(OrganisationUnitService.class);
+    }
 }

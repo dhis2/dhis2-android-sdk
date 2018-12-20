@@ -28,19 +28,28 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.util.Date;
 
-import java.util.List;
-import java.util.Map;
+final class TrackedEntityAttributeValueFields {
 
-public interface TrackedEntityAttributeValueStore extends ObjectWithoutUidStore<TrackedEntityAttributeValue> {
+    static final String ATTRIBUTE = "attribute";
+    static final String VALUE = "value";
+    final static String CREATED = "created";
+    final static String LAST_UPDATED = "lastUpdated";
 
-    Map<String, List<TrackedEntityAttributeValue>> queryTrackedEntityAttributeValueToPost();
+    private static final FieldsHelper<TrackedEntityAttributeValue> fh = new FieldsHelper<>();
 
-    List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
+    static final Fields<TrackedEntityAttributeValue> allFields = Fields.<TrackedEntityAttributeValue>builder()
+            .fields(
+                    fh.<String>field(ATTRIBUTE),
+                    fh.<String>field(VALUE),
+                    fh.<Date>field(CREATED),
+                    fh.<Date>field(LAST_UPDATED)
+            ).build();
 
-    void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
-                                            @NonNull List<String> trackedEntityAttributeUids);
+    private TrackedEntityAttributeValueFields() {
+    }
 }

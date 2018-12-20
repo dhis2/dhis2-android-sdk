@@ -28,19 +28,38 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValueSamples;
+import org.junit.runner.RunWith;
 
-import java.util.List;
-import java.util.Map;
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityAttributeValueStoreIntegrationShould
+        extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityAttributeValue> {
 
-public interface TrackedEntityAttributeValueStore extends ObjectWithoutUidStore<TrackedEntityAttributeValue> {
+    public TrackedEntityAttributeValueStoreIntegrationShould() {
+        super(TrackedEntityAttributeValueStoreImpl.create(DatabaseAdapterFactory.get(false)),
+                TrackedEntityAttributeValueTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
-    Map<String, List<TrackedEntityAttributeValue>> queryTrackedEntityAttributeValueToPost();
+    @Override
+    protected TrackedEntityAttributeValue buildObject() {
+        return TrackedEntityAttributeValueSamples.get();
+    }
 
-    List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
+    @Override
+    protected TrackedEntityAttributeValue buildObjectWithId() {
+        return TrackedEntityAttributeValueSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
 
-    void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
-                                            @NonNull List<String> trackedEntityAttributeUids);
+    @Override
+    protected TrackedEntityAttributeValue buildObjectToUpdate() {
+        return TrackedEntityAttributeValueSamples.get().toBuilder()
+                .value("new_value")
+                .build();
+    }
 }

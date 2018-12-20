@@ -67,12 +67,11 @@ class SearchGridMapper {
                 - NON_ATTRIBUTE_LENGTH);
 
         for (int i = NON_ATTRIBUTE_LENGTH; i < row.size(); i++) {
-            TrackedEntityAttributeValue attribute = TrackedEntityAttributeValue.create(
-                    headers.get(i).name(),
-                    row.get(i),
-                    null,
-                    null);
-            attributeValues.add(attribute);
+            TrackedEntityAttributeValue attributeValue = TrackedEntityAttributeValue.builder()
+                    .trackedEntityAttribute(headers.get(i).name())
+                    .value(row.get(i))
+                    .build();
+            attributeValues.add(attributeValue);
         }
 
         return attributeValues;

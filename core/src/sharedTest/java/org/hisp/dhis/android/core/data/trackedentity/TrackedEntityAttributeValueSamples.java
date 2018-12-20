@@ -26,27 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.trackedentity;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 
-public final class TrackedEntityAttributeValueModelBuilder extends ModelBuilder<TrackedEntityAttributeValue,
-        TrackedEntityAttributeValueModel> {
+import java.text.ParseException;
+import java.util.Date;
 
-    private final TrackedEntityInstance trackedEntityInstance;
+public class TrackedEntityAttributeValueSamples {
 
-    public TrackedEntityAttributeValueModelBuilder(TrackedEntityInstance trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
+    public static TrackedEntityAttributeValue get() {
+        return TrackedEntityAttributeValue.builder()
+                .value("value")
+                .created(getDate("2014-08-20T12:28:56.409"))
+                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+                .trackedEntityAttribute("tracked_entity_attribute")
+                .trackedEntityInstance("tracked_entity_instance")
+                .build();
     }
 
-    @Override
-    public TrackedEntityAttributeValueModel buildModel(TrackedEntityAttributeValue attributeValue) {
-        return TrackedEntityAttributeValueModel.builder()
-                .value(attributeValue.value())
-                .created(attributeValue.created())
-                .lastUpdated(attributeValue.lastUpdated())
-                .trackedEntityAttribute(attributeValue.trackedEntityAttribute())
-                .trackedEntityInstance(trackedEntityInstance.uid())
-                .build();
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

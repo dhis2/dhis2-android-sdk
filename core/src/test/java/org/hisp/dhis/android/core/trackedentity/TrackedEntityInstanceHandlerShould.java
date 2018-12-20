@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -22,7 +24,6 @@ import java.util.Collections;
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -42,7 +43,7 @@ public class TrackedEntityInstanceHandlerShould {
     private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
-    private TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
+    private SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
 
     @Mock
     private EnrollmentHandler enrollmentHandler;
@@ -106,7 +107,8 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).insert(anyString(), any(Date.class), any(Date.class),
                 anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
                 any(State.class));
-        verify(trackedEntityAttributeValueHandler, never()).handle(any(String.class), any(ArrayList.class));
+        verify(trackedEntityAttributeValueHandler, never()).handleMany(
+                anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
         verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
     }
@@ -127,8 +129,8 @@ public class TrackedEntityInstanceHandlerShould {
                 anyString(), anyString(), anyString(), anyString(), anyString(), any(FeatureType.class),
                 any(State.class));
 
-        verify(trackedEntityAttributeValueHandler, never()).handle(
-                any(String.class), any(ArrayList.class));
+        verify(trackedEntityAttributeValueHandler, never()).handleMany(
+                anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
 
         // verify that enrollment handler is never called
         verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
@@ -157,8 +159,8 @@ public class TrackedEntityInstanceHandlerShould {
                 any(State.class));
         verify(trackedEntityInstanceStore, never()).delete(anyString());
 
-        verify(trackedEntityAttributeValueHandler, times(1)).handle(
-                any(String.class), any(ArrayList.class));
+        verify(trackedEntityAttributeValueHandler, times(1)).handleMany(
+                anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class));
@@ -190,8 +192,8 @@ public class TrackedEntityInstanceHandlerShould {
         // check that delete is never invoked
         verify(trackedEntityInstanceStore, never()).delete(anyString());
 
-        verify(trackedEntityAttributeValueHandler, times(1)).handle(
-                any(String.class), any(ArrayList.class));
+        verify(trackedEntityAttributeValueHandler, times(1)).handleMany(
+                anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
 
         // verify that enrollment handler is called once
         verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class));

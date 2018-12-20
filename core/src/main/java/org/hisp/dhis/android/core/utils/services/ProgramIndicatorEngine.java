@@ -374,6 +374,6 @@ public class ProgramIndicatorEngine {
                 EventStoreImpl.create(databaseAdapter),
                 DataElementStore.create(databaseAdapter),
                 ConstantStore.create(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter));
+                TrackedEntityAttributeValueStoreImpl.create(databaseAdapter));
     }
 }

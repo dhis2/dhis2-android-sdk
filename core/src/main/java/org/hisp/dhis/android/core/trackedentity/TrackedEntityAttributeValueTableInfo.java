@@ -28,19 +28,49 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+public final class TrackedEntityAttributeValueTableInfo {
 
-import java.util.List;
-import java.util.Map;
+    private TrackedEntityAttributeValueTableInfo() {
+    }
 
-public interface TrackedEntityAttributeValueStore extends ObjectWithoutUidStore<TrackedEntityAttributeValue> {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    Map<String, List<TrackedEntityAttributeValue>> queryTrackedEntityAttributeValueToPost();
+        @Override
+        public String name() {
+            return "TrackedEntityAttributeValue";
+        }
 
-    List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-    void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
-                                            @NonNull List<String> trackedEntityAttributeUids);
+    public static class Columns extends BaseModel.Columns {
+        static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+        static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    TrackedEntityAttributeValueFields.VALUE,
+                    TrackedEntityAttributeValueFields.CREATED,
+                    TrackedEntityAttributeValueFields.LAST_UPDATED,
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    TRACKED_ENTITY_INSTANCE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    TRACKED_ENTITY_INSTANCE
+            );
+        }
+    }
 }

@@ -53,7 +53,8 @@ public class OrganisationUnitModuleDownloader {
     @Inject
     OrganisationUnitModuleDownloader(OrganisationUnitCallFactory organisationUnitCallFactory,
                                      SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory,
-                                     SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitOnDemandCallFactory) {
+                                     SearchOrganisationUnitOnDemandCallFactory
+                                             searchOrganisationUnitOnDemandCallFactory) {
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
         this.searchOrganisationUnitOnDemandCallFactory = searchOrganisationUnitOnDemandCallFactory;

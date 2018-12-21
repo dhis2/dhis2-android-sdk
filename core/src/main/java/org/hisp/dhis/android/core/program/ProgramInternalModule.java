@@ -27,27 +27,17 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class ProgramInternalModule implements Downloader<List<Program>> {
+public final class ProgramInternalModule {
 
-    private final ProgramParentCall programParentCall;
+    public final ProgramModuleDownloader moduleDownloader;
 
     @Inject
-    ProgramInternalModule(ProgramParentCall programParentCall) {
-        this.programParentCall = programParentCall;
-    }
-
-    @Override
-    public Callable<List<Program>> download() {
-        return programParentCall;
+    ProgramInternalModule(ProgramModuleDownloader moduleDownloader) {
+        this.moduleDownloader = moduleDownloader;
     }
 }

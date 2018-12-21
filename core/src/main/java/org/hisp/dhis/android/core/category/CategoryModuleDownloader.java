@@ -42,7 +42,6 @@ import dagger.Reusable;
 @Reusable
 public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-
     private final UidsCallFactory<Category> categoryCallFactory;
     private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
     private final CategoryComboUidsSeeker categoryComboUidsSeeker;

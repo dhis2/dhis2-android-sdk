@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
@@ -97,16 +97,16 @@ public class MetadataCallShould extends BaseCallShould {
     private Callable<Unit> systemSettingDownloadCall;
 
     @Mock
-    private Call<User> userCall;
+    private Callable<User> userCall;
 
     @Mock
     private Callable<Unit> categoryDownloadCall;
 
     @Mock
-    private Call<List<Program>> programParentCall;
+    private Callable<List<Program>> programDownloadCall;
 
     @Mock
-    private Call<List<DataSet>> dataSetParentCall;
+    private Callable<List<DataSet>> dataSetDownloadCall;
 
     @Mock
     private Callable<Unit> organisationUnitDownloadCall;
@@ -124,13 +124,13 @@ public class MetadataCallShould extends BaseCallShould {
     private CategoryModuleDownloader categoryDownloader;
 
     @Mock
-    private Downloader<List<Program>> programParentCallFactory;
+    private ProgramModuleDownloader programDownloader;
 
     @Mock
-    private OrganisationUnitDownloadModule organisationUnitDownloadModule;
+    private OrganisationUnitDownloadModule organisationUnitDownloader;
 
     @Mock
-    private Downloader<List<DataSet>> dataSetDownloader;
+    private DataSetModuleDownloader dataSetDownloader;
 
     @Mock
     private ForeignKeyCleaner foreignKeyCleaner;
@@ -155,19 +155,19 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemInfoDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
         when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
         when(userDownloader.downloadMetadata()).thenReturn(userCall);
-        when(programParentCallFactory.download()).thenReturn(programParentCall);
+        when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloadModule.download(same(user), anySetOf(Program.class),
+        when(organisationUnitDownloader.download(same(user), anySetOf(Program.class),
                 anySetOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
-        when(dataSetDownloader.download()).thenReturn(dataSetParentCall);
+        when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
 
         // Calls
         when(systemInfoDownloadCall.call()).thenReturn(new Unit());
         when(systemSettingDownloadCall.call()).thenReturn(new Unit());
         when(userCall.call()).thenReturn(user);
         when(categoryDownloadCall.call()).thenReturn(new Unit());
-        when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
-        when(dataSetParentCall.call()).thenReturn(Lists.newArrayList(dataSet));
+        when(programDownloadCall.call()).thenReturn(Lists.newArrayList(program));
+        when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
 
         // Metadata call
         metadataCall = new MetadataCall(
@@ -176,8 +176,8 @@ public class MetadataCallShould extends BaseCallShould {
                 systemSettingDownloader,
                 userDownloader,
                 categoryDownloader,
-                programParentCallFactory,
-                organisationUnitDownloadModule,
+                programDownloader,
+                organisationUnitDownloader,
                 dataSetDownloader,
                 foreignKeyCleaner);
     }
@@ -218,7 +218,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_program_call_fail() throws Exception {
-        when(programParentCall.call()).thenThrow(d2Error);
+        when(programDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
@@ -230,7 +230,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_dataset_parent_call_fail() throws Exception {
-        when(dataSetParentCall.call()).thenThrow(d2Error);
+        when(dataSetDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

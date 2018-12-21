@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
@@ -45,9 +44,8 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class ProgramParentCall extends SyncCall<List<Program>> {
+public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Program>> {
 
-    private final D2CallExecutor d2CallExecutor;
     private final ListCallFactory<Program> programCallFactory;
     private final UidsCallFactory<ProgramStage> programStageCallFactory;
     private final UidsCallFactory<ProgramRule> programRuleCallFactory;
@@ -56,14 +54,12 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
 
     @Inject
-    ProgramParentCall(D2CallExecutor d2CallExecutor,
-                      ListCallFactory<Program> programCallFactory,
-                      UidsCallFactory<ProgramStage> programStageCallFactory,
-                      UidsCallFactory<ProgramRule> programRuleCallFactory,
-                      UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
-                      ListCallFactory<RelationshipType> relationshipTypeCallFactory,
-                      UidsCallFactory<OptionSet> optionSetCallFactory) {
-        this.d2CallExecutor = d2CallExecutor;
+    ProgramModuleDownloader(ListCallFactory<Program> programCallFactory,
+                            UidsCallFactory<ProgramStage> programStageCallFactory,
+                            UidsCallFactory<ProgramRule> programRuleCallFactory,
+                            UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
+                            ListCallFactory<RelationshipType> relationshipTypeCallFactory,
+                            UidsCallFactory<OptionSet> optionSetCallFactory) {
         this.programCallFactory = programCallFactory;
         this.programStageCallFactory = programStageCallFactory;
         this.programRuleCallFactory = programRuleCallFactory;
@@ -73,10 +69,8 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
     }
 
     @Override
-    public List<Program> call() throws Exception {
-        setExecuted();
-
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<List<Program>>() {
+    public Callable<List<Program>> downloadMetadata() {
+        return new Callable<List<Program>>() {
             @Override
             public List<Program> call() throws Exception {
                 List<Program> programs = programCallFactory.create().call();
@@ -97,6 +91,6 @@ public class ProgramParentCall extends SyncCall<List<Program>> {
 
                 return programs;
             }
-        });
+        };
     }
 }

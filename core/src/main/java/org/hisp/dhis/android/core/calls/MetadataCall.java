@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
@@ -58,7 +58,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final SystemSettingModuleDownloader systemSettingDownloader;
     private final UserModuleDownloader userModuleDownloader;
     private final CategoryModuleDownloader categoryDownloader;
-    private final Downloader<List<Program>> programDownloader;
+    private final ProgramModuleDownloader programDownloader;
     private final OrganisationUnitDownloadModule organisationUnitDownloadModule;
     private final DataSetModuleDownloader dataSetDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
@@ -68,7 +68,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull SystemSettingModuleDownloader systemSettingDownloader,
                         @NonNull UserModuleDownloader userModuleDownloader,
                         @NonNull CategoryModuleDownloader categoryDownloader,
-                        @NonNull Downloader<List<Program>> programDownloader,
+                        @NonNull ProgramModuleDownloader programDownloader,
                         @NonNull OrganisationUnitDownloadModule organisationUnitDownloadModule,
                         @NonNull DataSetModuleDownloader dataSetDownloader,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
@@ -96,7 +96,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 User user = userModuleDownloader.downloadMetadata().call();
 
-                List<Program> programs = programDownloader.download().call();
+                List<Program> programs = programDownloader.downloadMetadata().call();
 
                 List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
 
@@ -120,7 +120,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 internalModules.systemSetting.moduleDownloader,
                 internalModules.user.moduleDownloader,
                 internalModules.category.moduleDownloader,
-                internalModules.program,
+                internalModules.program.moduleDownloader,
                 internalModules.organisationUnit,
                 internalModules.dataSet.moduleDownloader,
                 ForeignKeyCleanerImpl.create(genericCallData.databaseAdapter())

@@ -61,7 +61,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class ProgramParentCallShould extends BaseCallShould {
+public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Mock
     private Program program;
 
@@ -148,7 +148,7 @@ public class ProgramParentCallShould extends BaseCallShould {
         when(programRuleEndpointCall.call()).thenReturn(Collections.<ProgramRule>emptyList());
 
         // Metadata call
-        programParentCall = new ProgramParentCall(
+        programParentCall = new ProgramModuleDownloader(
                 new D2CallExecutor(databaseAdapter),
                 programCallFactory,
                 programStageCallFactory,

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
@@ -53,7 +53,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final D2CallExecutor d2CallExecutor;
 
     private final SystemInfoModuleDownloader systemInfoDownloader;
-    private final Downloader<SystemSetting> systemSettingDownloader;
+    private final SystemSettingModuleDownloader systemSettingDownloader;
     private final UserModuleDownloader userModuleDownloader;
     private final Downloader<Unit> categoryDownloader;
     private final Downloader<List<Program>> programDownloader;
@@ -63,7 +63,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
     public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
                         @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-                        @NonNull Downloader<SystemSetting> systemSettingDownloader,
+                        @NonNull SystemSettingModuleDownloader systemSettingDownloader,
                         @NonNull UserModuleDownloader userModuleDownloader,
                         @NonNull Downloader<Unit> categoryDownloader,
                         @NonNull Downloader<List<Program>> programDownloader,
@@ -90,7 +90,7 @@ public class MetadataCall extends SyncCall<Unit> {
             public Unit call() throws Exception {
                 systemInfoDownloader.downloadMetadata().call();
 
-                systemSettingDownloader.download().call();
+                systemSettingDownloader.downloadMetadata().call();
 
                 User user = userModuleDownloader.downloadMetadata().call();
 
@@ -115,7 +115,7 @@ public class MetadataCall extends SyncCall<Unit> {
         return new MetadataCall(
                 new D2CallExecutor(genericCallData.databaseAdapter()),
                 internalModules.systemInfo.moduleDownloader,
-                internalModules.systemSetting,
+                internalModules.systemSetting.moduleDownloader,
                 internalModules.user,
                 internalModules.category,
                 internalModules.program,

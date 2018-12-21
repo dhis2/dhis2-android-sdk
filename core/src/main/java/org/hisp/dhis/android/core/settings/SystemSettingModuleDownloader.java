@@ -25,14 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.concurrent.Callable;
 
@@ -41,39 +39,17 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class SystemSettingCall implements Callable<Unit> {
-    private final APICallExecutor apiCallExecutor;
-    private final DatabaseAdapter databaseAdapter;
-    private final SystemSettingHandler handler;
-    private final SystemSettingService service;
-    private final SystemSettingModelBuilder modelBuilder;
+public class SystemSettingModuleDownloader implements MetadataModuleDownloader<Unit> {
+
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     @Inject
-    SystemSettingCall(APICallExecutor apiCallExecutor,
-                      DatabaseAdapter databaseAdapter,
-                      SystemSettingHandler handler,
-                      SystemSettingService service,
-                      SystemSettingModelBuilder modelBuilder) {
-        this.apiCallExecutor = apiCallExecutor;
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-        this.service = service;
-        this.modelBuilder = modelBuilder;
+    SystemSettingModuleDownloader(ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
+        this.systemInfoRepository = systemInfoRepository;
     }
 
     @Override
-    public Unit call() throws D2Error {
-        SystemSetting setting = apiCallExecutor.executeObjectCall(service.getSystemSettings(SystemSetting.allFields));
-
-        Transaction transaction = databaseAdapter.beginNewTransaction();
-
-        try {
-            handler.handle(setting, modelBuilder);
-            transaction.setSuccessful();
-        } finally {
-            transaction.end();
-        }
-
-        return new Unit();
+    public Callable<Unit> downloadMetadata() {
+        return systemInfoRepository.download();
     }
 }

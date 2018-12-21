@@ -27,27 +27,17 @@
  */
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingInternalModule implements Downloader<SystemSetting> {
+public final class SystemSettingInternalModule {
 
-    private final Provider<SystemSettingCall> systemSettingCallProvider;
+    public final SystemSettingModuleDownloader moduleDownloader;
 
     @Inject
-    SystemSettingInternalModule(Provider<SystemSettingCall> systemSettingCallProvider) {
-        this.systemSettingCallProvider = systemSettingCallProvider;
-    }
-
-    @Override
-    public Callable<SystemSetting> download() {
-        return systemSettingCallProvider.get();
+    SystemSettingInternalModule(SystemSettingModuleDownloader moduleDownloader) {
+        this.moduleDownloader = moduleDownloader;
     }
 }

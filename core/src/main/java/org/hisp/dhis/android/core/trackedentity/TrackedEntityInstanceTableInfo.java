@@ -61,15 +61,15 @@ public final class TrackedEntityInstanceTableInfo {
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
                     UID,
+                    TrackedEntityInstanceFields.CREATED,
+                    TrackedEntityInstanceFields.LAST_UPDATED,
                     CREATED_AT_CLIENT,
                     LAST_UPDATED_AT_CLIENT,
                     ORGANISATION_UNIT,
                     TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE,
-                    TrackedEntityInstanceFields.CREATED,
-                    TrackedEntityInstanceFields.LAST_UPDATED,
-                    BaseDataModel.Columns.STATE,
                     TrackedEntityInstanceFields.COORDINATES,
-                    TrackedEntityInstanceFields.FEATURE_TYPE
+                    TrackedEntityInstanceFields.FEATURE_TYPE,
+                    BaseDataModel.Columns.STATE
             );
         }
 

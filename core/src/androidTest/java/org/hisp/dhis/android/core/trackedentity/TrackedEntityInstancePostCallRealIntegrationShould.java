@@ -39,9 +39,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import retrofit2.Response;
@@ -88,7 +86,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2= D2Factory.create(RealServerMother.url, databaseAdapter());
 
-        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
         enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
         eventStore = EventStoreImpl.create(databaseAdapter());
         trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter());
@@ -187,7 +185,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
         d2.downloadTrackedEntityInstances(4, true).call();
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
         FeatureType featureType =
                 tei.featureType() == FeatureType.POLYGON ? FeatureType.POINT : FeatureType.POLYGON;
@@ -213,7 +211,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
         d2.downloadTrackedEntityInstances(4, true).call();
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
         String newUid1 = codeGenerator.generate();
         String newUid2 = codeGenerator.generate();
@@ -237,7 +235,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
         d2.downloadTrackedEntityInstances(1, true).call();
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
         FeatureType featureType =
                 tei.featureType() == FeatureType.POLYGON ? FeatureType.POINT : FeatureType.POLYGON;
@@ -268,7 +266,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
         d2.downloadTrackedEntityInstances(5, true).call();
 
-        TrackedEntityInstance teiA = trackedEntityInstanceStore.queryAll().values().iterator().next();
+        TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
 
         // Create a TEI by copying an existing one
@@ -315,14 +313,11 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
 
         d2.downloadTrackedEntityInstances(5,  false).call();
-        Map<String, TrackedEntityInstance> trackedEntityInstances =
-                new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll();
+        List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
         assertThat(trackedEntityInstances.size() >= 5).isTrue();
 
-        Iterator<Map.Entry<String, TrackedEntityInstance>> tEIIterator = trackedEntityInstances.entrySet().iterator();
-
-        TrackedEntityInstance t0 = tEIIterator.next().getValue();
-        TrackedEntityInstance t1 = tEIIterator.next().getValue();
+        TrackedEntityInstance t0 = trackedEntityInstances.get(0);
+        TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
         RelationshipType relationshipType = d2.relationshipModule().relationshipTypes.get().iterator().next();
 
@@ -339,14 +334,12 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
 
         d2.downloadTrackedEntityInstances(10,  false).call();
-        Map<String, TrackedEntityInstance> trackedEntityInstances =
-                new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll();
+        List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
+
         assertThat(trackedEntityInstances.size() == 10).isTrue();
 
-        Iterator<Map.Entry<String, TrackedEntityInstance>> tEIIterator = trackedEntityInstances.entrySet().iterator();
-
-        TrackedEntityInstance t0 = tEIIterator.next().getValue();
-        TrackedEntityInstance t1 = tEIIterator.next().getValue();
+        TrackedEntityInstance t0 = trackedEntityInstances.get(0);
+        TrackedEntityInstance t1 = trackedEntityInstances.get(1);
 
         RelationshipModule relationshipModule = d2.relationshipModule();
         ReadOnlyIdentifiableCollectionRepository<RelationshipType> typesRepository = relationshipModule.relationshipTypes;
@@ -370,7 +363,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         downloadMetadata();
         d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
         Enrollment enrollment = enrollmentStore.selectFirst();
 
@@ -398,9 +391,13 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private void insertATei(String uid, TrackedEntityInstance tei, FeatureType featureType) {
-        trackedEntityInstanceStore.insert(uid, tei.created(), tei.lastUpdated(), tei.createdAtClient(),
-                tei.lastUpdatedAtClient(), tei.organisationUnit(), tei.trackedEntityType(), tei.coordinates(),
-                featureType, State.TO_POST);
+        TrackedEntityInstance trackedEntityInstance = tei.toBuilder()
+                .uid(uid)
+                .featureType(featureType)
+                .state(State.TO_POST)
+                .build();
+
+        trackedEntityInstanceStore.insert(trackedEntityInstance);
     }
 
     private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
@@ -410,8 +407,18 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         
         Date refDate = getCurrentDateMinusTwoHoursTenMinutes();
 
-        trackedEntityInstanceStore.insert(trackedEntityInstanceUid, refDate, refDate, null,
-                null, orgUnitUid, trackedEntityUid, coordinates, featureType, State.TO_POST);
+        TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder()
+                .uid(trackedEntityInstanceUid)
+                .created(refDate)
+                .lastUpdated(refDate)
+                .organisationUnit(orgUnitUid)
+                .trackedEntityType(trackedEntityUid)
+                .coordinates(coordinates)
+                .featureType(featureType)
+                .state(State.TO_POST)
+                .build();
+
+        trackedEntityInstanceStore.insert(trackedEntityInstance);
 
         Enrollment enrollment = Enrollment.builder()
                 .uid(enrollmentUid).created(refDate).lastUpdated(refDate).organisationUnit(orgUnitUid)
@@ -462,10 +469,8 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     }
 
     private TrackedEntityInstance getTrackedEntityInstanceFromDB(String trackedEntityInstanceUid) {
-        TrackedEntityInstanceStore trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
         TrackedEntityInstance trackedEntityInstance = null;
-        Map<String, TrackedEntityInstance> storedTrackedEntityInstances = trackedEntityInstanceStore.queryAll();
-        TrackedEntityInstance storedTrackedEntityInstance = storedTrackedEntityInstances.get(trackedEntityInstanceUid);
+        TrackedEntityInstance storedTrackedEntityInstance = trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid);
         if(storedTrackedEntityInstance.uid().equals(trackedEntityInstanceUid)) {
             trackedEntityInstance = storedTrackedEntityInstance;
         }

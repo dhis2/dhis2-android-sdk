@@ -28,8 +28,11 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.Unit;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -39,15 +42,31 @@ import dagger.Reusable;
 @Reusable
 public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    private final CategoryParentCall categoryParentCall;
+
+    private final UidsCallFactory<Category> categoryCallFactory;
+    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private final CategoryComboUidsSeeker categoryComboUidsSeeker;
 
     @Inject
-    CategoryModuleDownloader(CategoryParentCall categoryParentCall) {
-        this.categoryParentCall = categoryParentCall;
+    CategoryModuleDownloader(UidsCallFactory<Category> categoryCallFactory,
+                             UidsCallFactory<CategoryCombo> categoryComboCallFactory,
+                             CategoryComboUidsSeeker categoryComboUidsSeeker) {
+        this.categoryCallFactory = categoryCallFactory;
+        this.categoryComboCallFactory = categoryComboCallFactory;
+        this.categoryComboUidsSeeker = categoryComboUidsSeeker;
     }
 
     @Override
     public Callable<Unit> downloadMetadata() {
-        return categoryParentCall;
+        return new Callable<Unit>() {
+            @Override
+            public Unit call() throws Exception {
+                Set<String> comboUids = categoryComboUidsSeeker.seekUids();
+                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
+                categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
+
+                return new Unit();
+            }
+        };
     }
 }

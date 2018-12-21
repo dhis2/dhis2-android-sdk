@@ -37,15 +37,23 @@ import dagger.Reusable;
 @Reusable
 public class UserModuleDownloader {
 
-    private final UserParentCall userParentCall;
+    private final UserCall userCall;
+    private final AuthorityEndpointCallFactory authorityCallFactory;
 
     @Inject
-    public UserModuleDownloader(UserParentCall userParentCall) {
-        this.userParentCall = userParentCall;
+    UserModuleDownloader(UserCall userCall, AuthorityEndpointCallFactory authorityCallFactory) {
+        this.userCall = userCall;
+        this.authorityCallFactory = authorityCallFactory;
     }
 
-
     public Callable<User> downloadMetadata() {
-        return userParentCall;
+        return new Callable<User>() {
+            @Override
+            public User call() throws Exception {
+                User user = userCall.call();
+                authorityCallFactory.create().call();
+                return user;
+            }
+        };
     }
 }

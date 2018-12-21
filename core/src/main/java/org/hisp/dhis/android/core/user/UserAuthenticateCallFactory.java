@@ -33,8 +33,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIUrlProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -65,14 +64,12 @@ final class UserAuthenticateCallFactory {
     private final DatabaseAdapter databaseAdapter;
     private final APICallExecutor apiCallExecutor;
 
-    private final Downloader<SystemInfo> systemInfoDownloader;
-
     private final UserService userService;
 
     private final SyncHandler<User> userHandler;
     private final ResourceHandler resourceHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
-    private final ReadOnlyObjectRepository<SystemInfo> systemInfoRepository;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
 
@@ -82,19 +79,17 @@ final class UserAuthenticateCallFactory {
     UserAuthenticateCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
-            @NonNull Downloader<SystemInfo> systemInfoDownloader,
             @NonNull UserService userService,
             @NonNull SyncHandler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
-            @NonNull ReadOnlyObjectRepository<SystemInfo> systemInfoRepository,
+            @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
             @NonNull APIUrlProvider apiUrlProvider) {
         this.databaseAdapter = databaseAdapter;
         this.apiCallExecutor = apiCallExecutor;
 
-        this.systemInfoDownloader = systemInfoDownloader;
         this.userService = userService;
 
         this.userHandler = userHandler;
@@ -151,7 +146,7 @@ final class UserAuthenticateCallFactory {
                     username, password);
             authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
 
-            new D2CallExecutor(databaseAdapter).executeD2Call(systemInfoDownloader.download());
+            new D2CallExecutor(databaseAdapter).executeD2Call(systemInfoRepository.download());
 
             handleUser(authenticatedUser);
             transaction.setSuccessful();

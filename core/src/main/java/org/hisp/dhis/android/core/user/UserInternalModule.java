@@ -38,7 +38,7 @@ import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
-public final class UserInternalModule implements UserDownloadModule {
+public final class UserInternalModule implements UserModuleDownloader {
 
     public final UserModule publicModule;
     private final UserParentCall userParentCall;
@@ -55,7 +55,7 @@ public final class UserInternalModule implements UserDownloadModule {
     }
 
     @Override
-    public Callable<User> downloadUserAndAuthority() {
+    public Callable<User> downloadMetadata() {
         return userParentCall;
     }
 }

@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import javax.inject.Singleton;
@@ -51,21 +50,9 @@ public final class SystemInfoPackageDIModule {
 
     @Provides
     @Reusable
-    SystemInfoModule module(DHISVersionManager versionManager,
-                            ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
-        return new SystemInfoModule(versionManager, systemInfoRepository);
-    }
-
-    @Provides
-    @Reusable
-    ReadOnlyObjectRepository<SystemInfo> systemInfoRepository(ObjectWithoutUidStore<SystemInfo> store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Downloader<SystemInfo> downloader(SystemInfoInternalModule internalModule) {
-        return internalModule;
+    ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository(
+            ObjectWithoutUidStore<SystemInfo> store, SystemInfoCall systemInfoCall) {
+        return new ReadOnlyFirstObjectWithDownloadRepositoryImpl<>(store, systemInfoCall);
     }
 
     @Provides

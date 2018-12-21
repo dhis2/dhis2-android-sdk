@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,26 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+package org.hisp.dhis.android.core.user;
 
-import javax.inject.Inject;
+import java.util.concurrent.Callable;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class SystemInfoModule {
-
-    public final DHISVersionManager versionManager;
-    public final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
-
-    @Inject
-    SystemInfoModule(DHISVersionManager versionManager,
-                     ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.versionManager = versionManager;
-        this.systemInfo = systemInfoRepository;
-    }
+public interface UserModuleDownloader {
+    Callable<User> downloadMetadata();
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -35,7 +37,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class UserModuleDownloader {
+public class UserModuleDownloader implements MetadataModuleDownloader<User> {
 
     private final UserCall userCall;
     private final AuthorityEndpointCallFactory authorityCallFactory;
@@ -46,6 +48,7 @@ public class UserModuleDownloader {
         this.authorityCallFactory = authorityCallFactory;
     }
 
+    @Override
     public Callable<User> downloadMetadata() {
         return new Callable<User>() {
             @Override

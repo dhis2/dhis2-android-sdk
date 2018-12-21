@@ -112,13 +112,13 @@ public class MetadataCallShould extends BaseCallShould {
     private Callable<Unit> organisationUnitDownloadCall;
 
     @Mock
-    private SystemInfoModuleDownloader systemInfoModuleDownloader;
+    private SystemInfoModuleDownloader systemInfoDownloader;
 
     @Mock
     private SystemSettingModuleDownloader systemSettingDownloader;
 
     @Mock
-    private UserModuleDownloader userDownloadModule;
+    private UserModuleDownloader userDownloader;
 
     @Mock
     private CategoryModuleDownloader categoryDownloader;
@@ -152,9 +152,9 @@ public class MetadataCallShould extends BaseCallShould {
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         // Call factories
-        when(systemInfoModuleDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
+        when(systemInfoDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
         when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
-        when(userDownloadModule.downloadMetadata()).thenReturn(userCall);
+        when(userDownloader.downloadMetadata()).thenReturn(userCall);
         when(programParentCallFactory.download()).thenReturn(programParentCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
         when(organisationUnitDownloadModule.download(same(user), anySetOf(Program.class),
@@ -172,9 +172,9 @@ public class MetadataCallShould extends BaseCallShould {
         // Metadata call
         metadataCall = new MetadataCall(
                 new D2CallExecutor(databaseAdapter),
-                systemInfoModuleDownloader,
+                systemInfoDownloader,
                 systemSettingDownloader,
-                userDownloadModule,
+                userDownloader,
                 categoryDownloader,
                 programParentCallFactory,
                 organisationUnitDownloadModule,

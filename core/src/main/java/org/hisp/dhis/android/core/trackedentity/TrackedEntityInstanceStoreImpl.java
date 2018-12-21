@@ -42,12 +42,11 @@ import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWithStateStoreImpl<TrackedEntityInstance>
+public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWithStateStoreImpl<TrackedEntityInstance>
         implements TrackedEntityInstanceStore {
 
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,
@@ -65,13 +64,6 @@ public class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWithStateS
                 .build();
 
         return selectWhereClause(whereToPostClause);
-    }
-
-    private List<TrackedEntityInstance> teiListFromQuery(String query) {
-        List<TrackedEntityInstance> teiList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(query);
-        addObjectsToCollection(cursor, teiList);
-        return teiList;
     }
 
     @Override

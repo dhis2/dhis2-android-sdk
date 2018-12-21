@@ -65,23 +65,27 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
                 enrollmentHandler.handleMany(enrollments);
             }
 
-            List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
-            if (relationships != null) {
-                for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
-
-                    Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
-                    TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
-                            trackedEntityInstance.uid());
-
-                    if (relativeTEI != null) {
-                        handle(relativeTEI, relationshipModelBuilder());
-                        relationshipHandler.handle(relationship);
-                    }
-                }
-            }
+            handleRelationships(trackedEntityInstance);
         }
 
         enrollmentOrphanCleaner.deleteOrphan(trackedEntityInstance, trackedEntityInstance.enrollments());
+    }
+
+    private void handleRelationships(TrackedEntityInstance trackedEntityInstance) {
+        List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
+        if (relationships != null) {
+            for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
+
+                Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
+                TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
+                        trackedEntityInstance.uid());
+
+                if (relativeTEI != null) {
+                    handle(relativeTEI, relationshipModelBuilder());
+                    relationshipHandler.handle(relationship);
+                }
+            }
+        }
     }
 
     public final void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances,

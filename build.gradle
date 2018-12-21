@@ -22,6 +22,7 @@ buildscript {
 
         // enables cloud features of gradle plugin
         classpath "com.gradle:build-scan-plugin:1.3"
+        classpath "me.tatarka:gradle-retrolambda:3.7.0"
     }
 }
 

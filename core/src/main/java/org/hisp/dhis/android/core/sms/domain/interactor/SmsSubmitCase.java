@@ -12,7 +12,6 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class SmsSubmitCase {
-
     private LocalDbRepository localDbRepository;
     private SmsRepository smsRepository;
     private SmsFormatConverter converter;
@@ -30,7 +29,7 @@ public class SmsSubmitCase {
                             return new Pair<>(number, smsContents);
                         })
                 ).flatMapObservable(numAndContents ->
-                        smsRepository.sendSms(numAndContents.first, numAndContents.second)
+                        smsRepository.sendSms(numAndContents.first, numAndContents.second, 120)
                 ).map(smsSendingStatus -> {
                     // TODO translate properly to sms submission state
                     return new SmsSubmissionState();

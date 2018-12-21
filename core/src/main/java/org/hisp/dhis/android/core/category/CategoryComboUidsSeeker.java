@@ -15,15 +15,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CategoryComboUidsSeeker {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+class CategoryComboUidsSeeker {
 
     private final DatabaseAdapter databaseAdapter;
 
-    public CategoryComboUidsSeeker(DatabaseAdapter databaseAdapter) {
+    @Inject
+    CategoryComboUidsSeeker(DatabaseAdapter databaseAdapter) {
         this.databaseAdapter = databaseAdapter;
     }
 
-    public Set<String> seekUids() {
+    Set<String> seekUids() {
         List<String> tableNames = Arrays.asList(
                 ProgramTableInfo.TABLE_INFO.name(),
                 DataSetTableInfo.TABLE_INFO.name(),

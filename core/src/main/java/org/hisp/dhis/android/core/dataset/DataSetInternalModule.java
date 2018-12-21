@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -47,7 +47,7 @@ public final class DataSetInternalModule implements Downloader<List<DataSet>> {
     }
 
     @Override
-    public Call<List<DataSet>> download() {
+    public Callable<List<DataSet>> download() {
         return dataSetParentCall;
     }
 }

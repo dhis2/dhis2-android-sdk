@@ -25,31 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+package org.hisp.dhis.android.core.data.trackedentity;
 
-import java.util.Collection;
-import java.util.Collections;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 
-public final class ReadOnlyFirstObjectRepositoryImpl<M extends Model>
-        extends ReadOnlyObjectRepositoryImpl<M> {
+import java.text.ParseException;
+import java.util.Date;
 
-    private final ObjectStore<M> store;
+public class TrackedEntityAttributeValueSamples {
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store,
-                                             Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(childrenAppenders);
-        this.store = store;
+    public static TrackedEntityAttributeValue get() {
+        return TrackedEntityAttributeValue.builder()
+                .value("value")
+                .created(getDate("2014-08-20T12:28:56.409"))
+                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+                .trackedEntityAttribute("tracked_entity_attribute")
+                .trackedEntityInstance("tracked_entity_instance")
+                .build();
     }
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
-        this(store, Collections.<ChildrenAppender<M>>emptyList());
-    }
-
-    public M get() {
-        return this.store.selectFirst();
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

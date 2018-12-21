@@ -53,10 +53,9 @@ public class SearchOrganisationUnitHandlerShould {
 
     private OrganisationUnit organisationUnit;
 
-    private String userUid = "userUid";
     private String organisationUnitUid = "orgUnitUid";
 
-    private SyncHandlerWithTransformer<OrganisationUnit> handler;
+    private SearchOrganisationUnitHandler handler;
 
     @Before
     public void setUp() throws Exception {
@@ -64,14 +63,14 @@ public class SearchOrganisationUnitHandlerShould {
 
         organisationUnit = OrganisationUnit.builder().uid(organisationUnitUid).build();
 
-        handler = new SearchOrganisationUnitHandler(
+        handler = new SearchOrganisationUnitHandlerImpl(
                 organisationUnitStore,
-                userOrganisationUnitLinkStore,
-                User.builder().uid(userUid).build());
+                userOrganisationUnitLinkStore);
     }
 
     @Test
     public void persist_organisation_unit_user_link() {
+        String userUid = "userUid";
         UserOrganisationUnitLinkModel linkModel = UserOrganisationUnitLinkModel
                 .builder()
                 .organisationUnit(organisationUnitUid)
@@ -79,6 +78,7 @@ public class SearchOrganisationUnitHandlerShould {
                 .organisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH.toString())
                 .build();
 
+        handler.setUser(User.builder().uid(userUid).build());
         handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitDisplayPathTransformer());
         verify(userOrganisationUnitLinkStore).updateOrInsertWhere(linkModel);
     }

@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.arch.handlers;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
 
@@ -48,9 +50,22 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
         if (o == null) {
             return;
         }
+        handleInternal(o, modelBuilder);
+    }
+
+    private void handle(O o, ModelBuilder<O, O> modelBuilder, List<O> oTransformedCollection) {
+        if (o == null) {
+            return;
+        }
+        O oTransformed = handleInternal(o, modelBuilder);
+        oTransformedCollection.add(oTransformed);
+    }
+
+    private O handleInternal(O o, ModelBuilder<O, O> modelBuilder) {
         O oTransformed = modelBuilder.buildModel(o);
         HandleAction action = deleteOrPersist(oTransformed);
         afterObjectHandled(oTransformed, action);
+        return oTransformed;
     }
 
     @Override
@@ -66,10 +81,11 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     @Override
     public final void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder) {
         if (oCollection != null) {
+            List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
             for(O o : oCollection) {
-                handle(o, modelBuilder);
+                handle(o, modelBuilder, oTransformedCollection);
             }
-            afterCollectionHandled(oCollection);
+            afterCollectionHandled(oTransformedCollection);
         }
     }
 

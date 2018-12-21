@@ -3,8 +3,10 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -32,7 +34,7 @@ public class TrackedEntityInstanceHandler {
     private final RelationshipDHISVersionManager relationshipVersionManager;
     private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler;
+    private final SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
     private final EnrollmentHandler enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
 
@@ -40,7 +42,7 @@ public class TrackedEntityInstanceHandler {
             @NonNull RelationshipDHISVersionManager relationshipVersionManager,
             @NonNull RelationshipHandler relationshipHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-            @NonNull TrackedEntityAttributeValueHandler trackedEntityAttributeValueHandler,
+            @NonNull SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
             @NonNull EnrollmentHandler enrollmentHandler,
             @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
         this.relationshipVersionManager = relationshipVersionManager;
@@ -51,7 +53,7 @@ public class TrackedEntityInstanceHandler {
         this.enrollmentOrphanCleaner = enrollmentOrphanCleaner;
     }
 
-    public void handle(@NonNull TrackedEntityInstance trackedEntityInstance, boolean asRelationship) {
+    public void handle(@NonNull final TrackedEntityInstance trackedEntityInstance, boolean asRelationship) {
         if (trackedEntityInstance == null) {
             return;
         }
@@ -73,9 +75,14 @@ public class TrackedEntityInstanceHandler {
                 updateOrInsert(trackedEntityInstance, State.SYNCED);
             }
 
-            trackedEntityAttributeValueHandler.handle(
-                    trackedEntityInstance.uid(),
-                    trackedEntityInstance.trackedEntityAttributeValues());
+            trackedEntityAttributeValueHandler.handleMany(
+                    trackedEntityInstance.trackedEntityAttributeValues(),
+                    new ModelBuilder<TrackedEntityAttributeValue, TrackedEntityAttributeValue>() {
+                        @Override
+                        public TrackedEntityAttributeValue buildModel(TrackedEntityAttributeValue value) {
+                            return value.toBuilder().trackedEntityInstance(trackedEntityInstance.uid()).build();
+                        }
+                    });
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
             if (enrollments != null) {
@@ -131,7 +138,7 @@ public class TrackedEntityInstanceHandler {
                                                       D2InternalModules internalModules) {
         return new TrackedEntityInstanceHandler(
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationshipModule.relationshipHandler,
+                internalModules.relationship.relationshipHandler,
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 TrackedEntityAttributeValueHandler.create(databaseAdapter),
                 EnrollmentHandler.create(databaseAdapter, internalModules.systemInfo.publicModule.versionManager),

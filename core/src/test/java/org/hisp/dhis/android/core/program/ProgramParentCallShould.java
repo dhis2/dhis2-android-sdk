@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.OptionSet;
@@ -148,7 +149,7 @@ public class ProgramParentCallShould extends BaseCallShould {
 
         // Metadata call
         programParentCall = new ProgramParentCall(
-                genericCallData,
+                new D2CallExecutor(databaseAdapter),
                 programCallFactory,
                 programStageCallFactory,
                 programRuleCallFactory,

@@ -30,76 +30,53 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboEndpointCallFactory;
-import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
-import org.hisp.dhis.android.core.category.CategoryEndpointCallFactory;
-import org.hisp.dhis.android.core.category.CategoryParentUidsHelper;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
-import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramParentCall;
 import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserDownloadModule;
+import org.hisp.dhis.android.core.user.UserModuleDownloader;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public class MetadataCall extends SyncCall<Unit> {
 
-    private final GenericCallData genericCallData;
+    private final D2CallExecutor d2CallExecutor;
 
-    private final Downloader<SystemInfo> systemInfoDownloader;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
     private final Downloader<SystemSetting> systemSettingDownloader;
-    private final UserDownloadModule userDownloadModule;
-    private final UidsCallFactory<Category> categoryCallFactory;
-    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
-    private final CategoryComboUidsSeeker categoryComboUidsSeeker;
-    private final GenericCallFactory<List<Program>> programParentCallFactory;
-    private final OrganisationUnitCall.Factory organisationUnitCallFactory;
-    private final SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
+    private final UserModuleDownloader userModuleDownloader;
+    private final Downloader<Unit> categoryDownloader;
+    private final Downloader<List<Program>> programDownloader;
+    private final OrganisationUnitDownloadModule organisationUnitDownloadModule;
     private final Downloader<List<DataSet>> dataSetDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
-    public MetadataCall(@NonNull GenericCallData genericCallData,
-                        @NonNull Downloader<SystemInfo> systemInfoDownloader,
+    public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
+                        @NonNull SystemInfoModuleDownloader systemInfoDownloader,
                         @NonNull Downloader<SystemSetting> systemSettingDownloader,
-                        @NonNull UserDownloadModule userDownloadModule,
-                        @NonNull UidsCallFactory<Category> categoryCallFactory,
-                        @NonNull UidsCallFactory<CategoryCombo> categoryComboCallFactory,
-                        @NonNull CategoryComboUidsSeeker categoryComboUidsSeeker,
-                        @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
-                        @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
-                        @NonNull SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory,
+                        @NonNull UserModuleDownloader userModuleDownloader,
+                        @NonNull Downloader<Unit> categoryDownloader,
+                        @NonNull Downloader<List<Program>> programDownloader,
+                        @NonNull OrganisationUnitDownloadModule organisationUnitDownloadModule,
                         @NonNull Downloader<List<DataSet>> dataSetDownloader,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
-        this.genericCallData = genericCallData;
+        this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
-        this.userDownloadModule = userDownloadModule;
-        this.categoryCallFactory = categoryCallFactory;
-        this.categoryComboCallFactory = categoryComboCallFactory;
-        this.categoryComboUidsSeeker = categoryComboUidsSeeker;
-        this.programParentCallFactory = programParentCallFactory;
-        this.organisationUnitCallFactory = organisationUnitCallFactory;
-        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
+        this.userModuleDownloader = userModuleDownloader;
+        this.categoryDownloader = categoryDownloader;
+        this.programDownloader = programDownloader;
+        this.organisationUnitDownloadModule = organisationUnitDownloadModule;
         this.dataSetDownloader = dataSetDownloader;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
@@ -108,32 +85,22 @@ public class MetadataCall extends SyncCall<Unit> {
     public Unit call() throws Exception {
         setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor(genericCallData.databaseAdapter());
-
-        return executor.executeD2CallTransactionally(new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() throws Exception {
-                systemInfoDownloader.download().call();
+                systemInfoDownloader.downloadMetadata().call();
 
                 systemSettingDownloader.download().call();
 
-                User user = userDownloadModule.downloadUser().call();
+                User user = userModuleDownloader.downloadMetadata().call();
 
-                userDownloadModule.downloadAuthority().call();
-
-                List<Program> programs = programParentCallFactory.create(genericCallData).call();
+                List<Program> programs = programDownloader.download().call();
 
                 List<DataSet> dataSets = dataSetDownloader.download().call();
 
-                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(
-                        categoryComboUidsSeeker.seekUids()).call();
+                categoryDownloader.download().call();
 
-                categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
-
-                organisationUnitCallFactory.create(
-                        genericCallData, user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
-
-                searchOrganisationUnitCallFactory.create(genericCallData, user).call();
+                organisationUnitDownloadModule.download(user, programs, dataSets).call();
 
                 foreignKeyCleaner.cleanForeignKeyErrors();
 
@@ -144,19 +111,15 @@ public class MetadataCall extends SyncCall<Unit> {
 
     public static MetadataCall create(GenericCallData genericCallData,
                                       D2InternalModules internalModules) {
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
 
         return new MetadataCall(
-                genericCallData,
-                internalModules.systemInfo,
+                new D2CallExecutor(genericCallData.databaseAdapter()),
+                internalModules.systemInfo.moduleDownloader,
                 internalModules.systemSetting,
-                internalModules.userModule,
-                new CategoryEndpointCallFactory(genericCallData, apiCallExecutor),
-                new CategoryComboEndpointCallFactory(genericCallData, apiCallExecutor),
-                new CategoryComboUidsSeeker(genericCallData.databaseAdapter()),
-                ProgramParentCall.FACTORY,
-                OrganisationUnitCall.FACTORY,
-                SearchOrganisationUnitCall.FACTORY,
+                internalModules.user,
+                internalModules.category,
+                internalModules.program,
+                internalModules.organisationUnit,
                 internalModules.dataSet,
                 ForeignKeyCleanerImpl.create(genericCallData.databaseAdapter())
         );

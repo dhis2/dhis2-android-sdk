@@ -32,12 +32,11 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIUrlProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -122,13 +121,10 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private IdentifiableObjectStore<User> userStore;
 
     @Mock
-    private ReadOnlyObjectRepository<SystemInfo> systemInfoRepository;
+    private ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     @Mock
-    private Downloader<SystemInfo> systemInfoDownloader;
-
-    @Mock
-    private Call<SystemInfo> systemInfoEndpointCall;
+    private Callable<Unit> systemInfoEndpointCall;
 
     @Mock
     private WipeModule wipeModule;
@@ -164,8 +160,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
-        when(systemInfoDownloader.download()).thenReturn(systemInfoEndpointCall);
-        when(systemInfoEndpointCall.call()).thenReturn(systemInfoFromAPI);
+        when(systemInfoRepository.download()).thenReturn(systemInfoEndpointCall);
         whenAPICall().thenReturn(user);
 
         when(userStore.selectFirst()).thenReturn(loggedUser);
@@ -187,7 +182,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     private Callable<User> instantiateCall(String username, String password) {
-        return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor, systemInfoDownloader,
+        return new UserAuthenticateCallFactory(databaseAdapter, apiCallExecutor,
                 userService, userHandler, resourceHandler, authenticatedUserStore,
                 systemInfoRepository, userStore, wipeModule,
                 apiUrlProvider).getCall(username, password);

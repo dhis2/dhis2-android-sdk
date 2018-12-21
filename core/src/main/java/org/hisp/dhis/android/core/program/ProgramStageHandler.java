@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -127,7 +128,8 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
         collectionCleaner.deleteNotPresent(programStages);
     }
 
-    public static ProgramStageHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+    public static GenericHandler<ProgramStage, ProgramStageModel> create(DatabaseAdapter databaseAdapter,
+                                                                         DHISVersionManager versionManager) {
         return new ProgramStageHandler(
                 ProgramStageStore.create(databaseAdapter),
                 ProgramStageSectionHandler.create(databaseAdapter),

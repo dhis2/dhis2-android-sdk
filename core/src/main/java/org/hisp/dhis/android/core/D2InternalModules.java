@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
 import org.hisp.dhis.android.core.dataset.DataSetInternalModule;
 import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalModule;
+import org.hisp.dhis.android.core.program.ProgramInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
 import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
@@ -46,32 +48,38 @@ import dagger.Reusable;
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
     public final SystemSettingInternalModule systemSetting;
-    public final RelationshipInternalModule relationshipModule;
-    final CategoryInternalModule categoryModule;
+    public final RelationshipInternalModule relationship;
+    public final CategoryInternalModule category;
     public final DataSetInternalModule dataSet;
-    final DataElementInternalModule dataElementModule;
-    final DataValueInternalModule dataValueModule;
-    public final UserInternalModule userModule;
-    final MaintenanceInternalModule maintenanceModule;
+    final DataElementInternalModule dataElement;
+    final DataValueInternalModule dataValue;
+    public final ProgramInternalModule program;
+    public final OrganisationUnitInternalModule organisationUnit;
+    public final UserInternalModule user;
+    final MaintenanceInternalModule maintenance;
 
     @Inject
     public D2InternalModules(SystemInfoInternalModule systemInfo,
                              SystemSettingInternalModule systemSetting,
-                             RelationshipInternalModule relationshipModule,
-                             CategoryInternalModule categoryModule,
+                             RelationshipInternalModule relationship,
+                             CategoryInternalModule category,
                              DataSetInternalModule dataSet,
-                             DataElementInternalModule dataElementModule,
-                             DataValueInternalModule dataValueModule,
-                             UserInternalModule userModule,
-                             MaintenanceInternalModule maintenanceModule) {
+                             DataElementInternalModule dataElement,
+                             DataValueInternalModule dataValue,
+                             ProgramInternalModule program,
+                             OrganisationUnitInternalModule organisationUnit,
+                             UserInternalModule user,
+                             MaintenanceInternalModule maintenance) {
         this.systemInfo = systemInfo;
         this.systemSetting = systemSetting;
-        this.relationshipModule = relationshipModule;
-        this.categoryModule = categoryModule;
+        this.relationship = relationship;
+        this.category = category;
         this.dataSet = dataSet;
-        this.dataElementModule = dataElementModule;
-        this.dataValueModule = dataValueModule;
-        this.userModule = userModule;
-        this.maintenanceModule = maintenanceModule;
+        this.dataElement = dataElement;
+        this.dataValue = dataValue;
+        this.program = program;
+        this.organisationUnit = organisationUnit;
+        this.user = user;
+        this.maintenance = maintenance;
     }
 }

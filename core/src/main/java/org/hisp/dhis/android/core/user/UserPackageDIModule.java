@@ -44,12 +44,18 @@ public final class UserPackageDIModule {
 
     @Provides
     @Reusable
-    UserService service(Retrofit retrofit) {
+    UserService userService(Retrofit retrofit) {
         return retrofit.create(UserService.class);
     }
 
     @Provides
-    UserDownloadModule downloadModule(UserInternalModule internalModule) {
+    @Reusable
+    AuthorityService authorityService(Retrofit retrofit) {
+        return retrofit.create(AuthorityService.class);
+    }
+
+    @Provides
+    UserModuleDownloader downloadModule(UserInternalModule internalModule) {
         return internalModule;
     }
 }

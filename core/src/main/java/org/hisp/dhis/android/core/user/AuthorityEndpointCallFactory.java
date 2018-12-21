@@ -45,23 +45,24 @@ import dagger.Reusable;
 final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> {
 
     private final SyncHandler<Authority> handler;
+    private final AuthorityService service;
 
     @Inject
     AuthorityEndpointCallFactory(GenericCallData data,
                                  APICallExecutor apiCallExecutor,
-                                 SyncHandler<Authority> handler) {
+                                 SyncHandler<Authority> handler,
+                                 AuthorityService service) {
         super(data, apiCallExecutor);
         this.handler = handler;
+        this.service = service;
     }
 
     @Override
     protected CallFetcher<Authority> fetcher() {
-        final AuthorityService authorityService = data.retrofit().create(AuthorityService.class);
-
         return new AuthorityCallFetcher(apiCallExecutor) {
             @Override
             protected retrofit2.Call<List<String>> getCall() {
-                return authorityService.getAuthorities();
+                return service.getAuthorities();
             }
         };
     }

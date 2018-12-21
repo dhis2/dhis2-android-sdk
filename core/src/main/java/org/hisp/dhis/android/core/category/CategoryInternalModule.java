@@ -27,17 +27,46 @@
  */
 package org.hisp.dhis.android.core.category;
 
+import android.support.annotation.VisibleForTesting;
+
+import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
-public final class CategoryInternalModule {
+public final class CategoryInternalModule implements Downloader<Unit> {
 
     public final CategoryModule publicModule;
+    private final CategoryParentCall categoryParentCall;
+
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    final UidsCallFactory<Category> categoryCallFactory;
+
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
 
     @Inject
-    CategoryInternalModule(CategoryModule publicModule) {
+    CategoryInternalModule(CategoryModule publicModule,
+                           CategoryParentCall categoryParentCall,
+                           UidsCallFactory<Category> categoryCallFactory,
+                           UidsCallFactory<CategoryCombo> categoryComboCallFactory) {
         this.publicModule = publicModule;
+        this.categoryParentCall = categoryParentCall;
+        this.categoryCallFactory = categoryCallFactory;
+        this.categoryComboCallFactory = categoryComboCallFactory;
+    }
+
+    @Override
+    public Callable<Unit> download() {
+        return categoryParentCall;
     }
 }

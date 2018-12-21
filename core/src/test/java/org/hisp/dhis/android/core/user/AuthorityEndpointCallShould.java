@@ -72,7 +72,8 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
         super.setUp();
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        endpointCall = new AuthorityEndpointCallFactory(genericCallData, apiCallExecutor, handler).create();
+        endpointCall = new AuthorityEndpointCallFactory(genericCallData, apiCallExecutor, handler,
+                retrofit.create(AuthorityService.class)).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(authorityService.getAuthorities()).thenReturn(retrofitCall);

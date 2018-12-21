@@ -129,7 +129,8 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
         Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.queryEnrollmentsToPost();
-        Map<String, List<TrackedEntityAttributeValue>> attributeValueMap = trackedEntityAttributeValueStore.query();
+        Map<String, List<TrackedEntityAttributeValue>> attributeValueMap =
+                trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost();
         Map<String, TrackedEntityInstance> trackedEntityInstances =
                 trackedEntityInstanceStore.queryToPost();
 
@@ -235,13 +236,13 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         return new TrackedEntityInstancePostCall(
                 internalModules.systemInfo.publicModule.versionManager,
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationshipModule.publicModule.relationships,
+                internalModules.relationship.publicModule.relationships,
                 retrofit.create(TrackedEntityInstanceService.class),
                 new TrackedEntityInstanceStoreImpl(databaseAdapter),
                 EnrollmentStoreImpl.create(databaseAdapter),
                 EventStoreImpl.create(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter),
+                TrackedEntityAttributeValueStoreImpl.create(databaseAdapter),
                 NoteStore.create(databaseAdapter),
                 APICallExecutorImpl.create(databaseAdapter)
         );

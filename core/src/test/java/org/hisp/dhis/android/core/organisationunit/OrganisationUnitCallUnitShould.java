@@ -27,14 +27,12 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
@@ -55,16 +53,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.Callable;
 
-import static junit.framework.Assert.fail;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -75,9 +70,6 @@ public class OrganisationUnitCallUnitShould {
 
     @Mock
     private APICallExecutor apiCallExecutor;
-
-    @Mock
-    private Transaction transaction;
 
     //Mock return value of the mock service:
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -123,12 +115,11 @@ public class OrganisationUnitCallUnitShould {
     @Mock
     private D2Error d2Error;
 
-
     @Mock
-    private SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler;
+    private OrganisationUnitHandler organisationUnitHandler;
 
     //the call we are testing:
-    private OrganisationUnitCall organisationUnitCall;
+    private Callable<List<OrganisationUnit>> organisationUnitCall;
 
     @Before
     public void setUp() throws IOException {
@@ -174,11 +165,8 @@ public class OrganisationUnitCallUnitShould {
         when(user.phoneNumber()).thenReturn("user_phone_number");
         when(user.nationality()).thenReturn("user_nationality");
 
-
-        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
-
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
-                genericCallData, organisationUnitHandler, apiCallExecutor);
+        organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
+                apiCallExecutor, resourceHandler).create(user, new HashSet<String>(), new HashSet<String>());
 
         //Return only one organisationUnit.
         organisationUnits = Collections.singletonList(organisationUnit);
@@ -210,105 +198,20 @@ public class OrganisationUnitCallUnitShould {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void throw_exception_not_mark_transaction_successful() throws Exception {
-        when(apiCallExecutor.executePayloadCall(retrofitCall)).thenThrow(d2Error);
-        try {
-            organisationUnitCall.call();
-            fail("Expecting an Exception");
-        } catch (D2Error d2E) {
-            verify(databaseAdapter, times(1)).beginNewTransaction();
-            verify(transaction, times(1)).end();
-            verifyNoMoreInteractions(transaction);
-        } catch (Exception e) {
-            fail("Exception has wrong type");
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void not_mark_transaction_successful_if_request_fails() throws Exception {
-        when(apiCallExecutor.executePayloadCall(retrofitCall)).thenThrow(d2Error);
-
-        try {
-            organisationUnitCall.call();
-            fail("Call must fail");
-        } catch (D2Error d2E) {
-            verify(databaseAdapter, times(1)).beginNewTransaction();
-            verify(transaction, times(1)).end();
-            verifyNoMoreInteractions(transaction);
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void invoke_handler_if_request_succeeds() throws Exception {
         when(apiCallExecutor.executePayloadCall(retrofitCall)).thenReturn(organisationUnits);
 
         organisationUnitCall.call();
-
-        verify(databaseAdapter, times(1)).beginNewTransaction();
-        verify(transaction, times(1)).setSuccessful();
-        verify(transaction, times(1)).end();
 
         verify(organisationUnitHandler).handleMany(anyListOf(OrganisationUnit.class), any(ModelBuilder.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void not_fail_on_empty_input() {
-        Set<String> uids = new HashSet<>();
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
-                genericCallData, organisationUnitHandler, apiCallExecutor);
+    public void perform_call_twice_on_consecutive_calls() throws Exception {
+        organisationUnitCall.call();
+        organisationUnitCall.call();
 
-        try {
-            organisationUnitCall.call();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Exception should not be thrown.");
-        } finally {
-            assertThat(organisationUnitCall.isExecuted()).isTrue();
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void thrown_d2_call_exception_on_consecutive_calls() {
-        try {
-            organisationUnitCall.call();
-            organisationUnitCall.call();
-            fail("Expecting an Exception on Consecutive calls");
-        } catch (Exception e) {
-            assertThat(D2Error.class.isInstance(e)).isTrue();
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mark_as_executed_after_call() {
-        /*when(organisationUnitHandler.handleMany(anyListOf(OrganisationUnit.class),
-        TODO fix
-                any(OrganisationUnitModelBuilder.class))
-        ).thenThrow(IOException.class);
-                 */
-
-        try {
-            organisationUnitCall.call();
-        } catch (Exception e) {
-            fail("Exception should not be thrown.");
-        } finally {
-            assertThat(organisationUnitCall.isExecuted()).isTrue();
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mark_as_executed_after_call_with_io_exception() throws D2Error {
-        when(apiCallExecutor.executePayloadCall(retrofitCall)).thenThrow(d2Error);
-        try {
-            organisationUnitCall.call();
-            fail("IOException should be thrown");
-        } catch (Exception e) {
-            assertThat(organisationUnitCall.isExecuted()).isTrue();
-        }
+        verify(organisationUnitHandler, times(2)).handleMany(anyListOf(OrganisationUnit.class), any(OrganisationUnitDisplayPathTransformer.class));
     }
 }

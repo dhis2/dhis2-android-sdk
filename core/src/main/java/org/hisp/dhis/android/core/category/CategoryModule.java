@@ -29,9 +29,13 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
 public final class CategoryModule {
 
     public final ReadOnlyIdentifiableCollectionRepository<Category> categories;
@@ -39,6 +43,7 @@ public final class CategoryModule {
     public final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
     public final ReadOnlyIdentifiableCollectionRepository<CategoryCombo> categoryCombos;
 
+    @Inject
     CategoryModule(
             ReadOnlyIdentifiableCollectionRepository<Category> categories,
             ReadOnlyIdentifiableCollectionRepository<CategoryOption> categoryOptions,

@@ -99,7 +99,7 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
             throws Exception {
         Boolean successfulSync = true;
 
-        internalModules.systemInfo.download().call();
+        internalModules.systemInfo.publicModule.systemInfo.download().call();
 
         for (Paging paging : pagingList) {
             try {

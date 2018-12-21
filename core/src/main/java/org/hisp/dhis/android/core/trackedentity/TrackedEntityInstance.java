@@ -85,13 +85,13 @@ public abstract class TrackedEntityInstance implements ObjectWithUidInterface, O
     public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
             uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
             relationships.with(RelationshipFields.allFields),
-            trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields),
+            trackedEntityAttributeValues.with(TrackedEntityAttributeValueFields.allFields),
             enrollment.with(EnrollmentFields.allFields), coordinates, featureType
     ).build();
 
     static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()
             .fields(uid, created, lastUpdated, organisationUnit, trackedEntityType, coordinates, featureType,
-                    trackedEntityAttributeValues.with(TrackedEntityAttributeValue.allFields), deleted
+                    trackedEntityAttributeValues.with(TrackedEntityAttributeValueFields.allFields), deleted
     ).build();
 
     @JsonProperty(UID)

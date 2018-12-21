@@ -30,13 +30,8 @@ package org.hisp.dhis.android.core.organisationunit;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 
@@ -46,76 +41,59 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
-public class OrganisationUnitCall extends SyncCall<List<OrganisationUnit>> {
+@Reusable
+class OrganisationUnitCallFactory {
 
-    private final User user;
     private final OrganisationUnitService organisationUnitService;
-    private final SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler;
-    private final GenericCallData data;
-    private final APICallExecutor apiCallExecutor;
+    private final OrganisationUnitHandler handler;
 
-    OrganisationUnitCall(@NonNull User user,
-                         @NonNull OrganisationUnitService organisationUnitService,
-                         @NonNull GenericCallData data,
-                         @NonNull SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler,
-                         APICallExecutor apiCallExecutor) {
-        this.user = user;
+    private final APICallExecutor apiCallExecutor;
+    private final ResourceHandler resourceHandler;
+
+    @Inject
+    OrganisationUnitCallFactory(@NonNull OrganisationUnitService organisationUnitService,
+                                @NonNull OrganisationUnitHandler handler,
+                                @NonNull APICallExecutor apiCallExecutor,
+                                @NonNull ResourceHandler resourceHandler) {
         this.organisationUnitService = organisationUnitService;
-        this.data = data;
-        this.organisationUnitHandler = organisationUnitHandler;
+        this.handler = handler;
         this.apiCallExecutor = apiCallExecutor;
+        this.resourceHandler = resourceHandler;
     }
 
-    @Override
-    public List<OrganisationUnit> call() throws Exception {
-        setExecuted();
+    public Callable<List<OrganisationUnit>> create(final User user,
+                                                   final Set<String> programUids,
+                                                   final Set<String> dataSetUids) {
 
-        final Set<OrganisationUnit> organisationUnits = new HashSet<>();
-
-        return new D2CallExecutor(data.databaseAdapter()).executeD2CallTransactionally(
-                new Callable<List<OrganisationUnit>>() {
+        return new Callable<List<OrganisationUnit>>() {
             @Override
             public List<OrganisationUnit> call() throws Exception {
+                Set<OrganisationUnit> organisationUnits = new HashSet<>();
                 Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
                 for (String uid : rootOrgUnitUids) {
                     organisationUnits.addAll(apiCallExecutor.executePayloadCall(
                             getOrganisationUnitAndDescendants(uid)));
                 }
 
-                organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+                handler.setData(programUids, dataSetUids, user);
 
-                data.resourceHandler().handleResource(ResourceModel.Type.ORGANISATION_UNIT);
+                handler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+
+                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT);
 
                 return new ArrayList<>(organisationUnits);
             }
-        });
+        };
     }
 
     private retrofit2.Call<Payload<OrganisationUnit>> getOrganisationUnitAndDescendants(@NonNull String uid) {
         return organisationUnitService.getOrganisationUnitWithDescendants(
                 uid, OrganisationUnitFields.allFields, true, false);
     }
-
-    public interface Factory {
-        Call<List<OrganisationUnit>> create(GenericCallData data,
-                                            User user,
-                                            Set<String> programUids,
-                                            Set<String> dataSetUids);
-    }
-
-    public static final OrganisationUnitCall.Factory FACTORY = new OrganisationUnitCall.Factory() {
-        @Override
-        public Call<List<OrganisationUnit>> create(GenericCallData data,
-                                                                User user,
-                                                                Set<String> programUids,
-                                                                Set<String> dataSetUids) {
-            SyncHandlerWithTransformer<OrganisationUnit> handler =
-                    OrganisationUnitHandler.create(data.databaseAdapter(), programUids, dataSetUids,
-                            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
-            return new OrganisationUnitCall(user, data.retrofit().create(OrganisationUnitService.class), data, handler,
-                    APICallExecutorImpl.create(data.databaseAdapter()));
-        }
-    };
 }

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -60,7 +60,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
 
     private final D2CallExecutor d2CallExecutor;
 
-    private final Downloader<SystemInfo> systemInfoDownloader;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory;
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
@@ -70,7 +70,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
 
     @Inject
     AggregatedDataCall(@NonNull D2CallExecutor d2CallExecutor,
-                       @NonNull Downloader<SystemInfo> systemInfoDownloader,
+                       @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
                        @NonNull QueryCallFactory<DataValue, DataValueQuery> dataValueCallFactory,
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
@@ -78,7 +78,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
                        @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
                        @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
         this.d2CallExecutor = d2CallExecutor;
-        this.systemInfoDownloader = systemInfoDownloader;
+        this.systemInfoRepository = systemInfoRepository;
         this.dataValueCallFactory = dataValueCallFactory;
         this.dataSetCompleteRegistrationCallFactory = dataSetCompleteRegistrationCallFactory;
         this.dataSetStore = dataSetStore;
@@ -94,7 +94,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
 
             @Override
             public Unit call() throws Exception {
-                systemInfoDownloader.download().call();
+                systemInfoRepository.download().call();
 
                 List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
                 Set<String> periodIds = Collections.unmodifiableSet(

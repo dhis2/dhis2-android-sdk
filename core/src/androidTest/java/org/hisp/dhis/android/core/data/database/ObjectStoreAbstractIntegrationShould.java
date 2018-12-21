@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.content.ContentValues;
-
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;

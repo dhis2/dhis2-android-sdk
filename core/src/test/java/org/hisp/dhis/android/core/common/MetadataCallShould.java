@@ -28,28 +28,21 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
-import org.assertj.core.util.Sets;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
-import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.settings.SystemSetting;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.Authority;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserDownloadModule;
+import org.hisp.dhis.android.core.user.UserModuleDownloader;
 import org.hisp.dhis.android.core.user.UserRole;
 import org.junit.After;
 import org.junit.Before;
@@ -62,8 +55,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anySetOf;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
@@ -94,22 +87,13 @@ public class MetadataCallShould extends BaseCallShould {
     private OrganisationUnit organisationUnit;
 
     @Mock
-    private Authority authority;
-
-    @Mock
-    private Category category;
-
-    @Mock
-    private CategoryCombo categoryCombo;
-
-    @Mock
     private Program program;
 
     @Mock
     private DataSet dataSet;
 
     @Mock
-    private Call<SystemInfo> systemInfoEndpointCall;
+    private Callable<Unit> systemInfoDownloadCall;
 
     @Mock
     private Call<SystemSetting> systemSettingEndpointCall;
@@ -118,13 +102,7 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<User> userCall;
 
     @Mock
-    private Call<List<Authority>> authorityEndpointCall;
-
-    @Mock
-    private Call<List<Category>> categoryEndpointCall;
-
-    @Mock
-    private Call<List<CategoryCombo>> categoryComboEndpointCall;
+    private Callable<Unit> categoryDownloadCall;
 
     @Mock
     private Call<List<Program>> programParentCall;
@@ -133,37 +111,25 @@ public class MetadataCallShould extends BaseCallShould {
     private Call<List<DataSet>> dataSetParentCall;
 
     @Mock
-    private Call<List<OrganisationUnit>> organisationUnitEndpointCall;
+    private Callable<Unit> organisationUnitDownloadCall;
 
     @Mock
-    private Call<List<OrganisationUnit>> searchOrganisationUnitCall;
-
-    @Mock
-    private Downloader<SystemInfo> systemInfoCallDownloader;
+    private SystemInfoModuleDownloader systemInfoModuleDownloader;
 
     @Mock
     private Downloader<SystemSetting> systemSettingDownloader;
 
     @Mock
-    private UserDownloadModule userDownloadModule;
+    private UserModuleDownloader userDownloadModule;
 
     @Mock
-    private UidsCallFactory<Category> categoryCallFactory;
+    private Downloader<Unit> categoryDownloader;
 
     @Mock
-    private UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private Downloader<List<Program>> programParentCallFactory;
 
     @Mock
-    private CategoryComboUidsSeeker categoryComboUidsSeeker;
-
-    @Mock
-    private GenericCallFactory<List<Program>> programParentCallFactory;
-
-    @Mock
-    private OrganisationUnitCall.Factory organisationUnitCallFactory;
-
-    @Mock
-    private SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
+    private OrganisationUnitDownloadModule organisationUnitDownloadModule;
 
     @Mock
     private Downloader<List<DataSet>> dataSetDownloader;
@@ -188,45 +154,32 @@ public class MetadataCallShould extends BaseCallShould {
         when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         // Call factories
-        when(systemInfoCallDownloader.download()).thenReturn(systemInfoEndpointCall);
+        when(systemInfoModuleDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
         when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
-        when(userDownloadModule.downloadUser()).thenReturn(userCall);
-        when(userDownloadModule.downloadAuthority()).thenReturn(authorityEndpointCall);
-        when(programParentCallFactory.create(any(GenericCallData.class))).thenReturn(programParentCall);
-        when(categoryCallFactory.create(anySetOf(String.class))).thenReturn(categoryEndpointCall);
-        when(categoryComboCallFactory.create(anySetOf(String.class))).thenReturn(categoryComboEndpointCall);
-        when(organisationUnitCallFactory.create(any(GenericCallData.class), same(user), anySetOf(String.class),
-                anySetOf(String.class))).thenReturn(organisationUnitEndpointCall);
-        when(searchOrganisationUnitCallFactory.create(any(GenericCallData.class), same(user))).thenReturn(
-                searchOrganisationUnitCall);
+        when(userDownloadModule.downloadMetadata()).thenReturn(userCall);
+        when(programParentCallFactory.download()).thenReturn(programParentCall);
+        when(categoryDownloader.download()).thenReturn(categoryDownloadCall);
+        when(organisationUnitDownloadModule.download(same(user), anySetOf(Program.class),
+                anySetOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
         when(dataSetDownloader.download()).thenReturn(dataSetParentCall);
 
         // Calls
-        when(systemInfoEndpointCall.call()).thenReturn(systemInfo);
+        when(systemInfoDownloadCall.call()).thenReturn(new Unit());
         when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
         when(userCall.call()).thenReturn(user);
-        when(authorityEndpointCall.call()).thenReturn(Lists.newArrayList(authority));
-        when(categoryEndpointCall.call()).thenReturn(Lists.newArrayList(category));
-        when(categoryComboEndpointCall.call()).thenReturn(Lists.newArrayList(categoryCombo));
+        when(categoryDownloadCall.call()).thenReturn(new Unit());
         when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
-        when(organisationUnitEndpointCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
-        when(searchOrganisationUnitCall.call()).thenReturn(Lists.newArrayList(organisationUnit));
         when(dataSetParentCall.call()).thenReturn(Lists.newArrayList(dataSet));
-        when(categoryComboUidsSeeker.seekUids()).thenReturn(
-                Sets.newHashSet(Lists.newArrayList("category_combo_uid")));
 
         // Metadata call
         metadataCall = new MetadataCall(
-                genericCallData,
-                systemInfoCallDownloader,
+                new D2CallExecutor(databaseAdapter),
+                systemInfoModuleDownloader,
                 systemSettingDownloader,
                 userDownloadModule,
-                categoryCallFactory,
-                categoryComboCallFactory,
-                categoryComboUidsSeeker,
+                categoryDownloader,
                 programParentCallFactory,
-                organisationUnitCallFactory,
-                searchOrganisationUnitCallFactory,
+                organisationUnitDownloadModule,
                 dataSetDownloader,
                 foreignKeyCleaner);
     }
@@ -243,7 +196,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_system_info_call_fail() throws Exception {
-        when(systemInfoEndpointCall.call()).thenThrow(d2Error);
+        when(systemInfoDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
@@ -260,20 +213,8 @@ public class MetadataCallShould extends BaseCallShould {
     }
 
     @Test(expected = D2Error.class)
-    public void fail_when_authority_call_fail() throws Exception {
-        when(authorityEndpointCall.call()).thenThrow(d2Error);
-        metadataCall.call();
-    }
-
-    @Test(expected = D2Error.class)
-    public void fail_when_category_call_fail() throws Exception {
-        when(categoryEndpointCall.call()).thenThrow(d2Error);
-        metadataCall.call();
-    }
-
-    @Test(expected = D2Error.class)
-    public void fail_when_category_combo_call_fail() throws Exception {
-        when(categoryComboEndpointCall.call()).thenThrow(d2Error);
+    public void fail_when_category_download_call_fail() throws Exception {
+        when(categoryDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
@@ -285,13 +226,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_organisation_unit_call_fail() throws Exception {
-        when(organisationUnitEndpointCall.call()).thenThrow(d2Error);
-        metadataCall.call();
-    }
-
-    @Test(expected = D2Error.class)
-    public void fail_when_search_organisation_unit_call_fail() throws Exception {
-        when(searchOrganisationUnitCall.call()).thenThrow(d2Error);
+        when(organisationUnitDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,13 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.calls.Call;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-import java.util.List;
+@Module(includes = {
+        OrganisationUnitEntityDIModule.class,
+        UserOrganisationUnitEntityDIModule.class
+})
+public final class OrganisationUnitPackageDIModule {
 
-public interface UserDownloadModule {
-    Call<User> downloadUser();
-    Call<List<Authority>> downloadAuthority();
+    @Provides
+    @Reusable
+    OrganisationUnitService service(Retrofit retrofit) {
+        return retrofit.create(OrganisationUnitService.class);
+    }
 }

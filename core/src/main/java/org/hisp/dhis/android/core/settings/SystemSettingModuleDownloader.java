@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.concurrent.Callable;
 
@@ -41,15 +39,15 @@ import dagger.Reusable;
 @Reusable
 public class SystemSettingModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
+    private final SystemSettingCall call;
 
     @Inject
-    SystemSettingModuleDownloader(ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.systemInfoRepository = systemInfoRepository;
+    SystemSettingModuleDownloader(SystemSettingCall call) {
+        this.call = call;
     }
 
     @Override
     public Callable<Unit> downloadMetadata() {
-        return systemInfoRepository.download();
+        return call;
     }
 }

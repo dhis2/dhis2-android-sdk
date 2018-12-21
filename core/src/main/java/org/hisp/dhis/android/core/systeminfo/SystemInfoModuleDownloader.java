@@ -27,24 +27,28 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
+import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class SystemInfoModule {
+public class SystemInfoModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    public final DHISVersionManager versionManager;
-    public final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     @Inject
-    SystemInfoModule(DHISVersionManager versionManager,
-                     ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.versionManager = versionManager;
-        this.systemInfo = systemInfoRepository;
+    SystemInfoModuleDownloader(ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
+        this.systemInfoRepository = systemInfoRepository;
+    }
+
+    @Override
+    public Callable<Unit> downloadMetadata() {
+        return systemInfoRepository.download();
     }
 }

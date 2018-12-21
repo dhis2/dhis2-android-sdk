@@ -32,7 +32,7 @@ import android.database.Cursor;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -65,20 +65,20 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final TrackedEntityAttributeStore trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
-    private final Downloader<SystemInfo> systemInfoDownloader;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
 
     private TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
-            Downloader<SystemInfo> systemInfoDownloader,
+            ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             TrackedEntityAttributeStore trackedEntityAttributeStore,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory) {
         this.databaseAdapter = databaseAdapter;
-        this.systemInfoDownloader = systemInfoDownloader;
+        this.systemInfoRepository = systemInfoRepository;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -158,7 +158,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        executor.executeD2Call(systemInfoDownloader.download());
+        executor.executeD2Call(systemInfoRepository.download());
 
         String trackedEntityAttributePattern;
         try {
@@ -259,7 +259,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                                                                     D2InternalModules internalModules) {
         return new TrackedEntityAttributeReservedValueManager(
                 data.databaseAdapter(),
-                internalModules.systemInfo,
+                internalModules.systemInfo.publicModule.systemInfo,
                 TrackedEntityAttributeReservedValueStore.create(data.databaseAdapter()),
                 OrganisationUnitStore.create(data.databaseAdapter()),
                 new TrackedEntityAttributeStoreImpl(data.databaseAdapter()),

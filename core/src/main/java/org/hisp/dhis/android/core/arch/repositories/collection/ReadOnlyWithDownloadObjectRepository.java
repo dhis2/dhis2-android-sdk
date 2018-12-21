@@ -25,26 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.Unit;
 
-import javax.inject.Inject;
+import java.util.concurrent.Callable;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class SystemInfoModule {
-
-    public final DHISVersionManager versionManager;
-    public final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
-
-    @Inject
-    SystemInfoModule(DHISVersionManager versionManager,
-                     ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.versionManager = versionManager;
-        this.systemInfo = systemInfoRepository;
-    }
+public interface ReadOnlyWithDownloadObjectRepository<M extends Model> extends ReadOnlyObjectRepository<M> {
+    Callable<Unit> download();
 }

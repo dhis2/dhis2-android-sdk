@@ -27,31 +27,20 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemInfoInternalModule implements Downloader<SystemInfo> {
+public final class SystemInfoInternalModule {
 
-    private final Provider<SystemInfoCall> systemInfoCallProvider;
-
+    public final SystemInfoModuleDownloader moduleDownloader;
     public final SystemInfoModule publicModule;
 
     @Inject
     SystemInfoInternalModule(SystemInfoModule publicModule,
-                             Provider<SystemInfoCall> systemInfoCallProvider) {
+                             SystemInfoModuleDownloader moduleDownloader) {
         this.publicModule = publicModule;
-        this.systemInfoCallProvider = systemInfoCallProvider;
-    }
-
-    @Override
-    public Callable<SystemInfo> download() {
-        return systemInfoCallProvider.get();
+        this.moduleDownloader = moduleDownloader;
     }
 }

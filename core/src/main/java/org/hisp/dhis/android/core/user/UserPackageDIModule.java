@@ -55,7 +55,7 @@ public final class UserPackageDIModule {
     }
 
     @Provides
-    UserDownloadModule downloadModule(UserInternalModule internalModule) {
+    UserModuleDownloader downloadModule(UserInternalModule internalModule) {
         return internalModule;
     }
 }

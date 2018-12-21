@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -63,7 +63,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
 
     private MockWebServer mockWebServer;
-    private Downloader<SystemInfo> systemInfoDownloaderModule;
+    private ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     private SystemInfo systemInfoFromAPI = SystemInfoSamples.get1();
     private SystemInfo systemInfoFromDB = SystemInfoSamples.get2();
@@ -101,12 +101,12 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();
 
-        systemInfoDownloaderModule = d2DIComponent.internalModules().systemInfo;
+        systemInfoRepository = d2DIComponent.internalModules().systemInfo.publicModule.systemInfo;
     }
 
     @Test
     public void persist_system_info_when_call() throws Exception {
-        systemInfoDownloaderModule.download().call();
+        systemInfoRepository.download().call();
         Cursor systemInfoCursor = getCursor();
         assertSystemInfoInCursor(systemInfoCursor, systemInfoFromAPI);
     }
@@ -117,7 +117,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         Cursor cursorPreCall = getCursor();
         assertSystemInfoInCursor(cursorPreCall, systemInfoFromDB);
 
-        systemInfoDownloaderModule.download().call();
+        systemInfoRepository.download().call();
         Cursor cursorPostCall = getCursor();
         assertSystemInfoInCursor(cursorPostCall, systemInfoFromAPI);
     }

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -39,9 +39,14 @@ import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
+import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
 
-class SystemInfoCall extends SyncCall<SystemInfo> {
+import dagger.Reusable;
+
+@Reusable
+class SystemInfoCall implements Callable<Unit> {
     private final DatabaseAdapter databaseAdapter;
     private final SyncHandler<SystemInfo> systemInfoHandler;
     private final SystemInfoService systemInfoService;
@@ -65,9 +70,7 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
     }
 
     @Override
-    public SystemInfo call() throws D2Error {
-        setExecuted();
-
+    public Unit call() throws D2Error {
         SystemInfo systemInfo = apiCallExecutor.executeObjectCall(
                 systemInfoService.getSystemInfo(SystemInfoFields.allFields));
 
@@ -84,7 +87,7 @@ class SystemInfoCall extends SyncCall<SystemInfo> {
         }
 
         insertOrUpdateSystemInfo(systemInfo);
-        return systemInfo;
+        return new Unit();
     }
 
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {

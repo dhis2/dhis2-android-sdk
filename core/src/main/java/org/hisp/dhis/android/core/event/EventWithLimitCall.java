@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
@@ -38,7 +38,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
     private final boolean limitByOrgUnit;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
-    private final Downloader<SystemInfo> systemInfoDownloader;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private final ProgramStoreInterface programStore;
@@ -47,7 +47,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
     private EventWithLimitCall(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
-            @NonNull Downloader<SystemInfo> systemInfoDownloader,
+            @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull ResourceHandler resourceHandler,
             @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
             @NonNull ProgramStoreInterface programStore,
@@ -56,7 +56,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
             boolean limitByOrgUnit) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
-        this.systemInfoDownloader = systemInfoDownloader;
+        this.systemInfoRepository = systemInfoRepository;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
@@ -91,7 +91,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
         String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
         eventQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-        systemInfoDownloader.download().call();
+        systemInfoRepository.download().call();
 
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();
@@ -202,7 +202,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
         return new EventWithLimitCall(
                 databaseAdapter,
                 retrofit,
-                internalModules.systemInfo,
+                internalModules.systemInfo.publicModule.systemInfo,
                 resourceHandler,
                 UserOrganisationUnitLinkStore.create(databaseAdapter),
                 ProgramStore.create(databaseAdapter),

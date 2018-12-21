@@ -41,21 +41,20 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserDownloadModule;
+import org.hisp.dhis.android.core.user.UserModuleDownloader;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 public class MetadataCall extends SyncCall<Unit> {
 
     private final D2CallExecutor d2CallExecutor;
 
-    private final Downloader<SystemInfo> systemInfoDownloader;
+    private final SystemInfoModuleDownloader systemInfoDownloader;
     private final Downloader<SystemSetting> systemSettingDownloader;
-    private final UserDownloadModule userDownloadModule;
+    private final UserModuleDownloader userModuleDownloader;
     private final Downloader<Unit> categoryDownloader;
     private final Downloader<List<Program>> programDownloader;
     private final OrganisationUnitDownloadModule organisationUnitDownloadModule;
@@ -63,9 +62,9 @@ public class MetadataCall extends SyncCall<Unit> {
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
-                        @NonNull Downloader<SystemInfo> systemInfoDownloader,
+                        @NonNull SystemInfoModuleDownloader systemInfoDownloader,
                         @NonNull Downloader<SystemSetting> systemSettingDownloader,
-                        @NonNull UserDownloadModule userDownloadModule,
+                        @NonNull UserModuleDownloader userModuleDownloader,
                         @NonNull Downloader<Unit> categoryDownloader,
                         @NonNull Downloader<List<Program>> programDownloader,
                         @NonNull OrganisationUnitDownloadModule organisationUnitDownloadModule,
@@ -74,7 +73,7 @@ public class MetadataCall extends SyncCall<Unit> {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
-        this.userDownloadModule = userDownloadModule;
+        this.userModuleDownloader = userModuleDownloader;
         this.categoryDownloader = categoryDownloader;
         this.programDownloader = programDownloader;
         this.organisationUnitDownloadModule = organisationUnitDownloadModule;
@@ -89,11 +88,11 @@ public class MetadataCall extends SyncCall<Unit> {
         return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() throws Exception {
-                systemInfoDownloader.download().call();
+                systemInfoDownloader.downloadMetadata().call();
 
                 systemSettingDownloader.download().call();
 
-                User user = userDownloadModule.downloadUserAndAuthority().call();
+                User user = userModuleDownloader.downloadMetadata().call();
 
                 List<Program> programs = programDownloader.download().call();
 
@@ -115,7 +114,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
         return new MetadataCall(
                 new D2CallExecutor(genericCallData.databaseAdapter()),
-                internalModules.systemInfo,
+                internalModules.systemInfo.moduleDownloader,
                 internalModules.systemSetting,
                 internalModules.user,
                 internalModules.category,

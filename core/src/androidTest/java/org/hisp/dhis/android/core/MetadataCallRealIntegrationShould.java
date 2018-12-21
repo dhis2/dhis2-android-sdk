@@ -4,7 +4,6 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -57,7 +56,7 @@ public class MetadataCallRealIntegrationShould extends AbsStoreTestCase {
         // adding a new program..etc.
     }
 
-    @Test
+    //@Test
     public void response_successful_on_sync_meta_data_two_times() throws Exception {
         d2.userModule().logIn("android", "Android123").call();
 

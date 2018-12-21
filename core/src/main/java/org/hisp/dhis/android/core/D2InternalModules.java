@@ -29,14 +29,8 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.dataset.DataSetInternalModule;
-import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
-import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalModule;
-import org.hisp.dhis.android.core.program.ProgramInternalModule;
 import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 import org.hisp.dhis.android.core.user.UserInternalModule;
 
@@ -47,39 +41,21 @@ import dagger.Reusable;
 @Reusable
 public final class D2InternalModules {
     public final SystemInfoInternalModule systemInfo;
-    public final SystemSettingInternalModule systemSetting;
     public final RelationshipInternalModule relationship;
     public final CategoryInternalModule category;
-    public final DataSetInternalModule dataSet;
-    final DataElementInternalModule dataElement;
-    final DataValueInternalModule dataValue;
-    public final ProgramInternalModule program;
     public final OrganisationUnitInternalModule organisationUnit;
     public final UserInternalModule user;
-    final MaintenanceInternalModule maintenance;
 
     @Inject
     public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             SystemSettingInternalModule systemSetting,
                              RelationshipInternalModule relationship,
                              CategoryInternalModule category,
-                             DataSetInternalModule dataSet,
-                             DataElementInternalModule dataElement,
-                             DataValueInternalModule dataValue,
-                             ProgramInternalModule program,
                              OrganisationUnitInternalModule organisationUnit,
-                             UserInternalModule user,
-                             MaintenanceInternalModule maintenance) {
+                             UserInternalModule user) {
         this.systemInfo = systemInfo;
-        this.systemSetting = systemSetting;
         this.relationship = relationship;
         this.category = category;
-        this.dataSet = dataSet;
-        this.dataElement = dataElement;
-        this.dataValue = dataValue;
-        this.program = program;
         this.organisationUnit = organisationUnit;
         this.user = user;
-        this.maintenance = maintenance;
     }
 }

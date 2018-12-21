@@ -25,19 +25,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+
+package org.hisp.dhis.android.core;
+
+import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import org.hisp.dhis.android.core.datavalue.DataValueModule;
+import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
+import org.hisp.dhis.android.core.user.UserModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class ProgramInternalModule {
+final class D2Modules {
 
-    public final ProgramModuleDownloader moduleDownloader;
+    final CategoryModule category;
+    final DataElementModule dataElement;
+    final DataValueModule dataValue;
+    final MaintenanceModule maintenance;
+    final SystemInfoModule systemInfo;
+    final RelationshipModule relationship;
+    final UserModule user;
 
     @Inject
-    ProgramInternalModule(ProgramModuleDownloader moduleDownloader) {
-        this.moduleDownloader = moduleDownloader;
+    public D2Modules(CategoryModule category,
+                     DataElementModule dataElement,
+                     DataValueModule dataValue,
+                     MaintenanceModule maintenance,
+                     SystemInfoModule systemInfo,
+                     RelationshipModule relationship,
+                     UserModule user) {
+        this.category = category;
+        this.dataElement = dataElement;
+        this.dataValue = dataValue;
+        this.maintenance = maintenance;
+        this.systemInfo = systemInfo;
+        this.relationship = relationship;
+        this.user = user;
     }
 }

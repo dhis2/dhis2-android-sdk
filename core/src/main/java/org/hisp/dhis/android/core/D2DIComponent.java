@@ -57,6 +57,7 @@ import dagger.Component;
 public interface D2DIComponent {
 
     D2InternalModules internalModules();
+    D2Modules modules();
     ResourceHandler resourceHandler();
     GenericCallData genericCallData();
     AggregatedModule aggregatedModule();

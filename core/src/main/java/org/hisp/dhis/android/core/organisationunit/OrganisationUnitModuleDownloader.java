@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -41,22 +43,25 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class OrganisationUnitParentCallFactory {
+public class OrganisationUnitModuleDownloader {
 
     private final OrganisationUnitCallFactory organisationUnitCallFactory;
     private final SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory;
+    private final SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitOnDemandCallFactory;
+
 
     @Inject
-    OrganisationUnitParentCallFactory(OrganisationUnitCallFactory organisationUnitCallFactory,
-                                      SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory) {
+    OrganisationUnitModuleDownloader(OrganisationUnitCallFactory organisationUnitCallFactory,
+                                     SearchOrganisationUnitCallFactory searchOrganisationUnitCallFactory,
+                                     SearchOrganisationUnitOnDemandCallFactory searchOrganisationUnitOnDemandCallFactory) {
         this.organisationUnitCallFactory = organisationUnitCallFactory;
         this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
+        this.searchOrganisationUnitOnDemandCallFactory = searchOrganisationUnitOnDemandCallFactory;
     }
 
-    public Callable<Unit> call(final User user,
-                               final Collection<Program> programs,
-                               final Collection<DataSet> dataSets) {
-
+    public Callable<Unit> downloadMetadata(final User user,
+                                           final Collection<Program> programs,
+                                           final Collection<DataSet> dataSets) {
         return new Callable<Unit>() {
             @Override
             public Unit call() throws Exception {
@@ -67,5 +72,9 @@ class OrganisationUnitParentCallFactory {
                 return new Unit();
             }
         };
+    }
+
+    public Callable<List<OrganisationUnit>> downloadSearchOrganisationUnits(Set<String> uids, User user) {
+        return searchOrganisationUnitOnDemandCallFactory.create(uids, user);
     }
 }

@@ -11,7 +11,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 import org.hisp.dhis.android.core.user.User;
@@ -27,7 +27,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final TrackedEntityInstanceUidHelper uidsHelper;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
-    private final OrganisationUnitDownloadModule organisationUnitDownloadModule;
+    private final OrganisationUnitModuleDownloader organisationUnitDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     private final Collection<TrackedEntityInstance> trackedEntityInstances;
@@ -37,14 +37,14 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull TrackedEntityInstanceUidHelper uidsHelper,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
-            @NonNull OrganisationUnitDownloadModule organisationUnitDownloadModule,
+            @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,
             @NonNull Collection<TrackedEntityInstance> trackedEntityInstances,
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
         this.uidsHelper = uidsHelper;
         this.authenticatedUserStore = authenticatedUserStore;
-        this.organisationUnitDownloadModule = organisationUnitDownloadModule;
+        this.organisationUnitDownloader = organisationUnitDownloader;
         this.trackedEntityInstances = trackedEntityInstances;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
@@ -66,7 +66,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
                     AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
                     Callable<List<OrganisationUnit>> organisationUnitCall =
-                            organisationUnitDownloadModule.downloadSearchOrganisationUnits(
+                            organisationUnitDownloader.downloadSearchOrganisationUnits(
                                     searchOrgUnitUids,
                                     User.builder().uid(authenticatedUserModel.user()).build());
                     organisationUnitCall.call();
@@ -88,7 +88,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCall extends SyncCall<Vo
                 TrackedEntityInstanceHandler.create(databaseAdapter, internalModules),
                 TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
-                internalModules.organisationUnit,
+                internalModules.organisationUnit.moduleDownloader,
                 trackedEntityInstances,
                 ForeignKeyCleanerImpl.create(databaseAdapter)
         );

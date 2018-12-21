@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
@@ -127,7 +127,7 @@ public class MetadataCallShould extends BaseCallShould {
     private ProgramModuleDownloader programDownloader;
 
     @Mock
-    private OrganisationUnitDownloadModule organisationUnitDownloader;
+    private OrganisationUnitModuleDownloader organisationUnitDownloader;
 
     @Mock
     private DataSetModuleDownloader dataSetDownloader;
@@ -157,7 +157,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(userDownloader.downloadMetadata()).thenReturn(userCall);
         when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloader.download(same(user), anySetOf(Program.class),
+        when(organisationUnitDownloader.downloadMetadata(same(user), anySetOf(Program.class),
                 anySetOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
         when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
 

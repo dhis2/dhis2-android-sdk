@@ -31,9 +31,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -48,6 +46,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -108,7 +107,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private UidsCallFactory<OptionSet> optionSetCallFactory;
 
     // object to test
-    private Call<List<Program>> programParentCall;
+    private Callable<List<Program>> programDownloadCall;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -148,14 +147,13 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         when(programRuleEndpointCall.call()).thenReturn(Collections.<ProgramRule>emptyList());
 
         // Metadata call
-        programParentCall = new ProgramModuleDownloader(
-                new D2CallExecutor(databaseAdapter),
+        programDownloadCall = new ProgramModuleDownloader(
                 programCallFactory,
                 programStageCallFactory,
                 programRuleCallFactory,
                 trackedEntityCallFactory,
                 relationshipTypeCallFactory,
-                optionSetCallFactory);
+                optionSetCallFactory).downloadMetadata();
     }
 
     @After
@@ -165,43 +163,43 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
     @Test
     public void succeed_when_endpoint_calls_succeed() throws Exception {
-        programParentCall.call();
+        programDownloadCall.call();
     }
 
     @Test
     public void return_programs() throws Exception {
-        List<Program> programs = programParentCall.call();
+        List<Program> programs = programDownloadCall.call();
         assertTrue(!programs.isEmpty());
         assertThat(programs.get(0)).isEqualTo(program);
     }
 
-    @Test(expected = D2Error.class)
+    @Test(expected = Exception.class)
     public void fail_when_program_call_fail() throws Exception {
         whenEndpointCallFails(programEndpointCall);
-        programParentCall.call();
+        programDownloadCall.call();
     }
 
-    @Test(expected = D2Error.class)
+    @Test(expected = Exception.class)
     public void fail_when_program_stage_call_fail() throws Exception {
         whenEndpointCallFails(programStageEndpointCall);
-        programParentCall.call();
+        programDownloadCall.call();
     }
 
-    @Test(expected = D2Error.class)
+    @Test(expected = Exception.class)
     public void fail_when_program_rule_call_fail() throws Exception {
         whenEndpointCallFails(programRuleEndpointCall);
-        programParentCall.call();
+        programDownloadCall.call();
     }
 
-    @Test(expected = D2Error.class)
+    @Test(expected = Exception.class)
     public void fail_when_tracked_entity_types_call_fail() throws Exception {
         whenEndpointCallFails(trackedEntityTypeCall);
-        programParentCall.call();
+        programDownloadCall.call();
     }
 
-    @Test(expected = D2Error.class)
+    @Test(expected = Exception.class)
     public void fail_when_relationship_type_call_fail() throws Exception {
         whenEndpointCallFails(relationshipTypeCall);
-        programParentCall.call();
+        programDownloadCall.call();
     }
 }

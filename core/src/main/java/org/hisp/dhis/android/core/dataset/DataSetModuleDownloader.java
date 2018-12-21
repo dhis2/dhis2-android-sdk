@@ -45,7 +45,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class DataSetModuleDownloader implements MetadataModuleDownloader<List<DataSet>> {
+public class DataSetModuleDownloader implements MetadataModuleDownloader<List<DataSet>> {
     private final ListCallFactory<DataSet> dataSetCallFactory;
     private final UidsCallFactory<DataElement> dataElementCallFactory;
     private final UidsCallFactory<Indicator> indicatorCallFactory;

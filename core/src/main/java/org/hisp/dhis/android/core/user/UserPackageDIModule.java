@@ -53,9 +53,4 @@ public final class UserPackageDIModule {
     AuthorityService authorityService(Retrofit retrofit) {
         return retrofit.create(AuthorityService.class);
     }
-
-    @Provides
-    UserModuleDownloader downloadModule(UserInternalModule internalModule) {
-        return internalModule;
-    }
 }

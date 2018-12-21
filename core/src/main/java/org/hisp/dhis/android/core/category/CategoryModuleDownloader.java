@@ -27,37 +27,27 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import android.support.annotation.VisibleForTesting;
+import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.common.Unit;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
-public final class CategoryInternalModule {
+public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    public final CategoryModule publicModule;
-    public final CategoryModuleDownloader moduleDownloader;
-
-    @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
-    final UidsCallFactory<Category> categoryCallFactory;
-
-    @VisibleForTesting
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
-    final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private final CategoryParentCall categoryParentCall;
 
     @Inject
-    CategoryInternalModule(CategoryModule publicModule,
-                           CategoryModuleDownloader moduleDownloader,
-                           UidsCallFactory<Category> categoryCallFactory,
-                           UidsCallFactory<CategoryCombo> categoryComboCallFactory) {
-        this.publicModule = publicModule;
-        this.moduleDownloader = moduleDownloader;
-        this.categoryCallFactory = categoryCallFactory;
-        this.categoryComboCallFactory = categoryComboCallFactory;
+    CategoryModuleDownloader(CategoryParentCall categoryParentCall) {
+        this.categoryParentCall = categoryParentCall;
+    }
+
+    @Override
+    public Callable<Unit> downloadMetadata() {
+        return categoryParentCall;
     }
 }

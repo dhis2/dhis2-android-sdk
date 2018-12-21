@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SyncCall;
@@ -55,7 +56,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final SystemInfoModuleDownloader systemInfoDownloader;
     private final SystemSettingModuleDownloader systemSettingDownloader;
     private final UserModuleDownloader userModuleDownloader;
-    private final Downloader<Unit> categoryDownloader;
+    private final CategoryModuleDownloader categoryDownloader;
     private final Downloader<List<Program>> programDownloader;
     private final OrganisationUnitDownloadModule organisationUnitDownloadModule;
     private final Downloader<List<DataSet>> dataSetDownloader;
@@ -65,7 +66,7 @@ public class MetadataCall extends SyncCall<Unit> {
                         @NonNull SystemInfoModuleDownloader systemInfoDownloader,
                         @NonNull SystemSettingModuleDownloader systemSettingDownloader,
                         @NonNull UserModuleDownloader userModuleDownloader,
-                        @NonNull Downloader<Unit> categoryDownloader,
+                        @NonNull CategoryModuleDownloader categoryDownloader,
                         @NonNull Downloader<List<Program>> programDownloader,
                         @NonNull OrganisationUnitDownloadModule organisationUnitDownloadModule,
                         @NonNull Downloader<List<DataSet>> dataSetDownloader,
@@ -98,7 +99,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 List<DataSet> dataSets = dataSetDownloader.download().call();
 
-                categoryDownloader.download().call();
+                categoryDownloader.downloadMetadata().call();
 
                 organisationUnitDownloadModule.download(user, programs, dataSets).call();
 
@@ -117,7 +118,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 internalModules.systemInfo.moduleDownloader,
                 internalModules.systemSetting.moduleDownloader,
                 internalModules.user.moduleDownloader,
-                internalModules.category,
+                internalModules.category.moduleDownloader,
                 internalModules.program,
                 internalModules.organisationUnit,
                 internalModules.dataSet,

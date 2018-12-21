@@ -31,6 +31,7 @@ import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.modules.Downloader;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
@@ -120,7 +121,7 @@ public class MetadataCallShould extends BaseCallShould {
     private UserModuleDownloader userDownloadModule;
 
     @Mock
-    private Downloader<Unit> categoryDownloader;
+    private CategoryModuleDownloader categoryDownloader;
 
     @Mock
     private Downloader<List<Program>> programParentCallFactory;
@@ -155,7 +156,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
         when(userDownloadModule.downloadMetadata()).thenReturn(userCall);
         when(programParentCallFactory.download()).thenReturn(programParentCall);
-        when(categoryDownloader.download()).thenReturn(categoryDownloadCall);
+        when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
         when(organisationUnitDownloadModule.download(same(user), anySetOf(Program.class),
                 anySetOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
         when(dataSetDownloader.download()).thenReturn(dataSetParentCall);

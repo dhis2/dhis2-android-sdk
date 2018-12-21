@@ -93,9 +93,7 @@ public class MetadataCall extends SyncCall<Unit> {
 
                 systemSettingDownloader.download().call();
 
-                User user = userDownloadModule.downloadUser().call();
-
-                userDownloadModule.downloadAuthority().call();
+                User user = userDownloadModule.downloadUserAndAuthority().call();
 
                 List<Program> programs = programDownloader.download().call();
 

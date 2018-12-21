@@ -34,14 +34,18 @@ import android.util.Log;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 
+import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
 
-final class UserCall extends SyncCall<User> {
+import dagger.Reusable;
+
+@Reusable
+final class UserCall implements Callable<User> {
     private final GenericCallData genericCallData;
     private final APICallExecutor apiCallExecutor;
     private final UserService userService;
@@ -60,7 +64,6 @@ final class UserCall extends SyncCall<User> {
 
     @Override
     public User call() throws D2Error {
-        setExecuted();
 
         User user = apiCallExecutor.executeObjectCall(userService.getUser(UserFields.allFieldsWithOrgUnit));
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();

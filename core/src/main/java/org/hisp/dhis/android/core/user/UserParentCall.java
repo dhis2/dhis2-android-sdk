@@ -25,50 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 
-import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-final class AuthorityEndpointCallFactory extends ListCallFactoryImpl<Authority> {
+class UserParentCall implements Callable<User> {
 
-    private final SyncHandler<Authority> handler;
-    private final AuthorityService service;
+    private final D2CallExecutor d2CallExecutor;
+    private final UserCall userCall;
+    private final AuthorityEndpointCallFactory authorityCallFactory;
 
     @Inject
-    AuthorityEndpointCallFactory(GenericCallData data,
-                                 APICallExecutor apiCallExecutor,
-                                 SyncHandler<Authority> handler,
-                                 AuthorityService service) {
-        super(data, apiCallExecutor);
-        this.handler = handler;
-        this.service = service;
+    UserParentCall(D2CallExecutor d2CallExecutor,
+                   UserCall userCall,
+                   AuthorityEndpointCallFactory authorityCallFactory) {
+        this.d2CallExecutor = d2CallExecutor;
+        this.userCall = userCall;
+        this.authorityCallFactory = authorityCallFactory;
     }
 
     @Override
-    protected CallFetcher<Authority> fetcher() {
-        return new AuthorityCallFetcher(apiCallExecutor) {
+    public User call() throws Exception {
+
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<User>() {
             @Override
-            protected retrofit2.Call<List<String>> getCall() {
-                return service.getAuthorities();
+            public User call() throws Exception {
+                User user = userCall.call();
+                authorityCallFactory.create().call();
+                return user;
             }
-        };
-    }
-
-    @Override
-    protected CallProcessor<Authority> processor() {
-        return new AuthorityCallProcessor(data.databaseAdapter(), handler);
+        });
     }
 }

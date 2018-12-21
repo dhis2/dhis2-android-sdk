@@ -116,7 +116,7 @@ public class MetadataCall extends SyncCall<Unit> {
                 new D2CallExecutor(genericCallData.databaseAdapter()),
                 internalModules.systemInfo.moduleDownloader,
                 internalModules.systemSetting.moduleDownloader,
-                internalModules.user,
+                internalModules.user.moduleDownloader,
                 internalModules.category,
                 internalModules.program,
                 internalModules.organisationUnit,

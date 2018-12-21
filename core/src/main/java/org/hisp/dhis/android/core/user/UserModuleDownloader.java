@@ -30,6 +30,22 @@ package org.hisp.dhis.android.core.user;
 
 import java.util.concurrent.Callable;
 
-public interface UserModuleDownloader {
-    Callable<User> downloadMetadata();
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public class UserModuleDownloader {
+
+    private final UserParentCall userParentCall;
+
+    @Inject
+    public UserModuleDownloader(UserParentCall userParentCall) {
+        this.userParentCall = userParentCall;
+    }
+
+
+    public Callable<User> downloadMetadata() {
+        return userParentCall;
+    }
 }

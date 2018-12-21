@@ -34,17 +34,13 @@ import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
 import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
-import org.hisp.dhis.android.core.user.UserRole;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,8 +49,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -67,22 +61,7 @@ import static org.mockito.Mockito.when;
 public class MetadataCallShould extends BaseCallShould {
 
     @Mock
-    private SystemInfo systemInfo;
-
-    @Mock
-    private Date serverDateTime;
-
-    @Mock
     private User user;
-
-    @Mock
-    private UserCredentials userCredentials;
-
-    @Mock
-    private UserRole userRole;
-
-    @Mock
-    private OrganisationUnit organisationUnit;
 
     @Mock
     private Program program;
@@ -142,14 +121,6 @@ public class MetadataCallShould extends BaseCallShould {
     @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
         super.setUp();
-
-        // Payload data
-        when(systemInfo.serverDate()).thenReturn(serverDateTime);
-        when(userCredentials.userRoles()).thenReturn(Collections.singletonList(userRole));
-        when(organisationUnit.uid()).thenReturn("unit");
-        when(organisationUnit.path()).thenReturn("path/to/org/unit");
-        when(user.userCredentials()).thenReturn(userCredentials);
-        when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
 
         // Call factories
         when(systemInfoDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);

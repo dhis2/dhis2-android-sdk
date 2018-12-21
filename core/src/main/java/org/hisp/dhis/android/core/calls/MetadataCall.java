@@ -29,16 +29,12 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
@@ -50,7 +46,12 @@ import org.hisp.dhis.android.core.user.UserModuleDownloader;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class MetadataCall extends SyncCall<Unit> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public class MetadataCall implements Callable<Unit> {
 
     private final D2CallExecutor d2CallExecutor;
 
@@ -63,6 +64,7 @@ public class MetadataCall extends SyncCall<Unit> {
     private final DataSetModuleDownloader dataSetDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
+    @Inject
     public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
                         @NonNull SystemInfoModuleDownloader systemInfoDownloader,
                         @NonNull SystemSettingModuleDownloader systemSettingDownloader,
@@ -85,7 +87,6 @@ public class MetadataCall extends SyncCall<Unit> {
 
     @Override
     public Unit call() throws Exception {
-        setExecuted();
 
         return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
@@ -109,21 +110,5 @@ public class MetadataCall extends SyncCall<Unit> {
                 return new Unit();
             }
         });
-    }
-
-    public static MetadataCall create(GenericCallData genericCallData,
-                                      D2InternalModules internalModules) {
-
-        return new MetadataCall(
-                new D2CallExecutor(genericCallData.databaseAdapter()),
-                internalModules.systemInfo.moduleDownloader,
-                internalModules.systemSetting.moduleDownloader,
-                internalModules.user.moduleDownloader,
-                internalModules.category.moduleDownloader,
-                internalModules.program.moduleDownloader,
-                internalModules.organisationUnit.moduleDownloader,
-                internalModules.dataSet.moduleDownloader,
-                ForeignKeyCleanerImpl.create(genericCallData.databaseAdapter())
-        );
     }
 }

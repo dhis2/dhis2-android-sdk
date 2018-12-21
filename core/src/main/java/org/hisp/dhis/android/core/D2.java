@@ -34,7 +34,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
@@ -132,7 +131,7 @@ public final class D2 {
 
     @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(genericCallData, internalModules);
+        return d2DIComponent.metadataCall();
     }
 
     @NonNull

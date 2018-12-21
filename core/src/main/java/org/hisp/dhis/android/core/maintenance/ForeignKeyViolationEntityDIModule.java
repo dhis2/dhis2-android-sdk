@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -36,24 +35,12 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
-@Module(includes = {
-        ForeignKeyViolationEntityDIModule.class
-})
-public final class MaintenancePackageDIModule {
+@Module
+public final class ForeignKeyViolationEntityDIModule {
 
     @Provides
     @Reusable
-    MaintenanceModule create(DatabaseAdapter databaseAdapter) {
-        return new MaintenanceModule(
-                databaseAdapter,
-                new ReadOnlyCollectionRepositoryImpl<>(ForeignKeyViolationStore.create(databaseAdapter))
-        );
-    }
-
-    @Provides
-    @Reusable
-    ForeignKeyCleaner cleaner(DatabaseAdapter databaseAdapter,
-                              ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
-        return new ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore);
+    public ObjectStore<ForeignKeyViolation> store(DatabaseAdapter databaseAdapter) {
+        return ForeignKeyViolationStore.create(databaseAdapter);
     }
 }

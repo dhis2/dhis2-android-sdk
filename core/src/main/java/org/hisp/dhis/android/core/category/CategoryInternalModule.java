@@ -39,8 +39,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class CategoryInternalModule {
 
-    public final CategoryModule publicModule;
-
     @VisibleForTesting
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UidsCallFactory<Category> categoryCallFactory;
@@ -50,10 +48,8 @@ public final class CategoryInternalModule {
     final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
 
     @Inject
-    CategoryInternalModule(CategoryModule publicModule,
-                           UidsCallFactory<Category> categoryCallFactory,
+    CategoryInternalModule(UidsCallFactory<Category> categoryCallFactory,
                            UidsCallFactory<CategoryCombo> categoryComboCallFactory) {
-        this.publicModule = publicModule;
         this.categoryCallFactory = categoryCallFactory;
         this.categoryComboCallFactory = categoryComboCallFactory;
     }

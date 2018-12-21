@@ -38,17 +38,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class UserInternalModule {
 
-    public final UserModule publicModule;
-    public final UserModuleDownloader moduleDownloader;
-
     @VisibleForTesting
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UserCall userCall;
 
     @Inject
-    UserInternalModule(UserModule publicModule, UserModuleDownloader moduleDownloader, UserCall userCall) {
-        this.publicModule = publicModule;
-        this.moduleDownloader = moduleDownloader;
+    UserInternalModule(UserCall userCall) {
         this.userCall = userCall;
     }
 }

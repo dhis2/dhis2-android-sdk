@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -129,6 +130,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDataModel.Builder<Builder> {
         public abstract Builder id(Long id);
 

@@ -3,17 +3,16 @@ package org.hisp.dhis.android.core.calls;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Retrofit;
 
@@ -37,9 +36,9 @@ public final class TrackedEntityInstanceSyncDownCall extends SyncCall<List<Track
     @Override
     public List<TrackedEntityInstance> call() throws D2Error {
         setExecuted();
-        Map<String, TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.querySynced();
+        List<String> trackedEntityInstancesUids = trackedEntityInstanceStore.querySyncedTrackedEntityInstanceUids();
         Call<List<TrackedEntityInstance>> call = TrackedEntityInstanceListDownloadAndPersistCall
-                .create(databaseAdapter, retrofit, internalModules, trackedEntityInstances.keySet());
+                .create(databaseAdapter, retrofit, internalModules, trackedEntityInstancesUids);
         return new D2CallExecutor(databaseAdapter).executeD2Call(call);
     }
 
@@ -49,7 +48,7 @@ public final class TrackedEntityInstanceSyncDownCall extends SyncCall<List<Track
                 databaseAdapter,
                 retrofit,
                 internalModules,
-                new TrackedEntityInstanceStoreImpl(databaseAdapter)
+                TrackedEntityInstanceStoreImpl.create(databaseAdapter)
         );
     }
 }

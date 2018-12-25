@@ -23,7 +23,7 @@ public class SmsSubmitCase {
 
     public Observable<SmsSubmissionState> submit(final Event event) {
         return checkPreconditions()
-                .andThen(Single.zip(localDbRepository.getNumber(), localDbRepository.getUserName(),
+                .andThen(Single.zip(localDbRepository.getGatewayNumber(), localDbRepository.getUserName(),
                         (number, username) -> {
                             String smsContents = converter.format(username, event);
                             return new Pair<>(number, smsContents);

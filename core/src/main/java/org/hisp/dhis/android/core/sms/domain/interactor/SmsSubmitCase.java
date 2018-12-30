@@ -40,6 +40,13 @@ public class SmsSubmitCase {
                 });
     }
 
+    public Completable checkConfirmationSms(int timeoutSeconds, Event event) {
+        // TODO translate event to required texts
+        return localDbRepository.getConfirmationSenderNumber().flatMapCompletable(confirmationSenderNumber ->
+                smsRepository.listenToConfirmationSms(timeoutSeconds, confirmationSenderNumber, null)
+        );
+    }
+
     private Completable checkPreconditions() {
         ArrayList<Single<Boolean>> checks = new ArrayList<>();
         checks.add(deviceStateRepository.hasCheckNetworkPermission());

@@ -15,8 +15,11 @@ public class InitCase {
 
     public Completable initSMSModule() {
         // TODO add sms commands if needed
-        return apiRepository.getGatewayNumber().flatMapCompletable(
-                result -> localDbRepository.setGatewayNumber(result)
+        return Completable.mergeArray(
+                apiRepository.getGatewayNumber().flatMapCompletable(result ->
+                        localDbRepository.setGatewayNumber(result)),
+                apiRepository.getConfirmationSenderNumber().flatMapCompletable(result ->
+                        localDbRepository.setConfirmationSenderNumber(result))
         );
     }
 }

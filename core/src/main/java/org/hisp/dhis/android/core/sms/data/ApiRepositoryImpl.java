@@ -9,4 +9,9 @@ public class ApiRepositoryImpl implements ApiRepository {
     public Single<String> getGatewayNumber() {
         return null;
     }
+
+    @Override
+    public Single<String> getConfirmationSenderNumber() {
+        return null;
+    }
 }

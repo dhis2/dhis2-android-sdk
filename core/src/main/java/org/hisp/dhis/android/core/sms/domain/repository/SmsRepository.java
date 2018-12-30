@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.sms.domain.repository;
 
+import java.util.Collection;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 
@@ -21,7 +23,7 @@ public interface SmsRepository {
      * @param waitingTimeoutSeconds After this time error will be returned.
      * @return Completable that is completed when result sms is successfully received
      */
-    Completable listenToConfirmationSms(int waitingTimeoutSeconds);
+    Completable listenToConfirmationSms(int waitingTimeoutSeconds, String requiredSender, Collection<String> requiredStrings);
 
     /**
      * Sending status Observable may emit WAITING_TOTAL_CONFIRMATION, as a protection for sending too

@@ -17,6 +17,16 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Single<String> getConfirmationSenderNumber() {
+        return null;
+    }
+
+    @Override
+    public Completable setConfirmationSenderNumber(String number) {
+        return null;
+    }
+
+    @Override
     public Completable setGatewayNumber(String number) {
         return null;
     }

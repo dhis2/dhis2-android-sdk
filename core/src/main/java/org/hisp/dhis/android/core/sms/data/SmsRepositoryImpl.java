@@ -3,22 +3,31 @@ package org.hisp.dhis.android.core.sms.data;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
 
 public class SmsRepositoryImpl implements SmsRepository {
 
@@ -48,9 +57,82 @@ public class SmsRepositoryImpl implements SmsRepository {
     }
 
     @Override
-    public Completable listenToConfirmationSms(int waitingTimeoutSeconds) {
-        // TODO another task
-        return null;
+    public Completable listenToConfirmationSms(int waitingTimeoutSeconds, String requiredSender, Collection<String> requiredStrings) {
+        return findConfirmationSms(requiredSender, requiredStrings).flatMapCompletable(
+                found -> found ? Completable.complete() : waitToReceiveConfirmationSms(waitingTimeoutSeconds, requiredSender, requiredStrings));
+    }
+
+    private Completable waitToReceiveConfirmationSms(int waitingTimeoutSeconds, String requiredSender, Collection<String> requiredStrings) {
+        AtomicReference<BroadcastReceiver> receiver = new AtomicReference<>();
+        return Completable.fromPublisher(s -> {
+                    receiver.set(new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (isAwaitedMessage(intent, requiredSender, requiredStrings)) s.onComplete();
+                        }
+                    });
+                    context.registerReceiver(receiver.get(), new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
+                }
+        ).timeout(
+                waitingTimeoutSeconds, TimeUnit.SECONDS, Completable.error(new TimeoutException())
+        ).doFinally(() -> {
+            if (receiver.get() != null) try {
+                context.unregisterReceiver(receiver.get());
+            } catch (Throwable t) {
+                // not interested in unregistering error
+            }
+        });
+    }
+
+    private Single<Boolean> findConfirmationSms(String requiredSender, Collection<String> requiredStrings) {
+        return Single.fromCallable(() -> {
+            ContentResolver cr = context.getContentResolver();
+            Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, Telephony.Sms.DATE + " DESC");
+            if (c == null || !c.moveToPosition(-1)) return false;
+            while (c.moveToNext()) {
+                String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
+                String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
+                if (isAwaitedMessage(number, body, requiredSender, requiredStrings)) {
+                    c.close();
+                    return true;
+                }
+            }
+            c.close();
+            return false;
+        });
+    }
+
+    private boolean isAwaitedMessage(Intent intent, String requiredSender, Collection<String> requiredStrings) {
+        Bundle bundle = intent.getExtras();
+        if (bundle != null) {
+            // get sms objects
+            Object[] pdus = (Object[]) bundle.get("pdus");
+            if (pdus == null || pdus.length == 0) {
+                return false;
+            }
+            // large message might be broken into many
+            SmsMessage[] messages = new SmsMessage[pdus.length];
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < pdus.length; i++) {
+                messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                sb.append(messages[i].getMessageBody());
+            }
+            String sender = messages[0].getOriginatingAddress();
+            String message = sb.toString();
+            return isAwaitedMessage(sender, message, requiredSender, requiredStrings);
+        }
+        return true;
+    }
+
+    private boolean isAwaitedMessage(String sender, String message, String requiredSender, Collection<String> requiredStrings) {
+        if (requiredSender != null && (sender == null || !sender.toLowerCase().contains(requiredSender.toLowerCase())))
+            return false;
+        if (requiredStrings != null) {
+            for (String requiredString : requiredStrings) {
+                if (!message.contains(requiredString)) return false;
+            }
+        }
+        return true;
     }
 
     private void executeSmsSending(ObservableEmitter<SmsSendingState> e, String number, String contents, int timeoutSeconds) {

@@ -10,4 +10,8 @@ public interface LocalDbRepository {
     Single<String> getGatewayNumber();
 
     Completable setGatewayNumber(String number);
+
+    Single<String> getConfirmationSenderNumber();
+
+    Completable setConfirmationSenderNumber(String number);
 }

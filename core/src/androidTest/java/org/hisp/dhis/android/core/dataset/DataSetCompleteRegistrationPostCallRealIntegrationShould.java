@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -70,16 +71,18 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
-
+        d2.userModule().logIn("android", "Android123").call();
         d2.syncMetaData().call();
         d2.aggregatedModule().data().download().call();
 
         DataSetCompleteRegistration dataValueModel
                 = getTestDataSetCompleteRegistrationWith(State.TO_POST);
 
-        assertThat(insertToPostDataSetCompleteRegistration(dataValueModel)).isTrue();
+        ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> repository
+                = d2.dataSetModule().dataSetCompleteRegistrations;
+        repository.add(dataValueModel);
 
-        ImportSummary importSummary = d2.dataSetModule().dataSetCompleteRegistrations.upload().call();
+        ImportSummary importSummary = repository.upload().call();
 
         int importCountTotal = importSummary.importCount().imported() +
                 importSummary.importCount().updated() +
@@ -91,7 +94,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
-
+        d2.userModule().logIn("android", "Android123").call();
         d2.syncMetaData().call();
         d2.aggregatedModule().data().download().call();
 
@@ -117,7 +120,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     private DataSetCompleteRegistration getTestDataSetCompleteRegistrationWith(State state) throws Exception {
 
         return DataSetCompleteRegistration.builder()
-                        .period("201801")
+                        .period("2018")
                         .dataSet("BfMAe6Itzgt")
                         .attributeOptionCombo("HllvX50cXC0")
                         .organisationUnit("DiszpKrYNg8")

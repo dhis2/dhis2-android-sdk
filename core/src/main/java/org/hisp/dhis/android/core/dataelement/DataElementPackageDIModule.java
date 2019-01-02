@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,13 +37,6 @@ import retrofit2.Retrofit;
 
 @Module(includes = {DataElementEntityDIModule.class})
 public final class DataElementPackageDIModule {
-
-    @Provides
-    @Reusable
-    DataElementModule module(DatabaseAdapter databaseAdapter) {
-        return new DataElementModule(
-                DataElementCollectionRepository.create(databaseAdapter));
-    }
 
     @Provides
     @Reusable

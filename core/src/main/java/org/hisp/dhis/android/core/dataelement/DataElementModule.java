@@ -29,13 +29,18 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
 public final class DataElementModule {
 
     public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
 
+    @Inject
     DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
         this.dataElements = dataElementsRepository;
     }

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class DataSetCompleteRegistrationFields {
+final class DataSetCompleteRegistrationFields {
 
     static final String PERIOD = "period";
     static final String DATA_SET = "dataSet";

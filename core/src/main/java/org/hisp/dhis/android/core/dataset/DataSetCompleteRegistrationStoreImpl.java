@@ -45,8 +45,7 @@ import java.util.Collection;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-public class DataSetCompleteRegistrationStoreImpl extends
+final class DataSetCompleteRegistrationStoreImpl extends
         ObjectWithoutUidStoreImpl<DataSetCompleteRegistration> implements DataSetCompleteRegistrationStore {
 
     private DataSetCompleteRegistrationStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,

@@ -37,10 +37,10 @@ import java.util.List;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-public class DataSetCompleteRegistrationPayload {
+class DataSetCompleteRegistrationPayload {
 
     @JsonProperty("completeDataSetRegistrations")
-    public List<DataSetCompleteRegistration> dataSetCompleteRegistrations;
+    List<DataSetCompleteRegistration> dataSetCompleteRegistrations;
 
     DataSetCompleteRegistrationPayload(
             @JsonProperty("completeDataSetRegistrations")

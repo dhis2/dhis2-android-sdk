@@ -44,7 +44,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class DataSetCompleteRegistrationPostCall implements Callable<ImportSummary> {
+final class DataSetCompleteRegistrationPostCall implements Callable<ImportSummary> {
 
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
     private final DataSetCompleteRegistrationStore  dataSetCompleteRegistrationStore;

@@ -45,6 +45,16 @@ public class WhereClauseBuilderShould {
     }
 
     @Test
+    public void build_where_statement_for_two_key_value_pairs_with_or_logic_gate() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendOrKeyStringValue("COL1", "VAL1")
+                .appendOrKeyStringValue("COL2", "VAL2")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 = 'VAL1' OR COL2 = 'VAL2'");
+    }
+
+    @Test
     public void build_where_statement_for_not_in_key_values() {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         String whereStatement = builder

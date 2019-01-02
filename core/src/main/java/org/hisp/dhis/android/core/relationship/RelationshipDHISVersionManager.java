@@ -132,9 +132,10 @@ public class RelationshipDHISVersionManager {
 
         String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
 
-        return TrackedEntityInstance.create(relatedTEIUid, null, null,
-                null, null, null, null, null,
-                null, false, null,
-                Collections.<Relationship229Compatible>emptyList(), null);
+        return TrackedEntityInstance.builder()
+                .uid(relatedTEIUid)
+                .deleted(false)
+                .relationships(Collections.<Relationship229Compatible>emptyList())
+                .build();
     }
 }

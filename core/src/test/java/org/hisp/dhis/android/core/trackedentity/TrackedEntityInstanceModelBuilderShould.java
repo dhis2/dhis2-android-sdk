@@ -57,20 +57,18 @@ public class TrackedEntityInstanceModelBuilderShould extends ModelBuilderAbstrac
 
     @Override
     protected TrackedEntityInstance buildPojo() {
-        return TrackedEntityInstance.create(
-                UID,
-                CREATED,
-                LAST_UPDATED,
-                "createdAtClient",
-                "lastUpdatedAtClient",
-                "orgUnit",
-                "type",
-                "10N,34E",
-                FeatureType.MULTI_POLYGON,
-                false,
-                null,
-                null,
-                null);
+        return TrackedEntityInstance.builder()
+                .uid(UID)
+                .created(CREATED)
+                .lastUpdated(LAST_UPDATED)
+                .createdAtClient("createdAtClient")
+                .lastUpdatedAtClient("lastUpdatedAtClient")
+                .organisationUnit("orgUnit")
+                .trackedEntityType("type")
+                .coordinates("10N,34E")
+                .featureType(FeatureType.MULTI_POLYGON)
+                .deleted(false)
+                .build();
     }
 
     @Override

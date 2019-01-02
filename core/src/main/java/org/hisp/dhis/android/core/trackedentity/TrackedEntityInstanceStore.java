@@ -28,38 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.StoreWithState;
-import org.hisp.dhis.android.core.period.FeatureType;
+import java.util.List;
 
-import java.util.Date;
-import java.util.Map;
+public interface TrackedEntityInstanceStore extends IdentifiableObjectWithStateStore<TrackedEntityInstance> {
 
-public interface TrackedEntityInstanceStore extends DeletableStore, StoreWithState {
+    List<TrackedEntityInstance> queryTrackedEntityInstancesToPost();
 
-    long insert(
-            @NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-            @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit, @NonNull String trackedEntityType,
-            @Nullable String coordinates, @Nullable FeatureType featureType, @Nullable State state);
+    List<String> querySyncedTrackedEntityInstanceUids();
 
-    int delete();
-
-    int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated, @Nullable String createdAtClient,
-               @Nullable String lastUpdatedAtClient, @NonNull String organisationUnit,
-               @NonNull String trackedEntityType, @Nullable String coordinates, @Nullable FeatureType featureType,
-               @Nullable State state, @NonNull String whereTrackedEntityInstanceUid);
-
-    int delete(@NonNull String uid);
-
-    Map<String, TrackedEntityInstance> queryToPost();
-
-    Map<String, TrackedEntityInstance> querySynced();
-
-    Map<String, TrackedEntityInstance> queryRelationships();
-
-    Map<String, TrackedEntityInstance> queryAll();
+    List<String> queryRelationshipsUids();
 }

@@ -146,11 +146,11 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
     @Test
     public void select_tracker_data_values() {
-        TrackedEntityInstanceStore trackedEntityInstanceStore =
-                new TrackedEntityInstanceStoreImpl(DatabaseAdapterFactory.get(false));
-        trackedEntityInstanceStore.insert("tei_uid", null, null, null,
-                null, "organisation_unit_uid", "tei_type", null,
-                null, State.TO_POST);
+        TrackedEntityInstanceStore trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl
+                .create(DatabaseAdapterFactory.get(false));
+        TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder().uid("tei_uid")
+                .organisationUnit("organisation_unit_uid").trackedEntityType("tei_type").state(State.TO_POST).build();
+        trackedEntityInstanceStore.insert(trackedEntityInstance);
 
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(DatabaseAdapterFactory.get(false));
         Enrollment enrollment = Enrollment.builder().uid("enrollment").organisationUnit("organisation_unit")

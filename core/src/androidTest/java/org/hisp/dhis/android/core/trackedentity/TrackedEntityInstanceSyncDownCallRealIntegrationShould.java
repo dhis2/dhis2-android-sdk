@@ -10,15 +10,13 @@ import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class TrackedEntityInstanceSyncDownCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
-    private TrackedEntityInstanceStoreImpl store;
+    private TrackedEntityInstanceStore store;
 
     @Override
     @Before
@@ -26,7 +24,7 @@ public class TrackedEntityInstanceSyncDownCallRealIntegrationShould extends AbsS
         super.setUp();
 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-        store = new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        store = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
     }
 
     //This test is commented because technically it is flaky.
@@ -41,14 +39,11 @@ public class TrackedEntityInstanceSyncDownCallRealIntegrationShould extends AbsS
 
         d2.downloadTrackedEntityInstances(2, false).call();
 
-        Map<String, TrackedEntityInstance> trackedEntityInstances =
-                new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll();
+        List<TrackedEntityInstance> trackedEntityInstances = store.selectAll();
 
         Truth.assertThat(trackedEntityInstances.size()).isEqualTo(2);
 
-        Iterator<Map.Entry<String, TrackedEntityInstance>> tEIIterator = trackedEntityInstances.entrySet().iterator();
-
-        TrackedEntityInstance trackedEntityInstance = tEIIterator.next().getValue();
+        TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
 
         store.setState(trackedEntityInstance.uid(), State.TO_UPDATE);
 

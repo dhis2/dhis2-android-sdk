@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.EventEndpointCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.junit.Before;
 
@@ -76,16 +77,16 @@ public class WipeDBCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.downloadTrackedEntityInstances(5, false).call();
 
-        TrackedEntityInstanceStoreImpl trackedEntityInstanceStore =
-                new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        TrackedEntityInstanceStore trackedEntityInstanceStore =
+                TrackedEntityInstanceStoreImpl.create(databaseAdapter());
 
-        boolean hasTrackedEntities = trackedEntityInstanceStore.queryAll().values().iterator().hasNext();
+        boolean hasTrackedEntities = trackedEntityInstanceStore.count() > 0;
 
         assertThat(hasTrackedEntities).isTrue();
 
         d2.wipeModule().wipeData();
 
-        hasTrackedEntities = trackedEntityInstanceStore.queryAll().values().iterator().hasNext();
+        hasTrackedEntities = trackedEntityInstanceStore.count() > 0;
 
         assertThat(hasTrackedEntities).isFalse();
     }

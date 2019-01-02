@@ -26,14 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import android.support.test.runner.AndroidJUnit4;
 
-public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityInstance> {
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityInstanceStoreIntegrationShould extends
+        IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstance> {
+
+    public TrackedEntityInstanceStoreIntegrationShould() {
+        super(TrackedEntityInstanceStoreImpl.create(DatabaseAdapterFactory.get(false)),
+                TrackedEntityInstanceTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
     @Override
-    protected TrackedEntityInstance build(String uid) {
-        return TrackedEntityInstance.builder().uid(uid).build();
+    protected TrackedEntityInstance buildObject() {
+        return TrackedEntityInstanceSamples.get();
+    }
+
+    @Override
+    protected TrackedEntityInstance buildObjectWithId() {
+        return TrackedEntityInstanceSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityInstance buildObjectToUpdate() {
+        return TrackedEntityInstanceSamples.get().toBuilder()
+                .state(State.SYNCED)
+                .build();
     }
 }

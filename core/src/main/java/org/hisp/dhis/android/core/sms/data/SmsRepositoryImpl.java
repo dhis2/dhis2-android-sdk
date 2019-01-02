@@ -88,17 +88,20 @@ public class SmsRepositoryImpl implements SmsRepository {
         return Single.fromCallable(() -> {
             ContentResolver cr = context.getContentResolver();
             Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, Telephony.Sms.DATE + " DESC");
-            if (c == null || !c.moveToPosition(-1)) return false;
-            while (c.moveToNext()) {
+            if (c == null || !c.moveToFirst()) return false;
+            do {
                 String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
                 String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
                 if (isAwaitedMessage(number, body, requiredSender, requiredStrings)) {
                     c.close();
                     return true;
                 }
-            }
+            } while (c.moveToNext());
             c.close();
             return false;
+        }).onErrorResumeNext(throwable -> {
+            Log.e(TAG, throwable.getClass().getSimpleName(), throwable);
+            return Single.just(false);
         });
     }
 

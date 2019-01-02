@@ -25,40 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.Collections;
 
-@Module
-public final class DataSetCompleteRegistrationEntityDIModule
-        implements ObjectWithoutUidStoreProvider<DataSetCompleteRegistration> {
+final class DataSetCollectionRepository {
 
-    @Override
-    @Provides
-    @Reusable
-    public DataSetCompleteRegistrationStore store(DatabaseAdapter databaseAdapter) {
-        return DataSetCompleteRegistrationStoreImpl.create(databaseAdapter);
+    private DataSetCollectionRepository() {
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<DataSetCompleteRegistration> handler(DataSetCompleteRegistrationStore store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
-    }
+    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<DataSet> childrenAppender =
+                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        DataSetTableInfo.TABLE_INFO
+                );
 
-    @Provides
-    @Reusable
-    ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> collectionRepository(
-            DataSetCompleteRegistrationCollectionRepository repositoryImpl) {
-        return repositoryImpl;
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                DataSetStore.create(databaseAdapter),
+                Collections.singletonList(childrenAppender)
+        );
     }
 }

@@ -28,14 +28,21 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 
-import java.util.Collection;
+import javax.inject.Inject;
 
-public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state);
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class DataSetModule {
 
-    void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
+    public final ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations;
+
+    @Inject
+    DataSetModule(ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
+        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
+    }
 }

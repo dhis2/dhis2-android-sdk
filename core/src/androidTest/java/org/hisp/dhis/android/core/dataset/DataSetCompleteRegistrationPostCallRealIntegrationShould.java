@@ -61,7 +61,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
 
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
 
-        dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStore.create(databaseAdapter());
+        dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(databaseAdapter());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
 
         assertThat(insertToPostDataSetCompleteRegistration(dataValueModel)).isTrue();
 
-        ImportSummary importSummary = d2.syncDataSetCompleteRegistrations().call();
+        ImportSummary importSummary = d2.dataSetModule().dataSetCompleteRegistrations.upload().call();
 
         int importCountTotal = importSummary.importCount().imported() +
                 importSummary.importCount().updated() +
@@ -100,7 +100,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
 
         assertThat(insertToPostDataSetCompleteRegistration(dataSetCompleteRegistration)).isTrue();
 
-        ImportSummary importSummary = d2.syncDataSetCompleteRegistrations().call();
+        ImportSummary importSummary = d2.dataSetModule().dataSetCompleteRegistrations.upload().call();
 
         int importCountTotal = importSummary.importCount().updated() +
                 importSummary.importCount().ignored();
@@ -116,8 +116,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
 
     private DataSetCompleteRegistration getTestDataSetCompleteRegistrationWith(State state) throws Exception {
 
-        DataSetCompleteRegistration dataSetCompleteRegistration =
-                DataSetCompleteRegistration.builder()
+        return DataSetCompleteRegistration.builder()
                         .period("201801")
                         .dataSet("BfMAe6Itzgt")
                         .attributeOptionCombo("HllvX50cXC0")
@@ -126,8 +125,6 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
                         .storedBy("android")
                         .state(state)
                         .build();
-
-        return dataSetCompleteRegistration;
     }
 
 }

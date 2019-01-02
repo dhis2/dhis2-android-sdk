@@ -28,16 +28,42 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.ImportSummary;
 
-public final class DataSetCompleteRegistrationHandler {
+import java.util.concurrent.Callable;
 
-    private DataSetCompleteRegistrationHandler() {}
+import javax.inject.Inject;
 
-    public static SyncHandler<DataSetCompleteRegistration> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(DataSetCompleteRegistrationStore.create(databaseAdapter));
+import dagger.Reusable;
+
+@Reusable
+final class DataSetCompleteRegistrationCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration>
+        implements ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> {
+
+    private final SyncHandler<DataSetCompleteRegistration> handler;
+    private final DataSetCompleteRegistrationPostCall postCall;
+
+    @Inject
+    DataSetCompleteRegistrationCollectionRepository(DataSetCompleteRegistrationStore store,
+                                                    SyncHandler<DataSetCompleteRegistration> handler,
+                                                    DataSetCompleteRegistrationPostCall postCall) {
+        super(store);
+        this.handler = handler;
+        this.postCall = postCall;
     }
 
+    @Override
+    public void add(DataSetCompleteRegistration dataSetCompleteRegistration) {
+        handler.handle(dataSetCompleteRegistration.toBuilder().state(State.TO_POST).build());
+    }
+
+    @Override
+    public Callable<ImportSummary> upload() {
+        return postCall;
+    }
 }

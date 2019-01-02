@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,14 +28,29 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public interface DataSetCompleteRegistrationStore extends ObjectWithoutUidStore<DataSetCompleteRegistration> {
+@Module
+public final class DataSetCompleteRegistrationEntityDIModule
+        implements ObjectWithoutUidStoreProvider<DataSetCompleteRegistration> {
 
-    Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state);
+    @Override
+    @Provides
+    @Reusable
+    public DataSetCompleteRegistrationStore store(DatabaseAdapter databaseAdapter) {
+        return DataSetCompleteRegistrationStoreImpl.create(databaseAdapter);
+    }
 
-    void setState(DataSetCompleteRegistration dataSetCompleteRegistration, State newState);
+    @Provides
+    @Reusable
+    public SyncHandler<DataSetCompleteRegistration> handler(DataSetCompleteRegistrationStore store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
 }

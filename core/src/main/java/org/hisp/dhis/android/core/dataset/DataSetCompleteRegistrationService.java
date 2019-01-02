@@ -40,7 +40,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public interface DataSetCompleteRegistrationService {
+interface DataSetCompleteRegistrationService {
 
     @GET("completeDataSetRegistrations")
     Call<DataSetCompleteRegistrationPayload> getDataSetCompleteRegistrations(

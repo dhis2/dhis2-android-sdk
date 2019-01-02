@@ -30,29 +30,40 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
+@Reusable
 final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationQuery> {
 
-    DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+    private final SyncHandler<DataSetCompleteRegistration> handler;
+    private final DataSetCompleteRegistrationService service;
+
+    @Inject
+    DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData,
+                                           APICallExecutor apiCallExecutor,
+                                           SyncHandler<DataSetCompleteRegistration> handler,
+                                           DataSetCompleteRegistrationService service) {
         super(genericCallData, apiCallExecutor);
+        this.handler = handler;
+        this.service = service;
     }
 
     @Override
     protected CallFetcher<DataSetCompleteRegistration> fetcher(
             final DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
-
-        final DataSetCompleteRegistrationService dataSetCompleteRegistrationService =
-                data.retrofit().create(DataSetCompleteRegistrationService.class);
 
         return new DataSetCompleteRegistrationCallFetcher(
                 dataSetCompleteRegistrationQuery.dataSetUids(),
@@ -63,7 +74,7 @@ final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<
             @Override
             protected Call<DataSetCompleteRegistrationPayload> getCall(
                     DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
-                return dataSetCompleteRegistrationService.getDataSetCompleteRegistrations(
+                return service.getDataSetCompleteRegistrations(
                         DataSetCompleteRegistrationFields.allFields,
                         commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.dataSetUids()),
                         commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.periodIds()),
@@ -76,8 +87,6 @@ final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<
 
     @Override
     protected CallProcessor<DataSetCompleteRegistration> processor(DataSetCompleteRegistrationQuery query) {
-
-        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                DataSetCompleteRegistrationHandler.create(data.databaseAdapter()));
+        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(), handler);
     }
 }

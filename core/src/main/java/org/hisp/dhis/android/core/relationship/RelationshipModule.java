@@ -29,17 +29,22 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
 public final class RelationshipModule {
 
     public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
 
     public final RelationshipCollectionRepository relationships;
 
+    @Inject
     RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
-                               RelationshipCollectionRepository relationshipRepository) {
+                       RelationshipCollectionRepository relationshipRepository) {
         this.relationshipTypes = relationshipTypeRepository;
         this.relationships = relationshipRepository;
     }

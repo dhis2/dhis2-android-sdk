@@ -21,7 +21,7 @@ public abstract class MockIntegrationShould {
 
     private static SQLiteDatabase sqLiteDatabase;
     private static String dbName = null;
-    public static DatabaseAdapter databaseAdapter;
+    protected static DatabaseAdapter databaseAdapter;
 
     private static Dhis2MockServer dhis2MockServer;
     protected static D2 d2;

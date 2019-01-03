@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 final class DataSetCollectionRepository {
 
@@ -50,7 +50,10 @@ final class DataSetCollectionRepository {
 
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 DataSetStore.create(databaseAdapter),
-                Collections.singletonList(childrenAppender)
+                Arrays.asList(
+                        childrenAppender,
+                        SectionChildrenAppender.create(databaseAdapter)
+                )
         );
     }
 }

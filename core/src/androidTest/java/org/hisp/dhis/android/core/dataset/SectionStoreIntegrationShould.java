@@ -39,7 +39,7 @@ import org.junit.runner.RunWith;
 public class SectionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Section> {
 
     public SectionStoreIntegrationShould() {
-        super(SectionStore.create(DatabaseAdapterFactory.get(false)), SectionTableInfo.TABLE_INFO,
+        super(SectionStoreImpl.create(DatabaseAdapterFactory.get(false)), SectionTableInfo.TABLE_INFO,
                 DatabaseAdapterFactory.get(false));
     }
 

@@ -46,6 +46,23 @@
           "write": true
         }
       },
+      "sections": [
+        {
+          "lastUpdated": "2016-10-12T13:22:42.731",
+          "id": "Y2rk0vzgvAx",
+          "code": "Code123",
+          "created": "2012-04-26T19:26:02.933",
+          "name": "Immunization",
+          "displayName": "Immunization",
+          "description": "Immunization dose administration",
+          "showColumnTotals": false,
+          "sortOrder": 2,
+          "showRowTotals": false,
+          "dataSet": {
+            "id": "lyLU2wR22tC"
+          }
+        }
+      ],
       "style": {
         "color": "#000",
         "icon": "my-icon-name"

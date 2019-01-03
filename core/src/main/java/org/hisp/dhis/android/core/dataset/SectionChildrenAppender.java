@@ -25,14 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataset;
 
-
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-interface SectionStore extends IdentifiableObjectStore<Section> {
-    List<Section> getDataSet(String dataSetUid);
+final class SectionChildrenAppender extends ChildrenAppender<DataSet> {
+
+    private final SectionStore store;
+
+    private SectionChildrenAppender(SectionStore store) {
+        this.store = store;
+    }
+
+    @Override
+    protected DataSet appendChildren(DataSet dataSet) {
+        DataSet.Builder builder = dataSet.toBuilder();
+        List<Section> sections = store.getDataSet(dataSet.uid());
+        return builder.sections(sections).build();
+    }
+
+    static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
+        return new SectionChildrenAppender(
+                SectionStoreImpl.create(databaseAdapter)
+        );
+    }
 }

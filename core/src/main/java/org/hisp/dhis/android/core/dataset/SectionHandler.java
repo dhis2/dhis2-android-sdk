@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -47,7 +46,7 @@ public class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
     private final SyncHandler<DataElementOperand> greyedFieldsHandler;
     private final LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
 
-    SectionHandler(IdentifiableObjectStore<Section> sectionStore,
+    SectionHandler(SectionStore sectionStore,
                    OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler,
                    SyncHandler<DataElementOperand> greyedFieldsHandler,
                    LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler) {
@@ -75,7 +74,7 @@ public class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     public static SectionHandler create(DatabaseAdapter databaseAdapter) {
         return new SectionHandler(
-                SectionStore.create(databaseAdapter),
+                SectionStoreImpl.create(databaseAdapter),
                 new OrderedLinkModelHandlerImpl<ObjectWithUid,
                         SectionDataElementLinkModel>(SectionDataElementLinkStore.create(databaseAdapter)),
                 DataElementOperandHandler.create(databaseAdapter),

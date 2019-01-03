@@ -26,28 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+package org.hisp.dhis.android.core.data.dataset;
 
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.AccessHelper;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-    @Override
-    public Access fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(Access.ACCESS_DATA_WRITE);
-        Integer accessDataWrite = cursor.getInt(columnIndex);
-        return Access.createForDataWrite(accessDataWrite == 1);
-    }
+public class DataSetSamples {
 
-    @Override
-    public void toContentValues(ContentValues values, String columnName, Access value) {
-        Integer accessDataWrite = AccessHelper.getAccessDataWrite(value);
-        values.put(Access.ACCESS_DATA_WRITE, accessDataWrite);
+    public static DataSet getDataSet() {
+        DataSet.Builder dataSetBuilder = DataSet.builder();
+
+        fillNameableProperties(dataSetBuilder);
+        dataSetBuilder
+                .periodType(PeriodType.BiMonthly)
+                .categoryCombo(ObjectWithUid.create("comboUid"))
+                .mobile(false)
+                .version(2)
+                .expiryDays(3)
+                .timelyDays(4)
+                .notifyCompletingUser(true)
+                .openFuturePeriods(6)
+                .fieldCombinationRequired(false)
+                .validCompleteOnly(false)
+                .noValueRequiresComment(true)
+                .skipOffline(false)
+                .dataElementDecoration(true)
+                .renderAsTabs(false)
+                .renderHorizontally(true)
+                .access(Access.createForDataWrite(true));
+        return dataSetBuilder.build();
     }
 }

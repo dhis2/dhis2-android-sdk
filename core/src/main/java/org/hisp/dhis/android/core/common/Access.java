@@ -55,6 +55,8 @@ public abstract class Access {
     public static final Field<Access, Boolean> manage = Field.create(MANAGE);
     public static final NestedField<Access, DataAccess> data = NestedField.create(DATA);
 
+    public static final String ACCESS_DATA_WRITE = "accessDataWrite";
+
     @Nullable
     @JsonProperty(READ)
     public abstract Boolean read();
@@ -92,5 +94,10 @@ public abstract class Access {
                                 @JsonProperty(MANAGE) Boolean manage,
                                 @JsonProperty(DATA) DataAccess data) {
         return new AutoValue_Access(read, write, update, delete, externalize, manage, data);
+    }
+
+    public static Access createForDataWrite(Boolean accessDataWrite) {
+        return Access.create(null, null, null, null, null, null,
+                DataAccess.create(true, accessDataWrite));
     }
 }

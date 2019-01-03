@@ -26,28 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.dataset;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import android.support.test.runner.AndroidJUnit4;
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.DataSetSamples;
+import org.junit.runner.RunWith;
 
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.AccessHelper;
+@RunWith(AndroidJUnit4.class)
+public class DataSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataSet> {
 
-public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
-
-    @Override
-    public Access fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(Access.ACCESS_DATA_WRITE);
-        Integer accessDataWrite = cursor.getInt(columnIndex);
-        return Access.createForDataWrite(accessDataWrite == 1);
+    public DataSetStoreIntegrationShould() {
+        super(DataSetStore.create(DatabaseAdapterFactory.get(false)), DataSetTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void toContentValues(ContentValues values, String columnName, Access value) {
-        Integer accessDataWrite = AccessHelper.getAccessDataWrite(value);
-        values.put(Access.ACCESS_DATA_WRITE, accessDataWrite);
+    protected DataSet buildObject() {
+        return DataSetSamples.getDataSet();
+    }
+
+    @Override
+    protected DataSet buildObjectWithId() {
+        return DataSetSamples.getDataSet().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected DataSet buildObjectToUpdate() {
+        return DataSetSamples.getDataSet().toBuilder()
+                .version(66)
+                .build();
     }
 }

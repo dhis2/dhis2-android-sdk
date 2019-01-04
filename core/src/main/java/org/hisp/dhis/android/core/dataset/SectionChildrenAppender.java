@@ -27,29 +27,32 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import java.util.List;
 
 final class SectionChildrenAppender extends ChildrenAppender<DataSet> {
 
-    private final SectionStore store;
+    private final SingleParentChildStore<DataSet, Section> childStore;
 
-    private SectionChildrenAppender(SectionStore store) {
-        this.store = store;
+    private SectionChildrenAppender(SingleParentChildStore<DataSet, Section> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
     protected DataSet appendChildren(DataSet dataSet) {
         DataSet.Builder builder = dataSet.toBuilder();
-        List<Section> sections = store.getDataSet(dataSet.uid());
-        return builder.sections(sections).build();
+        builder.sections(childStore.getChildren(dataSet));
+        return builder.build();
     }
 
     static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new SectionChildrenAppender(
-                SectionStoreImpl.create(databaseAdapter)
+                StoreFactory.<DataSet, Section>singleParentChildStore(
+                        databaseAdapter,
+                        SectionStore.CHILD_PROJECTION,
+                        SectionStore.FACTORY)
         );
     }
 }

@@ -80,8 +80,8 @@ public class DataSetModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(dataElementOperands.size(), is(1));
 
         DataElementOperand operand = dataElementOperands.get(0);
-        assertThat(operand.uid(), is("NJnhOzjaLYk.rCMUTmcreqP"));
-        assertThat(operand.dataElement().uid(), is("NJnhOzjaLYk"));
-        assertThat(operand.categoryOptionCombo().uid(), is("rCMUTmcreqP"));
+        assertThat(operand.uid(), is("g9eOBujte1U.Gmbgme7z9BF"));
+        assertThat(operand.dataElement().uid(), is("g9eOBujte1U"));
+        assertThat(operand.categoryOptionCombo().uid(), is("Gmbgme7z9BF"));
     }
 }

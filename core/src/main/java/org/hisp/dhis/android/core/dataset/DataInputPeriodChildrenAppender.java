@@ -27,35 +27,33 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
+final class DataInputPeriodChildrenAppender extends ChildrenAppender<DataSet> {
 
-final class DataSetCollectionRepository {
 
-    private DataSetCollectionRepository() {
+    private final SingleParentChildStore<DataSet, DataInputPeriod> childStore;
+
+    private DataInputPeriodChildrenAppender(SingleParentChildStore<DataSet, DataInputPeriod> childStore) {
+        this.childStore = childStore;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataSet> childrenAppender =
-                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataSetTableInfo.TABLE_INFO
-                );
+    @Override
+    protected DataSet appendChildren(DataSet dataSet) {
+        DataSet.Builder builder = dataSet.toBuilder();
+        builder.dataInputPeriods(childStore.getChildren(dataSet));
+        return builder.build();
+    }
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                DataSetStore.create(databaseAdapter),
-                Arrays.asList(
-                        childrenAppender,
-                        SectionChildrenAppender.create(databaseAdapter),
-                        DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-                        DataInputPeriodChildrenAppender.create(databaseAdapter)
-                )
+    static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
+        return new DataInputPeriodChildrenAppender(
+                StoreFactory.<DataSet, DataInputPeriod>singleParentChildStore(
+                        databaseAdapter,
+                        DataInputPeriodLinkStore.CHILD_PROJECTION,
+                        DataInputPeriodLinkStore.FACTORY)
         );
     }
 }

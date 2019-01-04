@@ -2,12 +2,14 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -83,5 +85,17 @@ public class DataSetModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(operand.uid(), is("g9eOBujte1U.Gmbgme7z9BF"));
         assertThat(operand.dataElement().uid(), is("g9eOBujte1U"));
         assertThat(operand.categoryOptionCombo().uid(), is("Gmbgme7z9BF"));
+    }
+
+    @Test
+    public void allow_access_data_input_periods() throws ParseException {
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        List<DataInputPeriod> dataInputPeriods = dataSet.dataInputPeriods();
+        assertThat(dataInputPeriods.size(), is(1));
+
+        DataInputPeriod diPeriod = dataInputPeriods.get(0);
+        assertThat(diPeriod.period().uid(), is("2019"));
+        assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.openingDate()), is("2017-12-31T23:00:00.000"));
+        assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.closingDate()), is("2018-01-09T23:00:00.000"));
     }
 }

@@ -33,6 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -57,7 +58,7 @@ public final class DataInputPeriodLinkStore {
                 }
             };
 
-    private static final CursorModelFactory<DataInputPeriod> FACTORY
+    static final CursorModelFactory<DataInputPeriod> FACTORY
             = new CursorModelFactory<DataInputPeriod>() {
         @Override
         public DataInputPeriod fromCursor(Cursor cursor) {
@@ -65,12 +66,15 @@ public final class DataInputPeriodLinkStore {
         }
     };
 
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET);
+
     public static LinkModelStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.linkModelStore(
                 databaseAdapter,
                 DataInputPeriodTableInfo.TABLE_INFO,
-                DataInputPeriodTableInfo.DATA_SET,
+                DataInputPeriodTableInfo.Columns.DATA_SET,
                 BINDER,
                 FACTORY);
     }

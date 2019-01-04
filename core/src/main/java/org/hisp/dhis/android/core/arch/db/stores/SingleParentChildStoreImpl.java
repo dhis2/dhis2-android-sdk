@@ -25,37 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.arch.db.stores;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.executors.CursorExecutor;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
+import java.util.List;
 
-final class DataSetCollectionRepository {
+public class SingleParentChildStoreImpl<P extends ObjectWithUidInterface, C> implements SingleParentChildStore<P, C> {
 
-    private DataSetCollectionRepository() {
+    private final SingleParentChildProjection childProjection;
+
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLStatementBuilder statementBuilder;
+
+    private final CursorExecutor<C> cursorExecutor;
+
+    public SingleParentChildStoreImpl(SingleParentChildProjection childProjection,
+                                      DatabaseAdapter databaseAdapter,
+                                      SQLStatementBuilder statementBuilder,
+                                      CursorExecutor<C> cursorExecutor) {
+        this.childProjection = childProjection;
+        this.databaseAdapter = databaseAdapter;
+        this.statementBuilder = statementBuilder;
+        this.cursorExecutor = cursorExecutor;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataSet> childrenAppender =
-                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataSetTableInfo.TABLE_INFO
-                );
-
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                DataSetStore.create(databaseAdapter),
-                Arrays.asList(
-                        childrenAppender,
-                        SectionChildrenAppender.create(databaseAdapter),
-                        DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-                        DataInputPeriodChildrenAppender.create(databaseAdapter)
-                )
-        );
+    @Override
+    public List<C> getChildren(P p) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(childProjection.parentColumn, p.uid())
+                .build();
+        String selectStatement = statementBuilder.selectWhere(whereClause);
+        return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
     }
 }

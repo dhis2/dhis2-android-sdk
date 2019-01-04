@@ -34,7 +34,10 @@ import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStoreImpl;
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 @SuppressWarnings("PMD.UseVarargs")
@@ -110,6 +113,17 @@ public final class StoreFactory {
                 linkTableChildProjection,
                 databaseAdapter,
                 new SQLStatementBuilder(linkTableInfo),
+                new CursorExecutorImpl<>(childFactory));
+    }
+
+    public static <P extends ObjectWithUidInterface, C> SingleParentChildStore<P, C> singleParentChildStore(
+                    DatabaseAdapter databaseAdapter,
+                    SingleParentChildProjection childProjection,
+                    CursorModelFactory<C> childFactory) {
+        return new SingleParentChildStoreImpl<>(
+                childProjection,
+                databaseAdapter,
+                new SQLStatementBuilder(childProjection.childTableInfo),
                 new CursorExecutorImpl<>(childFactory));
     }
 }

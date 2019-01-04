@@ -42,7 +42,7 @@ final class DataSetCollectionRepository {
     }
 
     static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataSet> childrenAppender =
+        ChildrenAppender<DataSet> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataSetTableInfo.TABLE_INFO
@@ -51,7 +51,7 @@ final class DataSetCollectionRepository {
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 DataSetStore.create(databaseAdapter),
                 Arrays.asList(
-                        childrenAppender,
+                        objectStyleChildrenAppender,
                         SectionChildrenAppender.create(databaseAdapter),
                         DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
                         DataInputPeriodChildrenAppender.create(databaseAdapter)

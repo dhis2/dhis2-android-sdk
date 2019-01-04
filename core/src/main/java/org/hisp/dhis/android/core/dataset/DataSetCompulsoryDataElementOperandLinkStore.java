@@ -65,8 +65,7 @@ public final class DataSetCompulsoryDataElementOperandLinkStore {
     public static LinkModelStore<DataSetCompulsoryDataElementOperandLinkModel> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetCompulsoryDataElementOperandLinkModel.TABLE,
-                new DataSetCompulsoryDataElementOperandLinkModel.Columns(),
+                DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
                 DataSetCompulsoryDataElementOperandLinkModel.Columns.DATA_SET,
                 BINDER,
                 FACTORY);

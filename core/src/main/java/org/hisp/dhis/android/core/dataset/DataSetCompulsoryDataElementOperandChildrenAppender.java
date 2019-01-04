@@ -27,34 +27,36 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
 
-import java.util.Arrays;
+final class DataSetCompulsoryDataElementOperandChildrenAppender extends ChildrenAppender<DataSet> {
 
-final class DataSetCollectionRepository {
+    private final LinkModelChildStore<DataSet, DataElementOperand> linkModelChildStore;
 
-    private DataSetCollectionRepository() {
+    private DataSetCompulsoryDataElementOperandChildrenAppender(
+            LinkModelChildStore<DataSet, DataElementOperand> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataSet> childrenAppender =
-                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataSetTableInfo.TABLE_INFO
-                );
+    @Override
+    protected DataSet appendChildren(DataSet dataSet) {
+        DataSet.Builder builder = dataSet.toBuilder();
+        builder.compulsoryDataElementOperands(linkModelChildStore.getChildren(dataSet));
+        return builder.build();
+    }
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                DataSetStore.create(databaseAdapter),
-                Arrays.asList(
-                        childrenAppender,
-                        SectionChildrenAppender.create(databaseAdapter),
-                        DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter)
-                )
+    static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
+        return new DataSetCompulsoryDataElementOperandChildrenAppender(
+                StoreFactory.<DataSet, DataElementOperand>linkModelChildStore(
+                        databaseAdapter,
+                        DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
+                        DataSetCompulsoryDataElementOperandLinkTableInfo.CHILD_PROJECTION,
+                        DataElementOperandStore.FACTORY)
         );
     }
 }

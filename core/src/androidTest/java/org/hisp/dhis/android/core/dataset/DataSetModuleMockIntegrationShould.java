@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,5 +71,17 @@ public class DataSetModuleMockIntegrationShould extends MockIntegrationShould {
         Section section = sections.get(0);
         assertThat(section.uid(), is("Y2rk0vzgvAx"));
         assertThat(section.name(), is("Immunization"));
+    }
+
+    @Test
+    public void allow_access_to_compulsory_data_element_operands() {
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        List<DataElementOperand> dataElementOperands = dataSet.compulsoryDataElementOperands();
+        assertThat(dataElementOperands.size(), is(1));
+
+        DataElementOperand operand = dataElementOperands.get(0);
+        assertThat(operand.uid(), is("NJnhOzjaLYk.rCMUTmcreqP"));
+        assertThat(operand.dataElement().uid(), is("NJnhOzjaLYk"));
+        assertThat(operand.categoryOptionCombo().uid(), is("rCMUTmcreqP"));
     }
 }

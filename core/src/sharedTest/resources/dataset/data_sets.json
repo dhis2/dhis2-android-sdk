@@ -63,6 +63,17 @@
           }
         }
       ],
+      "compulsoryDataElementOperands": [
+        {
+          "id": "NJnhOzjaLYk.rCMUTmcreqP",
+          "categoryOptionCombo": {
+            "id": "rCMUTmcreqP"
+          },
+          "dataElement": {
+            "id": "NJnhOzjaLYk"
+          }
+        }
+      ],
       "style": {
         "color": "#000",
         "icon": "my-icon-name"

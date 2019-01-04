@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-final class DataElementOperandStore {
+public final class DataElementOperandStore {
 
     private DataElementOperandStore() {}
 
@@ -55,7 +55,7 @@ final class DataElementOperandStore {
         }
     };
 
-    private static final CursorModelFactory<DataElementOperand> FACTORY = new CursorModelFactory<DataElementOperand>() {
+    public static final CursorModelFactory<DataElementOperand> FACTORY = new CursorModelFactory<DataElementOperand>() {
         @Override
         public DataElementOperand fromCursor(Cursor cursor) {
             return DataElementOperand.create(cursor);

@@ -25,36 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.Arrays;
+public final class DataSetCompulsoryDataElementOperandLinkTableInfo {
 
-final class DataSetCollectionRepository {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private DataSetCollectionRepository() {
+        @Override
+        public String name() {
+            return "DataSetCompulsoryDataElementOperandsLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            Columns.DATA_SET,
+            Columns.DATA_ELEMENT_OPERAND);
+
+    private DataSetCompulsoryDataElementOperandLinkTableInfo() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataSet> childrenAppender =
-                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataSetTableInfo.TABLE_INFO
-                );
+    static class Columns extends BaseModel.Columns {
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                DataSetStore.create(databaseAdapter),
-                Arrays.asList(
-                        childrenAppender,
-                        SectionChildrenAppender.create(databaseAdapter),
-                        DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter)
-                )
-        );
+        public static final String DATA_SET = "dataSet";
+        public static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DATA_SET, DATA_ELEMENT_OPERAND);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

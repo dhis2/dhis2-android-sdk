@@ -5,6 +5,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -109,5 +110,16 @@ public class DataSetModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(dataSetElement.dataSet().uid(), is("lyLU2wR22tC"));
         assertThat(dataSetElement.dataElement().uid(), is("g9eOBujte1U"));
         assertThat(dataSetElement.categoryCombo().uid(), is("m2jTvAj5kkm"));
+    }
+
+    @Test
+    public void allow_access_indicators() {
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        List<Indicator> indicators = dataSet.indicators();
+        assertThat(indicators.size(), is(1));
+
+        Indicator indicator = indicators.get(0);
+        assertThat(indicator.uid(), is("ReUHfIn0pTQ"));
+        assertThat(indicator.name(), is("ANC 1-3 Dropout Rate"));
     }
 }

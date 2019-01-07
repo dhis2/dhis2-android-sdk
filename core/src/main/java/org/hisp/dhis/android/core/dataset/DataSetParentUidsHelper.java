@@ -55,7 +55,7 @@ final class DataSetParentUidsHelper {
     static Set<String> getIndicatorUids(List<DataSet> dataSets) {
         Set<String> uids = new HashSet<>();
         for (DataSet dataSet : dataSets) {
-            for (ObjectWithUid indicator : dataSet.indicators()) {
+            for (Indicator indicator : dataSet.indicators()) {
                 uids.add(indicator.uid());
             }
         }

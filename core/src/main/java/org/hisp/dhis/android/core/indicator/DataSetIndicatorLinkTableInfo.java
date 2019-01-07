@@ -28,22 +28,48 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
+public final class DataSetIndicatorLinkTableInfo {
 
-    private final DataSetIndicatorLinkModel.Builder builder;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
+        @Override
+        public String name() {
+            return "DataSetIndicatorLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            IndicatorTableInfo.TABLE_INFO,
+            Columns.DATA_SET,
+            Columns.INDICATOR);
+
+    private DataSetIndicatorLinkTableInfo() {
     }
 
-    @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
-                .build();
+    static class Columns extends BaseModel.Columns {
+
+        private static final String DATA_SET = "dataSet";
+        private static final String INDICATOR = "indicator";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DATA_SET, INDICATOR);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{DATA_SET, INDICATOR};
+        }
     }
 }

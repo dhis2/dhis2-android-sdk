@@ -54,7 +54,8 @@ final class DataSetCollectionRepository {
                         objectStyleChildrenAppender,
                         SectionChildrenAppender.create(databaseAdapter),
                         DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-                        DataInputPeriodChildrenAppender.create(databaseAdapter)
+                        DataInputPeriodChildrenAppender.create(databaseAdapter),
+                        DataSetElementChildrenAppender.create(databaseAdapter)
                 )
         );
     }

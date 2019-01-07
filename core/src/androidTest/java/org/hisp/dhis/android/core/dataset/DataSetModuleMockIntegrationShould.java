@@ -98,4 +98,16 @@ public class DataSetModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.openingDate()), is("2017-12-31T23:00:00.000"));
         assertThat(BaseIdentifiableObject.dateToDateStr(diPeriod.closingDate()), is("2018-01-09T23:00:00.000"));
     }
+
+    @Test
+    public void allow_access_data_set_elements() {
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        List<DataSetElement> dataSetElements = dataSet.dataSetElements();
+        assertThat(dataSetElements.size(), is(1));
+
+        DataSetElement dataSetElement = dataSetElements.get(0);
+        assertThat(dataSetElement.dataSet().uid(), is("lyLU2wR22tC"));
+        assertThat(dataSetElement.dataElement().uid(), is("g9eOBujte1U"));
+        assertThat(dataSetElement.categoryCombo().uid(), is("m2jTvAj5kkm"));
+    }
 }

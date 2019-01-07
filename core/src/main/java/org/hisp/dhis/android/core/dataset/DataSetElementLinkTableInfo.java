@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -49,6 +50,10 @@ public final class DataSetElementLinkTableInfo {
             return new Columns();
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            DataSetElementLinkTableInfo.TABLE_INFO,
+            DataSetElementFields.DATA_SET);
 
     static class Columns extends BaseModel.Columns {
 

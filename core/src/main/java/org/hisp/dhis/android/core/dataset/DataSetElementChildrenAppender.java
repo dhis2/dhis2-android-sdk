@@ -25,48 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+final class DataSetElementChildrenAppender extends ChildrenAppender<DataSet> {
 
-public final class DataSetDataElementLinkStore {
+    private final SingleParentChildStore<DataSet, DataSetElement> childStore;
 
-    private DataSetDataElementLinkStore() {}
+    private DataSetElementChildrenAppender(SingleParentChildStore<DataSet, DataSetElement> childStore) {
+        this.childStore = childStore;
+    }
 
-    private static final StatementBinder<DataSetElement> BINDER = new StatementBinder<DataSetElement>() {
-        @Override
-        public void bindToStatement(@NonNull DataSetElement o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.dataSet()));
-            sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
-            sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryCombo()));
-        }
-    };
+    @Override
+    protected DataSet appendChildren(DataSet dataSet) {
+        DataSet.Builder builder = dataSet.toBuilder();
+        builder.dataSetElements(childStore.getChildren(dataSet));
+        return builder.build();
+    }
 
-    static final CursorModelFactory<DataSetElement> FACTORY
-            = new CursorModelFactory<DataSetElement>() {
-        @Override
-        public DataSetElement fromCursor(Cursor cursor) {
-            return DataSetElement.create(cursor);
-        }
-    };
-
-    public static LinkModelStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetElementLinkTableInfo.TABLE_INFO,
-                DataSetElementFields.DATA_SET,
-                BINDER,
-                FACTORY);
+    static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
+        return new DataSetElementChildrenAppender(
+                StoreFactory.<DataSet, DataSetElement>singleParentChildStore(
+                        databaseAdapter,
+                        DataSetElementLinkTableInfo.CHILD_PROJECTION,
+                        DataSetDataElementLinkStore.FACTORY)
+        );
     }
 }

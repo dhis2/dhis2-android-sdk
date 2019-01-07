@@ -22,26 +22,22 @@ public class SmsSubmitCase {
 
     // TODO inject repos
     public SmsSubmitCase() {
-
     }
 
-    public Observable<SmsSubmissionState> submit(final Event event) {
+    public Observable<SmsRepository.SmsSendingState> submit(final Event event) {
         return checkPreconditions()
-                .andThen(Single.zip(localDbRepository.getGatewayNumber(), localDbRepository.getUserName(),
-                        (number, username) -> {
-                            String smsContents = converter.format(username, event);
+                .andThen(Single.zip(localDbRepository.getGatewayNumber(), localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
+                        (number, username, categoryOptionCombo) -> {
+                            String smsContents = converter.format(event, username, categoryOptionCombo);
                             return new Pair<>(number, smsContents);
                         })
                 ).flatMapObservable(numAndContents ->
                         smsRepository.sendSms(numAndContents.first, numAndContents.second, 120)
-                ).map(smsSendingStatus -> {
-                    // TODO translate properly to sms submission state
-                    return new SmsSubmissionState();
-                });
+                );
     }
 
     public Completable checkConfirmationSms(int timeoutSeconds, Event event) {
-        // TODO translate event to required texts
+        // TODO Use event to get list of required texts
         return localDbRepository.getConfirmationSenderNumber().flatMapCompletable(confirmationSenderNumber ->
                 smsRepository.listenToConfirmationSms(timeoutSeconds, confirmationSenderNumber, null)
         );
@@ -60,10 +56,6 @@ public class SmsSubmitCase {
             if (!checkPassed) return Completable.error(new PreconditionFailed());
             return Completable.complete();
         });
-
-    }
-
-    public class SmsSubmissionState {
 
     }
 

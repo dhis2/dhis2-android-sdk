@@ -5,6 +5,8 @@ import io.reactivex.Single;
 
 public interface LocalDbRepository {
 
+    Single<String> getDefaultCategoryOptionCombo();
+
     Single<String> getUserName();
 
     Single<String> getGatewayNumber();

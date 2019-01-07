@@ -13,13 +13,14 @@ import java.util.Locale;
 
 public class SmsFormatConverter {
 
-    public String format(String userName, Event event) {
+    public String format(Event event, String username, String categoryOptionCombo) {
         if (event == null) {
             throw new NullPointerException("Event is null");
         }
+        check(categoryOptionCombo);
 
         StringBuilder sb = new StringBuilder();
-        sb.append(check(userName));
+        sb.append(check(username));
         sb.append(' ');
 
         sb.append(check(event.organisationUnit()));
@@ -48,11 +49,14 @@ public class SmsFormatConverter {
             sb.append('|');
             sb.append(check(dataValue.dataElement()));
             sb.append('-');
+            sb.append(categoryOptionCombo);
+            sb.append('=');
             sb.append(check(dataValue.value(), false));
         }
         sb.append('|');
 
         try {
+            // TODO compress using compression library
             return addCheckSum(sb.toString());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);

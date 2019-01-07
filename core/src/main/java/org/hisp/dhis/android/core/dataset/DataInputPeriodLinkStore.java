@@ -44,8 +44,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataInputPeriodLinkStore {
 
-    private DataInputPeriodLinkStore() {}
-
     private static final StatementBinder<DataInputPeriod> BINDER =
             new StatementBinder<DataInputPeriod>() {
                 @Override
@@ -68,6 +66,8 @@ public final class DataInputPeriodLinkStore {
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET);
+
+    private DataInputPeriodLinkStore() {}
 
     public static LinkModelStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
 

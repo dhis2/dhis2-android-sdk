@@ -45,8 +45,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class SectionStore {
 
-    private SectionStore() {}
-
     private static StatementBinder<Section> BINDER = new IdentifiableStatementBinder<Section>() {
         @Override
         public void bindToStatement(@NonNull Section o, @NonNull SQLiteStatement sqLiteStatement) {
@@ -68,6 +66,8 @@ public final class SectionStore {
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             SectionTableInfo.TABLE_INFO, SectionFields.DATA_SET);
+
+    private SectionStore() {}
 
     public static IdentifiableObjectStore<Section> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, SectionTableInfo.TABLE_INFO, BINDER, FACTORY);

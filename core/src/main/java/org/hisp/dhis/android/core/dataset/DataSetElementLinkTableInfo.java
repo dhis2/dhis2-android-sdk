@@ -35,9 +35,6 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 public final class DataSetElementLinkTableInfo {
 
-    private DataSetElementLinkTableInfo() {
-    }
-
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
         @Override
@@ -54,6 +51,9 @@ public final class DataSetElementLinkTableInfo {
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             DataSetElementLinkTableInfo.TABLE_INFO,
             DataSetElementFields.DATA_SET);
+
+    private DataSetElementLinkTableInfo() {
+    }
 
     static class Columns extends BaseModel.Columns {
 

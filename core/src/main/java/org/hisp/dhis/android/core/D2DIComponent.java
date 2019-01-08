@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
+import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -56,9 +57,11 @@ import dagger.Component;
 public interface D2DIComponent {
 
     D2InternalModules internalModules();
+    D2Modules modules();
     ResourceHandler resourceHandler();
     GenericCallData genericCallData();
     AggregatedModule aggregatedModule();
+    MetadataCall metadataCall();
     WipeModule wipeModule();
 
     @Component.Builder

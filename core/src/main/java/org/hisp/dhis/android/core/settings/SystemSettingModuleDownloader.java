@@ -25,11 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.common.Unit;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -37,17 +37,17 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class ProgramInternalModule implements Downloader<List<Program>> {
+public class SystemSettingModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    private final ProgramParentCall programParentCall;
+    private final SystemSettingCall call;
 
     @Inject
-    ProgramInternalModule(ProgramParentCall programParentCall) {
-        this.programParentCall = programParentCall;
+    SystemSettingModuleDownloader(SystemSettingCall call) {
+        this.call = call;
     }
 
     @Override
-    public Callable<List<Program>> download() {
-        return programParentCall;
+    public Callable<Unit> downloadMetadata() {
+        return call;
     }
 }

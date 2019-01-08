@@ -29,18 +29,16 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
+import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
@@ -48,27 +46,33 @@ import org.hisp.dhis.android.core.user.UserModuleDownloader;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class MetadataCall extends SyncCall<Unit> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public class MetadataCall implements Callable<Unit> {
 
     private final D2CallExecutor d2CallExecutor;
 
     private final SystemInfoModuleDownloader systemInfoDownloader;
-    private final Downloader<SystemSetting> systemSettingDownloader;
+    private final SystemSettingModuleDownloader systemSettingDownloader;
     private final UserModuleDownloader userModuleDownloader;
-    private final Downloader<Unit> categoryDownloader;
-    private final Downloader<List<Program>> programDownloader;
-    private final OrganisationUnitDownloadModule organisationUnitDownloadModule;
-    private final Downloader<List<DataSet>> dataSetDownloader;
+    private final CategoryModuleDownloader categoryDownloader;
+    private final ProgramModuleDownloader programDownloader;
+    private final OrganisationUnitModuleDownloader organisationUnitDownloadModule;
+    private final DataSetModuleDownloader dataSetDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
+    @Inject
     public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
                         @NonNull SystemInfoModuleDownloader systemInfoDownloader,
-                        @NonNull Downloader<SystemSetting> systemSettingDownloader,
+                        @NonNull SystemSettingModuleDownloader systemSettingDownloader,
                         @NonNull UserModuleDownloader userModuleDownloader,
-                        @NonNull Downloader<Unit> categoryDownloader,
-                        @NonNull Downloader<List<Program>> programDownloader,
-                        @NonNull OrganisationUnitDownloadModule organisationUnitDownloadModule,
-                        @NonNull Downloader<List<DataSet>> dataSetDownloader,
+                        @NonNull CategoryModuleDownloader categoryDownloader,
+                        @NonNull ProgramModuleDownloader programDownloader,
+                        @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
+                        @NonNull DataSetModuleDownloader dataSetDownloader,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
@@ -83,45 +87,28 @@ public class MetadataCall extends SyncCall<Unit> {
 
     @Override
     public Unit call() throws Exception {
-        setExecuted();
 
         return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() throws Exception {
                 systemInfoDownloader.downloadMetadata().call();
 
-                systemSettingDownloader.download().call();
+                systemSettingDownloader.downloadMetadata().call();
 
                 User user = userModuleDownloader.downloadMetadata().call();
 
-                List<Program> programs = programDownloader.download().call();
+                List<Program> programs = programDownloader.downloadMetadata().call();
 
-                List<DataSet> dataSets = dataSetDownloader.download().call();
+                List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
 
-                categoryDownloader.download().call();
+                categoryDownloader.downloadMetadata().call();
 
-                organisationUnitDownloadModule.download(user, programs, dataSets).call();
+                organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
 
                 foreignKeyCleaner.cleanForeignKeyErrors();
 
                 return new Unit();
             }
         });
-    }
-
-    public static MetadataCall create(GenericCallData genericCallData,
-                                      D2InternalModules internalModules) {
-
-        return new MetadataCall(
-                new D2CallExecutor(genericCallData.databaseAdapter()),
-                internalModules.systemInfo.moduleDownloader,
-                internalModules.systemSetting,
-                internalModules.user,
-                internalModules.category,
-                internalModules.program,
-                internalModules.organisationUnit,
-                internalModules.dataSet,
-                ForeignKeyCleanerImpl.create(genericCallData.databaseAdapter())
-        );
     }
 }

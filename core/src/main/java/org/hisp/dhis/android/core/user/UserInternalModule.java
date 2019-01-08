@@ -30,32 +30,20 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.VisibleForTesting;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
-public final class UserInternalModule implements UserModuleDownloader {
-
-    public final UserModule publicModule;
-    private final UserParentCall userParentCall;
+public final class UserInternalModule {
 
     @VisibleForTesting
     @SuppressFBWarnings("URF_UNREAD_FIELD")
     final UserCall userCall;
 
     @Inject
-    UserInternalModule(UserModule publicModule, UserParentCall userParentCall, UserCall userCall) {
-        this.publicModule = publicModule;
-        this.userParentCall = userParentCall;
+    UserInternalModule(UserCall userCall) {
         this.userCall = userCall;
-    }
-
-    @Override
-    public Callable<User> downloadMetadata() {
-        return userParentCall;
     }
 }

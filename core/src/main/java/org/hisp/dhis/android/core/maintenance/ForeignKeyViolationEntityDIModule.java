@@ -25,42 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.D2CallExecutor;
+package org.hisp.dhis.android.core.maintenance;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-class UserParentCall implements Callable<User> {
+@Module
+public final class ForeignKeyViolationEntityDIModule {
 
-    private final D2CallExecutor d2CallExecutor;
-    private final UserCall userCall;
-    private final AuthorityEndpointCallFactory authorityCallFactory;
-
-    @Inject
-    UserParentCall(D2CallExecutor d2CallExecutor,
-                   UserCall userCall,
-                   AuthorityEndpointCallFactory authorityCallFactory) {
-        this.d2CallExecutor = d2CallExecutor;
-        this.userCall = userCall;
-        this.authorityCallFactory = authorityCallFactory;
-    }
-
-    @Override
-    public User call() throws Exception {
-
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<User>() {
-            @Override
-            public User call() throws Exception {
-                User user = userCall.call();
-                authorityCallFactory.create().call();
-                return user;
-            }
-        });
+    @Provides
+    @Reusable
+    public ObjectStore<ForeignKeyViolation> store(DatabaseAdapter databaseAdapter) {
+        return ForeignKeyViolationStore.create(databaseAdapter);
     }
 }

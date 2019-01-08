@@ -34,7 +34,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
@@ -84,6 +83,7 @@ public final class D2 {
     private final ResourceHandler resourceHandler;
     private final GenericCallData genericCallData;
     private final D2InternalModules internalModules;
+    private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
@@ -111,6 +111,7 @@ public final class D2 {
 
 
         this.internalModules = d2DIComponent.internalModules();
+        this.modules = d2DIComponent.modules();
         this.resourceHandler = d2DIComponent.resourceHandler();
         this.genericCallData = d2DIComponent.genericCallData();
     }
@@ -127,12 +128,12 @@ public final class D2 {
 
     @NonNull
     public UserModule userModule() {
-        return internalModules.user.publicModule;
+        return modules.user;
     }
 
     @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(genericCallData, internalModules);
+        return d2DIComponent.metadataCall();
     }
 
     @NonNull
@@ -206,27 +207,27 @@ public final class D2 {
     }
 
     public SystemInfoModule systemInfoModule() {
-        return this.internalModules.systemInfo.publicModule;
+        return this.modules.systemInfo;
     }
 
     public RelationshipModule relationshipModule() {
-        return this.internalModules.relationship.publicModule;
+        return this.modules.relationship;
     }
 
     public CategoryModule categoryModule() {
-        return this.internalModules.category.publicModule;
+        return this.modules.category;
     }
 
     public DataElementModule dataElementModule() {
-        return this.internalModules.dataElement.publicModule;
+        return this.modules.dataElement;
     }
 
     public DataValueModule dataValueModule() {
-        return this.internalModules.dataValue.publicModule;
+        return this.modules.dataValue;
     }
 
     public MaintenanceModule maintenanceModule() {
-        return this.internalModules.maintenance.publicModule;
+        return this.modules.maintenance;
     }
 
     public WipeModule wipeModule() {

@@ -25,19 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.category;
+
+import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class DataElementInternalModule {
+public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> {
 
-    public final DataElementModule publicModule;
+    private final UidsCallFactory<Category> categoryCallFactory;
+    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
+    private final CategoryComboUidsSeeker categoryComboUidsSeeker;
 
     @Inject
-    DataElementInternalModule(DataElementModule publicModule) {
-        this.publicModule = publicModule;
+    CategoryModuleDownloader(UidsCallFactory<Category> categoryCallFactory,
+                             UidsCallFactory<CategoryCombo> categoryComboCallFactory,
+                             CategoryComboUidsSeeker categoryComboUidsSeeker) {
+        this.categoryCallFactory = categoryCallFactory;
+        this.categoryComboCallFactory = categoryComboCallFactory;
+        this.categoryComboUidsSeeker = categoryComboUidsSeeker;
+    }
+
+    @Override
+    public Callable<Unit> downloadMetadata() {
+        return new Callable<Unit>() {
+            @Override
+            public Unit call() throws Exception {
+                Set<String> comboUids = categoryComboUidsSeeker.seekUids();
+                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
+                categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
+
+                return new Unit();
+            }
+        };
     }
 }

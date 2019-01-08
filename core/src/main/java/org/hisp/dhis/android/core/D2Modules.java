@@ -26,10 +26,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.modules;
+package org.hisp.dhis.android.core;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import org.hisp.dhis.android.core.datavalue.DataValueModule;
+import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
+import org.hisp.dhis.android.core.user.UserModule;
 
-public interface Downloader<O> {
-   Callable<O> download();
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class D2Modules {
+
+    final CategoryModule category;
+    final DataElementModule dataElement;
+    final DataValueModule dataValue;
+    final MaintenanceModule maintenance;
+    final SystemInfoModule systemInfo;
+    final RelationshipModule relationship;
+    final UserModule user;
+
+    @Inject
+    public D2Modules(CategoryModule category,
+                     DataElementModule dataElement,
+                     DataValueModule dataValue,
+                     MaintenanceModule maintenance,
+                     SystemInfoModule systemInfo,
+                     RelationshipModule relationship,
+                     UserModule user) {
+        this.category = category;
+        this.dataElement = dataElement;
+        this.dataValue = dataValue;
+        this.maintenance = maintenance;
+        this.systemInfo = systemInfo;
+        this.relationship = relationship;
+        this.user = user;
+    }
 }

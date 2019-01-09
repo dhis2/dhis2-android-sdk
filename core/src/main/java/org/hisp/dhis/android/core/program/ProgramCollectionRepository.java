@@ -25,39 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.ArrayList;
 
-@Module
-public final class ProgramEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<Program> {
+final class ProgramCollectionRepository {
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<Program> store(DatabaseAdapter databaseAdapter) {
-        return ProgramStore.create(databaseAdapter);
+    private ProgramCollectionRepository() {
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<Program> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramHandler.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    ReadOnlyIdentifiableCollectionRepository<Program> repository(DatabaseAdapter databaseAdapter) {
-        return ProgramCollectionRepository.create(databaseAdapter);
+    static ReadOnlyIdentifiableCollectionRepository<Program> create(DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                ProgramStore.create(databaseAdapter),
+                new ArrayList<ChildrenAppender<Program>>()
+        );
     }
 }

@@ -54,6 +54,7 @@ import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
@@ -215,6 +216,10 @@ public final class D2 {
 
     public MaintenanceModule maintenanceModule() {
         return this.modules.maintenance;
+    }
+
+    public ProgramModule programModule() {
+        return this.modules.program;
     }
 
     public UserModule userModule() {

@@ -42,20 +42,14 @@ class SearchGridMapper {
     public List<TrackedEntityInstance> transform(SearchGrid searchGrid) throws ParseException {
         List<TrackedEntityInstance> teis = new ArrayList<>(searchGrid.rows().size());
         for (List<String> row : searchGrid.rows()) {
-            TrackedEntityInstance tei = TrackedEntityInstance.create(
-                    row.get(0),
-                    BaseIdentifiableObject.parseSpaceDate(row.get(1)),
-                    BaseIdentifiableObject.parseSpaceDate(row.get(2)),
-                    null,
-                    null,
-                    row.get(3),
-                    row.get(5),
-                    null,
-                    null,
-                    null,
-                    getAttributes(searchGrid.headers(), row),
-                    null,
-                    null);
+            TrackedEntityInstance tei = TrackedEntityInstance.builder()
+                    .uid(row.get(0))
+                    .created(BaseIdentifiableObject.parseSpaceDate(row.get(1)))
+                    .lastUpdated(BaseIdentifiableObject.parseSpaceDate(row.get(2)))
+                    .organisationUnit(row.get(3))
+                    .trackedEntityType(row.get(5))
+                    .trackedEntityAttributeValues(getAttributes(searchGrid.headers(), row))
+                    .build();
 
             teis.add(tei);
         }

@@ -26,14 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.data.trackedentity;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityInstance> {
+import java.text.ParseException;
+import java.util.Date;
 
-    @Override
-    protected TrackedEntityInstance build(String uid) {
-        return TrackedEntityInstance.builder().uid(uid).build();
+public class TrackedEntityInstanceSamples {
+
+    public static TrackedEntityInstance get() {
+        return TrackedEntityInstance.builder()
+                .uid("event_uid")
+                .created(getDate("2014-08-20T12:28:56.409"))
+                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+                .createdAtClient("created_at_client")
+                .lastUpdatedAtClient("last_updated_at_client")
+                .organisationUnit("organisation_unit")
+                .trackedEntityType("tracked_entity_type")
+                .coordinates("coordinates")
+                .featureType(FeatureType.MULTI_POLYGON)
+                .state(State.TO_POST)
+                .build();
+    }
+
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

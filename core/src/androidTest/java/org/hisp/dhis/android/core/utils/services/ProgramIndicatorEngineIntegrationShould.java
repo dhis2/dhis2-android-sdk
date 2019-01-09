@@ -61,6 +61,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -112,9 +113,16 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
         TrackedEntityType trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build();
         TrackedEntityTypeStore.create(databaseAdapter()).insert(trackedEntityType);
 
-        TrackedEntityInstanceStore teiStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
-        teiStore.insert(teiUid, new Date(), new Date(), null, null, orgunitUid, teiTypeUid, null, null,
-                null);
+        TrackedEntityInstanceStore teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
+        TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder()
+                .uid(teiUid)
+                .created(new Date())
+                .lastUpdated(new Date())
+                .organisationUnit(orgunitUid)
+                .trackedEntityType(teiTypeUid)
+                .build();
+
+        teiStore.insert(trackedEntityInstance);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
         database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);

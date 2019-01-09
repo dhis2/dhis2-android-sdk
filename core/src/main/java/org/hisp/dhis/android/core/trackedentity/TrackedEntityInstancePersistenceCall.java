@@ -84,8 +84,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 }
 
                 if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
-                    // TODO Replace by method 'selectUidsWhere' from IdentifiableObjectStore once migrated
-                    Set<String> relationships = trackedEntityInstanceStore.queryRelationships().keySet();
+                    List<String> relationships = trackedEntityInstanceStore.queryRelationshipsUids();
 
                     if (!relationships.isEmpty()) {
                         Call<List<TrackedEntityInstance>> relationshipsCall =
@@ -113,7 +112,7 @@ final class TrackedEntityInstancePersistenceCall extends SyncCall<Void> {
                 retrofit,
                 internalModules,
                 TrackedEntityInstanceHandler.create(databaseAdapter, internalModules),
-                new TrackedEntityInstanceStoreImpl(databaseAdapter),
+                TrackedEntityInstanceStoreImpl.create(databaseAdapter),
                 TrackedEntityInstanceUidHelperImpl.create(databaseAdapter),
                 AuthenticatedUserStore.create(databaseAdapter),
                 internalModules.organisationUnit.moduleDownloader,

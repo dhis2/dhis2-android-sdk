@@ -31,225 +31,93 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.StoreWithStateImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceModel.Columns;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals",
-        "PMD.NPathComplexity"
-})
-public class TrackedEntityInstanceStoreImpl extends StoreWithStateImpl implements TrackedEntityInstanceStore {
-    private static final String INSERT_STATEMENT = "INSERT INTO " +
-            TrackedEntityInstanceModel.TABLE + " (" +
-            Columns.UID + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.CREATED_AT_CLIENT + ", " +
-            Columns.LAST_UPDATED_AT_CLIENT + ", " +
-            Columns.ORGANISATION_UNIT + ", " +
-            Columns.TRACKED_ENTITY_TYPE + ", " +
-            Columns.COORDINATES + ", " +
-            Columns.FEATURE_TYPE + ", " +
-            Columns.STATE +
-            ") " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWithStateStoreImpl<TrackedEntityInstance>
+        implements TrackedEntityInstanceStore {
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + TrackedEntityInstanceModel.TABLE + " SET " +
-            Columns.UID + " =?, " +
-            Columns.CREATED + " =?, " +
-            Columns.LAST_UPDATED + " =?, " +
-            Columns.CREATED_AT_CLIENT + " =? , " +
-            Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
-            Columns.ORGANISATION_UNIT + " =?, " +
-            Columns.TRACKED_ENTITY_TYPE + " =?, " +
-            Columns.COORDINATES + " =?, " +
-            Columns.FEATURE_TYPE + " =?, " +
-            Columns.STATE + " =? " +
-            " WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String DELETE_STATEMENT = "DELETE FROM " +
-            TrackedEntityInstanceModel.TABLE +
-            " WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String QUERY_STATEMENT = "SELECT " +
-            "  TrackedEntityInstance.uid, " +
-            "  TrackedEntityInstance.created, " +
-            "  TrackedEntityInstance.lastUpdated, " +
-            "  TrackedEntityInstance.createdAtClient, " +
-            "  TrackedEntityInstance.lastUpdatedAtClient, " +
-            "  TrackedEntityInstance.organisationUnit, " +
-            "  TrackedEntityInstance.trackedEntityType," +
-            "  TrackedEntityInstance.coordinates," +
-            "  TrackedEntityInstance.featureType, " +
-            "  TrackedEntityInstance.state " +
-            "FROM TrackedEntityInstance ";
-
-    private static final String QUERY_STATEMENT_TO_POST =
-            QUERY_STATEMENT +
-                    "WHERE state = 'TO_POST' " +
-                    "OR state = 'TO_UPDATE' " +
-                    "OR state = 'TO_DELETE'";
-
-    private static final String QUERY_STATEMENT_SYNCED =
-            QUERY_STATEMENT +
-                    " WHERE state = 'SYNCED'";
-
-    private static final String QUERY_STATEMENT_RELATIONSHIPS =
-            QUERY_STATEMENT +
-                    " WHERE state = 'RELATIONSHIP'";
-
-    private final SQLiteStatement updateStatement;
-    private final SQLiteStatement deleteStatement;
-
-    private final SQLiteStatement insertStatement;
-
-    public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter) {
-        super(databaseAdapter, TrackedEntityInstanceModel.TABLE);
-        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
-        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
+    public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,
+                                          SQLStatementWrapper statementWrapper,
+                                          SQLStatementBuilder builder) {
+        super(databaseAdapter, statementWrapper, builder, BINDER, FACTORY);
     }
 
     @Override
-    public long insert(@NonNull String uid, @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                       @NonNull String organisationUnit, @NonNull String trackedEntityType,
-                       @Nullable String coordinates, @Nullable FeatureType featureType,
-                       @Nullable State state) {
+    public List<TrackedEntityInstance> queryTrackedEntityInstancesToPost() {
+        String whereToPostClause = new WhereClauseBuilder()
+                .appendOrKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
+                .appendOrKeyStringValue(BaseDataModel.Columns.STATE, State.TO_UPDATE)
+                .appendOrKeyStringValue(BaseDataModel.Columns.STATE, State.TO_DELETE)
+                .build();
 
-        sqLiteBind(insertStatement, 1, uid);
-        sqLiteBind(insertStatement, 2, created);
-        sqLiteBind(insertStatement, 3, lastUpdated);
-        sqLiteBind(insertStatement, 4, createdAtClient);
-        sqLiteBind(insertStatement, 5, lastUpdatedAtClient);
-        sqLiteBind(insertStatement, 6, organisationUnit);
-        sqLiteBind(insertStatement, 7, trackedEntityType);
-        sqLiteBind(insertStatement, 8, coordinates);
-        sqLiteBind(insertStatement, 9, featureType);
-        sqLiteBind(insertStatement, 10, state);
-
-        long returnValue = databaseAdapter.executeInsert(TrackedEntityInstanceModel.TABLE, insertStatement);
-        insertStatement.clearBindings();
-        return returnValue;
+        return selectWhereClause(whereToPostClause);
     }
 
     @Override
-    public int delete() {
-        return databaseAdapter.delete(TrackedEntityInstanceModel.TABLE);
+    public List<String> querySyncedTrackedEntityInstanceUids() {
+        String whereSyncedClause = new WhereClauseBuilder()
+                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.SYNCED)
+                .build();
+
+        return selectUidsWhere(whereSyncedClause);
     }
 
     @Override
-    public int update(@NonNull String uid, @NonNull Date created, @NonNull Date lastUpdated,
-                      @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                      @NonNull String organisationUnit, @NonNull String trackedEntityType,
-                      @Nullable String coordinates, @Nullable FeatureType featureType,
-                      @NonNull State state, @NonNull String whereTrackedEntityInstanceUid) {
-        sqLiteBind(updateStatement, 1, uid);
-        sqLiteBind(updateStatement, 2, created);
-        sqLiteBind(updateStatement, 3, lastUpdated);
-        sqLiteBind(updateStatement, 4, createdAtClient);
-        sqLiteBind(updateStatement, 5, lastUpdatedAtClient);
-        sqLiteBind(updateStatement, 6, organisationUnit);
-        sqLiteBind(updateStatement, 7, trackedEntityType);
-        sqLiteBind(updateStatement, 8, coordinates);
-        sqLiteBind(updateStatement, 9, featureType);
-        sqLiteBind(updateStatement, 10, state);
+    public List<String> queryRelationshipsUids() {
+        String whereRelationshipsClause = new WhereClauseBuilder()
+                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.RELATIONSHIP)
+                .build();
 
-        // bind the where clause
-        sqLiteBind(updateStatement, 11, whereTrackedEntityInstanceUid);
-
-        int rowId = databaseAdapter.executeUpdateDelete(TrackedEntityInstanceModel.TABLE, updateStatement);
-        updateStatement.clearBindings();
-
-        return rowId;
+        return selectUidsWhere(whereRelationshipsClause);
     }
 
-    @Override
-    public int delete(@NonNull String uid) {
-        sqLiteBind(deleteStatement, 1, uid);
-
-        int rowId = deleteStatement.executeUpdateDelete();
-        deleteStatement.clearBindings();
-
-        return rowId;
-    }
-
-    @Override
-    public Map<String, TrackedEntityInstance> queryToPost() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_TO_POST);
-        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
-
-        return trackedEntityInstanceMap;
-    }
-
-    @Override
-    public Map<String, TrackedEntityInstance> querySynced() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_SYNCED);
-        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
-
-        return trackedEntityInstanceMap;
-    }
-
-    @Override
-    public Map<String, TrackedEntityInstance> queryRelationships() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_RELATIONSHIPS);
-        return mapFromCursor(cursor);
-    }
-
-    @Override
-    public Map<String, TrackedEntityInstance> queryAll() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
-
-        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = mapFromCursor(cursor);
-
-        return trackedEntityInstanceMap;
-    }
-
-    @NonNull
-    private Map<String, TrackedEntityInstance> mapFromCursor(Cursor cursor) {
-        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    String uid = cursor.getString(0);
-                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
-                    Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
-                    String createdAtClient = cursor.getString(3);
-                    String lastUpdatedAtClient = cursor.getString(4);
-                    String organisationUnit = cursor.getString(5);
-                    String trackedEntityType = cursor.getString(6);
-                    String coordinates = cursor.getString(7);
-                    FeatureType featureType = cursor.getString(8) == null ? null :
-                            FeatureType.valueOf(FeatureType.class, cursor.getString(8));
-                    String stateStr = cursor.getString(9);
-
-                    Boolean deleted = stateStr != null && stateStr.equals(State.TO_DELETE.toString());
-
-                    trackedEntityInstanceMap.put(uid, TrackedEntityInstance.create(
-                            uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                            organisationUnit, trackedEntityType, coordinates, featureType, deleted,
-                            null, null, null));
-
-                } while (cursor.moveToNext());
-            }
-
-        } finally {
-            cursor.close();
+    private static final StatementBinder<TrackedEntityInstance> BINDER = new StatementBinder<TrackedEntityInstance>() {
+        @Override
+        public void bindToStatement(@NonNull TrackedEntityInstance o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.uid());
+            sqLiteBind(sqLiteStatement, 2, o.created());
+            sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 4, o.createdAtClient());
+            sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
+            sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 7, o.trackedEntityType());
+            sqLiteBind(sqLiteStatement, 8, o.coordinates());
+            sqLiteBind(sqLiteStatement, 9, o.featureType());
+            sqLiteBind(sqLiteStatement, 10, o.state());
         }
-        return trackedEntityInstanceMap;
+    };
+
+    private static final CursorModelFactory<TrackedEntityInstance> FACTORY =
+            new CursorModelFactory<TrackedEntityInstance>() {
+        @Override
+        public TrackedEntityInstance fromCursor(Cursor cursor) {
+            return TrackedEntityInstance.create(cursor);
+        }
+    };
+
+    public static TrackedEntityInstanceStore create(DatabaseAdapter databaseAdapter) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+                TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
+                TrackedEntityInstanceTableInfo.TABLE_INFO.columns());
+        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
+
+        return new TrackedEntityInstanceStoreImpl(
+                databaseAdapter,
+                statementWrapper,
+                statementBuilder
+        );
     }
 }

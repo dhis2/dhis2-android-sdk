@@ -35,7 +35,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("AlvUHPP2Mes")).call();
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.queryAll().values().iterator().next();
+        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
         setTeiToPost(tei);
 
@@ -74,10 +74,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void setTeiToPost(TrackedEntityInstance tei) {
-        trackedEntityInstanceStore.update(
-                tei.uid(), tei.created(), tei.lastUpdated(), tei.createdAtClient(), tei.lastUpdatedAtClient(),
-                tei.organisationUnit(), tei.trackedEntityType(), tei.coordinates(), tei.featureType(),
-                State.TO_POST, tei.uid());
+        trackedEntityInstanceStore.update(tei.toBuilder().state(State.TO_POST).build());
     }
 
     private void addNote() {

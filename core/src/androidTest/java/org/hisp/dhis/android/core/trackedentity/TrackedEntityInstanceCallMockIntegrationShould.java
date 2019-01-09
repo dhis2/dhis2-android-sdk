@@ -158,18 +158,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             }
         }
 
-        trackedEntityInstance = TrackedEntityInstance.create(
-                trackedEntityInstance.uid(), trackedEntityInstance.created(),
-                trackedEntityInstance.lastUpdated(),
-                trackedEntityInstance.createdAtClient(),
-                trackedEntityInstance.lastUpdatedAtClient(),
-                trackedEntityInstance.organisationUnit(),
-                trackedEntityInstance.trackedEntityType(),
-                trackedEntityInstance.coordinates(),
-                trackedEntityInstance.featureType(),
-                trackedEntityInstance.deleted(),
-                trackedEntityInstance.trackedEntityAttributeValues(),
-                trackedEntityInstance.relationships(), expectedEnrollments);
+        trackedEntityInstance = trackedEntityInstance.toBuilder().enrollments(expectedEnrollments).build();
 
         return trackedEntityInstance;
     }
@@ -187,10 +176,9 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                     trackedEntityAttributeValue.toBuilder().id(null).trackedEntityInstance(null).build());
         }
 
-        TrackedEntityInstanceStoreImpl teiStore =
-                new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        TrackedEntityInstanceStore teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
 
-        downloadedTei = teiStore.queryAll().get(teiUid);
+        downloadedTei = teiStore.selectByUid(teiUid);
 
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
 
@@ -267,12 +255,14 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             relationships = downloadedTei.relationships();
         }
 
-        downloadedTei = TrackedEntityInstance.create(
-                downloadedTei.uid(), downloadedTei.created(), downloadedTei.lastUpdated(),
-                downloadedTei.createdAtClient(), downloadedTei.lastUpdatedAtClient(),
-                downloadedTei.organisationUnit(), downloadedTei.trackedEntityType(), downloadedTei.coordinates(),
-                downloadedTei.featureType(), downloadedTei.deleted(), attValuesWithoutIdAndTEI,
-                relationships, downloadedEnrollments);
+        downloadedTei = downloadedTei.toBuilder()
+                .id(null)
+                .state(null)
+                .deleted(false)
+                .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
+                .relationships(relationships)
+                .enrollments(downloadedEnrollments)
+                .build();
 
         return downloadedTei;
     }

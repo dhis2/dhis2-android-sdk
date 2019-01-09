@@ -5,7 +5,6 @@ import junit.framework.Assert;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -13,7 +12,9 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.junit.Before;
@@ -96,11 +97,11 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
 
         // Check server status
         TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         try {
             executor.executeObjectCall(trackedEntityInstanceService
-                    .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                    .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -136,11 +137,11 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
 
         // Check server status
         TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         try {
             executor.executeObjectCall(trackedEntityInstanceService
-                    .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                    .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
             Assert.fail("Should not reach that line");
         } catch (D2Error e) {
             assertThat(e.httpErrorCode()).isEqualTo(404);
@@ -176,10 +177,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
 
         // TODO Check server status
         TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverInvalidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
     }
 
@@ -211,10 +212,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverInvalidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI.enrollments()).isNotEmpty();
         assertThat(serverInvalidTEI.enrollments()).isEmpty();
@@ -250,10 +251,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverInvalidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI.enrollments().size()).isEqualTo(1);
         assertThat(serverInvalidTEI.enrollments().size()).isEqualTo(1);
@@ -288,10 +289,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI1 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI1.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI1.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverValidTEI2 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI2.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI2.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI1.enrollments().size()).isEqualTo(1);
 
@@ -330,10 +331,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI1 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI1.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI1.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverValidTEI2 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI2.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI2.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI1.enrollments().size()).isEqualTo(1);
         assertThat(serverValidTEI1.enrollments().get(0).events()).isEmpty();
@@ -373,10 +374,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI1 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverValidTEI2 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI1.enrollments().size()).isEqualTo(1);
         assertThat(serverValidTEI1.enrollments().get(0).events().size()).isEqualTo(1);
@@ -416,10 +417,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI1 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverValidTEI2 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI1.enrollments().size()).isEqualTo(1);
         assertThat(serverValidTEI1.enrollments().get(0).events().size()).isEqualTo(1);
@@ -460,10 +461,10 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI1 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         TrackedEntityInstance serverValidTEI2 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI1.enrollments().size()).isEqualTo(1);
         assertThat(serverValidTEI1.enrollments().get(0).events().size()).isEqualTo(1);
@@ -498,7 +499,7 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         }
 
         TrackedEntityInstance serverValidTEI1 = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(completedEnrollment.uid(), TrackedEntityInstance.allFields, true));
+                .getTrackedEntityInstance(completedEnrollment.uid(), TrackedEntityInstanceFields.allFields, true));
 
         assertThat(serverValidTEI1.enrollments().size()).isEqualTo(1);
         assertThat(serverValidTEI1.enrollments().get(0).status()).isEqualTo(EnrollmentStatus.COMPLETED);

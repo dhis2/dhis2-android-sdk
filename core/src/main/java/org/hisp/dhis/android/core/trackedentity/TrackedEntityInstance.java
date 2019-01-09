@@ -28,142 +28,142 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreEnrollmentListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreRelationship229CompatibleListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
-import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
-
 @AutoValue
-public abstract class TrackedEntityInstance implements ObjectWithUidInterface, ObjectWithDeleteInterface {
-    private static final String UID = "trackedEntityInstance";
-    private static final String CREATED_AT_CLIENT = "createdAtClient";
-    private static final String LAST_UPDATED_AT_CLIENT = "lastUpdatedAtClient";
-    private static final String CREATED = "created";
-    private static final String LAST_UPDATED = "lastUpdated";
-    private static final String ORGANISATION_UNIT = "orgUnit";
-    private static final String TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes";
-    private static final String RELATIONSHIPS = "relationships";
-    private static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
-    private static final String COORDINATES = "coordinates";
-    private static final String FEATURE_TYPE = "featureType";
-    private static final String DELETED = "deleted";
-    private static final String ENROLLMENTS = "enrollments";
+@JsonDeserialize(builder = AutoValue_TrackedEntityInstance.Builder.class)
+public abstract class TrackedEntityInstance extends BaseDataModel
+        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
 
-    static final Field<TrackedEntityInstance, String> uid = Field.create(UID);
-    private static final Field<TrackedEntityInstance, String> created = Field.create(CREATED);
-    private static final Field<TrackedEntityInstance, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<TrackedEntityInstance, String> organisationUnit = Field.create(ORGANISATION_UNIT);
-    private static final Field<TrackedEntityInstance, String> trackedEntityType = Field.create(TRACKED_ENTITY_TYPE);
-    private static final Field<TrackedEntityInstance, String> coordinates = Field.create(COORDINATES);
-    private static final Field<TrackedEntityInstance, FeatureType> featureType = Field.create(FEATURE_TYPE);
-    private static final Field<TrackedEntityInstance, Boolean> deleted = Field.create(DELETED);
-
-    private static final NestedField<TrackedEntityInstance, Enrollment> enrollment
-            = NestedField.create(ENROLLMENTS);
-    private static final NestedField<TrackedEntityInstance, TrackedEntityAttributeValue> trackedEntityAttributeValues
-            = NestedField.create(TRACKED_ENTITY_ATTRIBUTE_VALUES);
-    private static final NestedField<TrackedEntityInstance, Relationship229Compatible> relationships
-            = NestedField.create(RELATIONSHIPS);
-
-    public static final Fields<TrackedEntityInstance> allFields = Fields.<TrackedEntityInstance>builder().fields(
-            uid, created, lastUpdated, organisationUnit, trackedEntityType, deleted,
-            relationships.with(RelationshipFields.allFields),
-            trackedEntityAttributeValues.with(TrackedEntityAttributeValueFields.allFields),
-            enrollment.with(EnrollmentFields.allFields), coordinates, featureType
-    ).build();
-
-    static final Fields<TrackedEntityInstance> asRelationshipFields = Fields.<TrackedEntityInstance>builder()
-            .fields(uid, created, lastUpdated, organisationUnit, trackedEntityType, coordinates, featureType,
-                    trackedEntityAttributeValues.with(TrackedEntityAttributeValueFields.allFields), deleted
-    ).build();
-
-    @JsonProperty(UID)
+    @Override
+    @Nullable
+    @JsonProperty(TrackedEntityInstanceFields.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty(CREATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty(CREATED_AT_CLIENT)
+    @JsonIgnore()
     public abstract String createdAtClient();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED_AT_CLIENT)
+    @JsonIgnore()
     public abstract String lastUpdatedAtClient();
 
     @Nullable
-    @JsonProperty(ORGANISATION_UNIT)
+    @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_TYPE)
+    @JsonProperty()
     public abstract String trackedEntityType();
 
     @Nullable
-    @JsonProperty(COORDINATES)
+    @JsonProperty()
     public abstract String coordinates();
 
     @Nullable
-    @JsonProperty(FEATURE_TYPE)
+    @JsonProperty()
+    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
-    @JsonProperty(DELETED)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
+    @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
+    @ColumnAdapter(IgnoreTrackedEntityAttributeValueListColumnAdapter.class)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
     @Nullable
-    @JsonProperty(RELATIONSHIPS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreRelationship229CompatibleListColumnAdapter.class)
     public abstract List<Relationship229Compatible> relationships();
 
     @Nullable
-    @JsonProperty(ENROLLMENTS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreEnrollmentListColumnAdapter.class)
     public abstract List<Enrollment> enrollments();
 
-    @JsonCreator
-    public static TrackedEntityInstance create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(CREATED_AT_CLIENT) String createdAtClient,
-            @JsonProperty(LAST_UPDATED_AT_CLIENT) String lastUpdatedAtClient,
-            @JsonProperty(ORGANISATION_UNIT) String organisationUnit,
-            @JsonProperty(TRACKED_ENTITY_TYPE) String trackedEntityType,
-            @JsonProperty(COORDINATES) String coordinates,
-            @JsonProperty(FEATURE_TYPE) FeatureType featureType,
-            @JsonProperty(DELETED) Boolean deleted,
-            @JsonProperty(TRACKED_ENTITY_ATTRIBUTE_VALUES)
-                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues,
-            @JsonProperty(RELATIONSHIPS) List<Relationship229Compatible> relationships,
-            @JsonProperty(ENROLLMENTS) List<Enrollment> enrollments) {
-        return new AutoValue_TrackedEntityInstance(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                organisationUnit, trackedEntityType, coordinates, featureType, deleted,
-                safeUnmodifiableList(trackedEntityAttributeValues), safeUnmodifiableList(relationships),
-                safeUnmodifiableList(enrollments));
+    public static Builder builder() {
+        return new $$AutoValue_TrackedEntityInstance.Builder();
+    }
+
+    static TrackedEntityInstance create(Cursor cursor) {
+        return $AutoValue_TrackedEntityInstance.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseDataModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        @JsonProperty(TrackedEntityInstanceFields.UID)
+        public abstract Builder uid(String uid);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract Builder createdAtClient(String createdAtClient);
+
+        public abstract Builder lastUpdatedAtClient(String lastUpdatedAtClient);
+
+        @JsonProperty(TrackedEntityInstanceFields.ORGANISATION_UNIT)
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder trackedEntityType(String trackedEntityType);
+
+        public abstract Builder coordinates(String coordinates);
+
+        public abstract Builder featureType(FeatureType featureType);
+
+        public abstract Builder deleted(Boolean deleted);
+
+        @JsonProperty(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES)
+        public abstract Builder trackedEntityAttributeValues(
+                List<TrackedEntityAttributeValue> trackedEntityAttributeValues);
+
+        public abstract Builder relationships(List<Relationship229Compatible> relationships);
+
+        public abstract Builder enrollments(List<Enrollment> enrollments);
+
+        public abstract TrackedEntityInstance build();
     }
 }

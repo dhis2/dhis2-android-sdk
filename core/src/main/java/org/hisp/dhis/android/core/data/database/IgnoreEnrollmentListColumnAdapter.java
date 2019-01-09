@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityInstance> {
+import java.util.List;
 
-    @Override
-    protected TrackedEntityInstance build(String uid) {
-        return TrackedEntityInstance.builder().uid(uid).build();
-    }
+public final class IgnoreEnrollmentListColumnAdapter
+        extends IgnoreColumnAdapter<List<Enrollment>> {
 }

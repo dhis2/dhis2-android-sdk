@@ -46,12 +46,11 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
-import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
@@ -127,11 +126,6 @@ public final class D2 {
     }
 
     @NonNull
-    public UserModule userModule() {
-        return modules.user;
-    }
-
-    @NonNull
     public Callable<Unit> syncMetaData() {
         return d2DIComponent.metadataCall();
     }
@@ -139,17 +133,6 @@ public final class D2 {
     @NonNull
     public AggregatedModule aggregatedModule() {
         return d2DIComponent.aggregatedModule();
-    }
-
-    /**
-     * Allows uploading to DHIS2 server all DataSetCompleteRegistration with TO_POST or TO_UPDATE state
-     *
-     * @return A Callable instace ready to perform the data upload and retrieve the results
-     *         in form of {@link ImportSummary}
-     */
-    @NonNull
-    public Callable<ImportSummary> syncDataSetCompleteRegistrations() {
-        return DataSetCompleteRegistrationPostCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
@@ -222,12 +205,20 @@ public final class D2 {
         return this.modules.dataElement;
     }
 
+    public DataSetModule dataSetModule() {
+        return this.modules.dataSet;
+    }
+
     public DataValueModule dataValueModule() {
         return this.modules.dataValue;
     }
 
     public MaintenanceModule maintenanceModule() {
         return this.modules.maintenance;
+    }
+
+    public UserModule userModule() {
+        return modules.user;
     }
 
     public WipeModule wipeModule() {

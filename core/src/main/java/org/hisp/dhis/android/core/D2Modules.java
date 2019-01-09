@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
+import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
@@ -45,6 +46,7 @@ final class D2Modules {
 
     final CategoryModule category;
     final DataElementModule dataElement;
+    final DataSetModule dataSet;
     final DataValueModule dataValue;
     final MaintenanceModule maintenance;
     final SystemInfoModule systemInfo;
@@ -52,8 +54,9 @@ final class D2Modules {
     final UserModule user;
 
     @Inject
-    public D2Modules(CategoryModule category,
+    D2Modules(CategoryModule category,
                      DataElementModule dataElement,
+                     DataSetModule dataSet,
                      DataValueModule dataValue,
                      MaintenanceModule maintenance,
                      SystemInfoModule systemInfo,
@@ -61,6 +64,7 @@ final class D2Modules {
                      UserModule user) {
         this.category = category;
         this.dataElement = dataElement;
+        this.dataSet = dataSet;
         this.dataValue = dataValue;
         this.maintenance = maintenance;
         this.systemInfo = systemInfo;

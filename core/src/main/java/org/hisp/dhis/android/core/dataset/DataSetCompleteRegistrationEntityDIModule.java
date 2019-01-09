@@ -28,42 +28,29 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataSetEntityDIModule.class,
-        DataSetCompleteRegistrationEntityDIModule.class
-})
-public final class DataSetPackageDIModule {
+@Module
+public final class DataSetCompleteRegistrationEntityDIModule
+        implements ObjectWithoutUidStoreProvider<DataSetCompleteRegistration> {
 
+    @Override
     @Provides
     @Reusable
-    QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-    dataSetCompleteRegistrationCallFactory(DataSetCompleteRegistrationCallFactory impl) {
-        return impl;
+    public DataSetCompleteRegistrationStore store(DatabaseAdapter databaseAdapter) {
+        return DataSetCompleteRegistrationStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    ListCallFactory<DataSet> dataSetEndpointCallFactory(DataSetEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DataSetService dataSetService(Retrofit retrofit) {
-        return retrofit.create(DataSetService.class);
-    }
-
-    @Provides
-    @Reusable
-    DataSetCompleteRegistrationService dataSetCompleteRegistrationService(Retrofit retrofit) {
-        return retrofit.create(DataSetCompleteRegistrationService.class);
+    public SyncHandler<DataSetCompleteRegistration> handler(DataSetCompleteRegistrationStore store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

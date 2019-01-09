@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,42 +28,21 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Module(includes = {
-        DataSetEntityDIModule.class,
-        DataSetCompleteRegistrationEntityDIModule.class
-})
-public final class DataSetPackageDIModule {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class DataSetModule {
 
-    @Provides
-    @Reusable
-    QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
-    dataSetCompleteRegistrationCallFactory(DataSetCompleteRegistrationCallFactory impl) {
-        return impl;
-    }
+    public final ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations;
 
-    @Provides
-    @Reusable
-    ListCallFactory<DataSet> dataSetEndpointCallFactory(DataSetEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    DataSetService dataSetService(Retrofit retrofit) {
-        return retrofit.create(DataSetService.class);
-    }
-
-    @Provides
-    @Reusable
-    DataSetCompleteRegistrationService dataSetCompleteRegistrationService(Retrofit retrofit) {
-        return retrofit.create(DataSetCompleteRegistrationService.class);
+    @Inject
+    DataSetModule(ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
+        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
     }
 }

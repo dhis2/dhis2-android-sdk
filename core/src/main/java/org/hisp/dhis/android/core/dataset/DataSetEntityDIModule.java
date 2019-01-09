@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -52,5 +53,12 @@ public final class DataSetEntityDIModule implements IdentifiableEntityFromDataba
     @Reusable
     public SyncHandler<DataSet> handler(DatabaseAdapter databaseAdapter) {
         return DataSetHandler.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> collectionRepository(
+            DataSetCompleteRegistrationCollectionRepository repositoryImpl) {
+        return repositoryImpl;
     }
 }

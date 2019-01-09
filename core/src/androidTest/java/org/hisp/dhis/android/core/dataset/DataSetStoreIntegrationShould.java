@@ -25,23 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+package org.hisp.dhis.android.core.dataset;
 
-import javax.inject.Inject;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.DataSetSamples;
+import org.junit.runner.RunWith;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataElementModule {
+@RunWith(AndroidJUnit4.class)
+public class DataSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataSet> {
 
-    public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
+    public DataSetStoreIntegrationShould() {
+        super(DataSetStore.create(DatabaseAdapterFactory.get(false)), DataSetTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
+    }
 
-    @Inject
-    DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
-        this.dataElements = dataElementsRepository;
+    @Override
+    protected DataSet buildObject() {
+        return DataSetSamples.getDataSet();
+    }
+
+    @Override
+    protected DataSet buildObjectWithId() {
+        return DataSetSamples.getDataSet().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected DataSet buildObjectToUpdate() {
+        return DataSetSamples.getDataSet().toBuilder()
+                .version(66)
+                .build();
     }
 }

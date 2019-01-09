@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 
 import javax.inject.Inject;
@@ -40,9 +41,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class DataSetModule {
 
     public final ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations;
+    public final ReadOnlyIdentifiableCollectionRepository<DataSet> dataSets;
 
     @Inject
-    DataSetModule(ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
+    DataSetModule(ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations,
+                  ReadOnlyIdentifiableCollectionRepository<DataSet> dataSets) {
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
+        this.dataSets = dataSets;
     }
 }

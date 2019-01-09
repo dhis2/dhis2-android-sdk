@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,15 +40,6 @@ import retrofit2.Retrofit;
         RelationshipTypeEntityDIModule.class
 })
 public final class RelationshipPackageDIModule {
-
-    @Provides
-    @Reusable
-    RelationshipModule module(DatabaseAdapter databaseAdapter,
-                              RelationshipHandler relationshipHandler) {
-        return new RelationshipModule(
-                RelationshipTypeCollectionRepository.create(databaseAdapter),
-                RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler));
-    }
 
     @Provides
     @Reusable

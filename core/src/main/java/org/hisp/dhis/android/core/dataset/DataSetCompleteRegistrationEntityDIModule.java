@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -52,5 +53,12 @@ public final class DataSetCompleteRegistrationEntityDIModule
     @Reusable
     public SyncHandler<DataSetCompleteRegistration> handler(DataSetCompleteRegistrationStore store) {
         return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> collectionRepository(
+            DataSetCompleteRegistrationCollectionRepository repositoryImpl) {
+        return repositoryImpl;
     }
 }

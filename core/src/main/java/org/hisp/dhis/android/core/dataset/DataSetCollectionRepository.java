@@ -25,23 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
+import java.util.Collections;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+final class DataSetCollectionRepository {
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataElementModule {
+    private DataSetCollectionRepository() {
+    }
 
-    public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
+    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<DataSet> childrenAppender =
+                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        DataSetTableInfo.TABLE_INFO
+                );
 
-    @Inject
-    DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
-        this.dataElements = dataElementsRepository;
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                DataSetStore.create(databaseAdapter),
+                Collections.singletonList(childrenAppender)
+        );
     }
 }

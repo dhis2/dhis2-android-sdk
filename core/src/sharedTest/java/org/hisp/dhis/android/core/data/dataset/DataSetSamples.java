@@ -25,23 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+package org.hisp.dhis.android.core.data.dataset;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataElementModule {
+public class DataSetSamples {
 
-    public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
+    public static DataSet getDataSet() {
+        DataSet.Builder dataSetBuilder = DataSet.builder();
 
-    @Inject
-    DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
-        this.dataElements = dataElementsRepository;
+        fillNameableProperties(dataSetBuilder);
+        dataSetBuilder
+                .periodType(PeriodType.BiMonthly)
+                .categoryCombo(ObjectWithUid.create("comboUid"))
+                .mobile(false)
+                .version(2)
+                .expiryDays(3)
+                .timelyDays(4)
+                .notifyCompletingUser(true)
+                .openFuturePeriods(6)
+                .fieldCombinationRequired(false)
+                .validCompleteOnly(false)
+                .noValueRequiresComment(true)
+                .skipOffline(false)
+                .dataElementDecoration(true)
+                .renderAsTabs(false)
+                .renderHorizontally(true)
+                .access(Access.createForDataWrite(true));
+        return dataSetBuilder.build();
     }
 }

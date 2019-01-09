@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.calls.processors;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
 import java.util.concurrent.Callable;

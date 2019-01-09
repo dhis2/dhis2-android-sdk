@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.support.annotation.Nullable;
+
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
-
-import android.support.annotation.Nullable;
 
 public interface ObjectWithStyle<O, B extends ObjectWithStyle.Builder<O, B>> {
 

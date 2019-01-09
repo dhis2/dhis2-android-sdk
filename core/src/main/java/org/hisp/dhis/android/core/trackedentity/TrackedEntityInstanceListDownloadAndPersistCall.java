@@ -3,12 +3,12 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
@@ -45,12 +45,12 @@ import dagger.Reusable;
 class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
     implements SearchOrganisationUnitHandler {
 
-    private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private final LinkModelStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
     private User user;
 
     @Inject
     SearchOrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                                      @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
+                                      @NonNull LinkModelStore<UserOrganisationUnitLinkModel>
                                           userOrganisationUnitLinkStore) {
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
@@ -63,9 +63,11 @@ class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Orga
 
     @Override
     protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
+
         UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
                 OrganisationUnit.Scope.SCOPE_TEI_SEARCH, user);
 
-        userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
+        userOrganisationUnitLinkStore.insert(modelBuilder.buildModel(organisationUnit));
+
     }
 }

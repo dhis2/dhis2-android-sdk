@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,28 +28,21 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Module(includes = {
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class TrackedEntityModule {
 
-    @Provides
-    @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
-    }
+    public final ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances;
 
-    @Provides
-    @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
+    @Inject
+    TrackedEntityModule(ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances) {
+        this.trackedEntityInstances = trackedEntityInstances;
     }
 }

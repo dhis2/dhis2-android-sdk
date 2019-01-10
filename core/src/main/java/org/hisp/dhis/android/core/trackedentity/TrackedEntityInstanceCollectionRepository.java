@@ -25,31 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import java.util.ArrayList;
 
-@Module(includes = {
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
+final class TrackedEntityInstanceCollectionRepository {
 
-    @Provides
-    @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
+    private TrackedEntityInstanceCollectionRepository() {
     }
 
-    @Provides
-    @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
+    static ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> create(DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                TrackedEntityInstanceStoreImpl.create(databaseAdapter),
+                new ArrayList<ChildrenAppender<TrackedEntityInstance>>()
+        );
     }
 }

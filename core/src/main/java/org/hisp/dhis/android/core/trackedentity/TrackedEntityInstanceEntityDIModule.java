@@ -28,28 +28,34 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
+@Module
+public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
+    public TrackedEntityInstanceStore store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityInstanceStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
+    public SyncHandler<TrackedEntityInstance> handler(DatabaseAdapter databaseAdapter,
+                                                      D2InternalModules internalModules) {
+        return TrackedEntityInstanceHandler.create(databaseAdapter, internalModules);
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> repository(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityInstanceCollectionRepository.create(databaseAdapter);
     }
 }

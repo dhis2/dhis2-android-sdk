@@ -77,6 +77,8 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
         String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
         teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
+        internalModules.systemInfo.publicModule.systemInfo.download().call();
+
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();
             Set<String> orgUnitWrapper = new HashSet<>();
@@ -95,11 +97,8 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
         return new Unit();
     }
 
-    private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList)
-            throws Exception {
+    private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList) {
         Boolean successfulSync = true;
-
-        internalModules.systemInfo.publicModule.systemInfo.download().call();
 
         for (Paging paging : pagingList) {
             try {

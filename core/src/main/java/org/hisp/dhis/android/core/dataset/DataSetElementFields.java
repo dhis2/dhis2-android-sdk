@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class DataSetElementFields {
+final class DataSetElementFields {
 
     static final String DATA_SET = "dataSet";
     static final String DATA_ELEMENT = "dataElement";

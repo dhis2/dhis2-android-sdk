@@ -36,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface DataSetService {
+interface DataSetService {
     @GET("dataSets")
     Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
                                        @Query("filter") @Where String accessDataReadFilter,

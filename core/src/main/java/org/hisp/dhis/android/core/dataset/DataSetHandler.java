@@ -56,7 +56,7 @@ import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.Collection;
 
-public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
+class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 

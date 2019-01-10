@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataInputPeriodLinkStore {
+final class DataInputPeriodLinkStore {
 
     private static final StatementBinder<DataInputPeriod> BINDER =
             new StatementBinder<DataInputPeriod>() {

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class SectionGreyedFieldsLinkStore {
+final class SectionGreyedFieldsLinkStore {
 
     private SectionGreyedFieldsLinkStore() {}
 

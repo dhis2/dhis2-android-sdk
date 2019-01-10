@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -212,6 +213,10 @@ public final class D2 {
 
     public DataValueModule dataValueModule() {
         return this.modules.dataValue;
+    }
+
+    public EventModule eventModule() {
+        return this.modules.events;
     }
 
     public MaintenanceModule maintenanceModule() {

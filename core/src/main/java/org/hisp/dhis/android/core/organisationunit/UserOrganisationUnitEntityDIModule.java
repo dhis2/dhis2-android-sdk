@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
@@ -42,7 +42,7 @@ public final class UserOrganisationUnitEntityDIModule {
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<UserOrganisationUnitLinkModel> store(DatabaseAdapter databaseAdapter) {
+    LinkModelStore<UserOrganisationUnitLinkModel> store(DatabaseAdapter databaseAdapter) {
         return UserOrganisationUnitLinkStore.create(databaseAdapter);
     }
 }

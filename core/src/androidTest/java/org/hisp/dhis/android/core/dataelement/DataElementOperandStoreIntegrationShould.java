@@ -26,24 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import android.support.test.runner.AndroidJUnit4;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataelement.DataElementOperandSamples;
+import org.junit.runner.RunWith;
 
-    private final DataSetIndicatorLinkModel.Builder builder;
+@RunWith(AndroidJUnit4.class)
+public class DataElementOperandStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<DataElementOperand> {
 
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
+    public DataElementOperandStoreIntegrationShould() {
+        super(DataElementOperandStore.create(DatabaseAdapterFactory.get(false)), DataElementOperandTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
+    protected DataElementOperand buildObject() {
+        return DataElementOperandSamples.getDataElementOperand();
+    }
+
+    @Override
+    protected DataElementOperand buildObjectWithId() {
+        return DataElementOperandSamples.getDataElementOperand().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected DataElementOperand buildObjectToUpdate() {
+        return DataElementOperandSamples.getDataElementOperand().toBuilder()
+                .categoryOptionCombo(ObjectWithUid.create("newCombo"))
                 .build();
     }
 }

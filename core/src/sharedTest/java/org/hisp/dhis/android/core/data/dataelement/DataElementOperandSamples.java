@@ -26,24 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.data.dataelement;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
-    private final DataSetIndicatorLinkModel.Builder builder;
+public class DataElementOperandSamples {
 
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
-    }
-
-    @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
-                .build();
+    public static DataElementOperand getDataElementOperand() {
+        DataElementOperand.Builder builder = DataElementOperand.builder();
+        builder
+                .uid(UID)
+                .dataElement(ObjectWithUid.create("dataElement"))
+                .categoryOptionCombo(ObjectWithUid.create("optionCombo"));
+        return builder.build();
     }
 }

@@ -25,53 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores;
 
-package org.hisp.dhis.android.core.dataset;
-
-import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.executors.CursorExecutor;
 import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class DataSetElementLinkTableInfo {
+import java.util.List;
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+public class SingleParentChildStoreImpl<P extends ObjectWithUidInterface, C> implements SingleParentChildStore<P, C> {
 
-        @Override
-        public String name() {
-            return "DataSetDataElementLink";
-        }
+    private final SingleParentChildProjection childProjection;
 
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
+    private final DatabaseAdapter databaseAdapter;
+    private final SQLStatementBuilder statementBuilder;
 
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            DataSetElementLinkTableInfo.TABLE_INFO,
-            DataSetElementFields.DATA_SET);
+    private final CursorExecutor<C> cursorExecutor;
 
-    private DataSetElementLinkTableInfo() {
+    public SingleParentChildStoreImpl(SingleParentChildProjection childProjection,
+                                      DatabaseAdapter databaseAdapter,
+                                      SQLStatementBuilder statementBuilder,
+                                      CursorExecutor<C> cursorExecutor) {
+        this.childProjection = childProjection;
+        this.databaseAdapter = databaseAdapter;
+        this.statementBuilder = statementBuilder;
+        this.cursorExecutor = cursorExecutor;
     }
 
-    static class Columns extends BaseModel.Columns {
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    DataSetElementFields.DATA_SET,
-                    DataSetElementFields.DATA_ELEMENT,
-                    DataSetElementFields.CATEGORY_COMBO
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
-                    DataSetElementFields.DATA_SET,
-                    DataSetElementFields.DATA_ELEMENT
-            );
-        }
+    @Override
+    public List<C> getChildren(P p) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(childProjection.parentColumn, p.uid())
+                .build();
+        String selectStatement = statementBuilder.selectWhere(whereClause);
+        return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
     }
 }

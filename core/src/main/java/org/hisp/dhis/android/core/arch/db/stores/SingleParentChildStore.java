@@ -25,25 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.stores;
 
-package org.hisp.dhis.android.core.indicator;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import java.util.List;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
-
-    private final DataSetIndicatorLinkModel.Builder builder;
-
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
-    }
-
-    @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
-                .build();
-    }
+public interface SingleParentChildStore<P extends ObjectWithUidInterface, C> {
+    List<C> getChildren(P p);
 }

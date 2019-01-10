@@ -25,25 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.tableinfos;
 
-package org.hisp.dhis.android.core.indicator;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+public class SingleParentChildProjection {
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
+    public final TableInfo childTableInfo;
+    public final String parentColumn;
 
-    private final DataSetIndicatorLinkModel.Builder builder;
-
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
-    }
-
-    @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
-                .build();
+    public SingleParentChildProjection(TableInfo childTableInfo,
+                                       String parentColumn) {
+        this.childTableInfo = childTableInfo;
+        this.parentColumn = parentColumn;
     }
 }

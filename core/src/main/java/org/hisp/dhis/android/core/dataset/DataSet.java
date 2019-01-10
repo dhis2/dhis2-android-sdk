@@ -47,10 +47,11 @@ import org.hisp.dhis.android.core.data.database.DataInputPeriodListColumnAdapter
 import org.hisp.dhis.android.core.data.database.DataSetElementListAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreDataElementOperandListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreIndicatorListAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.SectionListAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
@@ -129,8 +130,8 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
     
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> indicators();
+    @ColumnAdapter(IgnoreIndicatorListAdapter.class)
+    public abstract List<Indicator> indicators();
 
     @Nullable
     @JsonProperty()
@@ -200,7 +201,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
 
         public abstract Builder dataSetElements(List<DataSetElement> dataSetElements);
 
-        public abstract Builder indicators(List<ObjectWithUid> indicators);
+        public abstract Builder indicators(List<Indicator> indicators);
 
         public abstract Builder sections(List<Section> sections);
 

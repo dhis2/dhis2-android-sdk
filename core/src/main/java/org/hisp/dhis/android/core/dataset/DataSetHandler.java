@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
+import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.Collection;
 
@@ -68,7 +69,7 @@ public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     private final LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler;
     private final LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
-    private final LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
+    private final LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
 
     DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
@@ -81,7 +82,7 @@ public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
                            dataSetCompulsoryDataElementOperandLinkHandler,
                    LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler,
                    LinkSyncHandler<DataSetElement> dataSetElementLinkHandler,
-                   LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler,
+                   LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler,
                    CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);
@@ -148,7 +149,7 @@ public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
                         DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(DataInputPeriodLinkStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(DataSetDataElementLinkStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<ObjectWithUid, DataSetIndicatorLinkModel>(
+                new LinkModelHandlerImpl<Indicator, DataSetIndicatorLinkModel>(
                         DataSetIndicatorLinkStore.create(databaseAdapter)),
                 new CollectionCleanerImpl<DataSet>(DataSetModel.TABLE, databaseAdapter)
         );

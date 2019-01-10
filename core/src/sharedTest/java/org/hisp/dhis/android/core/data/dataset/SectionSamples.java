@@ -26,24 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.data.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataset.Section;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    private final DataSetIndicatorLinkModel.Builder builder;
+public class SectionSamples {
 
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
-    }
-
-    @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
-                .build();
+    public static Section getSection() {
+        Section.Builder dataSetBuilder = Section.builder();
+        fillIdentifiableProperties(dataSetBuilder);
+        dataSetBuilder
+                .description("descr")
+                .sortOrder(2)
+                .showRowTotals(true)
+                .showColumnTotals(false)
+                .dataSet(ObjectWithUid.create("dataSet"));
+        return dataSetBuilder.build();
     }
 }

@@ -25,40 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.indicator;
 
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
+import org.hisp.dhis.android.core.dataset.DataSet;
 
-import java.util.Arrays;
+public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<DataSet> {
 
-final class DataSetCollectionRepository {
+    private final LinkModelChildStore<DataSet, Indicator> linkModelChildStore;
 
-    private DataSetCollectionRepository() {
+    private DataSetIndicatorChildrenAppender(
+            LinkModelChildStore<DataSet, Indicator> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataSet> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataSetTableInfo.TABLE_INFO
-                );
+    @Override
+    protected DataSet appendChildren(DataSet dataSet) {
+        DataSet.Builder builder = dataSet.toBuilder();
+        builder.indicators(linkModelChildStore.getChildren(dataSet));
+        return builder.build();
+    }
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                DataSetStore.create(databaseAdapter),
-                Arrays.asList(
-                        objectStyleChildrenAppender,
-                        SectionChildrenAppender.create(databaseAdapter),
-                        DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-                        DataInputPeriodChildrenAppender.create(databaseAdapter),
-                        DataSetElementChildrenAppender.create(databaseAdapter),
-                        DataSetIndicatorChildrenAppender.create(databaseAdapter)
-                )
+    public static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
+        return new DataSetIndicatorChildrenAppender(
+                StoreFactory.<DataSet, Indicator>linkModelChildStore(
+                        databaseAdapter,
+                        DataSetIndicatorLinkTableInfo.TABLE_INFO,
+                        DataSetIndicatorLinkTableInfo.CHILD_PROJECTION,
+                        IndicatorStore.FACTORY)
         );
     }
 }

@@ -26,24 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import android.support.test.runner.AndroidJUnit4;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.SectionSamples;
+import org.junit.runner.RunWith;
 
-    private final DataSetIndicatorLinkModel.Builder builder;
+@RunWith(AndroidJUnit4.class)
+public class SectionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Section> {
 
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
+    public SectionStoreIntegrationShould() {
+        super(SectionStore.create(DatabaseAdapterFactory.get(false)), SectionTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
+    protected Section buildObject() {
+        return SectionSamples.getSection();
+    }
+
+    @Override
+    protected Section buildObjectWithId() {
+        return SectionSamples.getSection().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected Section buildObjectToUpdate() {
+        return SectionSamples.getSection().toBuilder()
+                .description("new description")
                 .build();
     }
 }

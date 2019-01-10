@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
+import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -120,7 +121,7 @@ public class DataSetHandlerShould {
     private LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
 
     @Mock
-    private LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
+    private LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
 
     @Mock
     private CollectionCleaner<DataSet> collectionCleaner;
@@ -259,7 +260,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
+        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyListOf(Indicator.class),
                 any(DataSetIndicatorLinkModelBuilder.class));
     }
 }

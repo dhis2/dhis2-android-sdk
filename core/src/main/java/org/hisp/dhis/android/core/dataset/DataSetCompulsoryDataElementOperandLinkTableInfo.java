@@ -28,45 +28,49 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.common.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public final class DataSetCompulsoryDataElementOperandLinkTableInfo {
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-public final class DataSetDataElementLinkStore {
-
-    private DataSetDataElementLinkStore() {}
-
-    private static final StatementBinder<DataSetElement> BINDER = new StatementBinder<DataSetElement>() {
         @Override
-        public void bindToStatement(@NonNull DataSetElement o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.dataSet()));
-            sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
-            sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryCombo()));
+        public String name() {
+            return "DataSetCompulsoryDataElementOperandsLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
         }
     };
 
-    static final CursorModelFactory<DataSetElement> FACTORY
-            = new CursorModelFactory<DataSetElement>() {
-        @Override
-        public DataSetElement fromCursor(Cursor cursor) {
-            return DataSetElement.create(cursor);
-        }
-    };
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            Columns.DATA_SET,
+            Columns.DATA_ELEMENT_OPERAND);
 
-    public static LinkModelStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetElementLinkTableInfo.TABLE_INFO,
-                DataSetElementFields.DATA_SET,
-                BINDER,
-                FACTORY);
+    private DataSetCompulsoryDataElementOperandLinkTableInfo() {
+    }
+
+    static class Columns extends BaseModel.Columns {
+
+        public static final String DATA_SET = "dataSet";
+        public static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DATA_SET, DATA_ELEMENT_OPERAND);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

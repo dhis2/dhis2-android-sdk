@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -49,6 +50,7 @@ final class D2Modules {
     final DataSetModule dataSet;
     final DataValueModule dataValue;
     final MaintenanceModule maintenance;
+    final ProgramModule program;
     final SystemInfoModule systemInfo;
     final RelationshipModule relationship;
     final UserModule user;
@@ -59,6 +61,7 @@ final class D2Modules {
                      DataSetModule dataSet,
                      DataValueModule dataValue,
                      MaintenanceModule maintenance,
+                     ProgramModule program,
                      SystemInfoModule systemInfo,
                      RelationshipModule relationship,
                      UserModule user) {
@@ -67,6 +70,7 @@ final class D2Modules {
         this.dataSet = dataSet;
         this.dataValue = dataValue;
         this.maintenance = maintenance;
+        this.program = program;
         this.systemInfo = systemInfo;
         this.relationship = relationship;
         this.user = user;

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.concurrent.Callable;
@@ -37,7 +38,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
 public final class UserModule {
 
@@ -45,13 +48,17 @@ public final class UserModule {
     private final Provider<LogOutUserCallable> logoutCallCallProvider;
     private final UserAuthenticateCallFactory loginCallFactory;
 
+    public final ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser;
+
     @Inject
     UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
                Provider<LogOutUserCallable> logoutCallCallProvider,
-               UserAuthenticateCallFactory loginCallFactory) {
+               UserAuthenticateCallFactory loginCallFactory,
+               ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser) {
         this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
         this.logoutCallCallProvider = logoutCallCallProvider;
         this.loginCallFactory = loginCallFactory;
+        this.authenticatedUser = authenticatedUser;
     }
 
     @NonNull

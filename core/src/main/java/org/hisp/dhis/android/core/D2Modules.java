@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 
 import javax.inject.Inject;
@@ -55,6 +56,7 @@ final class D2Modules {
     final ProgramModule program;
     final SystemInfoModule systemInfo;
     final RelationshipModule relationship;
+    final TrackedEntityModule trackedEntity;
     final UserModule user;
 
     @Inject
@@ -67,6 +69,7 @@ final class D2Modules {
                      ProgramModule program,
                      SystemInfoModule systemInfo,
                      RelationshipModule relationship,
+                     TrackedEntityModule trackedEntity,
                      UserModule user) {
         this.category = category;
         this.dataElement = dataElement;
@@ -77,6 +80,7 @@ final class D2Modules {
         this.program = program;
         this.systemInfo = systemInfo;
         this.relationship = relationship;
+        this.trackedEntity = trackedEntity;
         this.user = user;
     }
 }

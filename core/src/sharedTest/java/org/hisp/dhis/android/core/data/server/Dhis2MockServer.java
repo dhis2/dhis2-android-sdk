@@ -97,6 +97,11 @@ public class Dhis2MockServer {
         enqueueMockResponse("event/events.json");
     }
 
+    public void enqueueTrackedEntityInstanceResponses() throws IOException {
+        enqueueMockResponse("systeminfo/system_info.json");
+        enqueueMockResponse("trackedentity/tracked_entity_instances.json");
+    }
+
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
                 "user/admin_user.json",

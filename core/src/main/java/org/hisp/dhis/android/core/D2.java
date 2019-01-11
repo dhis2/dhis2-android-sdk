@@ -63,6 +63,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -225,6 +226,10 @@ public final class D2 {
 
     public ProgramModule programModule() {
         return this.modules.program;
+    }
+
+    public TrackedEntityModule trackedEntityModule() {
+        return modules.trackedEntity;
     }
 
     public UserModule userModule() {

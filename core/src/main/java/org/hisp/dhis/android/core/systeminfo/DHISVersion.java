@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.systeminfo;
 
 public enum DHISVersion {
     V2_29,
-    V2_30;
+    V2_30,
+    V2_31;
 
     private static final String V2_29_STR = "2.29";
-
     private static final String V2_30_STR = "2.30";
+    private static final String V2_31_STR = "2.31-SNAPSHOT";
 
     public static DHISVersion getValue(String versionStr) {
         switch (versionStr) {
@@ -42,6 +43,8 @@ public enum DHISVersion {
                 return V2_29;
             case V2_30_STR:
                 return V2_30;
+            case V2_31_STR:
+                return V2_31;
             default:
                 return null;
         }
@@ -52,6 +55,6 @@ public enum DHISVersion {
     }
 
     public static String[] allowedVersionsAsStr() {
-        return new String[]{V2_29_STR, V2_30_STR};
+        return new String[]{V2_29_STR, V2_30_STR, V2_31_STR};
     }
 }

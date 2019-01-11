@@ -47,4 +47,9 @@ public abstract class MockIntegrationShould {
         dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
     }
+
+    protected static void downloadEvents() throws Exception {
+        dhis2MockServer.enqueueEventResponses();
+        d2.downloadSingleEvents(1, false).call();
+    }
 }

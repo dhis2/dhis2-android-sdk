@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -53,5 +55,11 @@ public final class UserCredentialsEntityDIModule implements IdentifiableEntityDI
     @Reusable
     public SyncHandler<UserCredentials> handler(IdentifiableObjectStore<UserCredentials> store) {
         return new IdentifiableSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyObjectRepository<UserCredentials> repository(IdentifiableObjectStore<UserCredentials> store) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
     }
 }

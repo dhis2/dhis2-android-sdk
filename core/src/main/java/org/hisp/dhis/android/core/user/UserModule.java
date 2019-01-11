@@ -50,18 +50,21 @@ public final class UserModule {
 
     public final ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser;
     public final ReadOnlyObjectRepository<UserCredentials> userCredentials;
+    public final ReadOnlyObjectRepository<User> user;
 
     @Inject
     UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
                Provider<LogOutUserCallable> logoutCallCallProvider,
                UserAuthenticateCallFactory loginCallFactory,
                ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser,
-               ReadOnlyObjectRepository<UserCredentials> userCredentials) {
+               ReadOnlyObjectRepository<UserCredentials> userCredentials,
+               ReadOnlyObjectRepository<User> user) {
         this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
         this.logoutCallCallProvider = logoutCallCallProvider;
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
         this.userCredentials = userCredentials;
+        this.user = user;
     }
 
     @NonNull

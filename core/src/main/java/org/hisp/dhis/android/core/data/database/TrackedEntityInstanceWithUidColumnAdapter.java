@@ -34,8 +34,6 @@ public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjec
 
     @Override
     protected TrackedEntityInstance build(String uid) {
-        return TrackedEntityInstance.create(uid, null, null, null, null, null,
-                null, null, null, null, null, null,
-                null);
+        return TrackedEntityInstance.builder().uid(uid).build();
     }
 }

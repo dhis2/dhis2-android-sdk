@@ -66,7 +66,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
                 "(Event INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
                 "INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
                 "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
-                "OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OREvent.state = 'TO_POST' " +
+                "OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
                 "OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE';";
 
         List<Event> eventList = eventListFromQuery(eventsAttachedToEnrollmentsQuery);

@@ -131,40 +131,28 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
         Map<String, List<Enrollment>> enrollmentMap = enrollmentStore.queryEnrollmentsToPost();
         Map<String, List<TrackedEntityAttributeValue>> attributeValueMap =
                 trackedEntityAttributeValueStore.queryTrackedEntityAttributeValueToPost();
-        Map<String, TrackedEntityInstance> trackedEntityInstances =
-                trackedEntityInstanceStore.queryToPost();
+        List<TrackedEntityInstance> trackedEntityInstances =
+                trackedEntityInstanceStore.queryTrackedEntityInstancesToPost();
 
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
         List<Note> notes = noteStore.selectWhereClause(whereClause);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
-
-        // EMPTY LISTS TO REPLACE NULL VALUES SO THAT API DOESN'T BREAK.
         List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();
 
-        for (Map.Entry<String, TrackedEntityInstance> teiUid : trackedEntityInstances.entrySet()) {
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+            String trackedEntityInstanceUid = trackedEntityInstance.uid();
             List<Enrollment> enrollmentsRecreated = new ArrayList<>();
-            List<Enrollment> enrollments = enrollmentMap.get(teiUid.getKey());
+            List<Enrollment> enrollments = enrollmentMap.get(trackedEntityInstanceUid);
 
-            // if enrollments is not null, then they exist for this tracked entity instance
             if (enrollments != null) {
                 List<Event> eventRecreated = new ArrayList<>();
-                // building enrollment
-                int enrollmentSize = enrollments.size();
-                for (int i = 0; i < enrollmentSize; i++) {
-                    Enrollment enrollment = enrollments.get(i);
-
-                    // building events for enrollment
+                for (Enrollment enrollment : enrollments) {
                     List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
-
-                    // if eventsForEnrollment is not null, then they exist for this enrollment
                     if (eventsForEnrollment != null) {
-                        int eventSize = eventsForEnrollment.size();
-                        for (int j = 0; j < eventSize; j++) {
-                            Event event = eventsForEnrollment.get(j);
+                        for (Event event : eventsForEnrollment) {
                             List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
-
                             eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
                         }
                     }
@@ -184,30 +172,20 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 }
             }
 
-            // Building TEI WITHOUT (new ArrayList) relationships
-            List<TrackedEntityAttributeValue> attributeValues = attributeValueMap.get(teiUid.getKey());
+            List<TrackedEntityAttributeValue> attributeValues = attributeValueMap.get(trackedEntityInstanceUid);
 
-            // if attributeValues is null, it means that they doesn't exist.
-            // Then we need to set it to empty arrayList so that API doesn't break
-            if (attributeValues == null) {
-                attributeValues = emptyAttributeValueList;
-            }
-            TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(teiUid.getKey());
-
-            // Building relationships for TEI
             List<Relationship> dbRelationships =
                     relationshipRepository.getByItem(RelationshipHelper.teiItem(trackedEntityInstance.uid()));
             List<Relationship229Compatible> versionAwareRelationships =
                     relationshipDHISVersionManager.to229Compatible(dbRelationships, trackedEntityInstance.uid());
 
-            trackedEntityInstancesRecreated.add(TrackedEntityInstance.create(trackedEntityInstance.uid(),
-                    trackedEntityInstance.created(), trackedEntityInstance.lastUpdated(),
-                    trackedEntityInstance.createdAtClient(), trackedEntityInstance.lastUpdatedAtClient(),
-                    trackedEntityInstance.organisationUnit(), trackedEntityInstance.trackedEntityType(),
-                    trackedEntityInstance.coordinates(), trackedEntityInstance.featureType(),
-                    trackedEntityInstance.deleted(), attributeValues,
-                    versionAwareRelationships, enrollmentsRecreated));
+            TrackedEntityInstance recreatedTrackedEntityInstance = trackedEntityInstance.toBuilder()
+                    .trackedEntityAttributeValues(attributeValues == null ? emptyAttributeValueList : attributeValues)
+                    .relationships(versionAwareRelationships)
+                    .enrollments(enrollmentsRecreated)
+                    .build();
 
+            trackedEntityInstancesRecreated.add(recreatedTrackedEntityInstance);
         }
 
         return trackedEntityInstancesRecreated;
@@ -238,7 +216,7 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
                 new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
                 internalModules.relationship.publicModule.relationships,
                 retrofit.create(TrackedEntityInstanceService.class),
-                new TrackedEntityInstanceStoreImpl(databaseAdapter),
+                TrackedEntityInstanceStoreImpl.create(databaseAdapter),
                 EnrollmentStoreImpl.create(databaseAdapter),
                 EventStoreImpl.create(databaseAdapter),
                 TrackedEntityDataValueStoreImpl.create(databaseAdapter),

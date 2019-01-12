@@ -50,4 +50,11 @@ public final class RelationshipEntityDIModule {
                 new RelationshipDHISVersionManager(versionManager)
         );
     }
+
+    @Provides
+    @Reusable
+    RelationshipCollectionRepository repository(DatabaseAdapter databaseAdapter,
+                                                RelationshipHandler relationshipHandler) {
+        return RelationshipCollectionRepositoryImpl.create(databaseAdapter, relationshipHandler);
+    }
 }

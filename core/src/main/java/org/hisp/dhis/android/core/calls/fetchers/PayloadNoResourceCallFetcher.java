@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.calls.fetchers;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
 

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -66,9 +67,6 @@ public class OrganisationUnitHandlerShould {
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
-    private ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
-
-    @Mock
     private ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
 
     @Mock
@@ -76,6 +74,9 @@ public class OrganisationUnitHandlerShould {
 
     @Mock
     private LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel> dataSetDataSetOrganisationUnitLinkHandler;
+
+    @Mock
+    private LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
 
     @Mock
     private GenericHandler<OrganisationUnitGroup, OrganisationUnitGroupModel> organisationUnitGroupHandler;
@@ -126,7 +127,7 @@ public class OrganisationUnitHandlerShould {
         dataSetUids = Sets.newHashSet(Lists.newArrayList(dataSetUid));
 
         organisationUnitHandler = new OrganisationUnitHandlerImpl(
-                organisationUnitStore, userOrganisationUnitLinkStore, organisationUnitProgramLinkHandler,
+                organisationUnitStore, userOrganisationUnitLinkHandler, organisationUnitProgramLinkHandler,
                 dataSetDataSetOrganisationUnitLinkHandler, programCollectionCleaner, dataSetCollectionCleaner,
                 organisationUnitGroupCollectionCleaner, organisationUnitGroupHandler, organisationUnitGroupLinkHandler);
 
@@ -152,11 +153,8 @@ public class OrganisationUnitHandlerShould {
 
     @Test
     public void persist_user_organisation_unit_link() {
-        UserOrganisationUnitLinkModel userLinkModel = new UserOrganisationUnitLinkModelBuilder(scope, user)
-                .buildModel(organisationUnitWithoutGroups);
         organisationUnitHandler.setData(programUids, dataSetUids, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
-        verify(userOrganisationUnitLinkStore).updateOrInsertWhere(userLinkModel);
     }
 
     @Test

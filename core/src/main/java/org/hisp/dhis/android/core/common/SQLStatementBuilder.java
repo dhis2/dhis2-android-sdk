@@ -135,7 +135,7 @@ public class SQLStatementBuilder {
         return selectWhere(andSeparatedColumnEqualInterrogationMark(UID));
     }
 
-    String selectWhere(String whereClause) {
+    public String selectWhere(String whereClause) {
         return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }
 

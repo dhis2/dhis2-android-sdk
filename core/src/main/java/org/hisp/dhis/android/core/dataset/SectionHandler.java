@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
 
-public class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
+class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     private final OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 

@@ -35,8 +35,6 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 public class DataInputPeriodTableInfo {
 
-    static final String DATA_SET = "dataSet";
-
     private DataInputPeriodTableInfo() {}
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
@@ -53,10 +51,13 @@ public class DataInputPeriodTableInfo {
     };
 
     static class Columns extends BaseDataModel.Columns {
+
+        static final String DATA_SET = "dataSet";
+
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    DataInputPeriodTableInfo.DATA_SET,
+                    DATA_SET,
                     DataInputPeriodFields.PERIOD,
                     DataInputPeriodFields.OPENING_DATE,
                     DataInputPeriodFields.CLOSING_DATE);
@@ -65,7 +66,7 @@ public class DataInputPeriodTableInfo {
         @Override
         public String[] whereUpdate() {
             return new String[]{
-                    DataInputPeriodTableInfo.DATA_SET,
+                    DATA_SET,
                     DataInputPeriodFields.PERIOD
             };
         }

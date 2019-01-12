@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public final class TrackedEntityInstancesEndpointCall extends SyncCall<List<Trac
 
         Call<Payload<TrackedEntityInstance>> call = trackedEntityInstanceService.getTrackedEntityInstances(
                 Utils.joinCollectionWithSeparator(trackerQuery.orgUnits(), ";"),
-                trackerQuery.ouMode().name(), TrackedEntityInstance.allFields, Boolean.TRUE,
+                trackerQuery.ouMode().name(), TrackedEntityInstanceFields.allFields, Boolean.TRUE,
                 trackerQuery.page(), trackerQuery.pageSize(), trackerQuery.lastUpdatedStartDate(), true);
 
         return apiCallExecutor.executePayloadCall(call);

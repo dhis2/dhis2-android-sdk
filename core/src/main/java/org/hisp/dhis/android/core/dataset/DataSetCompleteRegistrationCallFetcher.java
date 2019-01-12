@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -43,7 +43,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<DataSetCompleteRegistration> {
+abstract class DataSetCompleteRegistrationCallFetcher implements CallFetcher<DataSetCompleteRegistration> {
 
     private final static int MAX_ALLOWED_QUERY_LENGTH = 2500;
     private final static int SERVER_URL_LENGTH = 200;

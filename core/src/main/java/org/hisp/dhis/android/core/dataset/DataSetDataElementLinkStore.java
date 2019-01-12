@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataSetDataElementLinkStore {
+final class DataSetDataElementLinkStore {
 
     private DataSetDataElementLinkStore() {}
 
@@ -54,7 +54,7 @@ public final class DataSetDataElementLinkStore {
         }
     };
 
-    private static final CursorModelFactory<DataSetElement> FACTORY
+    static final CursorModelFactory<DataSetElement> FACTORY
             = new CursorModelFactory<DataSetElement>() {
         @Override
         public DataSetElement fromCursor(Cursor cursor) {

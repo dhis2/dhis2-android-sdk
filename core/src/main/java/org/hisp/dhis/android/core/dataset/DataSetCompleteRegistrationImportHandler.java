@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
-public class DataSetCompleteRegistrationImportHandler {
+class DataSetCompleteRegistrationImportHandler {
 
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
@@ -43,8 +43,8 @@ public class DataSetCompleteRegistrationImportHandler {
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
     }
 
-    public void handleImportSummary(@NonNull DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
-                                    @NonNull ImportSummary importSummary) {
+    void handleImportSummary(@NonNull DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
+                             @NonNull ImportSummary importSummary) {
 
         if (importSummary == null || dataSetCompleteRegistrationPayload == null) {
             return;

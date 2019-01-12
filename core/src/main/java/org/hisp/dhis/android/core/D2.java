@@ -34,7 +34,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
@@ -47,15 +46,17 @@ import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
+import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
-import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
@@ -63,6 +64,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -84,6 +86,7 @@ public final class D2 {
     private final ResourceHandler resourceHandler;
     private final GenericCallData genericCallData;
     private final D2InternalModules internalModules;
+    private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
     D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
@@ -111,6 +114,7 @@ public final class D2 {
 
 
         this.internalModules = d2DIComponent.internalModules();
+        this.modules = d2DIComponent.modules();
         this.resourceHandler = d2DIComponent.resourceHandler();
         this.genericCallData = d2DIComponent.genericCallData();
     }
@@ -126,29 +130,13 @@ public final class D2 {
     }
 
     @NonNull
-    public UserModule userModule() {
-        return internalModules.user.publicModule;
-    }
-
-    @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(genericCallData, internalModules);
+        return d2DIComponent.metadataCall();
     }
 
     @NonNull
     public AggregatedModule aggregatedModule() {
         return d2DIComponent.aggregatedModule();
-    }
-
-    /**
-     * Allows uploading to DHIS2 server all DataSetCompleteRegistration with TO_POST or TO_UPDATE state
-     *
-     * @return A Callable instace ready to perform the data upload and retrieve the results
-     *         in form of {@link ImportSummary}
-     */
-    @NonNull
-    public Callable<ImportSummary> syncDataSetCompleteRegistrations() {
-        return DataSetCompleteRegistrationPostCall.create(databaseAdapter, retrofit);
     }
 
     @NonNull
@@ -206,27 +194,51 @@ public final class D2 {
     }
 
     public SystemInfoModule systemInfoModule() {
-        return this.internalModules.systemInfo.publicModule;
+        return this.modules.systemInfo;
     }
 
     public RelationshipModule relationshipModule() {
-        return this.internalModules.relationship.publicModule;
+        return this.modules.relationship;
     }
 
     public CategoryModule categoryModule() {
-        return this.internalModules.category.publicModule;
+        return this.modules.category;
     }
 
     public DataElementModule dataElementModule() {
-        return this.internalModules.dataElement.publicModule;
+        return this.modules.dataElement;
+    }
+
+    public DataSetModule dataSetModule() {
+        return this.modules.dataSet;
     }
 
     public DataValueModule dataValueModule() {
-        return this.internalModules.dataValue.publicModule;
+        return this.modules.dataValue;
+    }
+
+    public EnrollmentModule enrollmentModule() {
+        return this.modules.enrollment;
+    }
+
+    public EventModule eventModule() {
+        return this.modules.events;
     }
 
     public MaintenanceModule maintenanceModule() {
-        return this.internalModules.maintenance.publicModule;
+        return this.modules.maintenance;
+    }
+
+    public ProgramModule programModule() {
+        return this.modules.program;
+    }
+
+    public TrackedEntityModule trackedEntityModule() {
+        return modules.trackedEntity;
+    }
+
+    public UserModule userModule() {
+        return modules.user;
     }
 
     public WipeModule wipeModule() {

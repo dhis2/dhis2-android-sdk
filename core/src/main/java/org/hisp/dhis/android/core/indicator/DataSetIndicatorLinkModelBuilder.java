@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSet;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<ObjectWithUid, DataSetIndicatorLinkModel> {
+public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
 
     private final DataSetIndicatorLinkModel.Builder builder;
 
@@ -42,7 +41,7 @@ public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<ObjectWithUid
     }
 
     @Override
-    public DataSetIndicatorLinkModel buildModel(ObjectWithUid pojo) {
+    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
         return builder
                 .indicator(pojo.uid())
                 .build();

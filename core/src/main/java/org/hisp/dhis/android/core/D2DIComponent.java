@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
+import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.common.GenericCallData;
@@ -9,6 +10,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
+import org.hisp.dhis.android.core.event.EventPackageDIModule;
 import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
@@ -40,6 +43,8 @@ import dagger.Component;
         DataElementPackageDIModule.class,
         DataSetPackageDIModule.class,
         DataValuePackageDIModule.class,
+        EnrollmentPackageDIModule.class,
+        EventPackageDIModule.class,
         IndicatorPackageDIModule.class,
         MaintenancePackageDIModule.class,
         OptionPackageDIModule.class,
@@ -56,9 +61,11 @@ import dagger.Component;
 public interface D2DIComponent {
 
     D2InternalModules internalModules();
+    D2Modules modules();
     ResourceHandler resourceHandler();
     GenericCallData genericCallData();
     AggregatedModule aggregatedModule();
+    MetadataCall metadataCall();
     WipeModule wipeModule();
 
     @Component.Builder
@@ -72,6 +79,8 @@ public interface D2DIComponent {
         Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);
+        Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
+        Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);
         Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
         Builder maintenancePackageDIModule(MaintenancePackageDIModule maintenancePackageDIModule);
         Builder optionPackageDIModule(OptionPackageDIModule optionPackageDIModule);

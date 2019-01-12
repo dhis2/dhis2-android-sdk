@@ -34,13 +34,10 @@ import dagger.Reusable;
 @Reusable
 public final class SystemInfoInternalModule {
 
-    public final SystemInfoModuleDownloader moduleDownloader;
     public final SystemInfoModule publicModule;
 
     @Inject
-    SystemInfoInternalModule(SystemInfoModule publicModule,
-                             SystemInfoModuleDownloader moduleDownloader) {
+    SystemInfoInternalModule(SystemInfoModule publicModule) {
         this.publicModule = publicModule;
-        this.moduleDownloader = moduleDownloader;
     }
 }

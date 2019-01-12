@@ -46,9 +46,19 @@ class TrackedEntityInstanceUtils {
                                                               List<Enrollment> enrollments) {
         Date refDate = getValidDate();
 
-        return TrackedEntityInstance.create(trackedEntityInstanceUid, refDate, refDate, null,
-                null, orgUnitUid, trackedEntityTypeUid, coordinates, featureType, false,
-                attributes, relationships, enrollments);
+        return TrackedEntityInstance.builder()
+                .uid(trackedEntityInstanceUid)
+                .created(refDate)
+                .lastUpdated(refDate)
+                .organisationUnit(orgUnitUid)
+                .trackedEntityType(trackedEntityTypeUid)
+                .coordinates(coordinates)
+                .featureType(featureType)
+                .deleted(false)
+                .trackedEntityAttributeValues(attributes)
+                .relationships(relationships)
+                .enrollments(enrollments)
+                .build();
     }
 
     private static TrackedEntityAttributeValue createTrackedEntityAttributeValue(String attributeUid, String value) {
@@ -301,7 +311,6 @@ class TrackedEntityInstanceUtils {
         Long newTime = (new Date()).getTime() + (2 * 24 * 60 * 60 * 1000);
         return new Date(newTime);
     }
-
 
     // Assertions
 

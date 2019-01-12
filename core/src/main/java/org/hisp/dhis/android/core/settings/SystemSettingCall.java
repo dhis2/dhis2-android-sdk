@@ -29,14 +29,19 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.common.SyncCall;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
+import java.util.concurrent.Callable;
+
 import javax.inject.Inject;
 
-final class SystemSettingCall extends SyncCall<SystemSetting> {
+import dagger.Reusable;
+
+@Reusable
+final class SystemSettingCall implements Callable<Unit> {
     private final APICallExecutor apiCallExecutor;
     private final DatabaseAdapter databaseAdapter;
     private final SystemSettingHandler handler;
@@ -57,9 +62,7 @@ final class SystemSettingCall extends SyncCall<SystemSetting> {
     }
 
     @Override
-    public SystemSetting call() throws D2Error {
-        setExecuted();
-
+    public Unit call() throws D2Error {
         SystemSetting setting = apiCallExecutor.executeObjectCall(service.getSystemSettings(SystemSetting.allFields));
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
@@ -71,6 +74,6 @@ final class SystemSettingCall extends SyncCall<SystemSetting> {
             transaction.end();
         }
 
-        return setting;
+        return new Unit();
     }
 }

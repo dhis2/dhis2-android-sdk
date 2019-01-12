@@ -21,7 +21,7 @@ public abstract class MockIntegrationShould {
 
     private static SQLiteDatabase sqLiteDatabase;
     private static String dbName = null;
-    public static DatabaseAdapter databaseAdapter;
+    protected static DatabaseAdapter databaseAdapter;
 
     private static Dhis2MockServer dhis2MockServer;
     protected static D2 d2;
@@ -46,5 +46,15 @@ public abstract class MockIntegrationShould {
     protected static void downloadMetadata() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
+    }
+
+    protected static void downloadEvents() throws Exception {
+        dhis2MockServer.enqueueEventResponses();
+        d2.downloadSingleEvents(1, false).call();
+    }
+
+    protected static void downloadTrackedEntityInstances() throws Exception {
+        dhis2MockServer.enqueueTrackedEntityInstanceResponses();
+        d2.downloadTrackedEntityInstances(1, false).call();
     }
 }

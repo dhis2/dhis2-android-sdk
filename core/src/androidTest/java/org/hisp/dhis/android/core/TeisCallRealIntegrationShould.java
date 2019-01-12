@@ -5,7 +5,6 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -31,6 +30,6 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.downloadTrackedEntityInstances(5,  false).call();
 
-        assertThat(new TrackedEntityInstanceStoreImpl(databaseAdapter()).queryAll().size() >= 5).isTrue();
+        assertThat(TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count() >= 5).isTrue();
     }
 }

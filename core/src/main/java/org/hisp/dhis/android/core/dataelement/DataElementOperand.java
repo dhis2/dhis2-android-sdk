@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 import javax.annotation.Nullable;
@@ -58,6 +59,7 @@ public abstract class DataElementOperand extends BaseModel
     @Override
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable
@@ -73,6 +75,8 @@ public abstract class DataElementOperand extends BaseModel
     public static DataElementOperand create(Cursor cursor) {
         return AutoValue_DataElementOperand.createFromCursor(cursor);
     }
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_DataElementOperand.Builder();

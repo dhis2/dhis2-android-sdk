@@ -60,7 +60,7 @@ public final class IndicatorStore {
         }
     };
 
-    private static final CursorModelFactory<Indicator> FACTORY = new CursorModelFactory<Indicator>() {
+    static final CursorModelFactory<Indicator> FACTORY = new CursorModelFactory<Indicator>() {
         @Override
         public Indicator fromCursor(Cursor cursor) {
             return Indicator.create(cursor);

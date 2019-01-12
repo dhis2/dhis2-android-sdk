@@ -28,22 +28,19 @@
 package org.hisp.dhis.android.core.common;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitDownloadModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
+import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserModuleDownloader;
-import org.hisp.dhis.android.core.user.UserRole;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,8 +49,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -66,25 +61,7 @@ import static org.mockito.Mockito.when;
 public class MetadataCallShould extends BaseCallShould {
 
     @Mock
-    private SystemInfo systemInfo;
-
-    @Mock
-    private SystemSetting systemSetting;
-
-    @Mock
-    private Date serverDateTime;
-
-    @Mock
     private User user;
-
-    @Mock
-    private UserCredentials userCredentials;
-
-    @Mock
-    private UserRole userRole;
-
-    @Mock
-    private OrganisationUnit organisationUnit;
 
     @Mock
     private Program program;
@@ -96,43 +73,43 @@ public class MetadataCallShould extends BaseCallShould {
     private Callable<Unit> systemInfoDownloadCall;
 
     @Mock
-    private Call<SystemSetting> systemSettingEndpointCall;
+    private Callable<Unit> systemSettingDownloadCall;
 
     @Mock
-    private Call<User> userCall;
+    private Callable<User> userCall;
 
     @Mock
     private Callable<Unit> categoryDownloadCall;
 
     @Mock
-    private Call<List<Program>> programParentCall;
+    private Callable<List<Program>> programDownloadCall;
 
     @Mock
-    private Call<List<DataSet>> dataSetParentCall;
+    private Callable<List<DataSet>> dataSetDownloadCall;
 
     @Mock
     private Callable<Unit> organisationUnitDownloadCall;
 
     @Mock
-    private SystemInfoModuleDownloader systemInfoModuleDownloader;
+    private SystemInfoModuleDownloader systemInfoDownloader;
 
     @Mock
-    private Downloader<SystemSetting> systemSettingDownloader;
+    private SystemSettingModuleDownloader systemSettingDownloader;
 
     @Mock
-    private UserModuleDownloader userDownloadModule;
+    private UserModuleDownloader userDownloader;
 
     @Mock
-    private Downloader<Unit> categoryDownloader;
+    private CategoryModuleDownloader categoryDownloader;
 
     @Mock
-    private Downloader<List<Program>> programParentCallFactory;
+    private ProgramModuleDownloader programDownloader;
 
     @Mock
-    private OrganisationUnitDownloadModule organisationUnitDownloadModule;
+    private OrganisationUnitModuleDownloader organisationUnitDownloader;
 
     @Mock
-    private Downloader<List<DataSet>> dataSetDownloader;
+    private DataSetModuleDownloader dataSetDownloader;
 
     @Mock
     private ForeignKeyCleaner foreignKeyCleaner;
@@ -145,41 +122,33 @@ public class MetadataCallShould extends BaseCallShould {
     public void setUp() throws Exception {
         super.setUp();
 
-        // Payload data
-        when(systemInfo.serverDate()).thenReturn(serverDateTime);
-        when(userCredentials.userRoles()).thenReturn(Collections.singletonList(userRole));
-        when(organisationUnit.uid()).thenReturn("unit");
-        when(organisationUnit.path()).thenReturn("path/to/org/unit");
-        when(user.userCredentials()).thenReturn(userCredentials);
-        when(user.organisationUnits()).thenReturn(Collections.singletonList(organisationUnit));
-
         // Call factories
-        when(systemInfoModuleDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
-        when(systemSettingDownloader.download()).thenReturn(systemSettingEndpointCall);
-        when(userDownloadModule.downloadMetadata()).thenReturn(userCall);
-        when(programParentCallFactory.download()).thenReturn(programParentCall);
-        when(categoryDownloader.download()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloadModule.download(same(user), anySetOf(Program.class),
+        when(systemInfoDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
+        when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
+        when(userDownloader.downloadMetadata()).thenReturn(userCall);
+        when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
+        when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
+        when(organisationUnitDownloader.downloadMetadata(same(user), anySetOf(Program.class),
                 anySetOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
-        when(dataSetDownloader.download()).thenReturn(dataSetParentCall);
+        when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
 
         // Calls
         when(systemInfoDownloadCall.call()).thenReturn(new Unit());
-        when(systemSettingEndpointCall.call()).thenReturn(systemSetting);
+        when(systemSettingDownloadCall.call()).thenReturn(new Unit());
         when(userCall.call()).thenReturn(user);
         when(categoryDownloadCall.call()).thenReturn(new Unit());
-        when(programParentCall.call()).thenReturn(Lists.newArrayList(program));
-        when(dataSetParentCall.call()).thenReturn(Lists.newArrayList(dataSet));
+        when(programDownloadCall.call()).thenReturn(Lists.newArrayList(program));
+        when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
 
         // Metadata call
         metadataCall = new MetadataCall(
                 new D2CallExecutor(databaseAdapter),
-                systemInfoModuleDownloader,
+                systemInfoDownloader,
                 systemSettingDownloader,
-                userDownloadModule,
+                userDownloader,
                 categoryDownloader,
-                programParentCallFactory,
-                organisationUnitDownloadModule,
+                programDownloader,
+                organisationUnitDownloader,
                 dataSetDownloader,
                 foreignKeyCleaner);
     }
@@ -202,7 +171,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_system_setting_call_fail() throws Exception {
-        when(systemSettingEndpointCall.call()).thenThrow(d2Error);
+        when(systemSettingDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
@@ -220,7 +189,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_program_call_fail() throws Exception {
-        when(programParentCall.call()).thenThrow(d2Error);
+        when(programDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 
@@ -232,7 +201,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_dataset_parent_call_fail() throws Exception {
-        when(dataSetParentCall.call()).thenThrow(d2Error);
+        when(dataSetDownloadCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

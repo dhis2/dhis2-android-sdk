@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -60,20 +61,22 @@ final class D2Modules {
     final RelationshipModule relationship;
     final TrackedEntityModule trackedEntity;
     final UserModule user;
+    final SmsModule sms;
 
     @Inject
     D2Modules(CategoryModule category,
-                     DataElementModule dataElement,
-                     DataSetModule dataSet,
-                     DataValueModule dataValue,
-                     EnrollmentModule enrollment,
-                     EventModule events,
-                     MaintenanceModule maintenance,
-                     ProgramModule program,
-                     SystemInfoModule systemInfo,
-                     RelationshipModule relationship,
-                     TrackedEntityModule trackedEntity,
-                     UserModule user) {
+              DataElementModule dataElement,
+              DataSetModule dataSet,
+              DataValueModule dataValue,
+              EnrollmentModule enrollment,
+              EventModule events,
+              MaintenanceModule maintenance,
+              ProgramModule program,
+              SystemInfoModule systemInfo,
+              RelationshipModule relationship,
+              TrackedEntityModule trackedEntity,
+              UserModule user,
+              SmsModule sms) {
         this.category = category;
         this.dataElement = dataElement;
         this.dataSet = dataSet;
@@ -86,5 +89,6 @@ final class D2Modules {
         this.relationship = relationship;
         this.trackedEntity = trackedEntity;
         this.user = user;
+        this.sms = sms;
     }
 }

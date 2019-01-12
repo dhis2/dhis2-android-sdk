@@ -8,14 +8,16 @@ import io.reactivex.Single;
 
 public class QrCodeCase {
     private LocalDbRepository localDbRepository;
-    private SmsFormatConverter converter;
 
-    // TODO inject repos
-    public QrCodeCase() {
+    public QrCodeCase(LocalDbRepository localDbRepository) {
+        this.localDbRepository = localDbRepository;
     }
 
     public Single<String> generateTextCode(final Event event) {
         return Single.zip(localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
-                (username, categoryOptionCombo) -> converter.format(event, username, categoryOptionCombo));
+                (username, categoryOptionCombo) -> {
+                    SmsFormatConverter converter = new SmsFormatConverter();
+                    return converter.format(event, username, categoryOptionCombo);
+                });
     }
 }

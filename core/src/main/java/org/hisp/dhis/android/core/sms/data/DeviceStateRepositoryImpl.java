@@ -16,11 +16,14 @@ import org.reactivestreams.Publisher;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Inject;
+
 import io.reactivex.Single;
 
 public class DeviceStateRepositoryImpl implements DeviceStateRepository {
     private Context context;
 
+    @Inject
     public DeviceStateRepositoryImpl(Context context) {
         this.context = context;
     }

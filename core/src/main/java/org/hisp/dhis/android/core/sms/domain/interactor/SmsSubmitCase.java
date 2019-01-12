@@ -17,17 +17,19 @@ import io.reactivex.Single;
 public class SmsSubmitCase {
     private LocalDbRepository localDbRepository;
     private SmsRepository smsRepository;
-    private SmsFormatConverter converter;
     private DeviceStateRepository deviceStateRepository;
 
-    // TODO inject repos
-    public SmsSubmitCase() {
+    public SmsSubmitCase(LocalDbRepository localDbRepository, SmsRepository smsRepository, DeviceStateRepository deviceStateRepository) {
+        this.localDbRepository = localDbRepository;
+        this.smsRepository = smsRepository;
+        this.deviceStateRepository = deviceStateRepository;
     }
 
     public Observable<SmsRepository.SmsSendingState> submit(final Event event) {
         return checkPreconditions()
                 .andThen(Single.zip(localDbRepository.getGatewayNumber(), localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
                         (number, username, categoryOptionCombo) -> {
+                            SmsFormatConverter converter = new SmsFormatConverter();
                             String smsContents = converter.format(event, username, categoryOptionCombo);
                             return new Pair<>(number, smsContents);
                         })

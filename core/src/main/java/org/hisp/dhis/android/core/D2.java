@@ -108,6 +108,7 @@ public final class D2 {
         this.databaseAdapter = databaseAdapter;
 
         this.d2DIComponent = DaggerD2DIComponent.builder()
+                .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();

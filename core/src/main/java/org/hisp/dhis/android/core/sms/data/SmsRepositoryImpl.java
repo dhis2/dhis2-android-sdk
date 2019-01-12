@@ -23,6 +23,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.inject.Inject;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -37,6 +39,7 @@ public class SmsRepositoryImpl implements SmsRepository {
     private String sendSmsAction;
     private boolean totalConfirmed = false;
 
+    @Inject
     public SmsRepositoryImpl(Context context) {
         this.context = context;
         sendSmsAction = context.getPackageName() + ".SEND_SMS";

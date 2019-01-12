@@ -22,6 +22,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
+import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.user.UserPackageDIModule;
@@ -34,6 +35,7 @@ import dagger.Component;
 
 @Singleton
 @Component(modules = {
+        AppContextDIModule.class,
         APIClientDIModule.class,
         DatabaseDIModule.class,
         WipeDIModule.class,
@@ -56,6 +58,7 @@ import dagger.Component;
         SystemInfoPackageDIModule.class,
         SystemSettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
+        SmsDIModule.class,
         UserPackageDIModule.class}
 )
 public interface D2DIComponent {
@@ -70,6 +73,7 @@ public interface D2DIComponent {
 
     @Component.Builder
     interface Builder {
+        Builder appContextDIModule(AppContextDIModule appContextDIModule);
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);

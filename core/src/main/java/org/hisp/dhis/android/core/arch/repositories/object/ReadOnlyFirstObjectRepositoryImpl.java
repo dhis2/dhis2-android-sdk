@@ -25,41 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-package org.hisp.dhis.android.core.user;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.Collection;
+import java.util.Collections;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
 
-@Module
-public final class UserCredentialsEntityDIModule implements IdentifiableEntityDIModule<UserCredentials> {
+    private final ObjectStore<M> store;
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<UserCredentials> store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStore.create(databaseAdapter);
+    ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
+        super(childrenAppenders);
+        this.store = store;
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<UserCredentials> handler(IdentifiableObjectStore<UserCredentials> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
+        this(store, Collections.<ChildrenAppender<M>>emptyList());
     }
 
-    @Provides
-    @Reusable
-    ReadOnlyObjectRepository<UserCredentials> repository(IdentifiableObjectStore<UserCredentials> store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    public M get() {
+        return this.store.selectFirst();
     }
 }

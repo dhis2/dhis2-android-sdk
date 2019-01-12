@@ -38,25 +38,19 @@ import java.util.Collections;
 import java.util.concurrent.Callable;
 
 public final class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model>
-        extends ReadOnlyObjectRepositoryImpl<M> implements ReadOnlyWithDownloadObjectRepository<M> {
+        extends ReadOnlyFirstObjectRepositoryImpl<M> implements ReadOnlyWithDownloadObjectRepository<M> {
 
-    private final ObjectStore<M> store;
     private final Callable<Unit> downloadCall;
 
     private ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
                                                           Collection<ChildrenAppender<M>> childrenAppenders,
                                                           Callable<Unit> downloadCall) {
-        super(childrenAppenders);
-        this.store = store;
+        super(store, childrenAppenders);
         this.downloadCall = downloadCall;
     }
 
     public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store, Callable<Unit> downloadCall) {
         this(store, Collections.<ChildrenAppender<M>>emptyList(), downloadCall);
-    }
-
-    public M get() {
-        return this.store.selectFirst();
     }
 
     @Override

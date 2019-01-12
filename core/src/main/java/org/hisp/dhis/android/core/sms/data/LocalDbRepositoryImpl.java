@@ -7,6 +7,11 @@ import io.reactivex.Single;
 
 public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
+    public Single<String> getDefaultCategoryOptionCombo() {
+        return null;
+    }
+
+    @Override
     public Single<String> getUserName() {
         return null;
     }

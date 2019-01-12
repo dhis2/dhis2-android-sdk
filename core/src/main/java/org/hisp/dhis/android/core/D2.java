@@ -59,6 +59,7 @@ import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
+import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
@@ -244,6 +245,10 @@ public final class D2 {
 
     public WipeModule wipeModule() {
         return this.d2DIComponent.wipeModule();
+    }
+
+    public SmsModule smsModule() {
+        return modules.sms;
     }
 
     public static class Builder {

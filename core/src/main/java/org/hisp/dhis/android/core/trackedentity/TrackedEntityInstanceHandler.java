@@ -29,7 +29,7 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
     private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
-    private final EnrollmentHandler enrollmentHandler;
+    private final SyncHandlerWithTransformer<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
 
     TrackedEntityInstanceHandler(
@@ -37,7 +37,7 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
             @NonNull RelationshipHandler relationshipHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
-            @NonNull EnrollmentHandler enrollmentHandler,
+            @NonNull SyncHandlerWithTransformer<Enrollment> enrollmentHandler,
             @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;
@@ -62,7 +62,14 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
             if (enrollments != null) {
-                enrollmentHandler.handleMany(enrollments);
+                enrollmentHandler.handleMany(enrollments, new ModelBuilder<Enrollment, Enrollment>() {
+                    @Override
+                    public Enrollment buildModel(Enrollment enrollment) {
+                        return enrollment.toBuilder()
+                                .state(State.SYNCED)
+                                .build();
+                    }
+                });
             }
 
             handleRelationships(trackedEntityInstance);

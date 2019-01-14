@@ -325,8 +325,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
                 relationshipType.uid()));
 
         d2.syncTrackedEntityInstances().call();
-
-        d2.syncDownSyncedTrackedEntityInstances().call();
     }
 
     //@Test

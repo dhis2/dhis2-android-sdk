@@ -35,7 +35,6 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
-import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
@@ -143,11 +142,6 @@ public final class D2 {
     public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
         return EventWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler, eventLimit,
                 limitByOrgUnit);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> syncDownSyncedTrackedEntityInstances() {
-        return TrackedEntityInstanceSyncDownCall.create(databaseAdapter, retrofit, internalModules);
     }
 
     @NonNull

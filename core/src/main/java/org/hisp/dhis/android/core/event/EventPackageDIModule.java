@@ -25,39 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.event;
 
-public class DHISVersionManager {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-    private DHISVersion version;
+@Module(includes = {
+        EventEntityDIModule.class
+})
+public final class EventPackageDIModule {
 
-    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
-
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
-    }
-
-    public DHISVersion getVersion() {
-        return version;
-    }
-
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
+    @Provides
+    @Reusable
+    EventService service(Retrofit retrofit) {
+        return retrofit.create(EventService.class);
     }
 }

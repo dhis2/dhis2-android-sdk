@@ -25,39 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.enrollment;
 
-public class DHISVersionManager {
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-    private DHISVersion version;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
+@Module
+public final class EnrollmentEntityDIModule {
 
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
+    @Provides
+    @Reusable
+    public EnrollmentStore store(DatabaseAdapter databaseAdapter) {
+        return EnrollmentStoreImpl.create(databaseAdapter);
     }
 
-    public DHISVersion getVersion() {
-        return version;
+    @Provides
+    @Reusable
+    public SyncHandler<Enrollment> handler(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+        return EnrollmentHandler.create(databaseAdapter, versionManager);
     }
 
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<Enrollment> repository(DatabaseAdapter databaseAdapter) {
+        return EnrollmentCollectionRepository.create(databaseAdapter);
     }
 }

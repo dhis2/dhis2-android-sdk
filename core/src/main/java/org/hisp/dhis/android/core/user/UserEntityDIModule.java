@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -51,5 +53,11 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
     @Reusable
     SyncHandler<User> handler(UserHandler userHandler) {
         return userHandler;
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyObjectRepository<User> repository(IdentifiableObjectStore<User> store) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
     }
 }

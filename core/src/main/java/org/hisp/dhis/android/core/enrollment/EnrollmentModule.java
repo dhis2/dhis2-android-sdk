@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,39 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.enrollment;
 
-public class DHISVersionManager {
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 
-    private DHISVersion version;
+import javax.inject.Inject;
 
-    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
-    }
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class EnrollmentModule {
 
-    public DHISVersion getVersion() {
-        return version;
-    }
+    public final ReadOnlyIdentifiableCollectionRepository<Enrollment> enrollments;
 
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
+    @Inject
+    EnrollmentModule(ReadOnlyIdentifiableCollectionRepository<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
 }

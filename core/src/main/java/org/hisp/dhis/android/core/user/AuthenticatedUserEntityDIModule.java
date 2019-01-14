@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -44,5 +46,12 @@ public final class AuthenticatedUserEntityDIModule implements ObjectWithoutUidSt
     @Reusable
     public ObjectWithoutUidStore<AuthenticatedUserModel> store(DatabaseAdapter databaseAdapter) {
         return AuthenticatedUserStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyObjectRepository<AuthenticatedUserModel> repository(
+            ObjectWithoutUidStore<AuthenticatedUserModel> store) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
     }
 }

@@ -25,39 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-public class DHISVersionManager {
+import java.util.Collection;
+import java.util.Collections;
 
-    private DHISVersion version;
+public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
 
-    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
+    private final ObjectStore<M> store;
 
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
+    ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
+        super(childrenAppenders);
+        this.store = store;
     }
 
-    public DHISVersion getVersion() {
-        return version;
+    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
+        this(store, Collections.<ChildrenAppender<M>>emptyList());
     }
 
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
+    public M get() {
+        return this.store.selectFirst();
     }
 }

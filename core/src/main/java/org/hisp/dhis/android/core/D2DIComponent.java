@@ -10,6 +10,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
+import org.hisp.dhis.android.core.event.EventPackageDIModule;
 import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
@@ -41,6 +43,8 @@ import dagger.Component;
         DataElementPackageDIModule.class,
         DataSetPackageDIModule.class,
         DataValuePackageDIModule.class,
+        EnrollmentPackageDIModule.class,
+        EventPackageDIModule.class,
         IndicatorPackageDIModule.class,
         MaintenancePackageDIModule.class,
         OptionPackageDIModule.class,
@@ -75,6 +79,8 @@ public interface D2DIComponent {
         Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);
+        Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
+        Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);
         Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
         Builder maintenancePackageDIModule(MaintenancePackageDIModule maintenancePackageDIModule);
         Builder optionPackageDIModule(OptionPackageDIModule optionPackageDIModule);

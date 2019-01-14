@@ -25,39 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.event;
 
-public class DHISVersionManager {
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-    private DHISVersion version;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
+@Module
+public final class EventEntityDIModule {
 
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
+    @Provides
+    @Reusable
+    public EventStore store(DatabaseAdapter databaseAdapter) {
+        return EventStoreImpl.create(databaseAdapter);
     }
 
-    public DHISVersion getVersion() {
-        return version;
+    @Provides
+    @Reusable
+    public SyncHandler<Event> handler(DatabaseAdapter databaseAdapter) {
+        return EventHandler.create(databaseAdapter);
     }
 
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<Event> repository(DatabaseAdapter databaseAdapter) {
+        return EventCollectionRepository.create(databaseAdapter);
     }
 }

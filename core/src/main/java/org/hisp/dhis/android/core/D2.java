@@ -49,6 +49,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
+import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -62,6 +64,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedVa
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -214,12 +217,24 @@ public final class D2 {
         return this.modules.dataValue;
     }
 
+    public EnrollmentModule enrollmentModule() {
+        return this.modules.enrollment;
+    }
+
+    public EventModule eventModule() {
+        return this.modules.events;
+    }
+
     public MaintenanceModule maintenanceModule() {
         return this.modules.maintenance;
     }
 
     public ProgramModule programModule() {
         return this.modules.program;
+    }
+
+    public TrackedEntityModule trackedEntityModule() {
+        return modules.trackedEntity;
     }
 
     public UserModule userModule() {

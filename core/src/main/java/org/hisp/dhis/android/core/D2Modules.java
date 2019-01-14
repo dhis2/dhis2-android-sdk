@@ -32,10 +32,13 @@ import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
+import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 
 import javax.inject.Inject;
@@ -49,10 +52,13 @@ final class D2Modules {
     final DataElementModule dataElement;
     final DataSetModule dataSet;
     final DataValueModule dataValue;
+    final EnrollmentModule enrollment;
+    final EventModule events;
     final MaintenanceModule maintenance;
     final ProgramModule program;
     final SystemInfoModule systemInfo;
     final RelationshipModule relationship;
+    final TrackedEntityModule trackedEntity;
     final UserModule user;
 
     @Inject
@@ -60,19 +66,25 @@ final class D2Modules {
                      DataElementModule dataElement,
                      DataSetModule dataSet,
                      DataValueModule dataValue,
+                     EnrollmentModule enrollment,
+                     EventModule events,
                      MaintenanceModule maintenance,
                      ProgramModule program,
                      SystemInfoModule systemInfo,
                      RelationshipModule relationship,
+                     TrackedEntityModule trackedEntity,
                      UserModule user) {
         this.category = category;
         this.dataElement = dataElement;
         this.dataSet = dataSet;
         this.dataValue = dataValue;
+        this.enrollment = enrollment;
+        this.events = events;
         this.maintenance = maintenance;
         this.program = program;
         this.systemInfo = systemInfo;
         this.relationship = relationship;
+        this.trackedEntity = trackedEntity;
         this.user = user;
     }
 }

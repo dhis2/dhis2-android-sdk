@@ -25,39 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.trackedentity;
 
-public class DHISVersionManager {
+import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-    private DHISVersion version;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
-        SystemInfo systemInfoModel = systemInfoStore.selectFirst();
+@Module
+public final class TrackedEntityInstanceEntityDIModule {
 
-        if (systemInfoModel != null && systemInfoModel.version() != null) {
-            version = DHISVersion.getValue(systemInfoModel.version());
-        }
+    @Provides
+    @Reusable
+    public TrackedEntityInstanceStore store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityInstanceStoreImpl.create(databaseAdapter);
     }
 
-    public DHISVersion getVersion() {
-        return version;
+    @Provides
+    @Reusable
+    public SyncHandler<TrackedEntityInstance> handler(DatabaseAdapter databaseAdapter,
+                                                      D2InternalModules internalModules) {
+        return TrackedEntityInstanceHandler.create(databaseAdapter, internalModules);
     }
 
-    public boolean is2_29() {
-        return version == DHISVersion.V2_29;
-    }
-
-    public boolean is2_30() {
-        return version == DHISVersion.V2_30;
-    }
-
-    public boolean is2_31() {
-        return version == DHISVersion.V2_31;
-    }
-
-    void setVersion(String versionStr) {
-        this.version = DHISVersion.getValue(versionStr);
+    @Provides
+    @Reusable
+    ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> repository(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityInstanceCollectionRepository.create(databaseAdapter);
     }
 }

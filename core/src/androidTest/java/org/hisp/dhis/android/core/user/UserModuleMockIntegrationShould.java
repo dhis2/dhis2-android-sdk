@@ -32,4 +32,12 @@ public class UserModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(credentials.code(), is("android"));
         assertThat(credentials.name(), is("John Barnes"));
     }
+
+    @Test
+    public void allow_access_to_user() {
+        User user = d2.userModule().user.get();
+        assertThat(user.uid(), is("DXyJmlo9rge"));
+        assertThat(user.firstName(), is("John"));
+        assertThat(user.email(), is("john@hmail.com"));
+    }
 }

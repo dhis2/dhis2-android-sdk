@@ -26,34 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-public final class TrackedEntityTypeFields {
+import java.util.List;
 
-    private final static String STYLE = "style";
-    private final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
-
-    private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
-
-    public static final Field<TrackedEntityType, String> uid = fh.uid();
-
-    static final Field<TrackedEntityType, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<TrackedEntityAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
-                            .with(TrackedEntityAttribute.allFields))
-            .fields(
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
-            ).build();
-
-    private TrackedEntityTypeFields() {
-    }
+public final class IgnoreTrackedEntityAttributeListColumnAdapter
+        extends IgnoreColumnAdapter<List<TrackedEntityAttribute>> {
 }

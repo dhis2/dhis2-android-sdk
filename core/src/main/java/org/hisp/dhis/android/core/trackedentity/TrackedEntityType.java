@@ -29,19 +29,31 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeListColumnAdapter;
+
+import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityType.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_TrackedEntityType.Builder.class)
 public abstract class TrackedEntityType extends BaseNameableObject implements Model,
         ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreTrackedEntityAttributeListColumnAdapter.class)
+    public abstract List<TrackedEntityAttribute> trackedEntityTypeAttributes();
 
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityType.Builder();
@@ -59,6 +71,8 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Mo
             implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
 
         public abstract Builder id(Long id);
+
+        public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityAttribute> trackedEntityAttributes);
 
         public abstract TrackedEntityType build();
     }

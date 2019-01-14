@@ -3,7 +3,7 @@ package org.hisp.dhis.android.core.event;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -44,7 +44,7 @@ public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
         return !validEventDate || event.organisationUnit() == null;
     }
 
-    public static SyncHandler<Event> create(DatabaseAdapter databaseAdapter) {
+    public static SyncHandlerWithTransformer<Event> create(DatabaseAdapter databaseAdapter) {
         return new EventHandler(
                 EventStoreImpl.create(databaseAdapter),
                 TrackedEntityDataValueHandler.create(databaseAdapter)

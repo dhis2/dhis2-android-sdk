@@ -187,7 +187,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {
             downloadedEnrollmentsWithoutIdAndDeleteFalse.add(
-                    enrollment.toBuilder().id(null).deleted(false).notes(new ArrayList<Note>()).build());
+                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<Note>()).build());
         }
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter());

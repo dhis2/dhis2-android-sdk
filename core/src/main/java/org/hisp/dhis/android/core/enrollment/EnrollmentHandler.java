@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
@@ -61,7 +62,8 @@ public class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
     }
 
-    public static EnrollmentHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+    public static SyncHandlerWithTransformer<Enrollment> create(DatabaseAdapter databaseAdapter,
+                                                                DHISVersionManager versionManager) {
         return new EnrollmentHandler(
                 versionManager,
                 EnrollmentStoreImpl.create(databaseAdapter),

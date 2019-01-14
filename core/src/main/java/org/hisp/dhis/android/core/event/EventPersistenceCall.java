@@ -3,10 +3,12 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -29,7 +31,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
 
     private final DatabaseAdapter databaseAdapter;
 
-    private final SyncHandler<Event> eventHandler;
+    private final SyncHandlerWithTransformer<Event> eventHandler;
     private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
@@ -39,7 +41,7 @@ public final class EventPersistenceCall extends SyncCall<Void> {
 
     private EventPersistenceCall(
             @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull SyncHandler<Event> eventHandler,
+            @NonNull SyncHandlerWithTransformer<Event> eventHandler,
             @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,
@@ -64,7 +66,15 @@ public final class EventPersistenceCall extends SyncCall<Void> {
 
             @Override
             public Void call() throws Exception {
-                eventHandler.handleMany(events);
+                eventHandler.handleMany(events,
+                        new ModelBuilder<Event, Event>() {
+                            @Override
+                            public Event buildModel(Event event) {
+                                return event.toBuilder()
+                                        .state(State.SYNCED)
+                                        .build();
+                            }
+                        });
 
                 Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 

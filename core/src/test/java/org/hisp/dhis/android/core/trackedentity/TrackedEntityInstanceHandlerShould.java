@@ -45,7 +45,7 @@ public class TrackedEntityInstanceHandlerShould {
     private SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
 
     @Mock
-    private EnrollmentHandler enrollmentHandler;
+    private SyncHandlerWithTransformer<Enrollment> enrollmentHandler;
 
     @Mock
     private TrackedEntityInstance trackedEntityInstance;
@@ -145,7 +145,7 @@ public class TrackedEntityInstanceHandlerShould {
                 anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class));
+        verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class), any(ModelBuilder.class));
 
         verify(enrollmentCleaner, times(1))
                 .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));

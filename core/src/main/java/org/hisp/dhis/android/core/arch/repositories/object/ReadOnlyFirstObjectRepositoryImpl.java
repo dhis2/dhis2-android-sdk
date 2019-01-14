@@ -28,33 +28,26 @@
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
-import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.Callable;
 
-public final class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model>
-        extends ReadOnlyFirstObjectRepositoryImpl<M> implements ReadOnlyWithDownloadObjectRepository<M> {
+public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
 
-    private final Callable<Unit> downloadCall;
+    private final ObjectStore<M> store;
 
-    private ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
-                                                          Collection<ChildrenAppender<M>> childrenAppenders,
-                                                          Callable<Unit> downloadCall) {
-        super(store, childrenAppenders);
-        this.downloadCall = downloadCall;
+    ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
+        super(childrenAppenders);
+        this.store = store;
     }
 
-    public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store, Callable<Unit> downloadCall) {
-        this(store, Collections.<ChildrenAppender<M>>emptyList(), downloadCall);
+    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
+        this(store, Collections.<ChildrenAppender<M>>emptyList());
     }
 
-    @Override
-    public Callable<Unit> download() {
-        return downloadCall;
+    public M get() {
+        return this.store.selectFirst();
     }
 }

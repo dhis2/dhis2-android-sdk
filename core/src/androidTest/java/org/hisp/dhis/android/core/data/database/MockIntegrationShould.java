@@ -43,6 +43,11 @@ public abstract class MockIntegrationShould {
         sqLiteDatabase.close();
     }
 
+    protected static void login() throws Exception {
+        dhis2MockServer.enqueueLoginResponses();
+        d2.userModule().logIn("android", "Android123").call();
+    }
+
     protected static void downloadMetadata() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();

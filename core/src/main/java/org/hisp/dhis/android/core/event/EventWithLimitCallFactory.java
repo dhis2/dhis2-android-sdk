@@ -135,11 +135,12 @@ public final class EventWithLimitCallFactory {
                             EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
 
                     List<Event> eventsToPersist;
-                    if (paging.isLastPage()) {
-                        int previousItemsToSkip =
-                                pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();
-                        int toIndex =
-                                previousItemsToSkip < 0 ? pageEvents.size() : pageEvents.size() - previousItemsToSkip;
+
+                    if (paging.isLastPage() && pageEvents.size() > paging.previousItemsToSkipCount()) {
+                        int toIndex = pageEvents.size() < paging.pageSize() - paging.posteriorItemsToSkipCount() ?
+                                pageEvents.size() :
+                                paging.pageSize() - paging.posteriorItemsToSkipCount();
+
                         eventsToPersist = pageEvents.subList(paging.previousItemsToSkipCount(), toIndex);
                     } else {
                         eventsToPersist = pageEvents;

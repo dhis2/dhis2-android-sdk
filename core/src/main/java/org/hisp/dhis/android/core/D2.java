@@ -36,7 +36,6 @@ import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -53,13 +52,11 @@ import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventPostCall;
 import org.hisp.dhis.android.core.event.EventWithLimitCall;
 import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
@@ -83,7 +80,6 @@ public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
     private final ResourceHandler resourceHandler;
-    private final GenericCallData genericCallData;
     private final D2InternalModules internalModules;
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
@@ -115,7 +111,6 @@ public final class D2 {
         this.internalModules = d2DIComponent.internalModules();
         this.modules = d2DIComponent.modules();
         this.resourceHandler = d2DIComponent.resourceHandler();
-        this.genericCallData = d2DIComponent.genericCallData();
     }
 
     @NonNull
@@ -153,19 +148,6 @@ public final class D2 {
     public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
         return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler,
                 teiLimit, limitByOrgUnit);
-    }
-
-    @NonNull
-    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
-            throws D2Error {
-        return TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
-                .getValue(attributeUid, organisationUnitUid);
-    }
-
-    public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
-                                                         Integer numberOfValuesToFillUp) {
-        TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
-                .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
     }
 
     @NonNull

@@ -28,39 +28,34 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module(includes = {
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityAttributeEntityDIModule.class,
-        TrackedEntityAttributeReservedValueEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
+@Module
+public final class TrackedEntityAttributeReservedValueEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
+    public TrackedEntityAttributeReservedValueStoreInterface store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityAttributeReservedValueStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
+    public SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler(
+            TrackedEntityAttributeReservedValueStoreInterface store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 
     @Provides
     @Reusable
-    QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
-            TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
-        return impl;
+    public TrackedEntityAttributeReservedValueService service(Retrofit retrofit) {
+        return retrofit.create(TrackedEntityAttributeReservedValueService.class);
     }
 }

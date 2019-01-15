@@ -75,21 +75,23 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
         List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
         if (relationships != null) {
             for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
-
-                Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
-                TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
-                        trackedEntityInstance.uid());
+                TrackedEntityInstance relativeTEI =
+                        relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstance.uid());
 
                 if (relativeTEI != null) {
-
-                    if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
-                        handle(relativeTEI, relationshipModelBuilder());
-                    }
-
-                    relationshipHandler.handle(relationship);
+                    handleRelationship(relativeTEI, relationship229);
                 }
             }
         }
+    }
+
+    private void handleRelationship(TrackedEntityInstance relativeTEI, Relationship229Compatible relationship229) {
+        if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
+            handle(relativeTEI, relationshipModelBuilder());
+        }
+
+        Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
+        relationshipHandler.handle(relationship);
     }
 
     public final void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances,

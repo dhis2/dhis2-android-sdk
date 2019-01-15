@@ -25,33 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.imports.WebResponse;
+package org.hisp.dhis.android.core.trackedentity;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-final class EventCollectionRepository extends ReadOnlyCollectionRepositoryImpl<Event>
-        implements ReadOnlyWithUploadCollectionRepository<Event> {
+@Module
+public final class TrackedEntityDataValueEntityDIModule {
 
-    private final EventPostCall postCall;
-
-    @Inject
-    EventCollectionRepository(EventStore eventStore, EventPostCall postCall) {
-        super(eventStore);
-        this.postCall = postCall;
+    @Provides
+    @Reusable
+    public TrackedEntityDataValueStore store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityDataValueStoreImpl.create(databaseAdapter);
     }
 
-
-    @Override
-    public Callable<WebResponse> upload() {
-        return postCall;
+    @Provides
+    @Reusable
+    public SyncHandlerWithTransformer<TrackedEntityDataValue> handler(TrackedEntityDataValueStore store) {
+        return new TrackedEntityDataValueHandler(store);
     }
 }

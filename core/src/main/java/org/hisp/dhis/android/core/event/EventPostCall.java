@@ -3,22 +3,22 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
 
-public final class EventPostCall extends SyncCall<WebResponse> {
+import dagger.Reusable;
+
+@Reusable
+public final class EventPostCall implements Callable<WebResponse> {
     // retrofit service
     private final EventService eventService;
 
@@ -28,7 +28,8 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
     private final APICallExecutor apiCallExecutor;
 
-    private EventPostCall(@NonNull EventService eventService,
+    @Inject
+    EventPostCall(@NonNull EventService eventService,
                           @NonNull EventStore eventStore,
                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                           @NonNull APICallExecutor apiCallExecutor) {
@@ -40,8 +41,6 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
     @Override
     public WebResponse call() throws Exception {
-        setExecuted();
-
         List<Event> eventsToPost = queryEventsToPost();
 
         // if there is nothing to send, return null
@@ -85,13 +84,5 @@ public final class EventPostCall extends SyncCall<WebResponse> {
         eventImportHandler.handleEventImportSummaries(
                 webResponse.importSummaries().importSummaries()
         );
-    }
-
-    public static EventPostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new EventPostCall(
-                retrofit.create(EventService.class),
-                EventStoreImpl.create(databaseAdapter),
-                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
-                APICallExecutorImpl.create(databaseAdapter));
     }
 }

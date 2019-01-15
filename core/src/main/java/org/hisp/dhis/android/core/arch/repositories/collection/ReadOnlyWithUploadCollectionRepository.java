@@ -25,33 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.concurrent.Callable;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-final class EventCollectionRepository extends ReadOnlyCollectionRepositoryImpl<Event>
-        implements ReadOnlyWithUploadCollectionRepository<Event> {
-
-    private final EventPostCall postCall;
-
-    @Inject
-    EventCollectionRepository(EventStore eventStore, EventPostCall postCall) {
-        super(eventStore);
-        this.postCall = postCall;
-    }
-
-
-    @Override
-    public Callable<WebResponse> upload() {
-        return postCall;
-    }
+public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    Callable<WebResponse> upload() throws D2Error;
 }

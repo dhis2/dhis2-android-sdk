@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
 
 import javax.inject.Inject;
 
@@ -39,10 +39,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class EventModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<Event> events;
+    public final ReadOnlyWithUploadCollectionRepository<Event> events;
 
     @Inject
-    EventModule(ReadOnlyIdentifiableCollectionRepository<Event> events) {
+    EventModule(ReadOnlyWithUploadCollectionRepository<Event> events) {
         this.events = events;
     }
 }

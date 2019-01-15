@@ -37,9 +37,10 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
-        TrackedEntityInstanceEntityDIModule.class,
         TrackedEntityAttributeEntityDIModule.class,
         TrackedEntityAttributeReservedValueEntityDIModule.class,
+        TrackedEntityDataValueEntityDIModule.class,
+        TrackedEntityInstanceEntityDIModule.class,
         TrackedEntityTypeEntityDIModule.class
 })
 public final class TrackedEntityPackageDIModule {

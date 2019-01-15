@@ -81,7 +81,11 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
                         trackedEntityInstance.uid());
 
                 if (relativeTEI != null) {
-                    handle(relativeTEI, relationshipModelBuilder());
+
+                    if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
+                        handle(relativeTEI, relationshipModelBuilder());
+                    }
+
                     relationshipHandler.handle(relationship);
                 }
             }

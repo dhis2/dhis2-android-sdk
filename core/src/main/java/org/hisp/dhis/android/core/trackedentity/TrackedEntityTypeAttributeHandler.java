@@ -25,35 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 
-public final class TrackedEntityTypeFields {
+import javax.inject.Inject;
 
-    private final static String STYLE = "style";
-    private final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
+import dagger.Reusable;
 
-    private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
+@Reusable
+final class TrackedEntityTypeAttributeHandler extends LinkSyncHandlerImpl<TrackedEntityTypeAttribute> {
 
-    public static final Field<TrackedEntityType, String> uid = fh.uid();
-
-    static final Field<TrackedEntityType, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<TrackedEntityTypeAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
-                            .with(TrackedEntityTypeAttributeFields.allFields))
-            .fields(
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
-            ).build();
-
-    private TrackedEntityTypeFields() {
+    @Inject
+    TrackedEntityTypeAttributeHandler(LinkModelStore<TrackedEntityTypeAttribute> trackedEntityTypeAttributeStore) {
+        super(trackedEntityTypeAttributeStore);
     }
+
 }

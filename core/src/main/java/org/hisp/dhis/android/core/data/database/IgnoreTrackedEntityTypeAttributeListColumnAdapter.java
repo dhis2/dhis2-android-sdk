@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 
 import java.util.List;
 
-public final class IgnoreTrackedEntityAttributeListColumnAdapter
-        extends IgnoreColumnAdapter<List<TrackedEntityAttribute>> {
+public final class IgnoreTrackedEntityTypeAttributeListColumnAdapter
+        extends IgnoreColumnAdapter<List<TrackedEntityTypeAttribute>> {
 }

@@ -29,31 +29,27 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class TrackedEntityTypeFields {
+public final class TrackedEntityTypeAttributeFields {
 
-    private final static String STYLE = "style";
-    private final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
+    final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
+    final static String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    final static String DISPLAY_IN_LIST = "displayInList";
+    final static String MANDATORY = "mandatory";
+    final static String SEARCHABLE = "searchable";
 
-    private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
+    private static final FieldsHelper<TrackedEntityTypeAttribute> fh = new FieldsHelper<>();
 
-    public static final Field<TrackedEntityType, String> uid = fh.uid();
-
-    static final Field<TrackedEntityType, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
-            .fields(fh.getNameableFields())
+    public static final Fields<TrackedEntityTypeAttribute> allFields = Fields.<TrackedEntityTypeAttribute>builder()
             .fields(
-                    fh.<TrackedEntityTypeAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
-                            .with(TrackedEntityTypeAttributeFields.allFields))
-            .fields(
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<Boolean>field(DISPLAY_IN_LIST),
+                    fh.<Boolean>field(MANDATORY),
+                    fh.<Boolean>field(SEARCHABLE)
             ).build();
 
-    private TrackedEntityTypeFields() {
+    private TrackedEntityTypeAttributeFields() {
     }
 }

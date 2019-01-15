@@ -28,32 +28,26 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class TrackedEntityTypeFields {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private final static String STYLE = "style";
-    private final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
+@Module
+public final class TrackedEntityTypeAttributeEntityDIModule {
 
-    private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
+    @Provides
+    @Reusable
+    public LinkModelStore<TrackedEntityTypeAttribute> store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityTypeAttributeStore.create(databaseAdapter);
+    }
 
-    public static final Field<TrackedEntityType, String> uid = fh.uid();
-
-    static final Field<TrackedEntityType, String> lastUpdated = fh.lastUpdated();
-
-    public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<TrackedEntityTypeAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
-                            .with(TrackedEntityTypeAttributeFields.allFields))
-            .fields(
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
-            ).build();
-
-    private TrackedEntityTypeFields() {
+    @Provides
+    @Reusable
+    public LinkSyncHandler<TrackedEntityTypeAttribute> handler(TrackedEntityTypeAttributeHandler impl) {
+        return impl;
     }
 }

@@ -28,32 +28,42 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class TrackedEntityTypeFields {
+public final class TrackedEntityTypeAttributeTableInfo {
 
-    private final static String STYLE = "style";
-    private final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
+    private TrackedEntityTypeAttributeTableInfo() {
+    }
 
-    private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public static final Field<TrackedEntityType, String> uid = fh.uid();
+        @Override
+        public String name() {
+            return "TrackedEntityTypeAttribute";
+        }
 
-    static final Field<TrackedEntityType, String> lastUpdated = fh.lastUpdated();
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-    public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<TrackedEntityTypeAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
-                            .with(TrackedEntityTypeAttributeFields.allFields))
-            .fields(
-                    fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
-            ).build();
+    static class Columns extends BaseModel.Columns {
 
-    private TrackedEntityTypeFields() {
+        private static final String SORT_ORDER = "sortOrder";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    TrackedEntityTypeAttributeFields.TRACKED_ENTITY_TYPE,
+                    TrackedEntityTypeAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                    TrackedEntityTypeAttributeFields.DISPLAY_IN_LIST,
+                    TrackedEntityTypeAttributeFields.MANDATORY,
+                    TrackedEntityTypeAttributeFields.SEARCHABLE,
+                    SORT_ORDER
+            );
+        }
     }
 }

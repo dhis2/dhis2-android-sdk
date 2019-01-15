@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -42,17 +43,21 @@ import dagger.Reusable;
 final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final LinkSyncHandler<TrackedEntityTypeAttribute> attributeHandler;
 
     @Inject
     TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
-                             SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
+                             SyncHandlerWithTransformer<ObjectStyle> styleHandler,
+                             LinkSyncHandler<TrackedEntityTypeAttribute> attributeHandler) {
         super(trackedEntityTypeStore);
         this.styleHandler = styleHandler;
+        this.attributeHandler = attributeHandler;
     }
 
     @Override
     protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
         styleHandler.handle(trackedEntityType.style(), new ObjectStyleModelBuilder(trackedEntityType.uid(),
                 TrackedEntityTypeTableInfo.TABLE_INFO.name()));
+        attributeHandler.handleMany(trackedEntityType.uid(), trackedEntityType.trackedEntityTypeAttributes());
     }
 }

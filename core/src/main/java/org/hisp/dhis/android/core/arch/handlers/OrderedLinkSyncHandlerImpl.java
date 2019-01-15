@@ -25,30 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.Collection;
 
-@Module
-public final class TrackedEntityTypeAttributeEntityDIModule {
+public class OrderedLinkSyncHandlerImpl<O extends Model> implements LinkSyncHandler<O>,
+        LinkSyncHandlerWithTransformer<O> {
 
-    @Provides
-    @Reusable
-    public LinkModelStore<TrackedEntityTypeAttribute> store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityTypeAttributeStore.create(databaseAdapter);
+    private final LinkModelStore<O> store;
+
+    public OrderedLinkSyncHandlerImpl(LinkModelStore<O> store) {
+        this.store = store;
     }
 
-    @Provides
-    @Reusable
-    public OrderedLinkModelHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> handler(
-            TrackedEntityTypeAttributeHandler impl) {
-        return impl;
+    @Override
+    public void handleMany(String masterUid, Collection<O> slaves) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (O slave : slaves) {
+                store.insert(slave);
+            }
+        }
+    }
+
+    @Override
+    public void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder) {
+        store.deleteLinksForMasterUid(masterUid);
+        if (slaves != null) {
+            for (O slave : slaves) {
+                O oTransformed = modelBuilder.buildModel(slave);
+                store.insert(oTransformed);
+            }
+        }
     }
 }

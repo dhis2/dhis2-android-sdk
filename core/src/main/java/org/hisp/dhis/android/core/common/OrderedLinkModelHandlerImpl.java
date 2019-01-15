@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.List;
 
-public final class OrderedLinkModelHandlerImpl<S, M extends BaseModel> implements OrderedLinkModelHandler<S, M> {
+public class OrderedLinkModelHandlerImpl<S, M extends Model> implements OrderedLinkModelHandler<S, M> {
 
     private final LinkModelStore<M> store;
 

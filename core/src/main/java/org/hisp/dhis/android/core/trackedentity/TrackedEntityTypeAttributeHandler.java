@@ -27,15 +27,16 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-final class TrackedEntityTypeAttributeHandler extends LinkSyncHandlerImpl<TrackedEntityTypeAttribute> {
+final class TrackedEntityTypeAttributeHandler
+        extends OrderedLinkModelHandlerImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> {
 
     @Inject
     TrackedEntityTypeAttributeHandler(LinkModelStore<TrackedEntityTypeAttribute> trackedEntityTypeAttributeStore) {

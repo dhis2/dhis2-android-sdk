@@ -77,6 +77,8 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
         return new AutoValue_ProgramRuleVariable.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {

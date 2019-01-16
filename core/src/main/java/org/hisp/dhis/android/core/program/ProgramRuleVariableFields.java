@@ -40,8 +40,8 @@ final class ProgramRuleVariableFields {
     static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
     static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
 
-    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
+    private static FieldsHelper<ProgramRuleVariable> fh = new FieldsHelper<>();
+    static final Fields<ProgramRuleVariable> allFields = Fields.<ProgramRuleVariable>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
                     fh.<Boolean>field(USE_CODE_FOR_OPTION_SET),

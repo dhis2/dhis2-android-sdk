@@ -79,7 +79,7 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder {
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract Builder useCodeForOptionSet(Boolean useCodeForOptionSet);

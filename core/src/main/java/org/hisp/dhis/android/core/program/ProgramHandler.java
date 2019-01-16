@@ -45,7 +45,7 @@ import java.util.Collection;
 
 class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
 
-    private final ProgramRuleVariableHandler programRuleVariableHandler;
+    private final IdentifiableSyncHandlerImpl<ProgramRuleVariable> programRuleVariableHandler;
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
     private final IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
     private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
@@ -56,7 +56,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
     private final CollectionCleaner<Program> collectionCleaner;
 
     ProgramHandler(IdentifiableObjectStore<Program> programStore,
-                   ProgramRuleVariableHandler programRuleVariableHandler,
+                   IdentifiableSyncHandlerImpl<ProgramRuleVariable> programRuleVariableHandler,
                    SyncHandler<ProgramIndicator> programIndicatorHandler,
                    IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler,
                    GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
@@ -96,7 +96,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
                 new ProgramTrackedEntityAttributeModelBuilder());
         programIndicatorHandler.handleMany(program.programIndicators());
         programRuleHandler.handleMany(program.programRules());
-        programRuleVariableHandler.handleProgramRuleVariables(program.programRuleVariables());
+        programRuleVariableHandler.handleMany(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(),
                 ProgramTableInfo.TABLE_INFO.name()));

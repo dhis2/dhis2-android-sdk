@@ -101,7 +101,8 @@ final class ProgramFields {
                     fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
                     fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicatorFields.allFields),
                     fh.nestedFieldWithUid(PROGRAM_STAGES),
-                    fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES).with(ProgramRuleVariable.allFields),
+                    fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES)
+                            .with(ProgramRuleVariableFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Integer>field(EXPIRY_DAYS),
                     fh.<Integer>field(COMPLETE_EVENTS_EXPIRY_DAYS),

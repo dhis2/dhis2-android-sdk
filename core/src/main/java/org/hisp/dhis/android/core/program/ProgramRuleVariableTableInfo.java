@@ -28,30 +28,41 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-final class ProgramRuleVariableFields {
+public final class ProgramRuleVariableTableInfo {
 
-    static final String PROGRAM_STAGE = "programStage";
-    static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
-    static final String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
-    static final String PROGRAM = "program";
-    static final String DATA_ELEMENT = "dataElement";
-    static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    private ProgramRuleVariableTableInfo() {
+    }
 
-    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleVariableSourceType>field(PROGRAM_RULE_VARIABLE_SOURCE_TYPE),
-                    fh.<Boolean>field(USE_CODE_FOR_OPTION_SET),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE)
-            ).build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private ProgramRuleVariableFields() {
+        @Override
+        public String name() {
+            return "ProgramRuleVariable";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramRuleVariableFields.PROGRAM_STAGE,
+                    ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE,
+                    ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
+                    ProgramRuleVariableFields.PROGRAM,
+                    ProgramRuleVariableFields.DATA_ELEMENT,
+                    ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE
+            );
+        }
     }
 }

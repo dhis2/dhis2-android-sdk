@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ public class SearchOrganisationUnitHandlerShould {
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
-    private LinkModelStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
+    private UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkHandler;
 
     private OrganisationUnit organisationUnit;
 

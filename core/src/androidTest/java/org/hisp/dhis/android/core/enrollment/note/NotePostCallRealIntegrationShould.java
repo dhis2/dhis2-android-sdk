@@ -68,7 +68,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
 
         addNote();
 
-        d2.syncTrackedEntityInstances().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().call();
 
         d2.wipeModule().wipeEverything();
     }

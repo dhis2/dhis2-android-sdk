@@ -32,10 +32,9 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
 import javax.inject.Inject;
 
@@ -45,12 +44,12 @@ import dagger.Reusable;
 class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
     implements SearchOrganisationUnitHandler {
 
-    private final LinkModelStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private User user;
 
     @Inject
     SearchOrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                                      @NonNull LinkModelStore<UserOrganisationUnitLinkModel>
+                                      @NonNull UserOrganisationUnitLinkStoreInterface
                                           userOrganisationUnitLinkStore) {
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;

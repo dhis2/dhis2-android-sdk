@@ -28,7 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
@@ -39,13 +42,20 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class TrackedEntityModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances;
+    public final ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances;
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
+    private final TrackedEntityInstanceWithLimitCallFactory trackedEntityInstanceWithLimitCallFactory;
 
     @Inject
-    TrackedEntityModule(ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances,
-                        TrackedEntityAttributeReservedValueManager reservedValueManager) {
+    TrackedEntityModule(ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances,
+                        TrackedEntityAttributeReservedValueManager reservedValueManager,
+                        TrackedEntityInstanceWithLimitCallFactory trackedEntityInstanceWithLimitCallFactory) {
         this.trackedEntityInstances = trackedEntityInstances;
         this.reservedValueManager = reservedValueManager;
+        this.trackedEntityInstanceWithLimitCallFactory = trackedEntityInstanceWithLimitCallFactory;
+    }
+
+    public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
+        return trackedEntityInstanceWithLimitCallFactory.getCall(teiLimit, limitByOrgUnit);
     }
 }

@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
+import retrofit2.Retrofit;
 
 @Module
 public final class TrackedEntityInstanceEntityDIModule {
@@ -55,7 +56,14 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> repository(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityInstanceCollectionRepository.create(databaseAdapter);
+    ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> repository(
+            TrackedEntityInstanceCollectionRepository impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    TrackedEntityInstanceService service(Retrofit retrofit) {
+        return retrofit.create(TrackedEntityInstanceService.class);
     }
 }

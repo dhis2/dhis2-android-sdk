@@ -19,7 +19,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModu
 import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
@@ -63,7 +62,6 @@ public interface D2DIComponent {
 
     D2InternalModules internalModules();
     D2Modules modules();
-    ResourceHandler resourceHandler();
     AggregatedModule aggregatedModule();
     MetadataCall metadataCall();
     WipeModule wipeModule();

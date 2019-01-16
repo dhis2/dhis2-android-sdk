@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.concurrent.Callable;
@@ -43,11 +43,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class EventModule {
 
     private final EventWithLimitCallFactory eventWithLimitCallFactory;
-    public final ReadOnlyWithUploadCollectionRepository<Event> events;
+    public final ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events;
 
     @Inject
     EventModule(EventWithLimitCallFactory eventWithLimitCallFactory,
-                ReadOnlyWithUploadCollectionRepository<Event> events) {
+                ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events) {
         this.eventWithLimitCallFactory = eventWithLimitCallFactory;
         this.events = events;
     }

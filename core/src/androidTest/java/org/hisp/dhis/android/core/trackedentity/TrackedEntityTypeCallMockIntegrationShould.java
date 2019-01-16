@@ -70,7 +70,7 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
         super.setUp();
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_types.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_ees.json");
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
@@ -78,8 +78,10 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
 
         HashSet<String> uids = new HashSet<>(Collections.singletonList(uid));
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        TrackedEntityTypeHandler handler = new TrackedEntityTypeHandler(TrackedEntityTypeStore.create(databaseAdapter()),
-                ObjectStyleHandler.create(databaseAdapter()));
+        TrackedEntityTypeHandler handler = new TrackedEntityTypeHandler(
+                TrackedEntityTypeStore.create(databaseAdapter()),
+                ObjectStyleHandler.create(databaseAdapter()),
+                new TrackedEntityTypeAttributeHandler(TrackedEntityTypeAttributeStore.create(databaseAdapter())));
         trackedEntityTypeCall = new TrackedEntityTypeCallFactory(getGenericCallData(d2), apiCallExecutor,
                 d2.retrofit().create(TrackedEntityTypeService.class), handler).create(uids);
     }

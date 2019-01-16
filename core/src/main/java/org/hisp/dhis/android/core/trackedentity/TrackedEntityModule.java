@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,25 +48,33 @@ public final class TrackedEntityModule {
 
     public final ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances;
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
-    private final TrackedEntityInstanceWithLimitCallFactory trackedEntityInstanceWithLimitCallFactory;
+    private final TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory;
     private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
+    private final TrackedEntityInstanceQueryCallFactory queryCallFactory;
 
     @Inject
-    TrackedEntityModule(ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances,
-                        TrackedEntityAttributeReservedValueManager reservedValueManager,
-                        TrackedEntityInstanceWithLimitCallFactory trackedEntityInstanceWithLimitCallFactory,
-                        TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory) {
+    TrackedEntityModule(
+            ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances,
+            TrackedEntityAttributeReservedValueManager reservedValueManager,
+            TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,
+            TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
+            TrackedEntityInstanceQueryCallFactory queryCallFactory) {
         this.trackedEntityInstances = trackedEntityInstances;
         this.reservedValueManager = reservedValueManager;
-        this.trackedEntityInstanceWithLimitCallFactory = trackedEntityInstanceWithLimitCallFactory;
+        this.withLimitCallFactory = withLimitCallFactory;
         this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
+        this.queryCallFactory = queryCallFactory;
     }
 
     public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return trackedEntityInstanceWithLimitCallFactory.getCall(teiLimit, limitByOrgUnit);
+        return withLimitCallFactory.getCall(teiLimit, limitByOrgUnit);
     }
 
     public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
         return downloadAndPersistCallFactory.getCall(uids);
+    }
+
+    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
+        return queryCallFactory.getCall(query);
     }
 }

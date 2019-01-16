@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
@@ -52,21 +53,16 @@ import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-@SuppressWarnings({"PMD.ExcessiveImports"})
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
@@ -100,11 +96,13 @@ public final class D2 {
         this.modules = d2DIComponent.modules();
     }
 
+    @VisibleForTesting
     @NonNull
     public Retrofit retrofit() {
         return retrofit;
     }
 
+    @VisibleForTesting
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
@@ -118,11 +116,6 @@ public final class D2 {
     @NonNull
     public AggregatedModule aggregatedModule() {
         return d2DIComponent.aggregatedModule();
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
-        return TrackedEntityInstanceQueryCall.create(retrofit, databaseAdapter, query);
     }
 
     public SystemInfoModule systemInfoModule() {

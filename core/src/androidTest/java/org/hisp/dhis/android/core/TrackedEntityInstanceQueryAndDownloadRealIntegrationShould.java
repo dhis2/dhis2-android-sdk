@@ -43,7 +43,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
         d2.syncMetaData().call();
 
         TrackedEntityInstanceQuery query = queryBuilder.build();
-        List<TrackedEntityInstance> queriedTeis = d2.queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queriedTeis = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
         assertThat(queriedTeis).isNotEmpty();
 
         Set<String> uids = new HashSet<>(queriedTeis.size());

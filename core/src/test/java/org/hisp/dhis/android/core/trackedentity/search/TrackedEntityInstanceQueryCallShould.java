@@ -94,7 +94,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     private TrackedEntityInstanceQuery query;
 
     // object to test
-    private TrackedEntityInstanceQueryCall call;
+    private TrackedEntityInstanceQueryCallFactory call;
 
     @Before
     public void setUp() throws Exception {
@@ -115,7 +115,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
 
         // Metadata call
-        call = new TrackedEntityInstanceQueryCall(service, query, mapper, apiCallExecutor);
+        call = new TrackedEntityInstanceQueryCallFactory(service, query, mapper, apiCallExecutor);
     }
 
     @After

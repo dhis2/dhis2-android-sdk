@@ -65,7 +65,7 @@ public class ProgramHandlerShould {
     private IdentifiableObjectStore<Program> programStore;
 
     @Mock
-    private ProgramRuleVariableHandler programRuleVariableHandler;
+    private IdentifiableSyncHandlerImpl<ProgramRuleVariable> programRuleVariableHandler;
 
     @Mock
     private SyncHandler<ProgramIndicator> programIndicatorHandler;
@@ -115,6 +115,9 @@ public class ProgramHandlerShould {
 
     @Mock
     private ProgramRule programRule;
+
+    @Mock
+    private ProgramRuleVariable programRuleVariable;
 
     @Mock
     private List<ProgramRule> programRules;
@@ -167,6 +170,7 @@ public class ProgramHandlerShould {
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
 
         programRules = Collections.singletonList(programRule);
+        programRuleVariables = Collections.singletonList(programRuleVariable);
 
         when(program.programStages()).thenReturn(programStages);
         when(program.programTrackedEntityAttributes()).thenReturn(programTrackedEntityAttributes);
@@ -202,7 +206,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_rule_variable_handler() {
         programHandler.handle(program);
-        verify(programRuleVariableHandler).handleProgramRuleVariables(programRuleVariables);
+        verify(programRuleVariableHandler).handleMany(programRuleVariables);
     }
 
     @Test

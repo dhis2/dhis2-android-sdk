@@ -51,30 +51,39 @@ public class SmsRepositoryImpl implements SmsRepository {
     }
 
     @Override
-    public Observable<SmsSendingState> sendSms(String number, String contents, int sendingTimeoutSeconds) {
+    public Observable<SmsSendingState> sendSms(String number, String contents,
+                                               int sendingTimeoutSeconds) {
         return Observable.create(
-                (ObservableOnSubscribe<SmsSendingState>) e -> executeSmsSending(e, number, contents, sendingTimeoutSeconds)
+                (ObservableOnSubscribe<SmsSendingState>) e ->
+                        executeSmsSending(e, number, contents, sendingTimeoutSeconds)
         ).doOnError(throwable ->
                 Log.e(TAG, throwable.getClass().getSimpleName(), throwable)
         );
     }
 
     @Override
-    public Completable listenToConfirmationSms(int waitingTimeoutSeconds, String requiredSender, Collection<String> requiredStrings) {
+    public Completable listenToConfirmationSms(int waitingTimeoutSeconds, String requiredSender,
+                                               Collection<String> requiredStrings) {
         return findConfirmationSms(requiredSender, requiredStrings).flatMapCompletable(
-                found -> found ? Completable.complete() : waitToReceiveConfirmationSms(waitingTimeoutSeconds, requiredSender, requiredStrings));
+                found -> found ?
+                        Completable.complete() :
+                        waitToReceiveConfirmationSms(waitingTimeoutSeconds, requiredSender,
+                                requiredStrings));
     }
 
-    private Completable waitToReceiveConfirmationSms(int waitingTimeoutSeconds, String requiredSender, Collection<String> requiredStrings) {
+    private Completable waitToReceiveConfirmationSms(int waitingTimeoutSeconds, String requiredSender,
+                                                     Collection<String> requiredStrings) {
         AtomicReference<BroadcastReceiver> receiver = new AtomicReference<>();
         return Completable.fromPublisher(s -> {
                     receiver.set(new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context context, Intent intent) {
-                            if (isAwaitedMessage(intent, requiredSender, requiredStrings)) s.onComplete();
+                            if (isAwaitedMessage(intent, requiredSender, requiredStrings))
+                                s.onComplete();
                         }
                     });
-                    context.registerReceiver(receiver.get(), new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
+                    context.registerReceiver(receiver.get(),
+                            new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
                 }
         ).timeout(
                 waitingTimeoutSeconds, TimeUnit.SECONDS, Completable.error(new TimeoutException())
@@ -87,10 +96,12 @@ public class SmsRepositoryImpl implements SmsRepository {
         });
     }
 
-    private Single<Boolean> findConfirmationSms(String requiredSender, Collection<String> requiredStrings) {
+    private Single<Boolean> findConfirmationSms(String requiredSender,
+                                                Collection<String> requiredStrings) {
         return Single.fromCallable(() -> {
             ContentResolver cr = context.getContentResolver();
-            Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, Telephony.Sms.DATE + " DESC");
+            Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null,
+                    null, Telephony.Sms.DATE + " DESC");
             if (c == null || !c.moveToFirst()) return false;
             do {
                 String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
@@ -108,7 +119,8 @@ public class SmsRepositoryImpl implements SmsRepository {
         });
     }
 
-    private boolean isAwaitedMessage(Intent intent, String requiredSender, Collection<String> requiredStrings) {
+    private boolean isAwaitedMessage(Intent intent, String requiredSender,
+                                     Collection<String> requiredStrings) {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             // get sms objects
@@ -130,8 +142,10 @@ public class SmsRepositoryImpl implements SmsRepository {
         return true;
     }
 
-    private boolean isAwaitedMessage(String sender, String message, String requiredSender, Collection<String> requiredStrings) {
-        if (requiredSender != null && (sender == null || !sender.toLowerCase().contains(requiredSender.toLowerCase())))
+    private boolean isAwaitedMessage(String sender, String message, String requiredSender,
+                                     Collection<String> requiredStrings) {
+        if (requiredSender != null &&
+                (sender == null || !sender.toLowerCase().contains(requiredSender.toLowerCase())))
             return false;
         if (requiredStrings != null) {
             for (String requiredString : requiredStrings) {
@@ -141,7 +155,8 @@ public class SmsRepositoryImpl implements SmsRepository {
         return true;
     }
 
-    private void executeSmsSending(ObservableEmitter<SmsSendingState> e, String number, String contents, int timeoutSeconds) {
+    private void executeSmsSending(ObservableEmitter<SmsSendingState> e, String number,
+                                   String contents, int timeoutSeconds) {
         ArrayList<String> parts = generateSmsParts(contents);
         int totalMessages = parts.size();
         if (!askForTotalCountConfirmation(e, totalMessages)) return;
@@ -192,8 +207,10 @@ public class SmsRepositoryImpl implements SmsRepository {
     /**
      * @return true if should continue execution
      */
-    private boolean askForTotalCountConfirmation(ObservableEmitter<SmsSendingState> e, int totalMessages) {
-        e.onNext(new SmsSendingState(SmsRepository.State.WAITING_TOTAL_CONFIRMATION, 0, totalMessages));
+    private boolean askForTotalCountConfirmation(ObservableEmitter<SmsSendingState> e,
+                                                 int totalMessages) {
+        e.onNext(new SmsSendingState(SmsRepository.State.WAITING_TOTAL_CONFIRMATION,
+                0, totalMessages));
         while (!totalConfirmed && !e.isDisposed()) {
             try {
                 Thread.sleep(500);
@@ -223,7 +240,8 @@ public class SmsRepositoryImpl implements SmsRepository {
      * @param number   String The phone number the sms should be sent to.
      * @param contents String The message that should be sent.
      */
-    private void sendSmsToOS(StateReceiver stateReceiver, String number, String contents, ArrayList<String> parts) {
+    private void sendSmsToOS(StateReceiver stateReceiver, String number, String contents,
+                             ArrayList<String> parts) {
         SmsManager sms = SmsManager.getDefault();
         int uniqueIntentId = contents.hashCode();
         String uniqueKeyPrefix = uniqueIntentId + "_" + UUID.randomUUID().toString();

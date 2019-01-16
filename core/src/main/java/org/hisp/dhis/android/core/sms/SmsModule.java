@@ -18,7 +18,8 @@ public class SmsModule {
     private SmsRepository smsRepository;
 
     @Inject
-    public SmsModule(DeviceStateRepository deviceStateRepository, LocalDbRepository localDbRepository, SmsRepository smsRepository) {
+    public SmsModule(DeviceStateRepository deviceStateRepository, LocalDbRepository localDbRepository,
+                     SmsRepository smsRepository) {
         this.deviceStateRepository = deviceStateRepository;
         this.localDbRepository = localDbRepository;
         this.smsRepository = smsRepository;

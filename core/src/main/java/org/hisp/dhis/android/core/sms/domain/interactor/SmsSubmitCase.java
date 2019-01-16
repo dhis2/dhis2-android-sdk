@@ -19,7 +19,8 @@ public class SmsSubmitCase {
     private SmsRepository smsRepository;
     private DeviceStateRepository deviceStateRepository;
 
-    public SmsSubmitCase(LocalDbRepository localDbRepository, SmsRepository smsRepository, DeviceStateRepository deviceStateRepository) {
+    public SmsSubmitCase(LocalDbRepository localDbRepository, SmsRepository smsRepository,
+                         DeviceStateRepository deviceStateRepository) {
         this.localDbRepository = localDbRepository;
         this.smsRepository = smsRepository;
         this.deviceStateRepository = deviceStateRepository;
@@ -27,7 +28,8 @@ public class SmsSubmitCase {
 
     public Observable<SmsRepository.SmsSendingState> submit(final Event event) {
         return checkPreconditions()
-                .andThen(Single.zip(localDbRepository.getGatewayNumber(), localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
+                .andThen(Single.zip(localDbRepository.getGatewayNumber(),
+                        localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
                         (number, username, categoryOptionCombo) -> {
                             SmsFormatConverter converter = new SmsFormatConverter();
                             String smsContents = converter.format(event, username, categoryOptionCombo);
@@ -40,9 +42,10 @@ public class SmsSubmitCase {
 
     public Completable checkConfirmationSms(int timeoutSeconds, Event event) {
         // TODO Use event to get list of required texts
-        return localDbRepository.getConfirmationSenderNumber().flatMapCompletable(confirmationSenderNumber ->
-                smsRepository.listenToConfirmationSms(timeoutSeconds, confirmationSenderNumber, null)
-        );
+        return localDbRepository.getConfirmationSenderNumber()
+                .flatMapCompletable(confirmationSenderNumber ->
+                        smsRepository.listenToConfirmationSms(timeoutSeconds, confirmationSenderNumber, null)
+                );
     }
 
     private Completable checkPreconditions() {

@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.internal.Util;
+
 public class SmsFormatConverter {
 
     public String format(Event event, String username, String categoryOptionCombo) {
@@ -79,7 +81,7 @@ public class SmsFormatConverter {
 
     private String addCheckSum(String data) throws NoSuchAlgorithmException {
         MessageDigest mdEnc = MessageDigest.getInstance("MD5");
-        mdEnc.update(data.getBytes(), 0, data.length());
+        mdEnc.update(data.getBytes(Util.UTF_8), 0, data.length());
         StringBuilder md5 = new StringBuilder(new BigInteger(1, mdEnc.digest()).toString(16));
         while (md5.length() < 32) {
             md5.insert(0, "0");

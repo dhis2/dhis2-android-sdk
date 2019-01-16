@@ -19,6 +19,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -145,7 +146,8 @@ public class SmsRepositoryImpl implements SmsRepository {
     private boolean isAwaitedMessage(String sender, String message, String requiredSender,
                                      Collection<String> requiredStrings) {
         if (requiredSender != null &&
-                (sender == null || !sender.toLowerCase().contains(requiredSender.toLowerCase())))
+                (sender == null || !sender.toLowerCase(Locale.ROOT)
+                        .contains(requiredSender.toLowerCase(Locale.ROOT))))
             return false;
         if (requiredStrings != null) {
             for (String requiredString : requiredStrings) {
@@ -223,7 +225,7 @@ public class SmsRepositoryImpl implements SmsRepository {
     }
 
     private long timeLeft(long timeStarted, int sendingTimeoutSeconds) {
-        return sendingTimeoutSeconds * 1000 + timeStarted - System.currentTimeMillis();
+        return sendingTimeoutSeconds * 1000L + timeStarted - System.currentTimeMillis();
     }
 
     private void unregisterReceiver(StateReceiver stateReceiver) {

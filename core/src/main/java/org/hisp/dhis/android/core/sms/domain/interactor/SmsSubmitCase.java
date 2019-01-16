@@ -64,6 +64,6 @@ public class SmsSubmitCase {
 
     }
 
-    public class PreconditionFailed extends Throwable {
+    public static class PreconditionFailed extends Throwable {
     }
 }

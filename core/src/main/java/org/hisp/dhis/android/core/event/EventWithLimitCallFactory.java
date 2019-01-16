@@ -134,16 +134,7 @@ public final class EventWithLimitCallFactory {
                     List<Event> pageEvents = executor.executeD2Call(
                             EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
 
-                    List<Event> eventsToPersist;
-                    if (paging.isLastPage()) {
-                        int previousItemsToSkip =
-                                pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();
-                        int toIndex =
-                                previousItemsToSkip < 0 ? pageEvents.size() : pageEvents.size() - previousItemsToSkip;
-                        eventsToPersist = pageEvents.subList(paging.previousItemsToSkipCount(), toIndex);
-                    } else {
-                        eventsToPersist = pageEvents;
-                    }
+                    List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 
                     executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, d2InternalModules,
                             eventsToPersist));
@@ -164,6 +155,18 @@ public final class EventWithLimitCallFactory {
         }
 
         return new EventsWithPagingResult(eventsCount, successfulSync);
+    }
+
+    private List<Event> getEventsToPersist(Paging paging, List<Event> pageEvents) {
+        if (paging.isLastPage() && pageEvents.size() > paging.previousItemsToSkipCount()) {
+            int toIndex = pageEvents.size() < paging.pageSize() - paging.posteriorItemsToSkipCount() ?
+                    pageEvents.size() :
+                    paging.pageSize() - paging.posteriorItemsToSkipCount();
+
+            return pageEvents.subList(paging.previousItemsToSkipCount(), toIndex);
+        } else {
+            return pageEvents;
+        }
     }
 
     private Set<String> getOrgUnitUids() {

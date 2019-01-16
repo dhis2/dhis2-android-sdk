@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
@@ -42,20 +41,10 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DbProgramRuleVariableSourceTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramRuleVariable.Builder.class)
 public abstract class ProgramRuleVariable extends BaseIdentifiableObject implements Model {
-
-    @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    @ColumnAdapter(DbProgramRuleVariableSourceTypeColumnAdapter.class)
-    public abstract ProgramRuleVariableSourceType programRuleVariableSourceType();
 
     @Nullable
     public abstract Boolean useCodeForOptionSet();
@@ -66,11 +55,19 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
 
     @Nullable
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid programStage();
+
+    @Nullable
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
     @Nullable
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityAttribute();
+
+    @Nullable
+    @ColumnAdapter(DbProgramRuleVariableSourceTypeColumnAdapter.class)
+    public abstract ProgramRuleVariableSourceType programRuleVariableSourceType();
 
     public static ProgramRuleVariable create(Cursor cursor) {
         return AutoValue_ProgramRuleVariable.createFromCursor(cursor);
@@ -85,19 +82,18 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
     public abstract static class Builder {
         public abstract Builder id(Long id);
 
-        public abstract Builder toContentValues(ContentValues toContentValues);
-
-        public abstract Builder programStage(ProgramStage programStage);
-
-        public abstract Builder programRuleVariableSourceType(ProgramRuleVariableSourceType programRuleVariableSourceType);
-
         public abstract Builder useCodeForOptionSet(Boolean useCodeForOptionSet);
 
-        public abstract Builder program(Program program);
+        public abstract Builder program(ObjectWithUid program);
 
-        public abstract Builder dataElement(DataElement dataElement);
+        public abstract Builder programStage(ObjectWithUid programStage);
 
-        public abstract Builder trackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute);
+        public abstract Builder dataElement(ObjectWithUid dataElement);
+
+        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
+
+        public abstract Builder programRuleVariableSourceType(
+                ProgramRuleVariableSourceType programRuleVariableSourceType);
 
         public abstract ProgramRuleVariable build();
     }

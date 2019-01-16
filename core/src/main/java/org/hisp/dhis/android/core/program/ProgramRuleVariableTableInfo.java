@@ -52,16 +52,15 @@ public final class ProgramRuleVariableTableInfo {
     };
 
     static class Columns extends BaseIdentifiableObjectModel.Columns {
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    ProgramRuleVariableFields.PROGRAM_STAGE,
-                    ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE,
                     ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
                     ProgramRuleVariableFields.PROGRAM,
+                    ProgramRuleVariableFields.PROGRAM_STAGE,
                     ProgramRuleVariableFields.DATA_ELEMENT,
-                    ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE
+                    ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
+                    ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
             );
         }
     }

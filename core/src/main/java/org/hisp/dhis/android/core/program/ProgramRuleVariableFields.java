@@ -33,23 +33,23 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 final class ProgramRuleVariableFields {
 
-    static final String PROGRAM_STAGE = "programStage";
-    static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
     static final String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
     static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
     static final String DATA_ELEMENT = "dataElement";
     static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
 
     private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
     static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleVariableSourceType>field(PROGRAM_RULE_VARIABLE_SOURCE_TYPE),
                     fh.<Boolean>field(USE_CODE_FOR_OPTION_SET),
                     fh.nestedFieldWithUid(PROGRAM),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE),
                     fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE)
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<ProgramRuleVariableSourceType>field(PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
             ).build();
 
     private ProgramRuleVariableFields() {

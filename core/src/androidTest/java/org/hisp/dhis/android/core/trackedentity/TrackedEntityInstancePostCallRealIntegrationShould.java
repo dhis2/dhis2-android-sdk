@@ -167,7 +167,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
 
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(trackedEntityInstanceUid));
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(trackedEntityInstanceUid));
 
         trackedEntityInstanceByUidEndPointCall.call();
 
@@ -199,7 +199,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        List<TrackedEntityInstance> response =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
+        List<TrackedEntityInstance> response =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
 
         TrackedEntityInstance updatedTei = response.get(0);
 
@@ -224,7 +224,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        List<TrackedEntityInstance> teiList =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
+        List<TrackedEntityInstance> teiList =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid1)).call();
 
         assertThat(teiList.size() == 1).isTrue();
     }
@@ -246,7 +246,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2.trackedEntityModule().trackedEntityInstances.upload().call();
         List<TrackedEntityInstance> response =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
         assertThat(response.size()).isEqualTo(1);
 
         trackedEntityInstanceStore.setState(newUid, State.TO_DELETE);
@@ -254,7 +254,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.trackedEntityModule().trackedEntityInstances.upload().call();
 
         try {
-            d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
+            d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(newUid)).call();
         } catch (D2Error e) {
             assertThat(e.errorComponent()).isEqualTo(D2ErrorComponent.Server);
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
@@ -284,10 +284,10 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         d2.wipeModule().wipeEverything();
         downloadMetadata();
 
-        List<TrackedEntityInstance> responseTeiA =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiA.uid())).call();
+        List<TrackedEntityInstance> responseTeiA =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiA.uid())).call();
         assertThat(responseTeiA.size() == 1).isTrue();
 
-        List<TrackedEntityInstance> responseTeiB =  d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).call();
+        List<TrackedEntityInstance> responseTeiB =  d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiBUid)).call();
         assertThat(responseTeiB.size() == 1).isTrue();
 
         List<Relationship> relationships = d2.relationshipModule().relationships.getByItem(RelationshipHelper.teiItem(teiA.uid()));
@@ -359,7 +359,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     //@Test
     public void post_a_tei_and_delete_one_event() throws Exception {
         downloadMetadata();
-        d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -376,7 +376,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
 
         d2.wipeModule().wipeEverything();
         downloadMetadata();
-        d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("LxMVYhJm3Jp")).call();
 
         Boolean deleted = true;
         for (Event eventToCheck : eventStore.selectAll()) {

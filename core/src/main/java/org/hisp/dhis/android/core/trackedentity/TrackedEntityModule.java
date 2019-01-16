@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -45,17 +47,24 @@ public final class TrackedEntityModule {
     public final ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances;
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
     private final TrackedEntityInstanceWithLimitCallFactory trackedEntityInstanceWithLimitCallFactory;
+    private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
 
     @Inject
     TrackedEntityModule(ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> trackedEntityInstances,
                         TrackedEntityAttributeReservedValueManager reservedValueManager,
-                        TrackedEntityInstanceWithLimitCallFactory trackedEntityInstanceWithLimitCallFactory) {
+                        TrackedEntityInstanceWithLimitCallFactory trackedEntityInstanceWithLimitCallFactory,
+                        TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory) {
         this.trackedEntityInstances = trackedEntityInstances;
         this.reservedValueManager = reservedValueManager;
         this.trackedEntityInstanceWithLimitCallFactory = trackedEntityInstanceWithLimitCallFactory;
+        this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
     }
 
     public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
         return trackedEntityInstanceWithLimitCallFactory.getCall(teiLimit, limitByOrgUnit);
+    }
+
+    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
+        return downloadAndPersistCallFactory.getCall(uids);
     }
 }

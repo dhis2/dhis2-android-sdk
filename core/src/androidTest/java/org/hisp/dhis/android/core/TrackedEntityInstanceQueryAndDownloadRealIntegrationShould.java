@@ -52,7 +52,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
             uids.add(tei.uid());
         }
 
-        List<TrackedEntityInstance> downloadedTeis = d2.downloadTrackedEntityInstancesByUid(uids).call();
+        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(uids).call();
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());
     }
 

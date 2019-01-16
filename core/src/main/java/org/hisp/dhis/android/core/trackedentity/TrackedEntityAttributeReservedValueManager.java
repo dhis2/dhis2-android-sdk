@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -54,8 +51,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@Reusable
 public final class TrackedEntityAttributeReservedValueManager {
 
     private static final Integer MIN_TO_TRY_FILL = 50;
@@ -69,7 +70,8 @@ public final class TrackedEntityAttributeReservedValueManager {
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
 
-    private TrackedEntityAttributeReservedValueManager(
+    @Inject
+    TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityAttributeReservedValueStoreInterface store,
@@ -253,18 +255,5 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
 
         return selectStatement.concat(";");
-    }
-
-    public static TrackedEntityAttributeReservedValueManager create(GenericCallData data,
-                                                                    D2InternalModules internalModules) {
-        return new TrackedEntityAttributeReservedValueManager(
-                data.databaseAdapter(),
-                internalModules.systemInfo.publicModule.systemInfo,
-                TrackedEntityAttributeReservedValueStore.create(data.databaseAdapter()),
-                OrganisationUnitStore.create(data.databaseAdapter()),
-                new TrackedEntityAttributeStoreImpl(data.databaseAdapter()),
-                new TrackedEntityAttributeReservedValueEndpointCallFactory(data,
-                        APICallExecutorImpl.create(data.databaseAdapter()))
-        );
     }
 }

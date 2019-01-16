@@ -28,39 +28,24 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityAttributeEntityDIModule.class,
-        TrackedEntityAttributeReservedValueEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
+@Module
+public final class TrackedEntityAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
+    public TrackedEntityAttributeStore store(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityAttributeStoreImpl(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
-    }
-
-    @Provides
-    @Reusable
-    QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
-            TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
-        return impl;
+    public TrackedEntityAttributeHandler handler(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityAttributeHandler.create(databaseAdapter);
     }
 }

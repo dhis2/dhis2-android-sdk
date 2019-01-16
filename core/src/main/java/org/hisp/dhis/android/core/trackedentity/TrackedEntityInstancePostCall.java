@@ -35,7 +35,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
-@SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
+@SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
 @Reusable
 public final class TrackedEntityInstancePostCall implements Callable<WebResponse> {
     // internal modules

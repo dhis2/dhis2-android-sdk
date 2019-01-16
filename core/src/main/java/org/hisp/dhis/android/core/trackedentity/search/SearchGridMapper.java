@@ -46,6 +46,7 @@ class SearchGridMapper {
 
     @Inject
     SearchGridMapper() {
+        // Empty constructor to add Dagger annotation
     }
 
     public List<TrackedEntityInstance> transform(SearchGrid searchGrid) throws ParseException {

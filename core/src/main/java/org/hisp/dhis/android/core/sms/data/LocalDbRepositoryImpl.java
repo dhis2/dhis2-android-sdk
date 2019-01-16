@@ -10,7 +10,7 @@ import io.reactivex.Single;
 
 public class LocalDbRepositoryImpl implements LocalDbRepository {
 
-    private UserModule userModule;
+    private final UserModule userModule;
 
     @Inject
     public LocalDbRepositoryImpl(UserModule userModule) {

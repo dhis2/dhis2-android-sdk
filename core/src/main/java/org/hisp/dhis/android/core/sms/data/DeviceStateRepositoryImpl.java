@@ -19,9 +19,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.inject.Inject;
 
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 public class DeviceStateRepositoryImpl implements DeviceStateRepository {
-    private Context context;
+    private final Context context;
 
     @Inject
     public DeviceStateRepositoryImpl(Context context) {
@@ -31,12 +32,15 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
     @Override
     public Single<Boolean> isNetworkConnected() {
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager == null) return Single.just(false);
+        if (telephonyManager == null) {
+            return Single.just(false);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             @SuppressLint("MissingPermission")
             ServiceState serviceState = telephonyManager.getServiceState();
-            if (serviceState != null)
+            if (serviceState != null) {
                 return Single.just(serviceState.getState() == ServiceState.STATE_IN_SERVICE);
+            }
         }
 
         // When failed to get current status or too low sdk version
@@ -47,15 +51,17 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
             listener.set(new PhoneStateListener() {
                 @Override
                 public void onServiceStateChanged(ServiceState serviceState) {
-                    if (listener.get() == null) return;
-                    s.onNext((serviceState.getState() == ServiceState.STATE_IN_SERVICE));
+                    if (listener.get() == null) {
+                        return;
+                    }
+                    s.onNext(serviceState.getState() == ServiceState.STATE_IN_SERVICE);
                     telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_NONE);
                     listener.set(null);
                     s.onComplete();
                 }
             });
             telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_SERVICE_STATE);
-        }).timeout(3, TimeUnit.SECONDS, Single.fromCallable(() -> {
+        }).timeout(3, TimeUnit.SECONDS, Schedulers.newThread(), Single.fromCallable(() -> {
             // If information did not come quickly, remove listener and try other method
             return telephonyManager.getNetworkType() != TelephonyManager.NETWORK_TYPE_UNKNOWN;
         })).doFinally(() -> {

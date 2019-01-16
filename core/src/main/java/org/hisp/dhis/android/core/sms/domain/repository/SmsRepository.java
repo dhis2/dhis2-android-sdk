@@ -36,7 +36,7 @@ public interface SmsRepository {
      * Returned when sms sending error is returned from OS.
      */
     class ReceivedErrorException extends Exception {
-        private int errorCode;
+        private final int errorCode;
 
         public ReceivedErrorException(int errorCode) {
             this.errorCode = errorCode;
@@ -57,9 +57,9 @@ public interface SmsRepository {
      * Shows the current status of sending task.
      */
     class SmsSendingState {
-        private State state;
-        private int sent;
-        private int total;
+        private final State state;
+        private final int sent;
+        private final int total;
 
         public SmsSendingState(State state, int sent, int total) {
             this.state = state;

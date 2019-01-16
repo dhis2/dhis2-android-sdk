@@ -7,7 +7,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import io.reactivex.Single;
 
 public class QrCodeCase {
-    private LocalDbRepository localDbRepository;
+    private final LocalDbRepository localDbRepository;
 
     public QrCodeCase(LocalDbRepository localDbRepository) {
         this.localDbRepository = localDbRepository;

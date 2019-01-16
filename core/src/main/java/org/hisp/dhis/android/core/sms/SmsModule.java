@@ -13,9 +13,9 @@ import dagger.Reusable;
 
 @Reusable
 public class SmsModule {
-    private DeviceStateRepository deviceStateRepository;
-    private LocalDbRepository localDbRepository;
-    private SmsRepository smsRepository;
+    private final DeviceStateRepository deviceStateRepository;
+    private final LocalDbRepository localDbRepository;
+    private final SmsRepository smsRepository;
 
     @Inject
     public SmsModule(DeviceStateRepository deviceStateRepository, LocalDbRepository localDbRepository,

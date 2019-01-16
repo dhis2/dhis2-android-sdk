@@ -61,6 +61,7 @@ import dagger.Component;
         SmsDIModule.class,
         UserPackageDIModule.class}
 )
+@SuppressWarnings({"PMD.ExcessiveImports"})
 public interface D2DIComponent {
 
     D2InternalModules internalModules();

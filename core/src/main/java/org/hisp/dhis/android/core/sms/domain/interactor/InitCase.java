@@ -5,6 +5,7 @@ import io.reactivex.Completable;
 public class InitCase {
 
     public InitCase() {
+        // TODO waiting for implementation
     }
 
     public Completable initSMSModule() {

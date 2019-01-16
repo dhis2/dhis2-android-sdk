@@ -15,9 +15,9 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class SmsSubmitCase {
-    private LocalDbRepository localDbRepository;
-    private SmsRepository smsRepository;
-    private DeviceStateRepository deviceStateRepository;
+    private final LocalDbRepository localDbRepository;
+    private final SmsRepository smsRepository;
+    private final DeviceStateRepository deviceStateRepository;
 
     public SmsSubmitCase(LocalDbRepository localDbRepository, SmsRepository smsRepository,
                          DeviceStateRepository deviceStateRepository) {
@@ -58,7 +58,9 @@ public class SmsSubmitCase {
         checks.add(localDbRepository.getUserName().map(username -> username.length() > 0));
 
         return Single.merge(checks).flatMapCompletable(checkPassed -> {
-            if (!checkPassed) return Completable.error(new PreconditionFailed());
+            if (!checkPassed) {
+                return Completable.error(new PreconditionFailed());
+            }
             return Completable.complete();
         });
 

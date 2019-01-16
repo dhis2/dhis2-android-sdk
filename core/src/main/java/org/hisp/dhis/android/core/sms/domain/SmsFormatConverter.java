@@ -21,45 +21,47 @@ public class SmsFormatConverter {
         }
         check(categoryOptionCombo);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(check(username));
-        sb.append(' ');
+        StringBuilder result = new StringBuilder();
+        result
+                .append(check(username))
+                .append(' ')
 
-        sb.append(check(event.organisationUnit()));
-        sb.append(' ');
+                .append(check(event.organisationUnit()))
+                .append(' ')
 
-        sb.append(SubmissionType.PROGRAM_EVENT_NO_REG);
-        sb.append(' ');
+                .append(SubmissionType.PROGRAM_EVENT_NO_REG)
+                .append(' ')
 
-        sb.append(check(event.program()));
-        sb.append(' ');
+                .append(check(event.program()))
+                .append(' ')
 
-        sb.append(check(event.attributeOptionCombo()));
-        sb.append(' ');
+                .append(check(event.attributeOptionCombo()))
+                .append(' ')
 
-        sb.append(check(event.uid()));
-        sb.append(' ');
+                .append(check(event.uid()))
+                .append(' ')
 
-        sb.append(timestamp());
-        sb.append(' ');
+                .append(timestamp())
+                .append(' ');
 
         List<TrackedEntityDataValue> dataValues = event.trackedEntityDataValues();
         if (dataValues == null) {
             throw new NullPointerException("Event's data values are null");
         }
         for (TrackedEntityDataValue dataValue : dataValues) {
-            sb.append('|');
-            sb.append(check(dataValue.dataElement()));
-            sb.append('-');
-            sb.append(categoryOptionCombo);
-            sb.append('=');
-            sb.append(check(dataValue.value(), false));
+            result
+                    .append('|')
+                    .append(check(dataValue.dataElement()))
+                    .append('-')
+                    .append(categoryOptionCombo)
+                    .append('=')
+                    .append(check(dataValue.value(), false));
         }
-        sb.append('|');
+        result.append('|');
 
         try {
             // TODO compress using compression library
-            return addCheckSum(sb.toString());
+            return addCheckSum(result.toString());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }

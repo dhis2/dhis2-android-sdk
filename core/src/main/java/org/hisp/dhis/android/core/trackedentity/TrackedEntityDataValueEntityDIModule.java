@@ -26,11 +26,9 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -38,25 +36,17 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<Program> {
+public final class TrackedEntityDataValueEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public ProgramStoreInterface store(DatabaseAdapter databaseAdapter) {
-        return ProgramStore.create(databaseAdapter);
-    }
-
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<Program> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramHandler.create(databaseAdapter);
+    public TrackedEntityDataValueStore store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityDataValueStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    ReadOnlyIdentifiableCollectionRepository<Program> repository(DatabaseAdapter databaseAdapter) {
-        return ProgramCollectionRepository.create(databaseAdapter);
+    public SyncHandlerWithTransformer<TrackedEntityDataValue> handler(TrackedEntityDataValueStore store) {
+        return new TrackedEntityDataValueHandler(store);
     }
 }

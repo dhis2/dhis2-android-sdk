@@ -7,11 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
 public class TrackedEntityDataValueHandler extends ObjectWithoutUidSyncHandlerImpl<TrackedEntityDataValue> {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    private TrackedEntityDataValueHandler(TrackedEntityDataValueStore trackedEntityDataValueStore) {
+    TrackedEntityDataValueHandler(TrackedEntityDataValueStore trackedEntityDataValueStore) {
         super(trackedEntityDataValueStore);
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }

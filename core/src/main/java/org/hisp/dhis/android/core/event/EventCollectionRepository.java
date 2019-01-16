@@ -27,22 +27,31 @@
  */
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.imports.WebResponse;
 
-import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
-final class EventCollectionRepository {
+import javax.inject.Inject;
 
-    private EventCollectionRepository() {
+import dagger.Reusable;
+
+@Reusable
+final class EventCollectionRepository extends ReadOnlyCollectionRepositoryImpl<Event>
+        implements ReadOnlyWithUploadCollectionRepository<Event> {
+
+    private final EventPostCall postCall;
+
+    @Inject
+    EventCollectionRepository(EventStore eventStore, EventPostCall postCall) {
+        super(eventStore);
+        this.postCall = postCall;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Event> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                EventStoreImpl.create(databaseAdapter),
-                new ArrayList<ChildrenAppender<Event>>()
-        );
+
+    @Override
+    public Callable<WebResponse> upload() {
+        return postCall;
     }
 }

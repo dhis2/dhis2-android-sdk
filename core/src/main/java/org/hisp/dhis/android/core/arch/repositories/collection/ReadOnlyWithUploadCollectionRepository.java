@@ -25,38 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import java.util.concurrent.Callable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-
-@Module
-public final class ProgramEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<Program> {
-
-    @Override
-    @Provides
-    @Reusable
-    public ProgramStoreInterface store(DatabaseAdapter databaseAdapter) {
-        return ProgramStore.create(databaseAdapter);
-    }
-
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<Program> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramHandler.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    ReadOnlyIdentifiableCollectionRepository<Program> repository(DatabaseAdapter databaseAdapter) {
-        return ProgramCollectionRepository.create(databaseAdapter);
-    }
+public interface ReadOnlyWithUploadCollectionRepository<M extends Model> extends ReadOnlyCollectionRepository<M> {
+    Callable<WebResponse> upload() throws D2Error;
 }

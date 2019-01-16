@@ -10,10 +10,17 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 
-public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
-    private final TrackedEntityDataValueHandler trackedEntityDataValueHandler;
+import javax.inject.Inject;
 
-    EventHandler(EventStore eventStore, TrackedEntityDataValueHandler trackedEntityDataValueHandler) {
+import dagger.Reusable;
+
+@Reusable
+public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
+    private final SyncHandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
+
+    @Inject
+    EventHandler(EventStore eventStore,
+                 SyncHandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler) {
         super(eventStore);
         this.trackedEntityDataValueHandler = trackedEntityDataValueHandler;
     }
@@ -36,7 +43,7 @@ public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
 
     @Override
     protected boolean deleteIfCondition(Event event) {
-        Boolean validEventDate = event.eventDate() != null ||
+        boolean validEventDate = event.eventDate() != null ||
                 event.status() == EventStatus.SCHEDULE ||
                 event.status() == EventStatus.SKIPPED ||
                 event.status() == EventStatus.OVERDUE;

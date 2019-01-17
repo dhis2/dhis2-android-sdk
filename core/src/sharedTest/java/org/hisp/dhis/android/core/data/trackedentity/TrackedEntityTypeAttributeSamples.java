@@ -25,25 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.List;
+package org.hisp.dhis.android.core.data.trackedentity;
 
-public class OrderedLinkModelHandlerImpl<S, M extends Model> implements OrderedLinkModelHandler<S, M> {
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
 
-    private final LinkModelStore<M> store;
+public class TrackedEntityTypeAttributeSamples {
 
-    public OrderedLinkModelHandlerImpl(LinkModelStore<M> store) {
-        this.store = store;
-    }
-
-    @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkModelBuilder<S, M> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (int i = 0; i < slaves.size(); i++) {
-                store.insert(modelBuilder.buildModel(slaves.get(i), i + 1));
-            }
-        }
+    public static TrackedEntityTypeAttribute get() {
+        return TrackedEntityTypeAttribute.builder()
+                .trackedEntityType(ObjectWithUid.create("nEenWmSyUEp"))
+                .trackedEntityAttribute(ObjectWithUid.create("w75KJ2mc4zz"))
+                .displayInList(true)
+                .searchable(true)
+                .mandatory(false)
+                .build();
     }
 }

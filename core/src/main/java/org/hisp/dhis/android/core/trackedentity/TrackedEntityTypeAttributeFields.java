@@ -25,25 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.List;
+package org.hisp.dhis.android.core.trackedentity;
 
-public class OrderedLinkModelHandlerImpl<S, M extends Model> implements OrderedLinkModelHandler<S, M> {
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-    private final LinkModelStore<M> store;
+public final class TrackedEntityTypeAttributeFields {
 
-    public OrderedLinkModelHandlerImpl(LinkModelStore<M> store) {
-        this.store = store;
-    }
+    final static String TRACKED_ENTITY_TYPE = "trackedEntityType";
+    final static String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    final static String DISPLAY_IN_LIST = "displayInList";
+    final static String MANDATORY = "mandatory";
+    final static String SEARCHABLE = "searchable";
 
-    @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkModelBuilder<S, M> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (int i = 0; i < slaves.size(); i++) {
-                store.insert(modelBuilder.buildModel(slaves.get(i), i + 1));
-            }
-        }
+    private static final FieldsHelper<TrackedEntityTypeAttribute> fh = new FieldsHelper<>();
+
+    public static final Fields<TrackedEntityTypeAttribute> allFields = Fields.<TrackedEntityTypeAttribute>builder()
+            .fields(
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<Boolean>field(DISPLAY_IN_LIST),
+                    fh.<Boolean>field(MANDATORY),
+                    fh.<Boolean>field(SEARCHABLE)
+            ).build();
+
+    private TrackedEntityTypeAttributeFields() {
     }
 }

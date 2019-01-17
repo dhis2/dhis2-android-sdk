@@ -25,25 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.List;
+package org.hisp.dhis.android.core.trackedentity;
 
-public class OrderedLinkModelHandlerImpl<S, M extends Model> implements OrderedLinkModelHandler<S, M> {
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeAttributeSamples;
+import org.junit.Test;
 
-    private final LinkModelStore<M> store;
+import java.io.IOException;
+import java.text.ParseException;
 
-    public OrderedLinkModelHandlerImpl(LinkModelStore<M> store) {
-        this.store = store;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
+public class TrackedEntityTypeAttributeShould extends BaseObjectShould implements ObjectShould {
+
+    public TrackedEntityTypeAttributeShould() {
+        super("trackedentity/tracked_entity_type_attribute.json");
     }
 
     @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkModelBuilder<S, M> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (int i = 0; i < slaves.size(); i++) {
-                store.insert(modelBuilder.buildModel(slaves.get(i), i + 1));
-            }
-        }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        TrackedEntityTypeAttribute jsonTrackedEntityTypeAttribute =
+                objectMapper.readValue(jsonStream, TrackedEntityTypeAttribute.class);
+        TrackedEntityTypeAttribute expectedTrackedEntityTypeAttribute = TrackedEntityTypeAttributeSamples.get();
+        assertThat(jsonTrackedEntityTypeAttribute).isEqualTo(expectedTrackedEntityTypeAttribute);
     }
 }

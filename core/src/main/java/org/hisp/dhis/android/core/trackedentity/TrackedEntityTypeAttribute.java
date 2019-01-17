@@ -31,48 +31,72 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
-
-import java.util.List;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityType.Builder.class)
-public abstract class TrackedEntityType extends BaseNameableObject implements Model,
-        ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
+@JsonDeserialize(builder = $AutoValue_TrackedEntityTypeAttribute.Builder.class)
+public abstract class TrackedEntityTypeAttribute implements Model {
+
+    @JsonIgnore()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid trackedEntityType();
+
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid trackedEntityAttribute();
+
+    @JsonProperty()
+    public abstract Boolean displayInList();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreTrackedEntityTypeAttributeListColumnAdapter.class)
-    public abstract List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes();
+    public abstract Boolean mandatory();
+
+    @JsonProperty()
+    public abstract Boolean searchable();
+
+    @Nullable
+    @JsonIgnore()
+    public abstract Integer sortOrder();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityType.Builder();
+        return new $AutoValue_TrackedEntityTypeAttribute.Builder();
     }
 
-    static TrackedEntityType create(Cursor cursor) {
-        return $AutoValue_TrackedEntityType.createFromCursor(cursor);
+    static TrackedEntityTypeAttribute create(Cursor cursor) {
+        return $AutoValue_TrackedEntityTypeAttribute.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder>
-            implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
+    public static abstract class Builder {
 
         public abstract Builder id(Long id);
 
-        public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);
+        public abstract Builder trackedEntityType(ObjectWithUid trackedEntityType);
 
-        public abstract TrackedEntityType build();
+        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
+
+        public abstract Builder displayInList(Boolean displayInList);
+
+        public abstract Builder mandatory(Boolean mandatory);
+
+        public abstract Builder searchable(Boolean searchable);
+
+        public abstract Builder sortOrder(Integer sortOrder);
+
+        public abstract TrackedEntityTypeAttribute build();
     }
+
 }

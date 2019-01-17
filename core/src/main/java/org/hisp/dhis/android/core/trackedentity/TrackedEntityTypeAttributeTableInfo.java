@@ -25,25 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.List;
+package org.hisp.dhis.android.core.trackedentity;
 
-public class OrderedLinkModelHandlerImpl<S, M extends Model> implements OrderedLinkModelHandler<S, M> {
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-    private final LinkModelStore<M> store;
+public final class TrackedEntityTypeAttributeTableInfo {
 
-    public OrderedLinkModelHandlerImpl(LinkModelStore<M> store) {
-        this.store = store;
+    private TrackedEntityTypeAttributeTableInfo() {
     }
 
-    @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkModelBuilder<S, M> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (int i = 0; i < slaves.size(); i++) {
-                store.insert(modelBuilder.buildModel(slaves.get(i), i + 1));
-            }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "TrackedEntityTypeAttribute";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+
+        private static final String SORT_ORDER = "sortOrder";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    TrackedEntityTypeAttributeFields.TRACKED_ENTITY_TYPE,
+                    TrackedEntityTypeAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                    TrackedEntityTypeAttributeFields.DISPLAY_IN_LIST,
+                    TrackedEntityTypeAttributeFields.MANDATORY,
+                    TrackedEntityTypeAttributeFields.SEARCHABLE,
+                    SORT_ORDER
+            );
         }
     }
 }

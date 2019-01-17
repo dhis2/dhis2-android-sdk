@@ -25,25 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity;
 
-import java.util.List;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 
-public class OrderedLinkModelHandlerImpl<S, M extends Model> implements OrderedLinkModelHandler<S, M> {
+import javax.inject.Inject;
 
-    private final LinkModelStore<M> store;
+import dagger.Reusable;
 
-    public OrderedLinkModelHandlerImpl(LinkModelStore<M> store) {
-        this.store = store;
+@Reusable
+final class TrackedEntityTypeAttributeHandler
+        extends OrderedLinkModelHandlerImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> {
+
+    @Inject
+    TrackedEntityTypeAttributeHandler(LinkModelStore<TrackedEntityTypeAttribute> trackedEntityTypeAttributeStore) {
+        super(trackedEntityTypeAttributeStore);
     }
 
-    @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkModelBuilder<S, M> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (int i = 0; i < slaves.size(); i++) {
-                store.insert(modelBuilder.buildModel(slaves.get(i), i + 1));
-            }
-        }
-    }
 }

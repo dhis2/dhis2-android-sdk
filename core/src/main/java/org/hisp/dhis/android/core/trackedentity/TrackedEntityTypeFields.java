@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 public final class TrackedEntityTypeFields {
 
     private final static String STYLE = "style";
+    private final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
 
     private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
 
@@ -46,6 +47,9 @@ public final class TrackedEntityTypeFields {
 
     public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
             .fields(fh.getNameableFields())
+            .fields(
+                    fh.<TrackedEntityTypeAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
+                            .with(TrackedEntityTypeAttributeFields.allFields))
             .fields(
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
             ).build();

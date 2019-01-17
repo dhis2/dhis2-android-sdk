@@ -28,42 +28,49 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeAttributeSamples;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@Module(includes = {
-        TrackedEntityAttributeEntityDIModule.class,
-        TrackedEntityAttributeReservedValueEntityDIModule.class,
-        TrackedEntityAttributeValueEntityDIModule.class,
-        TrackedEntityDataValueEntityDIModule.class,
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class,
-        TrackedEntityTypeAttributeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityTypeAttributeStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<TrackedEntityTypeAttribute> {
 
-    @Provides
-    @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
+    public TrackedEntityTypeAttributeStoreIntegrationShould() {
+        super(TrackedEntityTypeAttributeStore.create(DatabaseAdapterFactory.get(false)),
+                TrackedEntityTypeAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    @Provides
-    @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
+    @Override
+    protected TrackedEntityTypeAttribute buildObject() {
+        return TrackedEntityTypeAttributeSamples.get();
     }
 
-    @Provides
-    @Reusable
-    QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
-            TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
-        return impl;
+    @Override
+    protected TrackedEntityTypeAttribute buildObjectWithId() {
+        return TrackedEntityTypeAttributeSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityTypeAttribute buildObjectWithOtherMasterUid() {
+        return TrackedEntityTypeAttributeSamples.get().toBuilder()
+                .trackedEntityType(ObjectWithUid.create("new_tei_type_uid"))
+                .build();
+    }
+
+    @Override
+    protected String addMasterUid() {
+        return TrackedEntityTypeAttributeSamples.get().trackedEntityType().uid();
+    }
+
+    @Test
+    public void stub() {
     }
 }

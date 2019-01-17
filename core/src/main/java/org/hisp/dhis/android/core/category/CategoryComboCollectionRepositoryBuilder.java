@@ -28,22 +28,44 @@
 
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.db.scope.RepositoryScopeItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
 final class CategoryComboCollectionRepositoryBuilder {
 
     private final CategoryComboCollectionRepository collectionRepository;
-    private final String scope;
+    private final List<RepositoryScopeItem> scope;
+    private final String key;
 
     CategoryComboCollectionRepositoryBuilder(CategoryComboCollectionRepository collectionRepository,
-                                             String scope) {
+                                             List<RepositoryScopeItem> scope,
+                                             String key) {
         this.collectionRepository = collectionRepository;
         this.scope = scope;
+        this.key = key;
     }
 
     CategoryComboCollectionRepository isEqualTo(String value) {
-        return collectionRepository.newWithUpdatedScope(scope + ":eq:" + value + ";");
+        return newWithScope("eq", value);
     }
 
     CategoryComboCollectionRepository like(String value) {
-        return collectionRepository.newWithUpdatedScope(scope + ":like:" + value + ";");
+        return newWithScope("like", value);
+    }
+
+
+    private List<RepositoryScopeItem> updatedScope(String operator, String value) {
+        List<RepositoryScopeItem> copiedScope = new ArrayList<>();
+        for (RepositoryScopeItem si: scope) {
+            copiedScope.add(si);
+        }
+        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(value).build());
+        return copiedScope;
+    }
+
+    private CategoryComboCollectionRepository newWithScope(String operator, String value) {
+        return collectionRepository.newWithUpdatedScope(updatedScope(operator, value));
     }
 }

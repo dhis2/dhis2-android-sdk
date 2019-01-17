@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.db.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -34,20 +35,22 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo> {
 
     private final IdentifiableObjectStore<CategoryCombo> store;
-    private final String scope;
+    private final List<RepositoryScopeItem> scope;
 
     CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
                                       Collection<ChildrenAppender<CategoryCombo>> childrenAppenders) {
-        this(store, childrenAppenders,"");
+        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
     }
 
     private CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
                                               Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
-                                              String scope) {
+                                              List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders);
         this.store = store;
         this.scope = scope;
@@ -64,18 +67,22 @@ final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollec
     }
 
     public CategoryComboCollectionRepositoryBuilder byName() {
-        return new CategoryComboCollectionRepositoryBuilder(this, scope + "byName");
+        return builder("name");
     }
 
     public CategoryComboCollectionRepositoryBuilder byCode() {
-        return new CategoryComboCollectionRepositoryBuilder(this, scope + "byCode");
+        return builder("code");
     }
 
-    CategoryComboCollectionRepository newWithUpdatedScope(String updatedScope) {
+    private CategoryComboCollectionRepositoryBuilder builder(String key) {
+        return new CategoryComboCollectionRepositoryBuilder(this, scope, key);
+    }
+
+    CategoryComboCollectionRepository newWithUpdatedScope(List<RepositoryScopeItem> updatedScope) {
         return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
     }
 
-    public String getScope() {
+    public List<RepositoryScopeItem> getScope() {
         return scope;
     }
 }

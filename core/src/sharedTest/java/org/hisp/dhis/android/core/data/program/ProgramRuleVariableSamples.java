@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,27 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+public class ProgramRuleVariableSamples {
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ProgramModule {
+    public static ProgramRuleVariable getProgramRuleVariable() {
+        ProgramRuleVariable.Builder builder = ProgramRuleVariable.builder();
 
-    public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
-    public final ProgramIndicatorEngine programIndicatorEngine;
-
-    @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programIndicatorEngine = programIndicatorEngine;
+        fillIdentifiableProperties(builder);
+        builder
+                .useCodeForOptionSet(true)
+                .program(ObjectWithUid.create("program"))
+                .programStage(ObjectWithUid.create("program_stage"))
+                .dataElement(ObjectWithUid.create("data_element"))
+                .trackedEntityAttribute(ObjectWithUid.create("tracked_entity_attribute"))
+                .programRuleVariableSourceType(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM);
+        return builder.build();
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,25 +28,30 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import javax.inject.Inject;
+final class ProgramRuleVariableFields {
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+    static final String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
+    static final String DATA_ELEMENT = "dataElement";
+    static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ProgramModule {
+    private static FieldsHelper<ProgramRuleVariable> fh = new FieldsHelper<>();
+    static final Fields<ProgramRuleVariable> allFields = Fields.<ProgramRuleVariable>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Boolean>field(USE_CODE_FOR_OPTION_SET),
+                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<ProgramRuleVariableSourceType>field(PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
+            ).build();
 
-    public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
-    public final ProgramIndicatorEngine programIndicatorEngine;
-
-    @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programIndicatorEngine = programIndicatorEngine;
+    private ProgramRuleVariableFields() {
     }
 }

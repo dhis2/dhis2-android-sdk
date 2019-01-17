@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,25 +28,40 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class ProgramRuleVariableTableInfo {
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+    private ProgramRuleVariableTableInfo() {
+    }
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ProgramModule {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
-    public final ProgramIndicatorEngine programIndicatorEngine;
+        @Override
+        public String name() {
+            return "ProgramRuleVariable";
+        }
 
-    @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programIndicatorEngine = programIndicatorEngine;
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
+                    ProgramRuleVariableFields.PROGRAM,
+                    ProgramRuleVariableFields.PROGRAM_STAGE,
+                    ProgramRuleVariableFields.DATA_ELEMENT,
+                    ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
+                    ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+            );
+        }
     }
 }

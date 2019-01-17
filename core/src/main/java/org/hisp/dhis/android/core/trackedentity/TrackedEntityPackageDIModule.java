@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 
 import dagger.Module;
@@ -36,6 +37,10 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
+        TrackedEntityAttributeEntityDIModule.class,
+        TrackedEntityAttributeReservedValueEntityDIModule.class,
+        TrackedEntityAttributeValueEntityDIModule.class,
+        TrackedEntityDataValueEntityDIModule.class,
         TrackedEntityInstanceEntityDIModule.class,
         TrackedEntityTypeEntityDIModule.class,
         TrackedEntityTypeAttributeEntityDIModule.class
@@ -52,5 +57,13 @@ public final class TrackedEntityPackageDIModule {
     @Reusable
     TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
         return retrofit.create(TrackedEntityTypeService.class);
+    }
+
+    @Provides
+    @Reusable
+    QueryCallFactory<TrackedEntityAttributeReservedValue,
+            TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
+            TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
+        return impl;
     }
 }

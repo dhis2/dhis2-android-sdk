@@ -3,13 +3,9 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +22,6 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Call<List<TrackedEntityAttributeReservedValue>> reservedValueEndpointCall;
     private Integer numberToReserve = 5;
 
     @Before
@@ -34,29 +29,22 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
     public void setUp() throws IOException {
         super.setUp();
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-        reservedValueEndpointCall = createCall();
     }
 
-    private Call<List<TrackedEntityAttributeReservedValue>> createCall() {
-        OrganisationUnit organisationUnit =  OrganisationUnit.builder()
-                .uid("orgUnitUid").code("ORG_UNIT").build();
-
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        return new TrackedEntityAttributeReservedValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
-                TrackedEntityAttributeReservedValueQuery.create("xs8A6tQJY0s",
-                numberToReserve, organisationUnit, "pattern"));
+    private void reserveValues() {
+        d2.trackedEntityModule().reservedValueManager.syncReservedValues("xs8A6tQJY0s", "orgUnitUid", numberToReserve);
     }
 
     // @Test
     public void download_reserved_values() throws Exception {
         login();
-        reservedValueEndpointCall.call();
+        reserveValues();
     }
 
     // @Test
     public void download_and_persist_reserved_values() throws Exception {
         login();
-        reservedValueEndpointCall.call();
+        reserveValues();
 
         List<TrackedEntityAttributeReservedValue> reservedValues = TrackedEntityAttributeReservedValueStore.create(
                 databaseAdapter()).selectAll();

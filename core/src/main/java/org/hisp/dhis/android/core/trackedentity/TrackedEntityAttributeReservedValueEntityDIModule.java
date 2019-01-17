@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,27 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import retrofit2.Retrofit;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ProgramModule {
+@Module
+public final class TrackedEntityAttributeReservedValueEntityDIModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
-    public final ProgramIndicatorEngine programIndicatorEngine;
+    @Provides
+    @Reusable
+    public TrackedEntityAttributeReservedValueStoreInterface store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityAttributeReservedValueStore.create(databaseAdapter);
+    }
 
-    @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programIndicatorEngine = programIndicatorEngine;
+    @Provides
+    @Reusable
+    public SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler(
+            TrackedEntityAttributeReservedValueStoreInterface store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    public TrackedEntityAttributeReservedValueService service(Retrofit retrofit) {
+        return retrofit.create(TrackedEntityAttributeReservedValueService.class);
     }
 }

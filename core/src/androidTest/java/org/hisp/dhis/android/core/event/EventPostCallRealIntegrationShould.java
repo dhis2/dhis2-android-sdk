@@ -80,7 +80,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         createDummyDataToPost(orgUnitUid, programUid, programStageUid, eventUid1,
                 dataElementUid, attributeOptionCombo, null);
 
-        d2.syncSingleEvents().call();
+        d2.eventModule().events.upload().call();
     }
 
     // commented out since it is a flaky test that works against a real server.
@@ -182,7 +182,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void pushDummyEvent() throws Exception {
-        d2.syncSingleEvents().call();
+        d2.eventModule().events.upload().call();
     }
 
     private void downloadMetadata() throws Exception {

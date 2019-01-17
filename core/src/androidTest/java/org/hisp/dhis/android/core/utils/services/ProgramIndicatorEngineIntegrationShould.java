@@ -31,17 +31,20 @@ package org.hisp.dhis.android.core.utils.services;
 import android.content.ContentValues;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AggregationType;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
+import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
@@ -105,7 +108,9 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
 
-        programIndicatorEngine = ProgramIndicatorEngine.create(databaseAdapter());
+        D2 d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+
+        programIndicatorEngine = d2.programModule().programIndicatorEngine;
         
         OrganisationUnit orgunit = OrganisationUnit.builder().uid(orgunitUid).build();
         OrganisationUnitStore.create(databaseAdapter()).insert(orgunit);

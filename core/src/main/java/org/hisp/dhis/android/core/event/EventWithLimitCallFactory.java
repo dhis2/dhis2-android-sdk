@@ -5,19 +5,16 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
@@ -28,14 +25,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Retrofit;
 
-public final class EventWithLimitCall extends SyncCall<Unit> {
+@Reusable
+public final class EventWithLimitCallFactory {
 
     private final ResourceModel.Type resourceType = ResourceModel.Type.EVENT;
 
-    private final int eventLimit;
-    private final boolean limitByOrgUnit;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
@@ -44,41 +43,34 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
     private final ProgramStoreInterface programStore;
     private final D2InternalModules d2InternalModules;
 
-    private EventWithLimitCall(
+    @Inject
+    EventWithLimitCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull ResourceHandler resourceHandler,
             @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
             @NonNull ProgramStoreInterface programStore,
-            @NonNull D2InternalModules d2InternalModules,
-            int eventLimit,
-            boolean limitByOrgUnit) {
+            @NonNull D2InternalModules d2InternalModules) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.systemInfoRepository = systemInfoRepository;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
-        this.eventLimit = eventLimit;
-        this.limitByOrgUnit = limitByOrgUnit;
         this.d2InternalModules = d2InternalModules;
     }
 
-    @Override
-    public Unit call() throws D2Error {
-        setExecuted();
-
-        return new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(new Callable<Unit>() {
-
+    public Callable<Unit> getCall(final int eventLimit, final boolean limitByOrgUnit) {
+        return new Callable<Unit>() {
             @Override
             public Unit call() throws Exception {
-                return getEvents();
+                return getEvents(eventLimit, limitByOrgUnit);
             }
-        });
+        };
     }
 
-    private Unit getEvents() throws Exception {
+    private Unit getEvents(int eventLimit, boolean limitByOrgUnit) throws Exception {
         Collection<String> organisationUnitUids;
         int eventsCount = 0;
         boolean successfulSync = true;
@@ -105,7 +97,8 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
                 break;
             }
             eventQueryBuilder.orgUnit(orgUnitUid);
-            EventsWithPagingResult result  = getEventsWithPaging(eventQueryBuilder, pageSize, programUids, eventsCount);
+            EventsWithPagingResult result  = getEventsWithPaging(eventQueryBuilder, pageSize,
+                    programUids, eventsCount, eventLimit, limitByOrgUnit);
             eventsCount = eventsCount + result.eventCount;
             successfulSync = successfulSync && result.successfulSync;
         }
@@ -120,7 +113,9 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
     private EventsWithPagingResult getEventsWithPaging(EventQuery.Builder eventQueryBuilder,
                                                        int pageSize,
                                                        Collection<String> programUids,
-                                                       int globalEventsSize) {
+                                                       int globalEventsSize,
+                                                       int eventLimit,
+                                                       boolean limitByOrgUnit) {
         int eventsCount = 0;
         boolean successfulSync = true;
         D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
@@ -139,16 +134,7 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
                     List<Event> pageEvents = executor.executeD2Call(
                             EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
 
-                    List<Event> eventsToPersist;
-                    if (paging.isLastPage()) {
-                        int previousItemsToSkip =
-                                pageEvents.size() + paging.previousItemsToSkipCount() - paging.pageSize();
-                        int toIndex =
-                                previousItemsToSkip < 0 ? pageEvents.size() : pageEvents.size() - previousItemsToSkip;
-                        eventsToPersist = pageEvents.subList(paging.previousItemsToSkipCount(), toIndex);
-                    } else {
-                        eventsToPersist = pageEvents;
-                    }
+                    List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 
                     executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, d2InternalModules,
                             eventsToPersist));
@@ -169,6 +155,18 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
         }
 
         return new EventsWithPagingResult(eventsCount, successfulSync);
+    }
+
+    private List<Event> getEventsToPersist(Paging paging, List<Event> pageEvents) {
+        if (paging.isLastPage() && pageEvents.size() > paging.previousItemsToSkipCount()) {
+            int toIndex = pageEvents.size() < paging.pageSize() - paging.posteriorItemsToSkipCount() ?
+                    pageEvents.size() :
+                    paging.pageSize() - paging.posteriorItemsToSkipCount();
+
+            return pageEvents.subList(paging.previousItemsToSkipCount(), toIndex);
+        } else {
+            return pageEvents;
+        }
     }
 
     private Set<String> getOrgUnitUids() {
@@ -194,20 +192,5 @@ public final class EventWithLimitCall extends SyncCall<Unit> {
             this.eventCount = eventCount;
             this.successfulSync = successfulSync;
         }
-    }
-
-    public static EventWithLimitCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                            D2InternalModules internalModules, ResourceHandler resourceHandler,
-                                            int eventLimit, boolean limitByOrgUnit) {
-        return new EventWithLimitCall(
-                databaseAdapter,
-                retrofit,
-                internalModules.systemInfo.publicModule.systemInfo,
-                resourceHandler,
-                UserOrganisationUnitLinkStore.create(databaseAdapter),
-                ProgramStore.create(databaseAdapter),
-                internalModules,
-                eventLimit,
-                limitByOrgUnit);
     }
 }

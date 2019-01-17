@@ -34,24 +34,16 @@ import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.ConstantModel;
-import org.hisp.dhis.android.core.constant.ConstantStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.support.DateUtils;
 import org.hisp.dhis.android.core.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.core.utils.support.MathUtils;
@@ -66,6 +58,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
 /**
  * @author Chau Thu Tran
  */
@@ -79,6 +75,7 @@ import java.util.regex.Pattern;
         "PMD.StdCyclomaticComplexity",
         "PMD.GodClass"
 })
+@Reusable
 public class ProgramIndicatorEngine {
     private static final String NULL_REPLACEMENT = "null";
 
@@ -109,6 +106,7 @@ public class ProgramIndicatorEngine {
     private final IdentifiableObjectStore<ConstantModel> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
+    @Inject
     ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
                            TrackedEntityDataValueStore trackedEntityDataValueStore,
                            EnrollmentStore enrollmentStore,
@@ -365,15 +363,5 @@ public class ProgramIndicatorEngine {
 
     private static boolean isZeroOrPositive(String value) {
         return MathUtils.isNumeric(value) && Double.valueOf(value) >= 0d;
-    }
-
-    public static ProgramIndicatorEngine create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorEngine(ProgramIndicatorStore.create(databaseAdapter),
-                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
-                EnrollmentStoreImpl.create(databaseAdapter),
-                EventStoreImpl.create(databaseAdapter),
-                DataElementStore.create(databaseAdapter),
-                ConstantStore.create(databaseAdapter),
-                TrackedEntityAttributeValueStoreImpl.create(databaseAdapter));
     }
 }

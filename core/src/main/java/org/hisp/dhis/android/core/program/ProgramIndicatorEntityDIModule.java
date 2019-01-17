@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,25 +28,30 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ProgramModule {
+@Module
+public final class ProgramIndicatorEntityDIModule
+        implements IdentifiableEntityFromDatabaseAdapterDIModule<ProgramIndicator> {
 
-    public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
-    public final ProgramIndicatorEngine programIndicatorEngine;
+    @Override
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<ProgramIndicator> store(DatabaseAdapter databaseAdapter) {
+        return ProgramIndicatorStore.create(databaseAdapter);
+    }
 
-    @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programIndicatorEngine = programIndicatorEngine;
+    @Override
+    @Provides
+    @Reusable
+    public SyncHandler<ProgramIndicator> handler(DatabaseAdapter databaseAdapter) {
+        return ProgramIndicatorHandler.create(databaseAdapter);
     }
 }

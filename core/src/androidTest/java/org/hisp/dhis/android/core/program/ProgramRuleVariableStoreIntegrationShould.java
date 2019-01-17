@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,25 +28,38 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramRuleVariableSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+@RunWith(AndroidJUnit4.class)
+public class ProgramRuleVariableStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleVariable> {
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class ProgramModule {
+    public ProgramRuleVariableStoreIntegrationShould() {
+        super(ProgramRuleVariableStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramRuleVariableTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
-    public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
-    public final ProgramIndicatorEngine programIndicatorEngine;
+    @Override
+    protected ProgramRuleVariable buildObject() {
+        return ProgramRuleVariableSamples.getProgramRuleVariable();
+    }
 
-    @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programIndicatorEngine = programIndicatorEngine;
+    @Override
+    protected ProgramRuleVariable buildObjectWithId() {
+        return ProgramRuleVariableSamples.getProgramRuleVariable().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected ProgramRuleVariable buildObjectToUpdate() {
+        return ProgramRuleVariableSamples.getProgramRuleVariable().toBuilder()
+                .programRuleVariableSourceType(ProgramRuleVariableSourceType.CALCULATED_VALUE)
+                .build();
     }
 }

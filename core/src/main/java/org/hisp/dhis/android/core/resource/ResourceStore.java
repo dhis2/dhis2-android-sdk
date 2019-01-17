@@ -27,22 +27,9 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-
-import java.util.Date;
-
-public interface ResourceStore extends DeletableStore {
-    long insert(@NonNull String resourceType, @Nullable Date lastSynced);
-
-    int update(
-            @NonNull String resourceType, @Nullable Date lastSynced,
-            @NonNull String whereResourceUid
-    );
-
-    int delete(@NonNull String resourceType);
+public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
 
     String getLastUpdated(ResourceModel.Type type);
 }

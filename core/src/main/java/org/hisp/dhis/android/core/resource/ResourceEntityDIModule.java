@@ -40,6 +40,6 @@ public final class ResourceEntityDIModule {
     @Provides
     @Reusable
     ResourceStore store(DatabaseAdapter databaseAdapter) {
-        return new ResourceStoreImpl(databaseAdapter);
+        return ResourceStoreImpl.create(databaseAdapter);
     }
 }

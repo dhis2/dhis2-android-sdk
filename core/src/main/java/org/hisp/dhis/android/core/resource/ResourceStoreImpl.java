@@ -80,7 +80,7 @@ public class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> imple
     };
 
     @Override
-    public String getLastUpdated(ResourceModel.Type type) {
+    public String getLastUpdated(Resource.Type type) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name()).build();
 

@@ -31,5 +31,5 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
 
-    String getLastUpdated(ResourceModel.Type type);
+    String getLastUpdated(Resource.Type type);
 }

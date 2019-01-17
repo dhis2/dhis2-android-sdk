@@ -46,7 +46,7 @@ public class ResourceHandler {
         this.serverDate = new Date(serverDate.getTime());
     }
 
-    public void handleResource(ResourceModel.Type resourceType) {
+    public void handleResource(Resource.Type resourceType) {
         if (resourceType == null || serverDate == null) {
             return;
         }
@@ -65,7 +65,7 @@ public class ResourceHandler {
      * @param type Type of the resource.
      * @return a string representing the last synched date
      */
-    public String getLastUpdated(ResourceModel.Type type) {
+    public String getLastUpdated(Resource.Type type) {
         return resourceStore.getLastUpdated(type);
     }
 }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 
 import javax.inject.Inject;
 
@@ -48,7 +48,7 @@ import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionVal
 @Reusable
 final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
 
-    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
+    private final Resource.Type resourceType = Resource.Type.DATA_VALUE;
     private final SyncHandler<DataValue> dataValueHandler;
 
     @Inject

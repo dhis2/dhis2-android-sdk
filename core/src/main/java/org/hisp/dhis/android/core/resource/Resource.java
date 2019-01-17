@@ -43,6 +43,28 @@ import java.util.Date;
 @AutoValue
 public abstract class Resource implements Model {
 
+    public enum Type {
+        EVENT,
+        SYSTEM_INFO,
+        USER,
+        USER_CREDENTIALS,
+        ORGANISATION_UNIT,
+        AUTHENTICATED_USER,
+        PROGRAM,
+        OPTION_SET,
+        TRACKED_ENTITY_TYPE,
+        TRACKED_ENTITY_INSTANCE,
+        DATA_SET,
+        DATA_ELEMENT,
+        CATEGORY_COMBO,
+        INDICATOR_TYPE,
+        INDICATOR,
+        DATA_VALUE,
+        PROGRAM_STAGE,
+        RELATIONSHIP_TYPE,
+        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE
+    }
+
     @Nullable
     public abstract String resourceType();
 
@@ -57,7 +79,7 @@ public abstract class Resource implements Model {
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_resource.Builder();
+        return new AutoValue_Resource.Builder();
     }
 
     @AutoValue.Builder

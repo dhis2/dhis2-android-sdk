@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 
 import javax.inject.Inject;
 
@@ -46,7 +46,7 @@ import dagger.Reusable;
 @Reusable
 final class RelationshipTypeEndpointCallFactory extends ListCallFactoryImpl<RelationshipType> {
 
-    private final ResourceModel.Type resourceType = ResourceModel.Type.RELATIONSHIP_TYPE;
+    private final Resource.Type resourceType = Resource.Type.RELATIONSHIP_TYPE;
 
     private final RelationshipTypeService service;
     private final SyncHandler<RelationshipType> handler;

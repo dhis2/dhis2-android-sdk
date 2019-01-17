@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.concurrent.Callable;
@@ -95,7 +95,7 @@ class SystemInfoCall implements Callable<Unit> {
         try {
             systemInfoHandler.handle(systemInfo);
             resourceHandler.setServerDate(systemInfo.serverDate());
-            resourceHandler.handleResource(ResourceModel.Type.SYSTEM_INFO);
+            resourceHandler.handleResource(Resource.Type.SYSTEM_INFO);
             transaction.setSuccessful();
         } finally {
             transaction.end();

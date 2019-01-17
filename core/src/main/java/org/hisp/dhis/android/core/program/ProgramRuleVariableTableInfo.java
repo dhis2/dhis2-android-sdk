@@ -25,19 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class ProgramRuleVariableHandler extends IdentifiableSyncHandlerImpl<ProgramRuleVariable> {
+public final class ProgramRuleVariableTableInfo {
 
-    private ProgramRuleVariableHandler(IdentifiableObjectStore<ProgramRuleVariable> programRuleVariableStore) {
-        super(programRuleVariableStore);
+    private ProgramRuleVariableTableInfo() {
     }
 
-    public static ProgramRuleVariableHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleVariableHandler(ProgramRuleVariableStore.create(databaseAdapter));
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ProgramRuleVariable";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
+                    ProgramRuleVariableFields.PROGRAM,
+                    ProgramRuleVariableFields.PROGRAM_STAGE,
+                    ProgramRuleVariableFields.DATA_ELEMENT,
+                    ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
+                    ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+            );
+        }
     }
 }

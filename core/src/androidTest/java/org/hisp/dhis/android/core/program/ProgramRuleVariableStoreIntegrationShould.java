@@ -25,19 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-public final class ProgramRuleVariableHandler extends IdentifiableSyncHandlerImpl<ProgramRuleVariable> {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramRuleVariableSamples;
+import org.junit.runner.RunWith;
 
-    private ProgramRuleVariableHandler(IdentifiableObjectStore<ProgramRuleVariable> programRuleVariableStore) {
-        super(programRuleVariableStore);
+@RunWith(AndroidJUnit4.class)
+public class ProgramRuleVariableStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleVariable> {
+
+    public ProgramRuleVariableStoreIntegrationShould() {
+        super(ProgramRuleVariableStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramRuleVariableTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    public static ProgramRuleVariableHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleVariableHandler(ProgramRuleVariableStore.create(databaseAdapter));
+    @Override
+    protected ProgramRuleVariable buildObject() {
+        return ProgramRuleVariableSamples.getProgramRuleVariable();
+    }
+
+    @Override
+    protected ProgramRuleVariable buildObjectWithId() {
+        return ProgramRuleVariableSamples.getProgramRuleVariable().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected ProgramRuleVariable buildObjectToUpdate() {
+        return ProgramRuleVariableSamples.getProgramRuleVariable().toBuilder()
+                .programRuleVariableSourceType(ProgramRuleVariableSourceType.CALCULATED_VALUE)
+                .build();
     }
 }

@@ -25,19 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.program;
 
-public final class ProgramRuleVariableHandler extends IdentifiableSyncHandlerImpl<ProgramRuleVariable> {
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
 
-    private ProgramRuleVariableHandler(IdentifiableObjectStore<ProgramRuleVariable> programRuleVariableStore) {
-        super(programRuleVariableStore);
-    }
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    public static ProgramRuleVariableHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleVariableHandler(ProgramRuleVariableStore.create(databaseAdapter));
+public class ProgramRuleVariableSamples {
+
+    public static ProgramRuleVariable getProgramRuleVariable() {
+        ProgramRuleVariable.Builder builder = ProgramRuleVariable.builder();
+
+        fillIdentifiableProperties(builder);
+        builder
+                .useCodeForOptionSet(true)
+                .program(ObjectWithUid.create("program"))
+                .programStage(ObjectWithUid.create("program_stage"))
+                .dataElement(ObjectWithUid.create("data_element"))
+                .trackedEntityAttribute(ObjectWithUid.create("tracked_entity_attribute"))
+                .programRuleVariableSourceType(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM);
+        return builder.build();
     }
 }

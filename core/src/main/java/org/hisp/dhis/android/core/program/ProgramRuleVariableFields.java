@@ -25,19 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class ProgramRuleVariableHandler extends IdentifiableSyncHandlerImpl<ProgramRuleVariable> {
+final class ProgramRuleVariableFields {
 
-    private ProgramRuleVariableHandler(IdentifiableObjectStore<ProgramRuleVariable> programRuleVariableStore) {
-        super(programRuleVariableStore);
-    }
+    static final String USE_CODE_FOR_OPTION_SET = "useCodeForOptionSet";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
+    static final String DATA_ELEMENT = "dataElement";
+    static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    static final String PROGRAM_RULE_VARIABLE_SOURCE_TYPE = "programRuleVariableSourceType";
 
-    public static ProgramRuleVariableHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleVariableHandler(ProgramRuleVariableStore.create(databaseAdapter));
+    private static FieldsHelper<ProgramRuleVariable> fh = new FieldsHelper<>();
+    static final Fields<ProgramRuleVariable> allFields = Fields.<ProgramRuleVariable>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<Boolean>field(USE_CODE_FOR_OPTION_SET),
+                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.<ProgramRuleVariableSourceType>field(PROGRAM_RULE_VARIABLE_SOURCE_TYPE)
+            ).build();
+
+    private ProgramRuleVariableFields() {
     }
 }

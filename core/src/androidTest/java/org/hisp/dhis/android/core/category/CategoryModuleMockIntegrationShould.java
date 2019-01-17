@@ -33,6 +33,15 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
+    public void allow_access_to_combos_without_children_by_name() {
+
+        CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byName().isEqualTo("name")
+                .byCode().like("Mama");
+        assertThat(repositoryWithUpdatedScope.getScope(), is("byName:eq:name;byCode:like:Mama;"));
+    }
+
+    @Test
     public void allow_access_to_combos_with_category_option_combos() {
         List<CategoryCombo> combos = d2.categoryModule().categoryCombos.getWithAllChildren();
         assertThat(combos.size(), is(2));

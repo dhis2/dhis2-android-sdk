@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,33 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+final class CategoryComboCollectionRepositoryBuilder {
 
-import javax.inject.Inject;
+    private final CategoryComboCollectionRepository collectionRepository;
+    private final String scope;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+    CategoryComboCollectionRepositoryBuilder(CategoryComboCollectionRepository collectionRepository,
+                                             String scope) {
+        this.collectionRepository = collectionRepository;
+        this.scope = scope;
+    }
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class CategoryModule {
+    CategoryComboCollectionRepository isEqualTo(String value) {
+        return collectionRepository.newWithUpdatedScope(scope + ":eq:" + value + ";");
+    }
 
-    public final ReadOnlyIdentifiableCollectionRepository<Category> categories;
-    public final ReadOnlyIdentifiableCollectionRepository<CategoryOption> categoryOptions;
-    public final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
-    public final CategoryComboCollectionRepository categoryCombos;
-
-    @Inject
-    CategoryModule(
-            ReadOnlyIdentifiableCollectionRepository<Category> categories,
-            ReadOnlyIdentifiableCollectionRepository<CategoryOption> categoryOptions,
-            ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
-            CategoryComboCollectionRepository categoryCombos) {
-        this.categories = categories;
-        this.categoryOptions = categoryOptions;
-        this.categoryOptionCombos = categoryOptionCombos;
-        this.categoryCombos = categoryCombos;
+    CategoryComboCollectionRepository like(String value) {
+        return collectionRepository.newWithUpdatedScope(scope + ":like:" + value + ";");
     }
 }

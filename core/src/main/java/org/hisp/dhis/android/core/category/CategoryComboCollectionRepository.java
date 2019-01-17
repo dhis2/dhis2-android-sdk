@@ -27,24 +27,55 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Arrays;
+import java.util.Collection;
 
-final class CategoryComboCollectionRepository {
+final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo> {
 
-    private CategoryComboCollectionRepository() {
+    private final IdentifiableObjectStore<CategoryCombo> store;
+    private final String scope;
+
+    CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
+                                      Collection<ChildrenAppender<CategoryCombo>> childrenAppenders) {
+        this(store, childrenAppenders,"");
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+    private CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
+                                              Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
+                                              String scope) {
+        super(store, childrenAppenders);
+        this.store = store;
+        this.scope = scope;
+    }
+
+    static CategoryComboCollectionRepository create(DatabaseAdapter databaseAdapter) {
+        return new CategoryComboCollectionRepository(
                 CategoryComboStore.create(databaseAdapter),
                 Arrays.asList(
                         CategoryCategoryComboChildrenAppender.create(databaseAdapter),
                         CategoryOptionComboChildrenAppender.create(databaseAdapter)
                 )
         );
+    }
+
+    public CategoryComboCollectionRepositoryBuilder byName() {
+        return new CategoryComboCollectionRepositoryBuilder(this, scope + "byName");
+    }
+
+    public CategoryComboCollectionRepositoryBuilder byCode() {
+        return new CategoryComboCollectionRepositoryBuilder(this, scope + "byCode");
+    }
+
+    CategoryComboCollectionRepository newWithUpdatedScope(String updatedScope) {
+        return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
+    }
+
+    public String getScope() {
+        return scope;
     }
 }

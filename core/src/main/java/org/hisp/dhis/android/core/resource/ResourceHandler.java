@@ -50,10 +50,13 @@ public class ResourceHandler {
         if (resourceType == null || serverDate == null) {
             return;
         }
-        int updatedResourceRow = resourceStore.update(resourceType.name(), serverDate, resourceType.name());
-        if (updatedResourceRow <= 0) {
-            resourceStore.insert(resourceType.name(), serverDate);
-        }
+
+        Resource resource = Resource.builder()
+                .resourceType(resourceType.name())
+                .lastSynced(serverDate)
+                .build();
+
+        resourceStore.updateOrInsertWhere(resource);
     }
 
     /**

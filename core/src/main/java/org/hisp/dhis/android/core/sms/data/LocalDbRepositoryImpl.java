@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.core.sms.data;
 
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.user.UserModule;
 
@@ -39,6 +41,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Completable setConfirmationSenderNumber(String number) {
+        return null;
+    }
+
+    @Override
+    public Completable updateSubmissionState(BaseDataModel event, State sentViaSms) {
         return null;
     }
 

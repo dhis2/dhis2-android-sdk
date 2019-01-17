@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import android.util.Pair;
 
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
@@ -38,7 +39,13 @@ public class SmsSubmitCase {
                         })
                 ).flatMapObservable(numAndContents ->
                         smsRepository.sendSms(numAndContents.first, numAndContents.second, 120)
-                );
+                ).flatMap(smsSendingState -> {
+                    if (SmsRepository.State.ALL_SENT.equals(smsSendingState.getState())) {
+                        return localDbRepository.updateSubmissionState(event, State.SENT_VIA_SMS)
+                                .andThen(Observable.just(smsSendingState));
+                    }
+                    return Observable.just(smsSendingState);
+                });
     }
 
     public Completable checkConfirmationSms(int timeoutSeconds, Event event) {
@@ -47,7 +54,8 @@ public class SmsSubmitCase {
         return localDbRepository.getConfirmationSenderNumber()
                 .flatMapCompletable(confirmationSenderNumber ->
                         smsRepository.listenToConfirmationSms(
-                                timeoutSeconds, confirmationSenderNumber, requiredStrings));
+                                timeoutSeconds, confirmationSenderNumber, requiredStrings))
+                .andThen(localDbRepository.updateSubmissionState(event, State.SYNCED_VIA_SMS));
     }
 
     private Completable checkPreconditions() {

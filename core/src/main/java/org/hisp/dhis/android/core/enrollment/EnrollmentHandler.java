@@ -7,8 +7,10 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteHandler;
@@ -25,14 +27,14 @@ import java.util.Collection;
 
 public class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
     private final DHISVersionManager versionManager;
-    private final SyncHandler<Event> eventHandler;
+    private final SyncHandlerWithTransformer<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;
     private final ObjectWithoutUidStore<Note> noteStore;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
     EnrollmentHandler(@NonNull DHISVersionManager versionManager,
                       @NonNull EnrollmentStore enrollmentStore,
-                      @NonNull SyncHandler<Event> eventHandler,
+                      @NonNull SyncHandlerWithTransformer<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull SyncHandler<Note> noteHandler,
                       @NonNull ObjectWithoutUidStore<Note> noteStore) {
@@ -47,7 +49,15 @@ public class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
     @Override
     protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
         if (action != HandleAction.Delete) {
-            eventHandler.handleMany(enrollment.events());
+            eventHandler.handleMany(enrollment.events(),
+                    new ModelBuilder<Event, Event>() {
+                        @Override
+                        public Event buildModel(Event event) {
+                            return event.toBuilder()
+                                    .state(State.SYNCED)
+                                    .build();
+                        }
+                    });
 
             Collection<Note> notes = new ArrayList<>();
             NoteToStoreTransformer transformer = new NoteToStoreTransformer(enrollment, versionManager);

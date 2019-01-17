@@ -1,7 +1,9 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
@@ -32,7 +34,7 @@ public class EnrollmentHandlerShould {
     private EnrollmentStore enrollmentStore;
 
     @Mock
-    private SyncHandler<Event> eventHandler;
+    private SyncHandlerWithTransformer<Event> eventHandler;
 
     @Mock
     private SyncHandler<Note> noteHandler;
@@ -114,7 +116,7 @@ public class EnrollmentHandlerShould {
         verify(enrollmentStore, never()).deleteIfExists(anyString());
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handleMany(any(ArrayList.class));
+        verify(eventHandler, times(1)).handleMany(any(ArrayList.class), any(ModelBuilder.class));
         verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
         verify(noteHandler, times(1)).handleMany(anyCollectionOf(Note.class));
     }

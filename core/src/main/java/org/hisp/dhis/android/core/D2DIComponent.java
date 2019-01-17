@@ -4,6 +4,7 @@ import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
+import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
@@ -39,6 +40,7 @@ import dagger.Component;
 
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
+        ConstantPackageDIModule.class,
         DataElementPackageDIModule.class,
         DataSetPackageDIModule.class,
         DataValuePackageDIModule.class,
@@ -74,6 +76,7 @@ public interface D2DIComponent {
 
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);
+        Builder constantPackageDIModule(ConstantPackageDIModule constantPackageDIModule);
         Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);

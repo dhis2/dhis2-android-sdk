@@ -39,6 +39,7 @@ import retrofit2.Retrofit;
 @Module(includes = {
         TrackedEntityAttributeEntityDIModule.class,
         TrackedEntityAttributeReservedValueEntityDIModule.class,
+        TrackedEntityAttributeValueEntityDIModule.class,
         TrackedEntityDataValueEntityDIModule.class,
         TrackedEntityInstanceEntityDIModule.class,
         TrackedEntityTypeEntityDIModule.class

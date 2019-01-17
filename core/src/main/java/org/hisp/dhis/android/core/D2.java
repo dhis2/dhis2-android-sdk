@@ -62,7 +62,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.UserModule;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
 import java.util.Collection;
@@ -150,11 +149,6 @@ public final class D2 {
     @NonNull
     public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
         return TrackedEntityInstanceQueryCall.create(retrofit, databaseAdapter, query);
-    }
-
-    public String evaluateProgramIndicator(String enrollmentUid, String eventUid, String programIndicatorUid) {
-        return ProgramIndicatorEngine.create(databaseAdapter)
-                .getProgramIndicatorValue(enrollmentUid, eventUid, programIndicatorUid);
     }
 
     public SystemInfoModule systemInfoModule() {

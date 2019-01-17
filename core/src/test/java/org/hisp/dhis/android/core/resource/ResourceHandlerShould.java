@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.resource;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -68,43 +68,24 @@ public class ResourceHandlerShould {
         resourceHandler.handleResource(null);
 
         // verify that store is never called
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
+        verify(resourceStore, never()).updateOrInsertWhere(any(Resource.class));
     }
 
     @Test
     public void do_nothing_when_not_passing_server_date() {
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM);
+        resourceHandler.handleResource(Resource.Type.PROGRAM);
 
         // verify that store is never called
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-        verify(resourceStore, never()).update(anyString(), any(Date.class), anyString());
+        verify(resourceStore, never()).updateOrInsertWhere(any(Resource.class));
     }
 
     @Test
-    public void invoke_only_update_when_handle_resource_updatable() {
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(1);
+    public void invoke_update_or_insert_when_handle_resource_updatable() {
+        when(resourceStore.updateOrInsertWhere(any(Resource.class))).thenReturn(HandleAction.Update);
 
         resourceHandler.setServerDate(serverDate);
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM);
+        resourceHandler.handleResource(Resource.Type.PROGRAM);
 
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
-
-        // verify that insert is never called
-        verify(resourceStore, never()).insert(anyString(), any(Date.class));
-    }
-
-    @Test
-    public void invoke_update_and_insert_when_handle_resource_not_inserted() {
-        when(resourceStore.update(anyString(), any(Date.class), anyString())).thenReturn(0);
-
-        resourceHandler.setServerDate(serverDate);
-        resourceHandler.handleResource(ResourceModel.Type.PROGRAM);
-
-        // verify that insert is called once
-        verify(resourceStore, times(1)).insert(anyString(), any(Date.class));
-
-        // verify that update is called since we try to update before we insert
-        verify(resourceStore, times(1)).update(anyString(), any(Date.class), anyString());
+        verify(resourceStore, times(1)).updateOrInsertWhere(any(Resource.class));
     }
 }

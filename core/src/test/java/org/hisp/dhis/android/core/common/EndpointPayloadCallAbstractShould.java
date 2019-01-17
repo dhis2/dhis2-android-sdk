@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
 
     protected Call<List<P>> endpointCall;
 
-    protected ResourceModel.Type resourceType;
+    protected Resource.Type resourceType;
 
     @Before
     @SuppressWarnings("unchecked")

@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -178,14 +178,14 @@ public class OrganisationUnitCallUnitShould {
 
         when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
         when(genericCallData.databaseAdapter()).thenReturn(databaseAdapter);
-        when(resourceHandler.getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT)).thenReturn("lastUpdated");
+        when(resourceHandler.getLastUpdated(Resource.Type.ORGANISATION_UNIT)).thenReturn("lastUpdated");
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void invoke_server_with_correct_parameters() throws Exception {
         String date = "2014-11-25T09:37:53.358";
-        when(genericCallData.resourceHandler().getLastUpdated(ResourceModel.Type.ORGANISATION_UNIT))
+        when(genericCallData.resourceHandler().getLastUpdated(Resource.Type.ORGANISATION_UNIT))
                 .thenReturn(date);
 
         organisationUnitCall.call();

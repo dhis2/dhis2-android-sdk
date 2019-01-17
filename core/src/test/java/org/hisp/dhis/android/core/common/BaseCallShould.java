@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -103,7 +103,7 @@ public abstract class BaseCallShould {
         when(genericCallData.retrofit()).thenReturn(retrofit);
         when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
 
-        when(resourceHandler.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(null);
+        when(resourceHandler.getLastUpdated(any(Resource.Type.class))).thenReturn(null);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 

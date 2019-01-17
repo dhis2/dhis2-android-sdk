@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModel;
@@ -164,7 +165,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
         Cursor resourceCursor = database().query(ResourceModel.TABLE,
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
+        assertThatCursor(resourceCursor).hasRow(Resource.Type.ORGANISATION_UNIT,
                 BaseIdentifiableObject.dateToDateStr(serverDate));
 
         resourceCursor.close();

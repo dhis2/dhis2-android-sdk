@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.After;
 import org.junit.Before;
@@ -187,28 +188,28 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         1L,
-                        ResourceModel.Type.SYSTEM_INFO,
+                        Resource.Type.SYSTEM_INFO,
                         dateString
                 );
 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         2L,
-                        ResourceModel.Type.USER,
+                        Resource.Type.USER,
                         dateString
                 );
 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         3L,
-                        ResourceModel.Type.USER_CREDENTIALS,
+                        Resource.Type.USER_CREDENTIALS,
                         dateString
                 );
 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         4L,
-                        ResourceModel.Type.AUTHENTICATED_USER,
+                        Resource.Type.AUTHENTICATED_USER,
                         dateString
                 );
 

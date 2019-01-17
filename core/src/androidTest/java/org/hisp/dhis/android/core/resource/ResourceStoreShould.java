@@ -2,7 +2,6 @@ package org.hisp.dhis.android.core.resource;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -21,7 +20,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class ResourceStoreShould extends AbsStoreTestCase {
-    private static final ResourceModel.Type RESOURCE_TYPE = ResourceModel.Type.OPTION_SET;
+    private static final Resource.Type RESOURCE_TYPE = Resource.Type.OPTION_SET;
 
     private static final String[] PROJECTION = {Columns.RESOURCE_TYPE, Columns.LAST_SYNCED};
 
@@ -42,7 +41,7 @@ public class ResourceStoreShould extends AbsStoreTestCase {
     @Before
     public void setUp() throws IOException {
         super.setUp();
-        this.store = new ResourceStoreImpl(databaseAdapter());
+        this.store = ResourceStoreImpl.create(databaseAdapter());
     }
 
     @Test

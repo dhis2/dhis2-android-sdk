@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
@@ -49,23 +49,14 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -76,8 +67,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
-    private final D2InternalModules internalModules;
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
@@ -105,16 +94,16 @@ public final class D2 {
                 .build();
 
 
-        this.internalModules = d2DIComponent.internalModules();
         this.modules = d2DIComponent.modules();
-        this.resourceHandler = d2DIComponent.resourceHandler();
     }
 
+    @VisibleForTesting
     @NonNull
     public Retrofit retrofit() {
         return retrofit;
     }
 
+    @VisibleForTesting
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
@@ -128,27 +117,6 @@ public final class D2 {
     @NonNull
     public AggregatedModule aggregatedModule() {
         return d2DIComponent.aggregatedModule();
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, internalModules, uids);
-    }
-
-    @NonNull
-    public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler,
-                teiLimit, limitByOrgUnit);
-    }
-
-    @NonNull
-    public Callable<WebResponse> syncTrackedEntityInstances() {
-        return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit, internalModules);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
-        return TrackedEntityInstanceQueryCall.create(retrofit, databaseAdapter, query);
     }
 
     public SystemInfoModule systemInfoModule() {

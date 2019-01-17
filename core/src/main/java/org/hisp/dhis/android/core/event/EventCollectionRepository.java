@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -38,14 +40,14 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class EventCollectionRepository extends ReadOnlyCollectionRepositoryImpl<Event>
-        implements ReadOnlyWithUploadCollectionRepository<Event> {
+final class EventCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<Event>
+        implements ReadOnlyWithUploadIdentifiableCollectionRepository<Event> {
 
     private final EventPostCall postCall;
 
     @Inject
     EventCollectionRepository(EventStore eventStore, EventPostCall postCall) {
-        super(eventStore);
+        super(eventStore, Collections.<ChildrenAppender<Event>>emptyList());
         this.postCall = postCall;
     }
 

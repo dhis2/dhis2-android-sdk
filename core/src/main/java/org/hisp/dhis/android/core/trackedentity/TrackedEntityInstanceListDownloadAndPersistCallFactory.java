@@ -6,38 +6,47 @@ import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Retrofit;
 
-public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncCall<List<TrackedEntityInstance>> {
+@Reusable
+public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final D2InternalModules internalModules;
 
-    private final Collection<String> trackedEntityInstanceUids;
-
-    private TrackedEntityInstanceListDownloadAndPersistCall(
+    @Inject
+    TrackedEntityInstanceListDownloadAndPersistCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
-            @NonNull D2InternalModules internalModules,
-            @NonNull Collection<String> trackedEntityInstanceUids) {
+            @NonNull D2InternalModules internalModules) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
-        this.trackedEntityInstanceUids = trackedEntityInstanceUids;
     }
 
-    @Override
-    public List<TrackedEntityInstance> call() throws D2Error {
-        setExecuted();
+    public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
+        return new Callable<List<TrackedEntityInstance>>() {
+            @Override
+            public List<TrackedEntityInstance> call() throws Exception {
+                return downloadAndPersist(trackedEntityInstanceUids);
+            }
+        };
+    }
+
+    private List<TrackedEntityInstance> downloadAndPersist(Collection<String> trackedEntityInstanceUids)
+            throws D2Error {
 
         if (trackedEntityInstanceUids == null) {
             throw new IllegalArgumentException("UID list is null");
@@ -56,17 +65,5 @@ public final class TrackedEntityInstanceListDownloadAndPersistCall extends SyncC
                 internalModules, teis));
 
         return teis;
-    }
-
-    public static Call<List<TrackedEntityInstance>> create(@NonNull DatabaseAdapter databaseAdapter,
-                                                           @NonNull Retrofit retrofit,
-                                                           @NonNull D2InternalModules internalModules,
-                                                           @NonNull Collection<String> trackedEntityInstanceUids) {
-        return new TrackedEntityInstanceListDownloadAndPersistCall(
-                databaseAdapter,
-                retrofit,
-                internalModules,
-                trackedEntityInstanceUids
-        );
     }
 }

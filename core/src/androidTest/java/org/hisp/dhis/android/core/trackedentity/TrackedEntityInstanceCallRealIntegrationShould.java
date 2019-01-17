@@ -36,7 +36,7 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
         d2.syncMetaData().call();
 
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899"));
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899"));
 
         List<TrackedEntityInstance> teiResponse = trackedEntityInstanceByUidEndPointCall.call();
 

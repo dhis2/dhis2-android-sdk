@@ -60,7 +60,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("AlvUHPP2Mes")).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("AlvUHPP2Mes")).call();
 
         TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
 
@@ -68,7 +68,7 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
 
         addNote();
 
-        d2.syncTrackedEntityInstances().call();
+        d2.trackedEntityModule().trackedEntityInstances.upload().call();
 
         d2.wipeModule().wipeEverything();
     }

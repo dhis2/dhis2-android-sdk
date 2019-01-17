@@ -43,7 +43,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
         d2.syncMetaData().call();
 
         TrackedEntityInstanceQuery query = queryBuilder.build();
-        List<TrackedEntityInstance> queriedTeis = d2.queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queriedTeis = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
         assertThat(queriedTeis).isNotEmpty();
 
         Set<String> uids = new HashSet<>(queriedTeis.size());
@@ -52,7 +52,7 @@ public class TrackedEntityInstanceQueryAndDownloadRealIntegrationShould extends 
             uids.add(tei.uid());
         }
 
-        List<TrackedEntityInstance> downloadedTeis = d2.downloadTrackedEntityInstancesByUid(uids).call();
+        List<TrackedEntityInstance> downloadedTeis = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(uids).call();
         assertThat(queriedTeis.size()).isEqualTo(downloadedTeis.size());
     }
 

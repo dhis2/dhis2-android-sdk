@@ -75,7 +75,7 @@ public class WipeDBCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        d2.downloadTrackedEntityInstances(5, false).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(5, false).call();
 
         TrackedEntityInstanceStore trackedEntityInstanceStore =
                 TrackedEntityInstanceStoreImpl.create(databaseAdapter());

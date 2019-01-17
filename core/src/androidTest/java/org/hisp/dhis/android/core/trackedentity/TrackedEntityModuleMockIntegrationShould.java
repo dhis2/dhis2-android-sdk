@@ -22,7 +22,7 @@ public class TrackedEntityModuleMockIntegrationShould extends MockIntegrationSho
     }
 
     @Test
-    public void allow_access_to_all_programs_without_children() {
+    public void allow_access_to_all_teis_without_children() {
         List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances.get();
         assertThat(trackedEntityInstances.size(), is(1));
         for (TrackedEntityInstance tei: trackedEntityInstances) {
@@ -33,7 +33,7 @@ public class TrackedEntityModuleMockIntegrationShould extends MockIntegrationSho
     }
 
     @Test
-    public void allow_access_to_one_programs_without_children() {
+    public void allow_access_to_one_tei_without_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances.uid("nWrB0TfWlvh").get();
         assertThat(tei.uid(), is("nWrB0TfWlvh"));
         assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));

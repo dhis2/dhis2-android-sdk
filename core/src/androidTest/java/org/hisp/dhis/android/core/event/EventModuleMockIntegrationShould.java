@@ -22,7 +22,7 @@ public class EventModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
-    public void allow_access_to_all_programs_without_children() {
+    public void allow_access_to_all_events_without_children() {
         List<Event> events = d2.eventModule().events.get();
         assertThat(events.size(), is(1));
         for (Event event: events) {
@@ -31,5 +31,14 @@ public class EventModuleMockIntegrationShould extends MockIntegrationShould {
             assertThat(event.programStage(), is("dBwrot7S420"));
             assertThat(event.trackedEntityDataValues() == null, is(true));
         }
+    }
+
+    @Test
+    public void allow_access_to_one_event_without_children() {
+        Event event = d2.eventModule().events.uid("V1CerIi3sdL").get();
+        assertThat(event.uid(), is("V1CerIi3sdL"));
+        assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
+        assertThat(event.programStage(), is("dBwrot7S420"));
+        assertThat(event.trackedEntityDataValues() == null, is(true));
     }
 }

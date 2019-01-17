@@ -1,27 +1,20 @@
-package org.hisp.dhis.android.core.calls;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -31,28 +24,20 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
 import org.hisp.dhis.android.core.relationship.RelationshipHelper;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
+
+import dagger.Reusable;
 
 @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.ExcessiveImports"})
-public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
+@Reusable
+public final class TrackedEntityInstancePostCall implements Callable<WebResponse> {
     // internal modules
     private final DHISVersionManager versionManager;
     private final RelationshipDHISVersionManager relationshipDHISVersionManager;
@@ -71,17 +56,18 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
     private final APICallExecutor apiCallExecutor;
 
-    private TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
-                                          @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
-                                          @NonNull RelationshipCollectionRepository relationshipRepository,
-                                          @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
-                                          @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                          @NonNull EnrollmentStore enrollmentStore,
-                                          @NonNull EventStore eventStore,
-                                          @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
-                                          @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
-                                          @NonNull ObjectWithoutUidStore<Note> noteStore,
-                                          @NonNull APICallExecutor apiCallExecutor) {
+    @Inject
+    TrackedEntityInstancePostCall(@NonNull DHISVersionManager versionManager,
+                                  @NonNull RelationshipDHISVersionManager relationshipDHISVersionManager,
+                                  @NonNull RelationshipCollectionRepository relationshipRepository,
+                                  @NonNull TrackedEntityInstanceService trackedEntityInstanceService,
+                                  @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+                                  @NonNull EnrollmentStore enrollmentStore,
+                                  @NonNull EventStore eventStore,
+                                  @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
+                                  @NonNull TrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                                  @NonNull ObjectWithoutUidStore<Note> noteStore,
+                                  @NonNull APICallExecutor apiCallExecutor) {
         this.versionManager = versionManager;
         this.relationshipDHISVersionManager = relationshipDHISVersionManager;
         this.relationshipRepository = relationshipRepository;
@@ -97,8 +83,6 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
     @Override
     public WebResponse call() throws D2Error {
-        setExecuted();
-
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
 
         // if size is 0, then no need to do network request
@@ -207,22 +191,5 @@ public final class TrackedEntityInstancePostCall extends SyncCall<WebResponse> {
 
         webResponseHandler.handleWebResponse(webResponse);
 
-    }
-
-    public static TrackedEntityInstancePostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                                       D2InternalModules internalModules) {
-        return new TrackedEntityInstancePostCall(
-                internalModules.systemInfo.publicModule.versionManager,
-                new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationship.publicModule.relationships,
-                retrofit.create(TrackedEntityInstanceService.class),
-                TrackedEntityInstanceStoreImpl.create(databaseAdapter),
-                EnrollmentStoreImpl.create(databaseAdapter),
-                EventStoreImpl.create(databaseAdapter),
-                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
-                TrackedEntityAttributeValueStoreImpl.create(databaseAdapter),
-                NoteStore.create(databaseAdapter),
-                APICallExecutorImpl.create(databaseAdapter)
-        );
     }
 }

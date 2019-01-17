@@ -196,7 +196,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Event> downloadedEventsWithoutValuesAndDeleteFalse = new ArrayList<>();
         for (Event event : downloadedEventsWithoutValues) {
             downloadedEventsWithoutValuesAndDeleteFalse.add(
-                    event.toBuilder().deleted(false).build());
+                    event.toBuilder().deleted(false).state(null).build());
         }
 
         List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter()).selectAll();

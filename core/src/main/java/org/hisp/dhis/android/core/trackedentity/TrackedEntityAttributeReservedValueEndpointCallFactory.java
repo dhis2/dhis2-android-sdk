@@ -27,6 +27,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceCallFetcher;
@@ -36,20 +37,32 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class TrackedEntityAttributeReservedValueEndpointCallFactory
         extends QueryCallFactoryImpl<TrackedEntityAttributeReservedValue,
         TrackedEntityAttributeReservedValueQuery> {
 
-    TrackedEntityAttributeReservedValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final TrackedEntityAttributeReservedValueService service;
+    private final SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler;
+
+    @Inject
+    TrackedEntityAttributeReservedValueEndpointCallFactory(
+            GenericCallData data,
+            APICallExecutor apiCallExecutor,
+            TrackedEntityAttributeReservedValueService service,
+            SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<TrackedEntityAttributeReservedValue> fetcher(
             final TrackedEntityAttributeReservedValueQuery query) {
-
-        final TrackedEntityAttributeReservedValueService service
-                = data.retrofit().create(TrackedEntityAttributeReservedValueService.class);
 
         return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>(apiCallExecutor) {
             @Override
@@ -64,7 +77,8 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
                             query.numberToReserve(),
                             query.organisationUnit().code());
                 }
-            }};
+            }
+        };
     }
 
     @Override
@@ -72,7 +86,7 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
             final TrackedEntityAttributeReservedValueQuery query) {
         return new TransactionalNoResourceSyncCallWithTransformerProcessor<>(
                 data.databaseAdapter(),
-                TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
+                handler,
                 new TrackedEntityAttributeReservedValueModelBuilder(
                         query.organisationUnit(), query.trackedEntityAttributePattern())
         );

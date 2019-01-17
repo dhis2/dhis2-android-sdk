@@ -78,8 +78,10 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
 
         HashSet<String> uids = new HashSet<>(Collections.singletonList(uid));
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        TrackedEntityTypeHandler handler = new TrackedEntityTypeHandler(TrackedEntityTypeStore.create(databaseAdapter()),
-                ObjectStyleHandler.create(databaseAdapter()));
+        TrackedEntityTypeHandler handler = new TrackedEntityTypeHandler(
+                TrackedEntityTypeStore.create(databaseAdapter()),
+                ObjectStyleHandler.create(databaseAdapter()),
+                new TrackedEntityTypeAttributeHandler(TrackedEntityTypeAttributeStore.create(databaseAdapter())));
         trackedEntityTypeCall = new TrackedEntityTypeCallFactory(getGenericCallData(d2), apiCallExecutor,
                 d2.retrofit().create(TrackedEntityTypeService.class), handler).create(uids);
     }

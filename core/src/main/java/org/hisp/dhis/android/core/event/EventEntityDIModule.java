@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -47,13 +47,13 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<Event> handler(DatabaseAdapter databaseAdapter) {
-        return EventHandler.create(databaseAdapter);
+    public SyncHandler<Event> handler(EventHandler impl) {
+        return impl;
     }
 
     @Provides
     @Reusable
-    ReadOnlyIdentifiableCollectionRepository<Event> repository(DatabaseAdapter databaseAdapter) {
-        return EventCollectionRepository.create(databaseAdapter);
+    ReadOnlyWithUploadIdentifiableCollectionRepository<Event> repository(EventCollectionRepository impl) {
+        return impl;
     }
 }

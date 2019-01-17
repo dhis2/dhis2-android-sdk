@@ -156,6 +156,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
             downloadedEvents.add(event.toBuilder()
                     .id(null)
+                    .state(null)
                     .deleted(false)
                     .trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build());
         }

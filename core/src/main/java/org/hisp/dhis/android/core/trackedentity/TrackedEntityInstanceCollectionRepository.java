@@ -28,21 +28,31 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.imports.WebResponse;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.Callable;
 
-final class TrackedEntityInstanceCollectionRepository {
+import javax.inject.Inject;
 
-    private TrackedEntityInstanceCollectionRepository() {
+final class TrackedEntityInstanceCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<TrackedEntityInstance>
+        implements ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> {
+
+    private final TrackedEntityInstancePostCall postCall;
+
+    @Inject
+    TrackedEntityInstanceCollectionRepository(TrackedEntityInstanceStore store,
+                                              TrackedEntityInstancePostCall postCall) {
+        super(store, Collections.<ChildrenAppender<TrackedEntityInstance>>emptyList());
+        this.postCall = postCall;
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<TrackedEntityInstance> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                TrackedEntityInstanceStoreImpl.create(databaseAdapter),
-                new ArrayList<ChildrenAppender<TrackedEntityInstance>>()
-        );
+
+    @Override
+    public Callable<WebResponse> upload() {
+        return postCall;
     }
 }

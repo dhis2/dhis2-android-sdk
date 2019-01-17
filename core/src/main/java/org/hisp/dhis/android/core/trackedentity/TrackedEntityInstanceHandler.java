@@ -29,7 +29,7 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
     private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler;
-    private final EnrollmentHandler enrollmentHandler;
+    private final SyncHandlerWithTransformer<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
 
     TrackedEntityInstanceHandler(
@@ -37,7 +37,7 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
             @NonNull RelationshipHandler relationshipHandler,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
             @NonNull SyncHandlerWithTransformer<TrackedEntityAttributeValue> trackedEntityAttributeValueHandler,
-            @NonNull EnrollmentHandler enrollmentHandler,
+            @NonNull SyncHandlerWithTransformer<Enrollment> enrollmentHandler,
             @NonNull OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner) {
         super(trackedEntityInstanceStore);
         this.relationshipVersionManager = relationshipVersionManager;
@@ -62,7 +62,14 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
             if (enrollments != null) {
-                enrollmentHandler.handleMany(enrollments);
+                enrollmentHandler.handleMany(enrollments, new ModelBuilder<Enrollment, Enrollment>() {
+                    @Override
+                    public Enrollment buildModel(Enrollment enrollment) {
+                        return enrollment.toBuilder()
+                                .state(State.SYNCED)
+                                .build();
+                    }
+                });
             }
 
             handleRelationships(trackedEntityInstance);
@@ -75,17 +82,23 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
         List<Relationship229Compatible> relationships = trackedEntityInstance.relationships();
         if (relationships != null) {
             for (Relationship229Compatible relationship229 : trackedEntityInstance.relationships()) {
-
-                Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
-                TrackedEntityInstance relativeTEI = relationshipVersionManager.getRelativeTei(relationship229,
-                        trackedEntityInstance.uid());
+                TrackedEntityInstance relativeTEI =
+                        relationshipVersionManager.getRelativeTei(relationship229, trackedEntityInstance.uid());
 
                 if (relativeTEI != null) {
-                    handle(relativeTEI, relationshipModelBuilder());
-                    relationshipHandler.handle(relationship);
+                    handleRelationship(relativeTEI, relationship229);
                 }
             }
         }
+    }
+
+    private void handleRelationship(TrackedEntityInstance relativeTEI, Relationship229Compatible relationship229) {
+        if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
+            handle(relativeTEI, relationshipModelBuilder());
+        }
+
+        Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
+        relationshipHandler.handle(relationship);
     }
 
     public final void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances,

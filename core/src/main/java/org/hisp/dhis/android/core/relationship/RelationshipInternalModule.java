@@ -34,13 +34,10 @@ import dagger.Reusable;
 @Reusable
 public final class RelationshipInternalModule {
 
-    public final RelationshipModule publicModule;
     public final RelationshipHandler relationshipHandler;
 
     @Inject
-    RelationshipInternalModule(RelationshipModule publicModule,
-                               RelationshipHandler relationshipHandler) {
-        this.publicModule = publicModule;
+    RelationshipInternalModule(RelationshipHandler relationshipHandler) {
         this.relationshipHandler = relationshipHandler;
     }
 }

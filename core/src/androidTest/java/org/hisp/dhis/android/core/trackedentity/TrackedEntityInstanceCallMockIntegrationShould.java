@@ -65,7 +65,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
@@ -82,13 +82,13 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        trackedEntityInstanceByUidEndPointCall = d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
+        trackedEntityInstanceByUidEndPointCall = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data.json");
@@ -187,7 +187,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {
             downloadedEnrollmentsWithoutIdAndDeleteFalse.add(
-                    enrollment.toBuilder().id(null).deleted(false).notes(new ArrayList<Note>()).build());
+                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<Note>()).build());
         }
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter());
@@ -196,7 +196,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Event> downloadedEventsWithoutValuesAndDeleteFalse = new ArrayList<>();
         for (Event event : downloadedEventsWithoutValues) {
             downloadedEventsWithoutValuesAndDeleteFalse.add(
-                    event.toBuilder().deleted(false).build());
+                    event.toBuilder().deleted(false).state(null).build());
         }
 
         List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter()).selectAll();

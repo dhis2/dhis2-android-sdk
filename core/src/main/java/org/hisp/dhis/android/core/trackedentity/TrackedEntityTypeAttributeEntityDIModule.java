@@ -26,23 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class UserOrganisationUnitEntityDIModule {
+public final class TrackedEntityTypeAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    LinkModelStore<UserOrganisationUnitLinkModel> store(DatabaseAdapter databaseAdapter) {
-        return UserOrganisationUnitLinkStore.create(databaseAdapter);
+    public LinkModelStore<TrackedEntityTypeAttribute> store(DatabaseAdapter databaseAdapter) {
+        return TrackedEntityTypeAttributeStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public OrderedLinkModelHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> handler(
+            TrackedEntityTypeAttributeHandler impl) {
+        return impl;
     }
 }

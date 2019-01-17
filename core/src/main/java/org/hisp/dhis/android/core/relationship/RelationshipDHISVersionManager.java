@@ -36,10 +36,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public class RelationshipDHISVersionManager {
 
     private final DHISVersionManager versionManager;
 
+    @Inject
     public RelationshipDHISVersionManager(DHISVersionManager versionManager) {
         this.versionManager = versionManager;
     }

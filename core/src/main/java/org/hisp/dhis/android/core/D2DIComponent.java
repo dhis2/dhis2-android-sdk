@@ -4,7 +4,7 @@ import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
@@ -19,7 +19,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModu
 import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.SmsDIModule;
@@ -42,6 +41,7 @@ import dagger.Component;
 
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
+        ConstantPackageDIModule.class,
         DataElementPackageDIModule.class,
         DataSetPackageDIModule.class,
         DataValuePackageDIModule.class,
@@ -66,8 +66,6 @@ public interface D2DIComponent {
 
     D2InternalModules internalModules();
     D2Modules modules();
-    ResourceHandler resourceHandler();
-    GenericCallData genericCallData();
     AggregatedModule aggregatedModule();
     MetadataCall metadataCall();
     WipeModule wipeModule();
@@ -81,6 +79,7 @@ public interface D2DIComponent {
 
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);
+        Builder constantPackageDIModule(ConstantPackageDIModule constantPackageDIModule);
         Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);

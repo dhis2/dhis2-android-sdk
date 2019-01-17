@@ -27,80 +27,17 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.List;
+public final class ProgramRuleVariableHandler extends IdentifiableSyncHandlerImpl<ProgramRuleVariable> {
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class ProgramRuleVariableHandler {
-    private final ProgramRuleVariableStore programRuleVariableStore;
-
-    ProgramRuleVariableHandler(ProgramRuleVariableStore programRuleVariableStore) {
-        this.programRuleVariableStore = programRuleVariableStore;
-    }
-
-    public void handleProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
-        if (programRuleVariables == null) {
-            return;
-        }
-
-        deleteOrPersistProgramRuleVariables(programRuleVariables);
-    }
-
-    private void deleteOrPersistProgramRuleVariables(List<ProgramRuleVariable> programRuleVariables) {
-        int size = programRuleVariables.size();
-
-        for (int i = 0; i < size; i++) {
-            ProgramRuleVariable programRuleVariable = programRuleVariables.get(i);
-
-            if (isDeleted(programRuleVariable)) {
-                programRuleVariableStore.delete(programRuleVariable.uid());
-            } else {
-                String programStageUid = null;
-                if(programRuleVariable.programStage() != null) {
-                    programStageUid = programRuleVariable.programStage().uid();
-                }
-
-                String dataElementUid = null;
-                if(programRuleVariable.dataElement() != null) {
-                    dataElementUid = programRuleVariable.dataElement().uid();
-                }
-
-                String trackedEntityAttributeUid = null;
-                if(programRuleVariable.trackedEntityAttribute() != null) {
-                    trackedEntityAttributeUid = programRuleVariable.trackedEntityAttribute().uid();
-                }
-
-                int updatedRow = programRuleVariableStore.update(
-                        programRuleVariable.uid(), programRuleVariable.code(),
-                        programRuleVariable.name(), programRuleVariable.displayName(),
-                        programRuleVariable.created(), programRuleVariable.lastUpdated(),
-                        programRuleVariable.useCodeForOptionSet(),
-                        programRuleVariable.program().uid(), programStageUid,
-                        dataElementUid,
-                        trackedEntityAttributeUid,
-                        programRuleVariable.programRuleVariableSourceType(), programRuleVariable.uid()
-                );
-
-                if (updatedRow <= 0) {
-                    programRuleVariableStore.insert(
-                            programRuleVariable.uid(), programRuleVariable.code(),
-                            programRuleVariable.name(), programRuleVariable.displayName(),
-                            programRuleVariable.created(), programRuleVariable.lastUpdated(),
-                            programRuleVariable.useCodeForOptionSet(),
-                            programRuleVariable.program().uid(), programStageUid,
-                            dataElementUid,
-                            trackedEntityAttributeUid,
-                            programRuleVariable.programRuleVariableSourceType()
-                    );
-                }
-            }
-
-        }
+    private ProgramRuleVariableHandler(IdentifiableObjectStore<ProgramRuleVariable> programRuleVariableStore) {
+        super(programRuleVariableStore);
     }
 
     public static ProgramRuleVariableHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleVariableHandler(new ProgramRuleVariableStoreImpl(databaseAdapter));
+        return new ProgramRuleVariableHandler(ProgramRuleVariableStore.create(databaseAdapter));
     }
 }

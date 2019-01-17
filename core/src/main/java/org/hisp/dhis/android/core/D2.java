@@ -31,13 +31,11 @@ package org.hisp.dhis.android.core;
 import android.content.Context;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
-import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.ConfigurationModel;
@@ -51,29 +49,16 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
-import org.hisp.dhis.android.core.event.EventPostCall;
-import org.hisp.dhis.android.core.event.EventWithLimitCall;
-import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.sms.SmsModule;
+
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
 import org.hisp.dhis.android.core.user.UserModule;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
@@ -84,9 +69,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
-    private final GenericCallData genericCallData;
-    private final D2InternalModules internalModules;
     private final D2Modules modules;
     private final D2DIComponent d2DIComponent;
 
@@ -115,17 +97,16 @@ public final class D2 {
                 .build();
 
 
-        this.internalModules = d2DIComponent.internalModules();
         this.modules = d2DIComponent.modules();
-        this.resourceHandler = d2DIComponent.resourceHandler();
-        this.genericCallData = d2DIComponent.genericCallData();
     }
 
+    @VisibleForTesting
     @NonNull
     public Retrofit retrofit() {
         return retrofit;
     }
 
+    @VisibleForTesting
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
@@ -139,60 +120,6 @@ public final class D2 {
     @NonNull
     public AggregatedModule aggregatedModule() {
         return d2DIComponent.aggregatedModule();
-    }
-
-    @NonNull
-    public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
-        return EventWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler, eventLimit,
-                limitByOrgUnit);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> syncDownSyncedTrackedEntityInstances() {
-        return TrackedEntityInstanceSyncDownCall.create(databaseAdapter, retrofit, internalModules);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, internalModules, uids);
-    }
-
-    @NonNull
-    public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler,
-                teiLimit, limitByOrgUnit);
-    }
-
-    @NonNull
-    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
-            throws D2Error {
-        return TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
-                .getValue(attributeUid, organisationUnitUid);
-    }
-
-    public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
-                                                         Integer numberOfValuesToFillUp) {
-        TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
-                .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
-    }
-
-    @NonNull
-    public Callable<WebResponse> syncTrackedEntityInstances() {
-        return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit, internalModules);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
-        return TrackedEntityInstanceQueryCall.create(retrofit, databaseAdapter, query);
-    }
-
-    public Callable<WebResponse> syncSingleEvents() {
-        return EventPostCall.create(databaseAdapter, retrofit);
-    }
-
-    public String evaluateProgramIndicator(String enrollmentUid, String eventUid, String programIndicatorUid) {
-        return ProgramIndicatorEngine.create(databaseAdapter)
-                .getProgramIndicatorValue(enrollmentUid, eventUid, programIndicatorUid);
     }
 
     public SystemInfoModule systemInfoModule() {

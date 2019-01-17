@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -44,7 +43,7 @@ public final class ProgramEntityDIModule implements IdentifiableEntityFromDataba
     @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<Program> store(DatabaseAdapter databaseAdapter) {
+    public ProgramStoreInterface store(DatabaseAdapter databaseAdapter) {
         return ProgramStore.create(databaseAdapter);
     }
 

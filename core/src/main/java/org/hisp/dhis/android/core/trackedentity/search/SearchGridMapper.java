@@ -36,8 +36,18 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class SearchGridMapper {
     private static final Integer NON_ATTRIBUTE_LENGTH = 7;
+
+    @Inject
+    SearchGridMapper() {
+        // Empty constructor to add Dagger annotation
+    }
 
     public List<TrackedEntityInstance> transform(SearchGrid searchGrid) throws ParseException {
         List<TrackedEntityInstance> teis = new ArrayList<>(searchGrid.rows().size());

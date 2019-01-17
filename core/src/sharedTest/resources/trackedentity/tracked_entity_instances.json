@@ -31,7 +31,31 @@
           "incidentDate": "2019-01-10T00:00:00.000",
           "status": "ACTIVE",
           "notes": [],
-          "events": []
+          "events": [
+            {
+              "programStage": "dBwrot7S420",
+              "storedBy": "system",
+              "orgUnit": "DiszpKrYNg8",
+              "dueDate": "2015-05-01T00:00:00.000",
+              "program": "lxAQ7Zs9VYR",
+              "href": "https://play.dhis2.org/demo/api/events/hnaWBxMw5j3",
+              "event": "hnaWBxMw5j3",
+              "status": "COMPLETED",
+              "eventDate": "2015-05-01T00:00:00.000",
+              "orgUnitName": "Ngelehun CHC",
+              "created": "2015-09-08T21:40:22.000",
+              "completedDate": "2015-11-15T00:00:00.000",
+              "lastUpdated": "2015-11-15T14:55:22.995",
+              "completedBy": "system",
+              "enrollment": "JILLTkO4LKQ",
+              "coordinate": {
+                "latitude": 0.0,
+                "longitude": 0.0
+              },
+              "dataValues": [],
+              "notes": []
+            }
+          ]
         }
       ]
     }

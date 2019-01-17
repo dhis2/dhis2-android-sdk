@@ -3,10 +3,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -16,34 +13,42 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
 import javax.net.ssl.HttpsURLConnection;
 
+import dagger.Reusable;
 import retrofit2.Call;
-import retrofit2.Retrofit;
 
 @SuppressWarnings({"PMD.PreserveStackTrace"})
-public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedEntityInstance>> {
+@Reusable
+public final class TrackedEntityInstanceQueryCallFactory {
 
     private final TrackedEntityInstanceService service;
-    private final TrackedEntityInstanceQuery query;
     private final SearchGridMapper mapper;
     private final APICallExecutor apiCallExecutor;
 
-    TrackedEntityInstanceQueryCall(
+    @Inject
+    TrackedEntityInstanceQueryCallFactory(
             @NonNull TrackedEntityInstanceService service,
-            @NonNull TrackedEntityInstanceQuery query,
             @NonNull SearchGridMapper mapper,
             APICallExecutor apiCallExecutor) {
         this.service = service;
-        this.query = query;
         this.mapper = mapper;
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    @Override
-    public List<TrackedEntityInstance> call() throws D2Error {
-        setExecuted();
+    public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQuery query) {
+        return new Callable<List<TrackedEntityInstance>>() {
+            @Override
+            public List<TrackedEntityInstance> call() throws Exception {
+                return queryTrackedEntityInstances(query);
+            }
+        };
+    }
+
+    private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) throws D2Error {
 
         OuMode mode = query.orgUnitMode();
         String orgUnitModeStr = mode == null ? null : mode.toString();
@@ -80,14 +85,5 @@ public final class TrackedEntityInstanceQueryCall extends SyncCall<List<TrackedE
                     .originalException(pe)
                     .build();
         }
-    }
-
-    public static TrackedEntityInstanceQueryCall create(Retrofit retrofit, DatabaseAdapter databaseAdapter,
-                                                        TrackedEntityInstanceQuery query) {
-        return new TrackedEntityInstanceQueryCall(
-                retrofit.create(TrackedEntityInstanceService.class),
-                query,
-                new SearchGridMapper(),
-                APICallExecutorImpl.create(databaseAdapter));
     }
 }

@@ -3,8 +3,6 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -13,7 +11,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
@@ -24,51 +21,46 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Retrofit;
 
-public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
+@Reusable
+public final class TrackedEntityInstanceWithLimitCallFactory {
 
     private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
 
-    private final boolean limitByOrgUnit;
-    private final int teiLimit;
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final D2InternalModules internalModules;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
 
-    private TrackedEntityInstanceWithLimitCall(
+    @Inject
+    TrackedEntityInstanceWithLimitCallFactory(
             @NonNull DatabaseAdapter databaseAdapter,
             @NonNull Retrofit retrofit,
             @NonNull D2InternalModules internalModules,
             @NonNull ResourceHandler resourceHandler,
-            @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
-            int teiLimit,
-            boolean limitByOrgUnit) {
+            @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.teiLimit = teiLimit;
-        this.limitByOrgUnit = limitByOrgUnit;
     }
 
-    @Override
-    public Unit call() throws D2Error {
-        this.setExecuted();
-
-        return new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(
-                new Callable<Unit>() {
-                    @Override
-                    public Unit call() throws Exception {
-                        return getTrackedEntityInstances();
-                    }
-                });
+    public Callable<Unit> getCall(final int teiLimit, final boolean limitByOrgUnit) {
+        return new Callable<Unit>() {
+            @Override
+            public Unit call() throws Exception {
+                return getTrackedEntityInstances(teiLimit, limitByOrgUnit);
+            }
+        };
     }
     
-    private Unit getTrackedEntityInstances() throws Exception {
+    private Unit getTrackedEntityInstances(final int teiLimit, final boolean limitByOrgUnit) throws Exception {
         Collection<String> organisationUnitUids;
         TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
         int pageSize = teiQueryBuilder.build().pageSize();
@@ -107,15 +99,15 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
                         TrackedEntityInstancesEndpointCall.create(retrofit, databaseAdapter, teiQueryBuilder.build())
                                 .call();
 
-                if (paging.isLastPage()) {
-                    int previousItemsToSkip = pageTrackedEntityInstances.size()
-                            + paging.previousItemsToSkipCount() - paging.pageSize();
-                    int toIndex = previousItemsToSkip < 0 ? pageTrackedEntityInstances.size() :
-                            pageTrackedEntityInstances.size() - previousItemsToSkip;
+                if (paging.isLastPage() && pageTrackedEntityInstances.size() > paging.previousItemsToSkipCount()) {
+                    int toIndex = pageTrackedEntityInstances.size() <
+                            paging.pageSize() - paging.posteriorItemsToSkipCount() ?
+                            pageTrackedEntityInstances.size() :
+                            paging.pageSize() - paging.posteriorItemsToSkipCount();
 
                     TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, internalModules,
-                                    pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)
-                    ).call();
+                            pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)).call();
+
                 } else {
                     TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
                             internalModules, pageTrackedEntityInstances).call();
@@ -148,20 +140,5 @@ public final class TrackedEntityInstanceWithLimitCall extends SyncCall<Unit> {
         }
 
         return organisationUnitUids;
-    }
-
-    public static TrackedEntityInstanceWithLimitCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit,
-                                                            D2InternalModules internalModules,
-                                                            ResourceHandler resourceHandler, int teiLimit,
-                                                            boolean limitByOrgUnit) {
-        return new TrackedEntityInstanceWithLimitCall(
-                databaseAdapter,
-                retrofit,
-                internalModules,
-                resourceHandler,
-                UserOrganisationUnitLinkStore.create(databaseAdapter),
-                teiLimit,
-                limitByOrgUnit
-        );
     }
 }

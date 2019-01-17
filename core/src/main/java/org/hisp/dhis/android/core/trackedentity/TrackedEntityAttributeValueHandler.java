@@ -12,7 +12,7 @@ public final class TrackedEntityAttributeValueHandler
         extends ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeValue> {
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    private TrackedEntityAttributeValueHandler(TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+    TrackedEntityAttributeValueHandler(TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         super(trackedEntityAttributeValueStore);
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }

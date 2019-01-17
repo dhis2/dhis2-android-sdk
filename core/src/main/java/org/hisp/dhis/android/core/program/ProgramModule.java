@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 
 import javax.inject.Inject;
 
@@ -40,9 +41,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class ProgramModule {
 
     public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
+    public final ProgramIndicatorEngine programIndicatorEngine;
 
     @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs) {
+    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
+                  ProgramIndicatorEngine programIndicatorEngine) {
         this.programs = programs;
+        this.programIndicatorEngine = programIndicatorEngine;
     }
 }

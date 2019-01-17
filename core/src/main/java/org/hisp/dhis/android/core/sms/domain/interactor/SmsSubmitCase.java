@@ -3,12 +3,13 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 import android.util.Pair;
 
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.sms.domain.SmsFormatConverter;
+import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -31,7 +32,7 @@ public class SmsSubmitCase {
                 .andThen(Single.zip(localDbRepository.getGatewayNumber(),
                         localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
                         (number, username, categoryOptionCombo) -> {
-                            SmsFormatConverter converter = new SmsFormatConverter();
+                            EventConverter converter = new EventConverter();
                             String smsContents = converter.format(event, username, categoryOptionCombo);
                             return new Pair<>(number, smsContents);
                         })
@@ -41,11 +42,12 @@ public class SmsSubmitCase {
     }
 
     public Completable checkConfirmationSms(int timeoutSeconds, Event event) {
-        // TODO Use event to get list of required texts
+        EventConverter converter = new EventConverter();
+        Collection<String> requiredStrings = converter.getConfirmationRequiredTexts(event);
         return localDbRepository.getConfirmationSenderNumber()
                 .flatMapCompletable(confirmationSenderNumber ->
-                        smsRepository.listenToConfirmationSms(timeoutSeconds, confirmationSenderNumber, null)
-                );
+                        smsRepository.listenToConfirmationSms(
+                                timeoutSeconds, confirmationSenderNumber, requiredStrings));
     }
 
     private Completable checkPreconditions() {

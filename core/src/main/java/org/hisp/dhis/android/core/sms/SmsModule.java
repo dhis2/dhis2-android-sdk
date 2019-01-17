@@ -26,7 +26,7 @@ public class SmsModule {
     }
 
     public InitCase initCase() {
-        return new InitCase();
+        return new InitCase(localDbRepository);
     }
 
     public QrCodeCase qrCodeCase() {

@@ -106,13 +106,6 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         return list;
     }
 
-    public List<M> selectWhereClauseAsList(String whereClause) {
-        List<M> list = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
-        addObjectsToCollection(cursor, list);
-        return list;
-    }
-
     @Override
     public M selectFirst() {
         Cursor cursor = databaseAdapter.query(builder.selectAll());

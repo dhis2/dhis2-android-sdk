@@ -70,7 +70,7 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
         super.setUp();
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_ees.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_types.json");
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());

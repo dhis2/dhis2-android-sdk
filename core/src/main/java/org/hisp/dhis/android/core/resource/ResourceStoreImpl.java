@@ -44,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
+public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
     private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
                              SQLStatementBuilder builder) {
         super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()),

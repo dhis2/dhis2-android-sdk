@@ -45,14 +45,12 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
         implements ReadOnlyIdentifiableCollectionRepository<M> {
 
     private final IdentifiableObjectStore<M> store;
-    private final List<RepositoryScopeItem> scope;
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                         Collection<ChildrenAppender<M>> childrenAppenders,
                                                         List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders);
+        super(store, childrenAppenders, scope);
         this.store = store;
-        this.scope = scope;
     }
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
@@ -82,10 +80,5 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
 
     private StringFilterConnector<M> connector(String key) {
         return new StringFilterConnector<>(this, scope, key);
-    }
-
-    @Override
-    public List<RepositoryScopeItem> getScope() {
-        return scope;
     }
 }

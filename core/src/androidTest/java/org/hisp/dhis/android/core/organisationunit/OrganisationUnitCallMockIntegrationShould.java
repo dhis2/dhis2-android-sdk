@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.Resource;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
@@ -71,8 +71,8 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
     private static String[] RESOURCE_PROJECTION = {
-            ResourceModel.Columns.RESOURCE_TYPE,
-            ResourceModel.Columns.LAST_SYNCED
+            ResourceTableInfo.Columns.RESOURCE_TYPE,
+            ResourceTableInfo.Columns.LAST_SYNCED
     };
 
     private Dhis2MockServer dhis2MockServer;
@@ -162,7 +162,7 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     public void update_resource_handler() throws Exception {
        organisationUnitCall.call();
 
-        Cursor resourceCursor = database().query(ResourceModel.TABLE,
+        Cursor resourceCursor = database().query(ResourceTableInfo.TABLE_INFO.name(),
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
         assertThatCursor(resourceCursor).hasRow(Resource.Type.ORGANISATION_UNIT,

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -82,8 +82,9 @@ public class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> imple
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name()).build();
 
-        Date lastUpdated = selectWhereClause(whereClause).get(0).lastSynced();
-        return BaseIdentifiableObject.DATE_FORMAT.format(lastUpdated);
+        List<Resource> resourceList = selectWhereClause(whereClause);
+        return resourceList.isEmpty() ?
+                null : BaseIdentifiableObject.DATE_FORMAT.format(resourceList.get(0).lastSynced());
     }
 
     public static ResourceStore create(DatabaseAdapter databaseAdapter) {

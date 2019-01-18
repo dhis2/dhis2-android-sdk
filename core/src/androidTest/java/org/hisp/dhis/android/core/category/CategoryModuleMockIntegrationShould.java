@@ -2,7 +2,7 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.arch.db.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;

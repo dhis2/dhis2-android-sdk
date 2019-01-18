@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.db.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryWithScope;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -38,7 +40,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo> {
+final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo>
+    implements CollectionRepositoryWithScope<CategoryComboCollectionRepository> {
 
     private final IdentifiableObjectStore<CategoryCombo> store;
     private final List<RepositoryScopeItem> scope;
@@ -66,19 +69,20 @@ final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollec
         );
     }
 
-    public CategoryComboCollectionRepositoryBuilder byName() {
-        return builder("name");
+    public FilterConnector<CategoryComboCollectionRepository> byName() {
+        return connector("name");
     }
 
-    public CategoryComboCollectionRepositoryBuilder byCode() {
-        return builder("code");
+    public FilterConnector<CategoryComboCollectionRepository> byCode() {
+        return connector("code");
     }
 
-    private CategoryComboCollectionRepositoryBuilder builder(String key) {
-        return new CategoryComboCollectionRepositoryBuilder(this, scope, key);
+    private FilterConnector<CategoryComboCollectionRepository> connector(String key) {
+        return new FilterConnector<>(this, scope, key);
     }
 
-    CategoryComboCollectionRepository newWithUpdatedScope(List<RepositoryScopeItem> updatedScope) {
+    @Override
+    public CategoryComboCollectionRepository newWithUpdatedScope(List<RepositoryScopeItem> updatedScope) {
         return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
     }
 

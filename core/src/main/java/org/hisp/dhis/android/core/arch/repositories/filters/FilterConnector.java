@@ -26,46 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.db.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryWithScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-final class CategoryComboCollectionRepositoryBuilder {
+public final class FilterConnector<C extends CollectionRepositoryWithScope<C>> {
 
-    private final CategoryComboCollectionRepository collectionRepository;
+    private final C collectionRepository;
     private final List<RepositoryScopeItem> scope;
     private final String key;
 
-    CategoryComboCollectionRepositoryBuilder(CategoryComboCollectionRepository collectionRepository,
-                                             List<RepositoryScopeItem> scope,
-                                             String key) {
+    public FilterConnector(C collectionRepository,
+                    List<RepositoryScopeItem> scope,
+                    String key) {
         this.collectionRepository = collectionRepository;
         this.scope = scope;
         this.key = key;
     }
 
-    CategoryComboCollectionRepository isEqualTo(String value) {
+    public C isEqualTo(String value) {
         return newWithScope("eq", value);
     }
 
-    CategoryComboCollectionRepository like(String value) {
+    public C like(String value) {
         return newWithScope("like", value);
     }
 
-
     private List<RepositoryScopeItem> updatedScope(String operator, String value) {
         List<RepositoryScopeItem> copiedScope = new ArrayList<>();
-        for (RepositoryScopeItem si: scope) {
-            copiedScope.add(si);
-        }
+        copiedScope.addAll(scope);
         copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(value).build());
         return copiedScope;
     }
 
-    private CategoryComboCollectionRepository newWithScope(String operator, String value) {
+    private C newWithScope(String operator, String value) {
         return collectionRepository.newWithUpdatedScope(updatedScope(operator, value));
     }
 }

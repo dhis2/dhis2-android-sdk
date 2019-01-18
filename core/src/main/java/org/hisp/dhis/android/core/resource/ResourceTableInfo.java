@@ -50,9 +50,9 @@ public final class ResourceTableInfo {
         }
     };
 
-    static class Columns extends BaseModel.Columns {
-        static final String RESOURCE_TYPE = "resourceType";
-        static final String LAST_SYNCED = "lastSynced";
+    public static class Columns extends BaseModel.Columns {
+        public static final String RESOURCE_TYPE = "resourceType";
+        public static final String LAST_SYNCED = "lastSynced";
 
         @Override
         public String[] all() {

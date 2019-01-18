@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
-import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Date;
@@ -46,11 +45,10 @@ import java.util.Date;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
-    public ResourceStoreImpl(DatabaseAdapter databaseAdapter,
-                             SQLStatementWrapper statementWrapper,
+    private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
                              SQLStatementBuilder builder) {
-        super(databaseAdapter, statementWrapper.insert, statementWrapper.update, builder, BINDER,
-                WHERE_UPDATE_BINDER, FACTORY);
+        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()),
+                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 
     private static final StatementBinder<Resource> BINDER = new StatementBinder<Resource>() {
@@ -93,8 +91,6 @@ public class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> imple
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ResourceTableInfo.TABLE_INFO.name(),
                 ResourceTableInfo.TABLE_INFO.columns());
 
-        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
-
-        return new ResourceStoreImpl(databaseAdapter, statementWrapper, statementBuilder);
+        return new ResourceStoreImpl(databaseAdapter, statementBuilder);
     }
 }

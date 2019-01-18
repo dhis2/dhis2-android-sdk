@@ -47,7 +47,7 @@ public final class ResourceModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeMetadata() {
-        tableWiper.wipeTables(ResourceModel.TABLE);
+        tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO);
     }
 
     @Override

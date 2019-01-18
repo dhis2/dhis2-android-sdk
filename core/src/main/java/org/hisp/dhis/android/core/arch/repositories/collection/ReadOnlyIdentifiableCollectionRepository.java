@@ -27,11 +27,22 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
+import java.util.List;
+
 public interface ReadOnlyIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
         extends ReadOnlyCollectionRepository<M> {
+
     ReadOnlyObjectRepository<M> uid(String uid);
+
+    StringFilterConnector<M> byName();
+    StringFilterConnector<M> byCode();
+
+    ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope);
+    List<RepositoryScopeItem> getScope();
 }

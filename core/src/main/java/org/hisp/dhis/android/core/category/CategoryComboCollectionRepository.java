@@ -27,66 +27,24 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryWithScope;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
-final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo>
-    implements CollectionRepositoryWithScope<CategoryComboCollectionRepository> {
+final class CategoryComboCollectionRepository {
 
-    private final IdentifiableObjectStore<CategoryCombo> store;
-    private final List<RepositoryScopeItem> scope;
-
-    CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
-                                      Collection<ChildrenAppender<CategoryCombo>> childrenAppenders) {
-        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
+    private CategoryComboCollectionRepository() {
     }
 
-    private CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
-                                              Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
-                                              List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders);
-        this.store = store;
-        this.scope = scope;
-    }
-
-    static CategoryComboCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        return new CategoryComboCollectionRepository(
+    static ReadOnlyIdentifiableCollectionRepository<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 CategoryComboStore.create(databaseAdapter),
                 Arrays.asList(
                         CategoryCategoryComboChildrenAppender.create(databaseAdapter),
                         CategoryOptionComboChildrenAppender.create(databaseAdapter)
                 )
         );
-    }
-
-    public StringFilterConnector<CategoryComboCollectionRepository> byName() {
-        return connector("name");
-    }
-
-    public StringFilterConnector<CategoryComboCollectionRepository> byCode() {
-        return connector("code");
-    }
-
-    private StringFilterConnector<CategoryComboCollectionRepository> connector(String key) {
-        return new StringFilterConnector<>(this, scope, key);
-    }
-
-    @Override
-    public CategoryComboCollectionRepository newWithUpdatedScope(List<RepositoryScopeItem> updatedScope) {
-        return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
-    }
-
-    public List<RepositoryScopeItem> getScope() {
-        return scope;
     }
 }

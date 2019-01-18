@@ -28,19 +28,21 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryWithScope;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class StringFilterConnector<C extends CollectionRepositoryWithScope<C>> {
+public final class StringFilterConnector<M extends Model & ObjectWithUidInterface> {
 
-    private final C collectionRepository;
+    private final ReadOnlyIdentifiableCollectionRepository<M> collectionRepository;
     private final List<RepositoryScopeItem> scope;
     private final String key;
 
-    public StringFilterConnector(C collectionRepository,
+    public StringFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
                                  List<RepositoryScopeItem> scope,
                                  String key) {
         this.collectionRepository = collectionRepository;
@@ -48,11 +50,11 @@ public final class StringFilterConnector<C extends CollectionRepositoryWithScope
         this.key = key;
     }
 
-    public C isEqualTo(String value) {
+    public ReadOnlyIdentifiableCollectionRepository<M> isEqualTo(String value) {
         return newWithScope("eq", value);
     }
 
-    public C like(String value) {
+    public ReadOnlyIdentifiableCollectionRepository<M> like(String value) {
         return newWithScope("like", value);
     }
 
@@ -63,7 +65,7 @@ public final class StringFilterConnector<C extends CollectionRepositoryWithScope
         return copiedScope;
     }
 
-    private C newWithScope(String operator, String value) {
+    private ReadOnlyIdentifiableCollectionRepository<M> newWithScope(String operator, String value) {
         return collectionRepository.newWithUpdatedScope(updatedScope(operator, value));
     }
 }

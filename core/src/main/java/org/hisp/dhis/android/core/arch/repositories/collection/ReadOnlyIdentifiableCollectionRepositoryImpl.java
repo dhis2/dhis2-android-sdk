@@ -28,28 +28,64 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
         extends ReadOnlyCollectionRepositoryImpl<M>
         implements ReadOnlyIdentifiableCollectionRepository<M> {
 
     private final IdentifiableObjectStore<M> store;
+    private final List<RepositoryScopeItem> scope;
+
+    public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                        Collection<ChildrenAppender<M>> childrenAppenders,
+                                                        List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders);
+        this.store = store;
+        this.scope = scope;
+    }
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                         Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(store, childrenAppenders);
-        this.store = store;
+        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
     }
 
     @Override
     public ReadOnlyObjectRepository<M> uid(String uid) {
         return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
+    }
+
+    @Override
+    public StringFilterConnector<M> byName() {
+        return connector("name");
+    }
+
+    @Override
+    public StringFilterConnector<M> byCode() {
+        return connector("code");
+    }
+
+    @Override
+    public ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope) {
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
+    }
+
+    private StringFilterConnector<M> connector(String key) {
+        return new StringFilterConnector<>(this, scope, key);
+    }
+
+    @Override
+    public List<RepositoryScopeItem> getScope() {
+        return scope;
     }
 }

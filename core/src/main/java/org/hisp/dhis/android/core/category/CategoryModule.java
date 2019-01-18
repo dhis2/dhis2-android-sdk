@@ -41,14 +41,14 @@ public final class CategoryModule {
     public final ReadOnlyIdentifiableCollectionRepository<Category> categories;
     public final ReadOnlyIdentifiableCollectionRepository<CategoryOption> categoryOptions;
     public final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
-    public final CategoryComboCollectionRepository categoryCombos;
+    public final ReadOnlyIdentifiableCollectionRepository<CategoryCombo> categoryCombos;
 
     @Inject
     CategoryModule(
             ReadOnlyIdentifiableCollectionRepository<Category> categories,
             ReadOnlyIdentifiableCollectionRepository<CategoryOption> categoryOptions,
             ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
-            CategoryComboCollectionRepository categoryCombos) {
+            ReadOnlyIdentifiableCollectionRepository<CategoryCombo> categoryCombos) {
         this.categories = categories;
         this.categoryOptions = categoryOptions;
         this.categoryOptionCombos = categoryOptionCombos;

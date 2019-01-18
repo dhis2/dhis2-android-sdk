@@ -25,7 +25,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     @Test
     public void append_scope_for_multiple_filters() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().isEqualTo("Combi")
+                .byName().eq("Combi")
                 .byCode().like("cody");
         List<RepositoryScopeItem> scope = repositoryWithUpdatedScope.getScope();
 
@@ -36,7 +36,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     @Test
     public void find_objects_with_equal_name() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().isEqualTo("Births");
+                .byName().eq("Births");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
@@ -45,7 +45,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     @Test
     public void find_objects_with_equal_code() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byCode().isEqualTo("BIRTHS");
+                .byCode().eq("BIRTHS");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
@@ -54,7 +54,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     @Test
     public void find_objects_with_equal_uid() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byUid().isEqualTo("m2jTvAj5kkm");
+                .byUid().eq("m2jTvAj5kkm");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
@@ -63,7 +63,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     @Test
     public void find_objects_with_equal_display_name() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byDisplayName().isEqualTo("Births Display");
+                .byDisplayName().eq("Births Display");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
@@ -72,7 +72,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     @Test
     public void do_not_find_objects_with_wrong_equal_name() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().isEqualTo("Deaths");
+                .byName().eq("Deaths");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.isEmpty(), is(true));
     }
@@ -80,7 +80,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     @Test
     public void do_not_find_objects_with_wrong_equal_code() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byCode().isEqualTo("DEATHS");
+                .byCode().eq("DEATHS");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.isEmpty(), is(true));
     }

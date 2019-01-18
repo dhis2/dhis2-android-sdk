@@ -38,7 +38,7 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
     public void allow_access_to_combos_without_children_by_name() {
 
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().isEqualTo("Combi")
+                .byName().eq("Combi")
                 .byCode().like("cody");
         List<RepositoryScopeItem> scope = repositoryWithUpdatedScope.getScope();
 

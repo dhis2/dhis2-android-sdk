@@ -50,7 +50,7 @@ public final class StringFilterConnector<M extends Model & ObjectWithUidInterfac
         this.key = key;
     }
 
-    public ReadOnlyIdentifiableCollectionRepository<M> isEqualTo(String value) {
+    public ReadOnlyIdentifiableCollectionRepository<M> eq(String value) {
         return newWithScope("eq", value);
     }
 

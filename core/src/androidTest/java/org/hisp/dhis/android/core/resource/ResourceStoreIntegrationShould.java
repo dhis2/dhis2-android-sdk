@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.resource;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.resource.ResourceSamples;
@@ -75,6 +76,7 @@ public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstrac
         store.insert(ResourceSamples.getResource());
         String lastUpdated = store.getLastUpdated(Resource.Type.PROGRAM);
 
-        assertThat(lastUpdated).isEqualTo(ResourceSamples.getResource().lastSynced());
+        assertThat(lastUpdated).isEqualTo(BaseIdentifiableObject.DATE_FORMAT
+                .format(ResourceSamples.getResource().lastSynced()));
     }
 }

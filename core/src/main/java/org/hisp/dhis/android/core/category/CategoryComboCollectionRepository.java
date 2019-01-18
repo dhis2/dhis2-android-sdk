@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryWithScope;
-import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
@@ -69,16 +69,16 @@ final class CategoryComboCollectionRepository extends ReadOnlyIdentifiableCollec
         );
     }
 
-    public FilterConnector<CategoryComboCollectionRepository> byName() {
+    public StringFilterConnector<CategoryComboCollectionRepository> byName() {
         return connector("name");
     }
 
-    public FilterConnector<CategoryComboCollectionRepository> byCode() {
+    public StringFilterConnector<CategoryComboCollectionRepository> byCode() {
         return connector("code");
     }
 
-    private FilterConnector<CategoryComboCollectionRepository> connector(String key) {
-        return new FilterConnector<>(this, scope, key);
+    private StringFilterConnector<CategoryComboCollectionRepository> connector(String key) {
+        return new StringFilterConnector<>(this, scope, key);
     }
 
     @Override

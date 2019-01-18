@@ -34,15 +34,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class FilterConnector<C extends CollectionRepositoryWithScope<C>> {
+public final class StringFilterConnector<C extends CollectionRepositoryWithScope<C>> {
 
     private final C collectionRepository;
     private final List<RepositoryScopeItem> scope;
     private final String key;
 
-    public FilterConnector(C collectionRepository,
-                    List<RepositoryScopeItem> scope,
-                    String key) {
+    public StringFilterConnector(C collectionRepository,
+                                 List<RepositoryScopeItem> scope,
+                                 String key) {
         this.collectionRepository = collectionRepository;
         this.scope = scope;
         this.key = key;

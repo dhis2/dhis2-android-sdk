@@ -2,8 +2,6 @@ package org.hisp.dhis.android.core.category;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;
@@ -32,18 +30,6 @@ public class CategoryModuleMockIntegrationShould extends MockIntegrationShould {
             assertThat(combo.categories() == null, is(true));
             assertThat(combo.categoryOptionCombos() == null, is(true));
         }
-    }
-
-    @Test
-    public void allow_access_to_combos_without_children_by_name() {
-
-        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().eq("Combi")
-                .byCode().like("cody");
-        List<RepositoryScopeItem> scope = repositoryWithUpdatedScope.getScope();
-
-        assertThat(scope.get(0).equals(RepositoryScopeItem.builder().key("name").operator("eq").value("Combi").build()), is(true));
-        assertThat(scope.get(1).equals(RepositoryScopeItem.builder().key("code").operator("like").value("cody").build()), is(true));
     }
 
     @Test

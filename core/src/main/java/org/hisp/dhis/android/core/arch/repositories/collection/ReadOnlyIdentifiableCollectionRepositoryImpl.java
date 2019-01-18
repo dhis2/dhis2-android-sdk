@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnecto
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -65,22 +66,22 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
 
     @Override
     public StringFilterConnector<M> byUid() {
-        return connector("uid");
+        return connector(Columns.UID);
     }
 
     @Override
     public StringFilterConnector<M> byCode() {
-        return connector("code");
+        return connector(Columns.CODE);
     }
 
     @Override
     public StringFilterConnector<M> byName() {
-        return connector("name");
+        return connector(Columns.NAME);
     }
 
     @Override
     public StringFilterConnector<M> byDisplayName() {
-        return connector("displayName");
+        return connector(Columns.DISPLAY_NAME);
     }
 
     @Override

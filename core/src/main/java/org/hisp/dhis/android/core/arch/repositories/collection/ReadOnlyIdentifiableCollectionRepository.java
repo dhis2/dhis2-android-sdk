@@ -40,8 +40,10 @@ public interface ReadOnlyIdentifiableCollectionRepository<M extends Model & Obje
 
     ReadOnlyObjectRepository<M> uid(String uid);
 
-    StringFilterConnector<M> byName();
+    StringFilterConnector<M> byUid();
     StringFilterConnector<M> byCode();
+    StringFilterConnector<M> byName();
+    StringFilterConnector<M> byDisplayName();
 
     ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope);
 }

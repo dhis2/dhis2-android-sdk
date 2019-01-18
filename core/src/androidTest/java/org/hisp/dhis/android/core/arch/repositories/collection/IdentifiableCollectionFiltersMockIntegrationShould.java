@@ -52,6 +52,24 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     }
 
     @Test
+    public void find_objects_with_equal_uid() {
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byUid().isEqualTo("m2jTvAj5kkm");
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(1));
+        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+    }
+
+    @Test
+    public void find_objects_with_equal_display_name() {
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byDisplayName().isEqualTo("Births Display");
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(1));
+        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+    }
+
+    @Test
     public void do_not_find_objects_with_wrong_equal_name() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().isEqualTo("Deaths");

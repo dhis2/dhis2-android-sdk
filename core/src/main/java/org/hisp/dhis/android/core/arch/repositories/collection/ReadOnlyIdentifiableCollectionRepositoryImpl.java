@@ -64,13 +64,23 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
     }
 
     @Override
-    public StringFilterConnector<M> byName() {
-        return connector("name");
+    public StringFilterConnector<M> byUid() {
+        return connector("uid");
     }
 
     @Override
     public StringFilterConnector<M> byCode() {
         return connector("code");
+    }
+
+    @Override
+    public StringFilterConnector<M> byName() {
+        return connector("name");
+    }
+
+    @Override
+    public StringFilterConnector<M> byDisplayName() {
+        return connector("displayName");
     }
 
     @Override

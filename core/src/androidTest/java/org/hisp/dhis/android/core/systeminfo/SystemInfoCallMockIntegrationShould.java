@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.Cursor;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.hisp.dhis.android.core.AppContextDIModule;
 import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.DaggerD2DIComponent;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
@@ -97,6 +99,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
                 .build();
 
         D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
+                .appContextDIModule(new AppContextDIModule(InstrumentationRegistry.getTargetContext().getApplicationContext()))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();

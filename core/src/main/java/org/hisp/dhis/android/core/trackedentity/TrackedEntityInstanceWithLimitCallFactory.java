@@ -1,9 +1,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
@@ -39,24 +36,24 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final D2InternalModules internalModules;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
     TrackedEntityInstanceWithLimitCallFactory(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
-            @NonNull D2InternalModules internalModules,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
-            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-            @NonNull ForeignKeyCleaner foreignKeyCleaner) {
+            DatabaseAdapter databaseAdapter,
+            Retrofit retrofit,
+            D2InternalModules internalModules,
+            ResourceHandler resourceHandler,
+            UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
+            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall,
+            ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.relationshipsCall = relationshipsCall;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
@@ -102,15 +99,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
                 // TODO Wrap in try-catch?
                 if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
-                    List<String> relationships = trackedEntityInstanceStore.queryRelationshipsUids();
-
-                    if (!relationships.isEmpty()) {
-                        Call<List<TrackedEntityInstance>> relationshipsCall =
-                                TrackedEntityInstanceRelationshipDownloadAndPersistCall.create(
-                                        databaseAdapter, retrofit, internalModules, relationships
-                                );
-                        executor.executeD2Call(relationshipsCall);
-                    }
+                    executor.executeD2Call(relationshipsCall.getCall());
                 }
 
                 foreignKeyCleaner.cleanForeignKeyErrors();

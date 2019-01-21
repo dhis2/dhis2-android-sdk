@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.Call;
@@ -26,22 +24,22 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final D2InternalModules internalModules;
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final ForeignKeyCleaner foreignKeyCleaner;
+    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall;
 
 
     @Inject
     TrackedEntityInstanceListDownloadAndPersistCallFactory(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
-            @NonNull D2InternalModules internalModules,
-            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-            @NonNull ForeignKeyCleaner foreignKeyCleaner) {
+            DatabaseAdapter databaseAdapter,
+            Retrofit retrofit,
+            D2InternalModules internalModules,
+            ForeignKeyCleaner foreignKeyCleaner,
+            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.foreignKeyCleaner = foreignKeyCleaner;
+        this.relationshipsCall = relationshipsCall;
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
@@ -79,15 +77,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
 
                 // TODO Wrap in try-catch?
                 if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
-                    List<String> relationships = trackedEntityInstanceStore.queryRelationshipsUids();
-
-                    if (!relationships.isEmpty()) {
-                        Call<List<TrackedEntityInstance>> relationshipsCall =
-                                TrackedEntityInstanceRelationshipDownloadAndPersistCall.create(
-                                        databaseAdapter, retrofit, internalModules, relationships
-                                );
-                        executor.executeD2Call(relationshipsCall);
-                    }
+                    executor.executeD2Call(relationshipsCall.getCall());
                 }
 
                 foreignKeyCleaner.cleanForeignKeyErrors();

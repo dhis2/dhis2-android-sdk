@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -44,6 +45,8 @@ public interface ReadOnlyIdentifiableCollectionRepository<M extends Model & Obje
     StringFilterConnector<M> byCode();
     StringFilterConnector<M> byName();
     StringFilterConnector<M> byDisplayName();
+    DateFilterConnector<M> byCreated();
+    DateFilterConnector<M> byLastUpdated();
 
     ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope);
 }

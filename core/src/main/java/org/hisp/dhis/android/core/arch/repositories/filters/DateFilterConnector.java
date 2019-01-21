@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,24 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
+import java.util.Date;
 import java.util.List;
 
-public class WhereClauseFromScopeBuilder {
+public final class DateFilterConnector<M extends Model & ObjectWithUidInterface> extends BaseFilterConnector<M, Date> {
 
-    private final WhereClauseBuilder builder;
 
-    public WhereClauseFromScopeBuilder(WhereClauseBuilder builder) {
-        this.builder = builder;
+
+    public DateFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
+                               List<RepositoryScopeItem> scope,
+                               String key) {
+        super(collectionRepository, scope, key);
     }
 
-    public String getWhereClause(List<RepositoryScopeItem> scope) {
-        for (RepositoryScopeItem item: scope) {
-            builder.appendKeyOperatorValue(item.key(), item.operator(), item.value());
-        }
-        return builder.build();
+    public ReadOnlyIdentifiableCollectionRepository<M> eq(Date value) {
+        return newWithScope("=", value);
+    }
+
+    public ReadOnlyIdentifiableCollectionRepository<M> before(Date value) {
+        return newWithScope("<", value);
+    }
+
+    public ReadOnlyIdentifiableCollectionRepository<M> after(Date value) {
+        return newWithScope(">", value);
+    }
+
+    protected String wrapValue(Date value) {
+        return "'" + BaseIdentifiableObject.DATE_FORMAT.format(value) + "'";
     }
 }

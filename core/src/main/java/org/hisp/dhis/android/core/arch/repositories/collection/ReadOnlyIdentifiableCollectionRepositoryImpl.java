@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
@@ -66,22 +67,32 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
 
     @Override
     public StringFilterConnector<M> byUid() {
-        return connector(Columns.UID);
+        return stringConnector(Columns.UID);
     }
 
     @Override
     public StringFilterConnector<M> byCode() {
-        return connector(Columns.CODE);
+        return stringConnector(Columns.CODE);
     }
 
     @Override
     public StringFilterConnector<M> byName() {
-        return connector(Columns.NAME);
+        return stringConnector(Columns.NAME);
     }
 
     @Override
     public StringFilterConnector<M> byDisplayName() {
-        return connector(Columns.DISPLAY_NAME);
+        return stringConnector(Columns.DISPLAY_NAME);
+    }
+
+    @Override
+    public DateFilterConnector<M> byCreated() {
+        return dateConnector(Columns.CREATED);
+    }
+
+    @Override
+    public DateFilterConnector<M> byLastUpdated() {
+        return dateConnector(Columns.LAST_UPDATED);
     }
 
     @Override
@@ -89,7 +100,11 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
     }
 
-    private StringFilterConnector<M> connector(String key) {
+    private StringFilterConnector<M> stringConnector(String key) {
         return new StringFilterConnector<>(this, scope, key);
+    }
+
+    private DateFilterConnector<M> dateConnector(String key) {
+        return new DateFilterConnector<>(this, scope, key);
     }
 }

@@ -25,47 +25,71 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.resource;
+
+import android.database.Cursor;
+import android.support.annotation.Nullable;
+
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+@AutoValue
+public abstract class Resource implements Model {
 
-@Singleton
-public class ResourceHandler {
-    private final ResourceStore resourceStore;
-    private Date serverDate;
-
-    @Inject
-    public ResourceHandler(ResourceStore resourceStore) {
-        this.resourceStore = resourceStore;
+    public enum Type {
+        EVENT,
+        SYSTEM_INFO,
+        USER,
+        USER_CREDENTIALS,
+        ORGANISATION_UNIT,
+        AUTHENTICATED_USER,
+        PROGRAM,
+        OPTION_SET,
+        TRACKED_ENTITY_TYPE,
+        TRACKED_ENTITY_INSTANCE,
+        DATA_SET,
+        DATA_ELEMENT,
+        CATEGORY_COMBO,
+        INDICATOR_TYPE,
+        INDICATOR,
+        DATA_VALUE,
+        PROGRAM_STAGE,
+        RELATIONSHIP_TYPE,
+        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE
     }
 
-    public void setServerDate(Date serverDate) {
-        this.serverDate = new Date(serverDate.getTime());
+    @Nullable
+    public abstract String resourceType();
+
+    @Nullable
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastSynced();
+
+    static Resource create(Cursor cursor) {
+        return $AutoValue_Resource.createFromCursor(cursor);
     }
 
-    public void handleResource(Resource.Type resourceType) {
-        if (resourceType == null || serverDate == null) {
-            return;
-        }
+    public abstract Builder toBuilder();
 
-        Resource resource = Resource.builder()
-                .resourceType(resourceType.name())
-                .lastSynced(serverDate)
-                .build();
-
-        resourceStore.updateOrInsertWhere(resource);
+    public static Builder builder() {
+        return new AutoValue_Resource.Builder();
     }
 
-    /**
-     * A wrapper to expose resourceStore.getLastUpdated(str).
-     *
-     * @param type Type of the resource.
-     * @return a string representing the last synched date
-     */
-    public String getLastUpdated(Resource.Type type) {
-        return resourceStore.getLastUpdated(type);
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder resourceType(String resourceType);
+
+        public abstract Builder lastSynced(Date lastSynced);
+
+        public abstract Resource build();
     }
 }

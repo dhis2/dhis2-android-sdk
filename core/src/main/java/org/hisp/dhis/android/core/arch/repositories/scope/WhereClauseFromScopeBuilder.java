@@ -25,11 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 
-    String getLastUpdated(Resource.Type type);
+import java.util.List;
+
+public class WhereClauseFromScopeBuilder {
+
+    private final WhereClauseBuilder builder;
+
+    public WhereClauseFromScopeBuilder(WhereClauseBuilder builder) {
+        this.builder = builder;
+    }
+
+    public String getWhereClause(List<RepositoryScopeItem> scope) {
+        for (RepositoryScopeItem item: scope) {
+            if (item.operator().equals("eq")) {
+                builder.appendKeyStringValue(item.key(), item.value());
+            } else if (item.operator().equals("like")) {
+                builder.appendKeyLikeStringValue(item.key(), item.value());
+            }
+        }
+        return builder.build();
+    }
 }

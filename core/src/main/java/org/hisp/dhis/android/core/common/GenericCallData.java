@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.common;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import retrofit2.Retrofit;
@@ -49,7 +49,7 @@ public abstract class GenericCallData {
         return new AutoValue_GenericCallData(databaseAdapter, retrofit, resourceHandler, versionManager);
     }
 
-    public void handleResource(ResourceModel.Type type) {
+    public void handleResource(Resource.Type type) {
         resourceHandler().handleResource(type);
     }
 }

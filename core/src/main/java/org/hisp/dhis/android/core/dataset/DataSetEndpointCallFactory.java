@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCall
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 
 import javax.inject.Inject;
 
@@ -50,7 +50,7 @@ final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
 
     private final DataSetService dataSetService;
     private final SyncHandler<DataSet> dataSetHandler;
-    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
+    private final Resource.Type resourceType = Resource.Type.DATA_SET;
 
     @Inject
     DataSetEndpointCallFactory(GenericCallData data,

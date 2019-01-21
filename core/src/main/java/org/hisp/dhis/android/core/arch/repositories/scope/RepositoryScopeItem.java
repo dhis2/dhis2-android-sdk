@@ -25,11 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
+import com.google.auto.value.AutoValue;
 
-    String getLastUpdated(Resource.Type type);
+@AutoValue
+public abstract class RepositoryScopeItem {
+
+    public abstract String key();
+
+    public abstract String operator();
+
+    public abstract String value();
+
+    public static Builder builder() {
+        return new AutoValue_RepositoryScopeItem.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder key(String key);
+
+        public abstract Builder operator(String operator);
+
+        public abstract Builder value(String value);
+
+        public abstract RepositoryScopeItem build();
+    }
 }

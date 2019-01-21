@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,25 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+package org.hisp.dhis.android.core.arch.repositories.filters;
+
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface ReadOnlyIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
+public final class StringFilterConnector<M extends Model & ObjectWithUidInterface> {
 
-    ReadOnlyObjectRepository<M> uid(String uid);
+    private final ReadOnlyIdentifiableCollectionRepository<M> collectionRepository;
+    private final List<RepositoryScopeItem> scope;
+    private final String key;
 
-    StringFilterConnector<M> byUid();
-    StringFilterConnector<M> byCode();
-    StringFilterConnector<M> byName();
-    StringFilterConnector<M> byDisplayName();
+    public StringFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
+                                 List<RepositoryScopeItem> scope,
+                                 String key) {
+        this.collectionRepository = collectionRepository;
+        this.scope = scope;
+        this.key = key;
+    }
 
-    ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope);
+    public ReadOnlyIdentifiableCollectionRepository<M> eq(String value) {
+        return newWithScope("eq", value);
+    }
+
+    public ReadOnlyIdentifiableCollectionRepository<M> like(String value) {
+        return newWithScope("like", value);
+    }
+
+    private List<RepositoryScopeItem> updatedScope(String operator, String value) {
+        List<RepositoryScopeItem> copiedScope = new ArrayList<>();
+        copiedScope.addAll(scope);
+        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(value).build());
+        return copiedScope;
+    }
+
+    private ReadOnlyIdentifiableCollectionRepository<M> newWithScope(String operator, String value) {
+        return collectionRepository.newWithUpdatedScope(updatedScope(operator, value));
+    }
 }

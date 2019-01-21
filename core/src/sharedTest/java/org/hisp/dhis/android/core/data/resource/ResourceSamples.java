@@ -25,11 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.data.resource;
 
-public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.resource.Resource;
 
-    String getLastUpdated(Resource.Type type);
+import java.text.ParseException;
+import java.util.Date;
+
+public class ResourceSamples {
+
+    public static Resource getResource() {
+        return Resource.builder()
+                .lastSynced(getDate("2017-11-29T11:27:46.935"))
+                .resourceType(Resource.Type.PROGRAM.name())
+                .build();
+    }
+
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

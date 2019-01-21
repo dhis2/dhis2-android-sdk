@@ -8,8 +8,8 @@ import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
@@ -29,7 +29,7 @@ import retrofit2.Retrofit;
 @Reusable
 public final class TrackedEntityInstanceWithLimitCallFactory {
 
-    private final ResourceModel.Type resourceType = ResourceModel.Type.TRACKED_ENTITY_INSTANCE;
+    private final Resource.Type resourceType = Resource.Type.TRACKED_ENTITY_INSTANCE;
 
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;

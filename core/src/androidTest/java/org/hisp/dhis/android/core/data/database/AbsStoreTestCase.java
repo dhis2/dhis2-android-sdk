@@ -65,7 +65,7 @@ public abstract class AbsStoreTestCase {
                 , dbName);
         sqLiteDatabase = dbOpenHelper.getWritableDatabase();
         databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-        resourceHandler = new ResourceHandler(new ResourceStoreImpl(databaseAdapter));
+        resourceHandler = new ResourceHandler(ResourceStoreImpl.create(databaseAdapter));
         resourceHandler.setServerDate(serverDate);
         Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
     }

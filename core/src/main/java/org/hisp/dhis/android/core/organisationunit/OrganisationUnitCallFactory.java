@@ -31,8 +31,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ class OrganisationUnitCallFactory {
 
                 handler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
-                resourceHandler.handleResource(ResourceModel.Type.ORGANISATION_UNIT);
+                resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
 
                 return new ArrayList<>(organisationUnits);
             }

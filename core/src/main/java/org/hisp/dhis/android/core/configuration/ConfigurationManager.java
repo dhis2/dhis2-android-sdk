@@ -36,10 +36,10 @@ import okhttp3.HttpUrl;
 public interface ConfigurationManager {
 
     @NonNull
-    ConfigurationModel configure(@NonNull HttpUrl serverUrl);
+    Configuration configure(@NonNull HttpUrl serverUrl);
 
     @Nullable
-    ConfigurationModel get();
+    Configuration get();
 
     int remove();
 }

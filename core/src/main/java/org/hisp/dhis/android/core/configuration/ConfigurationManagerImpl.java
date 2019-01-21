@@ -31,9 +31,6 @@ package org.hisp.dhis.android.core.configuration;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.List;
-import java.util.Locale;
-
 import okhttp3.HttpUrl;
 
 final class ConfigurationManagerImpl implements ConfigurationManager {
@@ -47,36 +44,25 @@ final class ConfigurationManagerImpl implements ConfigurationManager {
 
     @NonNull
     @Override
-    public ConfigurationModel configure(@NonNull HttpUrl serverUrl) {
-        if (serverUrl == null) {
-            throw new IllegalArgumentException("serverUrl == null");
+    public Configuration configure(@NonNull HttpUrl serverUrl) {
+        configurationStore.save(Configuration.builder().serverUrl(serverUrl).build());
+
+        Configuration configuration = get();
+        if (configuration == null) {
+            throw new IllegalArgumentException("configuration == null");
         }
 
-        List<String> pathSegments = serverUrl.pathSegments();
-        if (!"".equals(pathSegments.get(pathSegments.size() - 1))) {
-            throw new IllegalArgumentException("baseUrl must end in /: " + serverUrl);
-        }
-
-        HttpUrl baseUrl = canonizeBaseUrl(serverUrl);
-        long configurationId = configurationStore.save(baseUrl.toString());
-        return ConfigurationModel.builder()
-                .id(configurationId)
-                .serverUrl(baseUrl)
-                .build();
+        return configuration;
     }
 
     @Nullable
     @Override
-    public ConfigurationModel get() {
-        return configurationStore.query();
+    public Configuration get() {
+        return configurationStore.selectFirst();
     }
 
     @Override
     public int remove() {
         return configurationStore.delete();
-    }
-
-    private static HttpUrl canonizeBaseUrl(HttpUrl baseUrl) {
-        return HttpUrl.parse(String.format(Locale.US, "%sapi/", baseUrl.toString()));
     }
 }

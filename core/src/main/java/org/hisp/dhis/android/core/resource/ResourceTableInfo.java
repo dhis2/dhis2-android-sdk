@@ -25,11 +25,48 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
+public final class ResourceTableInfo {
 
-    String getLastUpdated(Resource.Type type);
+    private ResourceTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Resource";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseModel.Columns {
+        public static final String RESOURCE_TYPE = "resourceType";
+        public static final String LAST_SYNCED = "lastSynced";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    RESOURCE_TYPE,
+                    LAST_SYNCED
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    RESOURCE_TYPE
+            );
+        }
+    }
 }

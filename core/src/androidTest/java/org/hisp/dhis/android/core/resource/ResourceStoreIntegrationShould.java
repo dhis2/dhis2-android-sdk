@@ -25,67 +25,58 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.junit.Before;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.resource.ResourceSamples;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.Date;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(JUnit4.class)
-public class ResourceHandlerShould {
+@RunWith(AndroidJUnit4.class)
+public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<Resource> {
 
-    @Mock
-    private ResourceStore resourceStore;
+    private ResourceStore store;
 
-    @Mock
-    private Date serverDate;
+    public ResourceStoreIntegrationShould() {
+        super(ResourceStoreImpl.create(DatabaseAdapterFactory.get(false)), ResourceTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
+        this.store = ResourceStoreImpl.create(DatabaseAdapterFactory.get(false));
+    }
 
-    // object to test
-    private ResourceHandler resourceHandler;
+    @Override
+    protected Resource buildObject() {
+        return ResourceSamples.getResource();
+    }
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @Override
+    protected Resource buildObjectToUpdate() {
+        return ResourceSamples.getResource().toBuilder()
+                .lastSynced(new Date())
+                .build();
+    }
 
-        resourceHandler = new ResourceHandler(resourceStore);
+    @Override
+    protected Resource buildObjectWithId() {
+        return ResourceSamples.getResource().toBuilder()
+                .id(1L)
+                .build();
     }
 
     @Test
-    public void do_nothing_when_passing_null_resource() {
-        resourceHandler.setServerDate(serverDate);
-        resourceHandler.handleResource(null);
+    public void return_last_updated() {
+        store.insert(ResourceSamples.getResource());
+        String lastUpdated = store.getLastUpdated(Resource.Type.PROGRAM);
 
-        // verify that store is never called
-        verify(resourceStore, never()).updateOrInsertWhere(any(Resource.class));
-    }
-
-    @Test
-    public void do_nothing_when_not_passing_server_date() {
-        resourceHandler.handleResource(Resource.Type.PROGRAM);
-
-        // verify that store is never called
-        verify(resourceStore, never()).updateOrInsertWhere(any(Resource.class));
-    }
-
-    @Test
-    public void invoke_update_or_insert_when_handle_resource_updatable() {
-        when(resourceStore.updateOrInsertWhere(any(Resource.class))).thenReturn(HandleAction.Update);
-
-        resourceHandler.setServerDate(serverDate);
-        resourceHandler.handleResource(Resource.Type.PROGRAM);
-
-        verify(resourceStore, times(1)).updateOrInsertWhere(any(Resource.class));
+        assertThat(lastUpdated).isEqualTo(BaseIdentifiableObject.DATE_FORMAT
+                .format(ResourceSamples.getResource().lastSynced()));
     }
 }

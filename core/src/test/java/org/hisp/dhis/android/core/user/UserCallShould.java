@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -117,6 +117,6 @@ public class UserCallShould extends BaseCallShould {
         when(apiCallExecutor.executeObjectCall(userCall)).thenReturn(user);
         userSyncCall.call();
         verify(userHandler).handle(eq(user));
-        verify(resourceHandler).handleResource(ResourceModel.Type.USER);
+        verify(resourceHandler).handleResource(Resource.Type.USER);
     }
 }

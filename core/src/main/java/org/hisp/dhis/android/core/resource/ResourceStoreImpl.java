@@ -30,97 +30,68 @@ package org.hisp.dhis.android.core.resource;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.ResourceModel.Columns;
 
-import java.util.Date;
+import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-public class ResourceStoreImpl implements ResourceStore {
-    public static final String INSERT_STATEMENT = "INSERT INTO " + ResourceModel.TABLE + " (" +
-            Columns.RESOURCE_TYPE + ", " +
-            Columns.LAST_SYNCED + ") " +
-            "VALUES(?, ?);";
-
-    private static final String UPDATE_STATEMENT = "UPDATE " + ResourceModel.TABLE + " SET " +
-            Columns.RESOURCE_TYPE + " =?, " +
-            Columns.LAST_SYNCED + "=? " + " WHERE " +
-            Columns.RESOURCE_TYPE + " = ?;";
-
-    private static final String DELETE_STATEMENT = "DELETE FROM " + ResourceModel.TABLE +
-            " WHERE " + Columns.RESOURCE_TYPE + " =?;";
-    
-    private final DatabaseAdapter databaseAdapter;
-    private final SQLiteStatement insertStatement;
-    private final SQLiteStatement updateStatement;
-    private final SQLiteStatement deleteStatement;
-
-    public ResourceStoreImpl(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
+public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
+    private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
+                             SQLStatementBuilder builder) {
+        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()),
+                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 
-    @Override
-    public long insert(@NonNull String resourceType, @Nullable Date lastSynced) {
-        isNull(resourceType);
-        sqLiteBind(insertStatement, 1, resourceType);
-        sqLiteBind(insertStatement, 2, lastSynced);
-
-        long returnValue = databaseAdapter.executeInsert(ResourceModel.TABLE, insertStatement);
-        insertStatement.clearBindings();
-        return returnValue;
-    }
-
-    @Override
-    public int update(@NonNull String resourceType, @Nullable Date lastSynced,
-                      @NonNull String whereResourceType) {
-        isNull(resourceType);
-        isNull(whereResourceType);
-        sqLiteBind(updateStatement, 1, resourceType);
-        sqLiteBind(updateStatement, 2, lastSynced);
-        sqLiteBind(updateStatement, 3, whereResourceType);
-
-        int returnValue = databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, updateStatement);
-        updateStatement.clearBindings();
-        return returnValue;
-    }
-
-    @Override
-    public int delete(@NonNull String resourceType) {
-        isNull(resourceType);
-        sqLiteBind(deleteStatement, 1, resourceType);
-
-        int returnValue = databaseAdapter.executeUpdateDelete(ResourceModel.TABLE, deleteStatement);
-        deleteStatement.clearBindings();
-        return returnValue;
-    }
-
-    @Override
-    public String getLastUpdated(ResourceModel.Type type) {
-        String lastUpdated = null;
-        Cursor cursor = databaseAdapter.query("SELECT " + ResourceModel.Columns.LAST_SYNCED +
-                " FROM " + ResourceModel.TABLE +
-                " WHERE " + ResourceModel.Columns.RESOURCE_TYPE +
-                " = '" + type.name() + "'"
-        );
-        if(cursor != null) {
-            cursor.moveToFirst();
-            if (cursor.getCount() > 0) {
-                lastUpdated = cursor.getString(cursor.getColumnIndex(ResourceModel.Columns.LAST_SYNCED));
-            }
-            cursor.close();
+    private static final StatementBinder<Resource> BINDER = new StatementBinder<Resource>() {
+        @Override
+        public void bindToStatement(@NonNull Resource resource,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, resource.resourceType());
+            sqLiteBind(sqLiteStatement, 2, resource.lastSynced());
         }
-        return lastUpdated;
-    }
+    };
+
+    private static final WhereStatementBinder<Resource> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<Resource>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull Resource resource,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 3, resource.resourceType());
+        }
+    };
+
+    private static final CursorModelFactory<Resource> FACTORY =
+            new CursorModelFactory<Resource>() {
+        @Override
+        public Resource fromCursor(Cursor cursor) {
+            return Resource.create(cursor);
+        }
+    };
 
     @Override
-    public int delete() {
-        return databaseAdapter.delete(ResourceModel.TABLE);
+    public String getLastUpdated(Resource.Type type) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name()).build();
+
+        List<Resource> resourceList = selectWhereClause(whereClause);
+        return resourceList.isEmpty() ?
+                null : BaseIdentifiableObject.DATE_FORMAT.format(resourceList.get(0).lastSynced());
+    }
+
+    public static ResourceStore create(DatabaseAdapter databaseAdapter) {
+
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ResourceTableInfo.TABLE_INFO.name(),
+                ResourceTableInfo.TABLE_INFO.columns());
+
+        return new ResourceStoreImpl(databaseAdapter, statementBuilder);
     }
 }

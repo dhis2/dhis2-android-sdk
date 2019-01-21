@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 
 import java.util.concurrent.Callable;
 
@@ -69,7 +69,7 @@ final class UserCall implements Callable<User> {
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
         try {
             userHandler.handle(user);
-            genericCallData.resourceHandler().handleResource(ResourceModel.Type.USER);
+            genericCallData.resourceHandler().handleResource(Resource.Type.USER);
 
             transaction.setSuccessful();
         } catch (SQLiteConstraintException constraintException) {

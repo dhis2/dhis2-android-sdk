@@ -42,8 +42,8 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.wipe.WipeModule;
 
@@ -239,9 +239,9 @@ final class UserAuthenticateCallFactory {
 
     private void handleUser(User user) {
         userHandler.handle(user);
-        resourceHandler.handleResource(ResourceModel.Type.USER);
-        resourceHandler.handleResource(ResourceModel.Type.USER_CREDENTIALS);
-        resourceHandler.handleResource(ResourceModel.Type.AUTHENTICATED_USER);
+        resourceHandler.handleResource(Resource.Type.USER);
+        resourceHandler.handleResource(Resource.Type.USER_CREDENTIALS);
+        resourceHandler.handleResource(Resource.Type.AUTHENTICATED_USER);
     }
 
     private AuthenticatedUserModel buildAuthenticatedUserModel(String uid, String username, String password) {

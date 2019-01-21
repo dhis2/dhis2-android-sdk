@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -161,7 +161,7 @@ public class SystemInfoCallShould {
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler).handle(systemInfo);
-        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO));
+        verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
 
     }
 
@@ -173,6 +173,6 @@ public class SystemInfoCallShould {
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler).handle(systemInfo);
-        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO));
+        verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
     }
 }

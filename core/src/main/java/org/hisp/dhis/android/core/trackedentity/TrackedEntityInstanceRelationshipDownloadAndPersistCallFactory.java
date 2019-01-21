@@ -52,7 +52,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
     private List<TrackedEntityInstance> downloadAndPersist() throws D2Error {
-        List<String> relationships = trackedEntityInstanceStore.queryRelationshipsUids();
+        List<String> relationships = trackedEntityInstanceStore.queryMissingRelationshipsUids();
 
         List<TrackedEntityInstance> teis = new ArrayList<>();
         if (!relationships.isEmpty()) {

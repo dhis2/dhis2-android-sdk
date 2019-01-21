@@ -97,7 +97,6 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                     getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
                 }
 
-                // TODO Wrap in try-catch?
                 if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
                     executor.executeD2Call(relationshipsCall.getCall());
                 }

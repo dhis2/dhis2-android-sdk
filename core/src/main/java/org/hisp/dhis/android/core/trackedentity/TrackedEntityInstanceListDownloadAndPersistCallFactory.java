@@ -75,7 +75,6 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter,
                         internalModules, teis));
 
-                // TODO Wrap in try-catch?
                 if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
                     executor.executeD2Call(relationshipsCall.getCall());
                 }

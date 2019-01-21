@@ -50,6 +50,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
         };
     }
 
+    @SuppressWarnings("PMD.EmptyCatchBlock")
     private List<TrackedEntityInstance> downloadAndPersist() throws D2Error {
         List<String> relationships = trackedEntityInstanceStore.queryRelationshipsUids();
 
@@ -57,9 +58,13 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
         if (!relationships.isEmpty()) {
             D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
             for (String uid : relationships) {
-                Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                        .create(retrofit, apiCallExecutor, uid, TrackedEntityInstanceFields.asRelationshipFields);
-                teis.add(executor.executeD2Call(teiCall));
+                try {
+                    Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
+                            .create(retrofit, apiCallExecutor, uid, TrackedEntityInstanceFields.asRelationshipFields);
+                    teis.add(executor.executeD2Call(teiCall));
+                } catch (D2Error ignored) {
+                    // Ignore
+                }
             }
 
             executor.executeD2Call(TrackedEntityInstanceRelationshipPersistenceCall.create(databaseAdapter,

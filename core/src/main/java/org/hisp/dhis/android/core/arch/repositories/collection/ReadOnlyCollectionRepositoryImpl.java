@@ -64,8 +64,12 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOn
 
     @Override
     public List<M> get() {
-        WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-        return store.selectWhereClause(whereClauseBuilder.getWhereClause(scope));
+        if (scope.isEmpty()) {
+            return store.selectAll();
+        } else {
+            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
+            return store.selectWhereClause(whereClauseBuilder.getWhereClause(scope));
+        }
     }
 
     @Override

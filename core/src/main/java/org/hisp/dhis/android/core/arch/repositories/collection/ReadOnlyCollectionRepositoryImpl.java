@@ -27,8 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
@@ -40,24 +43,42 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOn
 
     private final ObjectStore<M> store;
     protected final Collection<ChildrenAppender<M>> childrenAppenders;
+    protected final List<RepositoryScopeItem> scope;
+
+    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
+                                            Collection<ChildrenAppender<M>> childrenAppenders,
+                                            List<RepositoryScopeItem> scope) {
+        this.store = store;
+        this.childrenAppenders = childrenAppenders;
+        this.scope = scope;
+    }
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
                                             Collection<ChildrenAppender<M>> childrenAppenders) {
-        this.store = store;
-        this.childrenAppenders = childrenAppenders;
+        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
     }
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store) {
-        this(store, Collections.<ChildrenAppender<M>>emptyList());
+        this(store, Collections.<ChildrenAppender<M>>emptyList(), Collections.<RepositoryScopeItem>emptyList());
     }
 
     @Override
     public List<M> get() {
-        return store.selectAll();
+        if (scope.isEmpty()) {
+            return store.selectAll();
+        } else {
+            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
+            return store.selectWhereClause(whereClauseBuilder.getWhereClause(scope));
+        }
     }
 
     @Override
     public List<M> getWithAllChildren() {
         return ChildrenAppenderExecutor.appendInObjectCollection(get(), childrenAppenders);
+    }
+
+    @Override
+    public List<RepositoryScopeItem> getScope() {
+        return scope;
     }
 }

@@ -25,25 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+package org.hisp.dhis.android.core.arch.repositories.scope;
+
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 
 import java.util.List;
 
-public interface ReadOnlyIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
+public class WhereClauseFromScopeBuilder {
 
-    ReadOnlyObjectRepository<M> uid(String uid);
+    private final WhereClauseBuilder builder;
 
-    StringFilterConnector<M> byUid();
-    StringFilterConnector<M> byCode();
-    StringFilterConnector<M> byName();
-    StringFilterConnector<M> byDisplayName();
+    public WhereClauseFromScopeBuilder(WhereClauseBuilder builder) {
+        this.builder = builder;
+    }
 
-    ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope);
+    public String getWhereClause(List<RepositoryScopeItem> scope) {
+        for (RepositoryScopeItem item: scope) {
+            if (item.operator().equals("eq")) {
+                builder.appendKeyStringValue(item.key(), item.value());
+            } else if (item.operator().equals("like")) {
+                builder.appendKeyLikeStringValue(item.key(), item.value());
+            }
+        }
+        return builder.build();
+    }
 }

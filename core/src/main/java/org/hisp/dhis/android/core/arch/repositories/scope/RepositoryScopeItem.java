@@ -25,25 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import java.util.List;
+import com.google.auto.value.AutoValue;
 
-public interface ReadOnlyIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
+@AutoValue
+public abstract class RepositoryScopeItem {
 
-    ReadOnlyObjectRepository<M> uid(String uid);
+    public abstract String key();
 
-    StringFilterConnector<M> byUid();
-    StringFilterConnector<M> byCode();
-    StringFilterConnector<M> byName();
-    StringFilterConnector<M> byDisplayName();
+    public abstract String operator();
 
-    ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope);
+    public abstract String value();
+
+    public static Builder builder() {
+        return new AutoValue_RepositoryScopeItem.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder key(String key);
+
+        public abstract Builder operator(String operator);
+
+        public abstract Builder value(String value);
+
+        public abstract RepositoryScopeItem build();
+    }
 }

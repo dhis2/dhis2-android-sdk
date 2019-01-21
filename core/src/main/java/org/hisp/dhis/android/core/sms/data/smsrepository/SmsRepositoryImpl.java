@@ -14,8 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -29,7 +27,6 @@ public class SmsRepositoryImpl implements SmsRepository {
     private final String sendSmsAction;
     private boolean totalConfirmed;
 
-    @Inject
     public SmsRepositoryImpl(Context context) {
         this.context = context;
         sendSmsAction = context.getPackageName() + ".SEND_SMS";

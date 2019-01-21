@@ -2,6 +2,8 @@ package org.hisp.dhis.android.core.sms;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.sms.data.DeviceStateRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.LocalDbRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.smsrepository.SmsRepositoryImpl;
@@ -22,8 +24,8 @@ public class SmsDIModule {
     }
 
     @Provides
-    LocalDbRepository localDbRepository(UserModule userModule) {
-        return new LocalDbRepositoryImpl(userModule);
+    LocalDbRepository localDbRepository(UserModule userModule, ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos) {
+        return new LocalDbRepositoryImpl(userModule, categoryOptionCombos);
     }
 
     @Provides

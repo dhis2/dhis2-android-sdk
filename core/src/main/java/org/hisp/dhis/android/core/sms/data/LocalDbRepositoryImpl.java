@@ -1,11 +1,11 @@
 package org.hisp.dhis.android.core.sms.data;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.user.UserModule;
-
-import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -13,15 +13,24 @@ import io.reactivex.Single;
 public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     private final UserModule userModule;
+    private final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
+    private final static String DEFAULT_CATEGORY_OPTION_COMBO_CODE = "default";
 
-    @Inject
-    public LocalDbRepositoryImpl(UserModule userModule) {
+    public LocalDbRepositoryImpl(UserModule userModule, ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos) {
         this.userModule = userModule;
+        this.categoryOptionCombos = categoryOptionCombos;
     }
 
     @Override
     public Single<String> getDefaultCategoryOptionCombo() {
-        return null;
+        return Single.fromCallable(() -> {
+            for (CategoryOptionCombo coc : categoryOptionCombos.get()) {
+                if (DEFAULT_CATEGORY_OPTION_COMBO_CODE.equals(coc.code())) {
+                    return coc.uid();
+                }
+            }
+            return null;
+        });
     }
 
     @Override

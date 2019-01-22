@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event;
 
+import android.support.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
@@ -45,11 +47,16 @@ public final class EventModule {
     private final EventWithLimitCallFactory eventWithLimitCallFactory;
     public final ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events;
 
+    @VisibleForTesting
+    final EventPersistenceCallFactory eventPersistenceCallFactory;
+
     @Inject
     EventModule(EventWithLimitCallFactory eventWithLimitCallFactory,
-                ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events) {
+                ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events,
+                EventPersistenceCallFactory eventPersistenceCallFactory) {
         this.eventWithLimitCallFactory = eventWithLimitCallFactory;
         this.events = events;
+        this.eventPersistenceCallFactory = eventPersistenceCallFactory;
     }
 
     public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {

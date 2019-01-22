@@ -2,12 +2,10 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.program.ProgramStoreInterface;
@@ -28,37 +26,38 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
 @Reusable
-public final class EventWithLimitCallFactory {
+final class EventWithLimitCallFactory {
 
     private final Resource.Type resourceType = Resource.Type.EVENT;
 
-    private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
     private final ProgramStoreInterface programStore;
-    private final D2InternalModules d2InternalModules;
+
+    private final D2CallExecutor d2CallExecutor;
+
+    private final EventEndpointCallFactory endpointCallFactory;
+    private final EventPersistenceCallFactory persistenceCallFactory;
 
     @Inject
     EventWithLimitCallFactory(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull ResourceHandler resourceHandler,
             @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
             @NonNull ProgramStoreInterface programStore,
-            @NonNull D2InternalModules d2InternalModules) {
-        this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
+            @NonNull D2CallExecutor d2CallExecutor,
+            @NonNull EventEndpointCallFactory endpointCallFactory,
+            @NonNull EventPersistenceCallFactory persistenceCallFactory) {
         this.systemInfoRepository = systemInfoRepository;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
         this.programStore = programStore;
-        this.d2InternalModules = d2InternalModules;
+        this.d2CallExecutor = d2CallExecutor;
+        this.endpointCallFactory = endpointCallFactory;
+        this.persistenceCallFactory = persistenceCallFactory;
     }
 
     public Callable<Unit> getCall(final int eventLimit, final boolean limitByOrgUnit) {
@@ -118,7 +117,6 @@ public final class EventWithLimitCallFactory {
                                                        boolean limitByOrgUnit) {
         int eventsCount = 0;
         boolean successfulSync = true;
-        D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
         for (String programUid : programUids) {
             try {
@@ -131,13 +129,12 @@ public final class EventWithLimitCallFactory {
                     eventQueryBuilder.pageSize(paging.pageSize());
                     eventQueryBuilder.page(paging.page());
 
-                    List<Event> pageEvents = executor.executeD2Call(
-                            EventEndpointCall.create(retrofit, databaseAdapter, eventQueryBuilder.build()));
+                    List<Event> pageEvents = d2CallExecutor.executeD2Call(
+                            endpointCallFactory.getCall(eventQueryBuilder.build()));
 
                     List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 
-                    executor.executeD2Call(EventPersistenceCall.create(databaseAdapter, d2InternalModules,
-                            eventsToPersist));
+                    d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(eventsToPersist));
                     eventsCount = eventsCount + eventsToPersist.size();
 
                     if (pageEvents.size() < paging.pageSize()) {

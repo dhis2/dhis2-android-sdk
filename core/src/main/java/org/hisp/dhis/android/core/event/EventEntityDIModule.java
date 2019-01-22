@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -47,7 +47,7 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<Event> handler(EventHandler impl) {
+    public SyncHandlerWithTransformer<Event> handler(EventHandler impl) {
         return impl;
     }
 

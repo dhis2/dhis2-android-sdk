@@ -48,8 +48,8 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     final StatementBinder<M> binder;
     final CursorModelFactory<M> modelFactory;
 
-    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement, SQLStatementBuilder builder,
-                    StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
+    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
+                           SQLStatementBuilder builder, StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = insertStatement;
         this.builder = builder;

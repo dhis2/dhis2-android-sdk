@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.core;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
+import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.junit.Before;
@@ -56,7 +55,7 @@ public class D2Tests {
     private OkHttpClient okHttpClient;
 
     @Mock
-    private ConfigurationModel configuration;
+    private Configuration configuration;
 
     @Mock
     private Context context;

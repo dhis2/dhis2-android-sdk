@@ -118,7 +118,8 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         });
     }
 
-    private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList) throws Exception {
+    private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder,
+                                                     List<Paging> pagingList) throws Exception {
         boolean successfulSync = true;
 
         for (Paging paging : pagingList) {

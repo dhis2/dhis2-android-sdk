@@ -48,7 +48,8 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<Enrollment> handler(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+    public SyncHandlerWithTransformer<Enrollment> handler(DatabaseAdapter databaseAdapter,
+                                                          DHISVersionManager versionManager) {
         return EnrollmentHandler.create(databaseAdapter, versionManager);
     }
 

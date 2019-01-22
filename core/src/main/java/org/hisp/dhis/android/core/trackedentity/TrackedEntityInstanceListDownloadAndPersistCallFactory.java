@@ -1,12 +1,10 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,30 +14,37 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import retrofit2.Retrofit;
+import retrofit2.Call;
 
 @Reusable
 public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
 
-    private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
-    private final D2InternalModules internalModules;
     private final ForeignKeyCleaner foreignKeyCleaner;
-    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall;
+    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory
+            relationshipsCallFactory;
+    private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
+    private final D2CallExecutor d2CallExecutor;
+    private final APICallExecutor apiCallExecutor;
+    private final DHISVersionManager versionManager;
+    private final TrackedEntityInstanceService trackedEntityInstanceService;
 
 
     @Inject
     TrackedEntityInstanceListDownloadAndPersistCallFactory(
-            DatabaseAdapter databaseAdapter,
-            Retrofit retrofit,
-            D2InternalModules internalModules,
             ForeignKeyCleaner foreignKeyCleaner,
-            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall) {
-        this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
-        this.internalModules = internalModules;
+            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCallFactory,
+            TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
+            D2CallExecutor d2CallExecutor,
+            APICallExecutor apiCallExecutor,
+            DHISVersionManager versionManager,
+            TrackedEntityInstanceService trackedEntityInstanceService) {
         this.foreignKeyCleaner = foreignKeyCleaner;
-        this.relationshipsCall = relationshipsCall;
+        this.relationshipsCallFactory = relationshipsCallFactory;
+        this.persistenceCallFactory = persistenceCallFactory;
+        this.d2CallExecutor = d2CallExecutor;
+        this.apiCallExecutor = apiCallExecutor;
+        this.versionManager = versionManager;
+        this.trackedEntityInstanceService = trackedEntityInstanceService;
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
@@ -54,9 +59,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
     private List<TrackedEntityInstance> downloadAndPersist(final Collection<String> trackedEntityInstanceUids)
             throws D2Error {
 
-        final D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
-
-        return executor.executeD2CallTransactionally(new Callable<List<TrackedEntityInstance>>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<List<TrackedEntityInstance>>() {
             @Override
             public List<TrackedEntityInstance> call() throws Exception {
                 if (trackedEntityInstanceUids == null) {
@@ -64,19 +67,18 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 }
 
                 List<TrackedEntityInstance> teis = new ArrayList<>();
-                D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
+
                 for (String uid : trackedEntityInstanceUids) {
-                    Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                            .create(retrofit, APICallExecutorImpl.create(databaseAdapter), uid,
-                                    TrackedEntityInstanceFields.allFields);
-                    teis.add(executor.executeD2Call(teiCall));
+                    Call<TrackedEntityInstance> teiCall =
+                            trackedEntityInstanceService.getTrackedEntityInstance(uid,
+                                    TrackedEntityInstanceFields.allFields, true);
+                    teis.add(apiCallExecutor.executeObjectCall(teiCall));
                 }
 
-                executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter,
-                        internalModules, teis));
+                d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
 
-                if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
-                    executor.executeD2Call(relationshipsCall.getCall());
+                if (!versionManager.is2_29()) {
+                    d2CallExecutor.executeD2Call(relationshipsCallFactory.getCall());
                 }
 
                 foreignKeyCleaner.cleanForeignKeyErrors();

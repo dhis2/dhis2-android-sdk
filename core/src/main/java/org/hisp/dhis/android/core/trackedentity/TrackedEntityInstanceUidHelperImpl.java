@@ -14,10 +14,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelper {
 
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
+    @Inject
     TrackedEntityInstanceUidHelperImpl(
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore) {
         this.organisationUnitStore = organisationUnitStore;

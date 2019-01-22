@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -49,7 +48,7 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<TrackedEntityInstance> handler(DatabaseAdapter databaseAdapter,
+    public TrackedEntityInstanceHandler handler(DatabaseAdapter databaseAdapter,
                                                       D2InternalModules internalModules) {
         return TrackedEntityInstanceHandler.create(databaseAdapter, internalModules);
     }
@@ -65,5 +64,11 @@ public final class TrackedEntityInstanceEntityDIModule {
     @Reusable
     TrackedEntityInstanceService service(Retrofit retrofit) {
         return retrofit.create(TrackedEntityInstanceService.class);
+    }
+
+    @Provides
+    @Reusable
+    TrackedEntityInstanceUidHelper uidHelper(TrackedEntityInstanceUidHelperImpl impl) {
+        return impl;
     }
 }

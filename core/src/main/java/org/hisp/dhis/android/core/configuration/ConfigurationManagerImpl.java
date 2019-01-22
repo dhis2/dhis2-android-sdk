@@ -45,6 +45,10 @@ final class ConfigurationManagerImpl implements ConfigurationManager {
     @NonNull
     @Override
     public Configuration configure(@NonNull HttpUrl serverUrl) {
+        if (serverUrl == null) {
+            throw new IllegalArgumentException("serverUrl == null");
+        }
+
         configurationStore.save(Configuration.builder().serverUrl(serverUrl).build());
 
         Configuration configuration = get();

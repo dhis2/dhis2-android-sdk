@@ -3,11 +3,9 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -61,9 +59,5 @@ class TrackedEntityInstanceUidHelperImpl implements TrackedEntityInstanceUidHelp
                 }
             }
         }
-    }
-
-    public static TrackedEntityInstanceUidHelperImpl create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityInstanceUidHelperImpl(OrganisationUnitStore.create(databaseAdapter));
     }
 }

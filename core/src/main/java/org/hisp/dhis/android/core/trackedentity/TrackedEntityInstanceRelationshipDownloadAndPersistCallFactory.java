@@ -2,10 +2,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
@@ -19,26 +17,24 @@ import dagger.Reusable;
 @Reusable
 public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
 
-    private final DatabaseAdapter databaseAdapter;
     private final APICallExecutor apiCallExecutor;
     private final D2CallExecutor d2CallExecutor;
-    private final D2InternalModules internalModules;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final TrackedEntityInstanceService service;
+    private final TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory;
 
     @Inject
     TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory(
-            @NonNull DatabaseAdapter databaseAdapter,
             @NonNull APICallExecutor apiCallExecutor,
-            D2CallExecutor d2CallExecutor, @NonNull D2InternalModules internalModules,
+            @NonNull D2CallExecutor d2CallExecutor,
             @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-            @NonNull TrackedEntityInstanceService service) {
-        this.databaseAdapter = databaseAdapter;
+            @NonNull TrackedEntityInstanceService service,
+            @NonNull TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory) {
         this.apiCallExecutor = apiCallExecutor;
         this.d2CallExecutor = d2CallExecutor;
-        this.internalModules = internalModules;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.service = service;
+        this.persistenceCallFactory = persistenceCallFactory;
     }
 
     public Callable<List<TrackedEntityInstance>> getCall() {
@@ -67,8 +63,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
                 }
             }
 
-            d2CallExecutor.executeD2Call(TrackedEntityInstanceRelationshipPersistenceCall.create(databaseAdapter,
-                    internalModules, teis));
+            d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
         }
 
         return teis;

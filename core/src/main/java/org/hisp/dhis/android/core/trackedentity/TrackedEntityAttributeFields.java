@@ -38,28 +38,28 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.option.OptionSetFields;
 
-final class TrackedEntityAttributeFields {
+public final class TrackedEntityAttributeFields {
 
-    private static final String PATTERN = "pattern";
-    private static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
-    private static final String OPTION_SET = "optionSet";
-    private static final String VALUE_TYPE = "valueType";
-    private static final String EXPRESSION = "expression";
-    private static final String SEARCH_SCOPE = "searchScope";
-    private static final String PROGRAM_SCOPE = "programScope";
-    private static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
-    private static final String GENERATED = "generated";
-    private static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
-    private static final String ORG_UNIT_SCOPE = "orgunitScope";
-    private static final String UNIQUE = "unique";
-    private static final String INHERIT = "inherit";
-    private final static String STYLE = "style";
-    private final static String RENDER_TYPE = "renderType";
-    private final static String ACCESS = "access";
+    static final String PATTERN = "pattern";
+    static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
+    static final String OPTION_SET = "optionSet";
+    static final String VALUE_TYPE = "valueType";
+    static final String EXPRESSION = "expression";
+    static final String SEARCH_SCOPE = "searchScope";
+    static final String PROGRAM_SCOPE = "programScope";
+    static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
+    static final String GENERATED = "generated";
+    static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
+    static final String ORG_UNIT_SCOPE = "orgunitScope";
+    static final String UNIQUE = "unique";
+    static final String INHERIT = "inherit";
+    private static final String STYLE = "style";
+    private static final String RENDER_TYPE = "renderType";
+    private static final String ACCESS = "access";
 
     private static final FieldsHelper<TrackedEntityAttribute> fh = new FieldsHelper<>();
 
-    static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder()
+    public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder()
             .fields(fh.getNameableFields())
             .fields(
                     fh.<String>field(PATTERN),

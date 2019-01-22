@@ -48,6 +48,7 @@ public final class EventModule {
     public final ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events;
 
     @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
     final EventPersistenceCallFactory eventPersistenceCallFactory;
 
     @Inject

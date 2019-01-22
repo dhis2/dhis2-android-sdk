@@ -1,12 +1,12 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.D2InternalModules;
+import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
@@ -36,61 +36,80 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final D2InternalModules internalModules;
     private final ResourceHandler resourceHandler;
     private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
+    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall;
+    private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
     TrackedEntityInstanceWithLimitCallFactory(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
-            @NonNull D2InternalModules internalModules,
-            @NonNull ResourceHandler resourceHandler,
-            @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore) {
+            DatabaseAdapter databaseAdapter,
+            Retrofit retrofit,
+            D2InternalModules internalModules,
+            ResourceHandler resourceHandler,
+            UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
+            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall,
+            ForeignKeyCleaner foreignKeyCleaner) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
         this.resourceHandler = resourceHandler;
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
+        this.relationshipsCall = relationshipsCall;
+        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     public Callable<Unit> getCall(final int teiLimit, final boolean limitByOrgUnit) {
         return new Callable<Unit>() {
             @Override
-            public Unit call() throws Exception {
+            public Unit call() throws D2Error {
                 return getTrackedEntityInstances(teiLimit, limitByOrgUnit);
             }
         };
     }
     
-    private Unit getTrackedEntityInstances(final int teiLimit, final boolean limitByOrgUnit) throws Exception {
-        Collection<String> organisationUnitUids;
-        TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
-        int pageSize = teiQueryBuilder.build().pageSize();
-        List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
+    private Unit getTrackedEntityInstances(final int teiLimit, final boolean limitByOrgUnit) throws D2Error {
+        final D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
-        teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
+        return executor.executeD2CallTransactionally(new Callable<Unit>() {
+            @Override
+            public Unit call() throws Exception {
+                Collection<String> organisationUnitUids;
+                TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
+                int pageSize = teiQueryBuilder.build().pageSize();
+                List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
 
-        internalModules.systemInfo.publicModule.systemInfo.download().call();
+                String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
+                teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-        if (limitByOrgUnit) {
-            organisationUnitUids = getOrgUnitUids();
-            Set<String> orgUnitWrapper = new HashSet<>();
-            for (String orgUnitUid : organisationUnitUids) {
-                orgUnitWrapper.clear();
-                orgUnitWrapper.add(orgUnitUid);
-                teiQueryBuilder.orgUnits(orgUnitWrapper);
-                getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
+                internalModules.systemInfo.publicModule.systemInfo.download().call();
+
+                if (limitByOrgUnit) {
+                    organisationUnitUids = getOrgUnitUids();
+                    Set<String> orgUnitWrapper = new HashSet<>();
+                    for (String orgUnitUid : organisationUnitUids) {
+                        orgUnitWrapper.clear();
+                        orgUnitWrapper.add(orgUnitUid);
+                        teiQueryBuilder.orgUnits(orgUnitWrapper);
+                        getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
+                    }
+                } else {
+                    organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
+                    teiQueryBuilder.orgUnits(organisationUnitUids).ouMode(OuMode.DESCENDANTS);
+                    getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
+                }
+
+                if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
+                    executor.executeD2Call(relationshipsCall.getCall());
+                }
+
+                foreignKeyCleaner.cleanForeignKeyErrors();
+
+                return new Unit();
             }
-        } else {
-            organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-            teiQueryBuilder.orgUnits(organisationUnitUids).ouMode(OuMode.DESCENDANTS);
-            getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
-        }
-
-        return new Unit();
+        });
     }
 
     private void getTrackedEntityInstancesWithPaging(TeiQuery.Builder teiQueryBuilder, List<Paging> pagingList) {
-        Boolean successfulSync = true;
+        boolean successfulSync = true;
 
         for (Paging paging : pagingList) {
             try {
@@ -105,11 +124,11 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
                             pageTrackedEntityInstances.size() :
                             paging.pageSize() - paging.posteriorItemsToSkipCount();
 
-                    TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit, internalModules,
+                    TrackedEntityInstancePersistenceCall.create(databaseAdapter, internalModules,
                             pageTrackedEntityInstances.subList(paging.previousItemsToSkipCount(), toIndex)).call();
 
                 } else {
-                    TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
+                    TrackedEntityInstancePersistenceCall.create(databaseAdapter,
                             internalModules, pageTrackedEntityInstances).call();
                 }
 

@@ -38,5 +38,5 @@ public interface TrackedEntityInstanceStore extends IdentifiableObjectWithStateS
 
     List<String> querySyncedTrackedEntityInstanceUids();
 
-    List<String> queryRelationshipsUids();
+    List<String> queryMissingRelationshipsUids();
 }

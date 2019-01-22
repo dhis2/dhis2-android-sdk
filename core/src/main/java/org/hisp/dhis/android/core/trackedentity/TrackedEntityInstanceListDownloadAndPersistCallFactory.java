@@ -1,13 +1,12 @@
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,15 +24,22 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
     private final DatabaseAdapter databaseAdapter;
     private final Retrofit retrofit;
     private final D2InternalModules internalModules;
+    private final ForeignKeyCleaner foreignKeyCleaner;
+    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall;
+
 
     @Inject
     TrackedEntityInstanceListDownloadAndPersistCallFactory(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
-            @NonNull D2InternalModules internalModules) {
+            DatabaseAdapter databaseAdapter,
+            Retrofit retrofit,
+            D2InternalModules internalModules,
+            ForeignKeyCleaner foreignKeyCleaner,
+            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipsCall) {
         this.databaseAdapter = databaseAdapter;
         this.retrofit = retrofit;
         this.internalModules = internalModules;
+        this.foreignKeyCleaner = foreignKeyCleaner;
+        this.relationshipsCall = relationshipsCall;
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
@@ -45,25 +51,38 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
         };
     }
 
-    private List<TrackedEntityInstance> downloadAndPersist(Collection<String> trackedEntityInstanceUids)
+    private List<TrackedEntityInstance> downloadAndPersist(final Collection<String> trackedEntityInstanceUids)
             throws D2Error {
 
-        if (trackedEntityInstanceUids == null) {
-            throw new IllegalArgumentException("UID list is null");
-        }
+        final D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        List<TrackedEntityInstance> teis = new ArrayList<>();
-        D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
-        for (String uid: trackedEntityInstanceUids) {
-            Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                    .create(retrofit, APICallExecutorImpl.create(databaseAdapter), uid,
-                            TrackedEntityInstanceFields.allFields);
-            teis.add(executor.executeD2Call(teiCall));
-        }
+        return executor.executeD2CallTransactionally(new Callable<List<TrackedEntityInstance>>() {
+            @Override
+            public List<TrackedEntityInstance> call() throws Exception {
+                if (trackedEntityInstanceUids == null) {
+                    throw new IllegalArgumentException("UID list is null");
+                }
 
-        executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter, retrofit,
-                internalModules, teis));
+                List<TrackedEntityInstance> teis = new ArrayList<>();
+                D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
+                for (String uid : trackedEntityInstanceUids) {
+                    Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
+                            .create(retrofit, APICallExecutorImpl.create(databaseAdapter), uid,
+                                    TrackedEntityInstanceFields.allFields);
+                    teis.add(executor.executeD2Call(teiCall));
+                }
 
-        return teis;
+                executor.executeD2Call(TrackedEntityInstancePersistenceCall.create(databaseAdapter,
+                        internalModules, teis));
+
+                if (!internalModules.systemInfo.publicModule.versionManager.is2_29()) {
+                    executor.executeD2Call(relationshipsCall.getCall());
+                }
+
+                foreignKeyCleaner.cleanForeignKeyErrors();
+
+                return teis;
+            }
+        });
     }
 }

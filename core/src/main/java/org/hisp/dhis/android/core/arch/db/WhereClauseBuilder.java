@@ -45,6 +45,8 @@ public class WhereClauseBuilder {
     private static final String IN = " IN (";
     private static final String NOT_IN = " NOT IN (";
 
+    private static final String IS_NULL = " IS NULL";
+
     @SuppressWarnings("PMD.AvoidStringBufferField")
     private final StringBuilder whereClause = new StringBuilder();
     private boolean isFirst = true;
@@ -81,6 +83,10 @@ public class WhereClauseBuilder {
     public WhereClauseBuilder appendInKeyStringValues(String column, List<String> values) {
         String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
         return appendKeyValue(column, valuesArray, AND, IN, PARENTHESES_END);
+    }
+
+    public WhereClauseBuilder appendIsNullValue(String column) {
+        return appendKeyValue(column, "", AND, IS_NULL, "");
     }
 
     private WhereClauseBuilder appendKeyValue(String column, Object value, String logicGate, String eq, String end) {

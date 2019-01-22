@@ -44,8 +44,7 @@ public final class ConfigurationManagerFactory {
             throw new IllegalArgumentException("databaseAdapter == null");
         }
 
-        ConfigurationStore configurationStore = new ConfigurationStoreImpl(
-                databaseAdapter);
+        ConfigurationStore configurationStore = ConfigurationStoreImpl.create(databaseAdapter);
         return new ConfigurationManagerImpl(configurationStore);
     }
 }

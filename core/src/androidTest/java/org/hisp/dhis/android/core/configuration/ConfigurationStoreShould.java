@@ -31,11 +31,14 @@ package org.hisp.dhis.android.core.configuration;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+
+import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -49,19 +52,18 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        store = new ConfigurationStoreImpl(databaseAdapter());
+        store = ConfigurationStoreImpl.create(databaseAdapter());
     }
 
     @Test
     public void persist_row_in_database_when_save() {
-        long rowId = store.save("http://testserver.org/");
+        store.save(Configuration.builder().serverUrl(HttpUrl.parse("http://testserver.org/")).build());
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
 
-        assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "http://testserver.org/")
+                .hasRow(1L, "http://testserver.org/api/")
                 .isExhausted();
     }
 
@@ -73,13 +75,12 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
         // trying to configure configuration with server url (which is set to be unique in the table)
-        long rowId = store.save("http://testserver.org/");
+        store.save(Configuration.builder().serverUrl(HttpUrl.parse("http://testserver.org/")).build());
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
-        assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "http://testserver.org/")
+                .hasRow(2L, "http://testserver.org/api/")
                 .isExhausted();
     }
 
@@ -90,13 +91,13 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
-        long rowId = store.save("test_another_url");
+        HttpUrl url = HttpUrl.parse("http://othertestserver.org/");
+        store.save(Configuration.builder().serverUrl(url).build());
 
         Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
                 PROJECTION, null, null, null, null, null);
-        assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "test_another_url")
+                .hasRow(2L, "http://othertestserver.org/api/")
                 .isExhausted();
     }
 
@@ -128,14 +129,16 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
 
         database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
 
-        ConfigurationModel persistedConfiguration = store.query();
-        assertThat(persistedConfiguration.id()).isEqualTo(1L);
-        assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/");
+        HttpUrl url = HttpUrl.parse("http://othertestserver.org/");
+        store.save(Configuration.builder().serverUrl(url).build());
+
+        Configuration persistedConfiguration = store.selectFirst();
+        assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo("http://othertestserver.org/api/");
     }
 
     @Test
     public void return_null_if_no_rows_are_persisted() {
-        ConfigurationModel persistedConfiguration = store.query();
+        Configuration persistedConfiguration = store.selectFirst();
         assertThat(persistedConfiguration).isNull();
     }
 

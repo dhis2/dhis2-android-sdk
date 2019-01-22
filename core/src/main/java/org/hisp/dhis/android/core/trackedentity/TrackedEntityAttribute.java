@@ -30,203 +30,150 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
+import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetFields;
-
-import java.util.Date;
 
 @AutoValue
+@JsonDeserialize(builder = AutoValue_TrackedEntityAttribute.Builder.class)
 public abstract class TrackedEntityAttribute extends BaseNameableObject {
 
-    private static final String PATTERN = "pattern";
-    private static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
-    private static final String OPTION_SET = "optionSet";
-    private static final String VALUE_TYPE = "valueType";
-    private static final String EXPRESSION = "expression";
-    private static final String SEARCH_SCOPE = "searchScope";
-    private static final String PROGRAM_SCOPE = "programScope";
-    private static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
-    private static final String GENERATED = "generated";
-    private static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
-    private static final String ORG_UNIT_SCOPE = "orgunitScope";
-    private static final String UNIQUE = "unique";
-    private static final String INHERIT = "inherit";
-    private final static String STYLE = "style";
-    private final static String RENDER_TYPE = "renderType";
-    private final static String ACCESS = "access";
-
-    private static final Field<TrackedEntityAttribute, String> uid
-            = Field.create(UID);
-    private static final Field<TrackedEntityAttribute, String> code
-            = Field.create(CODE);
-    private static final Field<TrackedEntityAttribute, String> name
-            = Field.create(NAME);
-    private static final Field<TrackedEntityAttribute, String> displayName
-            = Field.create(DISPLAY_NAME);
-    private static final Field<TrackedEntityAttribute, String> created
-            = Field.create(CREATED);
-    private static final Field<TrackedEntityAttribute, String> lastUpdated
-            = Field.create(LAST_UPDATED);
-    private static final Field<TrackedEntityAttribute, String> shortName
-            = Field.create(SHORT_NAME);
-    private static final Field<TrackedEntityAttribute, String> displayShortName
-            = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<TrackedEntityAttribute, String> description
-            = Field.create(DESCRIPTION);
-    private static final Field<TrackedEntityAttribute, String> displayDescription
-            = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<TrackedEntityAttribute, String> pattern
-            = Field.create(PATTERN);
-    private static final Field<TrackedEntityAttribute, String> sortOrderInListNoProgram
-            = Field.create(SORT_ORDER_IN_LIST_NO_PROGRAM);
-    private static final NestedField<TrackedEntityAttribute, OptionSet> optionSet
-            = NestedField.create(OPTION_SET);
-    private static final Field<TrackedEntityAttribute, ValueType> valueType
-            = Field.create(VALUE_TYPE);
-    private static final Field<TrackedEntityAttribute, String> expression
-            = Field.create(EXPRESSION);
-    private static final Field<TrackedEntityAttribute, TrackedEntityAttributeSearchScope> searchScope
-            = Field.create(SEARCH_SCOPE);
-    private static final Field<TrackedEntityAttribute, Boolean> programScope
-            = Field.create(PROGRAM_SCOPE);
-    private static final Field<TrackedEntityAttribute, Boolean> displayInListNoProgram
-            = Field.create(DISPLAY_IN_LIST_NO_PROGRAM);
-    private static final Field<TrackedEntityAttribute, Boolean> generated
-            = Field.create(GENERATED);
-    private static final Field<TrackedEntityAttribute, Boolean> displayOnVisitSchedule
-            = Field.create(DISPLAY_ON_VISIT_SCHEDULE);
-    private static final Field<TrackedEntityAttribute, Boolean> orgUnitScope
-            = Field.create(ORG_UNIT_SCOPE);
-    private static final Field<TrackedEntityAttribute, Boolean> unique
-            = Field.create(UNIQUE);
-    private static final Field<TrackedEntityAttribute, Boolean> inherit
-            = Field.create(INHERIT);
-    private static final NestedField<TrackedEntityAttribute, ObjectStyle> style
-            = NestedField.create(STYLE);
-    private static final NestedField<TrackedEntityAttribute, ValueTypeRendering> renderType
-            = NestedField.create(RENDER_TYPE);
-    private static final NestedField<TrackedEntityAttribute, Access> access = NestedField.create(ACCESS);
-
-    public static final Fields<TrackedEntityAttribute> allFields = Fields.<TrackedEntityAttribute>builder().fields(
-            uid, code, created, lastUpdated, name, displayName, shortName, displayShortName, description,
-            displayDescription, displayInListNoProgram, displayOnVisitSchedule, expression, generated, inherit,
-            orgUnitScope, programScope, pattern, sortOrderInListNoProgram, unique, valueType, searchScope,
-            optionSet.with(OptionSetFields.uid, OptionSetFields.version), style.with(ObjectStyleFields.allFields),
-            access.with(Access.read), renderType).build();
-
     @Nullable
-    @JsonProperty(PATTERN)
+    @JsonProperty()
     public abstract String pattern();
 
     @Nullable
-    @JsonProperty(SORT_ORDER_IN_LIST_NO_PROGRAM)
+    @JsonProperty()
     public abstract Integer sortOrderInListNoProgram();
 
     @Nullable
-    @JsonProperty(OPTION_SET)
+    @JsonProperty()
+    @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
     public abstract OptionSet optionSet();
 
     @Nullable
-    @JsonProperty(VALUE_TYPE)
+    @JsonProperty()
+    @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @JsonProperty(EXPRESSION)
+    @JsonProperty()
     public abstract String expression();
 
     @Nullable
-    @JsonProperty(SEARCH_SCOPE)
+    @JsonProperty()
+    @ColumnAdapter(TrackedEntityAttributeSearchScopeColumnAdapter.class)
     public abstract TrackedEntityAttributeSearchScope searchScope();
 
     @Nullable
-    @JsonProperty(PROGRAM_SCOPE)
+    @JsonProperty()
     public abstract Boolean programScope();
 
     @Nullable
-    @JsonProperty(DISPLAY_IN_LIST_NO_PROGRAM)
+    @JsonProperty()
     public abstract Boolean displayInListNoProgram();
 
     @Nullable
-    @JsonProperty(GENERATED)
+    @JsonProperty()
     public abstract Boolean generated();
 
     @Nullable
-    @JsonProperty(DISPLAY_ON_VISIT_SCHEDULE)
+    @JsonProperty()
     public abstract Boolean displayOnVisitSchedule();
 
     @Nullable
-    @JsonProperty(ORG_UNIT_SCOPE)
+    @JsonProperty(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
+    @ColumnName(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
     public abstract Boolean orgUnitScope();
 
     @Nullable
-    @JsonProperty(UNIQUE)
+    @JsonProperty()
     public abstract Boolean unique();
 
     @Nullable
-    @JsonProperty(INHERIT)
+    @JsonProperty()
     public abstract Boolean inherit();
 
     @Nullable
-    @JsonProperty(STYLE)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
     public abstract ObjectStyle style();
 
     @Nullable
-    @JsonProperty(RENDER_TYPE)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
     public abstract ValueTypeRendering renderType();
 
     @Nullable
-    @JsonProperty(ACCESS)
+    @JsonProperty()
+    @ColumnAdapter(IgnoreAccessAdapter.class)
     public abstract Access access();
 
-    @JsonCreator
-    public static TrackedEntityAttribute create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(PATTERN) String pattern,
-            @JsonProperty(SORT_ORDER_IN_LIST_NO_PROGRAM) int sortOrderInListNoProgram,
-            @JsonProperty(OPTION_SET) OptionSet optionSet,
-            @JsonProperty(VALUE_TYPE) ValueType valueType,
-            @JsonProperty(EXPRESSION) String expression,
-            @JsonProperty(SEARCH_SCOPE) TrackedEntityAttributeSearchScope searchScope,
-            @JsonProperty(PROGRAM_SCOPE) boolean programScope,
-            @JsonProperty(DISPLAY_IN_LIST_NO_PROGRAM) boolean displayInListNoProgram,
-            @JsonProperty(GENERATED) boolean generated,
-            @JsonProperty(DISPLAY_ON_VISIT_SCHEDULE) boolean displayOnVisitSchedule,
-            @JsonProperty(ORG_UNIT_SCOPE) boolean orgUnitScope,
-            @JsonProperty(UNIQUE) boolean unique,
-            @JsonProperty(INHERIT) boolean inherit,
-            @JsonProperty(STYLE) ObjectStyle style,
-            @JsonProperty(RENDER_TYPE) ValueTypeRendering renderType,
-            @JsonProperty(ACCESS) Access access,
-            @JsonProperty(DELETED) Boolean deleted
-    ) {
-        return new AutoValue_TrackedEntityAttribute(
-                uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription,
-                pattern, sortOrderInListNoProgram, optionSet, valueType, expression, searchScope,
-                programScope, displayInListNoProgram, generated, displayOnVisitSchedule,
-                orgUnitScope, unique, inherit, style, renderType, access);
+    public static Builder builder() {
+        return new $$AutoValue_TrackedEntityAttribute.Builder();
     }
 
+    static TrackedEntityAttribute create(Cursor cursor) {
+        return $AutoValue_TrackedEntityAttribute.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder pattern(String pattern);
+
+        public abstract Builder sortOrderInListNoProgram(Integer sortOrderInListNoProgram);
+
+        public abstract Builder optionSet(OptionSet optionSet);
+
+        public abstract Builder valueType(ValueType valueType);
+
+        public abstract Builder expression(String expression);
+
+        public abstract Builder searchScope(TrackedEntityAttributeSearchScope searchScope);
+
+        public abstract Builder programScope(Boolean programScope);
+
+        public abstract Builder displayInListNoProgram(Boolean displayInListNoProgram);
+
+        public abstract Builder generated(Boolean generated);
+
+        public abstract Builder displayOnVisitSchedule(Boolean displayOnVisitSchedule);
+
+        public abstract Builder orgUnitScope(Boolean orgUnitScope);
+
+        public abstract Builder unique(Boolean unique);
+
+        public abstract Builder inherit(Boolean inherit);
+
+        public abstract Builder style(ObjectStyle style);
+
+        public abstract Builder renderType(ValueTypeRendering renderType);
+
+        public abstract Builder access(Access access);
+
+        public abstract TrackedEntityAttribute build();
+    }
 }

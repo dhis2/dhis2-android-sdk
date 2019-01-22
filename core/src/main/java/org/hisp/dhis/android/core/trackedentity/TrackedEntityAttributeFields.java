@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetFields;
 
 public final class TrackedEntityAttributeFields {
 
@@ -74,7 +73,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<Boolean>field(ORG_UNIT_SCOPE),
                     fh.<Boolean>field(UNIQUE),
                     fh.<Boolean>field(INHERIT),
-                    fh.<OptionSet>nestedField(OPTION_SET).with(OptionSetFields.uid, OptionSetFields.version),
+                    fh.<OptionSet>nestedFieldWithUid(OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<ValueTypeRendering>nestedField(RENDER_TYPE),
                     fh.<Access>nestedField(ACCESS).with(Access.read)

@@ -21,9 +21,8 @@ public class WhereClauseFromScopeBuilderShould {
     @Mock
     private WhereClauseBuilder builder;
 
-    private RepositoryScopeItem eqItem = RepositoryScopeItem.builder().key("k1").operator("eq").value("v1").build();
-    private RepositoryScopeItem likeItem = RepositoryScopeItem.builder().key("k2").operator("like").value("v2").build();
-    private RepositoryScopeItem unknownOperatorItem = RepositoryScopeItem.builder().key("k2").operator("unknown").value("v2").build();
+    private RepositoryScopeItem eqItem = RepositoryScopeItem.builder().key("k1").operator("=").value("v1").build();
+    private RepositoryScopeItem likeItem = RepositoryScopeItem.builder().key("k2").operator("LIKE").value("v2").build();
 
 
     @Before
@@ -36,7 +35,7 @@ public class WhereClauseFromScopeBuilderShould {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
         List<RepositoryScopeItem> scope = Collections.singletonList(eqItem);
         scopeBuilder.getWhereClause(scope);
-        verify(builder).appendKeyStringValue(eqItem.key(), eqItem.value());
+        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator(), eqItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
     }
@@ -46,7 +45,7 @@ public class WhereClauseFromScopeBuilderShould {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
         List<RepositoryScopeItem> scope = Collections.singletonList(likeItem);
         scopeBuilder.getWhereClause(scope);
-        verify(builder).appendKeyLikeStringValue(likeItem.key(), likeItem.value());
+        verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator(), likeItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
     }
@@ -56,17 +55,8 @@ public class WhereClauseFromScopeBuilderShould {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
         List<RepositoryScopeItem> scope = Lists.newArrayList(eqItem, likeItem);
         scopeBuilder.getWhereClause(scope);
-        verify(builder).appendKeyStringValue(eqItem.key(), eqItem.value());
-        verify(builder).appendKeyLikeStringValue(likeItem.key(), likeItem.value());
-        verify(builder).build();
-        verifyNoMoreInteractions(builder);
-    }
-
-    @Test
-    public void ignore_unknown_operators() {
-        WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
-        List<RepositoryScopeItem> scope = Lists.newArrayList(unknownOperatorItem);
-        scopeBuilder.getWhereClause(scope);
+        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator(), eqItem.value());
+        verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator(), likeItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
     }

@@ -4,11 +4,14 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,6 +19,13 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
 public class IdentifiableCollectionFiltersMockIntegrationShould extends MockIntegrationShould {
+
+    private final String BEFORE_DATE = "2007-12-24T12:24:25.203";
+    private final String IN_BETWEEN_DATE = "2016-04-16T18:04:34.745";
+    private final String AFTER_DATE =  "2017-12-24T12:24:25.203";
+
+    private final String BIRTH_UID =  "m2jTvAj5kkm";
+    private final String DEFAULT_UID =  "p0KPaWEg3cf";
 
     @BeforeClass
     public static void setUpAll() throws Exception {
@@ -29,8 +39,8 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byCode().like("cody");
         List<RepositoryScopeItem> scope = repositoryWithUpdatedScope.getScope();
 
-        assertThat(scope.get(0).equals(RepositoryScopeItem.builder().key("name").operator("eq").value("Combi").build()), is(true));
-        assertThat(scope.get(1).equals(RepositoryScopeItem.builder().key("code").operator("like").value("cody").build()), is(true));
+        assertThat(scope.get(0).equals(RepositoryScopeItem.builder().key("name").operator("=").value("'Combi'").build()), is(true));
+        assertThat(scope.get(1).equals(RepositoryScopeItem.builder().key("code").operator("LIKE").value("'cody'").build()), is(true));
     }
 
     @Test
@@ -39,7 +49,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byName().eq("Births");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
-        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
@@ -48,7 +58,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byName().eq("Births");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.getWithAllChildren();
         assertThat(combos.size(), is(1));
-        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
         assertThat(combos.get(0).categories().isEmpty(), is(false));
     }
 
@@ -58,7 +68,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byCode().eq("BIRTHS");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
-        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
@@ -67,7 +77,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byUid().eq("m2jTvAj5kkm");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
-        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
@@ -76,7 +86,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byDisplayName().eq("Births Display");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
-        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
@@ -101,7 +111,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byName().like("%bi%");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
-        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
     }
 
     @Test
@@ -110,6 +120,91 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
                 .byCode().like("%bi%");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
-        assertThat(combos.get(0).uid(), is("m2jTvAj5kkm"));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
+    }
+
+    @Test
+    public void find_objects_with_equal_created() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.203");
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byCreated().eq(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(2));
+    }
+
+    @Test
+    public void find_objects_with_equal_last_updated() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2016-04-18T16:04:34.745");
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().eq(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(1));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_before_date_before_both() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().before(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(0));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_before_date_in_between() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(IN_BETWEEN_DATE);
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().before(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(1));
+        assertThat(combos.get(0).uid(), is(DEFAULT_UID));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_before_date_after_both() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(AFTER_DATE);
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().before(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(2));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_after_date_before_both() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().after(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(2));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_after_date_in_between() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(IN_BETWEEN_DATE);
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().after(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(1));
+        assertThat(combos.get(0).uid(), is(BIRTH_UID));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_after_date_after_both() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(AFTER_DATE);
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().after(created);
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(0));
+    }
+
+    @Test
+    public void combine_date_and_string_filters() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
+        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
+                .byLastUpdated().after(created)
+                .byName().like("%t%");
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
+        assertThat(combos.size(), is(2));
     }
 }

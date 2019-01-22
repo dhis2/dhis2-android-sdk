@@ -69,6 +69,10 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, value, AND, EQ_NUMBER, "");
     }
 
+    public WhereClauseBuilder appendKeyOperatorValue(String column, String operator, String value) {
+        return appendKeyValue(column, value, AND,  " " + operator + " ", "");
+    }
+
     public WhereClauseBuilder appendNotInKeyStringValues(String column, List<String> values) {
         String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
         return appendKeyValue(column, valuesArray, AND, NOT_IN, PARENTHESES_END);

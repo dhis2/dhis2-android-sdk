@@ -64,7 +64,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
@@ -76,7 +76,7 @@ public final class TrackedEntityAttributeReservedValueManager {
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            TrackedEntityAttributeStore trackedEntityAttributeStore,
+            IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory) {
         this.databaseAdapter = databaseAdapter;
@@ -164,7 +164,8 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         String trackedEntityAttributePattern;
         try {
-            trackedEntityAttributePattern = trackedEntityAttributeStore.getPattern(trackedEntityAttributeUid);
+            trackedEntityAttributePattern =
+                    trackedEntityAttributeStore.selectByUid(trackedEntityAttributeUid).pattern();
         } catch (Exception e) {
             trackedEntityAttributePattern = "";
         }

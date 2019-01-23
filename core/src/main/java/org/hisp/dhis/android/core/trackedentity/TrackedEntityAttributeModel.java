@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 
+@Deprecated
 @AutoValue
 public abstract class TrackedEntityAttributeModel extends BaseNameableObjectModel {
     public static final String TABLE = "TrackedEntityAttribute";

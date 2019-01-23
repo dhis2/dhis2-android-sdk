@@ -72,6 +72,15 @@ public class WhereClauseBuilderShould {
         assertThat(whereStatement).isEqualTo("COL1 IN ('VAL1', 'VAL2')");
     }
 
+    @Test
+    public void build_where_statement_for_is_null_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendIsNullValue("COL1")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 IS NULL");
+    }
+
     @Test(expected = RuntimeException.class)
     public void throw_exception_for_no_pairs() {
         WhereClauseBuilder builder = new WhereClauseBuilder();

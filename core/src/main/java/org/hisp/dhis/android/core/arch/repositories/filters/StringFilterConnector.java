@@ -33,39 +33,26 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public final class StringFilterConnector<M extends Model & ObjectWithUidInterface> {
-
-    private final ReadOnlyIdentifiableCollectionRepository<M> collectionRepository;
-    private final List<RepositoryScopeItem> scope;
-    private final String key;
+public final class StringFilterConnector<M extends Model & ObjectWithUidInterface>
+        extends BaseFilterConnector<M, String> {
 
     public StringFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
                                  List<RepositoryScopeItem> scope,
                                  String key) {
-        this.collectionRepository = collectionRepository;
-        this.scope = scope;
-        this.key = key;
+        super(collectionRepository, scope, key);
     }
 
     public ReadOnlyIdentifiableCollectionRepository<M> eq(String value) {
-        return newWithScope("eq", value);
+        return newWithScope("=", value);
     }
 
     public ReadOnlyIdentifiableCollectionRepository<M> like(String value) {
-        return newWithScope("like", value);
+        return newWithScope("LIKE", value);
     }
 
-    private List<RepositoryScopeItem> updatedScope(String operator, String value) {
-        List<RepositoryScopeItem> copiedScope = new ArrayList<>();
-        copiedScope.addAll(scope);
-        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(value).build());
-        return copiedScope;
-    }
-
-    private ReadOnlyIdentifiableCollectionRepository<M> newWithScope(String operator, String value) {
-        return collectionRepository.newWithUpdatedScope(updatedScope(operator, value));
+    String wrapValue(String value) {
+        return "'" + value + "'";
     }
 }

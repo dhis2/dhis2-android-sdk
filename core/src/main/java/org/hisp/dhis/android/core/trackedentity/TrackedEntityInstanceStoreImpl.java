@@ -76,9 +76,10 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
     }
 
     @Override
-    public List<String> queryRelationshipsUids() {
+    public List<String> queryMissingRelationshipsUids() {
         String whereRelationshipsClause = new WhereClauseBuilder()
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.RELATIONSHIP)
+                .appendIsNullValue(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
                 .build();
 
         return selectUidsWhere(whereRelationshipsClause);

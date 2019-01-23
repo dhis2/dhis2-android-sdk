@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -48,7 +48,8 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<Enrollment> handler(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
+    public SyncHandlerWithTransformer<Enrollment> handler(DatabaseAdapter databaseAdapter,
+                                                          DHISVersionManager versionManager) {
         return EnrollmentHandler.create(databaseAdapter, versionManager);
     }
 

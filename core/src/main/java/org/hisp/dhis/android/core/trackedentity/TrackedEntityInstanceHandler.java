@@ -2,20 +2,13 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
-import org.hisp.dhis.android.core.enrollment.EnrollmentHandler;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.relationship.RelationshipDHISVersionManager;
@@ -24,6 +17,11 @@ import org.hisp.dhis.android.core.relationship.RelationshipHandler;
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEntityInstance> {
     private final RelationshipDHISVersionManager relationshipVersionManager;
     private final RelationshipHandler relationshipHandler;
@@ -32,6 +30,7 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
     private final SyncHandlerWithTransformer<Enrollment> enrollmentHandler;
     private final OrphanCleaner<TrackedEntityInstance, Enrollment> enrollmentOrphanCleaner;
 
+    @Inject
     TrackedEntityInstanceHandler(
             @NonNull RelationshipDHISVersionManager relationshipVersionManager,
             @NonNull RelationshipHandler relationshipHandler,
@@ -132,18 +131,5 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
                 }
             }
         };
-    }
-
-    public static TrackedEntityInstanceHandler create(DatabaseAdapter databaseAdapter,
-                                                      D2InternalModules internalModules) {
-        return new TrackedEntityInstanceHandler(
-                new RelationshipDHISVersionManager(internalModules.systemInfo.publicModule.versionManager),
-                internalModules.relationship.relationshipHandler,
-                TrackedEntityInstanceStoreImpl.create(databaseAdapter),
-                TrackedEntityAttributeValueHandler.create(databaseAdapter),
-                EnrollmentHandler.create(databaseAdapter, internalModules.systemInfo.publicModule.versionManager),
-                new DataOrphanCleanerImpl<TrackedEntityInstance, Enrollment>(EnrollmentTableInfo.TABLE_INFO.name(),
-                        EnrollmentFields.TRACKED_ENTITY_INSTANCE, BaseDataModel.Columns.STATE, databaseAdapter)
-        );
     }
 }

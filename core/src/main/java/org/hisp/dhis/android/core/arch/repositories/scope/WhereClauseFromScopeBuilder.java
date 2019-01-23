@@ -42,11 +42,7 @@ public class WhereClauseFromScopeBuilder {
 
     public String getWhereClause(List<RepositoryScopeItem> scope) {
         for (RepositoryScopeItem item: scope) {
-            if (item.operator().equals("eq")) {
-                builder.appendKeyStringValue(item.key(), item.value());
-            } else if (item.operator().equals("like")) {
-                builder.appendKeyLikeStringValue(item.key(), item.value());
-            }
+            builder.appendKeyOperatorValue(item.key(), item.operator(), item.value());
         }
         return builder.build();
     }

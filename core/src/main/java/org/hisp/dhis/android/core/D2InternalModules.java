@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
 import org.hisp.dhis.android.core.user.UserInternalModule;
 
 import javax.inject.Inject;
@@ -42,20 +40,14 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 @SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final RelationshipInternalModule relationship;
     public final CategoryInternalModule category;
     public final OrganisationUnitInternalModule organisationUnit;
     public final UserInternalModule user;
 
     @Inject
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             RelationshipInternalModule relationship,
-                             CategoryInternalModule category,
+    public D2InternalModules(CategoryInternalModule category,
                              OrganisationUnitInternalModule organisationUnit,
                              UserInternalModule user) {
-        this.systemInfo = systemInfo;
-        this.relationship = relationship;
         this.category = category;
         this.organisationUnit = organisationUnit;
         this.user = user;

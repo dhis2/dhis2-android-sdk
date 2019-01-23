@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,17 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface TrackedEntityInstanceStore extends IdentifiableObjectWithStateStore<TrackedEntityInstance> {
+abstract class BaseFilterConnector<M extends Model & ObjectWithUidInterface, V> {
 
-    List<TrackedEntityInstance> queryTrackedEntityInstancesToPost();
+    private final ReadOnlyIdentifiableCollectionRepository<M> collectionRepository;
+    private final List<RepositoryScopeItem> scope;
+    private final String key;
 
-    List<String> querySyncedTrackedEntityInstanceUids();
+    BaseFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
+                               List<RepositoryScopeItem> scope,
+                               String key) {
+        this.collectionRepository = collectionRepository;
+        this.scope = scope;
+        this.key = key;
+    }
 
-    List<String> queryMissingRelationshipsUids();
+    abstract String wrapValue(V value);
+
+    private List<RepositoryScopeItem> updatedScope(String operator, V value) {
+        List<RepositoryScopeItem> copiedScope = new ArrayList<>(scope);
+        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(wrapValue(value)).build());
+        return copiedScope;
+    }
+
+    ReadOnlyIdentifiableCollectionRepository<M> newWithScope(String operator, V value) {
+        return collectionRepository.newWithUpdatedScope(updatedScope(operator, value));
+    }
 }

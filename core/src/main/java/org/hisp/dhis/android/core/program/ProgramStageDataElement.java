@@ -37,12 +37,14 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStageDataElement.Builder.class)
-public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
+public abstract class ProgramStageDataElement extends BaseIdentifiableObject implements Model {
 
     @Nullable
     public abstract Boolean displayInReports();
@@ -60,15 +62,14 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
     public abstract Boolean allowFutureDate();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
-    public abstract ObjectWithUid dataElement();
+    public abstract DataElement dataElement();
 
     @Nullable
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
-    public static ProgramRuleVariable create(Cursor cursor) {
-        return AutoValue_ProgramRuleVariable.createFromCursor(cursor);
+    public static ProgramStageDataElement create(Cursor cursor) {
+        return AutoValue_ProgramStageDataElement.createFromCursor(cursor);
     }
 
     public static Builder builder() {
@@ -93,7 +94,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject {
 
         public abstract Builder allowFutureDate(Boolean allowFutureDate);
 
-        public abstract Builder dataElement(ObjectWithUid dataElement);
+        public abstract Builder dataElement(DataElement dataElement);
 
         public abstract Builder programStage(ObjectWithUid programStage);
 

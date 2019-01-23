@@ -54,7 +54,7 @@ public class DataDeleteColumnAdapter implements ColumnTypeAdapter<Boolean> {
             }
         }
 
-        return state == State.TO_DELETE ? Boolean.TRUE : null;
+        return state == State.TO_DELETE ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override

@@ -245,7 +245,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         assertThat(selectAll().size(), is(99));
     }
 
-    @Test
+    //@Test
     public void have_98_values_after_sync_and_take_two() throws D2Error {
         d2.trackedEntityModule().reservedValueManager.getValue(ownerUid, organisationUnitUid);
         d2.trackedEntityModule().reservedValueManager.getValue(ownerUid, organisationUnitUid);

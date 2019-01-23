@@ -2,11 +2,8 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
@@ -16,29 +13,28 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
 @Reusable
 public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory {
 
-    private final DatabaseAdapter databaseAdapter;
-    private final Retrofit retrofit;
     private final APICallExecutor apiCallExecutor;
-    private final D2InternalModules internalModules;
+    private final D2CallExecutor d2CallExecutor;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final TrackedEntityInstanceService service;
+    private final TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory;
 
     @Inject
     TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory(
-            @NonNull DatabaseAdapter databaseAdapter,
-            @NonNull Retrofit retrofit,
             @NonNull APICallExecutor apiCallExecutor,
-            @NonNull D2InternalModules internalModules,
-            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore) {
-        this.databaseAdapter = databaseAdapter;
-        this.retrofit = retrofit;
+            @NonNull D2CallExecutor d2CallExecutor,
+            @NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+            @NonNull TrackedEntityInstanceService service,
+            @NonNull TrackedEntityInstanceRelationshipPersistenceCallFactory persistenceCallFactory) {
         this.apiCallExecutor = apiCallExecutor;
-        this.internalModules = internalModules;
+        this.d2CallExecutor = d2CallExecutor;
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
+        this.service = service;
+        this.persistenceCallFactory = persistenceCallFactory;
     }
 
     public Callable<List<TrackedEntityInstance>> getCall() {
@@ -56,19 +52,18 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
 
         List<TrackedEntityInstance> teis = new ArrayList<>();
         if (!relationships.isEmpty()) {
-            D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
+
             for (String uid : relationships) {
                 try {
-                    Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
-                            .create(retrofit, apiCallExecutor, uid, TrackedEntityInstanceFields.asRelationshipFields);
-                    teis.add(executor.executeD2Call(teiCall));
+                    retrofit2.Call<TrackedEntityInstance> teiCall =
+                            service.getTrackedEntityInstance(uid, TrackedEntityInstanceFields.allFields, true);
+                    teis.add(apiCallExecutor.executeObjectCall(teiCall));
                 } catch (D2Error ignored) {
                     // Ignore
                 }
             }
 
-            executor.executeD2Call(TrackedEntityInstanceRelationshipPersistenceCall.create(databaseAdapter,
-                    internalModules, teis));
+            d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
         }
 
         return teis;

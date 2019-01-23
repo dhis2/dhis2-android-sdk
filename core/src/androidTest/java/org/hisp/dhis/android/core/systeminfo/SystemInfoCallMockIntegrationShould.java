@@ -30,20 +30,14 @@ package org.hisp.dhis.android.core.systeminfo;
 import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.D2DIComponent;
-import org.hisp.dhis.android.core.DaggerD2DIComponent;
-import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
+import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
-import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
 import org.junit.After;
 import org.junit.Before;
@@ -52,17 +46,11 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
 
-    private MockWebServer mockWebServer;
     private ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
 
     private SystemInfo systemInfoFromAPI = SystemInfoSamples.get1();
@@ -70,38 +58,18 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
 
     private TableInfo tableInfo = SystemInfoTableInfo.TABLE_INFO;
 
+    private Dhis2MockServer dhis2MockServer;
+
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
 
-        mockWebServer = new MockWebServer();
-        mockWebServer.start();
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
 
-        MockResponse mockResponse = new MockResponse();
-
-        IFileReader fileReader = new ResourcesFileReader();
-        String body = fileReader.getStringFromFile("systeminfo/system_info.json");
-        mockResponse.setBody(body);
-
-        mockWebServer.enqueue(mockResponse);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
-        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
-
-        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
-                .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
-                .apiClientDIModule(new APIClientDIModule(retrofit))
-                .build();
-
-        systemInfoRepository = d2DIComponent.internalModules().systemInfo.publicModule.systemInfo;
+        systemInfoRepository = d2.systemInfoModule().systemInfo;
     }
 
     @Test
@@ -141,6 +109,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
     @After
     public void tearDown() throws IOException {
         super.tearDown();
-        mockWebServer.shutdown();
+
+        dhis2MockServer.shutdown();
     }
 }

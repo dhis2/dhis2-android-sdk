@@ -4,6 +4,8 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifia
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.user.UserModule;
 
@@ -14,11 +16,14 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     private final UserModule userModule;
     private final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
+    private final EventStore eventStore;
     private final static String DEFAULT_CATEGORY_OPTION_COMBO_CODE = "default";
 
-    public LocalDbRepositoryImpl(UserModule userModule, ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos) {
+    public LocalDbRepositoryImpl(UserModule userModule, ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
+                                 EventStore eventStore) {
         this.userModule = userModule;
         this.categoryOptionCombos = categoryOptionCombos;
+        this.eventStore = eventStore;
     }
 
     @Override
@@ -39,6 +44,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
+    public Completable setGatewayNumber(String number) {
+        return null;
+    }
+
+    @Override
     public Single<String> getGatewayNumber() {
         return null;
     }
@@ -54,12 +64,10 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Completable updateSubmissionState(BaseDataModel event, State sentViaSms) {
-        return null;
-    }
-
-    @Override
-    public Completable setGatewayNumber(String number) {
-        return null;
+    public Completable updateSubmissionState(BaseDataModel item, State state) {
+        if (item instanceof Event) {
+            return Completable.fromAction(() -> eventStore.setState(((Event) item).uid(), state));
+        }
+        return Completable.error(new IllegalArgumentException("Not supported data type"));
     }
 }

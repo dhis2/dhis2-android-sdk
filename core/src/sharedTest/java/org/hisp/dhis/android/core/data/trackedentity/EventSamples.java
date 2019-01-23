@@ -58,6 +58,7 @@ public class EventSamples {
                 .attributeOptionCombo("attribute_option_combo")
                 .trackedEntityInstance("tracked_entity_instance")
                 .state(State.TO_POST)
+                .deleted(false)
                 .build();
     }
 

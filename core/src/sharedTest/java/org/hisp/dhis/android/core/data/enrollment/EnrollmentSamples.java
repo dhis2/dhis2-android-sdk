@@ -55,6 +55,7 @@ public class EnrollmentSamples {
                 .trackedEntityInstance("tracked_entity_instance")
                 .coordinate(Coordinates.create(21.21, 23.23))
                 .state(State.TO_POST)
+                .deleted(false)
                 .build();
     }
 

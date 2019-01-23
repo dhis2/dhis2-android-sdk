@@ -50,6 +50,7 @@ public class TrackedEntityInstanceSamples {
                 .coordinates("coordinates")
                 .featureType(FeatureType.MULTI_POLYGON)
                 .state(State.TO_POST)
+                .deleted(false)
                 .build();
     }
 

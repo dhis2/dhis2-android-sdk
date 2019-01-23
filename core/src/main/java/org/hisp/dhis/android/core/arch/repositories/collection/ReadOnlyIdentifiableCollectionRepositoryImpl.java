@@ -100,7 +100,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
     }
 
-    private StringFilterConnector<M> stringConnector(String key) {
+    protected StringFilterConnector<M> stringConnector(String key) {
         return new StringFilterConnector<>(this, scope, key);
     }
 

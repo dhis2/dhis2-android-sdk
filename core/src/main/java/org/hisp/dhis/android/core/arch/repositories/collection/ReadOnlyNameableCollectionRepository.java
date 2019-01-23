@@ -25,24 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.NameableObject;
 
-import java.util.Collections;
+public interface ReadOnlyNameableCollectionRepository<M extends Model & NameableObject>
+        extends ReadOnlyIdentifiableCollectionRepository<M> {
 
-final class CategoryOptionCollectionRepository {
-
-    private CategoryOptionCollectionRepository() {
-    }
-
-    static ReadOnlyNameableCollectionRepository<CategoryOption> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyNameableCollectionRepositoryImpl<>(
-                CategoryOptionStore.create(databaseAdapter),
-                Collections.<ChildrenAppender<CategoryOption>>emptyList()
-        );
-    }
+    StringFilterConnector<M> byShortName();
+    StringFilterConnector<M> byDisplayShortName();
+    StringFilterConnector<M> byDescription();
+    StringFilterConnector<M> byDisplayDescription();
 }

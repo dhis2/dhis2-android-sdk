@@ -39,19 +39,19 @@ import org.hisp.dhis.android.core.option.OptionSet;
 
 public final class TrackedEntityAttributeFields {
 
-    static final String PATTERN = "pattern";
-    static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
-    static final String OPTION_SET = "optionSet";
-    static final String VALUE_TYPE = "valueType";
-    static final String EXPRESSION = "expression";
-    static final String SEARCH_SCOPE = "searchScope";
-    static final String PROGRAM_SCOPE = "programScope";
-    static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
-    static final String GENERATED = "generated";
-    static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
-    static final String ORG_UNIT_SCOPE = "orgunitScope";
+    public static final String PATTERN = "pattern";
+    public static final String SORT_ORDER_IN_LIST_NO_PROGRAM = "sortOrderInListNoProgram";
+    public static final String OPTION_SET = "optionSet";
+    public static final String VALUE_TYPE = "valueType";
+    public static final String EXPRESSION = "expression";
+    public static final String SEARCH_SCOPE = "searchScope";
+    public static final String PROGRAM_SCOPE = "programScope";
+    public static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
+    public static final String GENERATED = "generated";
+    public static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
+    public static final String ORG_UNIT_SCOPE = "orgunitScope";
     private static final String UNIQUE = "unique";
-    static final String INHERIT = "inherit";
+    public static final String INHERIT = "inherit";
     private static final String STYLE = "style";
     private static final String RENDER_TYPE = "renderType";
     private static final String ACCESS = "access";

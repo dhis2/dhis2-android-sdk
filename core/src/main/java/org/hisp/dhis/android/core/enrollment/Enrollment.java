@@ -44,9 +44,9 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEnrollmentStatusColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreEventListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreNoteListColumnAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
@@ -119,7 +119,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
+    @ColumnAdapter(DataDeleteColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable

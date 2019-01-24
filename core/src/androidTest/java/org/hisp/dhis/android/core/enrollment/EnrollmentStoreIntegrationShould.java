@@ -32,12 +32,12 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class EnrollmentStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Enrollment> {
+public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Enrollment> {
 
     public EnrollmentStoreIntegrationShould() {
         super(EnrollmentStoreImpl.create(DatabaseAdapterFactory.get(false)),
@@ -58,6 +58,20 @@ public class EnrollmentStoreIntegrationShould extends IdentifiableObjectStoreAbs
 
     @Override
     protected Enrollment buildObjectToUpdate() {
+        return EnrollmentSamples.get().toBuilder()
+                .followUp(Boolean.TRUE)
+                .build();
+    }
+
+    @Override
+    protected Enrollment buildObjectWithToDeleteState() {
+        return EnrollmentSamples.get().toBuilder()
+                .state(State.TO_DELETE)
+                .build();
+    }
+
+    @Override
+    protected Enrollment buildObjectWithSyncedState() {
         return EnrollmentSamples.get().toBuilder()
                 .state(State.SYNCED)
                 .build();

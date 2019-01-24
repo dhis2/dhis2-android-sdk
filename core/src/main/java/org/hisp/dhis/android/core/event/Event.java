@@ -43,9 +43,9 @@ import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.data.database.CoordinatesColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityDataValueListColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
@@ -122,7 +122,7 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
+    @ColumnAdapter(DataDeleteColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable

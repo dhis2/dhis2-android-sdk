@@ -41,9 +41,9 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.data.database.DataDeleteColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreEnrollmentListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreRelationship229CompatibleListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeValueListColumnAdapter;
@@ -101,7 +101,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
+    @ColumnAdapter(DataDeleteColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable

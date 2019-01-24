@@ -32,12 +32,12 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class EventStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Event> {
+public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Event> {
 
     public EventStoreIntegrationShould() {
         super(EventStoreImpl.create(DatabaseAdapterFactory.get(false)),
@@ -58,6 +58,20 @@ public class EventStoreIntegrationShould extends IdentifiableObjectStoreAbstract
 
     @Override
     protected Event buildObjectToUpdate() {
+        return EventSamples.get().toBuilder()
+                .status(EventStatus.VISITED)
+                .build();
+    }
+
+    @Override
+    protected Event buildObjectWithToDeleteState() {
+        return EventSamples.get().toBuilder()
+                .state(State.TO_DELETE)
+                .build();
+    }
+
+    @Override
+    protected Event buildObjectWithSyncedState() {
         return EventSamples.get().toBuilder()
                 .state(State.SYNCED)
                 .build();

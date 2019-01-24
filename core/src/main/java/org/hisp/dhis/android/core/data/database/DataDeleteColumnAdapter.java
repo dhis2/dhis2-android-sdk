@@ -26,45 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.enrollment;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Coordinates;
+import android.content.ContentValues;
+import android.database.Cursor;
+
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 
-import java.text.ParseException;
-import java.util.Date;
+public class DataDeleteColumnAdapter implements ColumnTypeAdapter<Boolean> {
 
-public class EnrollmentSamples {
+    @Override
+    public Boolean fromCursor(Cursor cursor, String columnName) {
 
-    public static Enrollment get() {
-        return Enrollment.builder()
-                .uid("enrollment_uid")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .createdAtClient("created_at_client")
-                .lastUpdatedAtClient("last_updated_at_client")
-                .organisationUnit("organisation_unit")
-                .program("program")
-                .enrollmentDate(getDate("2014-08-20T12:28:56.409"))
-                .incidentDate(getDate("2014-08-20T12:28:56.409"))
-                .followUp(Boolean.FALSE)
-                .status(EnrollmentStatus.ACTIVE)
-                .trackedEntityInstance("tracked_entity_instance")
-                .coordinate(Coordinates.create(21.21, 23.23))
-                .state(State.TO_POST)
-                .deleted(false)
-                .build();
+        int stateColumnIndex = cursor.getColumnIndex(BaseDataModel.Columns.STATE);
+        String stateStr = stateColumnIndex == -1 || cursor.isNull(stateColumnIndex) ?
+                null : cursor.getString(stateColumnIndex);
+
+        State state = null;
+        if (stateStr != null) {
+            try {
+                state = Enum.valueOf(State.class, stateStr);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown " + State.class.getSimpleName() + " type", exception);
+            }
+        }
+
+        return state == State.TO_DELETE ? Boolean.TRUE : Boolean.FALSE;
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Boolean value) {
+        /* Method is empty because is the default action.
+         */
     }
 }

@@ -45,9 +45,9 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWit
 
     protected final IdentifiableObjectStore<M> store;
 
-    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                                    List<RepositoryScopeItem> scope) {
+    ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                            Collection<ChildrenAppender<M>> childrenAppenders,
+                                            List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope);
         this.store = store;
     }
@@ -60,9 +60,5 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWit
     @Override
     public ReadOnlyObjectRepository<M> uid(String uid) {
         return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
-    }
-
-    IdentifiableObjectStore<M> getStore() {
-        return store;
     }
 }

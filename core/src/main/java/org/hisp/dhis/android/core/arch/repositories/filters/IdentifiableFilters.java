@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 
 public interface IdentifiableFilters<R extends ReadOnlyCollectionRepository<?>>  {
     StringFilterConnector<R> byUid();

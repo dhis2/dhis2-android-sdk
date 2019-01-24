@@ -40,17 +40,21 @@ import dagger.Reusable;
 @Reusable
 class UserHandler extends IdentifiableSyncHandlerImpl<User> {
     private final SyncHandler<UserCredentials> userCredentialsHandler;
+    private final SyncHandler<UserRole> userRoleHandler;
 
     @Inject
     UserHandler(IdentifiableObjectStore<User> userStore,
-                SyncHandler<UserCredentials> userCredentialsHandler) {
+                SyncHandler<UserCredentials> userCredentialsHandler,
+                SyncHandler<UserRole> userRoleHandler) {
         super(userStore);
         this.userCredentialsHandler = userCredentialsHandler;
+        this.userRoleHandler = userRoleHandler;
     }
 
     public static UserHandler create(DatabaseAdapter databaseAdapter) {
         return new UserHandler(UserStore.create(databaseAdapter),
-                new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter)));
+                new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter)),
+                UserRoleHandler.create(databaseAdapter));
     }
 
     @Override
@@ -59,6 +63,7 @@ class UserHandler extends IdentifiableSyncHandlerImpl<User> {
         if (credentials != null) {
             UserCredentials credentialsWithUser = credentials.toBuilder().user(user).build();
             userCredentialsHandler.handle(credentialsWithUser);
+            userRoleHandler.handleMany(credentialsWithUser.userRoles());
         }
     }
 }

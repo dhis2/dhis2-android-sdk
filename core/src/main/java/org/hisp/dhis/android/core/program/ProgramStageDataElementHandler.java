@@ -27,93 +27,29 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
 
-import java.util.List;
+public final class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+    private final DataElementHandler dataElementHandler;
 
-public class ProgramStageDataElementHandler {
-    private final ProgramStageDataElementStore programStageDataElementStore;
-    private final SyncHandler<DataElement> dataElementHandler;
-    private final IdentifiableObjectStore<DataElement> dataElementStore;
-
-    ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                   SyncHandler<DataElement> dataElementHandler,
-                                   IdentifiableObjectStore<DataElement> dataElementStore) {
-        this.programStageDataElementStore = programStageDataElementStore;
+    private ProgramStageDataElementHandler(IdentifiableObjectStore<ProgramStageDataElement> ProgramStageDataElementStore,
+                                           DataElementHandler dataElementHandler) {
+        super(ProgramStageDataElementStore);
         this.dataElementHandler = dataElementHandler;
-        this.dataElementStore = dataElementStore;
-    }
-
-    void handleProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        if (programStageDataElements == null) {
-            return;
-        }
-        deleteOrPersistProgramStageDataElements(programStageDataElements);
-    }
-
-    /**
-     * This method deletes or persists program stage data elements and applies the changes to database.
-     * Method will call update with or without programStageSectionUid depending if it exists.
-     *
-     *
-     * @param programStageDataElements
-     */
-    private void deleteOrPersistProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        int size = programStageDataElements.size();
-        for (int i = 0; i < size; i++) {
-            ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
-            if (programStageDataElement.dataElement() == null) {
-                continue;
-            }
-            boolean readableDataElement = programStageDataElement.dataElement().access().read();
-
-            if (isDeleted(programStageDataElement) || !readableDataElement) {
-                programStageDataElementStore.delete(programStageDataElement.uid());
-                if (!readableDataElement) {
-                    dataElementStore.deleteIfExists(programStageDataElement.dataElement().uid());
-                }
-            } else {
-                int updatedRow;
-
-                updatedRow = programStageDataElementStore.update(
-                        programStageDataElement.uid(),
-                        programStageDataElement.code(), programStageDataElement.name(),
-                        programStageDataElement.displayName(), programStageDataElement.created(),
-                        programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
-                        programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
-                        programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
-                        programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
-                        programStageDataElement.uid());
-
-
-                if (updatedRow <= 0) {
-                    programStageDataElementStore.insert(
-                            programStageDataElement.uid(), programStageDataElement.code(),
-                            programStageDataElement.name(), programStageDataElement.displayName(),
-                            programStageDataElement.created(), programStageDataElement.lastUpdated(),
-                            programStageDataElement.displayInReports(), programStageDataElement.compulsory(),
-                            programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
-                            programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
-                            programStageDataElement.programStage().uid()
-                    );
-                }
-                dataElementHandler.handle(programStageDataElement.dataElement());
-            }
-        }
     }
 
     public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageDataElementHandler(
-                new ProgramStageDataElementStoreImpl(databaseAdapter),
-                DataElementHandler.create(databaseAdapter),
-                DataElementStore.create(databaseAdapter)
-        );
+        return new ProgramStageDataElementHandler(ProgramStageDataElementStore.create(databaseAdapter),
+                DataElementHandler.create(databaseAdapter));
+    }
+
+    @Override
+    protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
+        dataElementHandler.handle(programStageDataElement.dataElement());
     }
 }

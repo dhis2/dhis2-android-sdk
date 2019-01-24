@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -43,26 +41,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepositoryImpl<M>
+        extends ReadOnlyWithUidCollectionRepositoryImpl<M>
         implements ReadOnlyIdentifiableCollectionRepository<M> {
-
-    private final IdentifiableObjectStore<M> store;
 
     private ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                         Collection<ChildrenAppender<M>> childrenAppenders,
                                                         List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope);
-        this.store = store;
     }
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                         Collection<ChildrenAppender<M>> childrenAppenders) {
         this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
-    }
-
-    @Override
-    public ReadOnlyObjectRepository<M> uid(String uid) {
-        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
     }
 
     @Override

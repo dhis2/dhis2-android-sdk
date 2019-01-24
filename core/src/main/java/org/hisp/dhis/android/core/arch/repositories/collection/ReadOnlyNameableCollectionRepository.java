@@ -28,13 +28,10 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.filters.NameableFilters;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 public interface ReadOnlyNameableCollectionRepository
         <M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M>, NameableFilters<ReadOnlyNameableCollectionRepository<M>> {
-
-    ReadOnlyObjectRepository<M> uid(String uid); // TODO move to parent with identifiable
+        extends ReadOnlyWithUidCollectionRepository<M>, NameableFilters<ReadOnlyNameableCollectionRepository<M>> {
 }

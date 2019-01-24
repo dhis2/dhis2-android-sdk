@@ -55,7 +55,7 @@ public final class TrackedEntityAttributeStore {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.pattern());
             sqLiteBind(sqLiteStatement, 12, o.sortOrderInListNoProgram());
-            sqLiteBind(sqLiteStatement, 13, UidsHelper.getUidOrNull( o.optionSet()));
+            sqLiteBind(sqLiteStatement, 13, UidsHelper.getUidOrNull(o.optionSet()));
             sqLiteBind(sqLiteStatement, 14, o.valueType());
             sqLiteBind(sqLiteStatement, 15, o.expression());
             sqLiteBind(sqLiteStatement, 16, o.searchScope());

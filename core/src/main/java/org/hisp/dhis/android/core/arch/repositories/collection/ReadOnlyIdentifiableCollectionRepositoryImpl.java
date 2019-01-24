@@ -29,25 +29,39 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
+public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & IdentifiableObject>
         extends ReadOnlyWithUidCollectionRepositoryImpl<M>
         implements ReadOnlyIdentifiableCollectionRepository<M> {
 
+    private FilterConnectorFactory<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> cf;
+
     private ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                        Collection<ChildrenAppender<M>> childrenAppenders,
-                                                        List<RepositoryScopeItem> scope) {
+                                                         Collection<ChildrenAppender<M>> childrenAppenders,
+                                                         List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope);
+        this.cf = new FilterConnectorFactory<>(
+                new CollectionRepositoryFactory<ReadOnlyIdentifiableCollectionRepositoryImpl<M>>() {
+
+                    @Override
+                    public ReadOnlyIdentifiableCollectionRepositoryImpl<M> newWithScope(
+                            ReadOnlyIdentifiableCollectionRepositoryImpl<M> repository,
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+                                repository.getStore(), repository.getChildrenAppenders(), updatedScope);
+                    }
+                }, this, scope);
     }
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
@@ -56,49 +70,32 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byUid() {
-        return stringConnector(Columns.UID);
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byUid() {
+        return cf.string(Columns.UID);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCode() {
-        return stringConnector(Columns.CODE);
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byCode() {
+        return cf.string(Columns.CODE);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byName() {
-        return stringConnector(Columns.NAME);
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byName() {
+        return cf.string(Columns.NAME);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byDisplayName() {
-        return stringConnector(Columns.DISPLAY_NAME);
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byDisplayName() {
+        return cf.string(Columns.DISPLAY_NAME);
     }
 
     @Override
-    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCreated() {
-        return dateConnector(Columns.CREATED);
+    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byCreated() {
+        return cf.date(Columns.CREATED);
     }
 
     @Override
-    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byLastUpdated() {
-        return dateConnector(Columns.LAST_UPDATED);
-    }
-
-    private CollectionRepositoryFactory<ReadOnlyIdentifiableCollectionRepository<M>> repositoryFactory() {
-        return new CollectionRepositoryFactory<ReadOnlyIdentifiableCollectionRepository<M>>() {
-            @Override
-            public ReadOnlyIdentifiableCollectionRepository<M> newWithScope(List<RepositoryScopeItem> updatedScope) {
-                return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
-            }
-        };
-    }
-
-    private StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> stringConnector(String key) {
-        return new StringFilterConnector<>(repositoryFactory(), scope, key);
-    }
-
-    private DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> dateConnector(String key) {
-        return new DateFilterConnector<>(repositoryFactory(), scope, key);
+    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byLastUpdated() {
+        return cf.date(Columns.LAST_UPDATED);
     }
 }

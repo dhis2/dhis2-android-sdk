@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,16 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
-public interface ReadOnlyWithUploadIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyIdentifiableCollectionRepository<M> {
-    Callable<WebResponse> upload() throws D2Error;
+import java.util.List;
+
+public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+
+    private final CollectionRepositoryFactory<R> repositoryFactory;
+    private final R repository;
+    private final List<RepositoryScopeItem> scope;
+
+    public FilterConnectorFactory(CollectionRepositoryFactory<R> repositoryFactory,
+                                  R repository,
+                                  List<RepositoryScopeItem> scope) {
+        this.repositoryFactory = repositoryFactory;
+        this.repository = repository;
+        this.scope = scope;
+    }
+
+    public StringFilterConnector<R> string(String key) {
+        return new StringFilterConnector<>(repositoryFactory, repository, scope, key);
+    }
+
+    public DateFilterConnector<R> date(String key) {
+        return new DateFilterConnector<>(repositoryFactory, repository, scope, key);
+    }
 }

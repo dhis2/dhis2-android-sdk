@@ -35,5 +35,6 @@ import java.util.List;
 public interface ReadOnlyCollectionRepository<M extends Model> {
     List<M> get();
     List<M> getWithAllChildren();
+
     List<RepositoryScopeItem> getScope();
 }

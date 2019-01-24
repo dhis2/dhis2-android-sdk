@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.IdentifiableFilters;
-import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-public interface ReadOnlyIdentifiableCollectionRepository
-        <M extends Model & IdentifiableObject>
-        extends ReadOnlyWithUidCollectionRepository<M>,
-        IdentifiableFilters<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> {
+import java.util.concurrent.Callable;
+
+public interface ReadOnlyWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyWithUidCollectionRepository<M> {
+    Callable<WebResponse> upload() throws D2Error;
 }

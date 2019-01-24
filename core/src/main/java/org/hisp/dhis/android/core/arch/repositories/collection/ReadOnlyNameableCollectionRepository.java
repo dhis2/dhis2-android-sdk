@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.filters.NameableFilters;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.NameableObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 public interface ReadOnlyNameableCollectionRepository
-        <M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyWithUidCollectionRepository<M>, NameableFilters<ReadOnlyNameableCollectionRepository<M>> {
+        <M extends Model & NameableObject>
+        extends ReadOnlyWithUidCollectionRepository<M>, NameableFilters<ReadOnlyNameableCollectionRepositoryImpl<M>> {
 }

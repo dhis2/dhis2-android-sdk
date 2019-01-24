@@ -81,4 +81,8 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOn
     public List<RepositoryScopeItem> getScope() {
         return scope;
     }
+
+    Collection<ChildrenAppender<M>> getChildrenAppenders() {
+        return childrenAppenders;
+    }
 }

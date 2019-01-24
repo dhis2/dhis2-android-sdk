@@ -37,10 +37,11 @@ import java.util.List;
 public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
         extends BaseFilterConnector<R, String> {
 
-    public StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                                 List<RepositoryScopeItem> scope,
-                                 String key) {
-        super(repositoryFactory, scope, key);
+    StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                          R repository,
+                          List<RepositoryScopeItem> scope,
+                          String key) {
+        super(repositoryFactory, repository, scope, key);
     }
 
     public R eq(String value) {

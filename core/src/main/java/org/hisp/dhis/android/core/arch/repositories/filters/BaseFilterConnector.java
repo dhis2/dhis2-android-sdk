@@ -38,11 +38,16 @@ import java.util.List;
 abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V> {
 
     private final CollectionRepositoryFactory<R> repositoryFactory;
+    private final R repository;
     private final List<RepositoryScopeItem> scope;
     private final String key;
 
-    BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory, List<RepositoryScopeItem> scope, String key) {
+    BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                        R repository,
+                        List<RepositoryScopeItem> scope,
+                        String key) {
         this.repositoryFactory = repositoryFactory;
+        this.repository = repository;
         this.scope = scope;
         this.key = key;
     }
@@ -56,6 +61,6 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
     }
 
     R newWithScope(String operator, V value) {
-        return repositoryFactory.newWithScope(updatedScope(operator, value));
+        return repositoryFactory.newWithScope(repository, updatedScope(operator, value));
     }
 }

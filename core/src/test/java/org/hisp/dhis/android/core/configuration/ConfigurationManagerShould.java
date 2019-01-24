@@ -66,6 +66,7 @@ public class ConfigurationManagerShould {
                 .serverUrl(HttpUrl.parse("http://testserver.org/api/")).build());
         Configuration savedConfiguration = configurationManager.configure(httpUrl);
 
+        verify(configurationStore).save(Configuration.builder().serverUrl(httpUrl).build());
         assertThat(savedConfiguration.id()).isEqualTo(1L);
         assertThat(savedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/api/");
     }

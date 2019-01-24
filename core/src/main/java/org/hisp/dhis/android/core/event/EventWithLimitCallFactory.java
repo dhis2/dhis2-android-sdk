@@ -134,7 +134,7 @@ final class EventWithLimitCallFactory {
 
                     List<Event> eventsToPersist = getEventsToPersist(paging, pageEvents);
 
-                    d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(eventsToPersist));
+                    d2CallExecutor.executeD2CallTransactionally(persistenceCallFactory.getCall(eventsToPersist));
                     eventsCount = eventsCount + eventsToPersist.size();
 
                     if (pageEvents.size() < paging.pageSize()) {

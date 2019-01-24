@@ -27,42 +27,18 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import java.util.List;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+public final class UserRoleHandler extends IdentifiableSyncHandlerImpl<UserRole> {
 
-class UserRoleHandler {
-    private final UserRoleStore userRoleStore;
-
-
-    UserRoleHandler(UserRoleStore userRoleStore) {
-        this.userRoleStore = userRoleStore;
+    private UserRoleHandler(IdentifiableObjectStore<UserRole> userRoleStore) {
+        super(userRoleStore);
     }
 
-    void handleUserRoles(List<UserRole> userRoles) {
-        if (userRoles == null) {
-            return;
-        }
-        deleteOrPersistUserRoles(userRoles);
-    }
-
-    private void deleteOrPersistUserRoles(List<UserRole> userRoles) {
-        int size = userRoles.size();
-        for (int i = 0; i < size; i++) {
-            UserRole userRole = userRoles.get(i);
-
-            if (isDeleted(userRole)) {
-                userRoleStore.delete(userRole.uid());
-            } else {
-                int updatedRow = userRoleStore.update(userRole.uid(), userRole.code(),
-                        userRole.name(), userRole.displayName(), userRole.created(),
-                        userRole.lastUpdated(), userRole.uid());
-                if (updatedRow <= 0) {
-                    userRoleStore.insert(userRole.uid(), userRole.code(),
-                            userRole.name(), userRole.displayName(), userRole.created(),
-                            userRole.lastUpdated());
-                }
-            }
-        }
+    public static SyncHandler<UserRole> create(DatabaseAdapter databaseAdapter) {
+        return new UserRoleHandler(UserRoleStore.create(databaseAdapter));
     }
 }

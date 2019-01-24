@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 import okhttp3.HttpUrl;
 
+@Deprecated
 @AutoValue
 public abstract class ConfigurationModel extends BaseModel {
     public static final String CONFIGURATION = "Configuration";

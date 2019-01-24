@@ -37,11 +37,14 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import okhttp3.HttpUrl;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 public class ConfigurationStoreShould extends AbsStoreTestCase {
-    private static final String[] PROJECTION = {ConfigurationModel.Columns.ID, ConfigurationModel.Columns.SERVER_URL};
+    private static final String[] PROJECTION = {ConfigurationTableInfo.Columns.ID,
+            ConfigurationTableInfo.Columns.SERVER_URL};
 
     private ConfigurationStore store;
 
@@ -49,67 +52,65 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     @Override
     public void setUp() throws IOException {
         super.setUp();
-        store = new ConfigurationStoreImpl(databaseAdapter());
+        store = ConfigurationStoreImpl.create(databaseAdapter());
     }
 
     @Test
     public void persist_row_in_database_when_save() {
-        long rowId = store.save("http://testserver.org/");
+        store.save(Configuration.builder().serverUrl(HttpUrl.parse("http://testserver.org/")).build());
 
-        Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
+        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
 
-        assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "http://testserver.org/")
+                .hasRow(1L, "http://testserver.org/api/")
                 .isExhausted();
     }
 
     @Test
     public void not_thrown_on_save_conflict() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
 
-        database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
+        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         // trying to configure configuration with server url (which is set to be unique in the table)
-        long rowId = store.save("http://testserver.org/");
+        store.save(Configuration.builder().serverUrl(HttpUrl.parse("http://testserver.org/")).build());
 
-        Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
+        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
-        assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "http://testserver.org/")
+                .hasRow(2L, "http://testserver.org/api/")
                 .isExhausted();
     }
 
     @Test
     public void not_persist_more_than_one_url_on_save() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
 
-        database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
+        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
-        long rowId = store.save("test_another_url");
+        HttpUrl url = HttpUrl.parse("http://othertestserver.org/");
+        store.save(Configuration.builder().serverUrl(url).build());
 
-        Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
+        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
-        assertThat(rowId).isEqualTo(1L);
         assertThatCursor(cursor)
-                .hasRow(1L, "test_another_url")
+                .hasRow(2L, "http://othertestserver.org/api/")
                 .isExhausted();
     }
 
     @Test
     public void delete_persisted_rows_on_delete() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
 
-        database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
+        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
         long deleted = store.delete();
 
-        Cursor cursor = database().query(ConfigurationModel.CONFIGURATION,
+        Cursor cursor = database().query(ConfigurationTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThat(deleted).isEqualTo(1);
         assertThatCursor(cursor).isExhausted();
@@ -124,18 +125,20 @@ public class ConfigurationStoreShould extends AbsStoreTestCase {
     @Test
     public void return_persisted_row_when_query() {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ConfigurationModel.Columns.SERVER_URL, "http://testserver.org/");
+        contentValues.put(ConfigurationTableInfo.Columns.SERVER_URL, "http://testserver.org/");
 
-        database().insert(ConfigurationModel.CONFIGURATION, null, contentValues);
+        database().insert(ConfigurationTableInfo.TABLE_INFO.name(), null, contentValues);
 
-        ConfigurationModel persistedConfiguration = store.query();
-        assertThat(persistedConfiguration.id()).isEqualTo(1L);
-        assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/");
+        HttpUrl url = HttpUrl.parse("http://othertestserver.org/");
+        store.save(Configuration.builder().serverUrl(url).build());
+
+        Configuration persistedConfiguration = store.selectFirst();
+        assertThat(persistedConfiguration.serverUrl().toString()).isEqualTo("http://othertestserver.org/api/");
     }
 
     @Test
     public void return_null_if_no_rows_are_persisted() {
-        ConfigurationModel persistedConfiguration = store.query();
+        Configuration persistedConfiguration = store.selectFirst();
         assertThat(persistedConfiguration).isNull();
     }
 

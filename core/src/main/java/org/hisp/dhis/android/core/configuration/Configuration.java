@@ -28,45 +28,40 @@
 
 package org.hisp.dhis.android.core.configuration;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
 import okhttp3.HttpUrl;
 
-final class ConfigurationManagerImpl implements ConfigurationManager {
+@AutoValue
+public abstract class Configuration implements Model {
 
     @NonNull
-    private final ConfigurationStore configurationStore;
+    @ColumnAdapter(HttpUrlColumnAdapter.class)
+    public abstract HttpUrl serverUrl();
 
-    public ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
-        this.configurationStore = configurationStore;
+    static Configuration create(Cursor cursor) {
+        return $AutoValue_Configuration.createFromCursor(cursor);
     }
 
-    @NonNull
-    @Override
-    public Configuration configure(@NonNull HttpUrl serverUrl) {
-        if (serverUrl == null) {
-            throw new IllegalArgumentException("serverUrl == null");
-        }
+    public abstract Builder toBuilder();
 
-        configurationStore.save(Configuration.builder().serverUrl(serverUrl).build());
-
-        Configuration configuration = get();
-        if (configuration == null) {
-            throw new IllegalArgumentException("configuration == null");
-        }
-
-        return configuration;
+    public static Builder builder() {
+        return new AutoValue_Configuration.Builder();
     }
 
-    @Nullable
-    @Override
-    public Configuration get() {
-        return configurationStore.selectFirst();
-    }
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-    @Override
-    public int remove() {
-        return configurationStore.delete();
+        public abstract Builder serverUrl(HttpUrl serverUrl);
+
+        public abstract Configuration build();
     }
 }

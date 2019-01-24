@@ -25,20 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.configuration;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+public interface ConfigurationStore extends ObjectStore<Configuration> {
 
-public interface ConfigurationStore extends DeletableStore {
-    long save(@NonNull String serverUrl);
-
-    @Nullable
-    ConfigurationModel query();
-
-    @Override
-    int delete();
+    void save(Configuration configuration);
 }

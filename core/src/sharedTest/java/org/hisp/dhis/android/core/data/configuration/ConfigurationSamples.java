@@ -26,47 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration;
+package org.hisp.dhis.android.core.data.configuration;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.configuration.Configuration;
 
 import okhttp3.HttpUrl;
 
-final class ConfigurationManagerImpl implements ConfigurationManager {
+public class ConfigurationSamples {
 
-    @NonNull
-    private final ConfigurationStore configurationStore;
-
-    public ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
-        this.configurationStore = configurationStore;
-    }
-
-    @NonNull
-    @Override
-    public Configuration configure(@NonNull HttpUrl serverUrl) {
-        if (serverUrl == null) {
-            throw new IllegalArgumentException("serverUrl == null");
-        }
-
-        configurationStore.save(Configuration.builder().serverUrl(serverUrl).build());
-
-        Configuration configuration = get();
-        if (configuration == null) {
-            throw new IllegalArgumentException("configuration == null");
-        }
-
-        return configuration;
-    }
-
-    @Nullable
-    @Override
-    public Configuration get() {
-        return configurationStore.selectFirst();
-    }
-
-    @Override
-    public int remove() {
-        return configurationStore.delete();
+    public static Configuration getConfiguration() {
+        return Configuration.builder()
+                .serverUrl(HttpUrl.parse("http://testserver.org/"))
+                .build();
     }
 }

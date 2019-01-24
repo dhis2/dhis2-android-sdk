@@ -28,45 +28,43 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import okhttp3.HttpUrl;
+public final class ConfigurationTableInfo {
 
-final class ConfigurationManagerImpl implements ConfigurationManager {
-
-    @NonNull
-    private final ConfigurationStore configurationStore;
-
-    public ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
-        this.configurationStore = configurationStore;
+    private ConfigurationTableInfo() {
     }
 
-    @NonNull
-    @Override
-    public Configuration configure(@NonNull HttpUrl serverUrl) {
-        if (serverUrl == null) {
-            throw new IllegalArgumentException("serverUrl == null");
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Configuration";
         }
 
-        configurationStore.save(Configuration.builder().serverUrl(serverUrl).build());
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-        Configuration configuration = get();
-        if (configuration == null) {
-            throw new IllegalArgumentException("configuration == null");
+    public static class Columns extends BaseModel.Columns {
+        public static final String SERVER_URL = "serverUrl";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    SERVER_URL
+            );
         }
 
-        return configuration;
-    }
-
-    @Nullable
-    @Override
-    public Configuration get() {
-        return configurationStore.selectFirst();
-    }
-
-    @Override
-    public int remove() {
-        return configurationStore.delete();
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    SERVER_URL
+            );
+        }
     }
 }

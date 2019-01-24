@@ -25,48 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.configuration;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import java.util.List;
+import java.util.Locale;
 
 import okhttp3.HttpUrl;
 
-final class ConfigurationManagerImpl implements ConfigurationManager {
+public final class ConfigurationHelper {
 
-    @NonNull
-    private final ConfigurationStore configurationStore;
+    private ConfigurationHelper() {}
 
-    public ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
-        this.configurationStore = configurationStore;
-    }
+    public static String getConfigurationStr(@NonNull HttpUrl serverUrl) {
 
-    @NonNull
-    @Override
-    public Configuration configure(@NonNull HttpUrl serverUrl) {
-        if (serverUrl == null) {
-            throw new IllegalArgumentException("serverUrl == null");
+        List<String> pathSegments = serverUrl.pathSegments();
+        if (!"".equals(pathSegments.get(pathSegments.size() - 1))) {
+            throw new IllegalArgumentException("baseUrl must end in /: " + serverUrl);
         }
 
-        configurationStore.save(Configuration.builder().serverUrl(serverUrl).build());
-
-        Configuration configuration = get();
-        if (configuration == null) {
-            throw new IllegalArgumentException("configuration == null");
-        }
-
-        return configuration;
+        return canonizeBaseUrl(serverUrl).toString();
     }
 
-    @Nullable
-    @Override
-    public Configuration get() {
-        return configurationStore.selectFirst();
-    }
-
-    @Override
-    public int remove() {
-        return configurationStore.delete();
+    private static HttpUrl canonizeBaseUrl(HttpUrl baseUrl) {
+        return HttpUrl.parse(String.format(Locale.US, "%sapi/", baseUrl.toString()));
     }
 }

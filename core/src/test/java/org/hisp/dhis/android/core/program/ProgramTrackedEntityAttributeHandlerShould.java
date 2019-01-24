@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +53,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store;
 
     @Mock
-    private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
+    private IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler;
 
     @Mock
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
@@ -63,7 +62,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private ProgramTrackedEntityAttribute programTrackedEntityAttribute;
 
     @Mock
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
     @Mock
     private Access access;
@@ -103,7 +102,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     @Test
     public void call_tracked_entity_attribute_handler() throws Exception {
         handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
-        verify(trackedEntityAttributeHandler).handleTrackedEntityAttribute(trackedEntityAttribute);
+        verify(trackedEntityAttributeHandler).handle(trackedEntityAttribute);
     }
 
     @Test

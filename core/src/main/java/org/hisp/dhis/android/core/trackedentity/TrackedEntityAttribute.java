@@ -164,6 +164,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject implemen
 
         public abstract Builder displayOnVisitSchedule(Boolean displayOnVisitSchedule);
 
+        @JsonProperty(TrackedEntityAttributeFields.ORG_UNIT_SCOPE)
         public abstract Builder orgUnitScope(Boolean orgUnitScope);
 
         public abstract Builder unique(Boolean unique);

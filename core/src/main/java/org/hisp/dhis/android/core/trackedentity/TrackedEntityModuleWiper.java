@@ -48,16 +48,17 @@ public final class TrackedEntityModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                TrackedEntityAttributeModel.TABLE,
-                TrackedEntityTypeTableInfo.TABLE_INFO.name());
+                TrackedEntityAttributeTableInfo.TABLE_INFO,
+                TrackedEntityTypeTableInfo.TABLE_INFO);
     }
 
     @Override
     public void wipeData() {
         tableWiper.wipeTables(
-                TrackedEntityInstanceModel.TABLE,
-                TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
-                TrackedEntityAttributeValueModel.TABLE,
-                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name()
-        );    }
+                TrackedEntityInstanceTableInfo.TABLE_INFO,
+                TrackedEntityDataValueTableInfo.TABLE_INFO,
+                TrackedEntityAttributeValueTableInfo.TABLE_INFO,
+                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO
+        );
+    }
 }

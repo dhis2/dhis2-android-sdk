@@ -56,9 +56,10 @@ public class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<T
     protected void afterObjectHandled(TrackedEntityAttribute trackedEntityAttribute, HandleAction action) {
         if (action != HandleAction.Delete) {
             styleHandler.handle(trackedEntityAttribute.style(),
-                    new ObjectStyleModelBuilder(trackedEntityAttribute.uid(), TrackedEntityAttributeModel.TABLE));
+                    new ObjectStyleModelBuilder(trackedEntityAttribute.uid(),
+                            TrackedEntityAttributeTableInfo.TABLE_INFO.name()));
             renderTypeHandler.handle(trackedEntityAttribute.renderType(), trackedEntityAttribute.uid(),
-                    TrackedEntityAttributeModel.TABLE);
+                    TrackedEntityAttributeTableInfo.TABLE_INFO.name());
         }
     }
 

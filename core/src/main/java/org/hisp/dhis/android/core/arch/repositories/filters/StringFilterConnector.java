@@ -28,27 +28,26 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
-public final class StringFilterConnector<M extends Model & ObjectWithUidInterface>
-        extends BaseFilterConnector<M, String> {
+public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+        extends BaseFilterConnector<R, String> {
 
-    public StringFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
+    public StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
                                  List<RepositoryScopeItem> scope,
                                  String key) {
-        super(collectionRepository, scope, key);
+        super(repositoryFactory, scope, key);
     }
 
-    public ReadOnlyIdentifiableCollectionRepository<M> eq(String value) {
+    public R eq(String value) {
         return newWithScope("=", value);
     }
 
-    public ReadOnlyIdentifiableCollectionRepository<M> like(String value) {
+    public R like(String value) {
         return newWithScope("LIKE", value);
     }
 

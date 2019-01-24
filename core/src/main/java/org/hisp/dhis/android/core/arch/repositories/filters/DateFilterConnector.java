@@ -28,34 +28,31 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Date;
 import java.util.List;
 
-public final class DateFilterConnector<M extends Model & ObjectWithUidInterface> extends BaseFilterConnector<M, Date> {
+public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
 
-
-
-    public DateFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
+    public DateFilterConnector(CollectionRepositoryFactory<R> collectionRepository,
                                List<RepositoryScopeItem> scope,
                                String key) {
         super(collectionRepository, scope, key);
     }
 
-    public ReadOnlyIdentifiableCollectionRepository<M> eq(Date value) {
+    public R eq(Date value) {
         return newWithScope("=", value);
     }
 
-    public ReadOnlyIdentifiableCollectionRepository<M> before(Date value) {
+    public R before(Date value) {
         return newWithScope("<", value);
     }
 
-    public ReadOnlyIdentifiableCollectionRepository<M> after(Date value) {
+    public R after(Date value) {
         return newWithScope(">", value);
     }
 

@@ -28,8 +28,12 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
@@ -40,13 +44,16 @@ import java.util.Collections;
 import java.util.List;
 
 public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & NameableObject>
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<M>
+        extends ReadOnlyCollectionRepositoryImpl<M>
         implements ReadOnlyNameableCollectionRepository<M> {
 
-    public ReadOnlyNameableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+    private final IdentifiableObjectStore<M> store;
+
+    private ReadOnlyNameableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                     Collection<ChildrenAppender<M>> childrenAppenders,
                                                     List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope);
+        this.store = store;
     }
 
     public ReadOnlyNameableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
@@ -55,22 +62,74 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
     }
 
     @Override
-    public StringFilterConnector<M> byShortName() {
+    public ReadOnlyObjectRepository<M> uid(String uid) {
+        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
+    }
+
+    @Override
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byUid() {
+        return stringConnector(Columns.UID);
+    }
+
+    @Override
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byCode() {
+        return stringConnector(Columns.CODE);
+    }
+
+    @Override
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byName() {
+        return stringConnector(Columns.NAME);
+    }
+
+    @Override
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayName() {
+        return stringConnector(Columns.DISPLAY_NAME);
+    }
+
+    @Override
+    public DateFilterConnector<ReadOnlyNameableCollectionRepository<M>> byCreated() {
+        return dateConnector(Columns.CREATED);
+    }
+
+    @Override
+    public DateFilterConnector<ReadOnlyNameableCollectionRepository<M>> byLastUpdated() {
+        return dateConnector(BaseIdentifiableObjectModel.Columns.LAST_UPDATED);
+    }
+
+    @Override
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byShortName() {
         return stringConnector(Columns.SHORT_NAME);
     }
 
     @Override
-    public StringFilterConnector<M> byDisplayShortName() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayShortName() {
         return stringConnector(Columns.DISPLAY_SHORT_NAME);
     }
 
     @Override
-    public StringFilterConnector<M> byDescription() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDescription() {
         return stringConnector(Columns.DESCRIPTION);
     }
 
     @Override
-    public StringFilterConnector<M> byDisplayDescription() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayDescription() {
         return stringConnector(Columns.DISPLAY_DESCRIPTION);
+    }
+
+    CollectionRepositoryFactory<ReadOnlyNameableCollectionRepository<M>> repositoryFactory() {
+        return new CollectionRepositoryFactory<ReadOnlyNameableCollectionRepository<M>>() {
+            @Override
+            public ReadOnlyNameableCollectionRepository<M> newWithScope(List<RepositoryScopeItem> updatedScope) {
+                return new ReadOnlyNameableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
+            }
+        };
+    }
+
+    private StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> stringConnector(String key) {
+        return new StringFilterConnector<>(repositoryFactory(), scope, key);
+    }
+
+    private DateFilterConnector<ReadOnlyNameableCollectionRepository<M>> dateConnector(String key) {
+        return new DateFilterConnector<>(repositoryFactory(), scope, key);
     }
 }

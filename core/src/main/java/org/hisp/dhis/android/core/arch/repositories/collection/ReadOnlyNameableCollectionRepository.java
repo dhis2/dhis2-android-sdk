@@ -27,15 +27,26 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.NameableObject;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface ReadOnlyNameableCollectionRepository<M extends Model & NameableObject>
-        extends ReadOnlyIdentifiableCollectionRepository<M> {
+public interface ReadOnlyNameableCollectionRepository
+        <M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyCollectionRepository<M> {
 
-    StringFilterConnector<M> byShortName();
-    StringFilterConnector<M> byDisplayShortName();
-    StringFilterConnector<M> byDescription();
-    StringFilterConnector<M> byDisplayDescription();
+    ReadOnlyObjectRepository<M> uid(String uid); // TODO move to parent with identifiable
+
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byUid();
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byCode();
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byName();
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayName();
+    DateFilterConnector<ReadOnlyNameableCollectionRepository<M>> byCreated();
+    DateFilterConnector<ReadOnlyNameableCollectionRepository<M>> byLastUpdated();
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byShortName();
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayShortName();
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDescription();
+    StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayDescription();
 }

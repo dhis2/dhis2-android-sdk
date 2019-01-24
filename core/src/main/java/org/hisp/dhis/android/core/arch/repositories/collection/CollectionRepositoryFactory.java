@@ -26,36 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
-abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V> {
-
-    private final CollectionRepositoryFactory<R> repositoryFactory;
-    private final List<RepositoryScopeItem> scope;
-    private final String key;
-
-    BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory, List<RepositoryScopeItem> scope, String key) {
-        this.repositoryFactory = repositoryFactory;
-        this.scope = scope;
-        this.key = key;
-    }
-
-    abstract String wrapValue(V value);
-
-    private List<RepositoryScopeItem> updatedScope(String operator, V value) {
-        List<RepositoryScopeItem> copiedScope = new ArrayList<>(scope);
-        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(wrapValue(value)).build());
-        return copiedScope;
-    }
-
-    R newWithScope(String operator, V value) {
-        return repositoryFactory.newWithScope(updatedScope(operator, value));
-    }
+public interface CollectionRepositoryFactory<R extends ReadOnlyCollectionRepository<?>> {
+    R newWithScope(List<RepositoryScopeItem> updatedScope);
 }

@@ -48,7 +48,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
 
     private final IdentifiableObjectStore<M> store;
 
-    public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+    private ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                         Collection<ChildrenAppender<M>> childrenAppenders,
                                                         List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope);
@@ -66,45 +66,49 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Obje
     }
 
     @Override
-    public StringFilterConnector<M> byUid() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byUid() {
         return stringConnector(Columns.UID);
     }
 
     @Override
-    public StringFilterConnector<M> byCode() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCode() {
         return stringConnector(Columns.CODE);
     }
 
     @Override
-    public StringFilterConnector<M> byName() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byName() {
         return stringConnector(Columns.NAME);
     }
 
     @Override
-    public StringFilterConnector<M> byDisplayName() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byDisplayName() {
         return stringConnector(Columns.DISPLAY_NAME);
     }
 
     @Override
-    public DateFilterConnector<M> byCreated() {
+    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCreated() {
         return dateConnector(Columns.CREATED);
     }
 
     @Override
-    public DateFilterConnector<M> byLastUpdated() {
+    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byLastUpdated() {
         return dateConnector(Columns.LAST_UPDATED);
     }
 
-    @Override
-    public ReadOnlyIdentifiableCollectionRepository<M> newWithUpdatedScope(List<RepositoryScopeItem> updatedScope) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
+    private CollectionRepositoryFactory<ReadOnlyIdentifiableCollectionRepository<M>> repositoryFactory() {
+        return new CollectionRepositoryFactory<ReadOnlyIdentifiableCollectionRepository<M>>() {
+            @Override
+            public ReadOnlyIdentifiableCollectionRepository<M> newWithScope(List<RepositoryScopeItem> updatedScope) {
+                return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
+            }
+        };
     }
 
-    protected StringFilterConnector<M> stringConnector(String key) {
-        return new StringFilterConnector<>(this, scope, key);
+    private StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> stringConnector(String key) {
+        return new StringFilterConnector<>(repositoryFactory(), scope, key);
     }
 
-    private DateFilterConnector<M> dateConnector(String key) {
-        return new DateFilterConnector<>(this, scope, key);
+    private DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> dateConnector(String key) {
+        return new DateFilterConnector<>(repositoryFactory(), scope, key);
     }
 }

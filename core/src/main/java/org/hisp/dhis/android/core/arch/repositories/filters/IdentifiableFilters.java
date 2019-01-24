@@ -25,16 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.NameableFilters;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 
-public interface ReadOnlyNameableCollectionRepository
-        <M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M>, NameableFilters<ReadOnlyNameableCollectionRepository<M>> {
-
-    ReadOnlyObjectRepository<M> uid(String uid); // TODO move to parent with identifiable
+public interface IdentifiableFilters<R extends ReadOnlyCollectionRepository<?>>  {
+    StringFilterConnector<R> byUid();
+    StringFilterConnector<R> byCode();
+    StringFilterConnector<R> byName();
+    StringFilterConnector<R> byDisplayName();
+    DateFilterConnector<R> byCreated();
+    DateFilterConnector<R> byLastUpdated();
 }

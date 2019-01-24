@@ -27,22 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.IdentifiableFilters;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 public interface ReadOnlyIdentifiableCollectionRepository
         <M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
+        extends ReadOnlyCollectionRepository<M>, IdentifiableFilters<ReadOnlyIdentifiableCollectionRepository<M>> {
 
     ReadOnlyObjectRepository<M> uid(String uid);
-
-    StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byUid();
-    StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCode();
-    StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byName();
-    StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byDisplayName();
-    DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCreated();
-    DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byLastUpdated();
 }

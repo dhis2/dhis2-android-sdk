@@ -106,6 +106,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject implemen
 
     @Nullable
     @JsonProperty()
+    @ColumnName(TrackedEntityAttributeTableInfo.Columns.UNIQUE)
     public abstract Boolean unique();
 
     @Nullable

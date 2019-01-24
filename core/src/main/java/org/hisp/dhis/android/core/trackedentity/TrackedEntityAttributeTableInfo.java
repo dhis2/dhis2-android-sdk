@@ -51,6 +51,7 @@ public final class TrackedEntityAttributeTableInfo {
     };
 
     public static class Columns extends BaseNameableObjectModel.Columns {
+        public static final String UNIQUE = "uniqueProperty";
 
         @Override
         public String[] all() {
@@ -66,7 +67,7 @@ public final class TrackedEntityAttributeTableInfo {
                     TrackedEntityAttributeFields.GENERATED,
                     TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE,
                     TrackedEntityAttributeFields.ORG_UNIT_SCOPE,
-                    TrackedEntityAttributeFields.UNIQUE,
+                    UNIQUE,
                     TrackedEntityAttributeFields.INHERIT
             );
         }

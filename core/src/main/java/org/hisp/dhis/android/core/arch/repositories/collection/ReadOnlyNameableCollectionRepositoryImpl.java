@@ -46,23 +46,21 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
         extends ReadOnlyWithUidCollectionRepositoryImpl<M>
         implements ReadOnlyNameableCollectionRepository<M> {
 
-    private FilterConnectorFactory<ReadOnlyNameableCollectionRepositoryImpl<M>> cf;
+    private FilterConnectorFactory<ReadOnlyNameableCollectionRepository<M>> cf;
 
-    private ReadOnlyNameableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                                    List<RepositoryScopeItem> scope) {
+    private ReadOnlyNameableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
+                                                     final Collection<ChildrenAppender<M>> childrenAppenders,
+                                                     List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope);
-        this.cf = new FilterConnectorFactory<>(
-                new CollectionRepositoryFactory<ReadOnlyNameableCollectionRepositoryImpl<M>>() {
+        this.cf = new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<ReadOnlyNameableCollectionRepository<M>>() {
 
                     @Override
-                    public ReadOnlyNameableCollectionRepositoryImpl<M> newWithScope(
-                            ReadOnlyNameableCollectionRepositoryImpl<M> repository,
+                    public ReadOnlyNameableCollectionRepository<M> newWithScope(
                             List<RepositoryScopeItem> updatedScope) {
-                        return new ReadOnlyNameableCollectionRepositoryImpl<>(
-                                repository.getStore(), repository.getChildrenAppenders(), updatedScope);
+                        return new ReadOnlyNameableCollectionRepositoryImpl<>(store, childrenAppenders, updatedScope);
                     }
-                }, this, scope);
+                });
     }
 
     public ReadOnlyNameableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
@@ -71,52 +69,52 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byUid() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byUid() {
         return cf.string(Columns.UID);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byCode() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byCode() {
         return cf.string(Columns.CODE);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byName() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byName() {
         return cf.string(Columns.NAME);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byDisplayName() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayName() {
         return cf.string(Columns.DISPLAY_NAME);
     }
 
     @Override
-    public DateFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byCreated() {
+    public DateFilterConnector<ReadOnlyNameableCollectionRepository<M>> byCreated() {
         return cf.date(Columns.CREATED);
     }
 
     @Override
-    public DateFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byLastUpdated() {
+    public DateFilterConnector<ReadOnlyNameableCollectionRepository<M>> byLastUpdated() {
         return cf.date(BaseIdentifiableObjectModel.Columns.LAST_UPDATED);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byShortName() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byShortName() {
         return cf.string(Columns.SHORT_NAME);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byDisplayShortName() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayShortName() {
         return cf.string(Columns.DISPLAY_SHORT_NAME);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byDescription() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDescription() {
         return cf.string(Columns.DESCRIPTION);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyNameableCollectionRepositoryImpl<M>> byDisplayDescription() {
+    public StringFilterConnector<ReadOnlyNameableCollectionRepository<M>> byDisplayDescription() {
         return cf.string(Columns.DISPLAY_DESCRIPTION);
     }
 }

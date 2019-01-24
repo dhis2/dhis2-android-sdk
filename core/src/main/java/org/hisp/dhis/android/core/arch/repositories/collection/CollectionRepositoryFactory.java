@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import java.util.List;
 
 public interface CollectionRepositoryFactory<R extends ReadOnlyCollectionRepository<?>> {
-    R newWithScope(R repository, List<RepositoryScopeItem> updatedScope);
+    R newWithScope(List<RepositoryScopeItem> updatedScope);
 }

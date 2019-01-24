@@ -39,10 +39,9 @@ import java.util.List;
 public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
 
     DateFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        R repository,
                         List<RepositoryScopeItem> scope,
                         String key) {
-        super(repositoryFactory, repository, scope, key);
+        super(repositoryFactory, scope, key);
     }
 
     public R eq(Date value) {

@@ -76,13 +76,4 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOn
     public List<M> getWithAllChildren() {
         return ChildrenAppenderExecutor.appendInObjectCollection(get(), childrenAppenders);
     }
-
-    @Override
-    public List<RepositoryScopeItem> getScope() {
-        return scope;
-    }
-
-    Collection<ChildrenAppender<M>> getChildrenAppenders() {
-        return childrenAppenders;
-    }
 }

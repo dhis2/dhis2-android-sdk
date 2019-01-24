@@ -34,5 +34,5 @@ import org.hisp.dhis.android.core.common.Model;
 public interface ReadOnlyIdentifiableCollectionRepository
         <M extends Model & IdentifiableObject>
         extends ReadOnlyWithUidCollectionRepository<M>,
-        IdentifiableFilters<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> {
+        IdentifiableFilters<ReadOnlyIdentifiableCollectionRepository<M>> {
 }

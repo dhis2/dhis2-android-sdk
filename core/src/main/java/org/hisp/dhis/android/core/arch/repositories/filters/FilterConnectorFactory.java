@@ -36,23 +36,20 @@ import java.util.List;
 
 public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
-    private final CollectionRepositoryFactory<R> repositoryFactory;
-    private final R repository;
     private final List<RepositoryScopeItem> scope;
+    private final CollectionRepositoryFactory<R> repositoryFactory;
 
-    public FilterConnectorFactory(CollectionRepositoryFactory<R> repositoryFactory,
-                                  R repository,
-                                  List<RepositoryScopeItem> scope) {
-        this.repositoryFactory = repositoryFactory;
-        this.repository = repository;
+    public FilterConnectorFactory(List<RepositoryScopeItem> scope,
+                                  CollectionRepositoryFactory<R> repositoryFactory) {
         this.scope = scope;
+        this.repositoryFactory = repositoryFactory;
     }
 
     public StringFilterConnector<R> string(String key) {
-        return new StringFilterConnector<>(repositoryFactory, repository, scope, key);
+        return new StringFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public DateFilterConnector<R> date(String key) {
-        return new DateFilterConnector<>(repositoryFactory, repository, scope, key);
+        return new DateFilterConnector<>(repositoryFactory, scope, key);
     }
 }

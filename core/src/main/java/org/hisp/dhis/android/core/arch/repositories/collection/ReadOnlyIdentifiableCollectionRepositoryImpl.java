@@ -45,23 +45,22 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
         extends ReadOnlyWithUidCollectionRepositoryImpl<M>
         implements ReadOnlyIdentifiableCollectionRepository<M> {
 
-    private FilterConnectorFactory<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> cf;
+    private FilterConnectorFactory<ReadOnlyIdentifiableCollectionRepository<M>> cf;
 
-    private ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                         Collection<ChildrenAppender<M>> childrenAppenders,
+    private ReadOnlyIdentifiableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
+                                                         final Collection<ChildrenAppender<M>> childrenAppenders,
                                                          List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope);
-        this.cf = new FilterConnectorFactory<>(
-                new CollectionRepositoryFactory<ReadOnlyIdentifiableCollectionRepositoryImpl<M>>() {
+        this.cf = new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<ReadOnlyIdentifiableCollectionRepository<M>>() {
 
                     @Override
-                    public ReadOnlyIdentifiableCollectionRepositoryImpl<M> newWithScope(
-                            ReadOnlyIdentifiableCollectionRepositoryImpl<M> repository,
+                    public ReadOnlyIdentifiableCollectionRepository<M> newWithScope(
                             List<RepositoryScopeItem> updatedScope) {
                         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                                repository.getStore(), repository.getChildrenAppenders(), updatedScope);
+                                store, childrenAppenders, updatedScope);
                     }
-                }, this, scope);
+                });
     }
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
@@ -70,32 +69,32 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byUid() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byUid() {
         return cf.string(Columns.UID);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byCode() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCode() {
         return cf.string(Columns.CODE);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byName() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byName() {
         return cf.string(Columns.NAME);
     }
 
     @Override
-    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byDisplayName() {
+    public StringFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byDisplayName() {
         return cf.string(Columns.DISPLAY_NAME);
     }
 
     @Override
-    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byCreated() {
+    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byCreated() {
         return cf.date(Columns.CREATED);
     }
 
     @Override
-    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepositoryImpl<M>> byLastUpdated() {
+    public DateFilterConnector<ReadOnlyIdentifiableCollectionRepository<M>> byLastUpdated() {
         return cf.date(Columns.LAST_UPDATED);
     }
 }

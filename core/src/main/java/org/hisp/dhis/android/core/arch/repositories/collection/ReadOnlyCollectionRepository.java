@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.List;
@@ -35,6 +34,4 @@ import java.util.List;
 public interface ReadOnlyCollectionRepository<M extends Model> {
     List<M> get();
     List<M> getWithAllChildren();
-
-    List<RepositoryScopeItem> getScope();
 }

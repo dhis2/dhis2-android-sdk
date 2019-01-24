@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.configuration;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
@@ -42,7 +42,7 @@ import okhttp3.HttpUrl;
 @AutoValue
 public abstract class Configuration implements Model {
 
-    @Nullable
+    @NonNull
     @ColumnAdapter(HttpUrlColumnAdapter.class)
     public abstract HttpUrl serverUrl();
 

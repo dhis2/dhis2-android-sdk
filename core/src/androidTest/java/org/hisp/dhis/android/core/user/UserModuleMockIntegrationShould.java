@@ -34,6 +34,14 @@ public class UserModuleMockIntegrationShould extends MockIntegrationShould {
     }
 
     @Test
+    public void allow_access_to_user_role() {
+        UserRole userRole = d2.userModule().userRole.get();
+        assertThat(userRole.uid(), is("Ufph3mGRmMo"));
+        assertThat(userRole.name(), is("Superuser"));
+        assertThat(userRole.displayName(), is("Superuser"));
+    }
+
+    @Test
     public void allow_access_to_user() {
         User user = d2.userModule().user.get();
         assertThat(user.uid(), is("DXyJmlo9rge"));

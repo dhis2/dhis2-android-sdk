@@ -41,13 +41,12 @@ import org.hisp.dhis.android.core.common.Model;
 @JsonDeserialize(builder = AutoValue_UserRole.Builder.class)
 public abstract class UserRole extends BaseIdentifiableObject implements Model {
 
-
     public static Builder builder() {
         return new $$AutoValue_UserRole.Builder();
     }
 
     static UserRole create(Cursor cursor) {
-        return $AutoValue_userRole.createFromCursor(cursor);
+        return $AutoValue_UserRole.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

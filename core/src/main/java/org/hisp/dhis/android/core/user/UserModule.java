@@ -49,6 +49,7 @@ public final class UserModule {
     private final UserAuthenticateCallFactory loginCallFactory;
 
     public final ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser;
+    public final ReadOnlyObjectRepository<UserRole> userRole;
     public final ReadOnlyObjectRepository<UserCredentials> userCredentials;
     public final ReadOnlyObjectRepository<User> user;
 
@@ -57,12 +58,14 @@ public final class UserModule {
                Provider<LogOutUserCallable> logoutCallCallProvider,
                UserAuthenticateCallFactory loginCallFactory,
                ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser,
+               ReadOnlyObjectRepository<UserRole> userRole,
                ReadOnlyObjectRepository<UserCredentials> userCredentials,
                ReadOnlyObjectRepository<User> user) {
         this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
         this.logoutCallCallProvider = logoutCallCallProvider;
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
+        this.userRole = userRole;
         this.userCredentials = userCredentials;
         this.user = user;
     }

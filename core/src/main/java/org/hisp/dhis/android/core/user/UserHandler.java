@@ -54,7 +54,7 @@ class UserHandler extends IdentifiableSyncHandlerImpl<User> {
     public static UserHandler create(DatabaseAdapter databaseAdapter) {
         return new UserHandler(UserStore.create(databaseAdapter),
                 new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter)),
-                UserRoleHandler.create(databaseAdapter));
+                new IdentifiableSyncHandlerImpl<>(UserRoleStore.create(databaseAdapter)));
     }
 
     @Override

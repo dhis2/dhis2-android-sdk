@@ -53,7 +53,7 @@ public abstract class UserRole extends BaseIdentifiableObject implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>{
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
         public abstract UserRole build();

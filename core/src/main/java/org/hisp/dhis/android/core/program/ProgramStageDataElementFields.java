@@ -53,7 +53,6 @@ public class ProgramStageDataElementFields {
                     fh.<DataElement>nestedField(DATA_ELEMENT).with(DataElementFields.allFields),
                     fh.<Boolean>field(COMPULSORY),
                     fh.<Boolean>field(ALLOW_PROVIDED_ELSEWHERE),
-                    fh.<ObjectWithUid>nestedField(DATA_ELEMENT),
                     fh.<Integer>field(SORT_ORDER),
                     fh.<Boolean>field(ALLOW_FUTURE_DATE),
                     fh.<ObjectWithUid>nestedField(PROGRAM_STAGE)

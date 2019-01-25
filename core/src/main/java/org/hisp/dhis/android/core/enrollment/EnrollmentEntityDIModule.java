@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
@@ -55,7 +55,7 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    ReadOnlyIdentifiableCollectionRepository<Enrollment> repository(DatabaseAdapter databaseAdapter) {
+    ReadOnlyWithUidCollectionRepository<Enrollment> repository(DatabaseAdapter databaseAdapter) {
         return EnrollmentCollectionRepository.create(databaseAdapter);
     }
 }

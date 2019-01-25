@@ -28,10 +28,13 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.List;
+import java.util.concurrent.Callable;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    List<M> getWithAllChildren();
+public interface ReadOnlyWithUploadWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyWithUidCollectionRepository<M> {
+    Callable<WebResponse> upload() throws D2Error;
 }

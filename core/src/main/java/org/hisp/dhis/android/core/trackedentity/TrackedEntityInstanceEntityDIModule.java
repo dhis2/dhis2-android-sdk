@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -53,7 +53,7 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> repository(
+    ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> repository(
             TrackedEntityInstanceCollectionRepository impl) {
         return impl;
     }

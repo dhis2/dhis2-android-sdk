@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
 import java.util.Collections;
@@ -38,8 +38,8 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 final class TrackedEntityInstanceCollectionRepository
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<TrackedEntityInstance>
-        implements ReadOnlyWithUploadIdentifiableCollectionRepository<TrackedEntityInstance> {
+        extends ReadOnlyWithUidCollectionRepositoryImpl<TrackedEntityInstance>
+        implements ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> {
 
     private final TrackedEntityInstancePostCall postCall;
 

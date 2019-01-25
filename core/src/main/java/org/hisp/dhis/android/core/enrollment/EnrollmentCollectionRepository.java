@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -39,8 +39,8 @@ final class EnrollmentCollectionRepository {
     private EnrollmentCollectionRepository() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Enrollment> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+    static ReadOnlyWithUidCollectionRepository<Enrollment> create(DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyWithUidCollectionRepositoryImpl<>(
                 EnrollmentStoreImpl.create(databaseAdapter),
                 new ArrayList<ChildrenAppender<Enrollment>>()
         );

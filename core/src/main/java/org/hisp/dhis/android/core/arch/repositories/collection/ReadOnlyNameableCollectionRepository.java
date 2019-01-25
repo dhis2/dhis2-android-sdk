@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.filters.NameableFilters;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.NameableObject;
 
-import java.util.List;
-
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    List<M> getWithAllChildren();
+public interface ReadOnlyNameableCollectionRepository
+        <M extends Model & NameableObject>
+        extends ReadOnlyWithUidCollectionRepository<M>, NameableFilters<ReadOnlyNameableCollectionRepository<M>> {
 }

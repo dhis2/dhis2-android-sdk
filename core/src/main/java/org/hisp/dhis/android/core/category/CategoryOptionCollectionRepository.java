@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
@@ -39,8 +39,8 @@ final class CategoryOptionCollectionRepository {
     private CategoryOptionCollectionRepository() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryOption> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+    static ReadOnlyNameableCollectionRepository<CategoryOption> create(DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyNameableCollectionRepositoryImpl<>(
                 CategoryOptionStore.create(databaseAdapter),
                 Collections.<ChildrenAppender<CategoryOption>>emptyList()
         );

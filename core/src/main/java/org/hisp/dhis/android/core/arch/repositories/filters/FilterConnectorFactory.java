@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,13 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
+package org.hisp.dhis.android.core.arch.repositories.filters;
+
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
 import java.util.List;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    List<M> getWithAllChildren();
+public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+
+    private final List<RepositoryScopeItem> scope;
+    private final CollectionRepositoryFactory<R> repositoryFactory;
+
+    public FilterConnectorFactory(List<RepositoryScopeItem> scope,
+                                  CollectionRepositoryFactory<R> repositoryFactory) {
+        this.scope = scope;
+        this.repositoryFactory = repositoryFactory;
+    }
+
+    public StringFilterConnector<R> string(String key) {
+        return new StringFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public DateFilterConnector<R> date(String key) {
+        return new DateFilterConnector<>(repositoryFactory, scope, key);
+    }
 }

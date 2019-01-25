@@ -33,6 +33,9 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 class ProgramRuleActionHandler {
 
+    private ProgramRuleActionHandler() {
+    }
+
     static SyncHandler<ProgramRuleAction> create(DatabaseAdapter databaseAdapter) {
         return new IdentifiableSyncHandlerImpl<>(ProgramRuleActionStore.create(databaseAdapter));
     }

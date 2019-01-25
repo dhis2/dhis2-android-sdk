@@ -30,7 +30,8 @@ package org.hisp.dhis.android.core.data.database;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-public class TrackedEntityAttributeWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<TrackedEntityAttribute> {
+public class TrackedEntityAttributeWithUidColumnAdapter
+        extends IdentifiableObjectColumnAdapter<TrackedEntityAttribute> {
 
     @Override
     protected TrackedEntityAttribute build(String uid) {

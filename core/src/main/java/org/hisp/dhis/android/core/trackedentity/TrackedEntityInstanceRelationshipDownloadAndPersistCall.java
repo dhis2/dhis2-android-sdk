@@ -3,13 +3,14 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,9 +52,12 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCall
         List<TrackedEntityInstance> teis = new ArrayList<>();
         D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
         for (String uid: trackedEntityInstanceUids) {
-            Call<TrackedEntityInstance> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
+            Call<Payload<TrackedEntityInstance>> teiCall = TrackedEntityInstanceDownloadByUidEndPointCall
                     .create(retrofit, apiCallExecutor, uid, TrackedEntityInstance.asRelationshipFields);
-            teis.add(executor.executeD2Call(teiCall));
+            Payload<TrackedEntityInstance> response = executor.executeD2Call(teiCall);
+            if (response.items().size() == 1) {
+                teis.add(response.items().get(0));
+            }
         }
 
         executor.executeD2Call(TrackedEntityInstanceRelationshipPersistenceCall.create(databaseAdapter, retrofit,

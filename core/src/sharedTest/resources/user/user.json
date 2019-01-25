@@ -1,7 +1,7 @@
 {
   "created": "2015-03-31T13:31:09.324",
   "lastUpdated": "2016-04-06T00:05:57.495",
-  "name": "John Barnes",
+  "name": "John Barnesito",
   "id": "DXyJmlo9rge",
   "displayName": "John Barnes",
   "firstName": "John",
@@ -17,7 +17,11 @@
     "username": "android",
     "userRoles": [
       {
+        "created": "2018-10-01T14:22:46.030",
+        "lastUpdated": "2018-10-01T14:22:46.030",
+        "name": "Superuser",
         "id": "Ufph3mGRmMo",
+        "displayName": "Superuser",
         "programs": [
           {
             "id": "lxAQ7Zs9VYR"

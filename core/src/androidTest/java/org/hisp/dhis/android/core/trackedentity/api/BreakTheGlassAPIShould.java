@@ -21,6 +21,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
+import org.hisp.dhis.android.core.trackedentity.glass.BreakGlassResponse;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -66,7 +67,7 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
     private String attributeOptionCombo = "HllvX50cXC0";    // Default
 
     // API version dependant parameters
-    private String serverUrl = RealServerMother.url2_30;
+    private String serverUrl = RealServerMother.android_current;
     private String strategy = "SYNC";
 
     private D2 d2;
@@ -112,8 +113,6 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
 
         TrackedEntityInstance tei = teiWithEventInSearchScope();
 
-        executor.executeObjectCall(trackedEntityInstanceService.breakGlass(tei.uid(), program, "Sync"));
-
         WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
                 WebResponse.class);
@@ -121,6 +120,23 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
         assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
 
         for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+            assertTei(importSummary, SUCCESS);
+            assertEnrollments(importSummary, SUCCESS);
+            assertEvents(importSummary, ERROR);
+        }
+
+        BreakGlassResponse glassResponse =
+                executor.executeObjectCall(trackedEntityInstanceService.breakGlass(tei.uid(), program,
+                "Sync"));
+
+        WebResponse secondResponse =
+                executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                        .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
+                WebResponse.class);
+
+        assertThat(secondResponse.importSummaries().importStatus()).isEqualTo(SUCCESS);
+
+        for (ImportSummary importSummary : secondResponse.importSummaries().importSummaries()) {
             assertTei(importSummary, SUCCESS);
             assertEnrollments(importSummary, SUCCESS);
             assertEvents(importSummary, SUCCESS);

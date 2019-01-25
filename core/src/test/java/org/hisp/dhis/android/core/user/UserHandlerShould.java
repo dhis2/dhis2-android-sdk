@@ -50,6 +50,9 @@ public class UserHandlerShould {
     private SyncHandler<UserCredentials> userCredentialsHandler;
 
     @Mock
+    private SyncHandler<UserRole> userRoleHandler;
+
+    @Mock
     private User user;
 
     private UserCredentials userCredentials;
@@ -60,14 +63,14 @@ public class UserHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        userHandler = new UserHandler(userStore, userCredentialsHandler);
+        userHandler = new UserHandler(userStore, userCredentialsHandler, userRoleHandler);
         userCredentials = UserCredentials.builder().uid("credentialsUid").build();
         when(user.userCredentials()).thenReturn(userCredentials);
     }
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableSyncHandlerImpl<User> genericHandler = new UserHandler(null, null);
+        IdentifiableSyncHandlerImpl<User> genericHandler = new UserHandler(null, null, null);
     }
 
     @Test

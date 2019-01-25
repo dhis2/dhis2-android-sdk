@@ -4,6 +4,7 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.trackedentity.glass.BreakGlassResponse;
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 
 import java.util.List;
@@ -70,4 +71,11 @@ public interface TrackedEntityInstanceService {
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);
+
+    @POST("tracker/ownership/override")
+    Call<BreakGlassResponse> breakGlass(
+            @Query("trackedEntityInstance") String trackedEntityInstance,
+            @Query("program") String program,
+            @Query("reason") String reason
+    );
 }

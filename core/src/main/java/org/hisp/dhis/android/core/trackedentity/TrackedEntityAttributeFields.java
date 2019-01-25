@@ -75,7 +75,7 @@ public final class TrackedEntityAttributeFields {
                     fh.<Boolean>field(INHERIT),
                     fh.<OptionSet>nestedFieldWithUid(OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<ValueTypeRendering>nestedField(RENDER_TYPE),
+                    fh.<ValueTypeRendering>field(RENDER_TYPE),
                     fh.<Access>nestedField(ACCESS).with(Access.read)
             ).build();
 

@@ -31,10 +31,13 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,7 +62,8 @@ public final class UserRoleEntityDIModule implements IdentifiableEntityDIModule<
 
     @Provides
     @Reusable
-    ReadOnlyObjectRepository<UserRole> repository(IdentifiableObjectStore<UserRole> store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    ReadOnlyCollectionRepository<UserRole> repository(IdentifiableObjectStore<UserRole> store) {
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store,
+                Collections.<ChildrenAppender<UserRole>>emptyList());
     }
 }

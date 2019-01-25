@@ -53,11 +53,11 @@ public final class ProgramStageDataElementStore {
             super.bindToStatement(programStageDataElement, sqLiteStatement);
 
             sqLiteBind(sqLiteStatement, 7, programStageDataElement.displayInReports());
-            sqLiteBind(sqLiteStatement, 8, programStageDataElement.compulsory());
-            sqLiteBind(sqLiteStatement, 9, programStageDataElement.allowProvidedElsewhere());
-            sqLiteBind(sqLiteStatement, 10, programStageDataElement.sortOrder());
-            sqLiteBind(sqLiteStatement, 11, programStageDataElement.allowFutureDate());
-            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(programStageDataElement.dataElement()));
+            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(programStageDataElement.dataElement()));
+            sqLiteBind(sqLiteStatement, 9, programStageDataElement.compulsory());
+            sqLiteBind(sqLiteStatement, 10, programStageDataElement.allowProvidedElsewhere());
+            sqLiteBind(sqLiteStatement, 11, programStageDataElement.sortOrder());
+            sqLiteBind(sqLiteStatement, 12, programStageDataElement.allowFutureDate());
             sqLiteBind(sqLiteStatement, 13, UidsHelper.getUidOrNull(programStageDataElement.programStage()));
 
         }
@@ -71,8 +71,8 @@ public final class ProgramStageDataElementStore {
     };
 
     public static IdentifiableObjectStore<ProgramStageDataElement> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageDataElementModel.TABLE,
-                new ProgramStageDataElementModel.Columns().all(), BINDER, FACTORY);
+
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageDataElementTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 
 }

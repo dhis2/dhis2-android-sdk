@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-abstract class ProgramRuleActionFields {
+final class ProgramRuleActionFields {
     static final String DATA = "data";
     static final String CONTENT = "content";
     static final String LOCATION = "location";
@@ -59,4 +59,7 @@ abstract class ProgramRuleActionFields {
                     fh.nestedFieldWithUid(DATA_ELEMENT),
                     fh.nestedFieldWithUid(PROGRAM_RULE)
                     ).build();
+
+    private ProgramRuleActionFields() {
+    }
 }

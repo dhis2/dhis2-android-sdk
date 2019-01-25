@@ -59,8 +59,8 @@ public class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule>
         return new ProgramRuleHandler(
                 ProgramRuleStore.create(databaseAdapter),
                 ProgramRuleActionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(ProgramRuleActionModel.TABLE,
-                        ProgramRuleActionModel.Columns.PROGRAM_RULE, databaseAdapter)
+                new OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
+                        ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter)
         );
     }
 }

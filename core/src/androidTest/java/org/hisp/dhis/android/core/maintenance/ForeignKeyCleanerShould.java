@@ -16,8 +16,8 @@ import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
+import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
@@ -54,7 +54,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
             ProgramRuleModel.Columns.UID
     };
     private final String[] PROGRAM_RULE_ACTION_PROJECTION = {
-            ProgramRuleActionModel.Columns.UID
+            BaseIdentifiableObjectModel.Columns.UID
     };
 
     @Override
@@ -223,7 +223,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
     }
 
     private Cursor getProgramRuleActionCursor() {
-        return database().query(ProgramRuleActionModel.TABLE, PROGRAM_RULE_ACTION_PROJECTION, null, null,
+        return database().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), PROGRAM_RULE_ACTION_PROJECTION, null, null,
                 null, null, null);
     }
 

@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-class ProgramRuleActionHandler {
+final class ProgramRuleActionHandler {
 
     private ProgramRuleActionHandler() {
     }

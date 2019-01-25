@@ -15,8 +15,9 @@ import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionModel;
-import org.hisp.dhis.android.core.program.ProgramRuleActionStoreImpl;
+import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
@@ -33,7 +34,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -142,11 +142,14 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
                 ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()
                         .uid(PROGRAM_RULE_UID).name("Rule").program(program).build());
 
-                new ProgramRuleActionStoreImpl(d2.databaseAdapter())
-                        .insert("action_uid", null, "name", null, new
-                        Date(), new Date(), null, null, null, null,
-                                null, null, ProgramRuleActionType.ASSIGN,
-                        null, null, PROGRAM_RULE_UID);
+                ProgramRuleAction programRuleAction = ProgramRuleAction.builder()
+                        .uid("action_uid")
+                        .name("name")
+                        .programRuleActionType(ProgramRuleActionType.ASSIGN)
+                        .programRule(ProgramRule.builder().uid(PROGRAM_RULE_UID).build())
+                        .build();
+
+                ProgramRuleActionStore.create(d2.databaseAdapter()).insert(programRuleAction);
 
                 Cursor programRuleCursor1 = getProgramRuleCursor();
                 Cursor programRuleActionCursor1 = getProgramRuleActionCursor();

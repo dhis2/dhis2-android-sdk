@@ -25,15 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-class ProgramRuleActionHandler {
+abstract class ProgramRuleActionFields {
+    static final String DATA = "data";
+    static final String CONTENT = "content";
+    static final String LOCATION = "location";
+    static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    static final String PROGRAM_INDICATOR = "programIndicator";
+    static final String PROGRAM_STAGE_SECTION = "programStageSection";
+    static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+    static final String PROGRAM_RULE = "programRule";
+    static final String PROGRAM_STAGE = "programStage";
+    static final String DATA_ELEMENT = "dataElement";
 
-    static SyncHandler<ProgramRuleAction> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(ProgramRuleActionStore.create(databaseAdapter));
-    }
+    private static FieldsHelper<ProgramRuleAction> fh = new FieldsHelper<>();
+
+    static final Fields<ProgramRuleAction> allFields = Fields.<ProgramRuleAction>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.<String>field(DATA),
+                    fh.<String>field(CONTENT),
+                    fh.<String>field(LOCATION),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.nestedFieldWithUid(PROGRAM_INDICATOR),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE_SECTION),
+                    fh.<ProgramRuleActionType>field(PROGRAM_RULE_ACTION_TYPE),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE),
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(PROGRAM_RULE)
+                    ).build();
 }

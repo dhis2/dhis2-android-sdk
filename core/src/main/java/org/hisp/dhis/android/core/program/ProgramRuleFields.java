@@ -47,7 +47,7 @@ final class ProgramRuleFields {
                     fh.<String>field(CONDITION),
                     fh.nestedFieldWithUid(PROGRAM),
                     fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleAction.allFields)
+                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields)
             ).build();
 
     private ProgramRuleFields() {

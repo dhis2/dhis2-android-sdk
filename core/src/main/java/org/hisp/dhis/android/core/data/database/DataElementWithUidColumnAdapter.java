@@ -25,15 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.database;
 
-class ProgramRuleActionHandler {
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-    static SyncHandler<ProgramRuleAction> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(ProgramRuleActionStore.create(databaseAdapter));
+public class DataElementWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<DataElement> {
+
+    @Override
+    protected DataElement build(String uid) {
+        return DataElement.builder().uid(uid).build();
     }
 }

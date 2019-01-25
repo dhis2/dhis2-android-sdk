@@ -25,15 +25,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-class ProgramRuleActionHandler {
+public final class ProgramRuleActionTableInfo {
 
-    static SyncHandler<ProgramRuleAction> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(ProgramRuleActionStore.create(databaseAdapter));
+    private ProgramRuleActionTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ProgramRuleAction";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramRuleActionFields.DATA,
+                    ProgramRuleActionFields.CONTENT,
+                    ProgramRuleActionFields.LOCATION,
+                    ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE,
+                    ProgramRuleActionFields.PROGRAM_INDICATOR,
+                    ProgramRuleActionFields.PROGRAM_STAGE_SECTION,
+                    ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
+                    ProgramRuleActionFields.PROGRAM_STAGE,
+                    ProgramRuleActionFields.DATA_ELEMENT,
+                    ProgramRuleActionFields.PROGRAM_RULE
+            );
+        }
     }
 }

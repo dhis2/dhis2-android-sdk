@@ -28,24 +28,23 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class BaseFilterConnector<M extends Model & ObjectWithUidInterface, V> {
+abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V> {
 
-    private final ReadOnlyIdentifiableCollectionRepository<M> collectionRepository;
+    private final CollectionRepositoryFactory<R> repositoryFactory;
     private final List<RepositoryScopeItem> scope;
     private final String key;
 
-    BaseFilterConnector(ReadOnlyIdentifiableCollectionRepository<M> collectionRepository,
-                               List<RepositoryScopeItem> scope,
-                               String key) {
-        this.collectionRepository = collectionRepository;
+    BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                        List<RepositoryScopeItem> scope,
+                        String key) {
+        this.repositoryFactory = repositoryFactory;
         this.scope = scope;
         this.key = key;
     }
@@ -58,7 +57,7 @@ abstract class BaseFilterConnector<M extends Model & ObjectWithUidInterface, V> 
         return copiedScope;
     }
 
-    ReadOnlyIdentifiableCollectionRepository<M> newWithScope(String operator, V value) {
-        return collectionRepository.newWithUpdatedScope(updatedScope(operator, value));
+    R newWithScope(String operator, V value) {
+        return repositoryFactory.newWithScope(updatedScope(operator, value));
     }
 }

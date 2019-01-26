@@ -44,7 +44,7 @@ public abstract class IdentifiableObjectStoreAbstractIntegrationShould<M extends
         extends ObjectStoreAbstractIntegrationShould<M> {
 
     private M objectToUpdate;
-    private IdentifiableObjectStore<M> store;
+    IdentifiableObjectStore<M> store;
 
     public IdentifiableObjectStoreAbstractIntegrationShould(IdentifiableObjectStore<M> store, TableInfo tableInfo, DatabaseAdapter databaseAdapter) {
         super(store, tableInfo, databaseAdapter);

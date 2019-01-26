@@ -2,23 +2,15 @@ package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.database.DatabaseAssert;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventEndpointCall;
-import org.hisp.dhis.android.core.event.EventPersistenceCall;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 
 public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
 
@@ -82,14 +74,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenAEventInDatabase() throws Exception {
-        EventEndpointCall eventCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
-
         dhis2MockServer.enqueueMockResponse("event/events.json");
-
-        List<Event> events = eventCall.call();
-
-        EventPersistenceCall.create(databaseAdapter(), getD2DIComponent(d2).internalModules(), events).call();
-
-        assertThat(events.isEmpty(), is(false));
+        d2.eventModule().downloadSingleEvents(1, false);
     }
 }

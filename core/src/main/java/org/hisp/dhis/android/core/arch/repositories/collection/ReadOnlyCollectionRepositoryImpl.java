@@ -45,9 +45,9 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOn
     protected final Collection<ChildrenAppender<M>> childrenAppenders;
     protected final List<RepositoryScopeItem> scope;
 
-    public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
-                                            Collection<ChildrenAppender<M>> childrenAppenders,
-                                            List<RepositoryScopeItem> scope) {
+    ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
+                                     Collection<ChildrenAppender<M>> childrenAppenders,
+                                     List<RepositoryScopeItem> scope) {
         this.store = store;
         this.childrenAppenders = childrenAppenders;
         this.scope = scope;
@@ -75,10 +75,5 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model> implements ReadOn
     @Override
     public List<M> getWithAllChildren() {
         return ChildrenAppenderExecutor.appendInObjectCollection(get(), childrenAppenders);
-    }
-
-    @Override
-    public List<RepositoryScopeItem> getScope() {
-        return scope;
     }
 }

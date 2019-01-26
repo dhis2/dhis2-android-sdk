@@ -25,13 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
+package org.hisp.dhis.android.core.configuration;
+
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 
-import java.util.List;
+import okhttp3.HttpUrl;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    List<M> getWithAllChildren();
+@AutoValue
+public abstract class Configuration implements Model {
+
+    @NonNull
+    @ColumnAdapter(HttpUrlColumnAdapter.class)
+    public abstract HttpUrl serverUrl();
+
+    static Configuration create(Cursor cursor) {
+        return $AutoValue_Configuration.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_Configuration.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder serverUrl(HttpUrl serverUrl);
+
+        public abstract Configuration build();
+    }
 }

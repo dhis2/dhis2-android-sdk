@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -21,6 +20,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.assertTrue;
@@ -158,7 +158,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private void downloadEventsBy(String categoryComboUID) throws Exception {
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(
                 d2.retrofit(), d2.databaseAdapter(), orgUnitUid, 50, categoryComboUID);
 
         List<Event> events = eventEndpointCall.call();

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -24,6 +23,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -58,13 +58,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void download_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
         List<Event> events = eventEndpointCall.call();
 
-        EventPersistenceCall.create(databaseAdapter(), getD2DIComponent(d2).internalModules(), events).call();
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
 
         verifyDownloadedEvents("event/events_1.json");
     }
@@ -75,13 +75,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         int pageSize = 3;
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize);
 
         dhis2MockServer.enqueueMockResponse("event/events_2.json");
 
         List<Event> events = eventEndpointCall.call();
 
-        EventPersistenceCall.create(databaseAdapter(), getD2DIComponent(d2).internalModules(), events).call();
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
 
         List<Event> downloadedEvents = eventStore.selectAll();
 
@@ -94,7 +94,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
                 "event/two_events_first_good_second_wrong_foreign_key.json");

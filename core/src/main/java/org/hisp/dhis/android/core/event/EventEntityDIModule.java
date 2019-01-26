@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -47,13 +47,13 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<Event> handler(EventHandler impl) {
+    public SyncHandlerWithTransformer<Event> handler(EventHandler impl) {
         return impl;
     }
 
     @Provides
     @Reusable
-    ReadOnlyWithUploadIdentifiableCollectionRepository<Event> repository(EventCollectionRepository impl) {
+    ReadOnlyWithUploadWithUidCollectionRepository<Event> repository(EventCollectionRepository impl) {
         return impl;
     }
 }

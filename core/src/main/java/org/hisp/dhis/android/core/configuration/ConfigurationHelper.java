@@ -25,16 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.configuration;
 
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import android.support.annotation.NonNull;
 
-import java.util.concurrent.Callable;
+import java.util.List;
+import java.util.Locale;
 
-public interface ReadOnlyWithUploadIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyIdentifiableCollectionRepository<M> {
-    Callable<WebResponse> upload() throws D2Error;
+import okhttp3.HttpUrl;
+
+public final class ConfigurationHelper {
+
+    private ConfigurationHelper() {}
+
+    public static String getConfigurationStr(@NonNull HttpUrl serverUrl) {
+
+        List<String> pathSegments = serverUrl.pathSegments();
+        if (!"".equals(pathSegments.get(pathSegments.size() - 1))) {
+            throw new IllegalArgumentException("baseUrl must end in /: " + serverUrl);
+        }
+
+        return canonizeBaseUrl(serverUrl).toString();
+    }
+
+    private static HttpUrl canonizeBaseUrl(HttpUrl baseUrl) {
+        return HttpUrl.parse(String.format(Locale.US, "%sapi/", baseUrl.toString()));
+    }
 }

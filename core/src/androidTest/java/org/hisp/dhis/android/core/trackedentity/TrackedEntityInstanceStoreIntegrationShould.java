@@ -32,13 +32,14 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstanceStoreIntegrationShould extends
-        IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityInstance> {
+        IdentifiableDataObjectStoreAbstractIntegrationShould<TrackedEntityInstance> {
 
     public TrackedEntityInstanceStoreIntegrationShould() {
         super(TrackedEntityInstanceStoreImpl.create(DatabaseAdapterFactory.get(false)),
@@ -59,6 +60,20 @@ public class TrackedEntityInstanceStoreIntegrationShould extends
 
     @Override
     protected TrackedEntityInstance buildObjectToUpdate() {
+        return TrackedEntityInstanceSamples.get().toBuilder()
+                .featureType(FeatureType.POINT)
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityInstance buildObjectWithToDeleteState() {
+        return TrackedEntityInstanceSamples.get().toBuilder()
+                .state(State.TO_DELETE)
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityInstance buildObjectWithSyncedState() {
         return TrackedEntityInstanceSamples.get().toBuilder()
                 .state(State.SYNCED)
                 .build();

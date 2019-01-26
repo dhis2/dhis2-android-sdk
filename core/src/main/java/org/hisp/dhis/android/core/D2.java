@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
+import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -179,7 +179,7 @@ public final class D2 {
     }
 
     public static class Builder {
-        private ConfigurationModel configuration;
+        private Configuration configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
         private Context context;
@@ -189,7 +189,7 @@ public final class D2 {
         }
 
         @NonNull
-        public Builder configuration(@NonNull ConfigurationModel configuration) {
+        public Builder configuration(@NonNull Configuration configuration) {
             this.configuration = configuration;
             return this;
         }

@@ -25,13 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.common.Model;
+package org.hisp.dhis.android.core.data.database;
 
-import java.util.List;
+import android.content.ContentValues;
+import android.database.Cursor;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    List<M> getWithAllChildren();
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.State;
+
+public class DataDeleteColumnAdapter implements ColumnTypeAdapter<Boolean> {
+
+    @Override
+    public Boolean fromCursor(Cursor cursor, String columnName) {
+
+        int stateColumnIndex = cursor.getColumnIndex(BaseDataModel.Columns.STATE);
+        String stateStr = stateColumnIndex == -1 || cursor.isNull(stateColumnIndex) ?
+                null : cursor.getString(stateColumnIndex);
+
+        State state = null;
+        if (stateStr != null) {
+            try {
+                state = Enum.valueOf(State.class, stateStr);
+            } catch (Exception exception) {
+                throw new RuntimeException("Unknown " + State.class.getSimpleName() + " type", exception);
+            }
+        }
+
+        return state == State.TO_DELETE ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    public void toContentValues(ContentValues values, String columnName, Boolean value) {
+        /* Method is empty because is the default action.
+         */
+    }
 }

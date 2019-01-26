@@ -33,17 +33,6 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
     }
 
     @Test
-    public void append_scope_for_multiple_filters() {
-        ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
-                .byName().eq("Combi")
-                .byCode().like("cody");
-        List<RepositoryScopeItem> scope = repositoryWithUpdatedScope.getScope();
-
-        assertThat(scope.get(0).equals(RepositoryScopeItem.builder().key("name").operator("=").value("'Combi'").build()), is(true));
-        assertThat(scope.get(1).equals(RepositoryScopeItem.builder().key("code").operator("LIKE").value("'cody'").build()), is(true));
-    }
-
-    @Test
     public void find_objects_with_equal_name() {
         ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().eq("Births");

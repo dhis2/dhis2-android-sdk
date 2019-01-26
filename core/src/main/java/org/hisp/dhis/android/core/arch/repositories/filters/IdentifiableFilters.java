@@ -25,13 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 
-import java.util.List;
-
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    List<M> getWithAllChildren();
+public interface IdentifiableFilters<R extends ReadOnlyCollectionRepository<?>>  {
+    StringFilterConnector<R> byUid();
+    StringFilterConnector<R> byCode();
+    StringFilterConnector<R> byName();
+    StringFilterConnector<R> byDisplayName();
+    DateFilterConnector<R> byCreated();
+    DateFilterConnector<R> byLastUpdated();
 }

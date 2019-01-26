@@ -25,19 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import dagger.Reusable;
+public interface ReadOnlyWithUidCollectionRepository<M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyCollectionRepository<M> {
 
-@Reusable
-public final class OrganisationUnitInternalModule {
-
-    public final OrganisationUnitModuleDownloader moduleDownloader;
-
-    @Inject
-    OrganisationUnitInternalModule(OrganisationUnitModuleDownloader moduleDownloader) {
-        this.moduleDownloader = moduleDownloader;
-    }
+    ReadOnlyObjectRepository<M> uid(String uid);
 }

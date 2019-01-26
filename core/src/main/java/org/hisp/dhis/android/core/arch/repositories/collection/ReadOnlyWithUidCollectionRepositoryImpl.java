@@ -27,11 +27,38 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    List<M> getWithAllChildren();
+public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
+        extends ReadOnlyCollectionRepositoryImpl<M>
+        implements ReadOnlyWithUidCollectionRepository<M> {
+
+    protected final IdentifiableObjectStore<M> store;
+
+    ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                            Collection<ChildrenAppender<M>> childrenAppenders,
+                                            List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope);
+        this.store = store;
+    }
+
+    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
+                                                        Collection<ChildrenAppender<M>> childrenAppenders) {
+        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
+    }
+
+    @Override
+    public ReadOnlyObjectRepository<M> uid(String uid) {
+        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
+    }
 }

@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
+import android.support.annotation.VisibleForTesting;
+
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.concurrent.Callable;
@@ -43,13 +45,19 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class EventModule {
 
     private final EventWithLimitCallFactory eventWithLimitCallFactory;
-    public final ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events;
+    public final ReadOnlyWithUploadWithUidCollectionRepository<Event> events;
+
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    final EventPersistenceCallFactory eventPersistenceCallFactory;
 
     @Inject
     EventModule(EventWithLimitCallFactory eventWithLimitCallFactory,
-                ReadOnlyWithUploadIdentifiableCollectionRepository<Event> events) {
+                ReadOnlyWithUploadWithUidCollectionRepository<Event> events,
+                EventPersistenceCallFactory eventPersistenceCallFactory) {
         this.eventWithLimitCallFactory = eventWithLimitCallFactory;
         this.events = events;
+        this.eventPersistenceCallFactory = eventPersistenceCallFactory;
     }
 
     public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {

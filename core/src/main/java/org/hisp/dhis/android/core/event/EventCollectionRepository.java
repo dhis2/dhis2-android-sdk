@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
 import java.util.Collections;
@@ -40,8 +40,8 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class EventCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<Event>
-        implements ReadOnlyWithUploadIdentifiableCollectionRepository<Event> {
+final class EventCollectionRepository extends ReadOnlyWithUidCollectionRepositoryImpl<Event>
+        implements ReadOnlyWithUploadWithUidCollectionRepository<Event> {
 
     private final EventPostCall postCall;
 

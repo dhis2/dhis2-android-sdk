@@ -16,12 +16,16 @@
       "displayName": "default",
       "categoryOptions": [
         {
-          "lastUpdated": "2016-04-12T20:37:48.414",
-          "created": "2011-12-24T12:24:24.149",
-          "name": "default",
+          "lastUpdated": "2016-04-12T20:37:48.666",
+          "created": "2011-12-24T12:24:24.777",
+          "name": "default name",
+          "code": "default code",
           "id": "as6ygGvUGNg",
-          "shortName": "default",
-          "displayName": "default",
+          "shortName": "default short name",
+          "displayShortName": "default display short name",
+          "description": "default description",
+          "displayDescription": "default display description",
+          "displayName": "default display name",
           "access": {
             "data": {
               "read": true,

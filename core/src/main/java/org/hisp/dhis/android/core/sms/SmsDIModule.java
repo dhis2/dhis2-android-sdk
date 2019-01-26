@@ -25,7 +25,10 @@ public class SmsDIModule {
     }
 
     @Provides
-    LocalDbRepository localDbRepository(UserModule userModule, ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
+    LocalDbRepository localDbRepository(UserModule userModule,
+                                        //thanks checkstyle
+                                        ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo>
+                                                categoryOptionCombos,
                                         EventStore eventStore) {
         return new LocalDbRepositoryImpl(userModule, categoryOptionCombos, eventStore);
     }

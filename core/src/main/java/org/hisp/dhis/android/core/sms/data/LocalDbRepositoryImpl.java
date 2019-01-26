@@ -19,7 +19,8 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final EventStore eventStore;
     private final static String DEFAULT_CATEGORY_OPTION_COMBO_CODE = "default";
 
-    public LocalDbRepositoryImpl(UserModule userModule, ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
+    public LocalDbRepositoryImpl(UserModule userModule,
+                                 ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
                                  EventStore eventStore) {
         this.userModule = userModule;
         this.categoryOptionCombos = categoryOptionCombos;
@@ -44,12 +45,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Completable setGatewayNumber(String number) {
+    public Single<String> getGatewayNumber() {
         return null;
     }
 
     @Override
-    public Single<String> getGatewayNumber() {
+    public Completable setGatewayNumber(String number) {
         return null;
     }
 
@@ -66,7 +67,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     @Override
     public Completable updateSubmissionState(BaseDataModel item, State state) {
         if (item instanceof Event) {
-            return Completable.fromAction(() -> eventStore.setState(((Event) item).uid(), state));
+            String uid = ((Event) item).uid();
+            if (uid != null) {
+                return Completable.fromAction(() -> eventStore.setState(uid, state));
+            }
+            return Completable.error(new NullPointerException("Event uid param null"));
         }
         return Completable.error(new IllegalArgumentException("Not supported data type"));
     }

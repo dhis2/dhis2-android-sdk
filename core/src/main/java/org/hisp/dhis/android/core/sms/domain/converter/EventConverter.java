@@ -1,71 +1,50 @@
 package org.hisp.dhis.android.core.sms.domain.converter;
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
-import java.security.NoSuchAlgorithmException;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import static org.hisp.dhis.android.core.sms.domain.converter.Utility.check;
+import io.reactivex.Single;
 
-public class EventConverter {
+public class EventConverter extends Converter<Event, EventConverter.EventSubmissionParams> {
 
-    public String format(Event event, String username, String categoryOptionCombo) {
-        if (event == null) {
-            throw new NullPointerException("Event is null");
-        }
-        check(categoryOptionCombo);
+    private final LocalDbRepository localDbRepository;
 
-        StringBuilder result = new StringBuilder();
-        result
-                .append(check(username))
-                .append(' ')
-
-                .append(check(event.organisationUnit()))
-                .append(' ')
-
-                .append(SubmissionType.PROGRAM_EVENT_NO_REG)
-                .append(' ')
-
-                .append(check(event.program()))
-                .append(' ')
-
-                .append(check(event.attributeOptionCombo()))
-                .append(' ')
-
-                .append(check(event.uid()))
-                .append(' ')
-
-                .append(Utility.timestamp())
-                .append(' ');
-
-        List<TrackedEntityDataValue> dataValues = event.trackedEntityDataValues();
-        if (dataValues == null) {
-            throw new NullPointerException("Event's data values are null");
-        }
-        for (TrackedEntityDataValue dataValue : dataValues) {
-            result
-                    .append('|')
-                    .append(check(dataValue.dataElement()))
-                    .append('-')
-                    .append(categoryOptionCombo)
-                    .append('=')
-                    .append(check(dataValue.value(), false));
-        }
-        result.append('|');
-
-        try {
-            // TODO compress using compression library
-            return Utility.addCheckSum(result.toString());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+    public EventConverter(LocalDbRepository localDbRepository) {
+        this.localDbRepository = localDbRepository;
     }
 
+    @Override
+    public String format(@NonNull Event dataObject, EventSubmissionParams params) {
+        // TODO convert using compression library when received
+        Log.d("", params.username + " " + params.categoryOptionCombo);
+        return null;
+    }
+
+    @Override
     public Collection<String> getConfirmationRequiredTexts(Event event) {
         // TODO what is the confirmation sms text?
         return new ArrayList<>();
+    }
+
+    @Override
+    public Single<EventSubmissionParams> getParamsTask() {
+        return Single.zip(localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
+                EventConverter.EventSubmissionParams::new);
+    }
+
+    public static class EventSubmissionParams {
+        final String username;
+        final String categoryOptionCombo;
+
+        public EventSubmissionParams(String username, String categoryOptionCombo) {
+            this.username = username;
+            this.categoryOptionCombo = categoryOptionCombo;
+        }
     }
 }

@@ -2,8 +2,10 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import android.util.Pair;
 
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.sms.domain.converter.Converter;
 import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
@@ -28,34 +30,38 @@ public class SmsSubmitCase {
         this.deviceStateRepository = deviceStateRepository;
     }
 
-    public Observable<SmsRepository.SmsSendingState> submit(final Event event) {
+    public Observable<SmsRepository.SmsSendingState> submit(Event event) {
+        return submit(new EventConverter(localDbRepository), event);
+    }
+
+    public Completable checkConfirmationSms(Event event, int timeoutSeconds) {
+        return checkConfirmationSms(new EventConverter(localDbRepository), event, timeoutSeconds);
+    }
+
+    public <T extends BaseDataModel> Observable<SmsRepository.SmsSendingState>
+    submit(final Converter<T, ?> converter, final T dataItem) {
         return checkPreconditions()
-                .andThen(Single.zip(localDbRepository.getGatewayNumber(),
-                        localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
-                        (number, username, categoryOptionCombo) -> {
-                            EventConverter converter = new EventConverter();
-                            String smsContents = converter.format(event, username, categoryOptionCombo);
-                            return new Pair<>(number, smsContents);
-                        })
+                .andThen(
+                        Single.zip(localDbRepository.getGatewayNumber(), converter.format(dataItem), Pair::new)
                 ).flatMapObservable(numAndContents ->
                         smsRepository.sendSms(numAndContents.first, numAndContents.second, 120)
                 ).flatMap(smsSendingState -> {
                     if (SmsRepository.State.ALL_SENT.equals(smsSendingState.getState())) {
-                        return localDbRepository.updateSubmissionState(event, State.SENT_VIA_SMS)
+                        return localDbRepository.updateSubmissionState(dataItem, State.SENT_VIA_SMS)
                                 .andThen(Observable.just(smsSendingState));
                     }
                     return Observable.just(smsSendingState);
                 });
     }
 
-    public Completable checkConfirmationSms(int timeoutSeconds, Event event) {
-        EventConverter converter = new EventConverter();
-        Collection<String> requiredStrings = converter.getConfirmationRequiredTexts(event);
+    public <T extends BaseDataModel> Completable checkConfirmationSms(final Converter<T, ?> converter,
+                                                                      final T dataItem, int timeoutSeconds) {
+        Collection<String> requiredStrings = converter.getConfirmationRequiredTexts(dataItem);
         return localDbRepository.getConfirmationSenderNumber()
                 .flatMapCompletable(confirmationSenderNumber ->
                         smsRepository.listenToConfirmationSms(
                                 timeoutSeconds, confirmationSenderNumber, requiredStrings))
-                .andThen(localDbRepository.updateSubmissionState(event, State.SYNCED_VIA_SMS));
+                .andThen(localDbRepository.updateSubmissionState(dataItem, State.SYNCED_VIA_SMS));
     }
 
     private Completable checkPreconditions() {

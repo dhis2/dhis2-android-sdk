@@ -14,10 +14,6 @@ public class QrCodeCase {
     }
 
     public Single<String> generateTextCode(final Event event) {
-        return Single.zip(localDbRepository.getUserName(), localDbRepository.getDefaultCategoryOptionCombo(),
-                (username, categoryOptionCombo) -> {
-                    EventConverter converter = new EventConverter();
-                    return converter.format(event, username, categoryOptionCombo);
-                });
+        return new EventConverter(localDbRepository).format(event);
     }
 }

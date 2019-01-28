@@ -44,7 +44,10 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramStageDataElementStore {
 
-    private static StatementBinder<ProgramStageDataElement> BINDER = new IdentifiableStatementBinder<ProgramStageDataElement>() {
+    private ProgramStageDataElementStore() {}
+
+    private static StatementBinder<ProgramStageDataElement> BINDER =
+            new IdentifiableStatementBinder<ProgramStageDataElement>() {
 
         @Override
         public void bindToStatement(@NonNull ProgramStageDataElement programStageDataElement,
@@ -63,7 +66,9 @@ public final class ProgramStageDataElementStore {
         }
     };
 
-    private static final CursorModelFactory<ProgramStageDataElement> FACTORY = new CursorModelFactory<ProgramStageDataElement>() {
+    private static final CursorModelFactory<ProgramStageDataElement> FACTORY =
+            new CursorModelFactory<ProgramStageDataElement>() {
+
         @Override
         public ProgramStageDataElement fromCursor(Cursor cursor) {
             return ProgramStageDataElement.create(cursor);
@@ -72,7 +77,8 @@ public final class ProgramStageDataElementStore {
 
     public static IdentifiableObjectStore<ProgramStageDataElement> create(DatabaseAdapter databaseAdapter) {
 
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageDataElementTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter,
+                ProgramStageDataElementTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 
 }

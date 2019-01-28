@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private Access access;
 
     @Mock
-    private Program program;
+    private ObjectWithUid program;
 
     @Mock
     private TrackedEntityAttribute trackedEntityAttribute;
@@ -100,14 +101,14 @@ public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Test
     public void call_tracked_entity_attribute_handler() throws Exception {
-        handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
+        handler.handleMany(programTrackedEntityAttributes);
         verify(trackedEntityAttributeHandler).handle(trackedEntityAttribute);
     }
 
     @Test
     public void delete_program_tea_and_tea_when_have_no_access() {
         when(access.read()).thenReturn(false);
-        handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
+        handler.handleMany(programTrackedEntityAttributes);
         verify(store).deleteIfExists(programTrackedEntityAttribute.uid());
         verify(trackedEntityAttributeStore).delete(trackedEntityAttribute.uid());
     }

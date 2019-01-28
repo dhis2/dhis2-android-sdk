@@ -186,8 +186,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_tracked_entity_attributes_handler() {
         programHandler.handle(program);
-        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class),
-                any(ProgramTrackedEntityAttributeModelBuilder.class));
+        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class));
     }
 
     @Test

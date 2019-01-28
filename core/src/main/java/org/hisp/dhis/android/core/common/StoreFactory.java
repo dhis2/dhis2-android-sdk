@@ -45,6 +45,7 @@ public final class StoreFactory {
 
     private StoreFactory() {}
 
+    @Deprecated
     public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
     objectWithUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
                        StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {
@@ -69,6 +70,7 @@ public final class StoreFactory {
                 statementBuilder, binder, modelFactory);
     }
 
+    @Deprecated
     public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns, StatementBinder<I> binder,
             WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
@@ -86,6 +88,7 @@ public final class StoreFactory {
                 modelFactory);
     }
 
+    @Deprecated
     public static <I extends Model> LinkModelStore<I> linkModelStore(
             DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns,
             String masterColumn, StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {

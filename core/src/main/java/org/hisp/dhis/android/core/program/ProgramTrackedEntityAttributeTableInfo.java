@@ -28,36 +28,41 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class ProgramTrackedEntityAttributeFields {
+public final class ProgramTrackedEntityAttributeTableInfo {
 
-    static final String MANDATORY = "mandatory";
-    static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    static final String ALLOW_FUTURE_DATE = "allowFutureDate";
-    static final String DISPLAY_IN_LIST = "displayInList";
-    static final String PROGRAM = "program";
-    static final String SORT_ORDER = "sortOrder";
-    static final String SEARCHABLE = "searchable";
+    private ProgramTrackedEntityAttributeTableInfo() {
+    }
 
-    private static FieldsHelper<ProgramTrackedEntityAttribute> fh = new FieldsHelper<>();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public static final Fields<ProgramTrackedEntityAttribute> allFields
-            = Fields.<ProgramTrackedEntityAttribute>builder()
-            .fields(fh.getNameableFields())
-            .fields(
-                    fh.<String>field(MANDATORY),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.<Boolean>field(ALLOW_FUTURE_DATE),
-                    fh.<Boolean>field(DISPLAY_IN_LIST),
-                    fh.<Integer>field(SORT_ORDER),
-                    fh.<Boolean>field(SEARCHABLE),
-                    fh.<TrackedEntityAttribute>nestedField(TRACKED_ENTITY_ATTRIBUTE)
-                            .with(TrackedEntityAttribute.allFields)
-                    ).build();
+        @Override
+        public String name() {
+            return "ProgramTrackedEntityAttribute";
+        }
 
-    private ProgramTrackedEntityAttributeFields() {
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseNameableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramTrackedEntityAttributeFields.MANDATORY,
+                    ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                    ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
+                    ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
+                    ProgramTrackedEntityAttributeFields.PROGRAM,
+                    ProgramTrackedEntityAttributeFields.SORT_ORDER,
+                    ProgramTrackedEntityAttributeFields.SEARCHABLE
+            );
+        }
     }
 }

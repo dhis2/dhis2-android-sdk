@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,37 +28,41 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class AuthenticatedUserTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class UserModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    UserModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private AuthenticatedUserTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                UserTableInfo.TABLE_INFO,
-                UserCredentialsTableInfo.TABLE_INFO,
-                UserOrganisationUnitLinkTableInfo.TABLE_INFO,
-                AuthenticatedUserTableInfo.TABLE_INFO,
-                AuthorityTableInfo.TABLE_INFO,
-                UserRoleTableInfo.TABLE_INFO
-        );
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        @Override
+        public String name() {
+            return "AuthenticatedUser";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        static final String USER = "user";
+        static final String CREDENTIALS = "credentials";
+        static final String HASH = "hash";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), USER, CREDENTIALS, HASH);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{USER};
+        }
     }
 }

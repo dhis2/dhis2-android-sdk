@@ -26,22 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
-public final class ProgramTableInfo {
+public final class UserTableInfo {
 
-    private ProgramTableInfo() {
+    private UserTableInfo() {
     }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
         @Override
         public String name() {
-            return "Program";
+            return "User";
         }
 
         @Override
@@ -50,38 +50,24 @@ public final class ProgramTableInfo {
         }
     };
 
-    static class Columns extends BaseNameableObjectModel.Columns {
-        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
 
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    ProgramFields.VERSION,
-                    ProgramFields.ONLY_ENROLL_ONCE,
-                    ProgramFields.ENROLLMENT_DATE_LABEL,
-                    ProgramFields.DISPLAY_INCIDENT_DATE,
-                    ProgramFields.INCIDENT_DATE_LABEL,
-                    ProgramFields.REGISTRATION,
-                    ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-                    ProgramFields.DATA_ENTRY_METHOD,
-                    ProgramFields.IGNORE_OVERDUE_EVENTS,
-                    ProgramFields.RELATIONSHIP_FROM_A,
-                    ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
-                    ProgramFields.CAPTURE_COORDINATES,
-                    ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
-                    ProgramFields.DISPLAY_FRONT_PAGE_LIST,
-                    ProgramFields.PROGRAM_TYPE,
-                    ProgramFields.RELATIONSHIP_TYPE,
-                    ProgramFields.RELATIONSHIP_TEXT,
-                    ProgramFields.RELATED_PROGRAM,
-                    ProgramFields.TRACKED_ENTITY_TYPE,
-                    ProgramFields.CATEGORY_COMBO,
-                    ACCESS_DATA_WRITE,
-                    ProgramFields.EXPIRY_DAYS,
-                    ProgramFields.COMPLETE_EVENTS_EXPIRY_DAYS,
-                    ProgramFields.EXPIRY_PERIOD_TYPE,
-                    ProgramFields.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
-                    ProgramFields.MAX_TEI_COUNT_TO_RETURN
+                    UserFields.BIRTHDAY,
+                    UserFields.EDUCATION,
+                    UserFields.GENDER,
+                    UserFields.JOB_TITLE,
+                    UserFields.SURNAME,
+                    UserFields.FIRST_NAME,
+                    UserFields.INTRODUCTION,
+                    UserFields.EMPLOYER,
+                    UserFields.INTERESTS,
+                    UserFields.LANGUAGES,
+                    UserFields.EMAIL,
+                    UserFields.PHONE_NUMBER,
+                    UserFields.NATIONALITY
             );
         }
     }

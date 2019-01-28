@@ -48,7 +48,7 @@ public final class UserModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                UserModel.TABLE,
+                UserTableInfo.TABLE_INFO.name(),
                 UserCredentialsTableInfo.TABLE_INFO.name(),
                 UserOrganisationUnitLinkModel.TABLE,
                 AuthenticatedUserModel.TABLE,

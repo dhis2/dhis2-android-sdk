@@ -42,7 +42,7 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class UserModelModelShould {
+public class UserModelShould {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -66,7 +66,7 @@ public class UserModelModelShould {
     private final Date date;
     private final String dateString;
 
-    public UserModelModelShould() {
+    public UserModelShould() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }

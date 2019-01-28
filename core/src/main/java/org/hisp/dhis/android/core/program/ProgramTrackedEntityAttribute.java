@@ -32,19 +32,25 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.TrackedEntityAttributeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramTrackedEntityAttribute.Builder.class)
-public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
+public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject implements Model {
 
     @Nullable
     public abstract Boolean mandatory();
 
     @Nullable
+    @ColumnAdapter(TrackedEntityAttributeWithUidColumnAdapter.class)
     public abstract TrackedEntityAttribute trackedEntityAttribute();
 
     @Nullable
@@ -54,7 +60,8 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     public abstract Boolean displayInList();
 
     @Nullable
-    public abstract Program program();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid program();
 
     @Nullable
     public abstract Integer sortOrder();
@@ -65,6 +72,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
     public static Builder builder() {
         return new AutoValue_ProgramTrackedEntityAttribute.Builder();
     }
+
     static ProgramTrackedEntityAttribute create(Cursor cursor) {
         return $AutoValue_ProgramTrackedEntityAttribute.createFromCursor(cursor);
     }

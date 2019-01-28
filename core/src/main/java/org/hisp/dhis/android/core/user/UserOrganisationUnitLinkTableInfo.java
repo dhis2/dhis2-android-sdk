@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,37 +28,45 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class UserOrganisationUnitLinkTableInfo {
 
-import dagger.Reusable;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-@Reusable
-public final class UserModuleWiper implements ModuleWiper {
+        @Override
+        public String name() {
+            return "UserOrganisationUnit";
+        }
 
-    private final TableWiper tableWiper;
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-    @Inject
-    UserModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+
+    private UserOrganisationUnitLinkTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                UserTableInfo.TABLE_INFO.name(),
-                UserCredentialsTableInfo.TABLE_INFO.name(),
-                UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-                AuthenticatedUserModel.TABLE,
-                AuthorityTableInfo.TABLE_INFO.name(),
-                UserRoleModel.TABLE
-        );
-    }
+    static class Columns extends BaseModel.Columns {
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        static final String USER = "user";
+        static final String ORGANISATION_UNIT = "organisationUnit";
+        static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
+        static final String ROOT = "root";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

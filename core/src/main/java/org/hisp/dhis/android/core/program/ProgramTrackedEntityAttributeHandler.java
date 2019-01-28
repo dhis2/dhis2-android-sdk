@@ -29,22 +29,19 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 
-public class ProgramTrackedEntityAttributeHandler extends
-        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> {
+public class ProgramTrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> {
 
     private final IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler;
     private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
-
     ProgramTrackedEntityAttributeHandler(
-            IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store,
+            IdentifiableObjectStore<ProgramTrackedEntityAttribute> store,
             IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler,
             IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore) {
         super(store);

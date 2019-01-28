@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementFields;
 
-public class ProgramStageDataElementFields {
+public final class ProgramStageDataElementFields {
 
     static final String DISPLAY_IN_REPORTS = "displayInReports";
     static final String DATA_ELEMENT = "dataElement";

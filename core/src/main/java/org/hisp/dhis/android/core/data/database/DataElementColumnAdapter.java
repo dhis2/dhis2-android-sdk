@@ -28,21 +28,13 @@
 
 package org.hisp.dhis.android.core.data.database;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
-
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
-public class DataElementColumnAdapter implements ColumnTypeAdapter<DataElement> {
+
+public class DataElementColumnAdapter extends IdentifiableObjectColumnAdapter<DataElement> {
 
     @Override
-    public DataElement fromCursor(Cursor cursor, String columnName) {
-
-        return DataElement.create(cursor);
+    protected DataElement build(String uid) {
+        return DataElement.builder().uid(uid).build();
     }
-
-    @Override
-    public void toContentValues(ContentValues values, String columnName, DataElement value) {}
 }

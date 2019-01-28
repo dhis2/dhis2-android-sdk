@@ -80,7 +80,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder>{
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

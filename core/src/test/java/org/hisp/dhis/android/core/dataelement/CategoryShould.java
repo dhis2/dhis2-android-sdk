@@ -58,9 +58,7 @@ public class CategoryShould extends BaseObjectShould implements ObjectShould {
 
         // names
         assertThat(category.name()).isEqualTo("Births attended by");
-        assertThat(category.shortName()).isEqualTo("Births attended by");
         assertThat(category.displayName()).isEqualTo("Births attended by");
-        assertThat(category.displayShortName()).isEqualTo("Births attended by");
 
         // checking options
         assertThat(category.categoryOptions().get(0).uid()).isEqualTo("TNYQzTHdoxL");

@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -41,20 +43,24 @@ import dagger.Reusable;
 class UserHandler extends IdentifiableSyncHandlerImpl<User> {
     private final SyncHandler<UserCredentials> userCredentialsHandler;
     private final SyncHandler<UserRole> userRoleHandler;
+    private final CollectionCleaner<UserRole> userRoleCollectionCleaner;
 
     @Inject
     UserHandler(IdentifiableObjectStore<User> userStore,
                 SyncHandler<UserCredentials> userCredentialsHandler,
-                SyncHandler<UserRole> userRoleHandler) {
+                SyncHandler<UserRole> userRoleHandler,
+                CollectionCleaner<UserRole> userRoleCollectionCleaner) {
         super(userStore);
         this.userCredentialsHandler = userCredentialsHandler;
         this.userRoleHandler = userRoleHandler;
+        this.userRoleCollectionCleaner = userRoleCollectionCleaner;
     }
 
     public static UserHandler create(DatabaseAdapter databaseAdapter) {
         return new UserHandler(UserStore.create(databaseAdapter),
                 new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter)),
-                new IdentifiableSyncHandlerImpl<>(UserRoleStore.create(databaseAdapter)));
+                new IdentifiableSyncHandlerImpl<>(UserRoleStore.create(databaseAdapter)),
+                new CollectionCleanerImpl<UserRole>(UserRoleTableInfo.TABLE_INFO.name(), databaseAdapter));
     }
 
     @Override
@@ -63,6 +69,8 @@ class UserHandler extends IdentifiableSyncHandlerImpl<User> {
         if (credentials != null) {
             UserCredentials credentialsWithUser = credentials.toBuilder().user(user).build();
             userCredentialsHandler.handle(credentialsWithUser);
+
+            userRoleCollectionCleaner.deleteNotPresent(credentialsWithUser.userRoles());
             userRoleHandler.handleMany(credentialsWithUser.userRoles());
         }
     }

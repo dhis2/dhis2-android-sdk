@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.option.OptionSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,15 +41,10 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -56,21 +52,25 @@ import static org.mockito.Mockito.when;
 public class TrackedEntityAttributeHandlerShould {
 
     @Mock
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
     @Mock
     private TrackedEntityAttribute trackedEntityAttribute;
 
     @Mock
-    private OptionSet optionSet;
+    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private ObjectStyle objectStyle;
 
     @Mock
     private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
+    @Mock
+    private ValueTypeRendering renderType;
+
     // object to test
+    private List<TrackedEntityAttribute> trackedEntityAttributes;
     private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
 
     @Before
@@ -79,108 +79,30 @@ public class TrackedEntityAttributeHandlerShould {
         trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
                 styleHandler, renderTypeHandler);
 
+        trackedEntityAttributes = new ArrayList<>();
+        trackedEntityAttributes.add(trackedEntityAttribute);
+
         when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
-        when(optionSet.uid()).thenReturn("test_option_set_uid");
-        when(trackedEntityAttribute.optionSet()).thenReturn(optionSet);
+        when(trackedEntityAttribute.style()).thenReturn(objectStyle);
+        when(trackedEntityAttribute.renderType()).thenReturn(renderType);
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() throws Exception {
-        trackedEntityAttributeHandler.handleTrackedEntityAttribute(null);
-
-        // verify that store is never called
-        verify(trackedEntityAttributeStore, never()).delete(anyString());
-
-        verify(trackedEntityAttributeStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyString());
-
-        verify(trackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean());
+    public void extend_identifiable_handler_impl() {
+        IdentifiableSyncHandlerImpl<TrackedEntityAttribute> genericHandler =
+                new TrackedEntityAttributeHandler(null, null, null);
     }
 
     @Test
-    public void invoke_delete_when_handle_tracked_entity_attribute_set_as_deleted() throws Exception {
-        when(trackedEntityAttribute.deleted()).thenReturn(Boolean.TRUE);
-
-        trackedEntityAttributeHandler.handleTrackedEntityAttribute(trackedEntityAttribute);
-
-        // verify that delete is called once
-        verify(trackedEntityAttributeStore, times(1)).delete(anyString());
-
-        // verify that update and insert is never called
-        verify(trackedEntityAttributeStore, never()).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyString());
-
-        verify(trackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean());
-
+    public void call_object_style_handler() throws Exception {
+        trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
+        verify(styleHandler).handle(any(ObjectStyle.class), any(ModelBuilder.class));
     }
 
     @Test
-    public void invoke_only_update_when_handle_tracked_entity_attribute_inserted() throws Exception {
-        when(trackedEntityAttributeStore.update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyString())).thenReturn(1);
-
-        trackedEntityAttributeHandler.handleTrackedEntityAttribute(trackedEntityAttribute);
-
-        // verify that update is called once
-        verify(trackedEntityAttributeStore, timeout(1)).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyString());
-
-        // verify that insert and delete is never called
-        verify(trackedEntityAttributeStore, never()).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean());
-
-        verify(trackedEntityAttributeStore, never()).delete(anyString());
-    }
-
-    @Test
-    public void invoke_update_when_handle_invoke_update_and_insert_when_handle_tracked_entity_attribute_not_inserted() throws Exception {
-        when(trackedEntityAttributeStore.update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyString())).thenReturn(0);
-
-        trackedEntityAttributeHandler.handleTrackedEntityAttribute(trackedEntityAttribute);
-
-        // verify that insert is called once
-        verify(trackedEntityAttributeStore, times(1)).insert(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean());
-
-        // verify that update is called once since we try to update before we insert
-        verify(trackedEntityAttributeStore, times(1)).update(anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), anyString(), anyInt(), anyString(), any(ValueType.class), anyString(),
-                any(TrackedEntityAttributeSearchScope.class), anyBoolean(), anyBoolean(),
-                anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean(), anyString());
-
-        // verify that delete is never called
-
-        verify(trackedEntityAttributeStore, never()).delete(anyString());
+    public void call_render_type_handler() throws Exception {
+        trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
+        verify(renderTypeHandler).handle(renderType, trackedEntityAttribute.uid(),
+                TrackedEntityAttributeTableInfo.TABLE_INFO.name());
     }
 }

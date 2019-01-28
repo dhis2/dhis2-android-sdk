@@ -27,24 +27,26 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStoreImpl;
 
 public class ProgramTrackedEntityAttributeHandler extends
         IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> {
 
-    private final TrackedEntityAttributeHandler trackedEntityAttributeHandler;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
 
-    ProgramTrackedEntityAttributeHandler(IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store,
-                                         TrackedEntityAttributeHandler trackedEntityAttributeHandler,
-                                         TrackedEntityAttributeStore trackedEntityAttributeStore) {
+    ProgramTrackedEntityAttributeHandler(
+            IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store,
+            IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler,
+            IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore) {
         super(store);
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -54,7 +56,7 @@ public class ProgramTrackedEntityAttributeHandler extends
         return new ProgramTrackedEntityAttributeHandler(
                 ProgramTrackedEntityAttributeStore.create(databaseAdapter),
                 TrackedEntityAttributeHandler.create(databaseAdapter),
-                new TrackedEntityAttributeStoreImpl(databaseAdapter));
+                TrackedEntityAttributeStore.create(databaseAdapter));
     }
 
     @Override
@@ -63,8 +65,7 @@ public class ProgramTrackedEntityAttributeHandler extends
         if (action == HandleAction.Delete) {
             this.trackedEntityAttributeStore.delete(programTrackedEntityAttribute.trackedEntityAttribute().uid());
         } else {
-            trackedEntityAttributeHandler.handleTrackedEntityAttribute(
-                    programTrackedEntityAttribute.trackedEntityAttribute());
+            trackedEntityAttributeHandler.handle(programTrackedEntityAttribute.trackedEntityAttribute());
         }
     }
 

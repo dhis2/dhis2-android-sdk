@@ -36,6 +36,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -46,9 +47,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -102,7 +100,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance_2);
-        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
 
         trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
                 .value(VALUE).created(date).lastUpdated(date).trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
@@ -138,7 +136,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
                 deferredTrackedEntityAttribute, null);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
-        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
         database().setTransactionSuccessful();
         database().endTransaction();
 
@@ -232,8 +230,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_attribute_value_in_data_base_when_delete_tracked_entity_attribute() {
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
-        database().delete(TrackedEntityAttributeModel.TABLE,
-                TrackedEntityAttributeModel.Columns.UID + "=?",
+        database().delete(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID + "=?",
                 new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,

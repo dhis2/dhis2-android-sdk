@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,39 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.data.trackedentity;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeSearchScope;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-import dagger.Reusable;
+public class TrackedEntityAttributeSamples {
 
-@Reusable
-public final class TrackedEntityModuleWiper implements ModuleWiper {
+    public static TrackedEntityAttribute get() {
 
-    private final TableWiper tableWiper;
+        TrackedEntityAttribute.Builder builder = TrackedEntityAttribute.builder();
+        fillNameableProperties(builder);
 
-    @Inject
-    TrackedEntityModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                TrackedEntityAttributeTableInfo.TABLE_INFO,
-                TrackedEntityTypeTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                TrackedEntityInstanceTableInfo.TABLE_INFO,
-                TrackedEntityDataValueTableInfo.TABLE_INFO,
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO,
-                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO
-        );
+        return builder
+                .pattern("pattern")
+                .sortOrderInListNoProgram(1)
+                .optionSet(OptionSet.builder().uid("option_set_uid").build())
+                .valueType(ValueType.BOOLEAN)
+                .expression("expression")
+                .searchScope(TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS)
+                .programScope(Boolean.TRUE)
+                .displayInListNoProgram(Boolean.TRUE)
+                .generated(Boolean.TRUE)
+                .displayOnVisitSchedule(Boolean.TRUE)
+                .orgUnitScope(Boolean.TRUE)
+                .unique(Boolean.TRUE)
+                .inherit(Boolean.TRUE)
+                .build();
     }
 }

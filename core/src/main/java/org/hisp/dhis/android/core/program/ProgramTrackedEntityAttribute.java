@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 
 import java.util.Date;
 
@@ -84,7 +85,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
             .fields(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
                     displayDescription, allowFutureDate, deleted, displayInList, mandatory,
                     program.with(ObjectWithUid.uid), sortOrder, searchable,
-                    trackedEntityAttribute.with(TrackedEntityAttribute.allFields)).build();
+                    trackedEntityAttribute.with(TrackedEntityAttributeFields.allFields)).build();
 
     @Nullable
     @JsonProperty(MANDATORY)

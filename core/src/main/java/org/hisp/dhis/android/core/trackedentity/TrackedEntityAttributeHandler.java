@@ -27,8 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.DictionaryTableHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
@@ -36,81 +39,33 @@ import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
-
-public class TrackedEntityAttributeHandler {
-
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+public class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityAttribute> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
-    TrackedEntityAttributeHandler(TrackedEntityAttributeStore trackedEntityAttributeStore,
-                                         SyncHandlerWithTransformer<ObjectStyle> styleHandler,
-                                         DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+
+    TrackedEntityAttributeHandler(IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
+                                  SyncHandlerWithTransformer<ObjectStyle> styleHandler,
+                                  DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
+        super(trackedEntityAttributeStore);
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;
     }
 
-    public void handleTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        deleteOrPersistTrackedEntityAttributes(trackedEntityAttribute);
+    @Override
+    protected void afterObjectHandled(TrackedEntityAttribute trackedEntityAttribute, HandleAction action) {
+        if (action != HandleAction.Delete) {
+            styleHandler.handle(trackedEntityAttribute.style(),
+                    new ObjectStyleModelBuilder(trackedEntityAttribute.uid(),
+                            TrackedEntityAttributeTableInfo.TABLE_INFO.name()));
+            renderTypeHandler.handle(trackedEntityAttribute.renderType(), trackedEntityAttribute.uid(),
+                    TrackedEntityAttributeTableInfo.TABLE_INFO.name());
+        }
     }
 
-    private void deleteOrPersistTrackedEntityAttributes(TrackedEntityAttribute trackedEntityAttribute) {
-        if (trackedEntityAttribute == null) {
-            return;
-        }
-
-        if (isDeleted(trackedEntityAttribute)) {
-            trackedEntityAttributeStore.delete(trackedEntityAttribute.uid());
-        } else {
-            String optionSetUid = null;
-            if (trackedEntityAttribute.optionSet() != null) {
-                optionSetUid = trackedEntityAttribute.optionSet().uid();
-            }
-
-            int updatedRow = trackedEntityAttributeStore.update(
-                    trackedEntityAttribute.uid(), trackedEntityAttribute.code(),
-                    trackedEntityAttribute.name(), trackedEntityAttribute.displayName(),
-                    trackedEntityAttribute.created(), trackedEntityAttribute.lastUpdated(),
-                    trackedEntityAttribute.shortName(), trackedEntityAttribute.displayShortName(),
-                    trackedEntityAttribute.description(), trackedEntityAttribute.displayDescription(),
-                    trackedEntityAttribute.pattern(), trackedEntityAttribute.sortOrderInListNoProgram(),
-                    optionSetUid,
-                    trackedEntityAttribute.valueType(), trackedEntityAttribute.expression(),
-                    trackedEntityAttribute.searchScope(),
-                    trackedEntityAttribute.programScope(), trackedEntityAttribute.displayInListNoProgram(),
-                    trackedEntityAttribute.generated(), trackedEntityAttribute.displayOnVisitSchedule(),
-                    trackedEntityAttribute.orgUnitScope(), trackedEntityAttribute.unique(),
-                    trackedEntityAttribute.inherit(), trackedEntityAttribute.uid());
-
-            if (updatedRow <= 0) {
-                trackedEntityAttributeStore.insert(
-                        trackedEntityAttribute.uid(), trackedEntityAttribute.code(),
-                        trackedEntityAttribute.name(), trackedEntityAttribute.displayName(),
-                        trackedEntityAttribute.created(), trackedEntityAttribute.lastUpdated(),
-                        trackedEntityAttribute.shortName(), trackedEntityAttribute.displayShortName(),
-                        trackedEntityAttribute.description(), trackedEntityAttribute.displayDescription(),
-                        trackedEntityAttribute.pattern(), trackedEntityAttribute.sortOrderInListNoProgram(),
-                        optionSetUid,
-                        trackedEntityAttribute.valueType(), trackedEntityAttribute.expression(),
-                        trackedEntityAttribute.searchScope(), trackedEntityAttribute.programScope(),
-                        trackedEntityAttribute.displayInListNoProgram(),
-                        trackedEntityAttribute.generated(), trackedEntityAttribute.displayOnVisitSchedule(),
-                        trackedEntityAttribute.orgUnitScope(), trackedEntityAttribute.unique(),
-                        trackedEntityAttribute.inherit());
-            }
-        }
-
-        styleHandler.handle(trackedEntityAttribute.style(),
-                new ObjectStyleModelBuilder(trackedEntityAttribute.uid(), TrackedEntityAttributeModel.TABLE));
-        renderTypeHandler.handle(trackedEntityAttribute.renderType(), trackedEntityAttribute.uid(),
-                TrackedEntityAttributeModel.TABLE);
-    }
-
-    public static TrackedEntityAttributeHandler create(DatabaseAdapter databaseAdapter) {
+    public static IdentifiableSyncHandlerImpl<TrackedEntityAttribute> create(DatabaseAdapter databaseAdapter) {
         return new TrackedEntityAttributeHandler(
-                new TrackedEntityAttributeStoreImpl(databaseAdapter),
+                TrackedEntityAttributeStore.create(databaseAdapter),
                 ObjectStyleHandler.create(databaseAdapter),
                 ValueTypeRenderingHandler.create(databaseAdapter)
         );

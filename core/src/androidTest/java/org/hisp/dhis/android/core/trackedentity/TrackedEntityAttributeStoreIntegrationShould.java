@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,37 +28,38 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityAttributeStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<TrackedEntityAttribute> {
 
-@Reusable
-public final class TrackedEntityModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    TrackedEntityModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public TrackedEntityAttributeStoreIntegrationShould() {
+        super(TrackedEntityAttributeStore.create(DatabaseAdapterFactory.get(false)),
+                TrackedEntityAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                TrackedEntityAttributeTableInfo.TABLE_INFO,
-                TrackedEntityTypeTableInfo.TABLE_INFO);
+    protected TrackedEntityAttribute buildObject() {
+        return TrackedEntityAttributeSamples.get();
     }
 
     @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                TrackedEntityInstanceTableInfo.TABLE_INFO,
-                TrackedEntityDataValueTableInfo.TABLE_INFO,
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO,
-                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO
-        );
+    protected TrackedEntityAttribute buildObjectWithId() {
+        return TrackedEntityAttributeSamples.get().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityAttribute buildObjectToUpdate() {
+        return TrackedEntityAttributeSamples.get().toBuilder()
+                .description("new_description")
+                .build();
     }
 }

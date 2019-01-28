@@ -33,13 +33,15 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementHandler;
 
-public final class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+public class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
 
     private final DataElementHandler dataElementHandler;
 
-    private ProgramStageDataElementHandler(IdentifiableObjectStore<ProgramStageDataElement> ProgramStageDataElementStore,
+    ProgramStageDataElementHandler(
+            IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
                                            DataElementHandler dataElementHandler) {
-        super(ProgramStageDataElementStore);
+
+        super(programStageDataElementStore);
         this.dataElementHandler = dataElementHandler;
     }
 
@@ -50,6 +52,9 @@ public final class ProgramStageDataElementHandler extends IdentifiableSyncHandle
 
     @Override
     protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
-        dataElementHandler.handle(programStageDataElement.dataElement());
+
+        if (programStageDataElement.dataElement() != null) {
+            dataElementHandler.handle(programStageDataElement.dataElement());
+        }
     }
 }

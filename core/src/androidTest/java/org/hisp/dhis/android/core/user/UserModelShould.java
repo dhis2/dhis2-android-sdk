@@ -33,7 +33,7 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.user.UserModel.Columns;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,7 +42,7 @@ import java.util.Date;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class UserModelModelShould {
+public class UserModelShould {
     private static final long ID = 11L;
     private static final String UID = "test_uid";
     private static final String CODE = "test_code";
@@ -66,38 +66,17 @@ public class UserModelModelShould {
     private final Date date;
     private final String dateString;
 
-    public UserModelModelShould() {
+    public UserModelShould() {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
     @Test
     public void create_model_when_created_from_database_cursor() {
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{
-                Columns.ID,
-                Columns.UID,
-                Columns.CODE,
-                Columns.NAME,
-                Columns.DISPLAY_NAME,
-                Columns.CREATED,
-                Columns.LAST_UPDATED,
-                Columns.BIRTHDAY,
-                Columns.EDUCATION,
-                Columns.GENDER,
-                Columns.JOB_TITLE,
-                Columns.SURNAME,
-                Columns.FIRST_NAME,
-                Columns.INTRODUCTION,
-                Columns.EMPLOYER,
-                Columns.INTERESTS,
-                Columns.LANGUAGES,
-                Columns.EMAIL,
-                Columns.PHONE_NUMBER,
-                Columns.NATIONALITY
-        });
+        MatrixCursor matrixCursor = new MatrixCursor(UserTableInfo.TABLE_INFO.columns().all());
 
         matrixCursor.addRow(new Object[]{
-                ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, BIRTHDAY, EDUCATION, GENDER,
+                UID, CODE, NAME, DISPLAY_NAME, dateString, dateString, BIRTHDAY, EDUCATION, GENDER,
                 JOB_TITLE, SURNAME, FIRST_NAME, INTRODUCTION, EMPLOYER, INTERESTS, LANGUAGES, EMAIL,
                 PHONE_NUMBER, NATIONALITY
         });
@@ -105,9 +84,8 @@ public class UserModelModelShould {
         // move cursor to first item before reading
         matrixCursor.moveToFirst();
 
-        UserModel userModel = UserModel.create(matrixCursor);
+        User userModel = User.create(matrixCursor);
 
-        assertThat(userModel.id()).isEqualTo(ID);
         assertThat(userModel.uid()).isEqualTo(UID);
         assertThat(userModel.code()).isEqualTo(CODE);
         assertThat(userModel.name()).isEqualTo(NAME);
@@ -132,7 +110,7 @@ public class UserModelModelShould {
     @Test
     public void create_content_values_when_created_from_builder() {
 
-        UserModel userModel = UserModel.builder()
+        User userModel = User.builder()
                 .id(ID)
                 .uid(UID)
                 .code(CODE)
@@ -164,18 +142,18 @@ public class UserModelModelShould {
         assertThat(contentValues.getAsString(Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
         assertThat(contentValues.getAsString(Columns.CREATED)).isEqualTo(dateString);
         assertThat(contentValues.getAsString(Columns.LAST_UPDATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(Columns.BIRTHDAY)).isEqualTo(BIRTHDAY);
-        assertThat(contentValues.getAsString(Columns.EDUCATION)).isEqualTo(EDUCATION);
-        assertThat(contentValues.getAsString(Columns.GENDER)).isEqualTo(GENDER);
-        assertThat(contentValues.getAsString(Columns.JOB_TITLE)).isEqualTo(JOB_TITLE);
-        assertThat(contentValues.getAsString(Columns.SURNAME)).isEqualTo(SURNAME);
-        assertThat(contentValues.getAsString(Columns.FIRST_NAME)).isEqualTo(FIRST_NAME);
-        assertThat(contentValues.getAsString(Columns.INTRODUCTION)).isEqualTo(INTRODUCTION);
-        assertThat(contentValues.getAsString(Columns.EMPLOYER)).isEqualTo(EMPLOYER);
-        assertThat(contentValues.getAsString(Columns.INTERESTS)).isEqualTo(INTERESTS);
-        assertThat(contentValues.getAsString(Columns.LANGUAGES)).isEqualTo(LANGUAGES);
-        assertThat(contentValues.getAsString(Columns.EMAIL)).isEqualTo(EMAIL);
-        assertThat(contentValues.getAsString(Columns.PHONE_NUMBER)).isEqualTo(PHONE_NUMBER);
-        assertThat(contentValues.getAsString(Columns.NATIONALITY)).isEqualTo(NATIONALITY);
+        assertThat(contentValues.getAsString(UserFields.BIRTHDAY)).isEqualTo(BIRTHDAY);
+        assertThat(contentValues.getAsString(UserFields.EDUCATION)).isEqualTo(EDUCATION);
+        assertThat(contentValues.getAsString(UserFields.GENDER)).isEqualTo(GENDER);
+        assertThat(contentValues.getAsString(UserFields.JOB_TITLE)).isEqualTo(JOB_TITLE);
+        assertThat(contentValues.getAsString(UserFields.SURNAME)).isEqualTo(SURNAME);
+        assertThat(contentValues.getAsString(UserFields.FIRST_NAME)).isEqualTo(FIRST_NAME);
+        assertThat(contentValues.getAsString(UserFields.INTRODUCTION)).isEqualTo(INTRODUCTION);
+        assertThat(contentValues.getAsString(UserFields.EMPLOYER)).isEqualTo(EMPLOYER);
+        assertThat(contentValues.getAsString(UserFields.INTERESTS)).isEqualTo(INTERESTS);
+        assertThat(contentValues.getAsString(UserFields.LANGUAGES)).isEqualTo(LANGUAGES);
+        assertThat(contentValues.getAsString(UserFields.EMAIL)).isEqualTo(EMAIL);
+        assertThat(contentValues.getAsString(UserFields.PHONE_NUMBER)).isEqualTo(PHONE_NUMBER);
+        assertThat(contentValues.getAsString(UserFields.NATIONALITY)).isEqualTo(NATIONALITY);
     }
 }

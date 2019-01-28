@@ -73,7 +73,7 @@ public final class AuthenticatedUserStore {
     };
 
     public static ObjectWithoutUidStore<AuthenticatedUserModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthenticatedUserModel.TABLE,
-                new AuthenticatedUserModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthenticatedUserTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

@@ -26,7 +26,7 @@ import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStore;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
-import org.hisp.dhis.android.core.user.UserModel;
+import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,7 +100,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
                 ForeignKeyViolationStore.create(d2.databaseAdapter()).selectAll();
 
         ForeignKeyViolation categoryOptionComboViolation = ForeignKeyViolation.builder()
-                .toTable(UserModel.TABLE)
+                .toTable(UserTableInfo.TABLE_INFO.name())
                 .toColumn(BaseIdentifiableObjectModel.Columns.UID)
                 .fromTable(UserCredentialsTableInfo.TABLE_INFO.name())
                 .fromColumn(UserCredentialsTableInfo.Columns.USER)

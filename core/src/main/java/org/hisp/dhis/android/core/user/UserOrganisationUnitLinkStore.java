@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.LinkModelStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo.Columns;
 
 import java.util.List;
 
@@ -76,22 +77,21 @@ public final class UserOrganisationUnitLinkStore extends LinkModelStoreImpl<User
     };
 
     public static UserOrganisationUnitLinkStoreInterface create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
-                UserOrganisationUnitLinkModel.TABLE, new UserOrganisationUnitLinkModel.Columns());
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(UserOrganisationUnitLinkTableInfo.TABLE_INFO);
 
         return new UserOrganisationUnitLinkStore(
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
-                UserOrganisationUnitLinkModel.Columns.USER,
+                UserOrganisationUnitLinkTableInfo.Columns.USER,
                 statementBuilder,
                 BINDER);
     }
 
     @Override
     public List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException {
-        return selectStringColumnsWhereClause(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-                        UserOrganisationUnitLinkModel.Columns.ROOT + " = 1 " + "AND "
-                                + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " = '"
+        return selectStringColumnsWhereClause(Columns.ORGANISATION_UNIT,
+                        Columns.ROOT + " = 1 " + "AND "
+                                + Columns.ORGANISATION_UNIT_SCOPE + " = '"
                                 + OrganisationUnit.Scope.SCOPE_DATA_CAPTURE + "'");
     }
 }

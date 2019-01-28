@@ -28,21 +28,47 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+public final class UserTableInfo {
 
-@RunWith(JUnit4.class)
-public class UserModelShould {
+    private UserTableInfo() {
+    }
 
-    //TODO: add more tests ?
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(UserModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "User";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    UserFields.BIRTHDAY,
+                    UserFields.EDUCATION,
+                    UserFields.GENDER,
+                    UserFields.JOB_TITLE,
+                    UserFields.SURNAME,
+                    UserFields.FIRST_NAME,
+                    UserFields.INTRODUCTION,
+                    UserFields.EMPLOYER,
+                    UserFields.INTERESTS,
+                    UserFields.LANGUAGES,
+                    UserFields.EMAIL,
+                    UserFields.PHONE_NUMBER,
+                    UserFields.NATIONALITY
+            );
+        }
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
+@Deprecated
 public class UserModelBuilder extends ModelBuilder<User, UserModel> {
 
     @Override

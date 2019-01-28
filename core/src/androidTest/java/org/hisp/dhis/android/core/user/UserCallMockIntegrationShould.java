@@ -54,28 +54,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class UserCallMockIntegrationShould extends AbsStoreTestCase {
-    private static final String[] USER_PROJECTION = {
-            UserModel.Columns.ID,
-            UserModel.Columns.UID,
-            UserModel.Columns.CODE,
-            UserModel.Columns.NAME,
-            UserModel.Columns.DISPLAY_NAME,
-            UserModel.Columns.CREATED,
-            UserModel.Columns.LAST_UPDATED,
-            UserModel.Columns.BIRTHDAY,
-            UserModel.Columns.EDUCATION,
-            UserModel.Columns.GENDER,
-            UserModel.Columns.JOB_TITLE,
-            UserModel.Columns.SURNAME,
-            UserModel.Columns.FIRST_NAME,
-            UserModel.Columns.INTRODUCTION,
-            UserModel.Columns.EMPLOYER,
-            UserModel.Columns.INTERESTS,
-            UserModel.Columns.LANGUAGES,
-            UserModel.Columns.EMAIL,
-            UserModel.Columns.PHONE_NUMBER,
-            UserModel.Columns.NATIONALITY
-    };
 
     private Dhis2MockServer dhis2MockServer;
     private Callable<User> userCall;
@@ -113,10 +91,9 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_user_in_data_base_when_call() throws Exception {
         userCall.call();
 
-        Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);
+        Cursor userCursor = database().query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
 
         assertThatCursor(userCursor).hasRow(
-                1L,
                 "DXyJmlo9rge",
                 null,
                 "John Barnes",

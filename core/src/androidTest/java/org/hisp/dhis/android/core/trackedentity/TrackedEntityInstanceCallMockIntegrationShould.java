@@ -63,11 +63,11 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
 
     @Test
@@ -80,18 +80,18 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
                 d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
         trackedEntityInstanceByUidEndPointCall = d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
 
-        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_with_removed_data.json",
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
                 teiUid);
     }
 

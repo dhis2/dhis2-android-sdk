@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.period.PeriodModel;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
@@ -67,6 +68,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
     private final IdentifiableObjectStore<DataSet> dataSetStore;
     private final ObjectWithoutUidStore<PeriodModel> periodStore;
     private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
+    private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
     AggregatedDataCall(@NonNull D2CallExecutor d2CallExecutor,
@@ -76,7 +78,8 @@ final class AggregatedDataCall extends SyncCall<Unit> {
                                dataSetCompleteRegistrationCallFactory,
                        @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
                        @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
-                       @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore) {
+                       @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore,
+                       @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoRepository = systemInfoRepository;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -84,6 +87,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
         this.dataSetStore = dataSetStore;
         this.periodStore = periodStore;
         this.organisationUnitStore = organisationUnitStore;
+        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     @Override
@@ -113,6 +117,8 @@ final class AggregatedDataCall extends SyncCall<Unit> {
                         dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
 
                 dataSetCompleteRegistrationCall.call();
+
+                foreignKeyCleaner.cleanForeignKeyErrors();
 
                 return new Unit();
             }

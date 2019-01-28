@@ -218,24 +218,25 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                ProgramTrackedEntityAttributeModel.Columns.CODE,
-                ProgramTrackedEntityAttributeModel.Columns.NAME,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME,
-                ProgramTrackedEntityAttributeModel.Columns.CREATED,
-                ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED,
-                ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
-                ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
-                ProgramTrackedEntityAttributeModel.Columns.MANDATORY,
-                ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATE,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST,
-                ProgramTrackedEntityAttributeModel.Columns.PROGRAM,
-                ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                BaseNameableObjectModel.Columns.SHORT_NAME,
+                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
+                BaseNameableObjectModel.Columns.DESCRIPTION,
+                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
+                ProgramTrackedEntityAttributeFields.MANDATORY,
+                ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
+                ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
+                ProgramTrackedEntityAttributeFields.PROGRAM,
+                ProgramTrackedEntityAttributeFields.SORT_ORDER
         };
 
-        Cursor programTrackedEntityAttributeCursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
+        Cursor programTrackedEntityAttributeCursor = database().query(
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
                 projection,
                 UID + "=?",
                 new String[]{"l2T72XzBCLd"},

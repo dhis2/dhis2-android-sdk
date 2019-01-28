@@ -36,10 +36,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 public final class ProgramTrackedEntityAttributeFields {
 
     static final String MANDATORY = "mandatory";
-    static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    public static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
     static final String ALLOW_FUTURE_DATE = "allowFutureDate";
     static final String DISPLAY_IN_LIST = "displayInList";
-    static final String PROGRAM = "program";
+    public static final String PROGRAM = "program";
     static final String SORT_ORDER = "sortOrder";
     static final String SEARCHABLE = "searchable";
 

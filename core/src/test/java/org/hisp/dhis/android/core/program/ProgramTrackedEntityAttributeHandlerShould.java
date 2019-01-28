@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
@@ -50,7 +49,7 @@ import static org.mockito.Mockito.when;
 public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store;
+    private IdentifiableObjectStore<ProgramTrackedEntityAttribute> store;
 
     @Mock
     private IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler;
@@ -74,7 +73,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private TrackedEntityAttribute trackedEntityAttribute;
 
     // object to test
-    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> handler;
+    private SyncHandler<ProgramTrackedEntityAttribute> handler;
 
     @Before
     public void setUp() throws Exception {
@@ -95,7 +94,7 @@ public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> genericHandler =
+        IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> syncHandler =
                 new ProgramTrackedEntityAttributeHandler(null, null, null);
     }
 

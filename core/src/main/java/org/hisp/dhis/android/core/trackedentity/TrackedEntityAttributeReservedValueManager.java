@@ -44,7 +44,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkMo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.ArrayList;
@@ -187,10 +188,10 @@ public final class TrackedEntityAttributeReservedValueManager {
                 + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
         String oUPLProgram = OrganisationUnitProgramLinkModel.TABLE + dot
                 + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
-        String pTEAProgram = ProgramTrackedEntityAttributeModel.TABLE + dot
-                + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
-        String pTEATrackedEntityAttribute = ProgramTrackedEntityAttributeModel.TABLE + dot
-                + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
+        String pTEAProgram = ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
+                + ProgramTrackedEntityAttributeFields.PROGRAM;
+        String pTEATrackedEntityAttribute =  ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
+                + ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE;
         String tEAUid =  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
                 BaseIdentifiableObjectModel.Columns.UID;
         String tEAPattern =  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
@@ -200,7 +201,7 @@ public final class TrackedEntityAttributeReservedValueManager {
                 OrganisationUnitTableInfo.TABLE_INFO.name() +
                 join + OrganisationUnitProgramLinkModel.TABLE + on + oUUid + eq + oUPLOrganisationUnit +
                 join + ProgramTableInfo.TABLE_INFO.name() + on + oUPLProgram + eq + programUid +
-                join + ProgramTrackedEntityAttributeModel.TABLE + on + programUid + eq + pTEAProgram +
+                join + ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + programUid + eq + pTEAProgram +
                 join +  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + tEAUid +
                 eq + pTEATrackedEntityAttribute + ") " +
                 " WHERE " + new WhereClauseBuilder()
@@ -241,14 +242,14 @@ public final class TrackedEntityAttributeReservedValueManager {
         String tEAGeneratedColumn = "t." + TrackedEntityAttributeFields.GENERATED;
         String oUPLProgramColumn = "o." + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
         String oUPLOrganisationUnitColumn = "o." + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
-        String pTEATEAColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
-        String pTEAProgramColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
+        String pTEATEAColumn = "p." + ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE;
+        String pTEAProgramColumn = "p." + ProgramTrackedEntityAttributeFields.PROGRAM;
 
         String selectStatement = "SELECT DISTINCT " + tEAUidColumn + " " +
                 "FROM " +
                 TrackedEntityAttributeTableInfo.TABLE_INFO.name() + " t, " +
                 OrganisationUnitProgramLinkModel.TABLE + " o, " +
-                ProgramTrackedEntityAttributeModel.TABLE + " p " +
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + " p " +
 
                 "WHERE " + tEAGeneratedColumn + " = 1";
 

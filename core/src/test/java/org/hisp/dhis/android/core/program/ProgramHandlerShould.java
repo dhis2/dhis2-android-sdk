@@ -74,8 +74,7 @@ public class ProgramHandlerShould {
     private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
 
     @Mock
-    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
-            programTrackedEntityAttributeHandler;
+    private SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
 
     @Mock
     private GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;

@@ -37,6 +37,7 @@ import retrofit2.Retrofit;
         AuthenticatedUserEntityDIModule.class,
         AuthorityEntityDIModule.class,
         UserCredentialsEntityDIModule.class,
+        UserRoleEntityDIModule.class,
         UserEntityDIModule.class,
         UserOrganisationUnitLinkEntityDIModule.class
 })

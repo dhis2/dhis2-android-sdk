@@ -25,45 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
+import java.util.Collections;
 
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-class UserHandler extends IdentifiableSyncHandlerImpl<User> {
-    private final SyncHandler<UserCredentials> userCredentialsHandler;
-    private final SyncHandler<UserRole> userRoleHandler;
+@Module
+public final class UserRoleEntityDIModule implements IdentifiableEntityDIModule<UserRole> {
 
-    @Inject
-    UserHandler(IdentifiableObjectStore<User> userStore,
-                SyncHandler<UserCredentials> userCredentialsHandler,
-                SyncHandler<UserRole> userRoleHandler) {
-        super(userStore);
-        this.userCredentialsHandler = userCredentialsHandler;
-        this.userRoleHandler = userRoleHandler;
-    }
-
-    public static UserHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserHandler(UserStore.create(databaseAdapter),
-                new IdentifiableSyncHandlerImpl<>(UserCredentialsStore.create(databaseAdapter)),
-                new IdentifiableSyncHandlerImpl<>(UserRoleStore.create(databaseAdapter)));
+    @Override
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<UserRole> store(DatabaseAdapter databaseAdapter) {
+        return UserRoleStore.create(databaseAdapter);
     }
 
     @Override
-    protected void afterObjectHandled(User user, HandleAction action) {
-        UserCredentials credentials = user.userCredentials();
-        if (credentials != null) {
-            UserCredentials credentialsWithUser = credentials.toBuilder().user(user).build();
-            userCredentialsHandler.handle(credentialsWithUser);
-            userRoleHandler.handleMany(credentialsWithUser.userRoles());
-        }
+    @Provides
+    @Reusable
+    public SyncHandler<UserRole> handler(IdentifiableObjectStore<UserRole> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyCollectionRepository<UserRole> repository(IdentifiableObjectStore<UserRole> store) {
+        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store,
+                Collections.<ChildrenAppender<UserRole>>emptyList());
     }
 }

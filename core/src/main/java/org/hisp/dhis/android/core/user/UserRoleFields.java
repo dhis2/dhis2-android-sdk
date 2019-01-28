@@ -25,20 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class UserRoleHandler extends IdentifiableSyncHandlerImpl<UserRole> {
+final class UserRoleFields {
 
-    private UserRoleHandler(IdentifiableObjectStore<UserRole> userRoleStore) {
-        super(userRoleStore);
-    }
+    private static FieldsHelper<UserRole> fh = new FieldsHelper<>();
 
-    public static SyncHandler<UserRole> create(DatabaseAdapter databaseAdapter) {
-        return new UserRoleHandler(UserRoleStore.create(databaseAdapter));
-    }
+    static final Fields<UserRole> allFields = Fields.<UserRole>builder()
+            .fields(fh.getIdentifiableFields())
+            .build();
+
+    private UserRoleFields() {}
 }

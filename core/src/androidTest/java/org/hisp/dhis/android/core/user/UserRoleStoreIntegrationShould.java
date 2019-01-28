@@ -25,20 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-public final class UserRoleHandler extends IdentifiableSyncHandlerImpl<UserRole> {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.user.UserRoleSamples;
+import org.junit.runner.RunWith;
 
-    private UserRoleHandler(IdentifiableObjectStore<UserRole> userRoleStore) {
-        super(userRoleStore);
+@RunWith(AndroidJUnit4.class)
+public class UserRoleStoreIntegrationShould extends
+        IdentifiableObjectStoreAbstractIntegrationShould<UserRole> {
+
+    public UserRoleStoreIntegrationShould() {
+        super(UserRoleStore.create(DatabaseAdapterFactory.get(false)),
+                UserRoleTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    public static SyncHandler<UserRole> create(DatabaseAdapter databaseAdapter) {
-        return new UserRoleHandler(UserRoleStore.create(databaseAdapter));
+    @Override
+    protected UserRole buildObject() {
+        return UserRoleSamples.getUserRole();
+    }
+
+    @Override
+    protected UserRole buildObjectWithId() {
+        return UserRoleSamples.getUserRole().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected UserRole buildObjectToUpdate() {
+        return UserRoleSamples.getUserRole().toBuilder()
+                .name("new_name")
+                .build();
     }
 }

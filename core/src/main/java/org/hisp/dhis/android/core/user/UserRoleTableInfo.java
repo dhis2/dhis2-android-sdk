@@ -25,20 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 
-public final class UserRoleHandler extends IdentifiableSyncHandlerImpl<UserRole> {
+public final class UserRoleTableInfo {
 
-    private UserRoleHandler(IdentifiableObjectStore<UserRole> userRoleStore) {
-        super(userRoleStore);
+    private UserRoleTableInfo() {
     }
 
-    public static SyncHandler<UserRole> create(DatabaseAdapter databaseAdapter) {
-        return new UserRoleHandler(UserRoleStore.create(databaseAdapter));
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "UserRole";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseIdentifiableObjectModel.Columns {
     }
 }

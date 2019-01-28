@@ -25,33 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.data.user;
 
-import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
+import org.hisp.dhis.android.core.user.UserRole;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-public class CreateUserRoleUtils {
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
+public class UserRoleSamples {
 
-    public static ContentValues create(@NonNull long id, @NonNull String uid) {
-        final String dateString = new Date().toString();
+    public static UserRole getUserRole() {
+        UserRole.Builder builder = UserRole.builder();
 
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(Columns.ID, id);
-        contentValues.put(Columns.UID, uid);
-        contentValues.put(Columns.CODE, CODE);
-        contentValues.put(Columns.NAME, NAME);
-        contentValues.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        contentValues.put(Columns.CREATED, dateString);
-        contentValues.put(Columns.LAST_UPDATED, dateString);
-
-        return contentValues;
+        fillIdentifiableProperties(builder);
+        return builder.build();
     }
 }

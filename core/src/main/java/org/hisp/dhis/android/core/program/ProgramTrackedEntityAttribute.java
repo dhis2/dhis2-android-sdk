@@ -92,7 +92,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
 
         public abstract Builder displayInList(Boolean displayInList);
 
-        public abstract Builder program(Program program);
+        public abstract Builder program(ObjectWithUid program);
 
         public abstract Builder sortOrder(Integer sortOrder);
 

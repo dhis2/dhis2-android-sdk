@@ -31,25 +31,35 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-final class ProgramRuleFields {
+final class ProgramRuleActionFields {
+    static final String DATA = "data";
+    static final String CONTENT = "content";
+    static final String LOCATION = "location";
+    static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
+    static final String PROGRAM_INDICATOR = "programIndicator";
+    static final String PROGRAM_STAGE_SECTION = "programStageSection";
+    static final String PROGRAM_RULE_ACTION_TYPE = "programRuleActionType";
+    static final String PROGRAM_RULE = "programRule";
+    static final String PROGRAM_STAGE = "programStage";
+    static final String DATA_ELEMENT = "dataElement";
 
-    private static final String PRIORITY = "priority";
-    private static final String CONDITION = "condition";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
-    private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
+    private static FieldsHelper<ProgramRuleAction> fh = new FieldsHelper<>();
 
-    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
+    static final Fields<ProgramRuleAction> allFields = Fields.<ProgramRuleAction>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<Integer>field(PRIORITY),
-                    fh.<String>field(CONDITION),
-                    fh.nestedFieldWithUid(PROGRAM),
+                    fh.<String>field(DATA),
+                    fh.<String>field(CONTENT),
+                    fh.<String>field(LOCATION),
+                    fh.nestedFieldWithUid(TRACKED_ENTITY_ATTRIBUTE),
+                    fh.nestedFieldWithUid(PROGRAM_INDICATOR),
+                    fh.nestedFieldWithUid(PROGRAM_STAGE_SECTION),
+                    fh.<ProgramRuleActionType>field(PROGRAM_RULE_ACTION_TYPE),
                     fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields)
-            ).build();
+                    fh.nestedFieldWithUid(DATA_ELEMENT),
+                    fh.nestedFieldWithUid(PROGRAM_RULE)
+                    ).build();
 
-    private ProgramRuleFields() {
+    private ProgramRuleActionFields() {
     }
 }

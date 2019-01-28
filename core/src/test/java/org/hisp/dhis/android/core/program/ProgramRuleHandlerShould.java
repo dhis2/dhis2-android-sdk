@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -50,7 +51,7 @@ public class ProgramRuleHandlerShould {
     private IdentifiableObjectStore<ProgramRule> programRuleStore;
 
     @Mock
-    private ProgramRuleActionHandler programRuleActionHandler;
+    private SyncHandler<ProgramRuleAction> programRuleActionHandler;
 
     @Mock
     private ProgramRule programRule;
@@ -80,9 +81,9 @@ public class ProgramRuleHandlerShould {
     }
 
     @Test
-    public void call_user_credentials_handler() {
+    public void call_program_rule_action_handler() {
         programRuleHandler.handle(programRule);
-        verify(programRuleActionHandler).handleProgramRuleActions(programRuleActions);
+        verify(programRuleActionHandler).handleMany(programRuleActions);
     }
 
     @Test

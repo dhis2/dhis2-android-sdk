@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,43 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.program.ProgramRule;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
-
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
+public class ProgramRuleWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ProgramRule> {
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeModel.TABLE,
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleModel.TABLE,
-                ProgramStageDataElementModel.TABLE,
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageModel.TABLE);
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    protected ProgramRule build(String uid) {
+        return ProgramRule.builder().uid(uid).build();
     }
 }

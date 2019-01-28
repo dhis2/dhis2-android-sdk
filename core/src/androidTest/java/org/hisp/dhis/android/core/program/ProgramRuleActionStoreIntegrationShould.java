@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,41 +28,37 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramRuleActionSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class ProgramRuleActionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRuleAction> {
 
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public ProgramRuleActionStoreIntegrationShould() {
+        super(ProgramRuleActionStore.create(DatabaseAdapterFactory.get(false)), ProgramRuleActionTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeModel.TABLE,
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleModel.TABLE,
-                ProgramStageDataElementModel.TABLE,
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageModel.TABLE);
+    protected ProgramRuleAction buildObject() {
+        return ProgramRuleActionSamples.getProgramRuleAction();
     }
 
     @Override
-    public void wipeData() {
-        // No metadata to wipe
+    protected ProgramRuleAction buildObjectWithId() {
+        return ProgramRuleActionSamples.getProgramRuleAction().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected ProgramRuleAction buildObjectToUpdate() {
+        return ProgramRuleActionSamples.getProgramRuleAction().toBuilder()
+                .data("newData")
+                .build();
     }
 }

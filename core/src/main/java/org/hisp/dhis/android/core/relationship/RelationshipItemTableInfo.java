@@ -28,24 +28,41 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-final class RelationshipItemFields {
-    static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    static final String ENROLLMENT = "enrollment";
-    static final String EVENT = "event";
+public final class RelationshipItemTableInfo {
 
-    private static final FieldsHelper<RelationshipItem> fh = new FieldsHelper<>();
+    private RelationshipItemTableInfo() {
+    }
 
-    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder()
-            .fields(
-                    fh.<RelationshipItemTrackedEntityInstance>nestedField(TRACKED_ENTITY_INSTANCE)
-                            .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-            fh.<RelationshipItemEnrollment>nestedField(ENROLLMENT).with(RelationshipItemEnrollmentFields.enrollment),
-            fh.<RelationshipItemEvent>nestedField(EVENT).with(RelationshipItemEventFields.event)
-    ).build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private RelationshipItemFields() {
+        @Override
+        public String name() {
+            return "RelationshipItem";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        static final String RELATIONSHIP = "relationship";
+        static final String RELATIONSHIP_ITEM_TYPE = "relationshipItemType";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    RELATIONSHIP,
+                    RELATIONSHIP_ITEM_TYPE,
+                    RelationshipItemFields.TRACKED_ENTITY_INSTANCE,
+                    RelationshipItemFields.ENROLLMENT,
+                    RelationshipItemFields.EVENT
+            );
+        }
     }
 }

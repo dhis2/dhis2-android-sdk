@@ -3,6 +3,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;
@@ -26,9 +27,9 @@ public class NameableCollectionFiltersMockIntegrationShould extends MockIntegrat
 
     @Test
     public void allow_filter_by_short_uid() {
-        List<CategoryOption> categoryOptions = d2.categoryModule().categoryOptions
-                .byUid().eq("as6ygGvUGNg")
-                .get();
+        ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo, ReadOnlyIdentifiableCollectionRepository> optionsi = d2.categoryModule().categoryOptionCombos;
+        ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo, ReadOnlyIdentifiableCollectionRepository> byCode = optionsi.byCode().eq("codi");
+        byCode.get();
         assertThat(categoryOptions.size(), is(1));
     }
 

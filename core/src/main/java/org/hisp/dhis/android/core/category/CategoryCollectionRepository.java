@@ -29,21 +29,24 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collections;
 
-final class CategoryCollectionRepository {
+final class CategoryCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository> {
 
     private CategoryCollectionRepository() {
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Category> create(DatabaseAdapter databaseAdapter) {
+    static ReadOnlyIdentifiableCollectionRepository<Category, ReadOnlyIdentifiableCollectionRepository<Category, ?>> create(DatabaseAdapter databaseAdapter) {
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
                 CategoryStore.create(databaseAdapter),
                 Collections.singletonList(
                         CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
-                )
+                ),
+                Collections.<RepositoryScopeItem>emptyList(),
+                null
         );
     }
 }

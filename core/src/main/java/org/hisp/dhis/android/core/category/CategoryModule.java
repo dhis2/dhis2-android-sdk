@@ -39,16 +39,16 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class CategoryModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<Category> categories;
+    public final ReadOnlyIdentifiableCollectionRepository<Category, ReadOnlyIdentifiableCollectionRepository> categories;
     public final ReadOnlyNameableCollectionRepository<CategoryOption> categoryOptions;
-    public final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
+    public final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo, ReadOnlyIdentifiableCollectionRepository> categoryOptionCombos;
     public final CategoryComboCollectionRepository categoryCombos;
 
     @Inject
     CategoryModule(
-            ReadOnlyIdentifiableCollectionRepository<Category> categories,
+            ReadOnlyIdentifiableCollectionRepository<Category, ReadOnlyIdentifiableCollectionRepository> categories,
             ReadOnlyNameableCollectionRepository<CategoryOption> categoryOptions,
-            ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
+            ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo, ReadOnlyIdentifiableCollectionRepository> categoryOptionCombos,
             CategoryComboCollectionRepository categoryCombos) {
         this.categories = categories;
         this.categoryOptions = categoryOptions;

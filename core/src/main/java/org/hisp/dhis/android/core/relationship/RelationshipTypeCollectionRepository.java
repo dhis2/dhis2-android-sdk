@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class RelationshipTypeCollectionRepository
+public final class RelationshipTypeCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository> {
 
     private RelationshipTypeCollectionRepository(final IdentifiableObjectStore<RelationshipType> store,

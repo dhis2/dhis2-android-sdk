@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class CategoryOptionComboCollectionRepository
+public final class CategoryOptionComboCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryOptionCombo,
                 CategoryOptionComboCollectionRepository> {
 

@@ -43,7 +43,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class DataSetCollectionRepository
+public final class DataSetCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
 
     private DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,

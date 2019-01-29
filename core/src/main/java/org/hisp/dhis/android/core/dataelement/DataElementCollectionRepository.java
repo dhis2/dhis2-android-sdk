@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class DataElementCollectionRepository
+public final class DataElementCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository> {
 
     private DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,

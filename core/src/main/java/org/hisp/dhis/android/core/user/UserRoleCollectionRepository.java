@@ -38,7 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class UserRoleCollectionRepository
+public final class UserRoleCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository> {
 
     private UserRoleCollectionRepository(

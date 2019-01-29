@@ -40,7 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class ProgramCollectionRepository
+public final class ProgramCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository> {
 
     private ProgramCollectionRepository(final IdentifiableObjectStore<Program> store,

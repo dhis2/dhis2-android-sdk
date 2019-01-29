@@ -53,7 +53,7 @@ import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSampl
 @RunWith(AndroidJUnit4.class)
 public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
 
-    private ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeCollectionRepository;
+    private ReadOnlyIdentifiableCollectionRepository<RelationshipType, ?> relationshipTypeCollectionRepository;
 
     @Override
     @Before

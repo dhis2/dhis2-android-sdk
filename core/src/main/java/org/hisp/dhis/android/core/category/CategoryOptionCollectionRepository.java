@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class CategoryOptionCollectionRepository
+public final class CategoryOptionCollectionRepository
         extends ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository> {
 
     private CategoryOptionCollectionRepository(final IdentifiableObjectStore<CategoryOption> store,

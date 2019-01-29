@@ -28,28 +28,24 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.PojoBuilder;
 
 final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
 
     private final RelationshipItemStore store;
-    private final PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder;
 
-    RelationshipItemChildrenAppender(RelationshipItemStore store,
-                                     PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder) {
+    RelationshipItemChildrenAppender(RelationshipItemStore store) {
         this.store = store;
-        this.pojoBuilder = pojoBuilder;
     }
 
     @Override
     protected Relationship appendChildren(Relationship relationship) {
-        RelationshipItemModel fromItemModel = store.getForRelationshipUidAndConstraintType(
+        RelationshipItem fromItem = store.getForRelationshipUidAndConstraintType(
                 relationship.uid(), RelationshipConstraintType.FROM);
-        RelationshipItemModel toItemModel = store.getForRelationshipUidAndConstraintType(
+        RelationshipItem toItem = store.getForRelationshipUidAndConstraintType(
                 relationship.uid(), RelationshipConstraintType.TO);
         return relationship.toBuilder()
-                .from(pojoBuilder.buildPojo(fromItemModel))
-                .to(pojoBuilder.buildPojo(toItemModel))
+                .from(fromItem)
+                .to(toItem)
                 .build();
     }
 }

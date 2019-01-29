@@ -27,19 +27,73 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel.Columns;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-final class CategoryComboCollectionRepository {
+public final class CategoryComboCollectionRepository extends ReadOnlyWithUidCollectionRepositoryImpl<CategoryCombo> {
 
-    private CategoryComboCollectionRepository() {
+    private FilterConnectorFactory<CategoryComboCollectionRepository> cf;
+
+    private CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
+                                              final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
+                                              List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope);
+        this.cf = new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<CategoryComboCollectionRepository>() {
+
+                    @Override
+                    public CategoryComboCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                });
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+    private CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
+                                              Collection<ChildrenAppender<CategoryCombo>> childrenAppenders) {
+        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
+    }
+
+    public StringFilterConnector<CategoryComboCollectionRepository> byUid() {
+        return cf.string(Columns.UID);
+    }
+
+    public StringFilterConnector<CategoryComboCollectionRepository> byCode() {
+        return cf.string(Columns.CODE);
+    }
+
+    public StringFilterConnector<CategoryComboCollectionRepository> byName() {
+        return cf.string(Columns.NAME);
+    }
+
+    public StringFilterConnector<CategoryComboCollectionRepository> byDisplayName() {
+        return cf.string(Columns.DISPLAY_NAME);
+    }
+
+    public DateFilterConnector<CategoryComboCollectionRepository> byCreated() {
+        return cf.date(Columns.CREATED);
+    }
+
+    public DateFilterConnector<CategoryComboCollectionRepository> byLastUpdated() {
+        return cf.date(BaseIdentifiableObjectModel.Columns.LAST_UPDATED);
+    }
+
+    static CategoryComboCollectionRepository create(DatabaseAdapter databaseAdapter) {
+        return new CategoryComboCollectionRepository(
                 CategoryComboStore.create(databaseAdapter),
                 Arrays.asList(
                         CategoryCategoryComboChildrenAppender.create(databaseAdapter),

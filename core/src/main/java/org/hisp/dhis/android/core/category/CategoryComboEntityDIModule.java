@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
@@ -65,7 +64,7 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
 
     @Provides
     @Reusable
-    ReadOnlyIdentifiableCollectionRepository<CategoryCombo> repository(DatabaseAdapter databaseAdapter) {
+    CategoryComboCollectionRepository repository(DatabaseAdapter databaseAdapter) {
         return CategoryComboCollectionRepository.create(databaseAdapter);
     }
 }

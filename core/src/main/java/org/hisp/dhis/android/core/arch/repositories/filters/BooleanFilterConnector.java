@@ -52,6 +52,6 @@ public final class BooleanFilterConnector<R extends ReadOnlyCollectionRepository
     }
 
     String wrapValue(Integer value) {
-        return "" + value + "";
+        return value.toString();
     }
 }

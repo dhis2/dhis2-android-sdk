@@ -39,7 +39,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DataElementColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DataElementWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -63,7 +63,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
     public abstract Boolean allowFutureDate();
 
     @Nullable
-    @ColumnAdapter(DataElementColumnAdapter.class)
+    @ColumnAdapter(DataElementWithUidColumnAdapter.class)
     public abstract DataElement dataElement();
 
     @Nullable

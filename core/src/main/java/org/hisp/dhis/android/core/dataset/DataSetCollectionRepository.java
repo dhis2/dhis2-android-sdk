@@ -28,28 +28,44 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-final class DataSetCollectionRepository {
+final class DataSetCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
 
-    private DataSetCollectionRepository() {
+    private DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,
+                                         final Collection<ChildrenAppender<DataSet>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<DataSetCollectionRepository>() {
+
+                    @Override
+                    public DataSetCollectionRepository newWithScope(List<RepositoryScopeItem> updatedScope) {
+                        return new DataSetCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
-
-    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
+    static DataSetCollectionRepository create(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataSet> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataSetTableInfo.TABLE_INFO
                 );
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+        return new DataSetCollectionRepository(
                 DataSetStore.create(databaseAdapter),
                 Arrays.asList(
                         objectStyleChildrenAppender,
@@ -58,7 +74,8 @@ final class DataSetCollectionRepository {
                         DataInputPeriodChildrenAppender.create(databaseAdapter),
                         DataSetElementChildrenAppender.create(databaseAdapter),
                         DataSetIndicatorChildrenAppender.create(databaseAdapter)
-                )
+                ),
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

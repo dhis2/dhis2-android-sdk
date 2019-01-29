@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -35,11 +36,11 @@ import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 public class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> {
-    private final ProgramRuleActionHandler programRuleActionHandler;
+    private final SyncHandler<ProgramRuleAction> programRuleActionHandler;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
     ProgramRuleHandler(IdentifiableObjectStore<ProgramRule> programRuleStore,
-                              ProgramRuleActionHandler programRuleActionHandler,
+                       SyncHandler<ProgramRuleAction> programRuleActionHandler,
                        OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
         super(programRuleStore);
         this.programRuleActionHandler = programRuleActionHandler;
@@ -48,7 +49,7 @@ public class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule>
 
     @Override
     protected void afterObjectHandled(ProgramRule programRule, HandleAction handleAction) {
-        programRuleActionHandler.handleProgramRuleActions(programRule.programRuleActions());
+        programRuleActionHandler.handleMany(programRule.programRuleActions());
         if (handleAction == HandleAction.Update) {
             programRuleActionCleaner.deleteOrphan(programRule, programRule.programRuleActions());
         }
@@ -58,8 +59,8 @@ public class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule>
         return new ProgramRuleHandler(
                 ProgramRuleStore.create(databaseAdapter),
                 ProgramRuleActionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(ProgramRuleActionModel.TABLE,
-                        ProgramRuleActionModel.Columns.PROGRAM_RULE, databaseAdapter)
+                new OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
+                        ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter)
         );
     }
 }

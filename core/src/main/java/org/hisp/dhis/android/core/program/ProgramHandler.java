@@ -48,8 +48,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
     private final IdentifiableSyncHandlerImpl<ProgramRuleVariable> programRuleVariableHandler;
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
     private final IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
-    private final GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
-            programTrackedEntityAttributeHandler;
+    private final SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
     private final GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
@@ -59,8 +58,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
                    IdentifiableSyncHandlerImpl<ProgramRuleVariable> programRuleVariableHandler,
                    SyncHandler<ProgramIndicator> programIndicatorHandler,
                    IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler,
-                   GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
-                           programTrackedEntityAttributeHandler,
+                   SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
                    GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler,
                    SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
@@ -92,8 +90,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
 
     @Override
     protected void afterObjectHandled(Program program, HandleAction action) {
-        programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes(),
-                new ProgramTrackedEntityAttributeModelBuilder());
+        programTrackedEntityAttributeHandler.handleMany(program.programTrackedEntityAttributes());
         programIndicatorHandler.handleMany(program.programIndicators());
         programRuleHandler.handleMany(program.programRules());
         programRuleVariableHandler.handleMany(program.programRuleVariables());

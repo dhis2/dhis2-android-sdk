@@ -52,4 +52,8 @@ public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
     public DateFilterConnector<R> date(String key) {
         return new DateFilterConnector<>(repositoryFactory, scope, key);
     }
+
+    public BooleanFilterConnector<R> bool(String key) {
+        return new BooleanFilterConnector<>(repositoryFactory, scope, key);
+    }
 }

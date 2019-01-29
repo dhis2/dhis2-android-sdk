@@ -25,33 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import android.content.ContentValues;
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-import java.util.Date;
+public class DataElementWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<DataElement> {
 
-public class CreateUserRoleUtils {
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-
-    public static ContentValues create(@NonNull long id, @NonNull String uid) {
-        final String dateString = new Date().toString();
-
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(Columns.ID, id);
-        contentValues.put(Columns.UID, uid);
-        contentValues.put(Columns.CODE, CODE);
-        contentValues.put(Columns.NAME, NAME);
-        contentValues.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        contentValues.put(Columns.CREATED, dateString);
-        contentValues.put(Columns.LAST_UPDATED, dateString);
-
-        return contentValues;
+    @Override
+    protected DataElement build(String uid) {
+        return DataElement.builder().uid(uid).build();
     }
 }

@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
+import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -69,10 +70,11 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                 List<TrackedEntityInstance> teis = new ArrayList<>();
 
                 for (String uid : trackedEntityInstanceUids) {
-                    Call<TrackedEntityInstance> teiCall =
+                    Call<Payload<TrackedEntityInstance>> teiCall =
                             trackedEntityInstanceService.getTrackedEntityInstance(uid,
                                     TrackedEntityInstanceFields.allFields, true);
-                    teis.add(apiCallExecutor.executeObjectCall(teiCall));
+
+                    teis.addAll(apiCallExecutor.executePayloadCall(teiCall));
                 }
 
                 d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));

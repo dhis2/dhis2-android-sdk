@@ -56,28 +56,6 @@ import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 // ToDo:    - what will happen if the same user will be inserted twice?
 @RunWith(AndroidJUnit4.class)
 public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase {
-    private static final String[] USER_PROJECTION = {
-            UserModel.Columns.ID,
-            UserModel.Columns.UID,
-            UserModel.Columns.CODE,
-            UserModel.Columns.NAME,
-            UserModel.Columns.DISPLAY_NAME,
-            UserModel.Columns.CREATED,
-            UserModel.Columns.LAST_UPDATED,
-            UserModel.Columns.BIRTHDAY,
-            UserModel.Columns.EDUCATION,
-            UserModel.Columns.GENDER,
-            UserModel.Columns.JOB_TITLE,
-            UserModel.Columns.SURNAME,
-            UserModel.Columns.FIRST_NAME,
-            UserModel.Columns.INTRODUCTION,
-            UserModel.Columns.EMPLOYER,
-            UserModel.Columns.INTERESTS,
-            UserModel.Columns.LANGUAGES,
-            UserModel.Columns.EMAIL,
-            UserModel.Columns.PHONE_NUMBER,
-            UserModel.Columns.NATIONALITY
-    };
 
     private static final String[] USER_CREDENTIALS_PROJECTION = {
             UserCredentialsModel.Columns.ID,
@@ -126,8 +104,8 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
-        Cursor userCursor = database().query(UserModel.TABLE,
-                USER_PROJECTION, null, null, null, null, null);
+        Cursor userCursor = database().query(UserTableInfo.TABLE_INFO.name(),
+                UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
         Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
         Cursor authenticatedUsersCursor = database().query(AuthenticatedUserModel.TABLE,
@@ -138,7 +116,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         assertThatCursor(userCursor)
                 .hasRow(
-                        1L, // id
                         "DXyJmlo9rge", // uid
                         null, // code
                         "John Barnes", // name

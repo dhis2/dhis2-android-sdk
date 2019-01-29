@@ -53,7 +53,6 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
                 .code("BIRTHS_ATTENDED")
                 .created(today)
                 .name("Births attended by")
-                .shortName("Births attended by")
                 .displayName("Births attended by")
                 .categoryOptions(new ArrayList<CategoryOption>())
                 .dataDimensionType("DISAGGREGATION").build();

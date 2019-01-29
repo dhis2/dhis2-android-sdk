@@ -74,8 +74,7 @@ public class ProgramHandlerShould {
     private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
 
     @Mock
-    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
-            programTrackedEntityAttributeHandler;
+    private SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
 
     @Mock
     private GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
@@ -187,8 +186,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_tracked_entity_attributes_handler() {
         programHandler.handle(program);
-        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class),
-                any(ProgramTrackedEntityAttributeModelBuilder.class));
+        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class));
     }
 
     @Test

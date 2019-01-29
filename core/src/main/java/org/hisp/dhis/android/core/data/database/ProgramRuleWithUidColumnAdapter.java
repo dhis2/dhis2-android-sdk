@@ -26,23 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.data.database;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.hisp.dhis.android.core.program.ProgramRule;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+public class ProgramRuleWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<ProgramRule> {
 
-@RunWith(JUnit4.class)
-public class UserModelShould {
-
-    //TODO: add more tests ?
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(UserModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    @Override
+    protected ProgramRule build(String uid) {
+        return ProgramRule.builder().uid(uid).build();
     }
 }

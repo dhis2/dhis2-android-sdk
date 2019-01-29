@@ -59,8 +59,6 @@ public class CategoryOptionComboShould extends BaseObjectShould implements Objec
                 BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
 
         assertThat(categoryOptionCombo.name()).isEqualTo("0-11m");
-        assertThat(categoryOptionCombo.shortName()).isEqualTo("0-11m");
         assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m");
-        assertThat(categoryOptionCombo.displayShortName()).isEqualTo("0-11m");
     }
 }

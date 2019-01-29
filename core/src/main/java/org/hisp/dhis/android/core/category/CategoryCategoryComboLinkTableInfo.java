@@ -35,8 +35,6 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 public final class CategoryCategoryComboLinkTableInfo {
 
-
-
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
         @Override

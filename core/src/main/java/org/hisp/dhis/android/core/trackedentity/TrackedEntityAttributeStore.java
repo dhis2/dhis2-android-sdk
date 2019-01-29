@@ -28,40 +28,57 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public interface TrackedEntityAttributeStore extends DeletableStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable String shortName, @Nullable String displayShortName,
-                @Nullable String description, @Nullable String displayDescription,
-                @Nullable String pattern, @Nullable Integer sortOrderInListNoProgram,
-                @Nullable String optionSet, @NonNull ValueType valueType, @Nullable String expression,
-                @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
-                @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
-                @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
-                @Nullable Boolean unique, @Nullable Boolean inherit
-    );
+public final class TrackedEntityAttributeStore {
 
-    int update(@NonNull String uid, @Nullable String code, @NonNull String name,
-               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-               @Nullable String shortName, @Nullable String displayShortName,
-               @Nullable String description, @Nullable String displayDescription,
-               @Nullable String pattern, @Nullable Integer sortOrderInListNoProgram,
-               @Nullable String optionSet, @NonNull ValueType valueType, @Nullable String expression,
-               @Nullable TrackedEntityAttributeSearchScope searchScope, @Nullable Boolean programScope,
-               @Nullable Boolean displayInListNoProgram, @Nullable Boolean generated,
-               @Nullable Boolean displayOnVisitSchedule, @Nullable Boolean orgUnitScope,
-               @Nullable Boolean unique, @Nullable Boolean inherit, @NonNull String whereTrackedEntityAttributeUid
-    );
+    private TrackedEntityAttributeStore() {}
 
-    int delete(String uid);
+    private static StatementBinder<TrackedEntityAttribute> BINDER =
+            new NameableStatementBinder<TrackedEntityAttribute>() {
 
-    String getPattern(String uid);
+        @Override
+        public void bindToStatement(@NonNull TrackedEntityAttribute o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.pattern());
+            sqLiteBind(sqLiteStatement, 12, o.sortOrderInListNoProgram());
+            sqLiteBind(sqLiteStatement, 13, UidsHelper.getUidOrNull(o.optionSet()));
+            sqLiteBind(sqLiteStatement, 14, o.valueType());
+            sqLiteBind(sqLiteStatement, 15, o.expression());
+            sqLiteBind(sqLiteStatement, 16, o.searchScope());
+            sqLiteBind(sqLiteStatement, 17, o.programScope());
+            sqLiteBind(sqLiteStatement, 18, o.displayInListNoProgram());
+            sqLiteBind(sqLiteStatement, 19, o.generated());
+            sqLiteBind(sqLiteStatement, 20, o.displayOnVisitSchedule());
+            sqLiteBind(sqLiteStatement, 21, o.orgUnitScope());
+            sqLiteBind(sqLiteStatement, 22, o.unique());
+            sqLiteBind(sqLiteStatement, 23, o.inherit());
+        }
+    };
+
+    private static final CursorModelFactory<TrackedEntityAttribute> FACTORY = 
+            new CursorModelFactory<TrackedEntityAttribute>() {
+        @Override
+        public TrackedEntityAttribute fromCursor(Cursor cursor) {
+            return TrackedEntityAttribute.create(cursor);
+        }
+    };
+
+    public static IdentifiableObjectStore<TrackedEntityAttribute> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter,
+                TrackedEntityAttributeTableInfo.TABLE_INFO, BINDER, FACTORY);
+    }
 }

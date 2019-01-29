@@ -28,31 +28,38 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.support.test.runner.AndroidJUnit4;
 
-public class ProgramTrackedEntityAttributeModelBuilder extends
-        ModelBuilder<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramTrackedEntityAttributeSamples;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+public class ProgramTrackedEntityAttributeStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramTrackedEntityAttribute> {
+
+    public ProgramTrackedEntityAttributeStoreIntegrationShould() {
+        super(ProgramTrackedEntityAttributeStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
     @Override
-    public ProgramTrackedEntityAttributeModel buildModel(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
-        return ProgramTrackedEntityAttributeModel.builder()
-                .uid(programTrackedEntityAttribute.uid())
-                .code(programTrackedEntityAttribute.code())
-                .name(programTrackedEntityAttribute.name())
-                .displayName(programTrackedEntityAttribute.displayName())
-                .created(programTrackedEntityAttribute.created())
-                .lastUpdated(programTrackedEntityAttribute.lastUpdated())
-                .shortName(programTrackedEntityAttribute.shortName())
-                .displayShortName(programTrackedEntityAttribute.displayShortName())
-                .description(programTrackedEntityAttribute.description())
-                .displayDescription(programTrackedEntityAttribute.displayDescription())
-                .mandatory(programTrackedEntityAttribute.mandatory())
-                .trackedEntityAttribute(programTrackedEntityAttribute.trackedEntityAttribute().uid())
-                .allowFutureDate(programTrackedEntityAttribute.allowFutureDate())
-                .displayInList(programTrackedEntityAttribute.displayInList())
-                .program(programTrackedEntityAttribute.program().uid())
-                .sortOrder(programTrackedEntityAttribute.sortOrder())
-                .searchable(programTrackedEntityAttribute.searchable())
+    protected ProgramTrackedEntityAttribute buildObject() {
+        return ProgramTrackedEntityAttributeSamples.getProgramTrackedEntityAttribute();
+    }
+
+    @Override
+    protected ProgramTrackedEntityAttribute buildObjectWithId() {
+        return ProgramTrackedEntityAttributeSamples.getProgramTrackedEntityAttribute().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected ProgramTrackedEntityAttribute buildObjectToUpdate() {
+        return ProgramTrackedEntityAttributeSamples.getProgramTrackedEntityAttribute().toBuilder()
+                .sortOrder(2)
                 .build();
     }
 }

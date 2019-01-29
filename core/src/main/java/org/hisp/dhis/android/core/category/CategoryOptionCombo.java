@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreCategoryOptionListColumnAdapter;
@@ -46,7 +46,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryOptionCombo.Builder.class)
-public abstract class CategoryOptionCombo extends BaseNameableObject implements Model {
+public abstract class CategoryOptionCombo extends BaseIdentifiableObject implements Model {
 
     @Nullable
     @JsonProperty()
@@ -70,7 +70,7 @@ public abstract class CategoryOptionCombo extends BaseNameableObject implements 
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseNameableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

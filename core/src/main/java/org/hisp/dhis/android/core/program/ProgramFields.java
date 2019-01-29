@@ -94,7 +94,7 @@ final class ProgramFields {
                     fh.nestedFieldWithUid(RELATIONSHIP_TYPE),
                     fh.<String>field(RELATIONSHIP_TEXT),
                     fh.<ProgramTrackedEntityAttribute>nestedField(PROGRAM_TRACKED_ENTITY_ATTRIBUTES).with(
-                            ProgramTrackedEntityAttribute.allFields),
+                            ProgramTrackedEntityAttributeFields.allFields),
                     fh.nestedFieldWithUid(RELATED_PROGRAM),
                     fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
                     fh.nestedFieldWithUid(CATEGORY_COMBO),

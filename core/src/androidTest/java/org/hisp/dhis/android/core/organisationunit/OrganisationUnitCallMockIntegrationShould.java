@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -48,10 +49,10 @@ import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceTableInfo;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,11 +105,11 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.builder().uid("user_uid").organisationUnits(organisationUnits).build();
-        database().insert(UserModel.TABLE, null, user.toContentValues());
+        database().insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues());
 
         ContentValues userContentValues = new ContentValues();
-        userContentValues.put(UserModel.Columns.ID, "user_uid");
-        database().insert(UserModel.TABLE, null, userContentValues);
+        userContentValues.put(BaseIdentifiableObjectModel.Columns.UID, "user_uid");
+        database().insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues);
 
         // inserting programs for creating OrgUnitProgramLinks
         String programUid = "lxAQ7Zs9VYR";

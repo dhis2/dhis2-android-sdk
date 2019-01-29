@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
@@ -49,6 +50,7 @@ public final class UserModule {
     private final UserAuthenticateCallFactory loginCallFactory;
 
     public final ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser;
+    public final ReadOnlyCollectionRepository<UserRole> userRoles;
     public final ReadOnlyObjectRepository<UserCredentials> userCredentials;
     public final ReadOnlyObjectRepository<User> user;
 
@@ -57,12 +59,14 @@ public final class UserModule {
                Provider<LogOutUserCallable> logoutCallCallProvider,
                UserAuthenticateCallFactory loginCallFactory,
                ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser,
+               ReadOnlyCollectionRepository<UserRole> userRoles,
                ReadOnlyObjectRepository<UserCredentials> userCredentials,
                ReadOnlyObjectRepository<User> user) {
         this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
         this.logoutCallCallProvider = logoutCallCallProvider;
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
+        this.userRoles = userRoles;
         this.userCredentials = userCredentials;
         this.user = user;
     }

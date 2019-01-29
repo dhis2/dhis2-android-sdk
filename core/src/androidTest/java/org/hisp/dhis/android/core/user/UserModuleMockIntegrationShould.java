@@ -7,6 +7,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -31,6 +33,14 @@ public class UserModuleMockIntegrationShould extends MockIntegrationShould {
         assertThat(credentials.username(), is("android"));
         assertThat(credentials.code(), is("android"));
         assertThat(credentials.name(), is("John Barnes"));
+    }
+
+    @Test
+    public void allow_access_to_user_role() {
+        List<UserRole> userRole = d2.userModule().userRoles.get();
+        assertThat(userRole.get(0).uid(), is("Ufph3mGRmMo"));
+        assertThat(userRole.get(0).name(), is("Superuser"));
+        assertThat(userRole.get(0).displayName(), is("Superuser"));
     }
 
     @Test

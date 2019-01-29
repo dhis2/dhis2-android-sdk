@@ -33,13 +33,15 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 final class UserCredentialsFields {
     static final String USERNAME = "username";
+    static final String USER_ROLES = "userRoles";
 
     private static final FieldsHelper<UserCredentials> fh = new FieldsHelper<>();
 
     public static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(USERNAME)
+                    fh.<String>field(USERNAME),
+                    fh.<UserRole>nestedField(USER_ROLES).with(UserRoleFields.allFields)
             ).build();
 
     private UserCredentialsFields() {

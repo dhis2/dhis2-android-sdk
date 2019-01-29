@@ -28,118 +28,76 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.TrackedEntityAttributeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-import java.util.Date;
-
 @AutoValue
-public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject {
-    private static final String MANDATORY = "mandatory";
-    private static final String TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute";
-    private static final String ALLOW_FUTURE_DATE = "allowFutureDate";
-    private static final String DISPLAY_IN_LIST = "displayInList";
-    private static final String PROGRAM = "program";
-    private static final String SORT_ORDER = "sortOrder";
-    private static final String SEARCHABLE = "searchable";
-
-    private static final Field<ProgramTrackedEntityAttribute, String> uid = Field.create(UID);
-    private static final Field<ProgramTrackedEntityAttribute, String> code = Field.create(CODE);
-    private static final Field<ProgramTrackedEntityAttribute, String> name = Field.create(NAME);
-    private static final Field<ProgramTrackedEntityAttribute, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<ProgramTrackedEntityAttribute, String> created = Field.create(CREATED);
-    private static final Field<ProgramTrackedEntityAttribute, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<ProgramTrackedEntityAttribute, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<ProgramTrackedEntityAttribute, String> displayShortName
-            = Field.create(DISPLAY_SHORT_NAME);
-    private static final Field<ProgramTrackedEntityAttribute, String> description = Field.create(DESCRIPTION);
-    private static final Field<ProgramTrackedEntityAttribute, String> displayDescription
-            = Field.create(DISPLAY_DESCRIPTION);
-    private static final Field<ProgramTrackedEntityAttribute, String> mandatory = Field.create(MANDATORY);
-    private static final NestedField<ProgramTrackedEntityAttribute, TrackedEntityAttribute> trackedEntityAttribute
-            = NestedField.create(TRACKED_ENTITY_ATTRIBUTE);
-    private static final NestedField<ProgramTrackedEntityAttribute, ObjectWithUid> program
-            = NestedField.create(PROGRAM);
-    private static final Field<ProgramTrackedEntityAttribute, Boolean> allowFutureDate
-            = Field.create(ALLOW_FUTURE_DATE);
-    private static final Field<ProgramTrackedEntityAttribute, Boolean> displayInList
-            = Field.create(DISPLAY_IN_LIST);
-    private static final Field<ProgramTrackedEntityAttribute, Boolean> deleted
-            = Field.create(DELETED);
-    private static final Field<ProgramTrackedEntityAttribute, Integer> sortOrder
-            = Field.create(SORT_ORDER);
-    private static final Field<ProgramTrackedEntityAttribute, Boolean> searchable = Field.create(SEARCHABLE);
-
-    static final Fields<ProgramTrackedEntityAttribute> allFields = Fields.<ProgramTrackedEntityAttribute>builder()
-            .fields(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description,
-                    displayDescription, allowFutureDate, deleted, displayInList, mandatory,
-                    program.with(ObjectWithUid.uid), sortOrder, searchable,
-                    trackedEntityAttribute.with(TrackedEntityAttribute.allFields)).build();
+@JsonDeserialize(builder = AutoValue_ProgramTrackedEntityAttribute.Builder.class)
+public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject implements Model {
 
     @Nullable
-    @JsonProperty(MANDATORY)
     public abstract Boolean mandatory();
 
     @Nullable
-    @JsonProperty(TRACKED_ENTITY_ATTRIBUTE)
+    @ColumnAdapter(TrackedEntityAttributeWithUidColumnAdapter.class)
     public abstract TrackedEntityAttribute trackedEntityAttribute();
 
     @Nullable
-    @JsonProperty(ALLOW_FUTURE_DATE)
     public abstract Boolean allowFutureDate();
 
     @Nullable
-    @JsonProperty(DISPLAY_IN_LIST)
     public abstract Boolean displayInList();
 
     @Nullable
-    @JsonProperty(PROGRAM)
-    public abstract Program program();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty(SORT_ORDER)
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty(SEARCHABLE)
     public abstract Boolean searchable();
 
-    @JsonCreator
-    public static ProgramTrackedEntityAttribute create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(DISPLAY_DESCRIPTION) String displayDescription,
-            @JsonProperty(MANDATORY) Boolean mandatory,
-            @JsonProperty(TRACKED_ENTITY_ATTRIBUTE) TrackedEntityAttribute trackedEntityAttribute,
-            @JsonProperty(ALLOW_FUTURE_DATE) Boolean allowFutureDate,
-            @JsonProperty(DISPLAY_IN_LIST) Boolean displayInList,
-            @JsonProperty(PROGRAM) Program program,
-            @JsonProperty(SORT_ORDER) Integer sortOrder,
-            @JsonProperty(SEARCHABLE) Boolean searchable,
-            @JsonProperty(DELETED) Boolean deleted
-    ) {
-        return new AutoValue_ProgramTrackedEntityAttribute(
-                uid, code, name, displayName, created, lastUpdated, deleted,
-                shortName, displayShortName, description, displayDescription,
-                mandatory, trackedEntityAttribute, allowFutureDate, displayInList, program,
-                sortOrder, searchable);
+    public static Builder builder() {
+        return new AutoValue_ProgramTrackedEntityAttribute.Builder();
     }
 
+    static ProgramTrackedEntityAttribute create(Cursor cursor) {
+        return $AutoValue_ProgramTrackedEntityAttribute.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder mandatory(Boolean mandatory);
+
+        public abstract Builder trackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute);
+
+        public abstract Builder allowFutureDate(Boolean allowFutureDate);
+
+        public abstract Builder displayInList(Boolean displayInList);
+
+        public abstract Builder program(ObjectWithUid program);
+
+        public abstract Builder sortOrder(Integer sortOrder);
+
+        public abstract Builder searchable(Boolean searchable);
+
+        public abstract ProgramTrackedEntityAttribute build();
+    }
 }

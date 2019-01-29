@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,10 +50,10 @@ import static org.mockito.Mockito.when;
 public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> store;
+    private IdentifiableObjectStore<ProgramTrackedEntityAttribute> store;
 
     @Mock
-    private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
+    private IdentifiableSyncHandlerImpl<TrackedEntityAttribute> trackedEntityAttributeHandler;
 
     @Mock
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
@@ -63,19 +62,19 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private ProgramTrackedEntityAttribute programTrackedEntityAttribute;
 
     @Mock
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
     @Mock
     private Access access;
 
     @Mock
-    private Program program;
+    private ObjectWithUid program;
 
     @Mock
     private TrackedEntityAttribute trackedEntityAttribute;
 
     // object to test
-    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> handler;
+    private SyncHandler<ProgramTrackedEntityAttribute> handler;
 
     @Before
     public void setUp() throws Exception {
@@ -96,20 +95,20 @@ public class ProgramTrackedEntityAttributeHandlerShould {
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel> genericHandler =
+        IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> syncHandler =
                 new ProgramTrackedEntityAttributeHandler(null, null, null);
     }
 
     @Test
     public void call_tracked_entity_attribute_handler() throws Exception {
-        handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
-        verify(trackedEntityAttributeHandler).handleTrackedEntityAttribute(trackedEntityAttribute);
+        handler.handleMany(programTrackedEntityAttributes);
+        verify(trackedEntityAttributeHandler).handle(trackedEntityAttribute);
     }
 
     @Test
     public void delete_program_tea_and_tea_when_have_no_access() {
         when(access.read()).thenReturn(false);
-        handler.handleMany(programTrackedEntityAttributes, new ProgramTrackedEntityAttributeModelBuilder());
+        handler.handleMany(programTrackedEntityAttributes);
         verify(store).deleteIfExists(programTrackedEntityAttribute.uid());
         verify(trackedEntityAttributeStore).delete(trackedEntityAttribute.uid());
     }

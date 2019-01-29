@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,43 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-import dagger.Reusable;
+public class ProgramTrackedEntityAttributeSamples {
 
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleModel.TABLE,
-                ProgramStageDataElementModel.TABLE,
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageModel.TABLE);
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    public static ProgramTrackedEntityAttribute getProgramTrackedEntityAttribute() {
+        ProgramTrackedEntityAttribute.Builder builder = ProgramTrackedEntityAttribute.builder();
+        fillNameableProperties(builder);
+        return builder
+                .mandatory(Boolean.TRUE)
+                .trackedEntityAttribute(TrackedEntityAttribute.builder().uid("tracked_entity_attribute").build())
+                .allowFutureDate(Boolean.FALSE)
+                .displayInList(Boolean.FALSE)
+                .program(ObjectWithUid.create("program"))
+                .sortOrder(1)
+                .searchable(Boolean.TRUE).build();
     }
 }

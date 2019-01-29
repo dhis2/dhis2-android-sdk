@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,41 +28,41 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class ProgramTrackedEntityAttributeTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private ProgramTrackedEntityAttributeTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleModel.TABLE,
-                ProgramStageDataElementModel.TABLE,
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageModel.TABLE);
-    }
+        @Override
+        public String name() {
+            return "ProgramTrackedEntityAttribute";
+        }
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    public static class Columns extends BaseNameableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramTrackedEntityAttributeFields.MANDATORY,
+                    ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                    ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
+                    ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
+                    ProgramTrackedEntityAttributeFields.PROGRAM,
+                    ProgramTrackedEntityAttributeFields.SORT_ORDER,
+                    ProgramTrackedEntityAttributeFields.SEARCHABLE
+            );
+        }
     }
 }

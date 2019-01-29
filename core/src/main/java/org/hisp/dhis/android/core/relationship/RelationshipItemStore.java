@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.List;
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
+interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItem> {
     List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
 
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
+    RelationshipItem getForRelationshipUidAndConstraintType(
             @NonNull String uid,
             @NonNull RelationshipConstraintType constraintType);
 }

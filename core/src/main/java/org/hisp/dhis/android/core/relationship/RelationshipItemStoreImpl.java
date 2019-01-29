@@ -35,10 +35,10 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
@@ -46,17 +46,13 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<RelationshipItemModel>
+final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<RelationshipItem>
         implements RelationshipItemStore {
 
     private RelationshipItemStoreImpl(DatabaseAdapter databaseAdapter,
-                                      SQLiteStatement insertStatement,
-                                      SQLiteStatement updateWhereStatement,
-                                      SQLStatementBuilder builder,
-                                      StatementBinder<RelationshipItemModel> binder,
-                                      WhereStatementBinder<RelationshipItemModel> whereBinder,
-                                      CursorModelFactory<RelationshipItemModel> modelFactory) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, modelFactory);
+                                      SQLStatementBuilder builder) {
+        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()),
+                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 
     @Override
@@ -85,82 +81,80 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
     }
 
     @Override
-    public RelationshipItemModel getForRelationshipUidAndConstraintType(
+    public RelationshipItem getForRelationshipUidAndConstraintType(
             @NonNull String uid,
             @NonNull RelationshipConstraintType constraintType) {
         String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(RelationshipItemModel.Columns.RELATIONSHIP, uid)
-                .appendKeyStringValue(RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE, constraintType)
+                .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, uid)
+                .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE, constraintType)
                 .build();
         return selectOneWhere(whereClause);
     }
 
     private Cursor getAllItemsOfSameType(@NonNull RelationshipItem from, @NonNull RelationshipItem to) {
-        String query = "SELECT " + RelationshipItemModel.Columns.RELATIONSHIP + ", " +
-                "MAX(CASE WHEN " + RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
+        String query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
+                "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
                 "THEN " + getItemElementColumn(from) + " END) AS fromElementUid, " +
-                "MAX(CASE WHEN " + RelationshipItemModel.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
+                "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
                 "THEN " + getItemElementColumn(to) + " END) AS toElementUid " +
-                "FROM " + RelationshipItemModel.TABLE +
-                " GROUP BY " + RelationshipItemModel.Columns.RELATIONSHIP;
+                "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
+                " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP;
 
         return this.databaseAdapter.query(query);
     }
 
     private String getItemElementColumn(RelationshipItem item) {
         if (item.hasTrackedEntityInstance()) {
-            return RelationshipItemModel.Columns.TRACKED_ENTITY_INSTANCE;
+            return RelationshipItemFields.TRACKED_ENTITY_INSTANCE;
         } else if (item.hasEnrollment()) {
-            return RelationshipItemModel.Columns.ENROLLMENT;
+            return RelationshipItemFields.ENROLLMENT;
         } else {
-            return RelationshipItemModel.Columns.EVENT;
+            return RelationshipItemFields.EVENT;
         }
     }
 
-    private static final StatementBinder<RelationshipItemModel> BINDER = new StatementBinder<RelationshipItemModel>() {
+    private static final StatementBinder<RelationshipItem> BINDER = new StatementBinder<RelationshipItem>() {
         @Override
-        public void bindToStatement(@NonNull RelationshipItemModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.relationship());
+        public void bindToStatement(@NonNull RelationshipItem o, @NonNull SQLiteStatement sqLiteStatement) {
+            String trackedEntityInstance = o.trackedEntityInstance() == null ? null :
+                    o.trackedEntityInstance().trackedEntityInstance();
+            String enrollment = o.enrollment() == null ? null : o.enrollment().enrollment();
+            String event = o.event() == null ? null : o.event().event();
+
+            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull( o.relationship()));
             sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
-            sqLiteBind(sqLiteStatement, 3, o.trackedEntityInstance());
-            sqLiteBind(sqLiteStatement, 4, o.enrollment());
-            sqLiteBind(sqLiteStatement, 5, o.event());
+            sqLiteBind(sqLiteStatement, 3, trackedEntityInstance);
+            sqLiteBind(sqLiteStatement, 4, enrollment);
+            sqLiteBind(sqLiteStatement, 5, event);
         }
     };
 
 
-    private static final WhereStatementBinder<RelationshipItemModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<RelationshipItemModel>() {
+    private static final WhereStatementBinder<RelationshipItem> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<RelationshipItem>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull RelationshipItemModel o,
+        public void bindToUpdateWhereStatement(@NonNull RelationshipItem o,
                                                @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 6, o.relationship());
+            sqLiteBind(sqLiteStatement, 6, UidsHelper.getUidOrNull(o.relationship()));
             sqLiteBind(sqLiteStatement, 7, o.relationshipItemType());
         }
     };
 
-    private static final CursorModelFactory<RelationshipItemModel> FACTORY
-            = new CursorModelFactory<RelationshipItemModel>() {
+    private static final CursorModelFactory<RelationshipItem> FACTORY
+            = new CursorModelFactory<RelationshipItem>() {
         @Override
-        public RelationshipItemModel fromCursor(Cursor cursor) {
-            return RelationshipItemModel.create(cursor);
+        public RelationshipItem fromCursor(Cursor cursor) {
+            return RelationshipItem.create(cursor);
         }
     };
 
     public static RelationshipItemStore create(DatabaseAdapter databaseAdapter) {
-        BaseModel.Columns columns = new RelationshipItemModel.Columns();
-
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
-                RelationshipItemModel.TABLE, columns);
+                RelationshipItemTableInfo.TABLE_INFO.name(), new RelationshipItemTableInfo.Columns());
 
         return new RelationshipItemStoreImpl(
                 databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
-                statementBuilder,
-                BINDER,
-                WHERE_UPDATE_BINDER,
-                FACTORY
+                statementBuilder
         );
     }
 }

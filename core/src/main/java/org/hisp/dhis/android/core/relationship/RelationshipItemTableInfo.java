@@ -64,5 +64,13 @@ public final class RelationshipItemTableInfo {
                     RelationshipItemFields.EVENT
             );
         }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    RELATIONSHIP,
+                    RELATIONSHIP_ITEM_TYPE
+            );
+        }
     }
 }

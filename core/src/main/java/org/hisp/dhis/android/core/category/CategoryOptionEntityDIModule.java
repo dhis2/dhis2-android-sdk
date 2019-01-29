@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -58,7 +57,7 @@ public final class CategoryOptionEntityDIModule implements IdentifiableEntityDIM
 
     @Provides
     @Reusable
-    ReadOnlyNameableCollectionRepository<CategoryOption> repository(DatabaseAdapter databaseAdapter) {
+    CategoryOptionCollectionRepository repository(DatabaseAdapter databaseAdapter) {
         return CategoryOptionCollectionRepository.create(databaseAdapter);
     }
 }

@@ -31,12 +31,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -60,30 +56,6 @@ public final class CategoryComboCollectionRepository
                         return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
-    }
-
-    public StringFilterConnector<CategoryComboCollectionRepository> byUid() {
-        return cf.string(Columns.UID);
-    }
-
-    public StringFilterConnector<CategoryComboCollectionRepository> byCode() {
-        return cf.string(Columns.CODE);
-    }
-
-    public StringFilterConnector<CategoryComboCollectionRepository> byName() {
-        return cf.string(Columns.NAME);
-    }
-
-    public StringFilterConnector<CategoryComboCollectionRepository> byDisplayName() {
-        return cf.string(Columns.DISPLAY_NAME);
-    }
-
-    public DateFilterConnector<CategoryComboCollectionRepository> byCreated() {
-        return cf.date(Columns.CREATED);
-    }
-
-    public DateFilterConnector<CategoryComboCollectionRepository> byLastUpdated() {
-        return cf.date(BaseIdentifiableObjectModel.Columns.LAST_UPDATED);
     }
 
     public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {

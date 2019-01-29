@@ -62,11 +62,6 @@ public final class CategoryComboCollectionRepository
                 }));
     }
 
-    private CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
-                                              Collection<ChildrenAppender<CategoryCombo>> childrenAppenders) {
-        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
-    }
-
     public StringFilterConnector<CategoryComboCollectionRepository> byUid() {
         return cf.string(Columns.UID);
     }
@@ -101,7 +96,8 @@ public final class CategoryComboCollectionRepository
                 Arrays.asList(
                         CategoryCategoryComboChildrenAppender.create(databaseAdapter),
                         CategoryOptionComboChildrenAppender.create(databaseAdapter)
-                )
+                ),
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

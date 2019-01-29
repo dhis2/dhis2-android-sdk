@@ -27,26 +27,42 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-final class CategoryCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository> {
+final class CategoryCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository> {
 
-    private CategoryCollectionRepository() {
+    private CategoryCollectionRepository(final IdentifiableObjectStore<Category> store,
+                                         final Collection<ChildrenAppender<Category>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<CategoryCollectionRepository>() {
+
+                    @Override
+                    public CategoryCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new CategoryCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Category, ReadOnlyIdentifiableCollectionRepository<Category, ?>> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+    static CategoryCollectionRepository create(DatabaseAdapter databaseAdapter) {
+        return new CategoryCollectionRepository(
                 CategoryStore.create(databaseAdapter),
                 Collections.singletonList(
                         CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
                 ),
-                Collections.<RepositoryScopeItem>emptyList(),
-                null
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

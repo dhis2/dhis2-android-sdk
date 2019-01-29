@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -41,7 +40,7 @@ import java.util.Collections;
 import java.util.List;
 
 final class CategoryOptionComboCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<CategoryOptionCombo,
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryOptionCombo,
                 CategoryOptionComboCollectionRepository> {
 
     private CategoryOptionComboCollectionRepository(

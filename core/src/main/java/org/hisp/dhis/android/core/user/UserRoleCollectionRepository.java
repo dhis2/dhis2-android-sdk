@@ -25,41 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-final class CategoryOptionCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository> {
+final class UserRoleCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository> {
 
-    private CategoryOptionCollectionRepository(final IdentifiableObjectStore<CategoryOption> store,
-                                               final Collection<ChildrenAppender<CategoryOption>> childrenAppenders,
-                                               List<RepositoryScopeItem> scope) {
+    private UserRoleCollectionRepository(
+            final IdentifiableObjectStore<UserRole> store,
+            final Collection<ChildrenAppender<UserRole>> childrenAppenders,
+            List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<CategoryOptionCollectionRepository>() {
+                new CollectionRepositoryFactory<UserRoleCollectionRepository>() {
 
                     @Override
-                    public CategoryOptionCollectionRepository newWithScope(
+                    public UserRoleCollectionRepository newWithScope(
                             List<RepositoryScopeItem> updatedScope) {
-                        return new CategoryOptionCollectionRepository(store, childrenAppenders, updatedScope);
+                        return new UserRoleCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
     }
 
-    static CategoryOptionCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        return new CategoryOptionCollectionRepository(
-                CategoryOptionStore.create(databaseAdapter),
-                Collections.<ChildrenAppender<CategoryOption>>emptyList(),
+    static UserRoleCollectionRepository create(IdentifiableObjectStore<UserRole> store) {
+        return new UserRoleCollectionRepository(
+                store,
+                Collections.<ChildrenAppender<UserRole>>emptyList(),
                 Collections.<RepositoryScopeItem>emptyList()
         );
     }

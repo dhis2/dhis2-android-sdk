@@ -33,4 +33,12 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends MockInteg
                 .get();
         assertThat(categories.size(), is(3));
     }
+
+    @Test
+    public void filter_by_data_dimension_type() {
+        List<Category> categories = d2.categoryModule().categories
+                .byDataDimensionType().eq("DISAGGREGATION")
+                .get();
+        assertThat(categories.size(), is(4));
+    }
 }

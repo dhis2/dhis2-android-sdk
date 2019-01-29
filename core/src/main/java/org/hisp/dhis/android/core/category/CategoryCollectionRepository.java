@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -54,6 +55,10 @@ public final class CategoryCollectionRepository
                         return new CategoryCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
+    }
+
+    public StringFilterConnector<CategoryCollectionRepository> byDataDimensionType() {
+        return cf.string(CategoryFields.DATA_DIMENSION_TYPE);
     }
 
     static CategoryCollectionRepository create(DatabaseAdapter databaseAdapter) {

@@ -12,12 +12,12 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface TrackedEntityInstanceService {
     String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
-    String TRACKED_ENTITY_INSTANCE_UID = "trackedEntityInstanceUid";
+
+    String TRACKED_ENTITY_INSTACE = "trackedEntityInstance";
     String OU = "ou";
     String OU_MODE = "ouMode";
     String FIELDS = "fields";
@@ -40,9 +40,9 @@ public interface TrackedEntityInstanceService {
             @Body TrackedEntityInstancePayload trackedEntityInstances,
             @Query(STRATEGY) String strategy);
 
-    @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTANCE_UID + "}")
-    Call<TrackedEntityInstance> getTrackedEntityInstance(
-            @Path(TRACKED_ENTITY_INSTANCE_UID) String trackedEntityInstanceUid,
+    @GET(TRACKED_ENTITY_INSTANCES)
+    Call<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
+            @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
             @Query(INCLUDE_DELETED) boolean includeDeleted);
 

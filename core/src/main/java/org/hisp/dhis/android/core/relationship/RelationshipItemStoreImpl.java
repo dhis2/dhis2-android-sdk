@@ -121,7 +121,7 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
             String enrollment = o.enrollment() == null ? null : o.enrollment().enrollment();
             String event = o.event() == null ? null : o.event().event();
 
-            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull( o.relationship()));
+            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationship()));
             sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
             sqLiteBind(sqLiteStatement, 3, trackedEntityInstance);
             sqLiteBind(sqLiteStatement, 4, enrollment);

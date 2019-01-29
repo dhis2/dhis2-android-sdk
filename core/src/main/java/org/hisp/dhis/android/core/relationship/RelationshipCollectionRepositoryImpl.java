@@ -167,7 +167,7 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     private RelationshipItem findRelatedTEI(Collection<RelationshipItem> items, String relationshipUid,
                                             RelationshipConstraintType type) {
         for (RelationshipItem item : items) {
-            if (relationshipUid.equals(item.relationship()) && item.relationshipItemType() == type) {
+            if (relationshipUid.equals(item.relationship().uid()) && item.relationshipItemType() == type) {
                 return item;
             }
         }

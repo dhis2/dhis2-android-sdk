@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,36 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+package org.hisp.dhis.android.core.data.program;
 
-public class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 
-    private final DataElementHandler dataElementHandler;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    ProgramStageDataElementHandler(
-            IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-                                           DataElementHandler dataElementHandler) {
+public class ProgramStageDataElementSamples {
 
-        super(programStageDataElementStore);
-        this.dataElementHandler = dataElementHandler;
-    }
+    public static ProgramStageDataElement getProgramStageDataElement() {
+        ProgramStageDataElement.Builder builder = ProgramStageDataElement.builder();
 
-    public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageDataElementHandler(ProgramStageDataElementStore.create(databaseAdapter),
-                DataElementHandler.create(databaseAdapter));
-    }
-
-    @Override
-    protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
-
-        if (programStageDataElement.dataElement() != null) {
-            dataElementHandler.handle(programStageDataElement.dataElement());
-        }
+        fillIdentifiableProperties(builder);
+        builder
+                .displayInReports(true)
+                .dataElement(DataElement.builder().uid("data_element").build())
+                .compulsory(false)
+                .allowProvidedElsewhere(true)
+                .sortOrder(0)
+                .allowFutureDate(false)
+                .programStage(ObjectWithUid.create("program_stage"));
+        return builder.build();
     }
 }

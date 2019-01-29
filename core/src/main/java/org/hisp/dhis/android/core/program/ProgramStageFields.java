@@ -102,7 +102,7 @@ final class ProgramStageFields {
                     fh.<ProgramStageSection>nestedField(PROGRAM_STAGE_SECTIONS)
                             .with(ProgramStageSectionFields.allFields),
                     fh.<ProgramStageDataElement>nestedField(PROGRAM_STAGE_DATA_ELEMENTS)
-                            .with(ProgramStageDataElement.allFields),
+                            .with(ProgramStageDataElementFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<PeriodType>field(PERIOD_TYPE),
                     fh.<ObjectWithUid>field(PROGRAM),

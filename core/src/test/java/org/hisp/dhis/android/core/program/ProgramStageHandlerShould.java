@@ -81,6 +81,8 @@ public class ProgramStageHandlerShould {
     private ObjectStyle objectStyle;
 
     @Mock
+    private ProgramStageDataElement programStageDataElement;
+
     private List<ProgramStageDataElement> programStageDataElements;
 
     @Mock
@@ -133,6 +135,8 @@ public class ProgramStageHandlerShould {
         programStageSections = new ArrayList<>();
         programStageSections.add(programStageSection);
 
+        programStageDataElements = Collections.singletonList(programStageDataElement);
+
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
         when(programStage.programStageDataElements()).thenReturn(programStageDataElements);
@@ -158,8 +162,7 @@ public class ProgramStageHandlerShould {
     @Test
     public void call_program_stage_data_element_handler() throws Exception {
         programStageHandler.handle(programStage, programStageModelBuilder);
-        verify(programStageDataElementHandler).handleProgramStageDataElements(
-                programStageDataElements);
+        verify(programStageDataElementHandler).handleMany(programStageDataElements);
     }
 
     @Test

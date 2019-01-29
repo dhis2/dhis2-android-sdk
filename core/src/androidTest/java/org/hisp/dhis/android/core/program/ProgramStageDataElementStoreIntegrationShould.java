@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,36 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramStageDataElementSamples;
 
-public class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+public class ProgramStageDataElementStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStageDataElement> {
 
-    private final DataElementHandler dataElementHandler;
-
-    ProgramStageDataElementHandler(
-            IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-                                           DataElementHandler dataElementHandler) {
-
-        super(programStageDataElementStore);
-        this.dataElementHandler = dataElementHandler;
-    }
-
-    public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageDataElementHandler(ProgramStageDataElementStore.create(databaseAdapter),
-                DataElementHandler.create(databaseAdapter));
+    public ProgramStageDataElementStoreIntegrationShould() {
+        super(ProgramStageDataElementStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramStageDataElementTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
-
-        if (programStageDataElement.dataElement() != null) {
-            dataElementHandler.handle(programStageDataElement.dataElement());
-        }
+    protected ProgramStageDataElement buildObject() {
+        return ProgramStageDataElementSamples.getProgramStageDataElement();
     }
+
+    @Override
+    protected ProgramStageDataElement buildObjectWithId() {
+        return ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected ProgramStageDataElement buildObjectToUpdate() {
+        return ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
+                .allowFutureDate(true)
+                .build();
+    }
+
 }

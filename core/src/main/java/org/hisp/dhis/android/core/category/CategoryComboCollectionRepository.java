@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
@@ -90,6 +91,10 @@ public final class CategoryComboCollectionRepository extends ReadOnlyWithUidColl
 
     public DateFilterConnector<CategoryComboCollectionRepository> byLastUpdated() {
         return cf.date(BaseIdentifiableObjectModel.Columns.LAST_UPDATED);
+    }
+
+    public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {
+        return cf.bool(CategoryComboFields.IS_DEFAULT);
     }
 
     static CategoryComboCollectionRepository create(DatabaseAdapter databaseAdapter) {

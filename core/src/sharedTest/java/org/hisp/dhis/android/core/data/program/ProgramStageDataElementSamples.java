@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,20 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.program;
 
-public final class UserRoleHandler extends IdentifiableSyncHandlerImpl<UserRole> {
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.program.ProgramStageDataElement;
 
-    private UserRoleHandler(IdentifiableObjectStore<UserRole> userRoleStore) {
-        super(userRoleStore);
-    }
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    public static SyncHandler<UserRole> create(DatabaseAdapter databaseAdapter) {
-        return new UserRoleHandler(UserRoleStore.create(databaseAdapter));
+public class ProgramStageDataElementSamples {
+
+    public static ProgramStageDataElement getProgramStageDataElement() {
+        ProgramStageDataElement.Builder builder = ProgramStageDataElement.builder();
+
+        fillIdentifiableProperties(builder);
+        builder
+                .displayInReports(true)
+                .dataElement(DataElement.builder().uid("data_element").build())
+                .compulsory(false)
+                .allowProvidedElsewhere(true)
+                .sortOrder(0)
+                .allowFutureDate(false)
+                .programStage(ObjectWithUid.create("program_stage"));
+        return builder.build();
     }
 }

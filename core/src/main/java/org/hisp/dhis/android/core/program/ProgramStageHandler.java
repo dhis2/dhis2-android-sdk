@@ -94,8 +94,9 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
 
     @Override
     protected void afterObjectHandled(final ProgramStage programStage, HandleAction action) {
-        programStageDataElementHandler.handleProgramStageDataElements(
-                programStage.programStageDataElements());
+
+        programStageDataElementHandler.handleMany(programStage.programStageDataElements());
+
         programStageSectionHandler.handleMany(programStage.programStageSections(),
                 new ModelBuilder<ProgramStageSection, ProgramStageSection>() {
                     @Override
@@ -107,8 +108,10 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
                                 .build();
                     }
                 });
+
         styleHandler.handle(programStage.style(),
                 new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
+
         if (action == HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());
             programStageSectionCleaner.deleteOrphan(programStage, programStage.programStageSections());

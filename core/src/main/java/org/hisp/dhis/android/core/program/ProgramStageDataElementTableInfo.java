@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,36 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+public class ProgramStageDataElementTableInfo {
 
-    private final DataElementHandler dataElementHandler;
+    private ProgramStageDataElementTableInfo() {}
 
-    ProgramStageDataElementHandler(
-            IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-                                           DataElementHandler dataElementHandler) {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        super(programStageDataElementStore);
-        this.dataElementHandler = dataElementHandler;
-    }
+        @Override
+        public String name() {
+            return "ProgramStageDataElement";
+        }
 
-    public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageDataElementHandler(ProgramStageDataElementStore.create(databaseAdapter),
-                DataElementHandler.create(databaseAdapter));
-    }
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-    @Override
-    protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
 
-        if (programStageDataElement.dataElement() != null) {
-            dataElementHandler.handle(programStageDataElement.dataElement());
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramStageDataElementFields.DISPLAY_IN_REPORTS,
+                    ProgramStageDataElementFields.DATA_ELEMENT,
+                    ProgramStageDataElementFields.COMPULSORY,
+                    ProgramStageDataElementFields.ALLOW_PROVIDED_ELSEWHERE,
+                    ProgramStageDataElementFields.SORT_ORDER,
+                    ProgramStageDataElementFields.ALLOW_FUTURE_DATE,
+                    ProgramStageDataElementFields.PROGRAM_STAGE
+            );
         }
     }
+
 }

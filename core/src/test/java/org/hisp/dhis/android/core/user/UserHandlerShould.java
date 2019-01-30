@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +54,9 @@ public class UserHandlerShould {
     private SyncHandler<UserRole> userRoleHandler;
 
     @Mock
+    private CollectionCleaner<UserRole> userRoleCollectionCleaner;
+
+    @Mock
     private User user;
 
     private UserCredentials userCredentials;
@@ -63,14 +67,14 @@ public class UserHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        userHandler = new UserHandler(userStore, userCredentialsHandler, userRoleHandler);
+        userHandler = new UserHandler(userStore, userCredentialsHandler, userRoleHandler, userRoleCollectionCleaner);
         userCredentials = UserCredentials.builder().uid("credentialsUid").build();
         when(user.userCredentials()).thenReturn(userCredentials);
     }
 
     @Test
     public void extend_identifiable_sync_handler_impl() {
-        IdentifiableSyncHandlerImpl<User> genericHandler = new UserHandler(null, null, null);
+        IdentifiableSyncHandlerImpl<User> genericHandler = new UserHandler(null, null, null, null);
     }
 
     @Test

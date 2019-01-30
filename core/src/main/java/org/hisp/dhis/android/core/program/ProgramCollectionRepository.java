@@ -28,21 +28,40 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-final class ProgramCollectionRepository {
+public final class ProgramCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository> {
 
-    private ProgramCollectionRepository() {
+    private ProgramCollectionRepository(final IdentifiableObjectStore<Program> store,
+                                        final Collection<ChildrenAppender<Program>> childrenAppenders,
+                                        List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<ProgramCollectionRepository>() {
+
+                    @Override
+                    public ProgramCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new ProgramCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Program> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+    static ProgramCollectionRepository create(DatabaseAdapter databaseAdapter) {
+        return new ProgramCollectionRepository(
                 ProgramStore.create(databaseAdapter),
-                new ArrayList<ChildrenAppender<Program>>()
+                new ArrayList<ChildrenAppender<Program>>(),
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

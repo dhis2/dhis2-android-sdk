@@ -28,29 +28,47 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-final class DataElementCollectionRepository {
+public final class DataElementCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository> {
 
-    private DataElementCollectionRepository() {
+    private DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,
+                                         final Collection<ChildrenAppender<DataElement>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<DataElementCollectionRepository>() {
+
+                    @Override
+                    public DataElementCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new DataElementCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataElement> create(DatabaseAdapter databaseAdapter) {
+    static DataElementCollectionRepository create(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataElement> childrenAppender =
                 new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataElementTableInfo.TABLE_INFO
                 );
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+        return new DataElementCollectionRepository(
                 DataElementStore.create(databaseAdapter),
-                Collections.singletonList(childrenAppender)
+                Collections.singletonList(childrenAppender),
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

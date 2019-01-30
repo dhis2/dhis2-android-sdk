@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -38,10 +36,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class DataElementModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<DataElement> dataElements;
+    public final DataElementCollectionRepository dataElements;
 
     @Inject
-    DataElementModule(ReadOnlyIdentifiableCollectionRepository<DataElement> dataElementsRepository) {
+    DataElementModule(DataElementCollectionRepository dataElementsRepository) {
         this.dataElements = dataElementsRepository;
     }
 }

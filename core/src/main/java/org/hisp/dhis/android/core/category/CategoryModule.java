@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepository;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -39,16 +36,16 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class CategoryModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<Category> categories;
-    public final ReadOnlyNameableCollectionRepository<CategoryOption> categoryOptions;
-    public final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
+    public final CategoryCollectionRepository categories;
+    public final CategoryOptionCollectionRepository categoryOptions;
+    public final CategoryOptionComboCollectionRepository categoryOptionCombos;
     public final CategoryComboCollectionRepository categoryCombos;
 
     @Inject
     CategoryModule(
-            ReadOnlyIdentifiableCollectionRepository<Category> categories,
-            ReadOnlyNameableCollectionRepository<CategoryOption> categoryOptions,
-            ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
+            CategoryCollectionRepository categories,
+            CategoryOptionCollectionRepository categoryOptions,
+            CategoryOptionComboCollectionRepository categoryOptionCombos,
             CategoryComboCollectionRepository categoryCombos) {
         this.categories = categories;
         this.categoryOptions = categoryOptions;

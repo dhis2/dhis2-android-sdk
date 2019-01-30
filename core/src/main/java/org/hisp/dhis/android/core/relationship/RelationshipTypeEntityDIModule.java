@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -58,7 +57,7 @@ public final class RelationshipTypeEntityDIModule
 
     @Provides
     @Reusable
-    ReadOnlyIdentifiableCollectionRepository<RelationshipType> repository(DatabaseAdapter databaseAdapter) {
+    RelationshipTypeCollectionRepository repository(DatabaseAdapter databaseAdapter) {
         return RelationshipTypeCollectionRepository.create(databaseAdapter);
     }
 }

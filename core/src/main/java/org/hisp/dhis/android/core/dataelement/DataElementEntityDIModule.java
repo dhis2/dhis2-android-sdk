@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -57,7 +56,7 @@ public final class DataElementEntityDIModule implements IdentifiableEntityFromDa
 
     @Provides
     @Reusable
-    ReadOnlyIdentifiableCollectionRepository<DataElement> repository(DatabaseAdapter databaseAdapter) {
+    DataElementCollectionRepository repository(DatabaseAdapter databaseAdapter) {
         return DataElementCollectionRepository.create(databaseAdapter);
     }
 }

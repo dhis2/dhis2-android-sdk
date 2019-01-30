@@ -25,50 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.BaseNameableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.NameableObject;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & NameableObject,
-        R extends ReadOnlyCollectionRepository<M>>
-        extends ReadOnlyIdentifiableCollectionRepositoryImpl<M, R>
-        implements ReadOnlyNameableCollectionRepository<M, R> {
+public final class UserRoleCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository> {
 
+    private UserRoleCollectionRepository(
+            final IdentifiableObjectStore<UserRole> store,
+            final Collection<ChildrenAppender<UserRole>> childrenAppenders,
+            List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<UserRoleCollectionRepository>() {
 
-    public ReadOnlyNameableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
-                                                    final Collection<ChildrenAppender<M>> childrenAppenders,
-                                                    List<RepositoryScopeItem> scope,
-                                                    FilterConnectorFactory<R> cf) {
-        super(store, childrenAppenders, scope, cf);
+                    @Override
+                    public UserRoleCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new UserRoleCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    @Override
-    public StringFilterConnector<R> byShortName() {
-        return cf.string(Columns.SHORT_NAME);
-    }
-
-    @Override
-    public StringFilterConnector<R> byDisplayShortName() {
-        return cf.string(Columns.DISPLAY_SHORT_NAME);
-    }
-
-    @Override
-    public StringFilterConnector<R> byDescription() {
-        return cf.string(Columns.DESCRIPTION);
-    }
-
-    @Override
-    public StringFilterConnector<R> byDisplayDescription() {
-        return cf.string(Columns.DISPLAY_DESCRIPTION);
+    static UserRoleCollectionRepository create(IdentifiableObjectStore<UserRole> store) {
+        return new UserRoleCollectionRepository(
+                store,
+                Collections.<ChildrenAppender<UserRole>>emptyList(),
+                Collections.<RepositoryScopeItem>emptyList()
+        );
     }
 }

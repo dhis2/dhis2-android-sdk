@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
@@ -45,15 +45,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public final class CategoryComboCollectionRepository extends ReadOnlyWithUidCollectionRepositoryImpl<CategoryCombo> {
-
-    private FilterConnectorFactory<CategoryComboCollectionRepository> cf;
+public final class CategoryComboCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository> {
 
     private CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
                                               final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
                                               List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope);
-        this.cf = new FilterConnectorFactory<>(scope,
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<CategoryComboCollectionRepository>() {
 
                     @Override
@@ -61,12 +59,7 @@ public final class CategoryComboCollectionRepository extends ReadOnlyWithUidColl
                             List<RepositoryScopeItem> updatedScope) {
                         return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
                     }
-                });
-    }
-
-    private CategoryComboCollectionRepository(IdentifiableObjectStore<CategoryCombo> store,
-                                              Collection<ChildrenAppender<CategoryCombo>> childrenAppenders) {
-        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
+                }));
     }
 
     public StringFilterConnector<CategoryComboCollectionRepository> byUid() {
@@ -103,7 +96,8 @@ public final class CategoryComboCollectionRepository extends ReadOnlyWithUidColl
                 Arrays.asList(
                         CategoryCategoryComboChildrenAppender.create(databaseAdapter),
                         CategoryOptionComboChildrenAppender.create(databaseAdapter)
-                )
+                ),
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -65,5 +67,11 @@ public final class UserRoleEntityDIModule implements IdentifiableEntityDIModule<
     ReadOnlyCollectionRepository<UserRole> repository(IdentifiableObjectStore<UserRole> store) {
         return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(store,
                 Collections.<ChildrenAppender<UserRole>>emptyList());
+    }
+
+    @Provides
+    @Reusable
+    CollectionCleaner<UserRole> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(UserRoleTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 }

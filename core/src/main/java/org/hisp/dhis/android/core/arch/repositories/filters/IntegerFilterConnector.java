@@ -34,34 +34,28 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
 import java.util.List;
 
-public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+public final class IntegerFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+        extends BaseFilterConnector<R, Integer> {
 
-    private final List<RepositoryScopeItem> scope;
-    private final CollectionRepositoryFactory<R> repositoryFactory;
-
-    public FilterConnectorFactory(List<RepositoryScopeItem> scope,
-                                  CollectionRepositoryFactory<R> repositoryFactory) {
-        this.scope = scope;
-        this.repositoryFactory = repositoryFactory;
+    IntegerFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                           List<RepositoryScopeItem> scope,
+                           String key) {
+        super(repositoryFactory, scope, key);
     }
 
-    public StringFilterConnector<R> string(String key) {
-        return new StringFilterConnector<>(repositoryFactory, scope, key);
+    public R eq(int value) {
+        return newWithScope("=", value);
     }
 
-    public DateFilterConnector<R> date(String key) {
-        return new DateFilterConnector<>(repositoryFactory, scope, key);
+    public R smallerThan(int value) {
+        return newWithScope("<", value);
     }
 
-    public BooleanFilterConnector<R> bool(String key) {
-        return new BooleanFilterConnector<>(repositoryFactory, scope, key);
+    public R biggerThan(int value) {
+        return newWithScope(">", value);
     }
 
-    public IntegerFilterConnector<R> integer(String key) {
-        return new IntegerFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public <E extends Enum<E>> EnumFilterConnector<R, E> enumC(String key) {
-        return new EnumFilterConnector<>(repositoryFactory, scope, key);
+    String wrapValue(Integer value) {
+        return "" + value + "";
     }
 }

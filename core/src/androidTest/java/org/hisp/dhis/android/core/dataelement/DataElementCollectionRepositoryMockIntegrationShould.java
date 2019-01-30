@@ -29,7 +29,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends MockIn
     }
 
     @Test
-    public void filter_by_name() {
+    public void filter_by_value_type() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byValueType().eq(ValueType.TEXT)
                 .get();

@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.dataelement;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
@@ -56,6 +58,47 @@ public final class DataElementCollectionRepository
                         return new DataElementCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
+    }
+
+    // TODO Enum ValueType
+    public StringFilterConnector<DataElementCollectionRepository> byValueType() {
+        return cf.string(DataElementFields.VALUE_TYPE);
+    }
+
+    public BooleanFilterConnector<DataElementCollectionRepository> byZeroIsSignificant() {
+        return cf.bool(DataElementFields.ZERO_IS_SIGNIFICANT);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byAggregationType() {
+        return cf.string(DataElementFields.AGGREGATION_TYPE);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byFormName() {
+        return cf.string(DataElementFields.FORM_NAME);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byNumberType() {
+        return cf.string(DataElementFields.NUMBER_TYPE);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byDomainType() {
+        return cf.string(DataElementFields.DOMAIN_TYPE);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byDimension() {
+        return cf.string(DataElementFields.DIMENSION);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byDisplayFormName() {
+        return cf.string(DataElementFields.DISPLAY_FORM_NAME);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byOptionSetUid() {
+        return cf.string(DataElementFields.OPTION_SET);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byCategoryComboUid() {
+        return cf.string(DataElementFields.CATEGORY_COMBO);
     }
 
     static DataElementCollectionRepository create(DatabaseAdapter databaseAdapter) {

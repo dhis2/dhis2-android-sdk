@@ -55,6 +55,6 @@ public final class RelationshipModuleWiper implements ModuleWiper {
     public void wipeData() {
         tableWiper.wipeTables(
                 RelationshipModel.TABLE,
-                RelationshipItemModel.TABLE);
+                RelationshipItemTableInfo.TABLE_INFO.name());
     }
 }

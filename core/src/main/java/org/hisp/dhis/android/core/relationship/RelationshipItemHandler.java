@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 final class RelationshipItemHandler {
@@ -36,7 +36,7 @@ final class RelationshipItemHandler {
     private RelationshipItemHandler() {
     }
 
-    public static GenericHandler<RelationshipItem, RelationshipItemModel> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidHandlerImpl<>(RelationshipItemStoreImpl.create(databaseAdapter));
+    public static SyncHandler<RelationshipItem> create(DatabaseAdapter databaseAdapter) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(RelationshipItemStoreImpl.create(databaseAdapter));
     }
 }

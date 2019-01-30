@@ -25,27 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+package org.hisp.dhis.android.core.data.database;
 
-final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
+import android.content.ContentValues;
+import android.database.Cursor;
 
-    private final RelationshipItemStore store;
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
-    RelationshipItemChildrenAppender(RelationshipItemStore store) {
-        this.store = store;
+import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment;
+
+public class RelationshipItemEnrollmentColumnAdapter implements ColumnTypeAdapter<RelationshipItemEnrollment> {
+
+    @Override
+    public RelationshipItemEnrollment fromCursor(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+
+        return index == -1 || cursor.isNull(index) ?
+                null : RelationshipItemEnrollment.builder().enrollment(cursor.getString(index)).build();
     }
 
     @Override
-    protected Relationship appendChildren(Relationship relationship) {
-        RelationshipItem fromItem = store.getForRelationshipUidAndConstraintType(
-                relationship.uid(), RelationshipConstraintType.FROM);
-        RelationshipItem toItem = store.getForRelationshipUidAndConstraintType(
-                relationship.uid(), RelationshipConstraintType.TO);
-        return relationship.toBuilder()
-                .from(fromItem)
-                .to(toItem)
-                .build();
+    public void toContentValues(ContentValues values, String columnName, RelationshipItemEnrollment value) {
+        if (value != null) {
+            values.put(columnName, value.enrollment());
+        }
     }
 }

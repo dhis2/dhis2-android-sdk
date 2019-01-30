@@ -28,24 +28,22 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
 
 final class RelationshipItemFields {
-    private static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
-    private static final String ENROLLMENT = "enrollment";
-    private static final String EVENT = "event";
+    static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
+    static final String ENROLLMENT = "enrollment";
+    static final String EVENT = "event";
 
-    private static final NestedField<RelationshipItem, RelationshipItemTrackedEntityInstance> trackedEntityInstance =
-            NestedField.create(TRACKED_ENTITY_INSTANCE);
-    private static final NestedField<RelationshipItem, RelationshipItemEnrollment> enrollment
-            = NestedField.create(ENROLLMENT);
-    private static final NestedField<RelationshipItem, RelationshipItemEvent> event = NestedField.create(EVENT);
+    private static final FieldsHelper<RelationshipItem> fh = new FieldsHelper<>();
 
-    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder().fields(
-            trackedEntityInstance.with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-            enrollment.with(RelationshipItemEnrollmentFields.enrollment),
-            event.with(RelationshipItemEventFields.event)
+    public static final Fields<RelationshipItem> allFields = Fields.<RelationshipItem>builder()
+            .fields(
+                    fh.<RelationshipItemTrackedEntityInstance>nestedField(TRACKED_ENTITY_INSTANCE)
+                            .with(RelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
+            fh.<RelationshipItemEnrollment>nestedField(ENROLLMENT).with(RelationshipItemEnrollmentFields.enrollment),
+            fh.<RelationshipItemEvent>nestedField(EVENT).with(RelationshipItemEventFields.event)
     ).build();
 
     private RelationshipItemFields() {

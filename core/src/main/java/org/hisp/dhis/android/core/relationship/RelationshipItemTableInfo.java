@@ -28,51 +28,49 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.PojoBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class RelationshipItemPojoBuilder extends PojoBuilder<RelationshipItem, RelationshipItemModel> {
+public final class RelationshipItemTableInfo {
 
-    @Override
-    public RelationshipItem buildPojo(RelationshipItemModel model) {
-
-        return RelationshipItem
-                .builder()
-                .trackedEntityInstance(trackedEntityInstance(model.trackedEntityInstance()))
-                .enrollment(enrollment(model.enrollment()))
-                .event(event(model.event()))
-                .build();
+    private RelationshipItemTableInfo() {
     }
 
-    private RelationshipItemTrackedEntityInstance trackedEntityInstance(String uid) {
-        if (uid == null) {
-            return null;
-        } else {
-            return RelationshipItemTrackedEntityInstance
-                    .builder()
-                    .trackedEntityInstance(uid)
-                    .build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "RelationshipItem";
         }
-    }
 
-    private RelationshipItemEnrollment enrollment(String uid) {
-        if (uid == null) {
-            return null;
-        } else {
-            return RelationshipItemEnrollment
-                    .builder()
-                    .enrollment(uid)
-                    .build();
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
         }
-    }
+    };
 
-    private RelationshipItemEvent event(String uid) {
-        if (uid == null) {
-            return null;
-        } else {
-            return RelationshipItemEvent
-                    .builder()
-                    .event(uid)
-                    .build();
+    static class Columns extends BaseModel.Columns {
+        static final String RELATIONSHIP = "relationship";
+        static final String RELATIONSHIP_ITEM_TYPE = "relationshipItemType";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    RELATIONSHIP,
+                    RELATIONSHIP_ITEM_TYPE,
+                    RelationshipItemFields.TRACKED_ENTITY_INSTANCE,
+                    RelationshipItemFields.ENROLLMENT,
+                    RelationshipItemFields.EVENT
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    RELATIONSHIP,
+                    RELATIONSHIP_ITEM_TYPE
+            );
         }
     }
 }

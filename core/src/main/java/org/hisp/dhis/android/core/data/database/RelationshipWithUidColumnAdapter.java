@@ -26,31 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.relationship.Relationship;
 
-public class RelationshipItemModelBuilder extends ModelBuilder<RelationshipItem, RelationshipItemModel> {
-
-    private final RelationshipItemModel.Builder builder;
-
-    RelationshipItemModelBuilder(Relationship relationship, RelationshipConstraintType type) {
-        this.builder = RelationshipItemModel.builder()
-                .relationship(relationship.uid())
-                .relationshipItemType(type);
-    }
+public class RelationshipWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<Relationship> {
 
     @Override
-    public RelationshipItemModel buildModel(RelationshipItem relationshipItem) {
-        String trackedEntityInstance = relationshipItem.trackedEntityInstance() == null ? null :
-                relationshipItem.trackedEntityInstance().trackedEntityInstance();
-        String enrollment = relationshipItem.enrollment() == null ? null : relationshipItem.enrollment().enrollment();
-        String event = relationshipItem.event() == null ? null : relationshipItem.event().event();
-
-        return this.builder
-                .trackedEntityInstance(trackedEntityInstance)
-                .enrollment(enrollment)
-                .event(event)
-                .build();
+    protected Relationship build(String uid) {
+        return Relationship.builder().uid(uid).build();
     }
 }

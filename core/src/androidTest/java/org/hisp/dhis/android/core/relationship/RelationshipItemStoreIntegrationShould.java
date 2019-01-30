@@ -25,27 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import android.support.test.runner.AndroidJUnit4;
 
-final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples;
+import org.junit.runner.RunWith;
 
-    private final RelationshipItemStore store;
+@RunWith(AndroidJUnit4.class)
+public class RelationshipItemStoreIntegrationShould extends
+        ObjectWithoutUidStoreAbstractIntegrationShould<RelationshipItem> {
 
-    RelationshipItemChildrenAppender(RelationshipItemStore store) {
-        this.store = store;
+    public RelationshipItemStoreIntegrationShould() {
+        super(RelationshipItemStoreImpl.create(DatabaseAdapterFactory.get(false)),
+                RelationshipItemTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    protected Relationship appendChildren(Relationship relationship) {
-        RelationshipItem fromItem = store.getForRelationshipUidAndConstraintType(
-                relationship.uid(), RelationshipConstraintType.FROM);
-        RelationshipItem toItem = store.getForRelationshipUidAndConstraintType(
-                relationship.uid(), RelationshipConstraintType.TO);
-        return relationship.toBuilder()
-                .from(fromItem)
-                .to(toItem)
+    protected RelationshipItem buildObject() {
+        return RelationshipItemSamples.getRelationshipItem();
+    }
+
+    @Override
+    protected RelationshipItem buildObjectToUpdate() {
+        return RelationshipItemSamples.getRelationshipItem().toBuilder()
+                .event(RelationshipItemEvent.builder().event("new_event").build())
+                .build();
+    }
+
+    @Override
+    protected RelationshipItem buildObjectWithId() {
+        return RelationshipItemSamples.getRelationshipItem().toBuilder()
+                .id(1L)
                 .build();
     }
 }

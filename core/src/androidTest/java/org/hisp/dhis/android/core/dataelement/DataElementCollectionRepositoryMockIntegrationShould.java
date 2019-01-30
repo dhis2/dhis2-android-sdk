@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends MockIn
     @Test
     public void filter_by_name() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
-                .byValueType().eq("TEXT")
+                .byValueType().eq(ValueType.TEXT)
                 .get();
         assertThat(dataElements.size(), is(1));
     }

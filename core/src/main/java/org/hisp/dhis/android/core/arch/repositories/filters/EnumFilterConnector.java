@@ -34,30 +34,20 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
 import java.util.List;
 
-public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
+        extends BaseFilterConnector<R, String> {
 
-    private final List<RepositoryScopeItem> scope;
-    private final CollectionRepositoryFactory<R> repositoryFactory;
-
-    public FilterConnectorFactory(List<RepositoryScopeItem> scope,
-                                  CollectionRepositoryFactory<R> repositoryFactory) {
-        this.scope = scope;
-        this.repositoryFactory = repositoryFactory;
+    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                        List<RepositoryScopeItem> scope,
+                        String key) {
+        super(repositoryFactory, scope, key);
     }
 
-    public StringFilterConnector<R> string(String key) {
-        return new StringFilterConnector<>(repositoryFactory, scope, key);
+    public R eq(E value) {
+        return newWithScope("=", value.name());
     }
 
-    public DateFilterConnector<R> date(String key) {
-        return new DateFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public BooleanFilterConnector<R> bool(String key) {
-        return new BooleanFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public <E extends Enum<E>> EnumFilterConnector<R, E> enumC(String key) {
-        return new EnumFilterConnector<>(repositoryFactory, scope, key);
+    String wrapValue(String value) {
+        return "'" + value + "'";
     }
 }

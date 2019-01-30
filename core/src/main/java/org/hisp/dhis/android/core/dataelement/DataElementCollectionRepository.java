@@ -31,12 +31,14 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
@@ -60,9 +62,8 @@ public final class DataElementCollectionRepository
                 }));
     }
 
-    // TODO Enum ValueType
-    public StringFilterConnector<DataElementCollectionRepository> byValueType() {
-        return cf.string(DataElementFields.VALUE_TYPE);
+    public EnumFilterConnector<DataElementCollectionRepository, ValueType> byValueType() {
+        return cf.enumC(DataElementFields.VALUE_TYPE);
     }
 
     public BooleanFilterConnector<DataElementCollectionRepository> byZeroIsSignificant() {

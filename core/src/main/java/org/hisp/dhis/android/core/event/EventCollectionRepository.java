@@ -44,7 +44,8 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class EventCollectionRepository extends ReadOnlyWithUidCollectionRepositoryImpl<Event, EventCollectionRepository>
+public final class EventCollectionRepository
+        extends ReadOnlyWithUidCollectionRepositoryImpl<Event, EventCollectionRepository>
         implements ReadOnlyWithUploadWithUidCollectionRepository<Event> {
 
     private final EventPostCall postCall;

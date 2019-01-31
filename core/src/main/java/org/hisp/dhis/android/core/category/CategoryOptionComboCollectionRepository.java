@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -56,6 +57,10 @@ public final class CategoryOptionComboCollectionRepository
                         return new CategoryOptionComboCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
+    }
+
+    public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {
+        return cf.string(CategoryOptionComboFields.CATEGORY_COMBO);
     }
 
     static CategoryOptionComboCollectionRepository create(DatabaseAdapter databaseAdapter) {

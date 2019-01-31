@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -54,6 +56,18 @@ public final class CategoryOptionCollectionRepository
                         return new CategoryOptionCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
+    }
+
+    public DateFilterConnector<CategoryOptionCollectionRepository> byStartDate() {
+        return cf.date(CategoryOptionFields.START_DATE);
+    }
+
+    public DateFilterConnector<CategoryOptionCollectionRepository> byEndDate() {
+        return cf.date(CategoryOptionFields.END_DATE);
+    }
+
+    public BooleanFilterConnector<CategoryOptionCollectionRepository> byAccessDataWrite() {
+        return cf.bool(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE);
     }
 
     static CategoryOptionCollectionRepository create(DatabaseAdapter databaseAdapter) {

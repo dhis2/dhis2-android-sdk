@@ -110,6 +110,8 @@
           "id": "apsOixVZlf1",
           "shortName": "Female",
           "displayName": "Female",
+          "startDate": "2012-12-24T12:24:24.000",
+          "endDate": "2013-12-24T12:24:24.777",
           "access": {
             "data": {
               "read": true,
@@ -125,6 +127,8 @@
           "id": "jRbMi0aBjYn",
           "shortName": "Male",
           "displayName": "Male",
+          "startDate": "2012-12-24T12:24:24.444",
+          "endDate": "2013-12-24T12:24:24.999",
           "access": {
             "data": {
               "read": true,

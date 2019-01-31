@@ -34,19 +34,22 @@ import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnect
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class CategoryComboCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository> {
 
-    private CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
-                                              final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
-                                              List<RepositoryScopeItem> scope) {
+    @Inject
+    CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
+                                      final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
+                                      List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<CategoryComboCollectionRepository>() {
 
@@ -60,16 +63,5 @@ public final class CategoryComboCollectionRepository
 
     public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {
         return cf.bool(CategoryComboFields.IS_DEFAULT);
-    }
-
-    static CategoryComboCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        return new CategoryComboCollectionRepository(
-                CategoryComboStore.create(databaseAdapter),
-                Arrays.asList(
-                        CategoryCategoryComboChildrenAppender.create(databaseAdapter),
-                        CategoryOptionComboChildrenAppender.create(databaseAdapter)
-                ),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

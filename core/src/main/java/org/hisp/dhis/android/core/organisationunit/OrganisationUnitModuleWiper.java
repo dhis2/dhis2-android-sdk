@@ -50,7 +50,7 @@ public final class OrganisationUnitModuleWiper implements ModuleWiper {
         tableWiper.wipeTables(
                 OrganisationUnitTableInfo.TABLE_INFO.name(),
                 OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupModel.TABLE,
+                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
                 OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
     }
 

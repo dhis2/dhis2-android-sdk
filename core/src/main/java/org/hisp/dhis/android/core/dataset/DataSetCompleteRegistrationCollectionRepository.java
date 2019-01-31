@@ -29,11 +29,17 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -42,17 +48,30 @@ import dagger.Reusable;
 
 @Reusable
 final class DataSetCompleteRegistrationCollectionRepository
-        extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration>
+        extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration,
+        DataSetCompleteRegistrationCollectionRepository>
         implements ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> {
 
     private final SyncHandler<DataSetCompleteRegistration> handler;
     private final DataSetCompleteRegistrationPostCall postCall;
 
     @Inject
-    DataSetCompleteRegistrationCollectionRepository(DataSetCompleteRegistrationStore store,
-                                                    SyncHandler<DataSetCompleteRegistration> handler,
-                                                    DataSetCompleteRegistrationPostCall postCall) {
-        super(store);
+    DataSetCompleteRegistrationCollectionRepository(
+            final DataSetCompleteRegistrationStore store,
+            final Collection<ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
+            final List<RepositoryScopeItem> scope,
+            final SyncHandler<DataSetCompleteRegistration> handler,
+            final DataSetCompleteRegistrationPostCall postCall) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<DataSetCompleteRegistrationCollectionRepository>() {
+
+                    @Override
+                    public DataSetCompleteRegistrationCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
+                                updatedScope, handler, postCall);
+                    }
+                }));
         this.handler = handler;
         this.postCall = postCall;
     }

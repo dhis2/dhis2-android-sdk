@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
+ * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,54 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity;
+
+package org.hisp.dhis.android.core.maintenance;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class TrackedEntityInstanceCollectionRepository
-        extends ReadOnlyWithUidCollectionRepositoryImpl<TrackedEntityInstance,
-        TrackedEntityInstanceCollectionRepository>
-        implements ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> {
-
-    private final TrackedEntityInstancePostCall postCall;
+public final class ForeignKeyViolationCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<ForeignKeyViolation, ForeignKeyViolationCollectionRepository> {
 
     @Inject
-    TrackedEntityInstanceCollectionRepository(
-            final TrackedEntityInstanceStore store,
-            final Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
-            final List<RepositoryScopeItem> scope,
-            final TrackedEntityInstancePostCall postCall) {
+    ForeignKeyViolationCollectionRepository(final ObjectStore<ForeignKeyViolation> store,
+                                            final Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
+                                            final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<TrackedEntityInstanceCollectionRepository>() {
+                new CollectionRepositoryFactory<ForeignKeyViolationCollectionRepository>() {
 
                     @Override
-                    public TrackedEntityInstanceCollectionRepository newWithScope(
+                    public ForeignKeyViolationCollectionRepository newWithScope(
                             List<RepositoryScopeItem> updatedScope) {
-                        return new TrackedEntityInstanceCollectionRepository(store, childrenAppenders,
-                                updatedScope, postCall);
+                        return new ForeignKeyViolationCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
-        this.postCall = postCall;
-    }
-
-
-    @Override
-    public Callable<WebResponse> upload() {
-        return postCall;
     }
 }

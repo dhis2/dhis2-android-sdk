@@ -30,8 +30,11 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
@@ -43,12 +46,14 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
-final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<Relationship>
+public final class RelationshipCollectionRepositoryImpl
+        extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepositoryImpl>
         implements RelationshipCollectionRepository {
 
     private final IdentifiableObjectStore<Relationship> store;
@@ -56,12 +61,22 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
 
-    private RelationshipCollectionRepositoryImpl(IdentifiableObjectStore<Relationship> store,
-                                                 RelationshipHandler relationshipHandler,
-                                                 RelationshipItemStore relationshipItemStore,
-                                                 RelationshipItemElementStoreSelector storeSelector,
-                                                 Collection<ChildrenAppender<Relationship>> childrenAppenders) {
-        super(store, childrenAppenders);
+    private RelationshipCollectionRepositoryImpl(final IdentifiableObjectStore<Relationship> store,
+                                                 final Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                                 List<RepositoryScopeItem> scope,
+                                                 final RelationshipHandler relationshipHandler,
+                                                 final RelationshipItemStore relationshipItemStore,
+                                                 final RelationshipItemElementStoreSelector storeSelector) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<RelationshipCollectionRepositoryImpl>() {
+
+                    @Override
+                    public RelationshipCollectionRepositoryImpl newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new RelationshipCollectionRepositoryImpl(store, childrenAppenders, updatedScope,
+                                relationshipHandler, relationshipItemStore, storeSelector);
+                    }
+                }));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
@@ -183,10 +198,11 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
 
         return new RelationshipCollectionRepositoryImpl(
                 RelationshipStore.create(databaseAdapter),
+                appenders,
+                Collections.<RepositoryScopeItem>emptyList(),
                 relationshipHandler,
                 RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                appenders
+                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter)
         );
     }
 }

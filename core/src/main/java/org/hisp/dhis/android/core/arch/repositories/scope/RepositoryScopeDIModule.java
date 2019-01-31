@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,37 +25,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-public final class EnrollmentCollectionRepository
-        extends ReadOnlyWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCollectionRepository> {
+@Module()
+public final class RepositoryScopeDIModule {
 
-    @Inject
-    EnrollmentCollectionRepository(
-            final EnrollmentStore store,
-            final Collection<ChildrenAppender<Enrollment>> childrenAppenders,
-            final List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<EnrollmentCollectionRepository>() {
-
-                    @Override
-                    public EnrollmentCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new EnrollmentCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+    @Provides
+    @Reusable
+    List<RepositoryScopeItem> emptyScope() {
+        return Collections.unmodifiableList(Collections.<RepositoryScopeItem>emptyList());
     }
-
-
 }

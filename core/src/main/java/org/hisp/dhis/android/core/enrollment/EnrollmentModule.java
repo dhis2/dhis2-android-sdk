@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -39,10 +37,10 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class EnrollmentModule {
 
-    public final ReadOnlyWithUidCollectionRepository<Enrollment> enrollments;
+    public final EnrollmentCollectionRepository enrollments;
 
     @Inject
-    EnrollmentModule(ReadOnlyWithUidCollectionRepository<Enrollment> enrollments) {
+    EnrollmentModule(EnrollmentCollectionRepository enrollments) {
         this.enrollments = enrollments;
     }
 }

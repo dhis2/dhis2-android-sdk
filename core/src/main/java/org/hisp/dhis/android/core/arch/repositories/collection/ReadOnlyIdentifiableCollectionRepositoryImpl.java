@@ -42,17 +42,14 @@ import java.util.List;
 
 public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & IdentifiableObject,
         R extends ReadOnlyCollectionRepository<M>>
-        extends ReadOnlyWithUidCollectionRepositoryImpl<M>
+        extends ReadOnlyWithUidCollectionRepositoryImpl<M, R>
         implements ReadOnlyIdentifiableCollectionRepository<M, R> {
-
-    protected final FilterConnectorFactory<R> cf;
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
                                                         final Collection<ChildrenAppender<M>> childrenAppenders,
                                                         List<RepositoryScopeItem> scope,
                                                         FilterConnectorFactory<R> cf) {
-        super(store, childrenAppenders, scope);
-        this.cf = cf;
+        super(store, childrenAppenders, scope, cf);
     }
 
     @Override

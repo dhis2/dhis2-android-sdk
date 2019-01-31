@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -39,11 +37,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class DataSetModule {
 
-    public final ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations;
+    public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
     public final DataSetCollectionRepository dataSets;
 
     @Inject
-    DataSetModule(ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations,
+    DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
                   DataSetCollectionRepository dataSets) {
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
         this.dataSets = dataSets;

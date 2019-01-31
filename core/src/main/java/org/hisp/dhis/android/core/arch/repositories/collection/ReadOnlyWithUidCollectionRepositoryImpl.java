@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -36,25 +37,21 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepositoryImpl<M>
+public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface,
+        R extends ReadOnlyCollectionRepository<M>>
+        extends ReadOnlyCollectionRepositoryImpl<M, R>
         implements ReadOnlyWithUidCollectionRepository<M> {
 
     protected final IdentifiableObjectStore<M> store;
 
     public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                                   List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope);
+                                                   List<RepositoryScopeItem> scope,
+                                                   FilterConnectorFactory<R> cf) {
+        super(store, childrenAppenders, scope, cf);
         this.store = store;
-    }
-
-    public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                   Collection<ChildrenAppender<M>> childrenAppenders) {
-        this(store, childrenAppenders, Collections.<RepositoryScopeItem>emptyList());
     }
 
     @Override

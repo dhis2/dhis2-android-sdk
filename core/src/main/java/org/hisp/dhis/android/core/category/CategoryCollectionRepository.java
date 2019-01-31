@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,23 +27,47 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
-final class CategoryCollectionRepository {
+public final class CategoryCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository> {
 
-    private CategoryCollectionRepository() {
+    private CategoryCollectionRepository(final IdentifiableObjectStore<Category> store,
+                                         final Collection<ChildrenAppender<Category>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<CategoryCollectionRepository>() {
+
+                    @Override
+                    public CategoryCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new CategoryCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<Category> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+    public StringFilterConnector<CategoryCollectionRepository> byDataDimensionType() {
+        return cf.string(CategoryFields.DATA_DIMENSION_TYPE);
+    }
+
+    static CategoryCollectionRepository create(DatabaseAdapter databaseAdapter) {
+        return new CategoryCollectionRepository(
                 CategoryStore.create(databaseAdapter),
                 Collections.singletonList(
                         CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
-                )
+                ),
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

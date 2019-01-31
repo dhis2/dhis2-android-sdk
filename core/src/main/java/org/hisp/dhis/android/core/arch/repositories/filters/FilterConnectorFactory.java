@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,5 +55,13 @@ public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
     public BooleanFilterConnector<R> bool(String key) {
         return new BooleanFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public IntegerFilterConnector<R> integer(String key) {
+        return new IntegerFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public <E extends Enum<E>> EnumFilterConnector<R, E> enumC(String key) {
+        return new EnumFilterConnector<>(repositoryFactory, scope, key);
     }
 }

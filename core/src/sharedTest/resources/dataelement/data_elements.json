@@ -17,13 +17,18 @@
       "valueType": "TEXT",
       "formName": "ANC Visit",
       "dimensionItem": "g9eOBujte1U",
+      "dimension": "dim",
       "displayFormName": "ANC Visit",
+      "numberType": "numTy",
       "zeroIsSignificant": false,
       "url": "",
       "optionSetValue": true,
       "dimensionItemType": "DATA_ELEMENT",
       "access": {
         "read": true
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
       }
     }
   ]

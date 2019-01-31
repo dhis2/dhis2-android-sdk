@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,28 +28,114 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-final class DataSetCollectionRepository {
+public final class DataSetCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
 
-    private DataSetCollectionRepository() {
+    private DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,
+                                         final Collection<ChildrenAppender<DataSet>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<DataSetCollectionRepository>() {
+
+                    @Override
+                    public DataSetCollectionRepository newWithScope(List<RepositoryScopeItem> updatedScope) {
+                        return new DataSetCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataSet> create(DatabaseAdapter databaseAdapter) {
+    public EnumFilterConnector<DataSetCollectionRepository, PeriodType> byPeriodType() {
+        return cf.enumC(DataSetFields.PERIOD_TYPE);
+    }
+
+    public StringFilterConnector<DataSetCollectionRepository> byCategoryComboUid() {
+        return cf.string(DataSetFields.CATEGORY_COMBO);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byMobile() {
+        return cf.bool(DataSetFields.MOBILE);
+    }
+
+    public IntegerFilterConnector<DataSetCollectionRepository> byVersion() {
+        return cf.integer(DataSetFields.VERSION);
+    }
+
+    public IntegerFilterConnector<DataSetCollectionRepository> byExpiryDays() {
+        return cf.integer(DataSetFields.EXPIRY_DAYS);
+    }
+
+    public IntegerFilterConnector<DataSetCollectionRepository> byTimelyDays() {
+        return cf.integer(DataSetFields.TIMELY_DAYS);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byNotifyCompletingUser() {
+        return cf.bool(DataSetFields.NOTIFY_COMPLETING_USER);
+    }
+
+    public IntegerFilterConnector<DataSetCollectionRepository> byOpenFuturePeriods() {
+        return cf.integer(DataSetFields.OPEN_FUTURE_PERIODS);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byFieldCombinationRequired() {
+        return cf.bool(DataSetFields.FIELD_COMBINATION_REQUIRED);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byValidCompleteOnly() {
+        return cf.bool(DataSetFields.VALID_COMPLETE_ONLY);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byNoValueRequiresComment() {
+        return cf.bool(DataSetFields.NO_VALUE_REQUIRES_COMMENT);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> bySkipOffline() {
+        return cf.bool(DataSetFields.SKIP_OFFLINE);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byDataElementDecoration() {
+        return cf.bool(DataSetFields.DATA_ELEMENT_DECORATION);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byRenderAsTabs() {
+        return cf.bool(DataSetFields.RENDER_AS_TABS);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byRenderHorizontally() {
+        return cf.bool(DataSetFields.RENDER_HORIZONTALLY);
+    }
+
+    public BooleanFilterConnector<DataSetCollectionRepository> byAccessDataWrite() {
+        return cf.bool(DataSetFields.ACCESS_DATA_WRITE);
+    }
+
+    static DataSetCollectionRepository create(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataSet> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataSetTableInfo.TABLE_INFO
                 );
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
+        return new DataSetCollectionRepository(
                 DataSetStore.create(databaseAdapter),
                 Arrays.asList(
                         objectStyleChildrenAppender,
@@ -58,7 +144,8 @@ final class DataSetCollectionRepository {
                         DataInputPeriodChildrenAppender.create(databaseAdapter),
                         DataSetElementChildrenAppender.create(databaseAdapter),
                         DataSetIndicatorChildrenAppender.create(databaseAdapter)
-                )
+                ),
+                Collections.<RepositoryScopeItem>emptyList()
         );
     }
 }

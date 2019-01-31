@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -30,10 +30,12 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.PojoBuilder;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -44,33 +46,41 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
-final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepositoryImpl<Relationship>
+public final class RelationshipCollectionRepositoryImpl
+        extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepositoryImpl>
         implements RelationshipCollectionRepository {
 
     private final IdentifiableObjectStore<Relationship> store;
     private final RelationshipHandler relationshipHandler;
     private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
-    private final PojoBuilder<RelationshipItem, RelationshipItemModel> relationshipItemPojoBuilder;
 
-    private RelationshipCollectionRepositoryImpl(IdentifiableObjectStore<Relationship> store,
-                                                 RelationshipHandler relationshipHandler,
-                                                 RelationshipItemStore relationshipItemStore,
-                                                 RelationshipItemElementStoreSelector storeSelector,
-                                                 PojoBuilder<RelationshipItem, RelationshipItemModel>
-                                               relationshipItemPojoBuilder,
-                                                 Collection<ChildrenAppender<Relationship>> childrenAppenders) {
-        super(store, childrenAppenders);
+    private RelationshipCollectionRepositoryImpl(final IdentifiableObjectStore<Relationship> store,
+                                                 final Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                                 List<RepositoryScopeItem> scope,
+                                                 final RelationshipHandler relationshipHandler,
+                                                 final RelationshipItemStore relationshipItemStore,
+                                                 final RelationshipItemElementStoreSelector storeSelector) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<RelationshipCollectionRepositoryImpl>() {
+
+                    @Override
+                    public RelationshipCollectionRepositoryImpl newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new RelationshipCollectionRepositoryImpl(store, childrenAppenders, updatedScope,
+                                relationshipHandler, relationshipItemStore, storeSelector);
+                    }
+                }));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
         this.storeSelector = storeSelector;
-        this.relationshipItemPojoBuilder = relationshipItemPojoBuilder;
     }
 
     @Override
@@ -122,46 +132,44 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
 
         // TODO Create query to avoid retrieving the whole table
-        List<RelationshipItemModel> relationshipItemModels = this.relationshipItemStore.selectAll();
+        List<RelationshipItem> relationshipItems = this.relationshipItemStore.selectAll();
 
         List<Relationship> allRelationshipsFromDb = this.store.selectAll();
 
         List<Relationship> relationships = new ArrayList<>();
 
-        for (RelationshipItemModel iterationItemModel : relationshipItemModels) {
-            RelationshipItem iterationItem = relationshipItemPojoBuilder.buildPojo(iterationItemModel);
-
+        for (RelationshipItem iterationItem : relationshipItems) {
             if (searchItem.equals(iterationItem)) {
                 Relationship relationshipFromDb =
-                        UidsHelper.findByUid(allRelationshipsFromDb, iterationItemModel.relationship());
+                        UidsHelper.findByUid(allRelationshipsFromDb, iterationItem.relationship().uid());
 
                 if (relationshipFromDb == null) {
                     continue;
                 }
 
-                RelationshipConstraintType itemType = iterationItemModel.relationshipItemType();
+                RelationshipConstraintType itemType = iterationItem.relationshipItemType();
 
-                RelationshipItemModel relatedItemModel = findRelatedTEI(relationshipItemModels,
-                        iterationItemModel.relationship(), itemType == FROM ? TO : FROM);
+                RelationshipItem relatedItem = findRelatedTEI(relationshipItems,
+                        iterationItem.relationship().uid(), itemType == FROM ? TO : FROM);
 
-                if (relatedItemModel == null) {
+                if (relatedItem == null) {
                     continue;
                 }
 
-                RelationshipItemModel fromModel, toModel;
+                RelationshipItem from, to;
                 if (itemType == FROM) {
-                    fromModel = iterationItemModel;
-                    toModel = relatedItemModel;
+                    from = iterationItem;
+                    to = relatedItem;
                 } else {
-                    fromModel = relatedItemModel;
-                    toModel = iterationItemModel;
+                    from = relatedItem;
+                    to = iterationItem;
                 }
 
                 Relationship relationship = Relationship.builder()
                         .uid(relationshipFromDb.uid())
                         .relationshipType(relationshipFromDb.relationshipType())
-                        .from(relationshipItemPojoBuilder.buildPojo(fromModel))
-                        .to(relationshipItemPojoBuilder.buildPojo(toModel))
+                        .from(from)
+                        .to(to)
                         .build();
 
                 relationships.add(relationship);
@@ -171,10 +179,10 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
         return relationships;
     }
 
-    private RelationshipItemModel findRelatedTEI(Collection<RelationshipItemModel> items, String relationshipUid,
-                                                 RelationshipConstraintType type) {
-        for (RelationshipItemModel item : items) {
-            if (relationshipUid.equals(item.relationship()) && item.relationshipItemType() == type) {
+    private RelationshipItem findRelatedTEI(Collection<RelationshipItem> items, String relationshipUid,
+                                            RelationshipConstraintType type) {
+        for (RelationshipItem item : items) {
+            if (relationshipUid.equals(item.relationship().uid()) && item.relationshipItemType() == type) {
                 return item;
             }
         }
@@ -184,18 +192,17 @@ final class RelationshipCollectionRepositoryImpl extends ReadOnlyCollectionRepos
     static RelationshipCollectionRepository create(DatabaseAdapter databaseAdapter,
                                                        RelationshipHandler relationshipHandler) {
         RelationshipItemStore itemStore = RelationshipItemStoreImpl.create(databaseAdapter);
-        PojoBuilder<RelationshipItem, RelationshipItemModel> itemPojoBuilder = new RelationshipItemPojoBuilder();
 
         List<ChildrenAppender<Relationship>> appenders = new ArrayList<>(1);
-        appenders.add(new RelationshipItemChildrenAppender(itemStore, itemPojoBuilder));
+        appenders.add(new RelationshipItemChildrenAppender(itemStore));
 
         return new RelationshipCollectionRepositoryImpl(
                 RelationshipStore.create(databaseAdapter),
+                appenders,
+                Collections.<RepositoryScopeItem>emptyList(),
                 relationshipHandler,
                 RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                itemPojoBuilder,
-                appenders
+                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter)
         );
     }
 }

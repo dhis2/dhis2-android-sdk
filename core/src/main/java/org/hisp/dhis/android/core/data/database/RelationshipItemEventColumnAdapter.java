@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,20 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.database;
 
-public final class UserRoleHandler extends IdentifiableSyncHandlerImpl<UserRole> {
+import android.content.ContentValues;
+import android.database.Cursor;
 
-    private UserRoleHandler(IdentifiableObjectStore<UserRole> userRoleStore) {
-        super(userRoleStore);
+import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
+
+public class RelationshipItemEventColumnAdapter implements ColumnTypeAdapter<RelationshipItemEvent> {
+
+    @Override
+    public RelationshipItemEvent fromCursor(Cursor cursor, String columnName) {
+        int index = cursor.getColumnIndex(columnName);
+
+        return index == -1 || cursor.isNull(index) ?
+                null : RelationshipItemEvent.builder().event(cursor.getString(index)).build();
     }
 
-    public static SyncHandler<UserRole> create(DatabaseAdapter databaseAdapter) {
-        return new UserRoleHandler(UserRoleStore.create(databaseAdapter));
+    @Override
+    public void toContentValues(ContentValues values, String columnName, RelationshipItemEvent value) {
+        if (value != null) {
+            values.put(columnName, value.event());
+        }
     }
 }

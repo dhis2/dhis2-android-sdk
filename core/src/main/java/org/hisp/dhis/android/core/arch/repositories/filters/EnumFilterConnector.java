@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,31 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
-public class RelationshipItemModelBuilder extends ModelBuilder<RelationshipItem, RelationshipItemModel> {
+import java.util.List;
 
-    private final RelationshipItemModel.Builder builder;
+public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
+        extends BaseFilterConnector<R, String> {
 
-    RelationshipItemModelBuilder(Relationship relationship, RelationshipConstraintType type) {
-        this.builder = RelationshipItemModel.builder()
-                .relationship(relationship.uid())
-                .relationshipItemType(type);
+    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                        List<RepositoryScopeItem> scope,
+                        String key) {
+        super(repositoryFactory, scope, key);
     }
 
-    @Override
-    public RelationshipItemModel buildModel(RelationshipItem relationshipItem) {
-        String trackedEntityInstance = relationshipItem.trackedEntityInstance() == null ? null :
-                relationshipItem.trackedEntityInstance().trackedEntityInstance();
-        String enrollment = relationshipItem.enrollment() == null ? null : relationshipItem.enrollment().enrollment();
-        String event = relationshipItem.event() == null ? null : relationshipItem.event().event();
+    public R eq(E value) {
+        return newWithScope("=", value.name());
+    }
 
-        return this.builder
-                .trackedEntityInstance(trackedEntityInstance)
-                .enrollment(enrollment)
-                .event(event)
-                .build();
+    String wrapValue(String value) {
+        return "'" + value + "'";
     }
 }

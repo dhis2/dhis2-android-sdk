@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
 
 import javax.inject.Inject;
@@ -40,11 +39,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class ProgramModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<Program> programs;
+    public final ProgramCollectionRepository programs;
     public final ProgramIndicatorEngine programIndicatorEngine;
 
     @Inject
-    ProgramModule(ReadOnlyIdentifiableCollectionRepository<Program> programs,
+    ProgramModule(ProgramCollectionRepository programs,
                   ProgramIndicatorEngine programIndicatorEngine) {
         this.programs = programs;
         this.programIndicatorEngine = programIndicatorEngine;

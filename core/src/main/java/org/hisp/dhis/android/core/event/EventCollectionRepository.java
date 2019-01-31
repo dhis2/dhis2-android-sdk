@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,11 +28,15 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -40,14 +44,26 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class EventCollectionRepository extends ReadOnlyWithUidCollectionRepositoryImpl<Event>
+public final class EventCollectionRepository
+        extends ReadOnlyWithUidCollectionRepositoryImpl<Event, EventCollectionRepository>
         implements ReadOnlyWithUploadWithUidCollectionRepository<Event> {
 
     private final EventPostCall postCall;
 
     @Inject
-    EventCollectionRepository(EventStore eventStore, EventPostCall postCall) {
-        super(eventStore, Collections.<ChildrenAppender<Event>>emptyList());
+    EventCollectionRepository(final EventStore store,
+                              final Collection<ChildrenAppender<Event>> childrenAppenders,
+                              final List<RepositoryScopeItem> scope,
+                              final EventPostCall postCall) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<EventCollectionRepository>() {
+
+                    @Override
+                    public EventCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new EventCollectionRepository(store, childrenAppenders, updatedScope, postCall);
+                    }
+                }));
         this.postCall = postCall;
     }
 

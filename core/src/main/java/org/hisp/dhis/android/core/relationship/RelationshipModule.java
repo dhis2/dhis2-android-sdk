@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -38,12 +36,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class RelationshipModule {
 
-    public final ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypes;
+    public final RelationshipTypeCollectionRepository relationshipTypes;
 
     public final RelationshipCollectionRepository relationships;
 
     @Inject
-    RelationshipModule(ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeRepository,
+    RelationshipModule(RelationshipTypeCollectionRepository relationshipTypeRepository,
                        RelationshipCollectionRepository relationshipRepository) {
         this.relationshipTypes = relationshipTypeRepository;
         this.relationships = relationshipRepository;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -40,12 +37,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class DataSetModule {
 
-    public final ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations;
-    public final ReadOnlyIdentifiableCollectionRepository<DataSet> dataSets;
+    public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
+    public final DataSetCollectionRepository dataSets;
 
     @Inject
-    DataSetModule(ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> dataSetCompleteRegistrations,
-                  ReadOnlyIdentifiableCollectionRepository<DataSet> dataSets) {
+    DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
+                  DataSetCollectionRepository dataSets) {
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
         this.dataSets = dataSets;
     }

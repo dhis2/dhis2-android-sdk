@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,18 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.database;
 
-final class RelationshipItemHandler {
+import org.hisp.dhis.android.core.relationship.Relationship;
 
-    private RelationshipItemHandler() {
-    }
+public class RelationshipWithUidColumnAdapter extends IdentifiableObjectColumnAdapter<Relationship> {
 
-    public static GenericHandler<RelationshipItem, RelationshipItemModel> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidHandlerImpl<>(RelationshipItemStoreImpl.create(databaseAdapter));
+    @Override
+    protected Relationship build(String uid) {
+        return Relationship.builder().uid(uid).build();
     }
 }

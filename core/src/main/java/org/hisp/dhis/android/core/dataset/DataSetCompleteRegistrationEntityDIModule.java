@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -31,8 +31,11 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,8 +60,7 @@ public final class DataSetCompleteRegistrationEntityDIModule
 
     @Provides
     @Reusable
-    ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> collectionRepository(
-            DataSetCompleteRegistrationCollectionRepository repositoryImpl) {
-        return repositoryImpl;
+    Collection<ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

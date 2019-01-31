@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCallFactory;
@@ -46,7 +45,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class TrackedEntityModule {
 
-    public final ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> trackedEntityInstances;
+    public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
     private final TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory;
     private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
@@ -54,7 +53,7 @@ public final class TrackedEntityModule {
 
     @Inject
     TrackedEntityModule(
-            ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> trackedEntityInstances,
+            TrackedEntityInstanceCollectionRepository trackedEntityInstances,
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,
             TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,

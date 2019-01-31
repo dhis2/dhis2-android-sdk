@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreWithState;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
@@ -41,8 +41,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -57,7 +55,7 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     private RelationshipItemStore relationshipItemStore;
 
     @Mock
-    private GenericHandler<RelationshipItem, RelationshipItemModel> relationshipItemHandler;
+    private SyncHandler<RelationshipItem> relationshipItemHandler;
 
     @Mock
     private RelationshipItemElementStoreSelector storeSelector;
@@ -173,21 +171,27 @@ public class RelationshipHandlerShould extends RelationshipSamples {
     @Test()
     public void update_relationship_handler_store_for_existing_relationship() {
         relationshipHandler.handle(existingRelationship);
-        verify(relationshipItemHandler).handle(same(fromItem), any(RelationshipItemModelBuilder.class));
-        verify(relationshipItemHandler).handle(same(toItem), any(RelationshipItemModelBuilder.class));
+        verify(relationshipItemHandler).handle(fromItem.toBuilder().relationship(existingRelationship)
+                .relationshipItemType(RelationshipConstraintType.FROM).build());
+        verify(relationshipItemHandler).handle(toItem.toBuilder().relationship(existingRelationship)
+                .relationshipItemType(RelationshipConstraintType.TO).build());
     }
 
     @Test()
     public void update_relationship_item_handler_for_existing_relationship_with_new_uid() {
         relationshipHandler.handle(existingRelationshipWithNewUid);
-        verify(relationshipItemHandler).handle(same(fromItem), any(RelationshipItemModelBuilder.class));
-        verify(relationshipItemHandler).handle(same(toItem), any(RelationshipItemModelBuilder.class));
+        verify(relationshipItemHandler).handle(fromItem.toBuilder().relationship(existingRelationshipWithNewUid)
+                .relationshipItemType(RelationshipConstraintType.FROM).build());
+        verify(relationshipItemHandler).handle(toItem.toBuilder().relationship(existingRelationshipWithNewUid)
+                .relationshipItemType(RelationshipConstraintType.TO).build());
     }
 
     @Test()
     public void update_relationship_item_handler_for_new_relationship() {
         relationshipHandler.handle(newRelationship);
-        verify(relationshipItemHandler).handle(eq(tei3Item), any(RelationshipItemModelBuilder.class));
-        verify(relationshipItemHandler).handle(eq(tei4Item), any(RelationshipItemModelBuilder.class));
+        verify(relationshipItemHandler).handle(tei3Item.toBuilder().relationship(newRelationship)
+                .relationshipItemType(RelationshipConstraintType.FROM).build());
+        verify(relationshipItemHandler).handle(tei4Item.toBuilder().relationship(newRelationship)
+                .relationshipItemType(RelationshipConstraintType.TO).build());
     }
 }

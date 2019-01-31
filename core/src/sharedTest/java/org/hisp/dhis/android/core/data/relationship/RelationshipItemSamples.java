@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,53 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.data.relationship;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
+import org.hisp.dhis.android.core.relationship.RelationshipItem;
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
 
-import java.io.IOException;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+public class RelationshipItemSamples {
 
-public class RelationshipItemModelBuilderShould {
-
-    private RelationshipItem pojo;
-
-    private RelationshipItemModel model;
-
-    private String TEI_UID = "tei_uid";
-
-    private RelationshipConstraintType CONSTRAINT_TYPE = RelationshipConstraintType.FROM;
-
-    private Relationship relationship = Relationship.builder()
-            .uid("relationship_uid")
-            .relationshipType("type").build();
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        pojo = buildPojo();
-        model = buildModel();
-    }
-
-    private RelationshipItem buildPojo() {
-        return RelationshipHelper.teiItem(TEI_UID);
-    }
-
-    private RelationshipItemModel buildModel() {
-        return new RelationshipItemModelBuilder(relationship, CONSTRAINT_TYPE).buildModel(pojo);
-    }
-
-    @Test
-    public void copy_pojo_relationship_properties() {
-        assertThat(model.relationship()).isEqualTo(relationship.uid());
-        assertThat(model.relationshipItemType()).isEqualTo(CONSTRAINT_TYPE);
-        assertThat(model.trackedEntityInstance()).isEqualTo(TEI_UID);
-        assertThat(model.enrollment()).isNull();
-        assertThat(model.event()).isNull();
+    public static RelationshipItem getRelationshipItem() {
+        return RelationshipItem.builder()
+                .relationship(Relationship.builder().uid("relationship").build())
+                .relationshipItemType(RelationshipConstraintType.FROM)
+                .event(RelationshipItemEvent.builder().event("event").build())
+                .build();
     }
 }

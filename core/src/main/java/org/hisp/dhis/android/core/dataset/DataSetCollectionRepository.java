@@ -37,23 +37,23 @@ import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnect
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class DataSetCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository> {
 
-    private DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,
-                                         final Collection<ChildrenAppender<DataSet>> childrenAppenders,
-                                         List<RepositoryScopeItem> scope) {
+    @Inject
+    DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,
+                                final Collection<ChildrenAppender<DataSet>> childrenAppenders,
+                                List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<DataSetCollectionRepository>() {
 
@@ -126,26 +126,5 @@ public final class DataSetCollectionRepository
 
     public BooleanFilterConnector<DataSetCollectionRepository> byAccessDataWrite() {
         return cf.bool(DataSetFields.ACCESS_DATA_WRITE);
-    }
-
-    static DataSetCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataSet> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataSetTableInfo.TABLE_INFO
-                );
-
-        return new DataSetCollectionRepository(
-                DataSetStore.create(databaseAdapter),
-                Arrays.asList(
-                        objectStyleChildrenAppender,
-                        SectionChildrenAppender.create(databaseAdapter),
-                        DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-                        DataInputPeriodChildrenAppender.create(databaseAdapter),
-                        DataSetElementChildrenAppender.create(databaseAdapter),
-                        DataSetIndicatorChildrenAppender.create(databaseAdapter)
-                ),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

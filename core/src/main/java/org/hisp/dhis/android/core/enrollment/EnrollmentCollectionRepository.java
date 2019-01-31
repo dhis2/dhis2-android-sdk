@@ -38,6 +38,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
+
+@Reusable
 public final class EnrollmentCollectionRepository
         extends ReadOnlyWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCollectionRepository> {
 
@@ -56,6 +59,4 @@ public final class EnrollmentCollectionRepository
                     }
                 }));
     }
-
-
 }

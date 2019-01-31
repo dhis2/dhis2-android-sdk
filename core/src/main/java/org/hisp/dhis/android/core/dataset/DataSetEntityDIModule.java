@@ -30,8 +30,15 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,7 +63,20 @@ public final class DataSetEntityDIModule implements IdentifiableEntityFromDataba
 
     @Provides
     @Reusable
-    DataSetCollectionRepository repository(DatabaseAdapter databaseAdapter) {
-        return DataSetCollectionRepository.create(databaseAdapter);
+    Collection<ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<DataSet> objectStyleChildrenAppender =
+                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        DataSetTableInfo.TABLE_INFO
+                );
+
+        return Arrays.asList(
+                objectStyleChildrenAppender,
+                SectionChildrenAppender.create(databaseAdapter),
+                DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
+                DataInputPeriodChildrenAppender.create(databaseAdapter),
+                DataSetElementChildrenAppender.create(databaseAdapter),
+                DataSetIndicatorChildrenAppender.create(databaseAdapter)
+        );
     }
 }

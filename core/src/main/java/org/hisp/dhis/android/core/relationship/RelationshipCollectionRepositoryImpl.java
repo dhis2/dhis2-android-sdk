@@ -49,9 +49,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
+@Reusable
 public final class RelationshipCollectionRepositoryImpl
         extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepositoryImpl>
         implements RelationshipCollectionRepository {
@@ -61,12 +66,13 @@ public final class RelationshipCollectionRepositoryImpl
     private final RelationshipItemStore relationshipItemStore;
     private final RelationshipItemElementStoreSelector storeSelector;
 
-    private RelationshipCollectionRepositoryImpl(final IdentifiableObjectStore<Relationship> store,
-                                                 final Collection<ChildrenAppender<Relationship>> childrenAppenders,
-                                                 List<RepositoryScopeItem> scope,
-                                                 final RelationshipHandler relationshipHandler,
-                                                 final RelationshipItemStore relationshipItemStore,
-                                                 final RelationshipItemElementStoreSelector storeSelector) {
+    @Inject
+    RelationshipCollectionRepositoryImpl(final IdentifiableObjectStore<Relationship> store,
+                                         final Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope,
+                                         final RelationshipHandler relationshipHandler,
+                                         final RelationshipItemStore relationshipItemStore,
+                                         final RelationshipItemElementStoreSelector storeSelector) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<RelationshipCollectionRepositoryImpl>() {
 
@@ -107,7 +113,7 @@ public final class RelationshipCollectionRepositoryImpl
                         .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
                         .errorDescription(
                                 "RelationshipItem from doesn't have updatable state: " +
-                                "(" + from + ": " + fromState +  ")")
+                                        "(" + from + ": " + fromState + ")")
                         .build();
             }
         }

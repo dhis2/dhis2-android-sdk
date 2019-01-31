@@ -36,21 +36,23 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class DataElementCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository> {
 
-    private DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,
-                                         final Collection<ChildrenAppender<DataElement>> childrenAppenders,
-                                         List<RepositoryScopeItem> scope) {
+    @Inject
+    DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,
+                                    final Collection<ChildrenAppender<DataElement>> childrenAppenders,
+                                    List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<DataElementCollectionRepository>() {
 
@@ -100,19 +102,5 @@ public final class DataElementCollectionRepository
 
     public StringFilterConnector<DataElementCollectionRepository> byCategoryComboUid() {
         return cf.string(DataElementFields.CATEGORY_COMBO);
-    }
-
-    static DataElementCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataElement> childrenAppender =
-                new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataElementTableInfo.TABLE_INFO
-                );
-
-        return new DataElementCollectionRepository(
-                DataElementStore.create(databaseAdapter),
-                Collections.singletonList(childrenAppender),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

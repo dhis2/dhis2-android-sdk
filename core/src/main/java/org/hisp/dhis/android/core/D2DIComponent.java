@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
@@ -36,6 +37,7 @@ import dagger.Component;
         APIClientDIModule.class,
         DatabaseDIModule.class,
         WipeDIModule.class,
+        RepositoryScopeDIModule.class,
 
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
@@ -71,6 +73,7 @@ public interface D2DIComponent {
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
+        Builder repositoryScopeDIModule(RepositoryScopeDIModule repositoryScopeDIModule);
 
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);

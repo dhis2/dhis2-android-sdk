@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.VisibleForTesting;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.concurrent.Callable;
@@ -45,7 +44,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class EventModule {
 
     private final EventWithLimitCallFactory eventWithLimitCallFactory;
-    public final ReadOnlyWithUploadWithUidCollectionRepository<Event> events;
+    public final EventCollectionRepository events;
 
     @VisibleForTesting
     @SuppressFBWarnings("URF_UNREAD_FIELD")
@@ -53,7 +52,7 @@ public final class EventModule {
 
     @Inject
     EventModule(EventWithLimitCallFactory eventWithLimitCallFactory,
-                ReadOnlyWithUploadWithUidCollectionRepository<Event> events,
+                EventCollectionRepository events,
                 EventPersistenceCallFactory eventPersistenceCallFactory) {
         this.eventWithLimitCallFactory = eventWithLimitCallFactory;
         this.events = events;

@@ -28,25 +28,45 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
-final class TrackedEntityInstanceCollectionRepository
-        extends ReadOnlyWithUidCollectionRepositoryImpl<TrackedEntityInstance>
+import dagger.Reusable;
+
+@Reusable
+public final class TrackedEntityInstanceCollectionRepository
+        extends ReadOnlyWithUidCollectionRepositoryImpl<TrackedEntityInstance,
+        TrackedEntityInstanceCollectionRepository>
         implements ReadOnlyWithUploadWithUidCollectionRepository<TrackedEntityInstance> {
 
     private final TrackedEntityInstancePostCall postCall;
 
     @Inject
-    TrackedEntityInstanceCollectionRepository(TrackedEntityInstanceStore store,
-                                              TrackedEntityInstancePostCall postCall) {
-        super(store, Collections.<ChildrenAppender<TrackedEntityInstance>>emptyList());
+    TrackedEntityInstanceCollectionRepository(
+            final TrackedEntityInstanceStore store,
+            final Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
+            final List<RepositoryScopeItem> scope,
+            final TrackedEntityInstancePostCall postCall) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<TrackedEntityInstanceCollectionRepository>() {
+
+                    @Override
+                    public TrackedEntityInstanceCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new TrackedEntityInstanceCollectionRepository(store, childrenAppenders,
+                                updatedScope, postCall);
+                    }
+                }));
         this.postCall = postCall;
     }
 

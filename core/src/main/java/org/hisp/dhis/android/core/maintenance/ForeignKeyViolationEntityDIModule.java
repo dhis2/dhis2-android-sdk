@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,5 +46,11 @@ public final class ForeignKeyViolationEntityDIModule {
     @Reusable
     public ObjectStore<ForeignKeyViolation> store(DatabaseAdapter databaseAdapter) {
         return ForeignKeyViolationStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

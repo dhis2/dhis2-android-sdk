@@ -28,21 +28,34 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-final class EnrollmentCollectionRepository {
+import javax.inject.Inject;
 
-    private EnrollmentCollectionRepository() {
+public final class EnrollmentCollectionRepository
+        extends ReadOnlyWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCollectionRepository> {
+
+    @Inject
+    EnrollmentCollectionRepository(
+            final EnrollmentStore store,
+            final Collection<ChildrenAppender<Enrollment>> childrenAppenders,
+            final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<EnrollmentCollectionRepository>() {
+
+                    @Override
+                    public EnrollmentCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new EnrollmentCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyWithUidCollectionRepository<Enrollment> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyWithUidCollectionRepositoryImpl<>(
-                EnrollmentStoreImpl.create(databaseAdapter),
-                new ArrayList<ChildrenAppender<Enrollment>>()
-        );
-    }
+
 }

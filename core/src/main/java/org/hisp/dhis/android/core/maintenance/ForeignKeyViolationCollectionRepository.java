@@ -26,24 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.maintenance;
+
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.ObjectStore;
+
+import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class DataSetModule {
-
-    public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
-    public final DataSetCollectionRepository dataSets;
+public final class ForeignKeyViolationCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<ForeignKeyViolation, ForeignKeyViolationCollectionRepository> {
 
     @Inject
-    DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
-                  DataSetCollectionRepository dataSets) {
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
-        this.dataSets = dataSets;
+    ForeignKeyViolationCollectionRepository(final ObjectStore<ForeignKeyViolation> store,
+                                            final Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
+                                            final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<ForeignKeyViolationCollectionRepository>() {
+
+                    @Override
+                    public ForeignKeyViolationCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new ForeignKeyViolationCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 }

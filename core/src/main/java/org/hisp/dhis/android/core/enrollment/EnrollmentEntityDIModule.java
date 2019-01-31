@@ -29,9 +29,12 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -55,7 +58,7 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    ReadOnlyWithUidCollectionRepository<Enrollment> repository(DatabaseAdapter databaseAdapter) {
-        return EnrollmentCollectionRepository.create(databaseAdapter);
+    Collection<ChildrenAppender<Enrollment>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

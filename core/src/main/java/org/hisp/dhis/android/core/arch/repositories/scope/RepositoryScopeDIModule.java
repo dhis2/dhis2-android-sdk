@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,24 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class DataSetModule {
+@Module()
+public final class RepositoryScopeDIModule {
 
-    public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
-    public final DataSetCollectionRepository dataSets;
-
-    @Inject
-    DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
-                  DataSetCollectionRepository dataSets) {
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
-        this.dataSets = dataSets;
+    @Provides
+    @Reusable
+    List<RepositoryScopeItem> emptyScope() {
+        return Collections.unmodifiableList(Collections.<RepositoryScopeItem>emptyList());
     }
 }

@@ -4,8 +4,10 @@ import android.util.Pair;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
+import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
@@ -34,8 +36,16 @@ public class SmsSubmitCase {
         return submit(new EventConverter(localDbRepository), event);
     }
 
+    public Observable<SmsRepository.SmsSendingState> submit(Enrollment enrollment) {
+        return submit(new EnrollmentConverter(), enrollment);
+    }
+
     public Completable checkConfirmationSms(Event event, int timeoutSeconds) {
         return checkConfirmationSms(new EventConverter(localDbRepository), event, timeoutSeconds);
+    }
+
+    public Completable checkConfirmationSms(Enrollment enrollment, int timeoutSeconds) {
+        return checkConfirmationSms(new EnrollmentConverter(), enrollment, timeoutSeconds);
     }
 
     public <T extends BaseDataModel> Observable<SmsRepository.SmsSendingState>

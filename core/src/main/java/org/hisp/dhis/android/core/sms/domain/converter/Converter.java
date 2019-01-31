@@ -27,6 +27,8 @@ public abstract class Converter<T extends BaseDataModel, P> {
     public abstract Single<P> getParamsTask();
 
     public Single<String> format(@NonNull T dataItem) {
-        return getParamsTask().map(params -> format(dataItem, params));
+        Single<P> paramsTask = getParamsTask();
+        if (paramsTask != null) return paramsTask.map(params -> format(dataItem, params));
+        return Single.fromCallable(() -> format(dataItem, null));
     }
 }

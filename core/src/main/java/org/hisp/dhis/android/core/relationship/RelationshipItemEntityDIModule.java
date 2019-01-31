@@ -28,47 +28,24 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class RelationshipEntityDIModule {
+public final class RelationshipItemEntityDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<Relationship> store(DatabaseAdapter databaseAdapter) {
-        return RelationshipStore.create(databaseAdapter);
+    RelationshipItemStore store(DatabaseAdapter databaseAdapter) {
+        return RelationshipItemStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    RelationshipHandler relationshipHandler(DatabaseAdapter databaseAdapter,
-                                            DHISVersionManager versionManager) {
-        return new RelationshipHandlerImpl(
-                RelationshipStore.create(databaseAdapter),
-                RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemHandler.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                new RelationshipDHISVersionManager(versionManager)
-        );
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<Relationship>> childrenAppenders(
-            RelationshipItemChildrenAppender itemChildrenAppender) {
-        List<ChildrenAppender<Relationship>> appenders = new ArrayList<>(1);
-        appenders.add(itemChildrenAppender);
-        return appenders;
+    RelationshipItemElementStoreSelector storeSelector(RelationshipItemElementStoreSelectorImpl impl) {
+        return impl;
     }
 }

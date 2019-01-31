@@ -29,10 +29,167 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.StoreWithState;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public interface RelationshipCollectionRepository extends ReadWriteIdentifiableCollectionRepository<Relationship> {
-    List<Relationship> getByItem(@NonNull RelationshipItem item);
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
+import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
+
+@Reusable
+public final class RelationshipCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>
+        implements ReadWriteIdentifiableCollectionRepository<Relationship> {
+
+    private final IdentifiableObjectStore<Relationship> store;
+    private final RelationshipHandler relationshipHandler;
+    private final RelationshipItemStore relationshipItemStore;
+    private final RelationshipItemElementStoreSelector storeSelector;
+
+    @Inject
+    RelationshipCollectionRepository(final IdentifiableObjectStore<Relationship> store,
+                                     final Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                     List<RepositoryScopeItem> scope,
+                                     final RelationshipHandler relationshipHandler,
+                                     final RelationshipItemStore relationshipItemStore,
+                                     final RelationshipItemElementStoreSelector storeSelector) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<RelationshipCollectionRepository>() {
+
+                    @Override
+                    public RelationshipCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new RelationshipCollectionRepository(store, childrenAppenders, updatedScope,
+                                relationshipHandler, relationshipItemStore, storeSelector);
+                    }
+                }));
+        this.store = store;
+        this.relationshipHandler = relationshipHandler;
+        this.relationshipItemStore = relationshipItemStore;
+        this.storeSelector = storeSelector;
+    }
+
+    @Override
+    public void add(Relationship relationship) throws D2Error {
+        if (relationshipHandler.doesRelationshipExist(relationship)) {
+            throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                    .errorDescription("Tried to create already existing Relationship: " + relationship)
+                    .build();
+        } else {
+            RelationshipItem from = relationship.from();
+            StoreWithState fromStore = storeSelector.getElementStore(from);
+            State fromState = fromStore.getState(from.elementUid());
+
+            if (isUpdatableState(fromState)) {
+                relationshipHandler.handle(relationship);
+                setToUpdate(fromStore, fromState, from.elementUid());
+            } else {
+                throw D2Error
+                        .builder()
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .errorCode(D2ErrorCode.OBJECT_CANT_BE_UPDATED)
+                        .errorDescription(
+                                "RelationshipItem from doesn't have updatable state: " +
+                                        "(" + from + ": " + fromState + ")")
+                        .build();
+            }
+        }
+    }
+
+    @Override
+    public ReadWriteObjectRepository<Relationship> uid(String uid) {
+        return new RelationshipObjectRepository(store, uid, childrenAppenders, storeSelector);
+    }
+
+    private boolean isUpdatableState(State state) {
+        return state == State.SYNCED || state == State.TO_POST || state == State.TO_UPDATE;
+    }
+
+    private void setToUpdate(StoreWithState store, State state, String elementUid) {
+        if (state == State.SYNCED) {
+            store.setState(elementUid, State.TO_UPDATE);
+        }
+    }
+
+    public List<Relationship> getByItem(@NonNull RelationshipItem searchItem) {
+
+        // TODO Create query to avoid retrieving the whole table
+        List<RelationshipItem> relationshipItems = this.relationshipItemStore.selectAll();
+
+        List<Relationship> allRelationshipsFromDb = this.store.selectAll();
+
+        List<Relationship> relationships = new ArrayList<>();
+
+        for (RelationshipItem iterationItem : relationshipItems) {
+            if (searchItem.equals(iterationItem)) {
+                Relationship relationshipFromDb =
+                        UidsHelper.findByUid(allRelationshipsFromDb, iterationItem.relationship().uid());
+
+                if (relationshipFromDb == null) {
+                    continue;
+                }
+
+                RelationshipConstraintType itemType = iterationItem.relationshipItemType();
+
+                RelationshipItem relatedItem = findRelatedTEI(relationshipItems,
+                        iterationItem.relationship().uid(), itemType == FROM ? TO : FROM);
+
+                if (relatedItem == null) {
+                    continue;
+                }
+
+                RelationshipItem from, to;
+                if (itemType == FROM) {
+                    from = iterationItem;
+                    to = relatedItem;
+                } else {
+                    from = relatedItem;
+                    to = iterationItem;
+                }
+
+                Relationship relationship = Relationship.builder()
+                        .uid(relationshipFromDb.uid())
+                        .relationshipType(relationshipFromDb.relationshipType())
+                        .from(from)
+                        .to(to)
+                        .build();
+
+                relationships.add(relationship);
+            }
+        }
+
+        return relationships;
+    }
+
+    private RelationshipItem findRelatedTEI(Collection<RelationshipItem> items, String relationshipUid,
+                                            RelationshipConstraintType type) {
+        for (RelationshipItem item : items) {
+            if (relationshipUid.equals(item.relationship().uid()) && item.relationshipItemType() == type) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

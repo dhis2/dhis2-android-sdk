@@ -36,13 +36,19 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class RelationshipItemElementStoreSelectorImpl implements RelationshipItemElementStoreSelector {
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
 
-    private RelationshipItemElementStoreSelectorImpl(
+    @Inject
+    RelationshipItemElementStoreSelectorImpl(
             TrackedEntityInstanceStore trackedEntityInstanceStore,
             EnrollmentStore enrollmentStore,
             EventStore eventStore) {

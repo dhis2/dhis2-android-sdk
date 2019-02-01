@@ -28,28 +28,38 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-final class ProgramRuleFields {
+public final class ProgramRuleTableInfo {
 
-    static final String PRIORITY = "priority";
-    static final String CONDITION = "condition";
-    static final String PROGRAM = "program";
-    static final String PROGRAM_STAGE = "programStage";
-    private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
+    private ProgramRuleTableInfo() {
+    }
 
-    private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
-    static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<Integer>field(PRIORITY),
-                    fh.<String>field(CONDITION),
-                    fh.nestedFieldWithUid(PROGRAM),
-                    fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields)
-            ).build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private ProgramRuleFields() {
+        @Override
+        public String name() {
+            return "ProgramRule";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramRuleFields.PRIORITY,
+                    ProgramRuleFields.CONDITION,
+                    ProgramRuleFields.PROGRAM,
+                    ProgramRuleFields.PROGRAM_STAGE
+            );
+        }
     }
 }

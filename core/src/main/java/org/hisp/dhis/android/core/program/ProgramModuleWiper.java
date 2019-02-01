@@ -56,9 +56,9 @@ public final class ProgramModuleWiper implements ModuleWiper {
 
                 ProgramRuleActionTableInfo.TABLE_INFO.name(),
                 ProgramRuleModel.TABLE,
-                ProgramStageDataElementModel.TABLE,
+                ProgramStageDataElementTableInfo.TABLE_INFO.name(),
                 ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageModel.TABLE);
+                ProgramStageTableInfo.TABLE_INFO.name());
     }
 
     @Override

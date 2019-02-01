@@ -29,14 +29,14 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
 
@@ -52,13 +52,13 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
     private static final int MAX_UID_LIST_SIZE = 64;
 
     private final ProgramStageService service;
-    private final GenericHandler<ProgramStage, ProgramStageModel> handler;
+    private final SyncHandler<ProgramStage> handler;
 
     @Inject
     ProgramStageEndpointCallFactory(GenericCallData data,
                                     APICallExecutor apiCallExecutor,
                                     ProgramStageService service,
-                                    GenericHandler<ProgramStage, ProgramStageModel> handler) {
+                                    SyncHandler<ProgramStage> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;
@@ -83,10 +83,9 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
 
     @Override
     protected CallProcessor<ProgramStage> processor() {
-        return new TransactionalNoResourceCallProcessor<>(
+        return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                handler,
-                new ProgramStageModelBuilder()
+                handler
         );
     }
 }

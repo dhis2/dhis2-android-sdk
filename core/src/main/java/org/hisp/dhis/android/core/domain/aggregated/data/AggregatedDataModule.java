@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.Unit;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -45,7 +46,7 @@ public final class AggregatedDataModule {
         this.aggregatedDataCallProvider = aggregatedDataCallProvider;
     }
 
-    public Call<Unit> download() {
+    public Callable<Unit> download() {
         return aggregatedDataCallProvider.get();
     }
 }

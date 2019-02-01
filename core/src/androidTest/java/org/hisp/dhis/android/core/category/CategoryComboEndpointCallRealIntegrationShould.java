@@ -4,7 +4,6 @@ package org.hisp.dhis.android.core.category;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelStore;
@@ -15,6 +14,7 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -39,7 +39,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertNotCombosInDB();
         assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
 
-        Call<List<CategoryCombo>> categoryComboEndpointCall =
+        Callable<List<CategoryCombo>> categoryComboEndpointCall =
                 getD2DIComponent(d2).internalModules().category.categoryComboCallFactory.create(
                         new HashSet<>(Lists.newArrayList("bjDvmb4bfuf")));
         List<CategoryCombo> categoryCombos = categoryComboEndpointCall.call();

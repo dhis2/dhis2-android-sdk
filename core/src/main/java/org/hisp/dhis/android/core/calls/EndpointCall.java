@@ -32,11 +32,11 @@ import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.common.SyncCall;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public final class EndpointCall<P> extends SyncCall<List<P>> {
+public final class EndpointCall<P> implements Callable<List<P>> {
 
     private final CallFetcher<P> fetcher;
     private final CallProcessor<P> processor;
@@ -49,8 +49,6 @@ public final class EndpointCall<P> extends SyncCall<List<P>> {
 
     @Override
     public List<P> call() throws Exception {
-        setExecuted();
-
         List<P> objects = fetcher.fetch();
         processor.process(objects);
         return objects;

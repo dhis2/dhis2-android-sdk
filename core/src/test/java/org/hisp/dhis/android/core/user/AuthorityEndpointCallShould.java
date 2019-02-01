@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.After;
@@ -42,6 +41,7 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import retrofit2.Response;
 
@@ -63,7 +63,7 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     @Mock
     private List<String> payload;
 
-    private Call<List<Authority>> endpointCall;
+    private Callable<List<Authority>> endpointCall;
 
 
     @Before

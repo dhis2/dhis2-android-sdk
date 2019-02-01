@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -66,7 +65,7 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 public class OptionSetCallShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<List<OptionSet>> optionSetCall;
+    private Callable<List<OptionSet>> optionSetCall;
     private D2CallExecutor d2CallExecutor;
 
     @Override

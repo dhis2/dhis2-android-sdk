@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -45,6 +44,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
@@ -57,7 +57,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Call<List<DataValue>> dataValueCall;
+    private Callable<List<DataValue>> dataValueCall;
 
     @Before
     @Override
@@ -67,7 +67,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
         dataValueCall = createCall();
     }
 
-    private Call<List<DataValue>> createCall() {
+    private Callable<List<DataValue>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
         SyncHandler<DataValue> dataValueHandler =  new ObjectWithoutUidSyncHandlerImpl<>(
                 DataValueStore.create(databaseAdapter()));

@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.core.calls.factories;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public abstract class ListCallFactoryImpl<P> implements ListCallFactory<P> {
 
@@ -48,7 +48,7 @@ public abstract class ListCallFactoryImpl<P> implements ListCallFactory<P> {
     }
 
     @Override
-    public final Call<List<P>> create() {
+    public final Callable<List<P>> create() {
         return new EndpointCall<>(fetcher(), processor());
     }
 

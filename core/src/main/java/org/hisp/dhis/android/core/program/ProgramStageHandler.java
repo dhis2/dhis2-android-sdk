@@ -46,9 +46,10 @@ import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
+import java.util.List;
 
 public class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage> {
-    private final ProgramStageSectionHandler programStageSectionHandler;
+    private final SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
@@ -57,7 +58,7 @@ public class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStag
     private final DHISVersionManager versionManager;
 
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
-                        ProgramStageSectionHandler programStageSectionHandler,
+                        SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
                         ProgramStageDataElementHandler programStageDataElementHandler,
                         SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,

@@ -33,7 +33,7 @@ import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.constant.ConstantModel;
+import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -103,7 +103,7 @@ public class ProgramIndicatorEngine {
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
     private final IdentifiableObjectStore<DataElement> dataElementStore;
-    private final IdentifiableObjectStore<ConstantModel> constantStore;
+    private final IdentifiableObjectStore<Constant> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     @Inject
@@ -112,7 +112,7 @@ public class ProgramIndicatorEngine {
                            EnrollmentStore enrollmentStore,
                            EventStore eventStore,
                            IdentifiableObjectStore<DataElement> dataElementStore,
-                           IdentifiableObjectStore<ConstantModel> constantStore,
+                           IdentifiableObjectStore<Constant> constantStore,
                            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         this.programIndicatorStore = programIndicatorStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
@@ -232,7 +232,7 @@ public class ProgramIndicatorEngine {
                     matcher.appendReplacement(buffer, TextUtils.quote(value));
                 }
             } else if (KEY_CONSTANT.equals(key)) {
-                ConstantModel constant = constantStore.selectByUid(uid);
+                Constant constant = constantStore.selectByUid(uid);
 
                 if (constant != null) {
                     matcher.appendReplacement(buffer, String.valueOf(constant.value()));

@@ -7,6 +7,7 @@ import junit.framework.Assert;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
+import org.hisp.dhis.android.core.arch.api.responses.HttpMessageResponse;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
@@ -21,7 +22,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
-import org.hisp.dhis.android.core.trackedentity.glass.BreakGlassResponse;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
@@ -162,7 +162,7 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
             assertEnrollments(importSummary, ERROR);
         }
 
-        BreakGlassResponse glassResponse =
+        HttpMessageResponse glassResponse =
                 executor.executeObjectCall(trackedEntityInstanceService.breakGlass(tei.uid(), program, "Sync"));
 
         WebResponse secondResponse = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
@@ -244,7 +244,7 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
             assertEvents(importSummary, ERROR);         // It takes enrollment ownership
         }
 
-        BreakGlassResponse glassResponse =
+        HttpMessageResponse glassResponse =
                 executor.executeObjectCall(trackedEntityInstanceService.breakGlass(tei.uid(), program, "Sync"));
 
         WebResponse response2 = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
@@ -303,47 +303,6 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(instances);
         return payload;
-    }
-
-
-    //@Test
-    public void tei_with_invalid_tracked_entity_attribute() throws Exception {
-        login();
-
-        TrackedEntityInstance validTEI = createValidTrackedEntityInstance();
-
-        TrackedEntityInstance invalidTEI = createTrackedEntityInstanceWithInvalidAttribute();
-
-        TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
-        payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
-
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
-
-        assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
-
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
-            if (validTEI.uid().equals(importSummary.reference())) {
-                assertTei(importSummary, SUCCESS);
-            }
-            else if (invalidTEI.uid().equals(importSummary.reference())) {
-                assertTei(importSummary, ERROR);
-            }
-        }
-
-        // Check server status
-        TrackedEntityInstance serverValidTEI = executor.executeObjectCall(trackedEntityInstanceService
-                .getTrackedEntityInstance(validTEI.uid(), TrackedEntityInstanceFields.allFields, true));
-
-        try {
-            executor.executeObjectCall(trackedEntityInstanceService
-                    .getTrackedEntityInstance(invalidTEI.uid(), TrackedEntityInstanceFields.allFields, true));
-            Assert.fail("Should not reach that line");
-        } catch (D2Error e) {
-            assertThat(e.httpErrorCode()).isEqualTo(404);
-        }
-
-        assertThat(serverValidTEI).isNotNull();
     }
 
     private TrackedEntityInstance teiWithEventInSearchScope() {

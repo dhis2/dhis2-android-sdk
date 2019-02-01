@@ -113,10 +113,14 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 throw storeAndReturn(responseException(errorBuilder, response));
             } else {
                 D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
-                if (d2ErrorCode == null) {
-                    throw storeAndReturn(responseException(errorBuilder, response));
+
+                D2Error d2error = d2ErrorCode == null ? responseException(errorBuilder, response) :
+                        errorBuilder.errorCode(d2ErrorCode).errorDescription("").build();
+
+                if (errorCatcher.isPersistable()) {
+                    throw storeAndReturn(d2error);
                 } else {
-                    throw storeAndReturn(errorBuilder.errorCode(d2ErrorCode).build());
+                    throw d2error;
                 }
             }
         } catch (SocketTimeoutException e) {

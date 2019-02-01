@@ -26,44 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.glass;
+package org.hisp.dhis.android.core.arch.api.responses;
 
 import android.support.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class BreakGlassResponse {
-    private final static String HTTP_STATUS = "httpStatus";
-    private final static String HTTP_STATUS_CODE = "httpStatusCode";
-    private final static String STATUS = "status";
-    private final static String MESSAGE = "message";
+@JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
+public abstract class HttpMessageResponse {
 
     @NonNull
-    @JsonProperty(HTTP_STATUS)
     public abstract String httpStatus();
 
     @NonNull
-    @JsonProperty(HTTP_STATUS_CODE)
     public abstract Integer httpStatusCode();
 
     @NonNull
-    @JsonProperty(STATUS)
     public abstract String status();
 
     @NonNull
-    @JsonProperty(MESSAGE)
     public abstract String message();
 
-    @JsonCreator
-    static BreakGlassResponse create(
-            @JsonProperty(HTTP_STATUS) String httpStatus,
-            @JsonProperty(HTTP_STATUS_CODE) Integer httpStatusCode,
-            @JsonProperty(STATUS) String status,
-            @JsonProperty(MESSAGE) String message) {
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder httpStatus(String httpStatus);
 
-        return new AutoValue_BreakGlassResponse(httpStatus, httpStatusCode, status, message);
+        public abstract Builder httpStatusCode(Integer httpStatusCode);
+
+        public abstract Builder status(String status);
+
+        public abstract Builder message(String message);
+
+        public abstract HttpMessageResponse build();
     }
 }

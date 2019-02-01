@@ -26,16 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors;
+package org.hisp.dhis.android.core.arch.api.responses;
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
 
-import retrofit2.Response;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public interface APICallErrorCatcher {
-    Boolean isPersistable();
+public class HttpMessageResponseShould extends BaseObjectShould implements ObjectShould {
 
-    D2ErrorCode catchError(Response<?> response) throws IOException;
+    public HttpMessageResponseShould() {
+        super("trackedentity/glass/break_glass_successful.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        HttpMessageResponse response = objectMapper.readValue(jsonStream, HttpMessageResponse.class);
+
+        assertThat(response.httpStatus()).isEqualTo("OK");
+        assertThat(response.httpStatusCode()).isEqualTo(200);
+        assertThat(response.status()).isEqualTo("OK");
+        assertThat(response.message()).isEqualTo("Temporary Ownership granted");
+    }
 }

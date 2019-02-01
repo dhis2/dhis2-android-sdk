@@ -26,16 +26,36 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors;
+package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.api.responses.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-
-import java.io.IOException;
 
 import retrofit2.Response;
 
-public interface APICallErrorCatcher {
-    Boolean isPersistable();
+final class TrackedEntityInstanceCallErrorCatcher implements APICallErrorCatcher {
 
-    D2ErrorCode catchError(Response<?> response) throws IOException;
+    @Override
+    public Boolean isPersistable() {
+        return false;
+    }
+
+    @Override
+    public D2ErrorCode catchError(Response<?> response) {
+
+        try {
+            HttpMessageResponse parsed = ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(),
+                    HttpMessageResponse.class);
+
+            if (parsed.httpStatusCode() == 401 && parsed.message().equals("OWNERSHIP_ACCESS_DENIED")) {
+                return D2ErrorCode.OWNERSHIP_ACCESS_DENIED;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

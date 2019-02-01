@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
@@ -41,25 +43,35 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<Program> {
+public final class ProgramEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
     public ProgramStoreInterface store(DatabaseAdapter databaseAdapter) {
         return ProgramStore.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<Program> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramHandler.create(databaseAdapter);
+    public SyncHandler<Program> handler(ProgramHandler impl) {
+        return impl;
     }
 
     @Provides
     @Reusable
     Collection<ChildrenAppender<Program>> childrenAppenders() {
         return Collections.emptyList();
+    }
+
+    @Provides
+    @Reusable
+    CollectionCleaner<Program> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    ParentOrphanCleaner<Program> parentOrphanCleaner(DatabaseAdapter databaseAdapter) {
+        return ProgramOrphanCleaner.create(databaseAdapter);
     }
 }

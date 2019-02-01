@@ -25,19 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class ProgramRuleVariableHandler extends IdentifiableSyncHandlerImpl<ProgramRuleVariable> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private ProgramRuleVariableHandler(IdentifiableObjectStore<ProgramRuleVariable> programRuleVariableStore) {
-        super(programRuleVariableStore);
+@Module
+public final class ProgramSectionEntityDIModule {
+
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<ProgramSectionModel> store(DatabaseAdapter databaseAdapter) {
+        return ProgramSectionStore.create(databaseAdapter);
     }
 
-    public static ProgramRuleVariableHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleVariableHandler(ProgramRuleVariableStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    public GenericHandler<ProgramSection, ProgramSectionModel> handler(DatabaseAdapter databaseAdapter) {
+        return ProgramSectionHandler.create(databaseAdapter);
     }
 }

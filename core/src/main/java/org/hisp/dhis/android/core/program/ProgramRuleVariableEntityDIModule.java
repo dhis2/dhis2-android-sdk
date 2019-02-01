@@ -28,58 +28,27 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        ProgramEntityDIModule.class,
-        ProgramIndicatorEntityDIModule.class,
-        ProgramRuleEntityDIModule.class,
-        ProgramRuleVariableEntityDIModule.class,
-        ProgramSectionEntityDIModule.class,
-        ProgramStageEntityDIModule.class,
-        ProgramTrackedEntityAttributeEntityDIModule.class
-})
-public final class ProgramPackageDIModule {
+@Module
+public final class ProgramRuleVariableEntityDIModule {
 
     @Provides
     @Reusable
-    ListCallFactory<Program> programCallFactory(ProgramEndpointCallFactory impl) {
-        return impl;
+    public IdentifiableObjectStore<ProgramRuleVariable> store(DatabaseAdapter databaseAdapter) {
+        return ProgramRuleVariableStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<ProgramRule> programRuleCallFactory(ProgramRuleEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    UidsCallFactory<ProgramStage> programStageCallFactory(ProgramStageEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ProgramRuleService programRuleService(Retrofit retrofit) {
-        return retrofit.create(ProgramRuleService.class);
-    }
-
-    @Provides
-    @Reusable
-    ProgramService programService(Retrofit retrofit) {
-        return retrofit.create(ProgramService.class);
-    }
-
-    @Provides
-    @Reusable
-    ProgramStageService programStageService(Retrofit retrofit) {
-        return retrofit.create(ProgramStageService.class);
+    public SyncHandler<ProgramRuleVariable> handler(IdentifiableObjectStore<ProgramRuleVariable> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

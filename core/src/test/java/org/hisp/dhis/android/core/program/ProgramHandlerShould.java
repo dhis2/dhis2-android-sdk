@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
@@ -35,7 +34,6 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -62,16 +60,16 @@ import static org.mockito.Mockito.when;
 public class ProgramHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<Program> programStore;
+    private ProgramStoreInterface programStore;
 
     @Mock
-    private IdentifiableSyncHandlerImpl<ProgramRuleVariable> programRuleVariableHandler;
+    private SyncHandler<ProgramRuleVariable> programRuleVariableHandler;
 
     @Mock
     private SyncHandler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
-    private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
+    private SyncHandler<ProgramRule> programRuleHandler;
 
     @Mock
     private SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;

@@ -28,44 +28,43 @@
 
 package org.hisp.dhis.android.core.constant;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.common.Model;
 
 @AutoValue
-public abstract class Constant extends BaseIdentifiableObject {
-    private static final String VALUE = "value";
-
-    public static final Field<Constant, String> uid = Field.create(UID);
-    public static final Field<Constant, String> code = Field.create(CODE);
-    public static final Field<Constant, String> name = Field.create(NAME);
-    public static final Field<Constant, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<Constant, String> created = Field.create(CREATED);
-    public static final Field<Constant, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<Constant, String> value = Field.create(VALUE);
-    public static final Field<Constant, Boolean> deleted = Field.create(DELETED);
+@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
+public abstract class Constant extends BaseIdentifiableObject implements Model {
 
     @Nullable
-    @JsonProperty(VALUE)
+    @JsonProperty()
     public abstract Double value();
 
-    @JsonCreator
-    public static Constant create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(VALUE) Double value,
-            @JsonProperty(DELETED) Boolean deleted) {
-        return new AutoValue_Constant(uid, code, name, displayName, created, lastUpdated, deleted, value);
+    public static Builder builder() {
+        return new AutoValue_Constant.Builder();
+    }
+
+    static Constant create(Cursor cursor) {
+        return $AutoValue_Constant.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder value(Double value);
+
+        public abstract Constant build();
     }
 }

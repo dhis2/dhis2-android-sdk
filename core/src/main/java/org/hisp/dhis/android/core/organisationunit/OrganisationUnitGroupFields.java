@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,34 +28,22 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import javax.inject.Inject;
+public final class OrganisationUnitGroupFields {
 
-import dagger.Reusable;
+    private static final FieldsHelper<OrganisationUnitGroup> fh = new FieldsHelper<>();
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+    public static final Fields<OrganisationUnitGroup> allFields =
+            Fields.<OrganisationUnitGroup>builder()
+                    .fields(fh.getIdentifiableFields())
+                    .fields(
+                        fh.<String>field(BaseNameableObject.SHORT_NAME),
+                        fh.<String>field(BaseNameableObject.DISPLAY_SHORT_NAME)
+                    ).build();
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    private OrganisationUnitGroupFields() {
     }
 }

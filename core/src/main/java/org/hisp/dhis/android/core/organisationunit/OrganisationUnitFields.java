@@ -64,7 +64,7 @@ public final class OrganisationUnitFields {
                     fh.nestedFieldWithUid(DATA_SETS),
                     fh.<OrganisationUnit>nestedField(ANCESTORS).with(uid, displayName),
                     fh.<OrganisationUnitGroup>nestedField(ORGANISATION_UNIT_GROUPS)
-                            .with(OrganisationUnitGroup.allFields)
+                            .with(OrganisationUnitGroupFields.allFields)
             ).build();
 
     public static final Fields<OrganisationUnit> fieldsInUserCall = Fields.<OrganisationUnit>builder()

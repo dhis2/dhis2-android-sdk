@@ -31,9 +31,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
@@ -64,7 +64,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     private final LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
     private final LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
     private final LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitLinkHandler;
-    private final GenericHandler<OrganisationUnitGroup, OrganisationUnitGroupModel> organisationUnitGroupHandler;
+    private final SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
     private final LinkModelHandler<ObjectWithUid,
             OrganisationUnitOrganisationUnitGroupLinkModel> organisationUnitGroupLinkHandler;
     private final CollectionCleaner<ObjectWithUid> programCollectionCleaner;
@@ -91,8 +91,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                                 @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
                                 @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
                                 @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner,
-                                @Nullable GenericHandler<OrganisationUnitGroup,
-                                    OrganisationUnitGroupModel> organisationUnitGroupHandler,
+                                @Nullable SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler,
                                 @NonNull LinkModelHandler<ObjectWithUid,
                                     OrganisationUnitOrganisationUnitGroupLinkModel>
                                     organisationUnitGroupLinkHandler) {
@@ -127,8 +126,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
         addOrganisationUnitProgramLink(organisationUnit);
         addOrganisationUnitDataSetLink(organisationUnit);
 
-        organisationUnitGroupHandler.handleMany(organisationUnit.organisationUnitGroups(),
-                new OrganisationUnitGroupModelBuilder());
+        organisationUnitGroupHandler.handleMany(organisationUnit.organisationUnitGroups());
 
         addOrganisationUnitOrganisationUnitGroupLink(organisationUnit);
     }
@@ -227,8 +225,9 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                         DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
                 new CollectionCleanerImpl<ObjectWithUid>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new CollectionCleanerImpl<ObjectWithUid>(DataSetModel.TABLE, databaseAdapter),
-                new CollectionCleanerImpl<ObjectWithUid>(OrganisationUnitGroupModel.TABLE, databaseAdapter),
-                OrganisationUnitGroupHandler.create(databaseAdapter),
+                new CollectionCleanerImpl<ObjectWithUid>(
+                        OrganisationUnitGroupTableInfo.TABLE_INFO.name(), databaseAdapter),
+                new IdentifiableSyncHandlerImpl<>(OrganisationUnitGroupStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<ObjectWithUid, OrganisationUnitOrganisationUnitGroupLinkModel>(
                         OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)));
     }

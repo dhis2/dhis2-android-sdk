@@ -57,7 +57,7 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramStage.Builder.class)
-@SuppressWarnings({"PMD.ExcessivePublicCount"})
+@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
 public abstract class ProgramStage extends BaseIdentifiableObject
         implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, Model {
 

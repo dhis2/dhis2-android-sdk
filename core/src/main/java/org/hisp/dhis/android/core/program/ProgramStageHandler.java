@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
-import java.util.List;
 
 public class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage> {
     private final SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;

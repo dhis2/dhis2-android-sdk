@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -47,7 +48,7 @@ public final class NoteEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<Note> handler(DatabaseAdapter databaseAdapter) {
-        return NoteHandler.create(databaseAdapter);
+    public SyncHandler<Note> handler(ObjectWithoutUidStore<Note> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

@@ -24,10 +24,11 @@ public class SmsDIModule {
     }
 
     @Provides
-    LocalDbRepository localDbRepository(UserModule userModule,
+    LocalDbRepository localDbRepository(Context context,
+                                        UserModule userModule,
                                         CategoryOptionComboCollectionRepository categoryOptionCombos,
                                         EventStore eventStore) {
-        return new LocalDbRepositoryImpl(userModule, categoryOptionCombos, eventStore);
+        return new LocalDbRepositoryImpl(context, userModule, categoryOptionCombos, eventStore);
     }
 
     @Provides

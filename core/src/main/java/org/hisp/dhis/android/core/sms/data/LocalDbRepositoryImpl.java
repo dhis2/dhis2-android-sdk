@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.core.sms.data;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
@@ -15,12 +15,12 @@ import io.reactivex.Single;
 public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     private final UserModule userModule;
-    private final ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos;
+    private final CategoryOptionComboCollectionRepository categoryOptionCombos;
     private final EventStore eventStore;
     private final static String DEFAULT_CATEGORY_OPTION_COMBO_CODE = "default";
 
     public LocalDbRepositoryImpl(UserModule userModule,
-                                 ReadOnlyIdentifiableCollectionRepository<CategoryOptionCombo> categoryOptionCombos,
+                                 CategoryOptionComboCollectionRepository categoryOptionCombos,
                                  EventStore eventStore) {
         this.userModule = userModule;
         this.categoryOptionCombos = categoryOptionCombos;

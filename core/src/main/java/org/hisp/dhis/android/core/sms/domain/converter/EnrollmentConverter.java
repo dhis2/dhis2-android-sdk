@@ -10,7 +10,7 @@ import io.reactivex.Single;
 
 public class EnrollmentConverter extends Converter<Enrollment, Void> {
     @Override
-    public String format(@NonNull Enrollment Enrollment, Void params) {
+    public String format(@NonNull Enrollment enrollment, Void params) {
         return null;
     }
 

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import android.database.Cursor;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;

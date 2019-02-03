@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,36 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.data.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-import dagger.Reusable;
+public class OrganisationUnitGroupSamples {
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+    public static OrganisationUnitGroup getOrganisationUnitGroup() {
+        OrganisationUnitGroup.Builder builder = OrganisationUnitGroup.builder();
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        fillIdentifiableProperties(builder);
+        return builder
+                .shortName("short_name")
+                .displayShortName("display_short_name")
+                .build();
     }
 }

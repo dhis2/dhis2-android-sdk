@@ -45,27 +45,27 @@ final class OrganisationUnitGroupStore {
 
     private OrganisationUnitGroupStore() {}
 
-    private static StatementBinder<OrganisationUnitGroupModel> BINDER
-            = new IdentifiableStatementBinder<OrganisationUnitGroupModel>() {
+    private static StatementBinder<OrganisationUnitGroup> BINDER
+            = new IdentifiableStatementBinder<OrganisationUnitGroup>() {
         @Override
-        public void bindToStatement(@NonNull OrganisationUnitGroupModel organisationUnitGroupModel,
+        public void bindToStatement(@NonNull OrganisationUnitGroup organisationUnitGroup,
                                     @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(organisationUnitGroupModel, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, organisationUnitGroupModel.shortName());
-            sqLiteBind(sqLiteStatement, 8, organisationUnitGroupModel.displayShortName());
+            super.bindToStatement(organisationUnitGroup, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, organisationUnitGroup.shortName());
+            sqLiteBind(sqLiteStatement, 8, organisationUnitGroup.displayShortName());
         }
     };
 
-    private static final CursorModelFactory<OrganisationUnitGroupModel> FACTORY
-            = new CursorModelFactory<OrganisationUnitGroupModel>() {
+    private static final CursorModelFactory<OrganisationUnitGroup> FACTORY
+            = new CursorModelFactory<OrganisationUnitGroup>() {
         @Override
-        public OrganisationUnitGroupModel fromCursor(Cursor cursor) {
-            return OrganisationUnitGroupModel.create(cursor);
+        public OrganisationUnitGroup fromCursor(Cursor cursor) {
+            return OrganisationUnitGroup.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<OrganisationUnitGroupModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitGroupModel.TABLE,
-                new OrganisationUnitGroupModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<OrganisationUnitGroup> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(
+                databaseAdapter, OrganisationUnitGroupTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

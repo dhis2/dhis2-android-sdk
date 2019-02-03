@@ -29,11 +29,10 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Sets;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -41,7 +40,6 @@ import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,7 +77,7 @@ public class OrganisationUnitHandlerShould {
     private LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
 
     @Mock
-    private GenericHandler<OrganisationUnitGroup, OrganisationUnitGroupModel> organisationUnitGroupHandler;
+    private SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
 
     @Mock
     private LinkModelHandler<ObjectWithUid,
@@ -178,8 +176,7 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.setData(programUids, dataSetUids, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
-        verify(organisationUnitGroupHandler).handleMany(anyListOf(OrganisationUnitGroup.class),
-                any(OrganisationUnitGroupModelBuilder.class));
+        verify(organisationUnitGroupHandler).handleMany(anyListOf(OrganisationUnitGroup.class));
     }
 
     @Test

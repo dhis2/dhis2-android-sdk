@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,21 +28,30 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-class OrganisationUnitGroupModelBuilder extends ModelBuilder<OrganisationUnitGroup, OrganisationUnitGroupModel> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public final class OrganisationUnitGroupEntityDIModule implements IdentifiableEntityDIModule<OrganisationUnitGroup> {
 
     @Override
-    public OrganisationUnitGroupModel buildModel(OrganisationUnitGroup section) {
-        return OrganisationUnitGroupModel.builder()
-                .uid(section.uid())
-                .code(section.code())
-                .name(section.name())
-                .displayName(section.displayName())
-                .created(section.created())
-                .lastUpdated(section.lastUpdated())
-                .shortName(section.shortName())
-                .displayShortName(section.displayShortName())
-                .build();
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<OrganisationUnitGroup> store(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitGroupStore.create(databaseAdapter);
+    }
+
+    @Override
+    @Provides
+    @Reusable
+    public SyncHandler<OrganisationUnitGroup> handler(IdentifiableObjectStore<OrganisationUnitGroup> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

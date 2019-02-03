@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,51 +28,38 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.junit.Before;
-import org.junit.Test;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitGroupSamples;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitGroupStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<OrganisationUnitGroup> {
 
-@RunWith(JUnit4.class)
-public class OrganisationUnitGroupHandlerShould {
-
-    @Mock
-    private IdentifiableObjectStore<OrganisationUnitGroupModel> organisationUnitGroupStore;
-
-    @Mock
-    private OrganisationUnitGroup organisationUnitGroup;
-
-    // object to test
-    private OrganisationUnitGroupHandler organisationUnitGroupHandler;
-
-
-    @Before
-    public void setUp() throws Exception {
-
-        MockitoAnnotations.initMocks(this);
-
-        organisationUnitGroupHandler = new OrganisationUnitGroupHandler(organisationUnitGroupStore);
-
-        when(organisationUnitGroup.uid()).thenReturn("organisation_unit_group_uid");
+    public OrganisationUnitGroupStoreIntegrationShould() {
+        super(OrganisationUnitGroupStore.create(DatabaseAdapterFactory.get(false)),
+                OrganisationUnitGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    @Test
-    public void not_perform_any_action_when_null_parameters() {
-
-        organisationUnitGroupHandler.handle(null, null);
-
-        verify(organisationUnitGroupStore, never()).delete(anyString());
-        verify(organisationUnitGroupStore, never()).update(any(OrganisationUnitGroupModel.class));
-        verify(organisationUnitGroupStore, never()).insert(any(OrganisationUnitGroupModel.class));
+    @Override
+    protected OrganisationUnitGroup buildObject() {
+        return OrganisationUnitGroupSamples.getOrganisationUnitGroup();
     }
 
+    @Override
+    protected OrganisationUnitGroup buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected OrganisationUnitGroup buildObjectToUpdate() {
+        return buildObject().toBuilder()
+                .shortName("new_short_name")
+                .build();
+    }
 }

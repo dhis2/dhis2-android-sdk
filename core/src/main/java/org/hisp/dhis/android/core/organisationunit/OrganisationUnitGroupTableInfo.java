@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,21 +28,38 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-@SuppressWarnings("PMD.UseUtilityClass")
-class OrganisationUnitGroupHandler extends IdentifiableHandlerImpl<OrganisationUnitGroup, OrganisationUnitGroupModel> {
+public final class OrganisationUnitGroupTableInfo {
 
-
-    OrganisationUnitGroupHandler(IdentifiableObjectStore<OrganisationUnitGroupModel> organisationUnitGroupStore) {
-        super(organisationUnitGroupStore);
+    private OrganisationUnitGroupTableInfo() {
     }
 
-    public static OrganisationUnitGroupHandler create(DatabaseAdapter databaseAdapter) {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        return new OrganisationUnitGroupHandler(OrganisationUnitGroupStore.create(databaseAdapter));
+        @Override
+        public String name() {
+            return "OrganisationUnitGroup";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    BaseNameableObjectModel.Columns.SHORT_NAME,
+                    BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME
+            );
+        }
     }
-
 }

@@ -65,6 +65,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Singleton
 @Component(modules = {
         APIClientDIModule.class,

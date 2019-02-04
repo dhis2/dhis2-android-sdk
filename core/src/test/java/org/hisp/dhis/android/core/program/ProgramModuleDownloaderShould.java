@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
@@ -71,22 +70,22 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private TrackedEntityType trackedEntityType;
 
     @Mock
-    private Call<List<Program>> programEndpointCall;
+    private Callable<List<Program>> programEndpointCall;
 
     @Mock
-    private Call<List<ProgramStage>> programStageEndpointCall;
+    private Callable<List<ProgramStage>> programStageEndpointCall;
 
     @Mock
-    private Call<List<ProgramRule>> programRuleEndpointCall;
+    private Callable<List<ProgramRule>> programRuleEndpointCall;
 
     @Mock
-    private Call<List<TrackedEntityType>> trackedEntityTypeCall;
+    private Callable<List<TrackedEntityType>> trackedEntityTypeCall;
 
     @Mock
-    private Call<List<RelationshipType>> relationshipTypeCall;
+    private Callable<List<RelationshipType>> relationshipTypeCall;
 
     @Mock
-    private Call<List<OptionSet>> optionSetCall;
+    private Callable<List<OptionSet>> optionSetCall;
 
     @Mock
     private ListCallFactory<Program> programCallFactory;

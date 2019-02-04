@@ -35,13 +35,18 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class UserRoleCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository> {
 
-    private UserRoleCollectionRepository(
+    @Inject
+    UserRoleCollectionRepository(
             final IdentifiableObjectStore<UserRole> store,
             final Collection<ChildrenAppender<UserRole>> childrenAppenders,
             List<RepositoryScopeItem> scope) {
@@ -54,13 +59,5 @@ public final class UserRoleCollectionRepository
                         return new UserRoleCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
-    }
-
-    static UserRoleCollectionRepository create(IdentifiableObjectStore<UserRole> store) {
-        return new UserRoleCollectionRepository(
-                store,
-                Collections.<ChildrenAppender<UserRole>>emptyList(),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

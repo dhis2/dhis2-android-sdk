@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,51 +28,37 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.common.IdentifiableModelAbstractShould;
-import org.hisp.dhis.android.core.constant.ConstantModel.Columns;
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.List;
+public final class ConstantTableInfo {
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
-
-@RunWith(AndroidJUnit4.class)
-public class ConstantModelShould extends IdentifiableModelAbstractShould<ConstantModel> {
-
-    public ConstantModelShould() {
-        super(new Columns().all(), 7);
+    private ConstantTableInfo() {
     }
 
-    @Override
-    protected ConstantModel buildModel() {
-        ConstantModel.Builder builder = ConstantModel.builder();
-        fillIdentifiableModelProperties(builder);
-        builder.value("0.18");
-        return builder.build();
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    protected ConstantModel cursorToModel(Cursor cursor) {
-        return ConstantModel.create(cursor);
-    }
+        @Override
+        public String name() {
+            return "Constant";
+        }
 
-    @Override
-    protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model), model.value());
-    }
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-    @Test
-    public void have_extra_legend_model_columns() {
-        List<String> columnsList = Arrays.asList(columns);
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+        static final String VALUE = "value";
 
-        assertThat(columnsList.contains(Columns.VALUE)).isEqualTo(true);
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    VALUE
+            );
+        }
     }
 }

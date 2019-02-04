@@ -34,18 +34,22 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class CategoryCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository> {
 
-    private CategoryCollectionRepository(final IdentifiableObjectStore<Category> store,
-                                         final Collection<ChildrenAppender<Category>> childrenAppenders,
-                                         List<RepositoryScopeItem> scope) {
+    @Inject
+    CategoryCollectionRepository(final IdentifiableObjectStore<Category> store,
+                                 final Collection<ChildrenAppender<Category>> childrenAppenders,
+                                 List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<CategoryCollectionRepository>() {
 
@@ -59,15 +63,5 @@ public final class CategoryCollectionRepository
 
     public StringFilterConnector<CategoryCollectionRepository> byDataDimensionType() {
         return cf.string(CategoryFields.DATA_DIMENSION_TYPE);
-    }
-
-    static CategoryCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        return new CategoryCollectionRepository(
-                CategoryStore.create(databaseAdapter),
-                Collections.singletonList(
-                        CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
-                ),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

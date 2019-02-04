@@ -25,20 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment.note;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.data.constant;
 
-public final class NoteHandler extends ObjectWithoutUidSyncHandlerImpl<Note> {
+import org.hisp.dhis.android.core.constant.Constant;
 
-    private NoteHandler(ObjectWithoutUidStore<Note> store) {
-        super(store);
-    }
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-    public static SyncHandler<Note> create(DatabaseAdapter databaseAdapter) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(NoteStore.create(databaseAdapter));
+public class ConstantSamples {
+
+    public static Constant getConstant() {
+        Constant.Builder builder = Constant.builder();
+        fillIdentifiableProperties(builder);
+        return builder
+                .value(20.05).build();
     }
 }

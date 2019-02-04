@@ -30,8 +30,11 @@ package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventModel;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -51,14 +54,20 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<Enrollment> handler(DatabaseAdapter databaseAdapter,
-                                                          DHISVersionManager versionManager) {
-        return EnrollmentHandler.create(databaseAdapter, versionManager);
+    public SyncHandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
+        return impl;
     }
 
     @Provides
     @Reusable
     Collection<ChildrenAppender<Enrollment>> childrenAppenders() {
         return Collections.emptyList();
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
+        return new DataOrphanCleanerImpl<>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
+                EventModel.Columns.STATE, databaseAdapter);
     }
 }

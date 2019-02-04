@@ -5,7 +5,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 @RunWith(AndroidJUnit4.class)
 public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCase {
@@ -24,7 +24,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Call<List<DataElement>> dataElementCall;
+    private Callable<List<DataElement>> dataElementCall;
 
     @Before
     @Override
@@ -34,7 +34,7 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
         dataElementCall = createCall();
     }
 
-    private Call<List<DataElement>> createCall() {
+    private Callable<List<DataElement>> createCall() {
         Set<String> uids = new HashSet<>();
 
         uids.add("FTRrcoaog83");

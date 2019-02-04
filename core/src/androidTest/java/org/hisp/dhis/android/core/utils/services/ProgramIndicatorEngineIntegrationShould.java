@@ -56,7 +56,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
 import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
-import org.hisp.dhis.android.core.program.ProgramStageModel;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
 import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -141,12 +141,12 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
                 .build();
         ProgramStore.create(databaseAdapter()).insert(program);
 
-        ProgramStageModel stage1 = ProgramStageModel.builder().uid(programStage1).program(programUid)
+        ProgramStage stage1 = ProgramStage.builder().uid(programStage1).program(ObjectWithUid.create(programUid))
                 .formType(FormType.CUSTOM).build();
-        ProgramStageModel stage2 = ProgramStageModel.builder().uid(programStage2).program(programUid)
+        ProgramStage stage2 = ProgramStage.builder().uid(programStage2).program(ObjectWithUid.create(programUid))
                 .formType(FormType.CUSTOM).build();
 
-        IdentifiableObjectStore<ProgramStageModel> programStageStore = ProgramStageStore.create(databaseAdapter());
+        IdentifiableObjectStore<ProgramStage> programStageStore = ProgramStageStore.create(databaseAdapter());
         programStageStore.insert(stage1);
         programStageStore.insert(stage2);
 

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.utils.services;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.constant.ConstantModel;
+import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
@@ -131,7 +131,7 @@ public class ProgramIndicatorEngineShould {
     private String programStageUid2 = "hr7jRePpYMD";
 
     @Mock
-    private ConstantModel constantModel;
+    private Constant constant;
 
     private String constantUid1 = "gzlRs2HEGAf";
 
@@ -146,7 +146,7 @@ public class ProgramIndicatorEngineShould {
     @Mock
     private IdentifiableObjectStore<DataElement> dataElementStore;
     @Mock
-    private IdentifiableObjectStore<ConstantModel> constantStore;
+    private IdentifiableObjectStore<Constant> constantStore;
     @Mock
     private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
@@ -228,8 +228,8 @@ public class ProgramIndicatorEngineShould {
         when(trackedEntityAttributeValueStore.queryByTrackedEntityInstance(trackedEntityInstanceUid))
                 .thenReturn(Collections.singletonList(attributeValue));
 
-        when(constantModel.uid()).thenReturn(constantUid1);
-        when(constantStore.selectByUid(constantUid1)).thenReturn(constantModel);
+        when(constant.uid()).thenReturn(constantUid1);
+        when(constantStore.selectByUid(constantUid1)).thenReturn(constant);
     }
 
     @Test
@@ -287,11 +287,11 @@ public class ProgramIndicatorEngineShould {
                 de(programStageUid1, dataElementUid1) + " + " + cons(constantUid1));
 
         when(value1.value()).thenReturn("3.5");
-        when(constantModel.value()).thenReturn("2");
+        when(constant.value()).thenReturn(2.0);
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("3.5 + 2");
+        assertThat(result).isEqualTo("3.5 + 2.0");
     }
 
     @Test

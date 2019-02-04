@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -47,8 +47,8 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 
-public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, ProgramStageModel> {
-    private final ProgramStageSectionHandler programStageSectionHandler;
+public class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage> {
+    private final SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
     private final ProgramStageDataElementHandler programStageDataElementHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
@@ -56,8 +56,8 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
     private final CollectionCleaner<ProgramStage> collectionCleaner;
     private final DHISVersionManager versionManager;
 
-    ProgramStageHandler(IdentifiableObjectStore<ProgramStageModel> programStageStore,
-                        ProgramStageSectionHandler programStageSectionHandler,
+    ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
+                        SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
                         ProgramStageDataElementHandler programStageDataElementHandler,
                         SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
@@ -110,7 +110,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
                 });
 
         styleHandler.handle(programStage.style(),
-                new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
+                new ObjectStyleModelBuilder(programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name()));
 
         if (action == HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());
@@ -131,8 +131,8 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
         collectionCleaner.deleteNotPresent(programStages);
     }
 
-    public static GenericHandler<ProgramStage, ProgramStageModel> create(DatabaseAdapter databaseAdapter,
-                                                                         DHISVersionManager versionManager) {
+    public static SyncHandler<ProgramStage> create(DatabaseAdapter databaseAdapter,
+                                                                      DHISVersionManager versionManager) {
         return new ProgramStageHandler(
                 ProgramStageStore.create(databaseAdapter),
                 ProgramStageSectionHandler.create(databaseAdapter),
@@ -142,7 +142,7 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
                         ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter),
                 new OrphanCleanerImpl<ProgramStage, ProgramStageSection>(ProgramStageSectionModel.TABLE,
                         ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter),
-                new CollectionCleanerImpl<ProgramStage>(ProgramStageModel.TABLE, databaseAdapter),
+                new CollectionCleanerImpl<ProgramStage>(ProgramStageTableInfo.TABLE_INFO.name(), databaseAdapter),
                 versionManager);
     }
 }

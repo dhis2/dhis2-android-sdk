@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,11 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.factories;
+package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.common.GenericCallData;
+import android.support.test.runner.AndroidJUnit4;
 
-public interface GenericCallFactory<P> {
-    Call<P> create(GenericCallData genericCallData);
+import org.hisp.dhis.android.core.data.constant.ConstantSamples;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.junit.runner.RunWith;
+
+@RunWith(AndroidJUnit4.class)
+public class ConstantStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<Constant> {
+
+    public ConstantStoreIntegrationShould() {
+        super(ConstantStore.create(DatabaseAdapterFactory.get(false)), ConstantTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
+    }
+
+    @Override
+    protected Constant buildObject() {
+        return ConstantSamples.getConstant();
+    }
+
+    @Override
+    protected Constant buildObjectWithId() {
+        return ConstantSamples.getConstant().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected Constant buildObjectToUpdate() {
+        return ConstantSamples.getConstant().toBuilder()
+                .value(25.36)
+                .build();
+    }
 }

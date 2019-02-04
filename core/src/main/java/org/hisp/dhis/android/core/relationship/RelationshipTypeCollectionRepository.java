@@ -33,18 +33,22 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifia
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class RelationshipTypeCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository> {
 
-    private RelationshipTypeCollectionRepository(final IdentifiableObjectStore<RelationshipType> store,
-                                                 final Collection<ChildrenAppender<RelationshipType>> childrenAppenders,
-                                                 List<RepositoryScopeItem> scope) {
+    @Inject
+    RelationshipTypeCollectionRepository(final IdentifiableObjectStore<RelationshipType> store,
+                                         final Collection<ChildrenAppender<RelationshipType>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<RelationshipTypeCollectionRepository>() {
 
@@ -54,17 +58,5 @@ public final class RelationshipTypeCollectionRepository
                         return new RelationshipTypeCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
-    }
-
-    static RelationshipTypeCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
-                RelationshipConstraintStore.create(databaseAdapter)
-        );
-
-        return new RelationshipTypeCollectionRepository(
-                RelationshipTypeStore.create(databaseAdapter),
-                Collections.singletonList(childrenAppender),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

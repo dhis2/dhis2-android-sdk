@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
@@ -48,6 +47,7 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import retrofit2.Response;
 
@@ -78,7 +78,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Mock
     private Payload<Program> payload;
 
-    private Call<List<Program>> endpointCall;
+    private Callable<List<Program>> endpointCall;
 
 
     @Before

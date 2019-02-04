@@ -30,7 +30,11 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -55,7 +59,7 @@ public final class ProgramEntityDIModule implements IdentifiableEntityFromDataba
 
     @Provides
     @Reusable
-    ProgramCollectionRepository repository(DatabaseAdapter databaseAdapter) {
-        return ProgramCollectionRepository.create(databaseAdapter);
+    Collection<ChildrenAppender<Program>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

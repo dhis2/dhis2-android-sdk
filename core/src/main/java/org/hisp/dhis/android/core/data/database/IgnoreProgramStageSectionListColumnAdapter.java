@@ -26,33 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.program.ProgramStageSection;
 
-public abstract class SyncCall<C> implements Call<C> {
-    private boolean isExecuted;
+import java.util.List;
 
-    @Override
-    public final boolean isExecuted() {
-        synchronized (this) {
-            return isExecuted;
-        }
-    }
-
-    protected final void setExecuted() throws D2Error {
-        synchronized (this) {
-            if (isExecuted) {
-                throw D2Error.builder()
-                        .errorCode(D2ErrorCode.ALREADY_EXECUTED)
-                        .errorDescription("Already executed call")
-                        .errorComponent(D2ErrorComponent.SDK)
-                        .build();
-            }
-            isExecuted = true;
-        }
-    }
+public final class IgnoreProgramStageSectionListColumnAdapter extends IgnoreColumnAdapter<List<ProgramStageSection>> {
 }

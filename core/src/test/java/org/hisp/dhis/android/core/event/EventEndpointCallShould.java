@@ -46,7 +46,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.hisp.dhis.android.core.calls.Call.MAX_UIDS;
 
 public class EventEndpointCallShould extends BaseCallShould {
 
@@ -63,7 +62,7 @@ public class EventEndpointCallShould extends BaseCallShould {
 
     @Test
     public void create_event_call_if_uids_size_does_not_exceeds_the_limit() {
-        Callable<List<Event>> eventEndpointCall = givenAEventCallByUIds(MAX_UIDS);
+        Callable<List<Event>> eventEndpointCall = givenAEventCallByUIds(64);
         assertThat(eventEndpointCall, is(notNullValue()));
     }
 

@@ -26,43 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
+@Module
+public final class RelationshipItemEntityDIModule {
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    @Provides
+    @Reusable
+    RelationshipItemStore store(DatabaseAdapter databaseAdapter) {
+        return RelationshipItemStoreImpl.create(databaseAdapter);
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleModel.TABLE,
-                ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageTableInfo.TABLE_INFO.name());
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    @Provides
+    @Reusable
+    RelationshipItemElementStoreSelector storeSelector(RelationshipItemElementStoreSelectorImpl impl) {
+        return impl;
     }
 }

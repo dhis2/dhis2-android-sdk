@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,12 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls;
+package org.hisp.dhis.android.core.program;
 
-import java.util.concurrent.Callable;
+import android.support.test.runner.AndroidJUnit4;
 
-public interface Call<T> extends Callable<T> {
-    int MAX_UIDS = 64;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramStageSamples;
+import org.junit.runner.RunWith;
 
-    boolean isExecuted();
+@RunWith(AndroidJUnit4.class)
+public class ProgramStageStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStage> {
+
+    public ProgramStageStoreIntegrationShould() {
+        super(ProgramStageStore.create(DatabaseAdapterFactory.get(false)), ProgramStageTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
+
+    @Override
+    protected ProgramStage buildObject() {
+        return ProgramStageSamples.getProgramStage();
+    }
+
+    @Override
+    protected ProgramStage buildObjectWithId() {
+        return ProgramStageSamples.getProgramStage().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected ProgramStage buildObjectToUpdate() {
+        return ProgramStageSamples.getProgramStage().toBuilder()
+                .minDaysFromStart(12)
+                .build();
+    }
 }

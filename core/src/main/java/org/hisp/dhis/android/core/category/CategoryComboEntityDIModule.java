@@ -30,10 +30,14 @@ package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import dagger.Module;
 import dagger.Provides;
@@ -64,7 +68,10 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
 
     @Provides
     @Reusable
-    CategoryComboCollectionRepository repository(DatabaseAdapter databaseAdapter) {
-        return CategoryComboCollectionRepository.create(databaseAdapter);
+    Collection<ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Arrays.asList(
+                CategoryCategoryComboChildrenAppender.create(databaseAdapter),
+                CategoryOptionComboChildrenAppender.create(databaseAdapter)
+        );
     }
 }

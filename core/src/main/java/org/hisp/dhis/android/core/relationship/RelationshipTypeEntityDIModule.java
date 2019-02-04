@@ -30,8 +30,12 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +61,10 @@ public final class RelationshipTypeEntityDIModule
 
     @Provides
     @Reusable
-    RelationshipTypeCollectionRepository repository(DatabaseAdapter databaseAdapter) {
-        return RelationshipTypeCollectionRepository.create(databaseAdapter);
+    Collection<ChildrenAppender<RelationshipType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
+                RelationshipConstraintStore.create(databaseAdapter)
+        );
+        return Collections.singletonList(childrenAppender);
     }
 }

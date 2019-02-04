@@ -36,21 +36,23 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class ProgramCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository> {
 
-    private ProgramCollectionRepository(final IdentifiableObjectStore<Program> store,
-                                        final Collection<ChildrenAppender<Program>> childrenAppenders,
-                                        List<RepositoryScopeItem> scope) {
+    @Inject
+    ProgramCollectionRepository(final ProgramStoreInterface store,
+                                final Collection<ChildrenAppender<Program>> childrenAppenders,
+                                List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<ProgramCollectionRepository>() {
 
@@ -164,13 +166,5 @@ public final class ProgramCollectionRepository
 
     public IntegerFilterConnector<ProgramCollectionRepository> byMaxTeiCountToReturn() {
         return cf.integer(ProgramFields.MAX_TEI_COUNT_TO_RETURN);
-    }
-
-    static ProgramCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        return new ProgramCollectionRepository(
-                ProgramStore.create(databaseAdapter),
-                new ArrayList<ChildrenAppender<Program>>(),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

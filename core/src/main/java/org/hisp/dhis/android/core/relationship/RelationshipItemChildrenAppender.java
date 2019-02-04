@@ -29,10 +29,16 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
 
     private final RelationshipItemStore store;
 
+    @Inject
     RelationshipItemChildrenAppender(RelationshipItemStore store) {
         this.store = store;
     }

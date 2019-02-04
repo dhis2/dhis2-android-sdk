@@ -33,19 +33,22 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifia
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class CategoryOptionComboCollectionRepository
         extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryOptionCombo,
                 CategoryOptionComboCollectionRepository> {
 
-    private CategoryOptionComboCollectionRepository(
-            final IdentifiableObjectStore<CategoryOptionCombo> store,
+    @Inject
+    CategoryOptionComboCollectionRepository(
+            final CategoryOptionComboStore store,
             final Collection<ChildrenAppender<CategoryOptionCombo>> childrenAppenders,
             List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
@@ -61,15 +64,5 @@ public final class CategoryOptionComboCollectionRepository
 
     public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {
         return cf.string(CategoryOptionComboFields.CATEGORY_COMBO);
-    }
-
-    static CategoryOptionComboCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        return new CategoryOptionComboCollectionRepository(
-                CategoryOptionComboStoreImpl.create(databaseAdapter),
-                Collections.singletonList(
-                        CategoryOptionComboCategoryOptionChildrenAppender.create(databaseAdapter)
-                ),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

@@ -40,7 +40,7 @@ public final class ConstantPackageDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<ConstantModel> constantStore(DatabaseAdapter databaseAdapter) {
+    IdentifiableObjectStore<Constant> constantStore(DatabaseAdapter databaseAdapter) {
         return ConstantStore.create(databaseAdapter);
     }
 }

@@ -26,52 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
-import java.util.Arrays;
-import java.util.Collection;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class CategoryComboEntityDIModule implements IdentifiableStoreProvider<CategoryCombo> {
+public final class RelationshipItemEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<CategoryCombo> store(DatabaseAdapter databaseAdapter) {
-        return CategoryComboStore.create(databaseAdapter);
+    RelationshipItemStore store(DatabaseAdapter databaseAdapter) {
+        return RelationshipItemStoreImpl.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public SyncHandler<CategoryCombo> handler(CategoryComboHandler impl) {
+    RelationshipItemElementStoreSelector storeSelector(RelationshipItemElementStoreSelectorImpl impl) {
         return impl;
-    }
-
-    @Provides
-    @Reusable
-    OrphanCleaner<CategoryCombo, CategoryOptionCombo> orphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(CategoryOptionComboModel.TABLE,
-                CategoryOptionComboModel.Columns.CATEGORY_COMBO, databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Arrays.asList(
-                CategoryCategoryComboChildrenAppender.create(databaseAdapter),
-                CategoryOptionComboChildrenAppender.create(databaseAdapter)
-        );
     }
 }

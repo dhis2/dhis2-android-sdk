@@ -35,18 +35,22 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class CategoryOptionCollectionRepository
         extends ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository> {
 
-    private CategoryOptionCollectionRepository(final IdentifiableObjectStore<CategoryOption> store,
-                                               final Collection<ChildrenAppender<CategoryOption>> childrenAppenders,
-                                               List<RepositoryScopeItem> scope) {
+    @Inject
+    CategoryOptionCollectionRepository(final IdentifiableObjectStore<CategoryOption> store,
+                                       final Collection<ChildrenAppender<CategoryOption>> childrenAppenders,
+                                       List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 new CollectionRepositoryFactory<CategoryOptionCollectionRepository>() {
 
@@ -68,13 +72,5 @@ public final class CategoryOptionCollectionRepository
 
     public BooleanFilterConnector<CategoryOptionCollectionRepository> byAccessDataWrite() {
         return cf.bool(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE);
-    }
-
-    static CategoryOptionCollectionRepository create(DatabaseAdapter databaseAdapter) {
-        return new CategoryOptionCollectionRepository(
-                CategoryOptionStore.create(databaseAdapter),
-                Collections.<ChildrenAppender<CategoryOption>>emptyList(),
-                Collections.<RepositoryScopeItem>emptyList()
-        );
     }
 }

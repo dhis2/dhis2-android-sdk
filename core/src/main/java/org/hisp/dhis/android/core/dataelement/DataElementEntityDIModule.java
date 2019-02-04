@@ -30,8 +30,14 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,7 +62,13 @@ public final class DataElementEntityDIModule implements IdentifiableEntityFromDa
 
     @Provides
     @Reusable
-    DataElementCollectionRepository repository(DatabaseAdapter databaseAdapter) {
-        return DataElementCollectionRepository.create(databaseAdapter);
+    Collection<ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<DataElement> childrenAppender =
+                new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        DataElementTableInfo.TABLE_INFO
+                );
+
+        return Collections.singletonList(childrenAppender);
     }
 }

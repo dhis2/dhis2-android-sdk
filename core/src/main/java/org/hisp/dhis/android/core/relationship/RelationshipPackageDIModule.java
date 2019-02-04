@@ -37,6 +37,7 @@ import retrofit2.Retrofit;
 
 @Module(includes = {
         RelationshipEntityDIModule.class,
+        RelationshipItemEntityDIModule.class,
         RelationshipTypeEntityDIModule.class
 })
 public final class RelationshipPackageDIModule {

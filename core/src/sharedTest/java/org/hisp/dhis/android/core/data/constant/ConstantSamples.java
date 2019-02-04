@@ -26,48 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.core.data.constant;
 
-import android.database.Cursor;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.constant.Constant;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-import com.google.auto.value.AutoValue;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.utils.Utils;
+public class ConstantSamples {
 
-@AutoValue
-public abstract class ConstantModel extends BaseIdentifiableObjectModel {
-
-    public static final String TABLE = "Constant";
-
-    public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        public static final String VALUE = "value";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(), VALUE);
-        }
-    }
-
-    public static ConstantModel create(Cursor cursor) {
-        return AutoValue_ConstantModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_ConstantModel.Builder();
-    }
-
-    @Nullable
-    @ColumnName(Columns.VALUE)
-    public abstract String value();
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseIdentifiableObjectModel.Builder<Builder> {
-
-        public abstract Builder value(@Nullable String value);
-
-        public abstract ConstantModel build();
+    public static Constant getConstant() {
+        Constant.Builder builder = Constant.builder();
+        fillIdentifiableProperties(builder);
+        return builder
+                .value(20.05).build();
     }
 }

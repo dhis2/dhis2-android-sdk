@@ -28,51 +28,38 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.IdentifiableModelAbstractShould;
-import org.hisp.dhis.android.core.constant.ConstantModel.Columns;
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
-import org.hisp.dhis.android.core.utils.Utils;
-import org.junit.Test;
+import org.hisp.dhis.android.core.data.constant.ConstantSamples;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableModelProperties;
-
 @RunWith(AndroidJUnit4.class)
-public class ConstantModelShould extends IdentifiableModelAbstractShould<ConstantModel> {
+public class ConstantStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<Constant> {
 
-    public ConstantModelShould() {
-        super(new Columns().all(), 7);
+    public ConstantStoreIntegrationShould() {
+        super(ConstantStore.create(DatabaseAdapterFactory.get(false)), ConstantTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    protected ConstantModel buildModel() {
-        ConstantModel.Builder builder = ConstantModel.builder();
-        fillIdentifiableModelProperties(builder);
-        builder.value("0.18");
-        return builder.build();
+    protected Constant buildObject() {
+        return ConstantSamples.getConstant();
     }
 
     @Override
-    protected ConstantModel cursorToModel(Cursor cursor) {
-        return ConstantModel.create(cursor);
+    protected Constant buildObjectWithId() {
+        return ConstantSamples.getConstant().toBuilder()
+                .id(1L)
+                .build();
     }
 
     @Override
-    protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getIdentifiableModelAsObjectArray(model), model.value());
-    }
-
-    @Test
-    public void have_extra_legend_model_columns() {
-        List<String> columnsList = Arrays.asList(columns);
-
-        assertThat(columnsList.contains(Columns.VALUE)).isEqualTo(true);
+    protected Constant buildObjectToUpdate() {
+        return ConstantSamples.getConstant().toBuilder()
+                .value(25.36)
+                .build();
     }
 }

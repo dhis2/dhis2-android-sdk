@@ -28,19 +28,37 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public final class ConstantTableInfo {
 
-@Module()
-public final class ConstantPackageDIModule {
+    private ConstantTableInfo() {
+    }
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Constant> constantStore(DatabaseAdapter databaseAdapter) {
-        return ConstantStore.create(databaseAdapter);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Constant";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+        static final String VALUE = "value";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    VALUE
+            );
+        }
     }
 }

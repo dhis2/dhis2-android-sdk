@@ -33,33 +33,33 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteHandler;
-import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.enrollment.note.NoteToStoreTransformer;
 import org.hisp.dhis.android.core.enrollment.note.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventHandler;
-import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
     private final DHISVersionManager versionManager;
     private final SyncHandlerWithTransformer<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;
     private final ObjectWithoutUidStore<Note> noteStore;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
+    @Inject
     EnrollmentHandler(@NonNull DHISVersionManager versionManager,
                       @NonNull EnrollmentStore enrollmentStore,
                       @NonNull SyncHandlerWithTransformer<Event> eventHandler,
@@ -98,18 +98,5 @@ public class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
         }
 
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
-    }
-
-    public static SyncHandlerWithTransformer<Enrollment> create(DatabaseAdapter databaseAdapter,
-                                                                DHISVersionManager versionManager) {
-        return new EnrollmentHandler(
-                versionManager,
-                EnrollmentStoreImpl.create(databaseAdapter),
-                EventHandler.create(databaseAdapter),
-                new DataOrphanCleanerImpl<Enrollment, Event>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
-                        EventModel.Columns.STATE, databaseAdapter),
-                NoteHandler.create(databaseAdapter),
-                NoteStore.create(databaseAdapter)
-        );
     }
 }

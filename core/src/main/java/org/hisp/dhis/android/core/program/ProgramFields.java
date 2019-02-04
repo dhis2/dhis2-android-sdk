@@ -109,7 +109,7 @@ final class ProgramFields {
                     fh.<PeriodType>field(EXPIRY_PERIOD_TYPE),
                     fh.<Integer>field(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
                     fh.<Integer>field(MAX_TEI_COUNT_TO_RETURN),
-                    fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSection.allFields)
+                    fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields)
             ).build();
 
     private ProgramFields() {

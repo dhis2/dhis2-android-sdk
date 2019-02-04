@@ -37,8 +37,12 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
+        DataInputPeriodEntityDIModule.class,
+        DataSetElementEntityDIModule.class,
+        DataSetCompulsoryDataElementOperandEntityDIModule.class,
         DataSetEntityDIModule.class,
-        DataSetCompleteRegistrationEntityDIModule.class
+        DataSetCompleteRegistrationEntityDIModule.class,
+        SectionEntityDIModule.class
 })
 public final class DataSetPackageDIModule {
 

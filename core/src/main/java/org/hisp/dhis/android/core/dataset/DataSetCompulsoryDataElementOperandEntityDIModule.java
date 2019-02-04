@@ -26,43 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataSetIndicatorEntityDIModule.class,
-        IndicatorEntityDIModule.class,
-        IndicatorTypeEntityDIModule.class
-})
-public final class IndicatorPackageDIModule {
+@Module
+public final class DataSetCompulsoryDataElementOperandEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
-        return impl;
+    LinkModelStore<DataSetCompulsoryDataElementOperandLinkModel> store(DatabaseAdapter databaseAdapter) {
+        return DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    IndicatorService indicatorService(Retrofit retrofit) {
-        return retrofit.create(IndicatorService.class);
-    }
-
-    @Provides
-    @Reusable
-    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
-        return retrofit.create(IndicatorTypeService.class);
+    LinkModelHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLinkModel> handler(
+            LinkModelStore<DataSetCompulsoryDataElementOperandLinkModel> store) {
+        return new LinkModelHandlerImpl<>(store);
     }
 }

@@ -26,43 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataSetIndicatorEntityDIModule.class,
-        IndicatorEntityDIModule.class,
-        IndicatorTypeEntityDIModule.class
-})
-public final class IndicatorPackageDIModule {
+@Module
+public final class DataElementOperandEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
-        return impl;
+    IdentifiableObjectStore<DataElementOperand> store(DatabaseAdapter databaseAdapter) {
+        return DataElementOperandStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    IndicatorService indicatorService(Retrofit retrofit) {
-        return retrofit.create(IndicatorService.class);
-    }
-
-    @Provides
-    @Reusable
-    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
-        return retrofit.create(IndicatorTypeService.class);
+    SyncHandler<DataElementOperand> handler(IdentifiableObjectStore<DataElementOperand> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

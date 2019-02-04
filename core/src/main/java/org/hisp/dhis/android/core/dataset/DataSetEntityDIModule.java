@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
 
@@ -45,20 +48,30 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class DataSetEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<DataSet> {
+public final class DataSetEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<DataSet> store(DatabaseAdapter databaseAdapter) {
+    IdentifiableObjectStore<DataSet> store(DatabaseAdapter databaseAdapter) {
         return DataSetStore.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<DataSet> handler(DatabaseAdapter databaseAdapter) {
-        return DataSetHandler.create(databaseAdapter);
+    SyncHandler<DataSet> handler(DataSetHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<DataSet, Section> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(SectionTableInfo.TABLE_INFO.name(), SectionFields.DATA_SET, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(DataSetModel.TABLE, databaseAdapter);
     }
 
     @Provides

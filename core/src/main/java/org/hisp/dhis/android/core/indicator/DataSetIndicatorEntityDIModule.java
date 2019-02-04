@@ -28,41 +28,27 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        DataSetIndicatorEntityDIModule.class,
-        IndicatorEntityDIModule.class,
-        IndicatorTypeEntityDIModule.class
-})
-public final class IndicatorPackageDIModule {
+@Module
+public final class DataSetIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<Indicator> indicatorCallFactory(IndicatorEndpointCallFactory impl) {
-        return impl;
+    LinkModelStore<DataSetIndicatorLinkModel> store(DatabaseAdapter databaseAdapter) {
+        return DataSetIndicatorLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    UidsCallFactory<IndicatorType> indicatorTypeCallFactory(IndicatorTypeEndpointCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    IndicatorService indicatorService(Retrofit retrofit) {
-        return retrofit.create(IndicatorService.class);
-    }
-
-    @Provides
-    @Reusable
-    IndicatorTypeService indicatorTypeService(Retrofit retrofit) {
-        return retrofit.create(IndicatorTypeService.class);
+    LinkModelHandler<Indicator, DataSetIndicatorLinkModel> handler(LinkModelStore<DataSetIndicatorLinkModel> store) {
+        return new LinkModelHandlerImpl<>(store);
     }
 }

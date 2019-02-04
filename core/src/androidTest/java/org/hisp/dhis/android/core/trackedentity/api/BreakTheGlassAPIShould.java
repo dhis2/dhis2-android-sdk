@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.core.trackedentity.api;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
@@ -21,7 +19,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -34,7 +31,6 @@ import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstance
 import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertEvents;
 import static org.hisp.dhis.android.core.trackedentity.api.TrackedEntityInstanceUtils.assertTei;
 
-@RunWith(AndroidJUnit4.class)
 public class BreakTheGlassAPIShould extends AbsStoreTestCase {
 
     /**
@@ -139,7 +135,7 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
             assertEvents(importSummary, SUCCESS);
         }
     }
-    
+
     // Make program protected
     //@Test
     public void tei_with_enrollment_in_search_scope_in_protected_program() throws Exception {

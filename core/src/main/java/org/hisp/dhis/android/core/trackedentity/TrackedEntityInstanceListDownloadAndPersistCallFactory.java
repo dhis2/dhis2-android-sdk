@@ -9,9 +9,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import java.net.HttpRetryException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -117,8 +115,7 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
                     new TrackedEntityInstanceCallErrorCatcher());
 
             return Collections.singletonList(tei);
-        }
-        catch (D2Error d2Error) {
+        } catch (D2Error d2Error) {
             if (!d2Error.errorCode().equals(D2ErrorCode.OWNERSHIP_ACCESS_DENIED)) {
                 return Collections.emptyList();
             }

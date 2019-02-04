@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
 import org.hisp.dhis.android.core.arch.api.responses.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
+import java.io.IOException;
+
 import retrofit2.Response;
 
 final class TrackedEntityInstanceCallErrorCatcher implements APICallErrorCatcher {
@@ -43,18 +45,13 @@ final class TrackedEntityInstanceCallErrorCatcher implements APICallErrorCatcher
     }
 
     @Override
-    public D2ErrorCode catchError(Response<?> response) {
+    public D2ErrorCode catchError(Response<?> response) throws IOException {
+        HttpMessageResponse parsed = ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(),
+                HttpMessageResponse.class);
 
-        try {
-            HttpMessageResponse parsed = ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(),
-                    HttpMessageResponse.class);
-
-            if (parsed.httpStatusCode() == 401 && parsed.message().equals("OWNERSHIP_ACCESS_DENIED")) {
-                return D2ErrorCode.OWNERSHIP_ACCESS_DENIED;
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
+        if (parsed.httpStatusCode() == 401 && parsed.message().equals("OWNERSHIP_ACCESS_DENIED")) {
+            return D2ErrorCode.OWNERSHIP_ACCESS_DENIED;
+        } else {
             return null;
         }
     }

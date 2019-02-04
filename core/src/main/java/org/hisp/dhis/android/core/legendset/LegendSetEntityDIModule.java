@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -50,8 +49,8 @@ public final class LegendSetEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<LegendSet> handler(IdentifiableObjectStore<LegendSet> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public SyncHandler<LegendSet> handler(LegendSetHandler impl) {
+        return impl;
     }
 
     @Provides

@@ -38,7 +38,7 @@ import retrofit2.Response;
 final class TrackedEntityInstanceCallErrorCatcher implements APICallErrorCatcher {
 
     @Override
-    public Boolean isPersistable() {
+    public Boolean mustBeStored() {
         return false;
     }
 

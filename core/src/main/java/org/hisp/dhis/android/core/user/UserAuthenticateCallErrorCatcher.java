@@ -38,7 +38,7 @@ import retrofit2.Response;
 final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
 
     @Override
-    public Boolean isPersistable() {
+    public Boolean mustBeStored() {
         return true;
     }
 

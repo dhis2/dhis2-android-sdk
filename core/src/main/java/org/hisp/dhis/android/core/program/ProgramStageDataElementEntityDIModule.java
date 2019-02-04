@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -42,39 +37,17 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramStageEntityDIModule implements IdentifiableStoreProvider<ProgramStage> {
+public final class ProgramStageDataElementEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<ProgramStage> store(DatabaseAdapter databaseAdapter) {
-        return ProgramStageStore.create(databaseAdapter);
+    public IdentifiableObjectStore<ProgramStageDataElement> store(DatabaseAdapter databaseAdapter) {
+        return ProgramStageDataElementStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public SyncHandler<ProgramStage> handler(ProgramStageHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    public OrphanCleaner<ProgramStage, ProgramStageDataElement> dataElementOrphanCleaner(
-            DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(ProgramStageDataElementModel.TABLE,
-                ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public OrphanCleaner<ProgramStage, ProgramStageSection> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(ProgramStageSectionModel.TABLE,
-                        ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public CollectionCleaner<ProgramStage> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(), databaseAdapter);
+    public SyncHandler<ProgramStageDataElement> handler(DatabaseAdapter databaseAdapter) {
+        return ProgramStageDataElementHandler.create(databaseAdapter);
     }
 }

@@ -31,34 +31,36 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage> {
     private final SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
-    private final ProgramStageDataElementHandler programStageDataElementHandler;
+    private final SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
     private final CollectionCleaner<ProgramStage> collectionCleaner;
     private final DHISVersionManager versionManager;
 
+    @Inject
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
                         SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
-                        ProgramStageDataElementHandler programStageDataElementHandler,
+                        SyncHandler<ProgramStageDataElement> programStageDataElementHandler,
                         SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
@@ -129,20 +131,5 @@ public class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStag
     @Override
     protected void afterCollectionHandled(Collection<ProgramStage> programStages) {
         collectionCleaner.deleteNotPresent(programStages);
-    }
-
-    public static SyncHandler<ProgramStage> create(DatabaseAdapter databaseAdapter,
-                                                                      DHISVersionManager versionManager) {
-        return new ProgramStageHandler(
-                ProgramStageStore.create(databaseAdapter),
-                ProgramStageSectionHandler.create(databaseAdapter),
-                ProgramStageDataElementHandler.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<ProgramStage, ProgramStageDataElement>(ProgramStageDataElementModel.TABLE,
-                        ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter),
-                new OrphanCleanerImpl<ProgramStage, ProgramStageSection>(ProgramStageSectionModel.TABLE,
-                        ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter),
-                new CollectionCleanerImpl<ProgramStage>(ProgramStageTableInfo.TABLE_INFO.name(), databaseAdapter),
-                versionManager);
     }
 }

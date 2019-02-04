@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
@@ -48,6 +49,7 @@ import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
 import org.hisp.dhis.android.core.legendset.LegendPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModule;
 import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
@@ -105,6 +107,7 @@ public interface D2DIComponent {
 
     @VisibleForTesting
     ListCallFactory<Program> programCallFactory();
+    UidsCallFactory<OptionSet> optionSetCallFactory();
 
     @Component.Builder
     interface Builder {

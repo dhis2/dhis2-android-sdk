@@ -28,19 +28,22 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
-    private OptionHandler(IdentifiableObjectStore<Option> optionStore,
+    @Inject
+    OptionHandler(IdentifiableObjectStore<Option> optionStore,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(optionStore);
         this.styleHandler = styleHandler;
@@ -50,9 +53,5 @@ final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
     protected void afterObjectHandled(Option option, HandleAction action) {
         styleHandler.handle(option.style(),
                 new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
-    }
-
-    static SyncHandler<Option> create(DatabaseAdapter databaseAdapter) {
-        return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
     }
 }

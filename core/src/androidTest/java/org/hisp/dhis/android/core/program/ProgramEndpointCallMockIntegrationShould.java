@@ -35,8 +35,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -129,9 +127,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        programEndpointCall = new ProgramEndpointCallFactory(getGenericCallData(d2), apiCallExecutor,
-                d2.retrofit().create(ProgramService.class), ProgramHandler.create(databaseAdapter())).create();
+        programEndpointCall = getD2DIComponent(d2).programCallFactory().create();
     }
 
     @Test

@@ -46,7 +46,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
+final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
 
     private static final int MAX_UID_LIST_SIZE = 130;
 

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -39,19 +39,19 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramStageEntityDIModule implements IdentifiableStoreProvider<ProgramStageModel> {
+public final class ProgramStageEntityDIModule implements IdentifiableStoreProvider<ProgramStage> {
 
     @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<ProgramStageModel> store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableObjectStore<ProgramStage> store(DatabaseAdapter databaseAdapter) {
         return ProgramStageStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public GenericHandler<ProgramStage, ProgramStageModel> handler(DatabaseAdapter databaseAdapter,
-                                                                   DHISVersionManager versionManager) {
+    public SyncHandler<ProgramStage> handler(DatabaseAdapter databaseAdapter,
+                                             DHISVersionManager versionManager) {
         return ProgramStageHandler.create(databaseAdapter, versionManager);
     }
 }

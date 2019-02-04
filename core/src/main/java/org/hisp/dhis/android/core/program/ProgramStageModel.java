@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.utils.Utils;
 
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.GodClass"})
+@Deprecated
 @AutoValue
 public abstract class ProgramStageModel extends BaseIdentifiableObjectModel {
 

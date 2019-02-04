@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -37,17 +39,18 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramSectionEntityDIModule {
+public final class ProgramSectionAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public IdentifiableObjectStore<ProgramSectionModel> store(DatabaseAdapter databaseAdapter) {
-        return ProgramSectionStore.create(databaseAdapter);
+    public LinkModelStore<ProgramSectionAttributeLinkModel> store(DatabaseAdapter databaseAdapter) {
+        return ProgramSectionAttributeLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public GenericHandler<ProgramSection, ProgramSectionModel> handler(ProgramSectionHandler impl) {
-        return impl;
+    public LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel> handler(
+            LinkModelStore<ProgramSectionAttributeLinkModel> store) {
+        return new LinkModelHandlerImpl<>(store);
     }
 }

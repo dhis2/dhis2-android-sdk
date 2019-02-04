@@ -32,18 +32,21 @@ import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> {
     private final LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
+    @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSectionModel> programSectionStore,
                           LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
                                   programSectionAttributeLinkHandler,
@@ -59,14 +62,5 @@ public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSectio
                 programSection.attributes(), new ProgramSectionAttributeLinkModelBuilder(programSection));
         styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
                 ProgramSectionModel.TABLE));
-    }
-
-    public static ProgramSectionHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramSectionHandler(
-                ProgramSectionStore.create(databaseAdapter),
-                new LinkModelHandlerImpl<ObjectWithUid, ProgramSectionAttributeLinkModel>(
-                        ProgramSectionAttributeLinkStore.create(databaseAdapter)),
-                ObjectStyleHandler.create(databaseAdapter)
-        );
     }
 }

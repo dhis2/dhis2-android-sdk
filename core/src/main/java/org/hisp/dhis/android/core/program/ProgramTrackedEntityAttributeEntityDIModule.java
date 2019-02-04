@@ -47,7 +47,7 @@ public final class ProgramTrackedEntityAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<ProgramTrackedEntityAttribute> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramTrackedEntityAttributeHandler.create(databaseAdapter);
+    public SyncHandler<ProgramTrackedEntityAttribute> handler(ProgramTrackedEntityAttributeHandler impl) {
+        return impl;
     }
 }

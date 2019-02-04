@@ -31,16 +31,19 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeHandler;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeStore;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public class ProgramTrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> {
 
     private final SyncHandler<TrackedEntityAttribute> trackedEntityAttributeHandler;
     private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
+    @Inject
     ProgramTrackedEntityAttributeHandler(
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> store,
             SyncHandler<TrackedEntityAttribute> trackedEntityAttributeHandler,
@@ -48,13 +51,6 @@ public class ProgramTrackedEntityAttributeHandler extends IdentifiableSyncHandle
         super(store);
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
-    }
-
-    public static ProgramTrackedEntityAttributeHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramTrackedEntityAttributeHandler(
-                ProgramTrackedEntityAttributeStore.create(databaseAdapter),
-                TrackedEntityAttributeHandler.create(databaseAdapter),
-                TrackedEntityAttributeStore.create(databaseAdapter));
     }
 
     @Override

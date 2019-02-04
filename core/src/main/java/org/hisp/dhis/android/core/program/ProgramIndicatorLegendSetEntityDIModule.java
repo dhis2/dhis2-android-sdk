@@ -25,17 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+package org.hisp.dhis.android.core.program;
+
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 
-public final class LegendHandler {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private LegendHandler() {}
+@Module
+public final class ProgramIndicatorLegendSetEntityDIModule {
 
-    public static SyncHandlerWithTransformer<Legend> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(LegendStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    public LinkModelStore<ProgramIndicatorLegendSetLinkModel> store(DatabaseAdapter databaseAdapter) {
+        return ProgramIndicatorLegendSetLinkStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> handler(
+            LinkModelStore<ProgramIndicatorLegendSetLinkModel> store) {
+        return new LinkModelHandlerImpl<>(store);
     }
 }

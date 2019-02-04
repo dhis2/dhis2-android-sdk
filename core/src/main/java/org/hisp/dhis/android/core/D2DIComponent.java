@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.EventPackageDIModule;
 import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
+import org.hisp.dhis.android.core.legendset.LegendPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModule;
@@ -80,6 +81,7 @@ import dagger.Component;
         EnrollmentPackageDIModule.class,
         EventPackageDIModule.class,
         IndicatorPackageDIModule.class,
+        LegendPackageDIModule.class,
         MaintenancePackageDIModule.class,
         OptionPackageDIModule.class,
         OrganisationUnitPackageDIModule.class,
@@ -119,6 +121,7 @@ public interface D2DIComponent {
         Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
         Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);
         Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
+        Builder legendPackageDIModule(LegendPackageDIModule legendPackageDIModule);
         Builder maintenancePackageDIModule(MaintenancePackageDIModule maintenancePackageDIModule);
         Builder optionPackageDIModule(OptionPackageDIModule optionPackageDIModule);
         Builder organisationUnitPackageDIModule(OrganisationUnitPackageDIModule organisationUnitPackageDIModule);

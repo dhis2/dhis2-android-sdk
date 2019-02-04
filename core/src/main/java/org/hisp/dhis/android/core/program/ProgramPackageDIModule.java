@@ -39,6 +39,7 @@ import retrofit2.Retrofit;
 @Module(includes = {
         ProgramEntityDIModule.class,
         ProgramIndicatorEntityDIModule.class,
+        ProgramIndicatorLegendSetEntityDIModule.class,
         ProgramRuleEntityDIModule.class,
         ProgramRuleVariableEntityDIModule.class,
         ProgramSectionEntityDIModule.class,

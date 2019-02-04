@@ -25,40 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+
+package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModelBuilder;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramIndicator> {
-    private final SyncHandler<LegendSet> legendSetHandler;
-    private final LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
+@Module
+public final class LegendSetEntityDIModule {
 
-    @Inject
-    ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
-                            SyncHandler<LegendSet> legendSetHandler,
-                            LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel>
-                                    programIndicatorLegendSetLinkHandler) {
-        super(programIndicatorStore);
-        this.legendSetHandler = legendSetHandler;
-        this.programIndicatorLegendSetLinkHandler = programIndicatorLegendSetLinkHandler;
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<LegendSet> store(DatabaseAdapter databaseAdapter) {
+        return LegendSetStore.create(databaseAdapter);
     }
 
-    @Override
-    protected void afterObjectHandled(ProgramIndicator programIndicator, HandleAction action) {
-        legendSetHandler.handleMany(programIndicator.legendSets());
-        programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicator.legendSets(),
-                new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator));
+    @Provides
+    @Reusable
+    public SyncHandler<LegendSet> handler(IdentifiableObjectStore<LegendSet> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(LegendModel.TABLE, LegendModel.Columns.LEGEND_SET, databaseAdapter);
     }
 }

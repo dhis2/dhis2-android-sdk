@@ -26,28 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
-
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.legendset;
 
 import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
 
-@Module
-public final class ProgramIndicatorEntityDIModule {
-
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramIndicator> store(DatabaseAdapter databaseAdapter) {
-        return ProgramIndicatorStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramIndicator> handler(ProgramIndicatorHandler impl) {
-        return impl;
-    }
+@Module(includes = {
+        LegendEntityDIModule.class,
+        LegendSetEntityDIModule.class
+})
+public final class LegendPackageDIModule {
 }

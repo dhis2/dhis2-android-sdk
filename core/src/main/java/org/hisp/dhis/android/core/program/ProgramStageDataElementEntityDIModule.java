@@ -47,7 +47,7 @@ public final class ProgramStageDataElementEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<ProgramStageDataElement> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramStageDataElementHandler.create(databaseAdapter);
+    public SyncHandler<ProgramStageDataElement> handler(ProgramStageDataElementHandler impl) {
+        return impl;
     }
 }

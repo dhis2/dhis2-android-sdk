@@ -80,6 +80,8 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Mode
         return new AutoValue_ProgramRule.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {

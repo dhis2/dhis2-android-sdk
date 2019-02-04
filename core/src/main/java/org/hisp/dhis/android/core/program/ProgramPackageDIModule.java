@@ -40,6 +40,7 @@ import retrofit2.Retrofit;
         ProgramEntityDIModule.class,
         ProgramIndicatorEntityDIModule.class,
         ProgramIndicatorLegendSetEntityDIModule.class,
+        ProgramRuleActionEntityDIModule.class,
         ProgramRuleEntityDIModule.class,
         ProgramRuleVariableEntityDIModule.class,
         ProgramSectionEntityDIModule.class,

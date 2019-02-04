@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class ProgramTrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> {
+class ProgramTrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> {
 
     private final SyncHandler<TrackedEntityAttribute> trackedEntityAttributeHandler;
     private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;

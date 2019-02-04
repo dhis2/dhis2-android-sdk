@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramIndicator> {
+class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramIndicator> {
     private final SyncHandler<LegendSet> legendSetHandler;
     private final LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
 

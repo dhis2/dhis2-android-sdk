@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -61,6 +60,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -102,7 +102,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<List<Program>> programEndpointCall;
+    private Callable<List<Program>> programEndpointCall;
 
     @Override
     @Before

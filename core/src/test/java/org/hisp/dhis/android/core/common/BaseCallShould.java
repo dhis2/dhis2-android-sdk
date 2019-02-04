@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -45,6 +44,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -116,7 +116,7 @@ public abstract class BaseCallShould {
         dhis2MockServer.shutdown();
     }
 
-    protected void whenEndpointCallFails(Call<?> endpointCall) throws Exception {
+    protected void whenEndpointCallFails(Callable<?> endpointCall) throws Exception {
         when(endpointCall.call()).thenThrow(new Exception());
     }
 

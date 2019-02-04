@@ -30,12 +30,10 @@ package org.hisp.dhis.android.core.domain.aggregated.data;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
@@ -57,7 +55,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-final class AggregatedDataCall extends SyncCall<Unit> {
+final class AggregatedDataCall implements Callable<Unit> {
 
     private final D2CallExecutor d2CallExecutor;
 
@@ -92,9 +90,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
 
     @Override
     public Unit call() throws Exception {
-        setExecuted();
-
-            return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
 
             @Override
             public Unit call() throws Exception {
@@ -113,7 +109,7 @@ final class AggregatedDataCall extends SyncCall<Unit> {
                 DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                         DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                Call<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
+                Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
                         dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
 
                 dataSetCompleteRegistrationCall.call();

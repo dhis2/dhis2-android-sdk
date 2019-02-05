@@ -39,9 +39,8 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
@@ -49,7 +48,8 @@ import java.util.List;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_ProgramSection.Builder.class)
-public abstract class ProgramSection extends BaseIdentifiableObject implements Model {
+public abstract class ProgramSection extends BaseIdentifiableObject
+        implements Model, ObjectWithStyle<ProgramSection, ProgramSection.Builder> {
 
     @Nullable
     @JsonProperty()
@@ -71,11 +71,6 @@ public abstract class ProgramSection extends BaseIdentifiableObject implements M
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
-    public abstract ObjectStyle style();
-
-    @Nullable
-    @JsonProperty()
     public abstract String formName();
 
     public static Builder builder() {
@@ -90,7 +85,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject implements M
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<ProgramSection, Builder> {
 
         public abstract Builder id(Long id);
 
@@ -102,8 +98,6 @@ public abstract class ProgramSection extends BaseIdentifiableObject implements M
         public abstract Builder attributes(List<ObjectWithUid> attributes);
 
         public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract Builder style(ObjectStyle style);
 
         public abstract Builder formName(String formName);
 

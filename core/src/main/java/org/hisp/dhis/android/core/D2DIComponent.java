@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
@@ -107,7 +108,10 @@ public interface D2DIComponent {
 
     @VisibleForTesting
     ListCallFactory<Program> programCallFactory();
+    @VisibleForTesting
     UidsCallFactory<OptionSet> optionSetCallFactory();
+    @VisibleForTesting
+    ListCallFactory<DataSet> dataSetCallFactory();
 
     @Component.Builder
     interface Builder {

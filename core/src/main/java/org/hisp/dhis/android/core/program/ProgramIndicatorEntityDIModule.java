@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -38,20 +37,17 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramIndicatorEntityDIModule
-        implements IdentifiableEntityFromDatabaseAdapterDIModule<ProgramIndicator> {
+public final class ProgramIndicatorEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
     public IdentifiableObjectStore<ProgramIndicator> store(DatabaseAdapter databaseAdapter) {
         return ProgramIndicatorStore.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<ProgramIndicator> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramIndicatorHandler.create(databaseAdapter);
+    public SyncHandler<ProgramIndicator> handler(ProgramIndicatorHandler impl) {
+        return impl;
     }
 }

@@ -25,37 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+@Module
+public final class ProgramRuleVariableEntityDIModule {
 
-    private final SyncHandler<DataElement> dataElementHandler;
-
-    @Inject
-    ProgramStageDataElementHandler(
-            IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-            SyncHandler<DataElement> dataElementHandler) {
-
-        super(programStageDataElementStore);
-        this.dataElementHandler = dataElementHandler;
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<ProgramRuleVariable> store(DatabaseAdapter databaseAdapter) {
+        return ProgramRuleVariableStore.create(databaseAdapter);
     }
 
-    @Override
-    protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
-
-        if (programStageDataElement.dataElement() != null) {
-            dataElementHandler.handle(programStageDataElement.dataElement());
-        }
+    @Provides
+    @Reusable
+    public SyncHandler<ProgramRuleVariable> handler(IdentifiableObjectStore<ProgramRuleVariable> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
     }
 }

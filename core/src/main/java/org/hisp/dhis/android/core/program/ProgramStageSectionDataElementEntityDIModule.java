@@ -25,18 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-final class ProgramRuleActionHandler {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private ProgramRuleActionHandler() {
+@Module
+public final class ProgramStageSectionDataElementEntityDIModule {
+
+    @Provides
+    @Reusable
+    public LinkModelStore<ProgramStageSectionDataElementLinkModel> store(DatabaseAdapter databaseAdapter) {
+        return ProgramStageSectionDataElementLinkStore.create(databaseAdapter);
     }
 
-    static SyncHandler<ProgramRuleAction> create(DatabaseAdapter databaseAdapter) {
-        return new IdentifiableSyncHandlerImpl<>(ProgramRuleActionStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    public OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel> handler(
+            LinkModelStore<ProgramStageSectionDataElementLinkModel> store) {
+        return new OrderedLinkModelHandlerImpl<>(store);
     }
 }

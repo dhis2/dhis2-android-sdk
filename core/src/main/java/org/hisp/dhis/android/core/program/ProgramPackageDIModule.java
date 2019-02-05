@@ -39,8 +39,18 @@ import retrofit2.Retrofit;
 @Module(includes = {
         ProgramEntityDIModule.class,
         ProgramIndicatorEntityDIModule.class,
+        ProgramIndicatorLegendSetEntityDIModule.class,
+        ProgramRuleActionEntityDIModule.class,
         ProgramRuleEntityDIModule.class,
-        ProgramStageEntityDIModule.class
+        ProgramRuleVariableEntityDIModule.class,
+        ProgramSectionEntityDIModule.class,
+        ProgramStageDataElementEntityDIModule.class,
+        ProgramStageSectionDataElementEntityDIModule.class,
+        ProgramSectionAttributeEntityDIModule.class,
+        ProgramStageSectionEntityDIModule.class,
+        ProgramStageSectionProgramIndicatorEntityDIModule.class,
+        ProgramStageEntityDIModule.class,
+        ProgramTrackedEntityAttributeEntityDIModule.class
 })
 public final class ProgramPackageDIModule {
 

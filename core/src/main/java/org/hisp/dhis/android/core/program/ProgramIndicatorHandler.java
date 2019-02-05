@@ -32,18 +32,20 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.legendset.LegendSetHandler;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModel;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkModelBuilder;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 
-public class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramIndicator> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramIndicator> {
     private final SyncHandler<LegendSet> legendSetHandler;
     private final LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel> programIndicatorLegendSetLinkHandler;
 
+    @Inject
     ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
                             SyncHandler<LegendSet> legendSetHandler,
                             LinkModelHandler<LegendSet, ProgramIndicatorLegendSetLinkModel>
@@ -51,15 +53,6 @@ public class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<Program
         super(programIndicatorStore);
         this.legendSetHandler = legendSetHandler;
         this.programIndicatorLegendSetLinkHandler = programIndicatorLegendSetLinkHandler;
-    }
-
-    public static SyncHandler<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorHandler(
-                ProgramIndicatorStore.create(databaseAdapter),
-                LegendSetHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<LegendSet, ProgramIndicatorLegendSetLinkModel>(
-                        ProgramIndicatorLegendSetLinkStore.create(databaseAdapter))
-        );
     }
 
     @Override

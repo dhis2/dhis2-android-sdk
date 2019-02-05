@@ -28,9 +28,12 @@
 
 package org.hisp.dhis.android.core;
 
+import android.support.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
@@ -42,10 +45,12 @@ import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.EventPackageDIModule;
 import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
+import org.hisp.dhis.android.core.legendset.LegendPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModule;
 import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
@@ -60,6 +65,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Singleton
 @Component(modules = {
         APIClientDIModule.class,
@@ -76,6 +82,7 @@ import dagger.Component;
         EnrollmentPackageDIModule.class,
         EventPackageDIModule.class,
         IndicatorPackageDIModule.class,
+        LegendPackageDIModule.class,
         MaintenancePackageDIModule.class,
         OptionPackageDIModule.class,
         OrganisationUnitPackageDIModule.class,
@@ -96,6 +103,9 @@ public interface D2DIComponent {
     MetadataCall metadataCall();
     WipeModule wipeModule();
 
+    @VisibleForTesting
+    ListCallFactory<Program> programCallFactory();
+
     @Component.Builder
     interface Builder {
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
@@ -112,6 +122,7 @@ public interface D2DIComponent {
         Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
         Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);
         Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
+        Builder legendPackageDIModule(LegendPackageDIModule legendPackageDIModule);
         Builder maintenancePackageDIModule(MaintenancePackageDIModule maintenancePackageDIModule);
         Builder optionPackageDIModule(OptionPackageDIModule optionPackageDIModule);
         Builder organisationUnitPackageDIModule(OrganisationUnitPackageDIModule organisationUnitPackageDIModule);

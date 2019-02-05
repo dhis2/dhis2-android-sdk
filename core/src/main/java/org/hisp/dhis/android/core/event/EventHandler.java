@@ -34,9 +34,7 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
 
 import javax.inject.Inject;
 
@@ -77,12 +75,5 @@ public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
                 event.status() == EventStatus.OVERDUE;
 
         return !validEventDate || event.organisationUnit() == null;
-    }
-
-    public static SyncHandlerWithTransformer<Event> create(DatabaseAdapter databaseAdapter) {
-        return new EventHandler(
-                EventStoreImpl.create(databaseAdapter),
-                TrackedEntityDataValueHandler.create(databaseAdapter)
-        );
     }
 }

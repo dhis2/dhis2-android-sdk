@@ -28,35 +28,30 @@
 package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class LegendSetHandler extends IdentifiableSyncHandlerImpl<LegendSet> {
 
     private final SyncHandlerWithTransformer<Legend> legendHandler;
     private final OrphanCleaner<LegendSet, Legend> legendCleaner;
 
+    @Inject
     LegendSetHandler(IdentifiableObjectStore<LegendSet> legendSetStore,
                      SyncHandlerWithTransformer<Legend> legendHandler,
                      OrphanCleaner<LegendSet, Legend> legendCleaner) {
         super(legendSetStore);
         this.legendHandler = legendHandler;
         this.legendCleaner = legendCleaner;
-    }
-
-    public static SyncHandler<LegendSet> create(DatabaseAdapter databaseAdapter) {
-        return new LegendSetHandler(
-                LegendSetStore.create(databaseAdapter),
-                LegendHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<LegendSet, Legend>(LegendModel.TABLE, LegendModel.Columns.LEGEND_SET,
-                        databaseAdapter));
     }
 
     @Override

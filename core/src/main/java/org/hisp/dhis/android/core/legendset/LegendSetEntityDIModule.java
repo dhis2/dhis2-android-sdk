@@ -25,37 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+package org.hisp.dhis.android.core.legendset;
+
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+@Module
+public final class LegendSetEntityDIModule {
 
-    private final SyncHandler<DataElement> dataElementHandler;
-
-    @Inject
-    ProgramStageDataElementHandler(
-            IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-            SyncHandler<DataElement> dataElementHandler) {
-
-        super(programStageDataElementStore);
-        this.dataElementHandler = dataElementHandler;
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<LegendSet> store(DatabaseAdapter databaseAdapter) {
+        return LegendSetStore.create(databaseAdapter);
     }
 
-    @Override
-    protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
+    @Provides
+    @Reusable
+    public SyncHandler<LegendSet> handler(LegendSetHandler impl) {
+        return impl;
+    }
 
-        if (programStageDataElement.dataElement() != null) {
-            dataElementHandler.handle(programStageDataElement.dataElement());
-        }
+    @Provides
+    @Reusable
+    OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(LegendModel.TABLE, LegendModel.Columns.LEGEND_SET, databaseAdapter);
     }
 }

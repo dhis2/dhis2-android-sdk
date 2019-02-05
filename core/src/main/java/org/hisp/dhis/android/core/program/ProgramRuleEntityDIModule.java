@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -38,19 +39,24 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class ProgramRuleEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<ProgramRule> {
+public final class ProgramRuleEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
     public IdentifiableObjectStore<ProgramRule> store(DatabaseAdapter databaseAdapter) {
         return ProgramRuleStore.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<ProgramRule> handler(DatabaseAdapter databaseAdapter) {
-        return ProgramRuleHandler.create(databaseAdapter);
+    public SyncHandler<ProgramRule> handler(ProgramRuleHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    public OrphanCleaner<ProgramRule, ProgramRuleAction> actionCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
+                ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter);
     }
 }

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -41,13 +41,13 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> {
+class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
     private final LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Inject
-    ProgramSectionHandler(IdentifiableObjectStore<ProgramSectionModel> programSectionStore,
+    ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
                           LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
                                   programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
@@ -61,6 +61,6 @@ class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection, Prog
         programSectionAttributeLinkHandler.handleMany(programSection.uid(),
                 programSection.attributes(), new ProgramSectionAttributeLinkModelBuilder(programSection));
         styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
-                ProgramSectionModel.TABLE));
+                ProgramSectionTableInfo.TABLE_INFO.name()));
     }
 }

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -39,7 +37,7 @@ public final class ValueTypeRenderingEntityDIModule {
 
     @Provides
     @Reusable
-    DictionaryTableHandler<ValueTypeRendering> handler(DatabaseAdapter databaseAdapter) {
-        return ValueTypeRenderingHandler.create(databaseAdapter);
+    DictionaryTableHandler<ValueTypeRendering> handler(ValueTypeRenderingHandler impl) {
+        return impl;
     }
 }

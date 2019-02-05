@@ -27,13 +27,17 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
+import dagger.Reusable;
+
+@Reusable
+class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
     private final GenericHandler<ValueTypeDeviceRendering,
             ValueTypeDeviceRenderingModel> deviceRenderingHandler;
 
+    @Inject
     ValueTypeRenderingHandler(GenericHandler<ValueTypeDeviceRendering,
             ValueTypeDeviceRenderingModel> deviceRenderingHandler) {
         this.deviceRenderingHandler = deviceRenderingHandler;
@@ -47,10 +51,5 @@ public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTy
             deviceRenderingHandler.handle(renderType.mobile(),
                     new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.MOBILE));
         }
-    }
-
-    public static ValueTypeRenderingHandler create(DatabaseAdapter databaseAdapter) {
-        return new ValueTypeRenderingHandler(
-                ValueTypeDeviceRenderingHandler.create(databaseAdapter));
     }
 }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -44,20 +43,18 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class DataElementEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<DataElement> {
+public final class DataElementEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<DataElement> store(DatabaseAdapter databaseAdapter) {
+    IdentifiableObjectStore<DataElement> store(DatabaseAdapter databaseAdapter) {
         return DataElementStore.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<DataElement> handler(DatabaseAdapter databaseAdapter) {
-        return DataElementHandler.create(databaseAdapter);
+    SyncHandler<DataElement> handler(DataElementHandler impl) {
+        return impl;
     }
 
     @Provides

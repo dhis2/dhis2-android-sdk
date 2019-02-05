@@ -26,28 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.program.ProgramSection;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-@Module
-public final class ProgramSectionEntityDIModule {
+public class ProgramSectionSamples {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramSection> store(DatabaseAdapter databaseAdapter) {
-        return ProgramSectionStore.create(databaseAdapter);
-    }
+    public static ProgramSection getProgramSection() {
+        ProgramSection.Builder builder = ProgramSection.builder();
 
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramSection> handler(ProgramSectionHandler impl) {
-        return impl;
+        fillIdentifiableProperties(builder);
+        return builder
+                .description("description")
+                .program(ObjectWithUid.create("program_uid"))
+                .sortOrder(3)
+                .formName("form_name")
+                .build();
     }
 }

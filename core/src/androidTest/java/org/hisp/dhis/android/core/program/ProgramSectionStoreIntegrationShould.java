@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,26 +28,38 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramSectionSamples;
+import org.junit.runner.RunWith;
 
-@Module
-public final class ProgramSectionEntityDIModule {
+@RunWith(AndroidJUnit4.class)
+public class ProgramSectionStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramSection> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramSection> store(DatabaseAdapter databaseAdapter) {
-        return ProgramSectionStore.create(databaseAdapter);
+    public ProgramSectionStoreIntegrationShould() {
+        super(ProgramSectionStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramSectionTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramSection> handler(ProgramSectionHandler impl) {
-        return impl;
+    @Override
+    protected ProgramSection buildObject() {
+        return ProgramSectionSamples.getProgramSection();
+    }
+
+    @Override
+    protected ProgramSection buildObjectWithId() {
+        return ProgramSectionSamples.getProgramSection().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected ProgramSection buildObjectToUpdate() {
+        return ProgramSectionSamples.getProgramSection().toBuilder()
+                .sortOrder(2)
+                .build();
     }
 }

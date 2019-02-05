@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
@@ -75,7 +74,7 @@ public class ProgramHandlerShould {
     private SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
 
     @Mock
-    private GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
+    private SyncHandler<ProgramSection> programSectionHandler;
 
     @Mock
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
@@ -214,8 +213,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_section_handler() {
         programHandler.handle(program);
-        verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class),
-                any(ProgramSectionModelBuilder.class));
+        verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class));
     }
 
     @Test

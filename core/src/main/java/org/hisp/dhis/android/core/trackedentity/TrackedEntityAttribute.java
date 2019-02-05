@@ -47,14 +47,14 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_TrackedEntityAttribute.Builder.class)
-public abstract class TrackedEntityAttribute extends BaseNameableObject implements Model {
+public abstract class TrackedEntityAttribute extends BaseNameableObject
+        implements Model, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
 
     @Nullable
     @JsonProperty()
@@ -112,11 +112,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject implemen
     @Nullable
     @JsonProperty()
     public abstract Boolean inherit();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
-    public abstract ObjectStyle style();
 
     @Nullable
     @JsonProperty()

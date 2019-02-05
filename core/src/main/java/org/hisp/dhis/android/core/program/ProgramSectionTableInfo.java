@@ -28,26 +28,38 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public final class ProgramSectionTableInfo {
 
-@Module
-public final class ProgramSectionEntityDIModule {
-
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramSection> store(DatabaseAdapter databaseAdapter) {
-        return ProgramSectionStore.create(databaseAdapter);
+    private ProgramSectionTableInfo() {
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramSection> handler(ProgramSectionHandler impl) {
-        return impl;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "ProgramSection";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramSectionFields.DESCRIPTION,
+                    ProgramSectionFields.PROGRAM,
+                    ProgramSectionFields.SORT_ORDER,
+                    ProgramSectionFields.FORM_NAME
+            );
+        }
     }
 }

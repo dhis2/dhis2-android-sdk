@@ -32,13 +32,17 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class OptionSetHandler extends IdentifiableSyncHandlerImpl<OptionSet> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class OptionSetHandler extends IdentifiableSyncHandlerImpl<OptionSet> {
     private final SyncHandler<Option> optionHandler;
     private final OrphanCleaner<OptionSet, Option> optionCleaner;
 
+    @Inject
     OptionSetHandler(IdentifiableObjectStore<OptionSet> optionSetStore,
                      SyncHandler<Option> optionHandler,
                      OrphanCleaner<OptionSet, Option> optionCleaner) {
@@ -53,13 +57,5 @@ public final class OptionSetHandler extends IdentifiableSyncHandlerImpl<OptionSe
         if (action == HandleAction.Update) {
             optionCleaner.deleteOrphan(optionSet, optionSet.options());
         }
-    }
-
-    public static SyncHandler<OptionSet> create(DatabaseAdapter databaseAdapter) {
-        return new OptionSetHandler(
-                OptionSetStore.create(databaseAdapter),
-                OptionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<OptionSet, Option>(OptionTableInfo.TABLE_INFO.name(),
-                        OptionFields.OPTION_SET, databaseAdapter));
     }
 }

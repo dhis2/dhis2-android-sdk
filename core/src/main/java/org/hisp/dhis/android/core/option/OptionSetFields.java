@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
-public final class OptionSetFields {
+final class OptionSetFields {
 
     final static String VERSION = "version";
     final static String VALUE_TYPE = "valueType";

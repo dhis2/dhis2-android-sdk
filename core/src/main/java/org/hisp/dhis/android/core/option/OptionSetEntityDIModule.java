@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -38,19 +39,23 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class OptionSetEntityDIModule implements IdentifiableEntityFromDatabaseAdapterDIModule<OptionSet> {
+public final class OptionSetEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<OptionSet> store(DatabaseAdapter databaseAdapter) {
+    IdentifiableObjectStore<OptionSet> store(DatabaseAdapter databaseAdapter) {
         return OptionSetStore.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<OptionSet> handler(DatabaseAdapter databaseAdapter) {
-        return OptionSetHandler.create(databaseAdapter);
+    SyncHandler<OptionSet> handler(OptionSetHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OrphanCleaner<OptionSet, Option> optionCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionFields.OPTION_SET, databaseAdapter);
     }
 }

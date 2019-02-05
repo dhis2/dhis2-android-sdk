@@ -28,28 +28,26 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        OptionEntityDIModule.class,
-        OptionSetEntityDIModule.class
-})
-public final class OptionPackageDIModule {
+@Module
+public final class OptionEntityDIModule {
 
     @Provides
     @Reusable
-    UidsCallFactory<OptionSet> optionSetCallFactory(OptionSetCallFactory impl) {
-        return impl;
+    public IdentifiableObjectStore<Option> store(DatabaseAdapter databaseAdapter) {
+        return OptionStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    OptionSetService service(Retrofit retrofit) {
-        return retrofit.create(OptionSetService.class);
+    SyncHandler<Option> handler(OptionHandler impl) {
+        return impl;
     }
 }

@@ -32,13 +32,15 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import javax.inject.Inject;
 
 public final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<RelationshipType> {
 
     private final SyncHandler<RelationshipConstraint> relationshipConstraintHandler;
 
-    private RelationshipTypeHandler(
+    @Inject
+    RelationshipTypeHandler(
             IdentifiableObjectStore<RelationshipType> relationshipTypeStore,
             SyncHandler<RelationshipConstraint> relationshipConstraintHandler) {
         super(relationshipTypeStore);
@@ -61,11 +63,5 @@ public final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<R
 
             this.relationshipConstraintHandler.handle(fromConstraintToHanldle);
         }
-    }
-
-    public static SyncHandler<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipTypeHandler(
-                RelationshipTypeStore.create(databaseAdapter),
-                RelationshipConstraintHandler.create(databaseAdapter));
     }
 }

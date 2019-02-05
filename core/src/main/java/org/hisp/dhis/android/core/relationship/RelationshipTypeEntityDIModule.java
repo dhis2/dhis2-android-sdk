@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityFromDatabaseAdapterDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -42,21 +41,18 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class RelationshipTypeEntityDIModule
-        implements IdentifiableEntityFromDatabaseAdapterDIModule<RelationshipType> {
+public final class RelationshipTypeEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<RelationshipType> store(DatabaseAdapter databaseAdapter) {
+    IdentifiableObjectStore<RelationshipType> store(DatabaseAdapter databaseAdapter) {
         return RelationshipTypeStore.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<RelationshipType> handler(DatabaseAdapter databaseAdapter) {
-        return RelationshipTypeHandler.create(databaseAdapter);
+    SyncHandler<RelationshipType> handler(RelationshipTypeHandler impl) {
+        return impl;
     }
 
     @Provides

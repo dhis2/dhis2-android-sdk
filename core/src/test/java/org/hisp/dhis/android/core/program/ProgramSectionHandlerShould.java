@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.assertj.core.util.Lists;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -53,7 +53,7 @@ import static org.mockito.Mockito.when;
 public class ProgramSectionHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<ProgramSectionModel> programSectionStore;
+    private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
     private LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel> programSectionAttributeLinkHandler;
@@ -85,20 +85,20 @@ public class ProgramSectionHandlerShould {
 
     @Test
     public void call_style_handler() throws Exception {
-        programSectionHandler.handle(programSection, new ProgramSectionModelBuilder());
+        programSectionHandler.handle(programSection);
         verify(styleHandler).handle(same(programSection.style()), any(ObjectStyleModelBuilder.class));
     }
 
     @Test
     public void save_program_section_attribute_links() throws Exception {
-        programSectionHandler.handle(programSection, new ProgramSectionModelBuilder());
+        programSectionHandler.handle(programSection);
         verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID), same(attributes),
                 any(ProgramSectionAttributeLinkModelBuilder.class));
     }
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> genericHandler = new ProgramSectionHandler(
+        IdentifiableSyncHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
                 null,null, null);
     }
 }

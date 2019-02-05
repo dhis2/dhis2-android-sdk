@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -41,13 +41,13 @@ public final class ProgramSectionEntityDIModule {
 
     @Provides
     @Reusable
-    public IdentifiableObjectStore<ProgramSectionModel> store(DatabaseAdapter databaseAdapter) {
+    public IdentifiableObjectStore<ProgramSection> store(DatabaseAdapter databaseAdapter) {
         return ProgramSectionStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public GenericHandler<ProgramSection, ProgramSectionModel> handler(ProgramSectionHandler impl) {
+    public SyncHandler<ProgramSection> handler(ProgramSectionHandler impl) {
         return impl;
     }
 }

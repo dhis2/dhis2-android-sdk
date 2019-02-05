@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
@@ -50,7 +49,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
     private final SyncHandler<ProgramRule> programRuleHandler;
     private final SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
-    private final GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
+    private final SyncHandler<ProgramSection> programSectionHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
@@ -61,7 +60,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
                    SyncHandler<ProgramIndicator> programIndicatorHandler,
                    SyncHandler<ProgramRule> programRuleHandler,
                    SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler,
-                   GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler,
+                   SyncHandler<ProgramSection> programSectionHandler,
                    SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
                    CollectionCleaner<Program> collectionCleaner) {
@@ -82,7 +81,7 @@ class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
         programIndicatorHandler.handleMany(program.programIndicators());
         programRuleHandler.handleMany(program.programRules());
         programRuleVariableHandler.handleMany(program.programRuleVariables());
-        programSectionHandler.handleMany(program.programSections(), new ProgramSectionModelBuilder());
+        programSectionHandler.handleMany(program.programSections());
         styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(),
                 ProgramTableInfo.TABLE_INFO.name()));
 

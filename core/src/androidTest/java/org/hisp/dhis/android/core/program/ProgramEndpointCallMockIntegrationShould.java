@@ -395,18 +395,18 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                ProgramRuleModel.Columns.CODE,
-                ProgramRuleModel.Columns.NAME,
-                ProgramRuleModel.Columns.DISPLAY_NAME,
-                ProgramRuleModel.Columns.CREATED,
-                ProgramRuleModel.Columns.LAST_UPDATED,
-                ProgramRuleModel.Columns.PRIORITY,
-                ProgramRuleModel.Columns.CONDITION,
-                ProgramRuleModel.Columns.PROGRAM,
-                ProgramRuleModel.Columns.PROGRAM_STAGE
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                ProgramRuleFields.PRIORITY,
+                ProgramRuleFields.CONDITION,
+                ProgramRuleFields.PROGRAM,
+                ProgramRuleFields.PROGRAM_STAGE
         };
 
-        Cursor programRuleCursor = database().query(ProgramRuleModel.TABLE, projection,
+        Cursor programRuleCursor = database().query(ProgramRuleTableInfo.TABLE_INFO.name(), projection,
                 UID + "=?", new String[]{"NAgjOfWMXg6"}, null, null, null);
 
         assertThatCursor(programRuleCursor).hasRow(

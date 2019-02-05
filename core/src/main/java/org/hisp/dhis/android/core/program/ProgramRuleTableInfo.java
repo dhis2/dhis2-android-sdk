@@ -28,41 +28,38 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class ProgramRuleTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private ProgramRuleTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleTableInfo.TABLE_INFO.name(),
-                ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageTableInfo.TABLE_INFO.name());
-    }
+        @Override
+        public String name() {
+            return "ProgramRule";
+        }
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    ProgramRuleFields.PRIORITY,
+                    ProgramRuleFields.CONDITION,
+                    ProgramRuleFields.PROGRAM,
+                    ProgramRuleFields.PROGRAM_STAGE
+            );
+        }
     }
 }

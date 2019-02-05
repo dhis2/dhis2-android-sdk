@@ -26,43 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.program.ProgramStage;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-import dagger.Reusable;
+public class ProgramRuleSamples {
 
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
+    public static ProgramRule getProgramRule() {
+        ProgramRule.Builder builder = ProgramRule.builder();
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableModel.TABLE,
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleTableInfo.TABLE_INFO.name(),
-                ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageTableInfo.TABLE_INFO.name());
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+        fillIdentifiableProperties(builder);
+        return builder
+                .priority(2)
+                .condition("condition")
+                .program(Program.builder().uid("program_uid").build())
+                .programStage(ProgramStage.builder().uid("program_stage_uid").build())
+                .build();
     }
 }

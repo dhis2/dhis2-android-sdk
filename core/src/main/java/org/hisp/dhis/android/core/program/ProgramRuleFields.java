@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 final class ProgramRuleFields {
 
-    private static final String PRIORITY = "priority";
-    private static final String CONDITION = "condition";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
+    static final String PRIORITY = "priority";
+    static final String CONDITION = "condition";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
     private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
     private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();

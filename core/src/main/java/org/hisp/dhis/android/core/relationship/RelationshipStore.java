@@ -64,7 +64,6 @@ public final class RelationshipStore {
     };
 
     public static IdentifiableObjectStore<Relationship> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipModel.TABLE,
-                new RelationshipModel.Columns().all(), BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipTypeTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

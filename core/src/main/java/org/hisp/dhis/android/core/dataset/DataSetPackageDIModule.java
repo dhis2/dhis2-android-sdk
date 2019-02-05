@@ -42,7 +42,9 @@ import retrofit2.Retrofit;
         DataSetCompulsoryDataElementOperandEntityDIModule.class,
         DataSetEntityDIModule.class,
         DataSetCompleteRegistrationEntityDIModule.class,
-        SectionEntityDIModule.class
+        SectionEntityDIModule.class,
+        SectionDataElementEntityDIModule.class,
+        SectionGreyedFieldsEntityDIModule.class
 })
 public final class DataSetPackageDIModule {
 

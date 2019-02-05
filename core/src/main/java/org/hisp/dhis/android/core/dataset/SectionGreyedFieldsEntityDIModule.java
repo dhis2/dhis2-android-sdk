@@ -28,26 +28,29 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class SectionEntityDIModule {
+public final class SectionGreyedFieldsEntityDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<Section> store(DatabaseAdapter databaseAdapter) {
-        return SectionStore.create(databaseAdapter);
+    LinkModelStore<SectionGreyedFieldsLinkModel> store(DatabaseAdapter databaseAdapter) {
+        return SectionGreyedFieldsLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    SyncHandler<Section> handler(SectionHandler impl) {
-        return impl;
+    LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> handler(
+            LinkModelStore<SectionGreyedFieldsLinkModel> store) {
+        return  new LinkModelHandlerImpl<>(store);
     }
 }

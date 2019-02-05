@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.datavalue;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
 
 final class DataValueImportHandler {
 
@@ -43,14 +43,14 @@ final class DataValueImportHandler {
     }
 
     void handleImportSummary(@NonNull DataValueSet dataValueSet,
-                             @NonNull ImportSummary importSummary) {
+                             @NonNull DataValueImportSummary dataValueImportSummary) {
 
-        if (importSummary == null || dataValueSet == null) {
+        if (dataValueImportSummary == null || dataValueSet == null) {
             return;
         }
 
         State newState =
-                (importSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
+                (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
 
         for (DataValue dataValue : dataValueSet.dataValues) {
             dataValueStore.setState(dataValue, newState);

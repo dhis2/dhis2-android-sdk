@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 final class DataSetCompleteRegistrationImportHandler {
 
@@ -44,14 +44,14 @@ final class DataSetCompleteRegistrationImportHandler {
     }
 
     void handleImportSummary(@NonNull DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
-                             @NonNull ImportSummary importSummary) {
+                             @NonNull DataValueImportSummary dataValueImportSummary) {
 
-        if (importSummary == null || dataSetCompleteRegistrationPayload == null) {
+        if (dataValueImportSummary == null || dataSetCompleteRegistrationPayload == null) {
             return;
         }
 
         State newState =
-                (importSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
+                (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration :
                 dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations) {

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.TEIWebResponse;
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 
 import java.util.List;
@@ -64,7 +64,7 @@ public interface TrackedEntityInstanceService {
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
 
     @POST(TRACKED_ENTITY_INSTANCES)
-    Call<WebResponse> postTrackedEntityInstances(
+    Call<TEIWebResponse> postTrackedEntityInstances(
             @Body TrackedEntityInstancePayload trackedEntityInstances,
             @Query(STRATEGY) String strategy);
 

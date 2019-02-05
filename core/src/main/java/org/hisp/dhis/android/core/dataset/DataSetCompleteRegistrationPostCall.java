@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +44,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class DataSetCompleteRegistrationPostCall implements Callable<ImportSummary> {
+final class DataSetCompleteRegistrationPostCall implements Callable<DataValueImportSummary> {
 
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
     private final DataSetCompleteRegistrationStore  dataSetCompleteRegistrationStore;
@@ -62,26 +62,26 @@ final class DataSetCompleteRegistrationPostCall implements Callable<ImportSummar
     }
 
     @Override
-    public ImportSummary call() throws Exception {
+    public DataValueImportSummary call() throws Exception {
         List<DataSetCompleteRegistration> toPostDataSetCompleteRegistrations = new ArrayList<>();
 
         appendPostableDataValues(toPostDataSetCompleteRegistrations);
         appendUpdatableDataValues(toPostDataSetCompleteRegistrations);
 
         if (toPostDataSetCompleteRegistrations.isEmpty()) {
-            return ImportSummary.EMPTY;
+            return DataValueImportSummary.EMPTY;
         }
 
         DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload
                 = new DataSetCompleteRegistrationPayload(toPostDataSetCompleteRegistrations);
 
-        ImportSummary importSummary = apiCallExecutor.executeObjectCall(
+        DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
                 dataSetCompleteRegistrationService.postDataSetCompleteRegistrations(
                         dataSetCompleteRegistrationPayload));
 
-        handleImportSummary(dataSetCompleteRegistrationPayload, importSummary);
+        handleImportSummary(dataSetCompleteRegistrationPayload, dataValueImportSummary);
 
-        return importSummary;
+        return dataValueImportSummary;
     }
 
     private void appendPostableDataValues(Collection<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
@@ -95,12 +95,12 @@ final class DataSetCompleteRegistrationPostCall implements Callable<ImportSummar
     }
 
     private void handleImportSummary(DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
-                                     ImportSummary importSummary) {
+                                     DataValueImportSummary dataValueImportSummary) {
 
         DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler =
                 new DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore);
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                dataSetCompleteRegistrationPayload, importSummary);
+                dataSetCompleteRegistrationPayload, dataValueImportSummary);
     }
 }

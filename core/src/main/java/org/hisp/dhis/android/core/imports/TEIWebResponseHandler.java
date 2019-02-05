@@ -32,19 +32,19 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
 
-public final class WebResponseHandler {
+public final class TEIWebResponseHandler {
     private final TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
 
-    public WebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {
+    public TEIWebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {
         this.trackedEntityInstanceImportHandler = trackedEntityInstanceImportHandler;
     }
 
-    public void handleWebResponse(@NonNull WebResponse webResponse) {
-        if (webResponse == null || webResponse.importSummaries() == null) {
+    public void handleWebResponse(@NonNull TEIWebResponse webResponse) {
+        if (webResponse == null || webResponse.response() == null) {
             return;
         }
 
-        ImportSummaries importSummaries = webResponse.importSummaries();
+        TEIImportSummaries importSummaries = webResponse.response();
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
                 importSummaries.importSummaries()

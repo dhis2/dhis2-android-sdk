@@ -28,36 +28,38 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TEIWebResponse.Builder.class)
+public abstract class TEIWebResponse implements WebResponse {
+    private static final String MESSAGE = "message";
+    private static final String RESPONSE = "response"; // is called response from api
 
-@RunWith(JUnit4.class)
-public class WebResponseShould {
+    @NonNull
+    @JsonProperty(MESSAGE)
+    public abstract String message();
 
-    @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
+    @NonNull
+    @JsonProperty(RESPONSE)
+    public abstract TEIImportSummaries response();
 
-        String responseStr = new ResourcesFileReader().getStringFromFile("imports/web_response.json");
-        WebResponse webResponse = objectMapper.readValue(responseStr, WebResponse.class);
-
-        assertThat(webResponse.message()).isEqualTo("Import was successful.");
-        assertThat(webResponse.importSummaries()).isNotNull();
+    public static Builder builder() {
+        return new AutoValue_TEIWebResponse.Builder();
     }
 
-    @Test
-    public void map_from_json_string_with_import_conflicts() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder message(String message);
 
-        String webResponseStr = new ResourcesFileReader().getStringFromFile(
-                "imports/web_response_with_import_conflicts.json");
-        objectMapper.readValue(webResponseStr, WebResponse.class);
+        public abstract Builder response(TEIImportSummaries response);
+
+        public abstract TEIWebResponse build();
     }
 }

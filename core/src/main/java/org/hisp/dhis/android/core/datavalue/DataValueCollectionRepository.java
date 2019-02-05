@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUplo
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -95,7 +95,7 @@ public final class DataValueCollectionRepository
     }
 
     @Override
-    public Callable<ImportSummary> upload() {
+    public Callable<DataValueImportSummary> upload() {
         return postCall;
     }
 }

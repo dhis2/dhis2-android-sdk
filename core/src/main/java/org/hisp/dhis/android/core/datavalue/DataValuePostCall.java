@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +43,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class DataValuePostCall implements Callable<ImportSummary> {
+final class DataValuePostCall implements Callable<DataValueImportSummary> {
 
     private final DataValueService dataValueService;
     private final DataValueStore dataValueStore;
@@ -60,24 +60,24 @@ final class DataValuePostCall implements Callable<ImportSummary> {
     }
 
     @Override
-    public ImportSummary call() throws Exception {
+    public DataValueImportSummary call() throws Exception {
         Collection<DataValue> toPostDataValues = new ArrayList<>();
 
         appendPostableDataValues(toPostDataValues);
         appendUpdatableDataValues(toPostDataValues);
 
         if (toPostDataValues.isEmpty()) {
-            return ImportSummary.EMPTY;
+            return DataValueImportSummary.EMPTY;
         }
 
         DataValueSet dataValueSet = new DataValueSet(toPostDataValues);
 
-        ImportSummary importSummary = apiCallExecutor.executeObjectCall(
+        DataValueImportSummary dataValueImportSummary = apiCallExecutor.executeObjectCall(
                 dataValueService.postDataValues(dataValueSet));
 
-        handleImportSummary(dataValueSet, importSummary);
+        handleImportSummary(dataValueSet, dataValueImportSummary);
 
-        return importSummary;
+        return dataValueImportSummary;
     }
 
     private void appendPostableDataValues(Collection<DataValue> dataValues) {
@@ -88,11 +88,11 @@ final class DataValuePostCall implements Callable<ImportSummary> {
         dataValues.addAll(dataValueStore.getDataValuesWithState(State.TO_UPDATE));
     }
 
-    private void handleImportSummary(DataValueSet dataValueSet, ImportSummary importSummary) {
+    private void handleImportSummary(DataValueSet dataValueSet, DataValueImportSummary dataValueImportSummary) {
 
         DataValueImportHandler dataValueImportHandler =
                 new DataValueImportHandler(dataValueStore);
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
+        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
     }
 }

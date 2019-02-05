@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUplo
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import java.util.Collection;
 import java.util.List;
@@ -82,7 +82,7 @@ final class DataSetCompleteRegistrationCollectionRepository
     }
 
     @Override
-    public Callable<ImportSummary> upload() {
+    public Callable<DataValueImportSummary> upload() {
         return postCall;
     }
 }

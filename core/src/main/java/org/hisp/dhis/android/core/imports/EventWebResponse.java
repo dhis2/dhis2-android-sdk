@@ -28,44 +28,38 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
-import java.text.ParseException;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_EventWebResponse.Builder.class)
+public abstract class EventWebResponse implements WebResponse {
+    private static final String MESSAGE = "message";
+    private static final String IMPORT_SUMMARIES = "response"; // is called response from api
 
-@RunWith(JUnit4.class)
-public class ImportEnrollmentShould extends BaseObjectShould implements ObjectShould {
+    @NonNull
+    @JsonProperty(MESSAGE)
+    public abstract String message();
 
-    public ImportEnrollmentShould() {
-        super("imports/import_enrollment.json");
+    @NonNull
+    @JsonProperty(IMPORT_SUMMARIES)
+    public abstract EventImportSummaries response();
+
+    public static Builder builder() {
+        return new AutoValue_EventWebResponse.Builder();
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ImportEnrollment importEnrollment = objectMapper.readValue(jsonStream, ImportEnrollment.class);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder message(String message);
 
-        assertThat(importEnrollment.imported()).isEqualTo(0);
-        assertThat(importEnrollment.updated()).isEqualTo(1);
-        assertThat(importEnrollment.ignored()).isEqualTo(0);
-        assertThat(importEnrollment.deleted()).isEqualTo(0);
+        public abstract Builder response(EventImportSummaries response);
 
-        assertThat(importEnrollment.responseType()).isEqualTo("ImportSummaries");
-        assertThat(importEnrollment.importStatus()).isEqualTo(ImportStatus.SUCCESS);
-        assertThat(importEnrollment.importSummaries()).isNotNull();
-
-        assertThat(importEnrollment.importSummaries()).size().isEqualTo(1);
-
-        ImportSummary importSummary = importEnrollment.importSummaries().get(0);
-
-        assertThat(importSummary).isNotNull();
-        assertThat(importSummary.importEvent()).isNotNull();
-        assertThat(importSummary.reference()).isEqualTo("XaBZwKbHVxS");
+        public abstract EventWebResponse build();
     }
 }

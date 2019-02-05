@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCo
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.imports.TEIWebResponse;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
 import java.util.Collection;

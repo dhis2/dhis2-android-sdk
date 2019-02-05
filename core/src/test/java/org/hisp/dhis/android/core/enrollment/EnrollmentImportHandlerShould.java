@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.EventImportHandler;
-import org.hisp.dhis.android.core.imports.ImportEvent;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.imports.EventImportSummaries;
+import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,13 +66,13 @@ public class EnrollmentImportHandlerShould {
     private EventImportHandler eventImportHandler;
 
     @Mock
-    private ImportEvent importEvent;
+    private EventImportSummaries importEvent;
 
     @Mock
-    private ImportSummary eventSummary;
+    private EventImportSummary eventSummary;
 
     @Mock
-    private ImportSummary importSummary;
+    private EnrollmentImportSummary importSummary;
 
     // object to test
     private EnrollmentImportHandler enrollmentImportHandler;
@@ -93,7 +94,7 @@ public class EnrollmentImportHandlerShould {
 
     @Test
     public void invoke_set_state_when_enrollment_import_summary_is_success_with_reference() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary));
@@ -103,7 +104,7 @@ public class EnrollmentImportHandlerShould {
 
     @Test
     public void  invoke_set_state_when_enrollment_import_summary_is_error_with_reference() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.ERROR);
+        when(importSummary.status()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary));
@@ -113,11 +114,11 @@ public class EnrollmentImportHandlerShould {
 
     @Test
     public void invoke_set_state_and_handle_event_import_summaries_when_enrollment_is_success_and_event_is_imported() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
-        when(importSummary.importEvent()).thenReturn(importEvent);
+        when(importSummary.events()).thenReturn(importEvent);
 
-        List<ImportSummary> eventSummaries = Collections.singletonList(eventSummary);
+        List<EventImportSummary> eventSummaries = Collections.singletonList(eventSummary);
         when(importEvent.importSummaries()).thenReturn(eventSummaries);
 
 

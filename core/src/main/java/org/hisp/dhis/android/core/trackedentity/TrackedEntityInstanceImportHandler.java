@@ -34,10 +34,9 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.event.EventImportHandler;
-import org.hisp.dhis.android.core.imports.ImportEnrollment;
-import org.hisp.dhis.android.core.imports.ImportEvent;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
+import org.hisp.dhis.android.core.imports.TEIImportSummary;
 
 import java.util.List;
 
@@ -56,37 +55,39 @@ public final class TrackedEntityInstanceImportHandler {
         this.eventImportHandler = eventImportHandler;
     }
 
-    public void handleTrackedEntityInstanceImportSummaries(@NonNull List<ImportSummary> importSummaries) {
+    public void handleTrackedEntityInstanceImportSummaries(@NonNull List<TEIImportSummary> importSummaries) {
         if (importSummaries == null) {
             return;
         }
 
         int size = importSummaries.size();
         for (int i = 0; i < size; i++) {
-            ImportSummary importSummary = importSummaries.get(i);
+            TEIImportSummary importSummary = importSummaries.get(i);
 
             if (importSummary == null) {
                 break;
             }
 
-            ImportStatus importStatus = importSummary.importStatus();
+            ImportStatus importStatus = importSummary.status();
             State state = getState(importStatus);
 
             // store the state in database
             trackedEntityInstanceStore.setState(importSummary.reference(), state);
 
-            if (importSummary.importEnrollment() != null) {
-                ImportEnrollment importEnrollment = importSummary.importEnrollment();
+            if (importSummary.enrollments() != null) {
+                EnrollmentImportSummaries importEnrollment = importSummary.enrollments();
 
                 enrollmentImportHandler.handleEnrollmentImportSummary(importEnrollment.importSummaries());
             }
 
+            // TODO Review if it makes sense
+            /**
+            if (importSummary.events() != null) {
+                ImportEvent events = importSummary.events();
 
-            if (importSummary.importEvent() != null) {
-                ImportEvent importEvent = importSummary.importEvent();
-
-                eventImportHandler.handleEventImportSummaries(importEvent.importSummaries());
+                eventImportHandler.handleEventImportSummaries(events.response());
             }
+             */
         }
 
 

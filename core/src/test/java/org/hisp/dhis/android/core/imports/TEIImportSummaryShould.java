@@ -39,7 +39,7 @@ import org.junit.runners.JUnit4;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class ImportSummaryShould {
+public class TEIImportSummaryShould {
 
     @Test
     public void map_from_json_string_with_tei_conflicts() throws Exception {
@@ -47,9 +47,9 @@ public class ImportSummaryShould {
 
         String importSummaryStr = new ResourcesFileReader().getStringFromFile(
                 "imports/import_summary_with_tei_conflicts.json");
-        ImportSummary importSummary = objectMapper.readValue(importSummaryStr, ImportSummary.class);
+        TEIImportSummary importSummary = objectMapper.readValue(importSummaryStr, TEIImportSummary.class);
 
-        assertThat(importSummary.importStatus()).isEqualTo(ImportStatus.ERROR);
+        assertThat(importSummary.status()).isEqualTo(ImportStatus.ERROR);
         assertThat(importSummary.responseType()).isEqualTo("ImportSummary");
         assertThat(importSummary.importCount()).isNotNull();
         assertThat(importSummary.importCount().imported()).isEqualTo(0);
@@ -57,10 +57,10 @@ public class ImportSummaryShould {
         assertThat(importSummary.importCount().ignored()).isEqualTo(1);
         assertThat(importSummary.importCount().deleted()).isEqualTo(0);
 
-        assertThat(importSummary.importConflicts()).isNotNull();
-        assertThat(importSummary.importConflicts().size()).isEqualTo(1);
+        assertThat(importSummary.conflicts()).isNotNull();
+        assertThat(importSummary.conflicts().size()).isEqualTo(1);
 
-        ImportConflict importConflict = importSummary.importConflicts().get(0);
+        ImportConflict importConflict = importSummary.conflicts().get(0);
 
         assertThat(importConflict).isNotNull();
         assertThat(importConflict.value()).isEqualTo("Value '201921212' is not a valid date for attribute iESIqZ0R0R0");
@@ -77,10 +77,10 @@ public class ImportSummaryShould {
         ObjectMapper objectMapper = Inject.objectMapper();
 
         String importSummaryStr = new ResourcesFileReader().getStringFromFile("imports/import_summary_with_event_conflicts.json");
-        ImportSummary importSummary = objectMapper.readValue(importSummaryStr, ImportSummary.class);
+        TEIImportSummary importSummary = objectMapper.readValue(importSummaryStr, TEIImportSummary.class);
 
         assertThat(importSummary.responseType()).isEqualTo("ImportSummary");
-        assertThat(importSummary.importStatus()).isEqualTo(ImportStatus.SUCCESS);
+        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS);
         assertThat(importSummary.importCount()).isNotNull();
 
         assertThat(importSummary.importCount().imported()).isEqualTo(0);
@@ -90,9 +90,6 @@ public class ImportSummaryShould {
 
         assertThat(importSummary.reference()).isEqualTo("Rmp5T1vmZ74");
 
-        assertThat(importSummary.importEvent()).isNull();
-        assertThat(importSummary.importEnrollment()).isNotNull();
-
-
+        assertThat(importSummary.enrollments()).isNotNull();
     }
 }

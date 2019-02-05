@@ -47,7 +47,7 @@ public final class TrackedEntityAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandler<TrackedEntityAttribute> handler(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityAttributeHandler.create(databaseAdapter);
+    public SyncHandler<TrackedEntityAttribute> handler(TrackedEntityAttributeHandler impl) {
+        return impl;
     }
 }

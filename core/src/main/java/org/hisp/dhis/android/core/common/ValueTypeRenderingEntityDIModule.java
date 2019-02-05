@@ -29,26 +29,17 @@
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module(includes = {
-        ObjectStyleEntityDIModule.class,
-        ValueTypeRenderingEntityDIModule.class
-})
-public class CommonPackageDIModule {
+@Module
+public final class ValueTypeRenderingEntityDIModule {
 
     @Provides
     @Reusable
-    GenericCallData genericCallData(DatabaseAdapter databaseAdapter,
-                                    Retrofit retrofit,
-                                    ResourceHandler resourceHandler,
-                                    DHISVersionManager versionManager) {
-        return GenericCallData.create(databaseAdapter, retrofit, resourceHandler, versionManager);
+    DictionaryTableHandler<ValueTypeRendering> handler(DatabaseAdapter databaseAdapter) {
+        return ValueTypeRenderingHandler.create(databaseAdapter);
     }
 }

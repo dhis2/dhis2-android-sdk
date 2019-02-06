@@ -93,15 +93,15 @@ final class DataSetCompleteRegistrationCollectionRepository
         return cf.string(DataSetCompleteRegistrationFields.PERIOD);
     }
 
-    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDataSet() {
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDataSetUid() {
         return cf.string(DataSetCompleteRegistrationFields.DATA_SET);
     }
 
-    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byOrganisationUnit() {
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byOrganisationUnitUid() {
         return cf.string(DataSetCompleteRegistrationFields.ORGANISATION_UNIT);
     }
 
-    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byAttributeOptionCombo() {
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byAttributeOptionComboUid() {
         return cf.string(DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO);
     }
 

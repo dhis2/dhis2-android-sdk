@@ -25,24 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity;
+
+package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressWarnings("PMD.UseUtilityClass")
-public final class TrackedEntityAttributeReservedValueHandler extends
-        ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeReservedValue> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    TrackedEntityAttributeReservedValueHandler(ObjectWithoutUidStore<TrackedEntityAttributeReservedValue> store) {
-        super(store);
+@Module
+public final class RelationshipConstraintEntityDIModule {
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<RelationshipConstraint> store(DatabaseAdapter databaseAdapter) {
+        return RelationshipConstraintStore.create(databaseAdapter);
     }
 
-    public static SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue>
-    create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityAttributeReservedValueHandler(
-                TrackedEntityAttributeReservedValueStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    SyncHandler<RelationshipConstraint> handler(ObjectWithoutUidStore<RelationshipConstraint> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

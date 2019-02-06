@@ -36,6 +36,7 @@ import dagger.Reusable;
 import retrofit2.Retrofit;
 
 @Module(includes = {
+        RelationshipConstraintEntityDIModule.class,
         RelationshipEntityDIModule.class,
         RelationshipItemEntityDIModule.class,
         RelationshipTypeEntityDIModule.class

@@ -44,7 +44,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
+final class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
 
     private final SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
     private final OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;

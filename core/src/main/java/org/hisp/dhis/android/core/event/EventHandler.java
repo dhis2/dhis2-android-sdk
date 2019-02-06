@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
+final class EventHandler extends IdentifiableSyncHandlerImpl<Event> {
     private final SyncHandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
 
     @Inject

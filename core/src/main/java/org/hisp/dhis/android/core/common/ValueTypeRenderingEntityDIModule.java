@@ -25,16 +25,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+package org.hisp.dhis.android.core.common;
 
-public final class RelationshipConstraintHandler {
-    private RelationshipConstraintHandler() {}
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    public static SyncHandler<RelationshipConstraint> create(DatabaseAdapter db) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(RelationshipConstraintStore.create(db));
+@Module
+public final class ValueTypeRenderingEntityDIModule {
+
+    @Provides
+    @Reusable
+    DictionaryTableHandler<ValueTypeRendering> handler(ValueTypeRenderingHandler impl) {
+        return impl;
     }
 }

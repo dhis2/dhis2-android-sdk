@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -116,7 +117,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
         manager = d2.trackedEntityModule().reservedValueManager;
 
         SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler =
-                TrackedEntityAttributeReservedValueHandler.create(databaseAdapter());
+                new ObjectWithoutUidSyncHandlerImpl<>(store);
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
 

@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueHandler;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +54,7 @@ public class EventHandlerShould {
     private EventStore eventStore;
 
     @Mock
-    private TrackedEntityDataValueHandler trackedEntityDataValueHandler;
+    private SyncHandlerWithTransformer<TrackedEntityDataValue> trackedEntityDataValueHandler;
 
     @Mock
     private Event event;

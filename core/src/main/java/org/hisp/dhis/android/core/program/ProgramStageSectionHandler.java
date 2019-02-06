@@ -42,7 +42,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<ProgramStageSection> {
+final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<ProgramStageSection> {
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
     private final LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
             programStageSectionProgramIndicatorLinkHandler;

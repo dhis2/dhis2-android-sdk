@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
+final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     private final OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 

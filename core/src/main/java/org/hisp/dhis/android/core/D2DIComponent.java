@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core;
 import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
@@ -56,10 +58,12 @@ import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.user.UserPackageDIModule;
 import org.hisp.dhis.android.core.wipe.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
@@ -111,7 +115,13 @@ public interface D2DIComponent {
     @VisibleForTesting
     UidsCallFactory<OptionSet> optionSetCallFactory();
     @VisibleForTesting
+    UidsCallFactory<DataElement> dataElementCallFactory();
+    @VisibleForTesting
     ListCallFactory<DataSet> dataSetCallFactory();
+    @VisibleForTesting
+    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory();
+    @VisibleForTesting
+    SyncHandler<RelationshipType> relationshipTypeHandler();
 
     @Component.Builder
     interface Builder {

@@ -25,19 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class ValueTypeDeviceRenderingHandler extends ObjectWithoutUidHandlerImpl<ValueTypeDeviceRendering,
-        ValueTypeDeviceRenderingModel> {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    private ValueTypeDeviceRenderingHandler(ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store) {
-        super(store);
+@Module
+public final class ValueTypeDeviceRenderingEntityDIModule {
+
+    @Provides
+    @Reusable
+    ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store(DatabaseAdapter databaseAdapter) {
+        return ValueTypeDeviceRenderingStore.create(databaseAdapter);
     }
 
-    public static ValueTypeDeviceRenderingHandler create(DatabaseAdapter databaseAdapter) {
-        return new ValueTypeDeviceRenderingHandler(
-                ValueTypeDeviceRenderingStore.create(databaseAdapter));
+    @Provides
+    @Reusable
+    GenericHandler<ValueTypeDeviceRendering, ValueTypeDeviceRenderingModel> handler(
+            ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store) {
+        return new ObjectWithoutUidHandlerImpl<>(store);
     }
 }

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
-class DataValueImportHandler {
+final class DataValueImportHandler {
 
     private final DataValueStore dataValueStore;
 

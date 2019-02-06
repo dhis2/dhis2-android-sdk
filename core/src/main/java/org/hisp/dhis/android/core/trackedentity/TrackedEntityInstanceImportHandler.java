@@ -43,7 +43,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.getState;
 
-public class TrackedEntityInstanceImportHandler {
+public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
     private final EventImportHandler eventImportHandler;

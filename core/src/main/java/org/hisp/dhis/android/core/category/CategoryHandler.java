@@ -45,7 +45,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
+final class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
 
     private final SyncHandler<CategoryOption> categoryOptionHandler;
     private final OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>

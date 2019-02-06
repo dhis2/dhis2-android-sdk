@@ -40,7 +40,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class LegendSetHandler extends IdentifiableSyncHandlerImpl<LegendSet> {
+final class LegendSetHandler extends IdentifiableSyncHandlerImpl<LegendSet> {
 
     private final SyncHandlerWithTransformer<Legend> legendHandler;
     private final OrphanCleaner<LegendSet, Legend> legendCleaner;

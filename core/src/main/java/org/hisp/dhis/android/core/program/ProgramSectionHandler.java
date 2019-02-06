@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
+final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
     private final LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;

@@ -29,15 +29,18 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
+@Reusable
 final class RelationshipHandlerImpl implements RelationshipHandler {
 
     private final IdentifiableObjectStore<Relationship> relationshipStore;
@@ -46,6 +49,7 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
     private final RelationshipItemElementStoreSelector storeSelector;
     private final RelationshipDHISVersionManager versionManager;
 
+    @Inject
     RelationshipHandlerImpl(
             IdentifiableObjectStore<Relationship> relationshipStore,
             RelationshipItemStore relationshipItemStore,
@@ -110,15 +114,5 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
             }
         }
         return null;
-    }
-
-    public static RelationshipHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
-        return new RelationshipHandlerImpl(
-                RelationshipStore.create(databaseAdapter),
-                RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemHandler.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                new RelationshipDHISVersionManager(versionManager)
-        );
     }
 }

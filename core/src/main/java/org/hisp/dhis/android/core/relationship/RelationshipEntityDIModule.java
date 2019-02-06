@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,15 +51,8 @@ public final class RelationshipEntityDIModule {
 
     @Provides
     @Reusable
-    RelationshipHandler relationshipHandler(DatabaseAdapter databaseAdapter,
-                                            DHISVersionManager versionManager) {
-        return new RelationshipHandlerImpl(
-                RelationshipStore.create(databaseAdapter),
-                RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemHandler.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                new RelationshipDHISVersionManager(versionManager)
-        );
+    RelationshipHandler relationshipHandler(RelationshipHandlerImpl impl) {
+        return impl;
     }
 
     @Provides

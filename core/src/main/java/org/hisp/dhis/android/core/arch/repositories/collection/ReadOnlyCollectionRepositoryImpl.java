@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
@@ -63,8 +65,13 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
             return store.selectAll();
         } else {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectWhereClause(whereClauseBuilder.getWhereClause(scope));
+            return store.selectWhere(whereClauseBuilder.getWhereClause(scope));
         }
+    }
+
+    @Override
+    public ReadOnlyObjectRepository<M> one() {
+        return new ReadOnlyOneObjectRepositoryImpl<>(store, childrenAppenders, scope);
     }
 
     @Override

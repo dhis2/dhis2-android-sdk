@@ -63,7 +63,7 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
                 .appendOrKeyStringValue(BaseDataModel.Columns.STATE, State.TO_DELETE)
                 .build();
 
-        return selectWhereClause(whereToPostClause);
+        return selectWhere(whereToPostClause);
     }
 
     @Override

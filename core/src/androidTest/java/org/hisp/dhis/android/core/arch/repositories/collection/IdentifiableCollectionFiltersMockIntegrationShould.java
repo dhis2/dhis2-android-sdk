@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,6 +40,15 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends MockInte
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
+    }
+
+    @Test
+    public void get_objects_with_equal_name_using_one() {
+        ReadOnlyObjectRepository<CategoryCombo> objectRepository = d2.categoryModule().categoryCombos
+                .byName().eq("Births")
+                .one();
+        CategoryCombo combo = objectRepository.get();
+        assertThat(combo.uid(), is(BIRTH_UID));
     }
 
     @Test

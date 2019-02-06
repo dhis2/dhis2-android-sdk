@@ -184,7 +184,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
 
-        List<Enrollment> downloadedEnrollments = enrollmentStore.selectWhereClause(new WhereClauseBuilder()
+        List<Enrollment> downloadedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, teiUid).build());
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {

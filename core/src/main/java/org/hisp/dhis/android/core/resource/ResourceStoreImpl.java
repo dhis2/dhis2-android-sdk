@@ -82,7 +82,7 @@ public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource>
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name()).build();
 
-        List<Resource> resourceList = selectWhereClause(whereClause);
+        List<Resource> resourceList = selectWhere(whereClause);
         return resourceList.isEmpty() ?
                 null : BaseIdentifiableObject.DATE_FORMAT.format(resourceList.get(0).lastSynced());
     }

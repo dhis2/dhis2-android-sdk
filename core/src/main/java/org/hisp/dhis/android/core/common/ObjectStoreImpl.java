@@ -99,11 +99,17 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public List<M> selectWhereClause(String whereClause) {
+    public List<M> selectWhere(String whereClause) {
         List<M> list = new ArrayList<>();
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
         addObjectsToCollection(cursor, list);
         return list;
+    }
+
+    @Override
+    public M selectOneWhere(@NonNull String whereClause) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
+        return getFirstFromCursor(cursor);
     }
 
     @Override
@@ -115,11 +121,6 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     @Override
     public boolean deleteById(@NonNull M m) {
         return deleteWhereClause(BaseModel.Columns.ID + "='" + m.id() + "';");
-    }
-
-    protected M selectOneWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
-        return getFirstFromCursor(cursor);
     }
 
     private M getFirstFromCursor(@NonNull Cursor cursor) {

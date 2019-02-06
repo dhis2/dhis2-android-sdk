@@ -107,7 +107,7 @@ final class DataSetCompleteRegistrationStoreImpl extends
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(DataSetCompleteRegistration.Columns.STATE, state.name())
                 .build();
-        return selectWhereClause(whereClause);
+        return selectWhere(whereClause);
     }
 
     /**

@@ -103,7 +103,7 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
 
     @Test
     public void select_inserted_object_where_clause() {
-        // TODO Implement test for store.selectWhereClause() method
+        // TODO Implement test for store.selectWhere() method
     }
 
     @Test

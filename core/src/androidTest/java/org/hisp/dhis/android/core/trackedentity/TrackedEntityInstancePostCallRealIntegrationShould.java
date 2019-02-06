@@ -478,7 +478,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
     private Enrollment getEnrollmentsByTrackedEntityInstanceFromDb(String trackedEntityInstanceUid) {
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
         Enrollment enrollment = null;
-        List<Enrollment> storedEnrollments = enrollmentStore.selectWhereClause(new WhereClauseBuilder()
+        List<Enrollment> storedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build());
         for (Enrollment storedEnrollment : storedEnrollments) {
             if(storedEnrollment.uid().equals(enrollmentUid)) {

@@ -111,7 +111,7 @@ public class Dhis2MockServer {
     private void enqueueMetadataResponsesWithUserAndOrgUnits(String userPath, String orgUnitPath)
             throws IOException {
         enqueueMockResponse("systeminfo/system_info.json");
-        enqueueMockResponse("settings/system_setting.json");
+        enqueueMockResponse("settings/system_settings.json");
         enqueueMockResponse(userPath);
         enqueueMockResponse("user/authorities.json");
         enqueueMockResponse("program/programs.json");

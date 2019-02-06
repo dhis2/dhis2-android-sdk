@@ -110,7 +110,7 @@ final class DataSetCompleteRegistrationCollectionRepository
     }
 
     public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
-        return cf.string(DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO);
+        return cf.string(DataSetCompleteRegistrationFields.STORED_BY);
     }
 
 }

@@ -28,27 +28,35 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class SystemSettingShould extends BaseObjectShould implements ObjectShould {
+@RunWith(JUnit4.class)
+public class SystemSettingSplitterShould {
 
-    public SystemSettingShould() {
-        super("settings/system_setting.json");
+    private SystemSettings settingsPojo = SystemSettings.builder().keyFlag("aFlag").keyStyle("aStyle").build();
+    private SystemSettingsSplitter modelBuilder = new SystemSettingsSplitter();
+
+    @Test
+    public void build_flag_setting() throws IOException, ParseException {
+        List<SystemSetting> settingList = modelBuilder.splitSettings(settingsPojo);
+        SystemSetting flag = settingList.get(0);
+        assertThat(flag.key()).isEqualTo("flag");
+        assertThat(flag.value()).isEqualTo("aFlag");
     }
 
-    @Override
     @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SystemSetting settings = objectMapper.readValue(jsonStream, SystemSetting.class);
-
-        assertThat(settings.keyFlag()).isEqualTo("sierra_leone");
-        assertThat(settings.keyStyle()).isEqualTo("light_blue/light_blue.css");
+    public void build_style_setting() throws IOException, ParseException {
+        List<SystemSetting> settingList = modelBuilder.splitSettings(settingsPojo);
+        SystemSetting style = settingList.get(1);
+        assertThat(style.key()).isEqualTo("style");
+        assertThat(style.value()).isEqualTo("aStyle");
     }
 }

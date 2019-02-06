@@ -29,8 +29,12 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,5 +53,11 @@ public final class SectionEntityDIModule {
     @Reusable
     SyncHandler<Section> handler(SectionHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    Collection<ChildrenAppender<Section>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

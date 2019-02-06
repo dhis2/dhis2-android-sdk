@@ -25,28 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataset;
+
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+
+import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class DataSetModule {
-
-    public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
-    public final DataSetCollectionRepository dataSets;
-    public final SectionCollectionRepository sections;
+public final class SectionCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Section, SectionCollectionRepository> {
 
     @Inject
-    DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
-                  DataSetCollectionRepository dataSets,
-                  SectionCollectionRepository sections) {
-        this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
-        this.dataSets = dataSets;
-        this.sections = sections;
+    SectionCollectionRepository(final IdentifiableObjectStore<Section> store,
+                                final Collection<ChildrenAppender<Section>> childrenAppenders,
+                                List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<SectionCollectionRepository>() {
+
+                    @Override
+                    public SectionCollectionRepository newWithScope(List<RepositoryScopeItem> updatedScope) {
+                        return new SectionCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 }

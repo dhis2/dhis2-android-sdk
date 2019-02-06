@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityAttribute> {
+final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityAttribute> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 

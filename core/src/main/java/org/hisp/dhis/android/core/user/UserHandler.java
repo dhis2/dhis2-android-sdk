@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class UserHandler extends IdentifiableSyncHandlerImpl<User> {
+final class UserHandler extends IdentifiableSyncHandlerImpl<User> {
     private final SyncHandler<UserCredentials> userCredentialsHandler;
     private final SyncHandler<UserRole> userRoleHandler;
     private final CollectionCleaner<UserRole> userRoleCollectionCleaner;

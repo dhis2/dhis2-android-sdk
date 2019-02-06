@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
+final class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 

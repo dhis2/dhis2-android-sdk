@@ -53,7 +53,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
+final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 

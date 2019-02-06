@@ -38,7 +38,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> {
+final class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> {
     private final SyncHandler<ProgramRuleAction> programRuleActionHandler;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 

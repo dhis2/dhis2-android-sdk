@@ -50,7 +50,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEntityInstance> {
+final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEntityInstance> {
     private final RelationshipDHISVersionManager relationshipVersionManager;
     private final RelationshipHandler relationshipHandler;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
@@ -128,8 +128,7 @@ class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<TrackedEn
         relationshipHandler.handle(relationship);
     }
 
-    public final void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances,
-                                 boolean asRelationship) {
+    public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship) {
         if (asRelationship) {
             handleMany(trackedEntityInstances, relationshipModelBuilder());
         } else {

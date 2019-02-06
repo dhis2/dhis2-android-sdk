@@ -43,7 +43,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
+final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
 
     private final SyncHandler<ProgramRuleVariable> programRuleVariableHandler;
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;

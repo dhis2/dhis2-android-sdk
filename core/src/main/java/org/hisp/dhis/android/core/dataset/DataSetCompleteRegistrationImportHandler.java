@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
-class DataSetCompleteRegistrationImportHandler {
+final class DataSetCompleteRegistrationImportHandler {
 
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 

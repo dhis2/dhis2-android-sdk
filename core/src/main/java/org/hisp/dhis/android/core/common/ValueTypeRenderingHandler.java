@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
+final class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
     private final GenericHandler<ValueTypeDeviceRendering,
             ValueTypeDeviceRenderingModel> deviceRenderingHandler;

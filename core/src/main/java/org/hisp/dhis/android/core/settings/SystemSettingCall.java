@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -44,31 +45,32 @@ import dagger.Reusable;
 final class SystemSettingCall implements Callable<Unit> {
     private final APICallExecutor apiCallExecutor;
     private final DatabaseAdapter databaseAdapter;
-    private final SystemSettingHandler handler;
+    private final SyncHandler<SystemSetting> handler;
     private final SystemSettingService service;
-    private final SystemSettingModelBuilder modelBuilder;
+    private final SystemSettingsSplitter settingsSplitter;
 
     @Inject
     SystemSettingCall(APICallExecutor apiCallExecutor,
                       DatabaseAdapter databaseAdapter,
-                      SystemSettingHandler handler,
+                      SyncHandler<SystemSetting> handler,
                       SystemSettingService service,
-                      SystemSettingModelBuilder modelBuilder) {
+                      SystemSettingsSplitter modelBuilder) {
         this.apiCallExecutor = apiCallExecutor;
         this.databaseAdapter = databaseAdapter;
         this.handler = handler;
         this.service = service;
-        this.modelBuilder = modelBuilder;
+        this.settingsSplitter = modelBuilder;
     }
 
     @Override
     public Unit call() throws D2Error {
-        SystemSetting setting = apiCallExecutor.executeObjectCall(service.getSystemSettings(SystemSetting.allFields));
+        SystemSettings settings = apiCallExecutor.executeObjectCall(
+                service.getSystemSettings(SystemSettingsFields.allFields));
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
 
         try {
-            handler.handle(setting, modelBuilder);
+            handler.handleMany(settingsSplitter.splitSettings(settings));
             transaction.setSuccessful();
         } finally {
             transaction.end();

@@ -25,32 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import javax.inject.Inject;
+final class SystemSettingsFields {
 
-import dagger.Reusable;
+    static final String KEY_FLAG = "keyFlag";
+    static final String KEY_STYLE = "keyStyle";
 
-@Reusable
-public final class SystemSettingModuleWiper implements ModuleWiper {
+    private static FieldsHelper<SystemSettings> fh = new FieldsHelper<>();
+    static final Fields<SystemSettings> allFields = Fields.<SystemSettings>builder()
+            .fields(
+                    fh.<String>field(KEY_FLAG),
+                    fh.<String>field(KEY_STYLE)
+            ).build();
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    SystemSettingModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    private SystemSettingsFields() {
     }
 }

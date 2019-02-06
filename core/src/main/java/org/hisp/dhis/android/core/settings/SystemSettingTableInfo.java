@@ -28,32 +28,45 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class SystemSettingTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-class SystemSettingModelBuilder {
-
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingModelBuilder() {
-        /* Empty constructor to add Inject annotation */
+    private SystemSettingTableInfo() {
     }
 
-    List<SystemSettingModel> splitSettings(SystemSetting settings) {
-        SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();
-        SystemSettingModel style = SystemSettingModel.builder().key("style").value(settings.keyStyle()).build();
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        List<SystemSettingModel> settingModelList = new ArrayList<>(2);
-        settingModelList.add(flag);
-        settingModelList.add(style);
+        @Override
+        public String name() {
+            return "SystemSetting";
+        }
 
-        return settingModelList;
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        public static final String KEY = "key";
+        public static final String VALUE = "value";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    KEY,
+                    VALUE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    KEY
+            );
+        }
     }
 }

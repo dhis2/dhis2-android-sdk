@@ -25,32 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class SystemSettingModuleWiper implements ModuleWiper {
+class SystemSettingsSplitter {
 
-    private final TableWiper tableWiper;
-
+    /**
+     * Empty constructor to add Inject annotation
+     */
     @Inject
-    SystemSettingModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    SystemSettingsSplitter() {
+        /* Empty constructor to add Inject annotation */
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
-    }
+    List<SystemSetting> splitSettings(SystemSettings settings) {
+        SystemSetting flag = SystemSetting.builder().key("flag").value(settings.keyFlag()).build();
+        SystemSetting style = SystemSetting.builder().key("style").value(settings.keyStyle()).build();
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        List<SystemSetting> settingList = new ArrayList<>(2);
+        settingList.add(flag);
+        settingList.add(style);
+
+        return settingList;
     }
 }

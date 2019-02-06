@@ -45,32 +45,32 @@ final class SystemSettingStore {
 
     private SystemSettingStore() {}
 
-    private static final StatementBinder<SystemSettingModel> BINDER = new StatementBinder<SystemSettingModel>() {
+    private static final StatementBinder<SystemSetting> BINDER = new StatementBinder<SystemSetting>() {
         @Override
-        public void bindToStatement(@NonNull SystemSettingModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull SystemSetting o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.key());
             sqLiteBind(sqLiteStatement, 2, o.value());
         }
     };
 
-    private static final WhereStatementBinder<SystemSettingModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<SystemSettingModel>() {
+    private static final WhereStatementBinder<SystemSetting> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<SystemSetting>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull SystemSettingModel o,
+        public void bindToUpdateWhereStatement(@NonNull SystemSetting o,
                                                @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 3, o.key());
         }
     };
 
-    private static final CursorModelFactory<SystemSettingModel> FACTORY = new CursorModelFactory<SystemSettingModel>() {
+    private static final CursorModelFactory<SystemSetting> FACTORY = new CursorModelFactory<SystemSetting>() {
         @Override
-        public SystemSettingModel fromCursor(Cursor cursor) {
-            return SystemSettingModel.create(cursor);
+        public SystemSetting fromCursor(Cursor cursor) {
+            return SystemSetting.create(cursor);
         }
     };
 
-    public static ObjectWithoutUidStore<SystemSettingModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingModel.TABLE,
-                new SystemSettingModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
+    public static ObjectWithoutUidStore<SystemSetting> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, FACTORY);
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class RelationshipTableInfo {
@@ -45,12 +46,12 @@ public final class RelationshipTableInfo {
         }
 
         @Override
-        public BaseIdentifiableObjectModel.Columns columns() {
+        public BaseModel.Columns columns() {
             return new Columns();
         }
     };
 
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
+    static class Columns extends BaseModel.Columns {
         static final String RELATIONSHIP_TYPE = "relationshipType";
 
         @Override

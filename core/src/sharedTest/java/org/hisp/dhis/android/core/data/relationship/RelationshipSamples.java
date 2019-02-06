@@ -38,7 +38,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME;
 
 
-public final class RelationshipSamples {
+public class RelationshipSamples {
 
     protected static String UID = "uid";
 

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import javax.inject.Inject;
 
-public final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<RelationshipType> {
+final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<RelationshipType> {
 
     private final SyncHandler<RelationshipConstraint> relationshipConstraintHandler;
 

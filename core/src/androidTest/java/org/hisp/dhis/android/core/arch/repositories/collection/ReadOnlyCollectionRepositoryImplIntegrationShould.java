@@ -61,8 +61,6 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreT
     public void setUp() throws IOException {
         super.setUp();
 
-
-
         typeMap = RelationshipTypeSamples.typeMap();
 
         D2 d2 = D2Factory.create(RealServerMother.url, databaseAdapter());

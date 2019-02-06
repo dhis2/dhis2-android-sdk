@@ -92,6 +92,12 @@ public class Dhis2MockServer {
                 "organisationunit/organisation_units.json");
     }
 
+    public void enqueueAggregatedDataResponses() throws IOException {
+        enqueueMockResponse("systeminfo/system_info.json");
+        enqueueMockResponse("datavalue/data_values.json");
+        enqueueMockResponse("dataset/data_set_complete_registrations.json");
+    }
+
     public void enqueueEventResponses() throws IOException {
         enqueueMockResponse("systeminfo/system_info.json");
         enqueueMockResponse("event/events.json");

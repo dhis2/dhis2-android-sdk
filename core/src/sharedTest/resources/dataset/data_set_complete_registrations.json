@@ -1,0 +1,80 @@
+{
+  "completeDataSetRegistrations": [
+    {
+      "period": "201804",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-06-03T02:00:00.000",
+      "storedBy": "imported"
+    },
+    {
+      "period": "201803",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-04-05T02:00:00.000"
+    },
+    {
+      "period": "201805",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-06-03T02:00:00.000"
+    },
+    {
+      "period": "201806",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-07-05T02:00:00.000"
+    },
+    {
+      "period": "201807",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-08-06T02:00:00.000",
+      "storedBy": "imported"
+    },
+    {
+      "period": "201808",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-09-15T02:00:00.000",
+      "storedBy": "imported"
+    },
+    {
+      "period": "201809",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-10-12T02:00:00.000",
+      "storedBy": "imported"
+    },
+    {
+      "period": "201811",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-12-14T01:00:00.000",
+      "storedBy": "imported"
+    },
+    {
+      "period": "201810",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2010-11-10T01:00:00.000",
+      "storedBy": "imported"
+    },
+    {
+      "period": "201812",
+      "dataSet": "lyLU2wR22tC",
+      "organisationUnit": "DiszpKrYNg8",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "date": "2011-01-03T01:00:00.000"
+    }
+  ]
+}

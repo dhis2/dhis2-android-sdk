@@ -109,7 +109,7 @@ class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
     Collection<DataValue> getDataValuesWithState(State state) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(DataValue.Columns.STATE, state.name()).build();
-        return selectWhereClause(whereClause);
+        return selectWhere(whereClause);
     }
 
     /**
@@ -131,7 +131,7 @@ class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
                 .appendKeyStringValue(DataValueFields.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
                 .appendKeyStringValue(DataValueFields.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
                 .build();
-        return selectWhereClause(whereClause).size() > 0;
+        return selectWhere(whereClause).size() > 0;
     }
 
 }

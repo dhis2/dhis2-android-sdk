@@ -76,7 +76,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
         WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid);
 
-        return selectWhereClause(whereClauseBuilder.build());
+        return selectWhere(whereClauseBuilder.build());
     }
 
     @Override

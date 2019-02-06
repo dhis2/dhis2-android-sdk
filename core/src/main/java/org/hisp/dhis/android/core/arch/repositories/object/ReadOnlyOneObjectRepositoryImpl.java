@@ -25,15 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
+import java.util.Collection;
 import java.util.List;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    ReadOnlyObjectRepository<M> one();
-    List<M> getWithAllChildren();
+public class ReadOnlyOneObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
+
+    private final ObjectStore<M> store;
+    private final List<RepositoryScopeItem> scope;
+
+    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
+                                    Collection<ChildrenAppender<M>> childrenAppenders,
+                                    List<RepositoryScopeItem> scope) {
+        super(childrenAppenders);
+        this.store = store;
+        this.scope = scope;
+    }
+
+    public M get() {
+        if (scope.isEmpty()) {
+            return store.selectFirst();
+        } else {
+            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
+            return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
+        }
+    }
 }

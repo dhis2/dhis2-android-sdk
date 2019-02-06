@@ -25,36 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class RelationshipTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class RelationshipModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    RelationshipModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private RelationshipTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                RelationshipTypeTableInfo.TABLE_INFO,
-                RelationshipConstraintTableInfo.TABLE_INFO);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                RelationshipTableInfo.TABLE_INFO,
-                RelationshipItemTableInfo.TABLE_INFO);
+        @Override
+        public String name() {
+            return "Relationship";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        static final String RELATIONSHIP_TYPE = "relationshipType";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    BaseIdentifiableObjectModel.Columns.UID,
+                    BaseIdentifiableObjectModel.Columns.NAME,
+                    BaseIdentifiableObjectModel.Columns.CREATED,
+                    BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                    RELATIONSHIP_TYPE
+            );
+        }
     }
 }

@@ -45,19 +45,13 @@ public final class StoreFactory {
 
     private StoreFactory() {}
 
-    @Deprecated
-    public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
-    objectWithUidStore(DatabaseAdapter databaseAdapter, String tableName, String[] columns,
-                       StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns, new String[]{});
-        SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
-        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder, modelFactory);
-    }
-
     public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
     objectWithUidStore(DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
                        CursorModelFactory<I> modelFactory) {
-        return objectWithUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns().all(), binder, modelFactory);
+        SQLStatementBuilder statementBuilder =
+                new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(), new String[]{});
+        SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
+        return new IdentifiableObjectStoreImpl<>(databaseAdapter, statements, statementBuilder, binder, modelFactory);
     }
 
     public static <I extends Model> ObjectStore<I> objectStore(DatabaseAdapter databaseAdapter,

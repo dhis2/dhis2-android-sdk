@@ -40,17 +40,17 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.NAME
 
 public class RelationshipSamples {
 
-    protected String UID = "uid";
+    protected static String UID = "uid";
 
-    protected String FROM_UID = "fromUid";
+    protected static String FROM_UID = "fromUid";
 
-    protected String TO_UID = "toUid";
+    protected static String TO_UID = "toUid";
 
-    protected String TYPE = "type";
+    protected static String TYPE = "type";
 
-    protected RelationshipItem fromItem = RelationshipHelper.teiItem(FROM_UID);
+    protected static RelationshipItem fromItem = RelationshipHelper.teiItem(FROM_UID);
 
-    protected RelationshipItem toItem = RelationshipHelper.teiItem(TO_UID);
+    protected static RelationshipItem toItem = RelationshipHelper.teiItem(TO_UID);
 
     protected RelationshipItem eventItem = RelationshipHelper.eventItem(TO_UID);
 
@@ -60,7 +60,7 @@ public class RelationshipSamples {
             .lastUpdated(LAST_UPDATED)
             .name(NAME);
 
-    protected Relationship.Builder commonBuilder = Relationship
+    private static Relationship.Builder commonBuilder = Relationship
             .builder()
             .created(CREATED)
             .lastUpdated(LAST_UPDATED)
@@ -98,6 +98,13 @@ public class RelationshipSamples {
                 .relationshipType(TYPE)
                 .from(RelationshipHelper.teiItem(fromUid))
                 .to(RelationshipHelper.teiItem(toUid))
+                .build();
+    }
+
+    public static Relationship getRelationshipToInsertOnDB() {
+        return commonBuilder
+                .uid(UID)
+                .relationshipType(TYPE)
                 .build();
     }
 }

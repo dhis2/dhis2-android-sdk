@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,36 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Relationship> {
 
-@Reusable
-public final class RelationshipModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    RelationshipModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public RelationshipStoreIntegrationShould() {
+        super(RelationshipStore.create(DatabaseAdapterFactory.get(false)),
+                RelationshipTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                RelationshipTypeTableInfo.TABLE_INFO,
-                RelationshipConstraintTableInfo.TABLE_INFO);
+    protected Relationship buildObject() {
+        return RelationshipSamples.getRelationshipToInsertOnDB();
     }
 
     @Override
-    public void wipeData() {
-        tableWiper.wipeTables(
-                RelationshipTableInfo.TABLE_INFO,
-                RelationshipItemTableInfo.TABLE_INFO);
+    protected Relationship buildObjectToUpdate() {
+        return RelationshipSamples.getRelationshipToInsertOnDB().toBuilder()
+                .name("new_name")
+                .build();
+    }
+
+    @Override
+    protected Relationship buildObjectWithId() {
+        return RelationshipSamples.getRelationshipToInsertOnDB().toBuilder()
+                .id(1L)
+                .build();
     }
 }

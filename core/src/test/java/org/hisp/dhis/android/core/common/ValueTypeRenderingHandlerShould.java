@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ public class ValueTypeRenderingHandlerShould {
     private static final String TABLE = "table";
     
     @Mock
-    private GenericHandler<ValueTypeDeviceRendering, ValueTypeDeviceRenderingModel> deviceRenderingHandler;
+    private SyncHandlerWithTransformer<ValueTypeDeviceRendering> deviceRenderingHandler;
     
     @Mock
     private ValueTypeDeviceRendering desktopRenderType;
@@ -72,10 +73,8 @@ public class ValueTypeRenderingHandlerShould {
     @Test
     public void call_device_handler_when_render_type_not_null() throws Exception {
         renderTypeHandler.handle(renderType, UID, TABLE);
-        verify(deviceRenderingHandler).handle(eq(desktopRenderType),
-                any(ValueTypeDeviceRenderingModelBuilder.class));
-        verify(deviceRenderingHandler).handle(eq(mobileRenderType),
-                any(ValueTypeDeviceRenderingModelBuilder.class));
+        verify(deviceRenderingHandler).handle(eq(desktopRenderType), any(ModelBuilder.class));
+        verify(deviceRenderingHandler).handle(eq(mobileRenderType), any(ModelBuilder.class));
         verifyNoMoreInteractions(deviceRenderingHandler);
     }
 

@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
 public class SectionDataElementLinkModelBuilder
-        extends OrderedLinkModelBuilder<ObjectWithUid, SectionDataElementLinkModel> {
+        extends OrderedLinkModelBuilder<DataElement, SectionDataElementLinkModel> {
 
     private final SectionDataElementLinkModel.Builder builder;
 
@@ -42,7 +42,7 @@ public class SectionDataElementLinkModelBuilder
     }
 
     @Override
-    public SectionDataElementLinkModel buildModel(ObjectWithUid dataElement, Integer sortOrder) {
+    public SectionDataElementLinkModel buildModel(DataElement dataElement, Integer sortOrder) {
         return builder
                 .dataElement(dataElement.uid())
                 .sortOrder(sortOrder)

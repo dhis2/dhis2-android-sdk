@@ -40,9 +40,11 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.IgnoreDataElementListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreDataElementOperandListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import java.util.List;
@@ -74,8 +76,8 @@ public abstract class Section extends BaseIdentifiableObject implements Model {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> dataElements();
+    @ColumnAdapter(IgnoreDataElementListColumnAdapter.class)
+    public abstract List<DataElement> dataElements();
 
     @Nullable
     @JsonProperty()
@@ -107,7 +109,7 @@ public abstract class Section extends BaseIdentifiableObject implements Model {
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
 
-        public abstract Builder dataElements(List<ObjectWithUid> dataElements);
+        public abstract Builder dataElements(List<DataElement> dataElements);
 
         public abstract Builder greyedFields(List<DataElementOperand> greyedFields);
 

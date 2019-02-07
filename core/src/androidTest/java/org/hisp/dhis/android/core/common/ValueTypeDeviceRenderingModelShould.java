@@ -81,13 +81,10 @@ public class ValueTypeDeviceRenderingModelShould extends LinkModelAbstractShould
                 model.step(), model.decimalPoints());
     }
 
-    private ValueTypeDeviceRendering buildPojo() {
-        return ValueTypeDeviceRendering.create(VALUE_TYPE_RENDERING_TYPE, 0, 10, 1, 0);
-    }
-
     @Test
     public void create_model_from_pojo() {
-        assertThat(new ValueTypeDeviceRenderingModelBuilder(UID, TABLE, DEVICE_TYPE).buildModel(buildPojo()))
+        assertThat(ValueTypeDeviceRenderingModel.builder().uid(UID).objectTable(TABLE).deviceType(DEVICE_TYPE)
+                .type(VALUE_TYPE_RENDERING_TYPE).min(0).max(10).step(1).decimalPoints(0).build())
                 .isEqualTo(model);
     }
 

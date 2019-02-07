@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -47,7 +47,7 @@ public final class TrackedEntityAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public IdentifiableSyncHandlerImpl<TrackedEntityAttribute> handler(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityAttributeHandler.create(databaseAdapter);
+    public SyncHandler<TrackedEntityAttribute> handler(TrackedEntityAttributeHandler impl) {
+        return impl;
     }
 }

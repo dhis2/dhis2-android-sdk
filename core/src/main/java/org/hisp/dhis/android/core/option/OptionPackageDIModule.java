@@ -35,7 +35,10 @@ import dagger.Provides;
 import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module(includes = {OptionSetEntityDIModule.class})
+@Module(includes = {
+        OptionEntityDIModule.class,
+        OptionSetEntityDIModule.class
+})
 public final class OptionPackageDIModule {
 
     @Provides

@@ -32,21 +32,23 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
 
-class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     private final OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler;
 
     private final SyncHandler<DataElementOperand> greyedFieldsHandler;
     private final LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
 
+    @Inject
     SectionHandler(IdentifiableObjectStore<Section> sectionStore,
                    OrderedLinkModelHandler<ObjectWithUid, SectionDataElementLinkModel> sectionDataElementLinkHandler,
                    SyncHandler<DataElementOperand> greyedFieldsHandler,
@@ -71,15 +73,5 @@ class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
         sectionGreyedFieldsLinkHandler.handleMany(section.uid(),
                 section.greyedFields(),
                 new SectionGreyedFieldsLinkModelBuilder(section));
-    }
-
-    public static SectionHandler create(DatabaseAdapter databaseAdapter) {
-        return new SectionHandler(
-                SectionStore.create(databaseAdapter),
-                new OrderedLinkModelHandlerImpl<ObjectWithUid,
-                        SectionDataElementLinkModel>(SectionDataElementLinkStore.create(databaseAdapter)),
-                DataElementOperandHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<DataElementOperand, SectionGreyedFieldsLinkModel>(
-                        SectionGreyedFieldsLinkStore.create(databaseAdapter)));
     }
 }

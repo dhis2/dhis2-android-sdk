@@ -35,18 +35,17 @@ public enum DHISVersion {
 
     private static final String V2_29_STR = "2.29";
     private static final String V2_30_STR = "2.30";
-    private static final String V2_31_STR = "2.31-SNAPSHOT";
+    private static final String V2_31_STR = "2.31";
 
     public static DHISVersion getValue(String versionStr) {
-        switch (versionStr) {
-            case V2_29_STR:
-                return V2_29;
-            case V2_30_STR:
-                return V2_30;
-            case V2_31_STR:
-                return V2_31;
-            default:
-                return null;
+        if (versionStr.startsWith(V2_29_STR)) {
+            return V2_29;
+        } else if (versionStr.startsWith(V2_30_STR)) {
+            return V2_30;
+        } else if (versionStr.startsWith(V2_31_STR)) {
+            return V2_31;
+        } else {
+            return null;
         }
     }
 

@@ -52,7 +52,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
+final class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
     private final DHISVersionManager versionManager;
     private final SyncHandlerWithTransformer<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;

@@ -35,8 +35,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -129,9 +127,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        programEndpointCall = new ProgramEndpointCallFactory(getGenericCallData(d2), apiCallExecutor,
-                d2.retrofit().create(ProgramService.class), ProgramHandler.create(databaseAdapter())).create();
+        programEndpointCall = getD2DIComponent(d2).programCallFactory().create();
     }
 
     @Test
@@ -399,18 +395,18 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                ProgramRuleModel.Columns.CODE,
-                ProgramRuleModel.Columns.NAME,
-                ProgramRuleModel.Columns.DISPLAY_NAME,
-                ProgramRuleModel.Columns.CREATED,
-                ProgramRuleModel.Columns.LAST_UPDATED,
-                ProgramRuleModel.Columns.PRIORITY,
-                ProgramRuleModel.Columns.CONDITION,
-                ProgramRuleModel.Columns.PROGRAM,
-                ProgramRuleModel.Columns.PROGRAM_STAGE
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                ProgramRuleFields.PRIORITY,
+                ProgramRuleFields.CONDITION,
+                ProgramRuleFields.PROGRAM,
+                ProgramRuleFields.PROGRAM_STAGE
         };
 
-        Cursor programRuleCursor = database().query(ProgramRuleModel.TABLE, projection,
+        Cursor programRuleCursor = database().query(ProgramRuleTableInfo.TABLE_INFO.name(), projection,
                 UID + "=?", new String[]{"NAgjOfWMXg6"}, null, null, null);
 
         assertThatCursor(programRuleCursor).hasRow(

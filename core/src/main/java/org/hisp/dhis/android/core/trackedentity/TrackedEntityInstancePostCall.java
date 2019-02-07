@@ -148,7 +148,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
 
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST).build();
-        List<Note> notes = noteStore.selectWhereClause(whereClause);
+        List<Note> notes = noteStore.selectWhere(whereClause);
 
         List<TrackedEntityInstance> trackedEntityInstancesRecreated = new ArrayList<>();
         List<TrackedEntityAttributeValue> emptyAttributeValueList = new ArrayList<>();

@@ -36,7 +36,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public class PeriodHandler {
+public final class PeriodHandler {
     private final ObjectWithoutUidStore<PeriodModel> store;
     private final ParentPeriodGenerator generator;
 

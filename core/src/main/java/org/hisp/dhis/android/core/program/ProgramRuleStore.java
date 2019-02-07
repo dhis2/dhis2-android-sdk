@@ -67,7 +67,6 @@ public final class ProgramRuleStore {
     };
 
     public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramRuleModel.TABLE,
-                new ProgramRuleModel.Columns().all(), BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramRuleTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

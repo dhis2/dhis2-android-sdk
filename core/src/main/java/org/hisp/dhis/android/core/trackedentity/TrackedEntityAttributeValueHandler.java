@@ -36,8 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public final class TrackedEntityAttributeValueHandler
-        extends ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeValue> {
+final class TrackedEntityAttributeValueHandler extends ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeValue> {
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     TrackedEntityAttributeValueHandler(TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {

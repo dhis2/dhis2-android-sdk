@@ -35,7 +35,11 @@ import dagger.Provides;
 import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module(includes = {IndicatorEntityDIModule.class, IndicatorTypeEntityDIModule.class})
+@Module(includes = {
+        DataSetIndicatorEntityDIModule.class,
+        IndicatorEntityDIModule.class,
+        IndicatorTypeEntityDIModule.class
+})
 public final class IndicatorPackageDIModule {
 
     @Provides

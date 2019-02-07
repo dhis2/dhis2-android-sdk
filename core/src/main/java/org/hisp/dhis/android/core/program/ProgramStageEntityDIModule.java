@@ -30,9 +30,12 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,8 +53,28 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    public SyncHandler<ProgramStage> handler(DatabaseAdapter databaseAdapter,
-                                             DHISVersionManager versionManager) {
-        return ProgramStageHandler.create(databaseAdapter, versionManager);
+    public SyncHandler<ProgramStage> handler(ProgramStageHandler impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    public OrphanCleaner<ProgramStage, ProgramStageDataElement> dataElementOrphanCleaner(
+            DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(ProgramStageDataElementModel.TABLE,
+                ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public OrphanCleaner<ProgramStage, ProgramStageSection> sectionOrphanCleaner(DatabaseAdapter databaseAdapter) {
+        return new OrphanCleanerImpl<>(ProgramStageSectionModel.TABLE,
+                        ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public CollectionCleaner<ProgramStage> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 }

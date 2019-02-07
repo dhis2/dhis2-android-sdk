@@ -73,6 +73,11 @@ public final class TrackedEntityModule {
         return downloadAndPersistCallFactory.getCall(uids);
     }
 
+    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids,
+                                                                                     String program) {
+        return downloadAndPersistCallFactory.getCall(uids, program);
+    }
+
     public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
         return queryCallFactory.getCall(query);
     }

@@ -32,13 +32,17 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule> {
     private final SyncHandler<ProgramRuleAction> programRuleActionHandler;
     private final OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner;
 
+    @Inject
     ProgramRuleHandler(IdentifiableObjectStore<ProgramRule> programRuleStore,
                        SyncHandler<ProgramRuleAction> programRuleActionHandler,
                        OrphanCleaner<ProgramRule, ProgramRuleAction> programRuleActionCleaner) {
@@ -53,14 +57,5 @@ public class ProgramRuleHandler extends IdentifiableSyncHandlerImpl<ProgramRule>
         if (handleAction == HandleAction.Update) {
             programRuleActionCleaner.deleteOrphan(programRule, programRule.programRuleActions());
         }
-    }
-
-    public static ProgramRuleHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramRuleHandler(
-                ProgramRuleStore.create(databaseAdapter),
-                ProgramRuleActionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<ProgramRule, ProgramRuleAction>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                        ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter)
-        );
     }
 }

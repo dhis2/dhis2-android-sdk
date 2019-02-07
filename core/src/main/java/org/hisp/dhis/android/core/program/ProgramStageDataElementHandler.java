@@ -28,26 +28,27 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-public class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+import javax.inject.Inject;
 
-    private final DataElementHandler dataElementHandler;
+import dagger.Reusable;
 
+@Reusable
+final class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+
+    private final SyncHandler<DataElement> dataElementHandler;
+
+    @Inject
     ProgramStageDataElementHandler(
             IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-                                           DataElementHandler dataElementHandler) {
+            SyncHandler<DataElement> dataElementHandler) {
 
         super(programStageDataElementStore);
         this.dataElementHandler = dataElementHandler;
-    }
-
-    public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageDataElementHandler(ProgramStageDataElementStore.create(databaseAdapter),
-                DataElementHandler.create(databaseAdapter));
     }
 
     @Override

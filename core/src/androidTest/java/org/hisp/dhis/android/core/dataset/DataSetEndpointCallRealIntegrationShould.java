@@ -3,8 +3,6 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -33,9 +31,7 @@ public class DataSetEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     }
 
     private Callable<List<DataSet>> createCall() {
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return new DataSetEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, d2.retrofit().create(DataSetService.class),
-                DataSetHandler.create(databaseAdapter())).create();
+        return getD2DIComponent(d2).dataSetCallFactory().create();
     }
 
     // @Test

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.api.responses.HttpMessageResponse;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
@@ -40,6 +41,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface TrackedEntityInstanceService {
@@ -57,11 +59,11 @@ public interface TrackedEntityInstanceService {
     String PROGRAM = "program";
     String PROGRAM_START_DATE = "programStartDate";
     String PROGRAM_END_DATE = "programEndDate";
-    String INCLUDE_DELETED = "includeDeleted";
     String INCLUDE_ALL_ATTRIBUTES = "includeAllAttributes";
     String FILTER = "filter";
     String STRATEGY = "strategy";
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
+    String REASON = "reason";
 
     @POST(TRACKED_ENTITY_INSTANCES)
     Call<WebResponse> postTrackedEntityInstances(
@@ -72,7 +74,14 @@ public interface TrackedEntityInstanceService {
     Call<Payload<TrackedEntityInstance>> getTrackedEntityInstance(
             @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
             @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
-            @Query(INCLUDE_DELETED) boolean includeDeleted);
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
+
+    @GET(TRACKED_ENTITY_INSTANCES + "/{" + TRACKED_ENTITY_INSTACE + "}")
+    Call<TrackedEntityInstance> getTrackedEntityInstanceByProgram(
+            @Path(TRACKED_ENTITY_INSTACE) String trackedEntityInstanceUid,
+            @Query(PROGRAM) String program,
+            @Query(FIELDS) @Which Fields<TrackedEntityInstance> fields,
+            @Query(INCLUDE_ALL_ATTRIBUTES) boolean includeAllAttributes);
 
     @GET(TRACKED_ENTITY_INSTANCES)
     Call<Payload<TrackedEntityInstance>> getTrackedEntityInstances(
@@ -98,4 +107,11 @@ public interface TrackedEntityInstanceService {
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize);
+
+    @POST("tracker/ownership/override")
+    Call<HttpMessageResponse> breakGlass(
+            @Query(TRACKED_ENTITY_INSTACE) String trackedEntityInstance,
+            @Query(PROGRAM) String program,
+            @Query(REASON) String reason
+    );
 }

@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportSummary;
@@ -85,4 +87,30 @@ final class DataSetCompleteRegistrationCollectionRepository
     public Callable<ImportSummary> upload() {
         return postCall;
     }
+
+
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byPeriod() {
+        return cf.string(DataSetCompleteRegistrationFields.PERIOD);
+    }
+
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDataSetUid() {
+        return cf.string(DataSetCompleteRegistrationFields.DATA_SET);
+    }
+
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byOrganisationUnitUid() {
+        return cf.string(DataSetCompleteRegistrationFields.ORGANISATION_UNIT);
+    }
+
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byAttributeOptionComboUid() {
+        return cf.string(DataSetCompleteRegistrationFields.ATTRIBUTE_OPTION_COMBO);
+    }
+
+    public DateFilterConnector<DataSetCompleteRegistrationCollectionRepository> byDate() {
+        return cf.date(DataSetCompleteRegistrationFields.DATE);
+    }
+
+    public StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> byStoredBy() {
+        return cf.string(DataSetCompleteRegistrationFields.STORED_BY);
+    }
+
 }

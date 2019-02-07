@@ -28,31 +28,43 @@
 
 package org.hisp.dhis.android.core;
 
+import android.support.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetPackageDIModule;
 import org.hisp.dhis.android.core.datavalue.DataValuePackageDIModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentPackageDIModule;
 import org.hisp.dhis.android.core.event.EventPackageDIModule;
 import org.hisp.dhis.android.core.indicator.IndicatorPackageDIModule;
+import org.hisp.dhis.android.core.legendset.LegendPackageDIModule;
 import org.hisp.dhis.android.core.maintenance.MaintenancePackageDIModule;
 import org.hisp.dhis.android.core.option.OptionPackageDIModule;
+import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitPackageDIModule;
 import org.hisp.dhis.android.core.period.PeriodPackageDIModule;
+import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
+import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.user.UserPackageDIModule;
 import org.hisp.dhis.android.core.wipe.WipeDIModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
@@ -61,6 +73,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
+@SuppressWarnings("PMD.ExcessiveImports")
 @Singleton
 @Component(modules = {
         AppContextDIModule.class,
@@ -78,6 +91,7 @@ import dagger.Component;
         EnrollmentPackageDIModule.class,
         EventPackageDIModule.class,
         IndicatorPackageDIModule.class,
+        LegendPackageDIModule.class,
         MaintenancePackageDIModule.class,
         OptionPackageDIModule.class,
         OrganisationUnitPackageDIModule.class,
@@ -100,6 +114,19 @@ public interface D2DIComponent {
     MetadataCall metadataCall();
     WipeModule wipeModule();
 
+    @VisibleForTesting
+    ListCallFactory<Program> programCallFactory();
+    @VisibleForTesting
+    UidsCallFactory<OptionSet> optionSetCallFactory();
+    @VisibleForTesting
+    UidsCallFactory<DataElement> dataElementCallFactory();
+    @VisibleForTesting
+    ListCallFactory<DataSet> dataSetCallFactory();
+    @VisibleForTesting
+    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory();
+    @VisibleForTesting
+    SyncHandler<RelationshipType> relationshipTypeHandler();
+
     @Component.Builder
     interface Builder {
         Builder appContextDIModule(AppContextDIModule appContextDIModule);
@@ -117,6 +144,7 @@ public interface D2DIComponent {
         Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
         Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);
         Builder indicatorPackageDIModule(IndicatorPackageDIModule indicatorPackageDIModule);
+        Builder legendPackageDIModule(LegendPackageDIModule legendPackageDIModule);
         Builder maintenancePackageDIModule(MaintenancePackageDIModule maintenancePackageDIModule);
         Builder optionPackageDIModule(OptionPackageDIModule optionPackageDIModule);
         Builder organisationUnitPackageDIModule(OrganisationUnitPackageDIModule organisationUnitPackageDIModule);

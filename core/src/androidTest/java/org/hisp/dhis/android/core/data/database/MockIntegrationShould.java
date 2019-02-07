@@ -53,6 +53,11 @@ public abstract class MockIntegrationShould {
         d2.syncMetaData().call();
     }
 
+    protected static void downloadAggregatedData() throws Exception {
+        dhis2MockServer.enqueueAggregatedDataResponses();
+        d2.aggregatedModule().data().download().call();
+    }
+
     protected static void downloadEvents() throws Exception {
         dhis2MockServer.enqueueEventResponses();
         d2.eventModule().downloadSingleEvents(1, false).call();

@@ -35,5 +35,7 @@ import java.io.IOException;
 import retrofit2.Response;
 
 public interface APICallErrorCatcher {
+    Boolean mustBeStored();
+
     D2ErrorCode catchError(Response<?> response) throws IOException;
 }

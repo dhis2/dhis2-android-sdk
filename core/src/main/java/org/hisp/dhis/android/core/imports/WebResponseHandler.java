@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
 
-public class WebResponseHandler {
+public final class WebResponseHandler {
     private final TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
 
     public WebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {

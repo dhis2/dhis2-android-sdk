@@ -37,6 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 
+@Deprecated
 @AutoValue
 public abstract class RelationshipModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "Relationship";

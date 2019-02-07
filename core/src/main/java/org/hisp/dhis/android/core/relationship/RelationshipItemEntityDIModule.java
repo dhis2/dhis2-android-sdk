@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -41,6 +43,12 @@ public final class RelationshipItemEntityDIModule {
     @Reusable
     RelationshipItemStore store(DatabaseAdapter databaseAdapter) {
         return RelationshipItemStoreImpl.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    SyncHandler<RelationshipItem> handler(RelationshipItemStore store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 
     @Provides

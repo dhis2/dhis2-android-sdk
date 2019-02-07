@@ -19,8 +19,8 @@ import org.hisp.dhis.android.core.program.ProgramRuleAction;
 import org.hisp.dhis.android.core.program.ProgramRuleActionStore;
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo;
 import org.hisp.dhis.android.core.program.ProgramRuleActionType;
-import org.hisp.dhis.android.core.program.ProgramRuleModel;
 import org.hisp.dhis.android.core.program.ProgramRuleStore;
+import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
@@ -51,7 +51,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
             UserCredentialsModel.Columns.USER
     };
     private final String[] PROGRAM_RULE_PROJECTION = {
-            ProgramRuleModel.Columns.UID
+            BaseIdentifiableObjectModel.Columns.UID
     };
     private final String[] PROGRAM_RULE_ACTION_PROJECTION = {
             BaseIdentifiableObjectModel.Columns.UID
@@ -218,7 +218,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
     }
 
     private Cursor getProgramRuleCursor() {
-        return database().query(ProgramRuleModel.TABLE, PROGRAM_RULE_PROJECTION, null, null,
+        return database().query(ProgramRuleTableInfo.TABLE_INFO.name(), PROGRAM_RULE_PROJECTION, null, null,
                 null, null, null);
     }
 

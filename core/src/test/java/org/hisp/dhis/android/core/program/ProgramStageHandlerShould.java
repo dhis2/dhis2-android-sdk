@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
@@ -67,7 +68,7 @@ public class ProgramStageHandlerShould {
     private SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
 
     @Mock
-    private ProgramStageDataElementHandler programStageDataElementHandler;
+    private SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
 
     @Mock
     private ProgramStage programStage;

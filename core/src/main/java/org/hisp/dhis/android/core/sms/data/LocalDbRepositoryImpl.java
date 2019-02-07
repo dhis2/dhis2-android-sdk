@@ -2,8 +2,6 @@ package org.hisp.dhis.android.core.sms.data;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
@@ -20,34 +18,20 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     private final Context context;
     private final UserModule userModule;
-    private final CategoryOptionComboCollectionRepository categoryOptionCombos;
     private final EventStore eventStore;
-    private final static String DEFAULT_CATEGORY_OPTION_COMBO_CODE = "default";
     private final static String CONFIG_FILE = "smsconfig";
     private final static String KEY_GATEWAY = "gateway";
     private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
+    private final static String KEY_WAITING_RESULT_TIMEOUT = "reading_timeout";
 
     public LocalDbRepositoryImpl(Context ctx,
                                  UserModule userModule,
-                                 CategoryOptionComboCollectionRepository categoryOptionCombos,
                                  EventStore eventStore) {
         this.context = ctx;
         this.userModule = userModule;
-        this.categoryOptionCombos = categoryOptionCombos;
         this.eventStore = eventStore;
     }
 
-    @Override
-    public Single<String> getDefaultCategoryOptionCombo() {
-        return Single.fromCallable(() -> {
-            for (CategoryOptionCombo coc : categoryOptionCombos.get()) {
-                if (DEFAULT_CATEGORY_OPTION_COMBO_CODE.equals(coc.code())) {
-                    return coc.uid();
-                }
-            }
-            return null;
-        });
-    }
 
     @Override
     public Single<String> getUserName() {
@@ -69,6 +53,25 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                     .edit().putString(KEY_GATEWAY, number).commit();
             if (!result) {
                 throw new IOException("Failed writing gateway number to local storage");
+            }
+        });
+    }
+
+    @Override
+    public Single<Integer> getWaitingResultTimeout() {
+        return Single.fromCallable(() ->
+                context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                        .getInt(KEY_WAITING_RESULT_TIMEOUT, 120)
+        );
+    }
+
+    @Override
+    public Completable setWaitingResultTimeout(Integer timeoutSeconds) {
+        return Completable.fromAction(() -> {
+            boolean result = context.getSharedPreferences(CONFIG_FILE, Context.MODE_PRIVATE)
+                    .edit().putInt(KEY_WAITING_RESULT_TIMEOUT, timeoutSeconds).commit();
+            if (!result) {
+                throw new IOException("Failed writing timeout setting to local storage");
             }
         });
     }

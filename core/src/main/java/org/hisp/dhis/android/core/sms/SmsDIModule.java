@@ -2,7 +2,6 @@ package org.hisp.dhis.android.core.sms;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.data.DeviceStateRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.LocalDbRepositoryImpl;
@@ -26,9 +25,8 @@ public class SmsDIModule {
     @Provides
     LocalDbRepository localDbRepository(Context context,
                                         UserModule userModule,
-                                        CategoryOptionComboCollectionRepository categoryOptionCombos,
                                         EventStore eventStore) {
-        return new LocalDbRepositoryImpl(context, userModule, categoryOptionCombos, eventStore);
+        return new LocalDbRepositoryImpl(context, userModule, eventStore);
     }
 
     @Provides

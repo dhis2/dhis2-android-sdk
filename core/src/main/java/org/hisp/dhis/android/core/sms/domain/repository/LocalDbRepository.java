@@ -8,13 +8,15 @@ import io.reactivex.Single;
 
 public interface LocalDbRepository {
 
-    Single<String> getDefaultCategoryOptionCombo();
-
     Single<String> getUserName();
 
     Single<String> getGatewayNumber();
 
     Completable setGatewayNumber(String number);
+
+    Single<Integer> getWaitingResultTimeout();
+
+    Completable setWaitingResultTimeout(Integer timeoutSeconds);
 
     Single<String> getConfirmationSenderNumber();
 

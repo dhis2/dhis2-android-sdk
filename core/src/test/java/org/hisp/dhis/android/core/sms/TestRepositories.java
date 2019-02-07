@@ -12,11 +12,7 @@ public class TestRepositories {
     public static class TestLocalDbRepository implements LocalDbRepository {
         private String gatewayNumber = null;
         private String confirmationSenderNumber = null;
-
-        @Override
-        public Single<String> getDefaultCategoryOptionCombo() {
-            return Single.just("testCategoryOptionCombo");
-        }
+        private Integer resultWaitingTimeout = 120;
 
         @Override
         public Single<String> getUserName() {
@@ -31,6 +27,16 @@ public class TestRepositories {
         @Override
         public Completable setGatewayNumber(String number) {
             return Completable.fromAction(() -> gatewayNumber = number);
+        }
+
+        @Override
+        public Single<Integer> getWaitingResultTimeout() {
+            return Single.fromCallable(() -> resultWaitingTimeout);
+        }
+
+        @Override
+        public Completable setWaitingResultTimeout(Integer timeoutSeconds) {
+            return Completable.fromAction(() -> resultWaitingTimeout = timeoutSeconds);
         }
 
         @Override

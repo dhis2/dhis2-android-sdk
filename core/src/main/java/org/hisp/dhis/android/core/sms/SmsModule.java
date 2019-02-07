@@ -30,7 +30,7 @@ public class SmsModule {
     }
 
     public QrCodeCase qrCodeCase() {
-        return new QrCodeCase(localDbRepository);
+        return new QrCodeCase();
     }
 
     public SmsSubmitCase smsSubmitCase() {

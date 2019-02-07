@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -35,68 +35,42 @@ import android.support.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
-import org.hisp.dhis.android.core.calls.AggregatedDataCall;
-import org.hisp.dhis.android.core.calls.MetadataCall;
-import org.hisp.dhis.android.core.calls.TrackedEntityInstancePostCall;
-import org.hisp.dhis.android.core.calls.TrackedEntityInstanceSyncDownCall;
 import org.hisp.dhis.android.core.category.CategoryModule;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
+import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationPostCall;
+import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
-import org.hisp.dhis.android.core.datavalue.DataValuePostCall;
-import org.hisp.dhis.android.core.event.EventPostCall;
-import org.hisp.dhis.android.core.event.EventWithLimitCall;
-import org.hisp.dhis.android.core.imports.ImportSummary;
-import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
+import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueManager;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceListDownloadAndPersistCall;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceWithLimitCall;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCall;
-import org.hisp.dhis.android.core.user.IsUserLoggedInCallable;
-import org.hisp.dhis.android.core.user.LogOutUserCallable;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserAuthenticateCall;
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
+import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.android.core.wipe.WipeModule;
-import org.hisp.dhis.android.core.wipe.WipeModuleImpl;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-// ToDo: handle corner cases when user initially has been signed in, but later was locked (or
-// password has changed)
 @SuppressWarnings({"PMD.ExcessiveImports"})
 public final class D2 {
     private final Retrofit retrofit;
     private final DatabaseAdapter databaseAdapter;
-    private final ResourceHandler resourceHandler;
-    private final GenericCallData genericCallData;
-    private final D2InternalModules internalModules;
-    private final WipeModule wipeModule;
+    private final D2Modules modules;
+    private final D2DIComponent d2DIComponent;
 
-    @VisibleForTesting
-    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter,
-       @NonNull Context context) {
+    D2(@NonNull Retrofit retrofit, @NonNull DatabaseAdapter databaseAdapter, @NonNull Context context) {
 
         if (BuildConfig.DEBUG) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
@@ -114,160 +88,91 @@ public final class D2 {
         this.retrofit = retrofit;
         this.databaseAdapter = databaseAdapter;
 
-        D2DIComponent d2DIComponent = DaggerD2DIComponent.builder()
+        this.d2DIComponent = DaggerD2DIComponent.builder()
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();
 
 
-        this.internalModules = d2DIComponent.internalModules();
-        this.resourceHandler = d2DIComponent.resourceHandler();
-        this.genericCallData = d2DIComponent.genericCallData();
-        this.wipeModule = WipeModuleImpl.create(databaseAdapter, internalModules);
+        this.modules = d2DIComponent.modules();
     }
 
+    @VisibleForTesting
     @NonNull
     public Retrofit retrofit() {
         return retrofit;
     }
 
+    @VisibleForTesting
     @NonNull
     public DatabaseAdapter databaseAdapter() {
         return databaseAdapter;
     }
 
     @NonNull
-    public Callable<User> logIn(@NonNull String username, @NonNull String password) {
-        return UserAuthenticateCall.create(databaseAdapter, retrofit, resourceHandler,
-                internalModules, username, password);
-    }
-
-    @NonNull
-    public Callable<Boolean> isUserLoggedIn() {
-       return IsUserLoggedInCallable.create(databaseAdapter);
-    }
-
-    @NonNull
-    public Callable<Unit> logout() {
-        return LogOutUserCallable.create(databaseAdapter);
-    }
-
-    @NonNull
     public Callable<Unit> syncMetaData() {
-        return MetadataCall.create(genericCallData, internalModules);
+        return d2DIComponent.metadataCall();
     }
 
     @NonNull
-    public Callable<Unit> syncAggregatedData() {
-        return AggregatedDataCall.create(genericCallData, internalModules);
-    }
-
-    /**
-     * Allows uploading to DHIS2 server all DataSetCompleteRegistration with TO_POST or TO_UPDATE state
-     *
-     * @return A Callable instace ready to perform the data upload and retrieve the results
-     *         in form of {@link ImportSummary}
-     */
-    @NonNull
-    public Callable<ImportSummary> syncDataSetCompleteRegistrations() {
-        return DataSetCompleteRegistrationPostCall.create(databaseAdapter, retrofit);
-    }
-
-    /**
-     * Allows uploading to DHIS2 server all DataValues with TO_POST or TO_UPDATE state
-     *
-     * @return A Callable instace ready to perform the data upload and retrieve the results
-     *         in form of {@link ImportSummary}
-     */
-    @NonNull
-    public Callable<ImportSummary> syncDataValues() {
-        return DataValuePostCall.create(databaseAdapter, retrofit);
-    }
-
-    @NonNull
-    public Callable<Unit> downloadSingleEvents(int eventLimit, boolean limitByOrgUnit) {
-        return EventWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler, eventLimit,
-                limitByOrgUnit);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> syncDownSyncedTrackedEntityInstances() {
-        return TrackedEntityInstanceSyncDownCall.create(databaseAdapter, retrofit, internalModules);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> downloadTrackedEntityInstancesByUid(Collection<String> uids) {
-        return TrackedEntityInstanceListDownloadAndPersistCall.create(databaseAdapter, retrofit, internalModules, uids);
-    }
-
-    @NonNull
-    public Callable<Unit> downloadTrackedEntityInstances(int teiLimit, boolean limitByOrgUnit) {
-        return TrackedEntityInstanceWithLimitCall.create(databaseAdapter, retrofit, internalModules, resourceHandler,
-                teiLimit, limitByOrgUnit);
-    }
-
-    @NonNull
-    public String popTrackedEntityAttributeReservedValue(String attributeUid, String organisationUnitUid)
-            throws D2Error {
-        return TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
-                .getValue(attributeUid, organisationUnitUid);
-    }
-
-    public void syncTrackedEntityAttributeReservedValues(String attributeUid, String organisationUnitUid,
-                                                         Integer numberOfValuesToFillUp) {
-        TrackedEntityAttributeReservedValueManager.create(genericCallData, internalModules)
-                .syncReservedValues(attributeUid, organisationUnitUid, numberOfValuesToFillUp);
-    }
-
-    @NonNull
-    public Callable<WebResponse> syncTrackedEntityInstances() {
-        return TrackedEntityInstancePostCall.create(databaseAdapter, retrofit, internalModules);
-    }
-
-    @NonNull
-    public Callable<List<TrackedEntityInstance>> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) {
-        return TrackedEntityInstanceQueryCall.create(retrofit, databaseAdapter, query);
-    }
-
-    public Callable<WebResponse> syncSingleEvents() {
-        return EventPostCall.create(databaseAdapter, retrofit);
-    }
-
-    public String evaluateProgramIndicator(String enrollmentUid, String eventUid, String programIndicatorUid) {
-        return ProgramIndicatorEngine.create(databaseAdapter)
-                .getProgramIndicatorValue(enrollmentUid, eventUid, programIndicatorUid);
+    public AggregatedModule aggregatedModule() {
+        return d2DIComponent.aggregatedModule();
     }
 
     public SystemInfoModule systemInfoModule() {
-        return this.internalModules.systemInfo.publicModule;
+        return this.modules.systemInfo;
     }
 
     public RelationshipModule relationshipModule() {
-        return this.internalModules.relationshipModule.publicModule;
+        return this.modules.relationship;
     }
 
     public CategoryModule categoryModule() {
-        return this.internalModules.categoryModule.publicModule;
+        return this.modules.category;
     }
 
     public DataElementModule dataElementModule() {
-        return this.internalModules.dataElementModule.publicModule;
+        return this.modules.dataElement;
+    }
+
+    public DataSetModule dataSetModule() {
+        return this.modules.dataSet;
     }
 
     public DataValueModule dataValueModule() {
-        return this.internalModules.dataValueModule.publicModule;
+        return this.modules.dataValue;
+    }
+
+    public EnrollmentModule enrollmentModule() {
+        return this.modules.enrollment;
+    }
+
+    public EventModule eventModule() {
+        return this.modules.events;
     }
 
     public MaintenanceModule maintenanceModule() {
-        return this.internalModules.maintenanceModule.publicModule;
+        return this.modules.maintenance;
+    }
+
+    public ProgramModule programModule() {
+        return this.modules.program;
+    }
+
+    public TrackedEntityModule trackedEntityModule() {
+        return modules.trackedEntity;
+    }
+
+    public UserModule userModule() {
+        return modules.user;
     }
 
     public WipeModule wipeModule() {
-        return wipeModule;
+        return this.d2DIComponent.wipeModule();
     }
 
     public static class Builder {
-        private ConfigurationModel configuration;
+        private Configuration configuration;
         private DatabaseAdapter databaseAdapter;
         private OkHttpClient okHttpClient;
         private Context context;
@@ -277,7 +182,7 @@ public final class D2 {
         }
 
         @NonNull
-        public Builder configuration(@NonNull ConfigurationModel configuration) {
+        public Builder configuration(@NonNull Configuration configuration) {
             this.configuration = configuration;
             return this;
         }

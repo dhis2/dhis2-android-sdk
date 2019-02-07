@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -32,13 +32,15 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<RelationshipType> {
+import javax.inject.Inject;
+
+final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<RelationshipType> {
 
     private final SyncHandler<RelationshipConstraint> relationshipConstraintHandler;
 
-    private RelationshipTypeHandler(
+    @Inject
+    RelationshipTypeHandler(
             IdentifiableObjectStore<RelationshipType> relationshipTypeStore,
             SyncHandler<RelationshipConstraint> relationshipConstraintHandler) {
         super(relationshipTypeStore);
@@ -61,11 +63,5 @@ public final class RelationshipTypeHandler extends IdentifiableSyncHandlerImpl<R
 
             this.relationshipConstraintHandler.handle(fromConstraintToHanldle);
         }
-    }
-
-    public static SyncHandler<RelationshipType> create(DatabaseAdapter databaseAdapter) {
-        return new RelationshipTypeHandler(
-                RelationshipTypeStore.create(databaseAdapter),
-                RelationshipConstraintHandler.create(databaseAdapter));
     }
 }

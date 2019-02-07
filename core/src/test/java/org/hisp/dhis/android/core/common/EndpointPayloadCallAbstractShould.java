@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,11 +39,11 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import retrofit2.Response;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -61,9 +60,9 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
 
     protected List<P> pojoList;
 
-    protected Call<List<P>> endpointCall;
+    protected Callable<List<P>> endpointCall;
 
-    protected ResourceModel.Type resourceType;
+    protected Resource.Type resourceType;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -99,34 +98,6 @@ public abstract class EndpointPayloadCallAbstractShould<P> extends BaseCallShoul
         endpointCall.call();
 
         verify(processor).process(pojoList);
-    }
-
-    @Test
-    public void mark_call_as_executed_on_success() throws Exception {
-        endpointCall.call();
-        assertThat(endpointCall.isExecuted()).isTrue();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void mark_call_as_executed_on_failure() throws Exception {
-        when(retrofitCall.execute()).thenReturn(errorResponse);
-        try {
-            endpointCall.call();
-            fail("Call must fail");
-        } catch (D2Error d2E) {
-            assertThat(endpointCall.isExecuted()).isTrue();
-        }
-    }
-
-    @Test()
-    public void throw_d2_call_exception_when_executing_consecutive_calls() throws Exception {
-        endpointCall.call();
-        try {
-            endpointCall.call();
-        } catch (D2Error d2E) {
-            assertThat(d2E.errorCode()).isEqualTo(D2ErrorCode.ALREADY_EXECUTED);
-        }
     }
 
     @Test

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.utils.services;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.constant.ConstantModel;
+import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -76,7 +76,25 @@ public class ProgramIndicatorEngineShould {
     private Event event3;
 
     @Mock
-    private EnrollmentModel enrollmentModel;
+    private Event event1WithDataValues;
+
+    @Mock
+    private Event event2WithDataValues;
+
+    @Mock
+    private Event event3WithDataValues;
+
+    @Mock
+    private Event.Builder eventBuilder1;
+
+    @Mock
+    private Event.Builder eventBuilder2;
+
+    @Mock
+    private Event.Builder eventBuilder3;
+
+    @Mock
+    private Enrollment enrollment;
 
     @Mock
     private ProgramIndicator programIndicator;
@@ -113,7 +131,7 @@ public class ProgramIndicatorEngineShould {
     private String programStageUid2 = "hr7jRePpYMD";
 
     @Mock
-    private ConstantModel constantModel;
+    private Constant constant;
 
     private String constantUid1 = "gzlRs2HEGAf";
 
@@ -128,7 +146,7 @@ public class ProgramIndicatorEngineShould {
     @Mock
     private IdentifiableObjectStore<DataElement> dataElementStore;
     @Mock
-    private IdentifiableObjectStore<ConstantModel> constantStore;
+    private IdentifiableObjectStore<Constant> constantStore;
     @Mock
     private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
@@ -160,23 +178,46 @@ public class ProgramIndicatorEngineShould {
                 .thenReturn(Collections.singletonList(value5));
 
         when(event1.uid()).thenReturn(eventUid1);
+        when(event1WithDataValues.uid()).thenReturn(eventUid1);
         when(event1.programStage()).thenReturn(programStageUid1);
-        when(eventStore.queryByUid(eventUid1)).thenReturn(event1);
+        when(event1WithDataValues.programStage()).thenReturn(programStageUid1);
+        when(eventStore.selectByUid(eventUid1)).thenReturn(event1);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid1))
                 .thenReturn(Collections.singletonList(event1));
 
+        when(event1.toBuilder()).thenReturn(eventBuilder1);
+        when(eventBuilder1.trackedEntityDataValues(Arrays.asList(value1, value2, value3))).thenReturn(eventBuilder1);
+        when(eventBuilder1.build()).thenReturn(event1WithDataValues);
+        when(event1WithDataValues.trackedEntityDataValues()).thenReturn(Arrays.asList(value1, value2, value3));
+
         when(event2.uid()).thenReturn(eventUid2_1);
+        when(event2WithDataValues.uid()).thenReturn(eventUid2_1);
         when(event2.programStage()).thenReturn(programStageUid2);
+        when(event2WithDataValues.programStage()).thenReturn(programStageUid2);
+
+        when(event2.toBuilder()).thenReturn(eventBuilder2);
+        when(eventBuilder2.trackedEntityDataValues(Collections.singletonList(value4))).thenReturn(eventBuilder2);
+        when(eventBuilder2.build()).thenReturn(event2WithDataValues);
+        when(event2WithDataValues.trackedEntityDataValues()).thenReturn(Collections.singletonList(value4));
+
         when(event3.uid()).thenReturn(eventUid2_2);
+        when(event3WithDataValues.uid()).thenReturn(eventUid2_2);
         when(event3.programStage()).thenReturn(programStageUid2);
-        when(eventStore.queryByUid(eventUid2_1)).thenReturn(event2);
-        when(eventStore.queryByUid(eventUid2_2)).thenReturn(event3);
+        when(event3WithDataValues.programStage()).thenReturn(programStageUid2);
+
+        when(event3.toBuilder()).thenReturn(eventBuilder3);
+        when(eventBuilder3.trackedEntityDataValues(Collections.singletonList(value5))).thenReturn(eventBuilder3);
+        when(eventBuilder3.build()).thenReturn(event3WithDataValues);
+        when(event3WithDataValues.trackedEntityDataValues()).thenReturn(Collections.singletonList(value5));
+
+        when(eventStore.selectByUid(eventUid2_1)).thenReturn(event2);
+        when(eventStore.selectByUid(eventUid2_2)).thenReturn(event3);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Arrays.asList(event2, event3));
 
-        when(enrollmentModel.uid()).thenReturn(enrollmentUid);
-        when(enrollmentModel.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
-        when(enrollmentStore.queryByUid(enrollmentUid)).thenReturn(enrollmentModel);
+        when(enrollment.uid()).thenReturn(enrollmentUid);
+        when(enrollment.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
+        when(enrollmentStore.selectByUid(enrollmentUid)).thenReturn(enrollment);
 
         when(dataElement.valueType()).thenReturn(ValueType.NUMBER);
         when(dataElementStore.selectByUid(dataElementUid1)).thenReturn(dataElement);
@@ -187,8 +228,8 @@ public class ProgramIndicatorEngineShould {
         when(trackedEntityAttributeValueStore.queryByTrackedEntityInstance(trackedEntityInstanceUid))
                 .thenReturn(Collections.singletonList(attributeValue));
 
-        when(constantModel.uid()).thenReturn(constantUid1);
-        when(constantStore.selectByUid(constantUid1)).thenReturn(constantModel);
+        when(constant.uid()).thenReturn(constantUid1);
+        when(constantStore.selectByUid(constantUid1)).thenReturn(constant);
     }
 
     @Test
@@ -246,11 +287,11 @@ public class ProgramIndicatorEngineShould {
                 de(programStageUid1, dataElementUid1) + " + " + cons(constantUid1));
 
         when(value1.value()).thenReturn("3.5");
-        when(constantModel.value()).thenReturn("2");
+        when(constant.value()).thenReturn(2.0);
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("3.5 + 2");
+        assertThat(result).isEqualTo("3.5 + 2.0");
     }
 
     @Test
@@ -258,7 +299,7 @@ public class ProgramIndicatorEngineShould {
         when(programIndicator.expression()).thenReturn(var("enrollment_date"));
 
         Date enrollmentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
-        when(enrollmentModel.enrollmentDate()).thenReturn(enrollmentDate);
+        when(enrollment.enrollmentDate()).thenReturn(enrollmentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 
@@ -270,7 +311,7 @@ public class ProgramIndicatorEngineShould {
         when(programIndicator.expression()).thenReturn(var("incident_date"));
 
         Date incidentDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
-        when(enrollmentModel.incidentDate()).thenReturn(incidentDate);
+        when(enrollment.incidentDate()).thenReturn(incidentDate);
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
 
@@ -353,7 +394,7 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
 
         // Event2 does not exist
-        when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
+        when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.<Event>emptyList());
 
@@ -372,7 +413,7 @@ public class ProgramIndicatorEngineShould {
                 de(programStageUid2, dataElementUid2) + " * 10");
 
         // Event2 does not exist
-        when(eventStore.queryByUid(eventUid2_1)).thenReturn(null);
+        when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.<Event>emptyList());
 

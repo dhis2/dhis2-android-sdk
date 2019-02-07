@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -31,229 +31,127 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
-@SuppressWarnings({
-        "PMD.NPathComplexity",
-        "PMD.AvoidInstantiatingObjectsInLoops"
-})
-public class TrackedEntityAttributeValueStoreImpl implements TrackedEntityAttributeValueStore {
+public final class TrackedEntityAttributeValueStoreImpl
+        extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue> implements TrackedEntityAttributeValueStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " +
-            TrackedEntityAttributeValueModel.TABLE + " (" +
-            TrackedEntityAttributeValueModel.Columns.VALUE + ", " +
-            TrackedEntityAttributeValueModel.Columns.CREATED + ", " +
-            TrackedEntityAttributeValueModel.Columns.LAST_UPDATED + ", " +
-            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + ", " +
-            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + ") " +
-            "VALUES (?, ?, ?, ?, ?)";
-
-    private static final String UPDATE_STATEMENT =
-            "UPDATE " + TrackedEntityAttributeValueModel.TABLE + " SET " +
-                    TrackedEntityAttributeValueModel.Columns.VALUE + " =?, " +
-                    TrackedEntityAttributeValueModel.Columns.CREATED + " =?, " +
-                    TrackedEntityAttributeValueModel.Columns.LAST_UPDATED + " =? " +
-                    " WHERE " + TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE
-                    + " =? AND " +
-                    TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " =?;";
-
-    private static final String FIELDS =
-            "  TrackedEntityAttributeValue.value, " +
-                    "  TrackedEntityAttributeValue.created, " +
-                    "  TrackedEntityAttributeValue.lastUpdated, " +
-                    "  TrackedEntityAttributeValue.trackedEntityAttribute, " +
-                    "  TrackedEntityAttributeValue.trackedEntityInstance ";
-
-    private static final String QUERY_STATEMENT_TO_POST =
-            "SELECT " + FIELDS +
-                    "FROM (TrackedEntityAttributeValue " +
-                    "  INNER JOIN TrackedEntityInstance " +
-                    "    ON TrackedEntityAttributeValue.trackedEntityInstance = "
-                    + "TrackedEntityInstance.uid) "
-                    +
-                    "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state"
-                    + " = "
-                    + "'TO_UPDATE';";
-
-    private static final String QUERY_STATEMENT =
-            "SELECT " + FIELDS +
-                    "FROM TrackedEntityAttributeValue";
-
-    private static final String QUERY_BY_TRACKED_ENTITY_INSTANCE_STATEMENT =
-            "SELECT " + FIELDS +
-                    "FROM TrackedEntityAttributeValue where trackedEntityInstance = '?'";
-
-    private final SQLiteStatement insertRowStatement;
-    private final SQLiteStatement updateRowStatement;
-    private final DatabaseAdapter databaseAdapter;
-
-    public TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-        this.insertRowStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
-        this.updateRowStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
+    private TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter,
+                                SQLStatementBuilder builder) {
+        super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()),
+                databaseAdapter.compileStatement(builder.updateWhere()), builder,
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 
     @Override
-    public long insert(@Nullable String value, @Nullable Date created,
-            @Nullable Date lastUpdated, @NonNull String trackedEntityAttribute,
-            @NonNull String trackedEntityInstance) {
-        isNull(trackedEntityAttribute);
-        isNull(trackedEntityInstance);
+    public Map<String, List<TrackedEntityAttributeValue>> queryTrackedEntityAttributeValueToPost() {
+        String toPostQuery =
+                "SELECT TrackedEntityAttributeValue.* " +
+                "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
+                "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
+                "WHERE TrackedEntityInstance.state = 'TO_POST' " +
+                "OR TrackedEntityInstance.state = 'TO_UPDATE';";
 
-        bindArguments(insertRowStatement, value, created, lastUpdated,
-                trackedEntityAttribute, trackedEntityInstance);
+        List<TrackedEntityAttributeValue> valueList = trackedEntityAttributeValueListFromQuery(toPostQuery);
 
-        long returnValue = databaseAdapter.executeInsert(
-                TrackedEntityAttributeValueModel.TABLE, insertRowStatement);
-
-        insertRowStatement.clearBindings();
-        return returnValue;
-
-    }
-
-    @Override
-    public int update(@Nullable String value, @Nullable Date created,
-            @Nullable Date lastUpdated, @NonNull String trackedEntityAttribute,
-            @NonNull String trackedEntityInstance) {
-        isNull(trackedEntityAttribute);
-        isNull(trackedEntityInstance);
-
-        bindArguments(updateRowStatement, value, created, lastUpdated,
-                trackedEntityAttribute, trackedEntityInstance);
-
-        int update = databaseAdapter.executeUpdateDelete(
-                TrackedEntityAttributeValueModel.TABLE, updateRowStatement);
-
-        updateRowStatement.clearBindings();
-
-        return update;
-    }
-
-    @Override
-    public int deleteByInstanceAndAttributes(
-            @NonNull String trackedEntityInstanceUId,
-            @NonNull List<String> trackedEntityAttributeUIds) {
-
-        isNull(trackedEntityInstanceUId);
-        isNull(trackedEntityAttributeUIds);
-
-        List<String> argumentValues = new ArrayList<>();
-        argumentValues.add(trackedEntityInstanceUId);
-        argumentValues.addAll(trackedEntityAttributeUIds);
-        String[] argumentValuesArray = argumentValues.toArray(new String[argumentValues.size()]);
-
-        String inArguments = TextUtils.join(
-                ",", Collections.nCopies(trackedEntityAttributeUIds.size(), "?"));
-
-        int delete = databaseAdapter.delete(TrackedEntityAttributeValueModel.TABLE,
-                TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE + " = ? AND " +
-                        TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE + " in ("
-                        +
-                        inArguments + ");", argumentValuesArray);
-
-        return delete;
-    }
-
-    @Override
-    public List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(
-            String trackedEntityInstanceUid) {
-        String queryStatement = QUERY_BY_TRACKED_ENTITY_INSTANCE_STATEMENT;
-
-        queryStatement = queryStatement.replace("?", trackedEntityInstanceUid);
-
-        Cursor cursor = databaseAdapter.query(queryStatement);
-
-        Map<String, List<TrackedEntityAttributeValue>> attributeValuesMap =
-                mapFromCursor(cursor);
-
-        List<TrackedEntityAttributeValue> attributeValues =
-                attributeValuesMap.get(trackedEntityInstanceUid);
-
-        if (attributeValues == null) {
-            return new ArrayList<>();
-        } else {
-            return attributeValues;
+        Map<String, List<TrackedEntityAttributeValue>> valueMap = new HashMap<>();
+        for (TrackedEntityAttributeValue value : valueList) {
+            addTrackedEntityAttributeValueToMap(valueMap, value);
         }
+
+        return valueMap;
     }
 
     @Override
-    public Map<String, List<TrackedEntityAttributeValue>> query() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT_TO_POST);
-        Map<String, List<TrackedEntityAttributeValue>> attributeValues = mapFromCursor(cursor);
+    public List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid) {
+        String selectByTrackedEntityInstanceQuery = new WhereClauseBuilder().appendKeyStringValue(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build();
 
-        return attributeValues;
+        return selectWhere(selectByTrackedEntityInstanceQuery);
     }
 
     @Override
-    public Map<String, List<TrackedEntityAttributeValue>> queryAll() {
-        Cursor cursor = databaseAdapter.query(QUERY_STATEMENT);
-        Map<String, List<TrackedEntityAttributeValue>> attributeValues = mapFromCursor(cursor);
+    public void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
+                                                   @NonNull List<String> trackedEntityAttributeUids) {
+        String deleteWhereQuery = new WhereClauseBuilder()
+                .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                        trackedEntityInstanceUid)
+                .appendNotInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                        trackedEntityAttributeUids)
+                .build();
 
-        return attributeValues;
+        deleteWhereClause(deleteWhereQuery);
     }
 
-    @NonNull
-    private Map<String, List<TrackedEntityAttributeValue>> mapFromCursor(Cursor cursor) {
-        Map<String, List<TrackedEntityAttributeValue>> attributeValues = new HashMap<>(cursor
-                .getCount());
+    private List<TrackedEntityAttributeValue> trackedEntityAttributeValueListFromQuery(String query) {
+        List<TrackedEntityAttributeValue> trackedEntityAttributeValueList = new ArrayList<>();
+        Cursor cursor = databaseAdapter.query(query);
+        addObjectsToCollection(cursor, trackedEntityAttributeValueList);
+        return trackedEntityAttributeValueList;
+    }
 
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-
-                    String value = cursor.getString(0) == null ? null : cursor.getString(0);
-                    Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
-                    Date lastUpdated = cursor.getString(2) == null ? null : parse(
-                            cursor.getString(2));
-                    String attribute = cursor.getString(3) == null ? null : cursor.getString(3);
-                    String trackedEntityInstance = cursor.getString(4) == null ? null
-                            : cursor.getString(4);
-
-
-                    if (attributeValues.get(trackedEntityInstance) == null) {
-                        attributeValues.put(trackedEntityInstance, new
-                                ArrayList<TrackedEntityAttributeValue>());
-                    }
-
-                    attributeValues.get(trackedEntityInstance)
-                            .add(TrackedEntityAttributeValue.create(
-                                    attribute, value, created, lastUpdated));
-
-                } while (cursor.moveToNext());
-            }
-        } finally {
-            cursor.close();
+    private void addTrackedEntityAttributeValueToMap(Map<String, List<TrackedEntityAttributeValue>> valueMap,
+                                    TrackedEntityAttributeValue trackedEntityAttributeValue) {
+        if (valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()) == null) {
+            valueMap.put(trackedEntityAttributeValue.trackedEntityInstance(),
+                    new ArrayList<TrackedEntityAttributeValue>());
         }
-        return attributeValues;
+
+        valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()).add(trackedEntityAttributeValue);
     }
 
-    private void bindArguments(@NonNull SQLiteStatement sqLiteStatement,
-            @Nullable String value, @Nullable Date created, @Nullable Date lastUpdated,
-            @Nullable String trackedEntityAttribute, @Nullable String trackedEntityInstance) {
-        sqLiteBind(sqLiteStatement, 1, value);
-        sqLiteBind(sqLiteStatement, 2, created);
-        sqLiteBind(sqLiteStatement, 3, lastUpdated);
-        sqLiteBind(sqLiteStatement, 4, trackedEntityAttribute);
-        sqLiteBind(sqLiteStatement, 5, trackedEntityInstance);
-    }
+    private static final StatementBinder<TrackedEntityAttributeValue> BINDER =
+            new StatementBinder<TrackedEntityAttributeValue>() {
+        @Override
+        public void bindToStatement(@NonNull TrackedEntityAttributeValue o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.value());
+            sqLiteBind(sqLiteStatement, 2, o.created());
+            sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 4, o.trackedEntityAttribute());
+            sqLiteBind(sqLiteStatement, 5, o.trackedEntityInstance());
+        }
+    };
 
-    @Override
-    public int delete() {
-        return databaseAdapter.delete(TrackedEntityAttributeValueModel.TABLE);
+    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<TrackedEntityAttributeValue>() {
+        @Override
+        public void bindToUpdateWhereStatement(@NonNull TrackedEntityAttributeValue o,
+                                               @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 6, o.trackedEntityAttribute());
+            sqLiteBind(sqLiteStatement, 7, o.trackedEntityInstance());
+        }
+    };
+
+    private static final CursorModelFactory<TrackedEntityAttributeValue> FACTORY =
+            new CursorModelFactory<TrackedEntityAttributeValue>() {
+        @Override
+        public TrackedEntityAttributeValue fromCursor(Cursor cursor) {
+            return TrackedEntityAttributeValue.create(cursor);
+        }
+    };
+
+    public static TrackedEntityAttributeValueStore create(DatabaseAdapter databaseAdapter) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+                TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
+                TrackedEntityAttributeValueTableInfo.TABLE_INFO.columns());
+
+        return new TrackedEntityAttributeValueStoreImpl(
+                databaseAdapter,
+                statementBuilder
+        );
     }
 }

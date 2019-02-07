@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,24 +27,27 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSection, ProgramSectionModel> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
     private final LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
-    ProgramSectionHandler(IdentifiableObjectStore<ProgramSectionModel> programSectionStore,
+    @Inject
+    ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
                           LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
                                   programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
@@ -58,15 +61,6 @@ public class ProgramSectionHandler extends IdentifiableHandlerImpl<ProgramSectio
         programSectionAttributeLinkHandler.handleMany(programSection.uid(),
                 programSection.attributes(), new ProgramSectionAttributeLinkModelBuilder(programSection));
         styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
-                ProgramSectionModel.TABLE));
-    }
-
-    public static ProgramSectionHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramSectionHandler(
-                ProgramSectionStore.create(databaseAdapter),
-                new LinkModelHandlerImpl<ObjectWithUid, ProgramSectionAttributeLinkModel>(
-                        ProgramSectionAttributeLinkStore.create(databaseAdapter)),
-                ObjectStyleHandler.create(databaseAdapter)
-        );
+                ProgramSectionTableInfo.TABLE_INFO.name()));
     }
 }

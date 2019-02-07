@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-final class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
+class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
 
     static final int DAILY_PERIODS = 60;
     static final int WEEKLY_PERIODS = 13;

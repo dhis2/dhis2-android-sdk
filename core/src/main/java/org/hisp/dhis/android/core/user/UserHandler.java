@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,22 +29,29 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class UserHandler extends IdentifiableSyncHandlerImpl<User> {
     private final SyncHandler<UserCredentials> userCredentialsHandler;
+    private final SyncHandler<UserRole> userRoleHandler;
+    private final CollectionCleaner<UserRole> userRoleCollectionCleaner;
 
+    @Inject
     UserHandler(IdentifiableObjectStore<User> userStore,
-                SyncHandler<UserCredentials> userCredentialsHandler) {
+                SyncHandler<UserCredentials> userCredentialsHandler,
+                SyncHandler<UserRole> userRoleHandler,
+                CollectionCleaner<UserRole> userRoleCollectionCleaner) {
         super(userStore);
         this.userCredentialsHandler = userCredentialsHandler;
-    }
-
-    public static UserHandler create(DatabaseAdapter databaseAdapter) {
-        return new UserHandler(UserStore.create(databaseAdapter),
-                UserCredentialsHandler.create(databaseAdapter));
+        this.userRoleHandler = userRoleHandler;
+        this.userRoleCollectionCleaner = userRoleCollectionCleaner;
     }
 
     @Override
@@ -53,6 +60,9 @@ public class UserHandler extends IdentifiableSyncHandlerImpl<User> {
         if (credentials != null) {
             UserCredentials credentialsWithUser = credentials.toBuilder().user(user).build();
             userCredentialsHandler.handle(credentialsWithUser);
+
+            userRoleCollectionCleaner.deleteNotPresent(credentialsWithUser.userRoles());
+            userRoleHandler.handleMany(credentialsWithUser.userRoles());
         }
     }
 }

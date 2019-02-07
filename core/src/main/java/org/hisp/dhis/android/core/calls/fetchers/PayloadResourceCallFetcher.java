@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,21 +29,21 @@
 package org.hisp.dhis.android.core.calls.fetchers;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 
 import java.util.List;
 
 public abstract class PayloadResourceCallFetcher<P> implements CallFetcher<P> {
 
     private final ResourceHandler resourceHandler;
-    private final ResourceModel.Type resourceType;
+    private final Resource.Type resourceType;
     private final APICallExecutor apiCallExecutor;
 
     protected PayloadResourceCallFetcher(ResourceHandler resourceHandler,
-                                         ResourceModel.Type resourceType,
+                                         Resource.Type resourceType,
                                          APICallExecutor apiCallExecutor) {
         this.resourceHandler = resourceHandler;
         this.resourceType = resourceType;

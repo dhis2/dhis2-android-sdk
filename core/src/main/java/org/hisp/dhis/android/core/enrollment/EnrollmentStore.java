@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,57 +28,12 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStore;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.StoreWithState;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface EnrollmentStore extends DeletableStore, StoreWithState {
-    long insert(@NonNull String uid,
-                @Nullable Date created,
-                @Nullable Date lastUpdated,
-                @Nullable String createdAtClient,
-                @Nullable String lastUpdatedAtClient,
-                @NonNull String organisationUnit,
-                @NonNull String program,
-                @Nullable Date enrollmentDate,
-                @Nullable Date incidentDate,
-                @Nullable Boolean followUp,
-                @Nullable EnrollmentStatus enrollmentStatus,
-                @NonNull String trackedEntityInstance,
-                @Nullable String latitude,
-                @Nullable String longitude,
-                @Nullable State state
-    );
+public interface EnrollmentStore extends IdentifiableObjectWithStateStore<Enrollment> {
 
-    int delete(@NonNull String uid);
-
-    int update(@NonNull String uid,
-               @NonNull Date created,
-               @NonNull Date lastUpdated,
-               @Nullable String createdAtClient,
-               @Nullable String lastUpdatedAtClient,
-               @NonNull String organisationUnit,
-               @NonNull String program,
-               @NonNull Date enrollmentDate,
-               @Nullable Date incidentDate,
-               @Nullable Boolean followUp,
-               @NonNull EnrollmentStatus enrollmentStatus,
-               @NonNull String trackedEntityInstance,
-               @Nullable String latitude,
-               @Nullable String longitude,
-               @NonNull State state,
-               @NonNull String whereEnrollmentUid);
-
-    Map<String, List<Enrollment>> query();
-
-    Map<String, List<Enrollment>> queryAll();
-
-    EnrollmentModel queryByUid(String enrollmentUid);
+    Map<String, List<Enrollment>> queryEnrollmentsToPost();
 }

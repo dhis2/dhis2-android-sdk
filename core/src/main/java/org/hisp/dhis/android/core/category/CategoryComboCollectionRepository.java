@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,24 +27,41 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-final class CategoryComboCollectionRepository {
+import javax.inject.Inject;
 
-    private CategoryComboCollectionRepository() {
+import dagger.Reusable;
+
+@Reusable
+public final class CategoryComboCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository> {
+
+    @Inject
+    CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
+                                      final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
+                                      List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<CategoryComboCollectionRepository>() {
+
+                    @Override
+                    public CategoryComboCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryComboStore.create(databaseAdapter),
-                Arrays.asList(
-                        CategoryCategoryComboChildrenAppender.create(databaseAdapter),
-                        CategoryOptionComboChildrenAppender.create(databaseAdapter)
-                )
-        );
+    public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {
+        return cf.bool(CategoryComboFields.IS_DEFAULT);
     }
 }

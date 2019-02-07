@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,28 +28,30 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.PojoBuilder;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class RelationshipItemChildrenAppender extends ChildrenAppender<Relationship> {
 
     private final RelationshipItemStore store;
-    private final PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder;
 
-    RelationshipItemChildrenAppender(RelationshipItemStore store,
-                                     PojoBuilder<RelationshipItem, RelationshipItemModel> pojoBuilder) {
+    @Inject
+    RelationshipItemChildrenAppender(RelationshipItemStore store) {
         this.store = store;
-        this.pojoBuilder = pojoBuilder;
     }
 
     @Override
     protected Relationship appendChildren(Relationship relationship) {
-        RelationshipItemModel fromItemModel = store.getForRelationshipUidAndConstraintType(
+        RelationshipItem fromItem = store.getForRelationshipUidAndConstraintType(
                 relationship.uid(), RelationshipConstraintType.FROM);
-        RelationshipItemModel toItemModel = store.getForRelationshipUidAndConstraintType(
+        RelationshipItem toItem = store.getForRelationshipUidAndConstraintType(
                 relationship.uid(), RelationshipConstraintType.TO);
         return relationship.toBuilder()
-                .from(pojoBuilder.buildPojo(fromItemModel))
-                .to(pojoBuilder.buildPojo(toItemModel))
+                .from(fromItem)
+                .to(toItem)
                 .build();
     }
 }

@@ -57,7 +57,6 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
                 .code("BIRTHS_ATTENDED")
                 .created(today)
                 .name("Births attended by")
-                .shortName("Births attended by")
                 .displayName("Births attended by")
                 .dataDimensionType("DISAGGREGATION").build();
     }

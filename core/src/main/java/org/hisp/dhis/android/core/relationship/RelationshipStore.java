@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -64,7 +64,6 @@ public final class RelationshipStore {
     };
 
     public static IdentifiableObjectStore<Relationship> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipModel.TABLE,
-                new RelationshipModel.Columns().all(), BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

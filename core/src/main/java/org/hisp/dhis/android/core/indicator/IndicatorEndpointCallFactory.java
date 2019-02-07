@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
@@ -40,23 +41,36 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class IndicatorEndpointCallFactory extends UidsCallFactoryImpl<Indicator> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class IndicatorEndpointCallFactory extends UidsCallFactoryImpl<Indicator> {
+
+    private final IndicatorService service;
+    private final SyncHandler<Indicator> handler;
 
     private static final int MAX_UID_LIST_SIZE = 100;
 
-    public IndicatorEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    @Inject
+    IndicatorEndpointCallFactory(GenericCallData data,
+                                        APICallExecutor apiCallExecutor,
+                                        IndicatorService service,
+                                        SyncHandler<Indicator> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<Indicator> fetcher(Set<String> uids) {
-        final IndicatorService indicatorService = data.retrofit().create(IndicatorService.class);
 
         return new UidsNoResourceCallFetcher<Indicator>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
             @Override
             protected retrofit2.Call<Payload<Indicator>> getCall(UidsQuery query) {
-                return indicatorService.getIndicators(
+                return service.getIndicators(
                         IndicatorFields.allFields,
                         IndicatorFields.lastUpdated.gt(null),
                         IndicatorFields.uid.in(query.uids()),
@@ -69,7 +83,6 @@ public final class IndicatorEndpointCallFactory extends UidsCallFactoryImpl<Indi
     protected CallProcessor<Indicator> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                IndicatorHandler.create(data.databaseAdapter())
-        );
+                handler);
     }
 }

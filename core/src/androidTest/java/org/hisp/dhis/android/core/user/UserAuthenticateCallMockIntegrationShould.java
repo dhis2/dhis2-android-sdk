@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.After;
 import org.junit.Before;
@@ -55,28 +56,6 @@ import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 // ToDo:    - what will happen if the same user will be inserted twice?
 @RunWith(AndroidJUnit4.class)
 public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase {
-    private static final String[] USER_PROJECTION = {
-            UserModel.Columns.ID,
-            UserModel.Columns.UID,
-            UserModel.Columns.CODE,
-            UserModel.Columns.NAME,
-            UserModel.Columns.DISPLAY_NAME,
-            UserModel.Columns.CREATED,
-            UserModel.Columns.LAST_UPDATED,
-            UserModel.Columns.BIRTHDAY,
-            UserModel.Columns.EDUCATION,
-            UserModel.Columns.GENDER,
-            UserModel.Columns.JOB_TITLE,
-            UserModel.Columns.SURNAME,
-            UserModel.Columns.FIRST_NAME,
-            UserModel.Columns.INTRODUCTION,
-            UserModel.Columns.EMPLOYER,
-            UserModel.Columns.INTERESTS,
-            UserModel.Columns.LANGUAGES,
-            UserModel.Columns.EMAIL,
-            UserModel.Columns.PHONE_NUMBER,
-            UserModel.Columns.NATIONALITY
-    };
 
     private static final String[] USER_CREDENTIALS_PROJECTION = {
             UserCredentialsModel.Columns.ID,
@@ -117,7 +96,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         dhis2MockServer.enqueueMockResponse("user/user.json");
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
 
-        authenticateUserCall = d2.logIn("test_user", "test_password");
+        authenticateUserCall = d2.userModule().logIn("test_user", "test_password");
     }
 
     @Test
@@ -125,8 +104,8 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         authenticateUserCall.call();
 
         // verify that user is persisted in database with corresponding data
-        Cursor userCursor = database().query(UserModel.TABLE,
-                USER_PROJECTION, null, null, null, null, null);
+        Cursor userCursor = database().query(UserTableInfo.TABLE_INFO.name(),
+                UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
         Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
         Cursor authenticatedUsersCursor = database().query(AuthenticatedUserModel.TABLE,
@@ -137,7 +116,6 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
 
         assertThatCursor(userCursor)
                 .hasRow(
-                        1L, // id
                         "DXyJmlo9rge", // uid
                         null, // code
                         "John Barnes", // name
@@ -187,28 +165,28 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         1L,
-                        ResourceModel.Type.SYSTEM_INFO,
+                        Resource.Type.SYSTEM_INFO,
                         dateString
                 );
 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         2L,
-                        ResourceModel.Type.USER,
+                        Resource.Type.USER,
                         dateString
                 );
 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         3L,
-                        ResourceModel.Type.USER_CREDENTIALS,
+                        Resource.Type.USER_CREDENTIALS,
                         dateString
                 );
 
         assertThatCursor(resourceCursor)
                 .hasRow(
                         4L,
-                        ResourceModel.Type.AUTHENTICATED_USER,
+                        Resource.Type.AUTHENTICATED_USER,
                         dateString
                 );
 

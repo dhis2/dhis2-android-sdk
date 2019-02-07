@@ -35,7 +35,9 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -121,16 +123,10 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
     @Test
     public void select_single_events_data_values() {
-        EventStore eventStore = new EventStoreImpl(DatabaseAdapterFactory.get(false));
-        eventStore.insert("event_1", null, null, null, null,
-                null, null, null, null, "program",
-                "program_stage", "organisation_unit", null,
-                null, null, State.TO_POST, null, null);
-        eventStore.insert("event_2", "enrollment", null, null, null,
-                null, null, null, null, "program",
-                "program_stage", "organisation_unit", null,
-                null, null, State.TO_POST, null, null);
-        assertThat(eventStore.queryAll().size()).isEqualTo(2);
+        EventStore eventStore = EventStoreImpl.create(DatabaseAdapterFactory.get(false));
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_1").enrollment(null).state(State.TO_POST).build());
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_2").state(State.TO_POST).build());
+        assertThat(eventStore.count()).isEqualTo(2);
 
         store.insert(TrackedEntityDataValueSamples.get()
                 .toBuilder().event("event_1").dataElement("data_element_1").build());
@@ -150,27 +146,22 @@ public class TrackedEntityDataValueStoreIntegrationShould
 
     @Test
     public void select_tracker_data_values() {
-        TrackedEntityInstanceStore trackedEntityInstanceStore =
-                new TrackedEntityInstanceStoreImpl(DatabaseAdapterFactory.get(false));
-        trackedEntityInstanceStore.insert("tei_uid", null, null, null,
-                null, "organisation_unit_uid", "tei_type", null,
-                null, State.TO_POST);
+        TrackedEntityInstanceStore trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl
+                .create(DatabaseAdapterFactory.get(false));
+        TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder().uid("tei_uid")
+                .organisationUnit("organisation_unit_uid").trackedEntityType("tei_type").state(State.TO_POST).build();
+        trackedEntityInstanceStore.insert(trackedEntityInstance);
 
-        EnrollmentStore enrollmentStore = new EnrollmentStoreImpl(DatabaseAdapterFactory.get(false));
-        enrollmentStore.insert("enrollment", null, null, null,null,
-                "organisation_unit", "program", null, null, null,
-                null, "tei_uid", null, null, State.TO_POST);
+        EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(DatabaseAdapterFactory.get(false));
+        Enrollment enrollment = Enrollment.builder().uid("enrollment").organisationUnit("organisation_unit")
+                .program("program").trackedEntityInstance("tei_uid").state(State.TO_POST).build();
+        enrollmentStore.insert(enrollment);
 
-        EventStore eventStore = new EventStoreImpl(DatabaseAdapterFactory.get(false));
-        eventStore.insert("event_1", "enrollment", null, null, null,
-                null, null, null, null, "program_uid",
-                "program_stage_uid", "organisation_unit_uid", null,
-                null, null, State.TO_POST, null, null);
-        eventStore.insert("event_2", null, null, null, null,
-                null, null, null, null, "program_uid",
-                "program_stage_uid", "organisation_unit_uid", null,
-                null, null, State.TO_POST, null, null);
-        assertThat(eventStore.queryAll().size()).isEqualTo(2);
+        EventStore eventStore = EventStoreImpl.create(DatabaseAdapterFactory.get(false));
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_1").state(State.TO_POST).build());
+        eventStore.insert(EventSamples.get().toBuilder().uid("event_2").enrollment(null).state(State.TO_POST).build());
+
+        assertThat(eventStore.count()).isEqualTo(2);
 
         store.insert(TrackedEntityDataValueSamples.get()
                 .toBuilder().event("event_1").dataElement("data_element_1").build());

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -58,9 +58,7 @@ public class CategoryShould extends BaseObjectShould implements ObjectShould {
 
         // names
         assertThat(category.name()).isEqualTo("Births attended by");
-        assertThat(category.shortName()).isEqualTo("Births attended by");
         assertThat(category.displayName()).isEqualTo("Births attended by");
-        assertThat(category.displayShortName()).isEqualTo("Births attended by");
 
         // checking options
         assertThat(category.categoryOptions().get(0).uid()).isEqualTo("TNYQzTHdoxL");

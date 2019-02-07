@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -49,7 +49,7 @@ public final class NoteUniquenessManager {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
-        List<Note> toPostNotes = noteStore.selectWhereClause(whereClause);
+        List<Note> toPostNotes = noteStore.selectWhere(whereClause);
         noteStore.delete();
 
         Set<Note> uniqueNotes = new HashSet<>();

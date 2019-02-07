@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,29 +28,57 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public interface ProgramStageDataElementStore extends DeletableStore {
-    long insert(
-            @NonNull String uid, @Nullable String code, @Nullable String name,
-            @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
-            @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-            @NonNull Boolean allowFutureDate, @NonNull String dataElement, @Nullable String programStageUid
-    );
+public final class ProgramStageDataElementStore {
 
-    int update(@NonNull String uid, @Nullable String code, @Nullable String name,
-               @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-               @NonNull Boolean displayInReports, @NonNull Boolean compulsory,
-               @NonNull Boolean allowProvidedElsewhere, @Nullable Integer sortOrder,
-               @NonNull Boolean allowFutureDate, @NonNull String dataElement,
-               @Nullable String programStageUid, @NonNull String whereProgramStageDataElementUid
-    );
+    private ProgramStageDataElementStore() {}
 
-    int delete(@NonNull String uid);
+    private static StatementBinder<ProgramStageDataElement> BINDER =
+            new IdentifiableStatementBinder<ProgramStageDataElement>() {
+
+        @Override
+        public void bindToStatement(@NonNull ProgramStageDataElement programStageDataElement,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+
+            super.bindToStatement(programStageDataElement, sqLiteStatement);
+
+            sqLiteBind(sqLiteStatement, 7, programStageDataElement.displayInReports());
+            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(programStageDataElement.dataElement()));
+            sqLiteBind(sqLiteStatement, 9, programStageDataElement.compulsory());
+            sqLiteBind(sqLiteStatement, 10, programStageDataElement.allowProvidedElsewhere());
+            sqLiteBind(sqLiteStatement, 11, programStageDataElement.sortOrder());
+            sqLiteBind(sqLiteStatement, 12, programStageDataElement.allowFutureDate());
+            sqLiteBind(sqLiteStatement, 13, UidsHelper.getUidOrNull(programStageDataElement.programStage()));
+
+        }
+    };
+
+    private static final CursorModelFactory<ProgramStageDataElement> FACTORY =
+            new CursorModelFactory<ProgramStageDataElement>() {
+
+        @Override
+        public ProgramStageDataElement fromCursor(Cursor cursor) {
+            return ProgramStageDataElement.create(cursor);
+        }
+    };
+
+    public static IdentifiableObjectStore<ProgramStageDataElement> create(DatabaseAdapter databaseAdapter) {
+
+        return StoreFactory.objectWithUidStore(databaseAdapter,
+                ProgramStageDataElementTableInfo.TABLE_INFO, BINDER, FACTORY);
+    }
+
 }

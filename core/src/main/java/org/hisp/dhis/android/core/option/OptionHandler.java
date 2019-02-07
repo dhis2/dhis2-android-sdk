@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,19 +28,22 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
-    private OptionHandler(IdentifiableObjectStore<Option> optionStore,
+    @Inject
+    OptionHandler(IdentifiableObjectStore<Option> optionStore,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(optionStore);
         this.styleHandler = styleHandler;
@@ -50,9 +53,5 @@ final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
     protected void afterObjectHandled(Option option, HandleAction action) {
         styleHandler.handle(option.style(),
                 new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
-    }
-
-    static SyncHandler<Option> create(DatabaseAdapter databaseAdapter) {
-        return new OptionHandler(OptionStore.create(databaseAdapter), ObjectStyleHandler.create(databaseAdapter));
     }
 }

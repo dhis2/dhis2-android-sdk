@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,15 +27,12 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.GenericHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -62,23 +59,22 @@ import static org.mockito.Mockito.when;
 public class ProgramHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<Program> programStore;
+    private ProgramStoreInterface programStore;
 
     @Mock
-    private ProgramRuleVariableHandler programRuleVariableHandler;
+    private SyncHandler<ProgramRuleVariable> programRuleVariableHandler;
 
     @Mock
     private SyncHandler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
-    private IdentifiableSyncHandlerImpl<ProgramRule> programRuleHandler;
+    private SyncHandler<ProgramRule> programRuleHandler;
 
     @Mock
-    private GenericHandler<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeModel>
-            programTrackedEntityAttributeHandler;
+    private SyncHandler<ProgramTrackedEntityAttribute> programTrackedEntityAttributeHandler;
 
     @Mock
-    private GenericHandler<ProgramSection, ProgramSectionModel> programSectionHandler;
+    private SyncHandler<ProgramSection> programSectionHandler;
 
     @Mock
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
@@ -115,6 +111,9 @@ public class ProgramHandlerShould {
 
     @Mock
     private ProgramRule programRule;
+
+    @Mock
+    private ProgramRuleVariable programRuleVariable;
 
     @Mock
     private List<ProgramRule> programRules;
@@ -167,6 +166,7 @@ public class ProgramHandlerShould {
         when(program.trackedEntityType()).thenReturn(trackedEntityType);
 
         programRules = Collections.singletonList(programRule);
+        programRuleVariables = Collections.singletonList(programRuleVariable);
 
         when(program.programStages()).thenReturn(programStages);
         when(program.programTrackedEntityAttributes()).thenReturn(programTrackedEntityAttributes);
@@ -183,8 +183,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_tracked_entity_attributes_handler() {
         programHandler.handle(program);
-        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class),
-                any(ProgramTrackedEntityAttributeModelBuilder.class));
+        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class));
     }
 
     @Test
@@ -202,7 +201,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_rule_variable_handler() {
         programHandler.handle(program);
-        verify(programRuleVariableHandler).handleProgramRuleVariables(programRuleVariables);
+        verify(programRuleVariableHandler).handleMany(programRuleVariables);
     }
 
     @Test
@@ -214,8 +213,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_program_section_handler() {
         programHandler.handle(program);
-        verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class),
-                any(ProgramSectionModelBuilder.class));
+        verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class));
     }
 
     @Test

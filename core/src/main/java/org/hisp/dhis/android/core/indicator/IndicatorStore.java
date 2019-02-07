@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -60,7 +60,7 @@ public final class IndicatorStore {
         }
     };
 
-    private static final CursorModelFactory<Indicator> FACTORY = new CursorModelFactory<Indicator>() {
+    static final CursorModelFactory<Indicator> FACTORY = new CursorModelFactory<Indicator>() {
         @Override
         public Indicator fromCursor(Cursor cursor) {
             return Indicator.create(cursor);

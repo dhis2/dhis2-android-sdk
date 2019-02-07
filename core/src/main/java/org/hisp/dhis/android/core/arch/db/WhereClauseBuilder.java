@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -41,41 +41,56 @@ public class WhereClauseBuilder {
     private static final String EQ_NUMBER = " = ";
 
     private static final String AND = " AND ";
+    private static final String OR = " OR ";
     private static final String IN = " IN (";
     private static final String NOT_IN = " NOT IN (";
+
+    private static final String IS_NULL = " IS NULL";
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
     private final StringBuilder whereClause = new StringBuilder();
     private boolean isFirst = true;
 
     public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
-        return appendKeyValue(column, value, EQ_STR, END_STR);
+        return appendKeyValue(column, value, AND, EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendOrKeyStringValue(String column, Object value) {
+        return appendKeyValue(column, value, OR, EQ_STR, END_STR);
     }
 
     public WhereClauseBuilder appendKeyLikeStringValue(String column, Object value) {
-        return appendKeyValue(column, value, LIKE_STR, END_STR);
+        return appendKeyValue(column, value, AND, LIKE_STR, END_STR);
     }
 
     public WhereClauseBuilder appendKeyNumberValue(String column, double value) {
-        return appendKeyValue(column, value, EQ_NUMBER, "");
+        return appendKeyValue(column, value, AND, EQ_NUMBER, "");
     }
 
     public WhereClauseBuilder appendKeyNumberValue(String column, int value) {
-        return appendKeyValue(column, value, EQ_NUMBER, "");
+        return appendKeyValue(column, value, AND, EQ_NUMBER, "");
+    }
+
+    public WhereClauseBuilder appendKeyOperatorValue(String column, String operator, String value) {
+        return appendKeyValue(column, value, AND,  " " + operator + " ", "");
     }
 
     public WhereClauseBuilder appendNotInKeyStringValues(String column, List<String> values) {
         String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
-        return appendKeyValue(column, valuesArray, NOT_IN, PARENTHESES_END);
+        return appendKeyValue(column, valuesArray, AND, NOT_IN, PARENTHESES_END);
     }
 
     public WhereClauseBuilder appendInKeyStringValues(String column, List<String> values) {
         String valuesArray = Utils.commaAndSpaceSeparatedArrayValues(Utils.withSingleQuotationMarksArray(values));
-        return appendKeyValue(column, valuesArray, IN, PARENTHESES_END);
+        return appendKeyValue(column, valuesArray, AND, IN, PARENTHESES_END);
     }
 
-    private WhereClauseBuilder appendKeyValue(String column, Object value, String eq, String end) {
-        String andOpt = isFirst ? "" : AND;
+    public WhereClauseBuilder appendIsNullValue(String column) {
+        return appendKeyValue(column, "", AND, IS_NULL, "");
+    }
+
+    private WhereClauseBuilder appendKeyValue(String column, Object value, String logicGate, String eq, String end) {
+        String andOpt = isFirst ? "" : logicGate;
         isFirst = false;
         whereClause.append(andOpt).append(column).append(eq).append(value).append(end);
         return this;

@@ -70,13 +70,13 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
     public void dataValuesWithToPostState_shouldBeUploaded() throws Exception {
 
         d2.syncMetaData().call();
-        d2.syncAggregatedData().call();
+        d2.aggregatedModule().data().download().call();
 
         DataValue dataValue = getTestDataValueWith(State.TO_POST, 1);
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        ImportSummary importSummary = d2.syncDataValues().call();
+        ImportSummary importSummary = d2.dataValueModule().dataValues.upload().call();
 
         int importCountTotal = importSummary.importCount().imported() +
                 importSummary.importCount().updated() +
@@ -90,13 +90,13 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
     public void dataValuesWithToUpdateState_shouldBeUploaded() throws Exception {
 
         d2.syncMetaData().call();
-        d2.syncAggregatedData().call();
+        d2.aggregatedModule().data().download().call();
 
         DataValue dataValue = getTestDataValueWith(State.TO_UPDATE,2);
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        ImportSummary importSummary = d2.syncDataValues().call();
+        ImportSummary importSummary = d2.dataValueModule().dataValues.upload().call();
 
         int importCountTotal = importSummary.importCount().updated() +
                 importSummary.importCount().ignored();

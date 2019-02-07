@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -51,6 +51,10 @@ public class DHISVersionManager {
 
     public boolean is2_30() {
         return version == DHISVersion.V2_30;
+    }
+
+    public boolean is2_31() {
+        return version == DHISVersion.V2_31;
     }
 
     void setVersion(String versionStr) {

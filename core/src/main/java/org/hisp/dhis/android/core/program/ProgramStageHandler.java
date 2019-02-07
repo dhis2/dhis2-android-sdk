@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,37 +27,40 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableHandlerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 
-public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, ProgramStageModel> {
-    private final ProgramStageSectionHandler programStageSectionHandler;
-    private final ProgramStageDataElementHandler programStageDataElementHandler;
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage> {
+    private final SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
+    private final SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
     private final CollectionCleaner<ProgramStage> collectionCleaner;
     private final DHISVersionManager versionManager;
 
-    ProgramStageHandler(IdentifiableObjectStore<ProgramStageModel> programStageStore,
-                        ProgramStageSectionHandler programStageSectionHandler,
-                        ProgramStageDataElementHandler programStageDataElementHandler,
+    @Inject
+    ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
+                        SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
+                        SyncHandler<ProgramStageDataElement> programStageDataElementHandler,
                         SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
@@ -93,8 +96,9 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
 
     @Override
     protected void afterObjectHandled(final ProgramStage programStage, HandleAction action) {
-        programStageDataElementHandler.handleProgramStageDataElements(
-                programStage.programStageDataElements());
+
+        programStageDataElementHandler.handleMany(programStage.programStageDataElements());
+
         programStageSectionHandler.handleMany(programStage.programStageSections(),
                 new ModelBuilder<ProgramStageSection, ProgramStageSection>() {
                     @Override
@@ -106,8 +110,10 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
                                 .build();
                     }
                 });
+
         styleHandler.handle(programStage.style(),
-                new ObjectStyleModelBuilder(programStage.uid(), ProgramStageModel.TABLE));
+                new ObjectStyleModelBuilder(programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name()));
+
         if (action == HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());
             programStageSectionCleaner.deleteOrphan(programStage, programStage.programStageSections());
@@ -125,19 +131,5 @@ public class ProgramStageHandler extends IdentifiableHandlerImpl<ProgramStage, P
     @Override
     protected void afterCollectionHandled(Collection<ProgramStage> programStages) {
         collectionCleaner.deleteNotPresent(programStages);
-    }
-
-    public static ProgramStageHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
-        return new ProgramStageHandler(
-                ProgramStageStore.create(databaseAdapter),
-                ProgramStageSectionHandler.create(databaseAdapter),
-                ProgramStageDataElementHandler.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<ProgramStage, ProgramStageDataElement>(ProgramStageDataElementModel.TABLE,
-                        ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter),
-                new OrphanCleanerImpl<ProgramStage, ProgramStageSection>(ProgramStageSectionModel.TABLE,
-                        ProgramStageSectionModel.Columns.PROGRAM_STAGE, databaseAdapter),
-                new CollectionCleanerImpl<ProgramStage>(ProgramStageModel.TABLE, databaseAdapter),
-                versionManager);
     }
 }

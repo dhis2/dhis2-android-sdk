@@ -25,11 +25,11 @@
     "username": "admin",
     "userRoles": [
       {
-        "id": "UYXOT4A7JMI",
-        "programs": [
-          {
-            "id": "lxAQ7Zs9VYR"
-          }
+        "created": "2018-10-01T14:22:46.030",
+        "lastUpdated": "2018-10-01T14:22:46.030",
+        "name": "Superuser",
+        "id": "Ufph3mGRmMo",
+        "displayName": "Superuser"
         ]
       }
     ]

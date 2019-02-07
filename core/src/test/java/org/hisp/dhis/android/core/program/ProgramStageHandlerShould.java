@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -60,13 +62,13 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class ProgramStageHandlerShould {
     @Mock
-    private IdentifiableObjectStore<ProgramStageModel> programStageStore;
+    private IdentifiableObjectStore<ProgramStage> programStageStore;
 
     @Mock
-    private ProgramStageSectionHandler programStageSectionHandler;
+    private SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
 
     @Mock
-    private ProgramStageDataElementHandler programStageDataElementHandler;
+    private SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
 
     @Mock
     private ProgramStage programStage;
@@ -81,6 +83,8 @@ public class ProgramStageHandlerShould {
     private ObjectStyle objectStyle;
 
     @Mock
+    private ProgramStageDataElement programStageDataElement;
+
     private List<ProgramStageDataElement> programStageDataElements;
 
     @Mock
@@ -112,13 +116,9 @@ public class ProgramStageHandlerShould {
     // object to test
     private ProgramStageHandler programStageHandler;
 
-    private ProgramStageModelBuilder programStageModelBuilder;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-
-        programStageModelBuilder = new ProgramStageModelBuilder();
 
         programStageHandler = new ProgramStageHandler(
                 programStageStore,
@@ -132,6 +132,8 @@ public class ProgramStageHandlerShould {
 
         programStageSections = new ArrayList<>();
         programStageSections.add(programStageSection);
+
+        programStageDataElements = Collections.singletonList(programStageDataElement);
 
         when(programStage.uid()).thenReturn("test_program_stage_uid");
         when(programStage.style()).thenReturn(objectStyle);
@@ -157,55 +159,54 @@ public class ProgramStageHandlerShould {
 
     @Test
     public void call_program_stage_data_element_handler() throws Exception {
-        programStageHandler.handle(programStage, programStageModelBuilder);
-        verify(programStageDataElementHandler).handleProgramStageDataElements(
-                programStageDataElements);
+        programStageHandler.handle(programStage);
+        verify(programStageDataElementHandler).handleMany(programStageDataElements);
     }
 
     @Test
     public void call_program_stage_section_handler() throws Exception {
-        programStageHandler.handle(programStage, programStageModelBuilder);
-        verify(programStageSectionHandler).handleMany(programStageSections);
+        programStageHandler.handle(programStage);
+        verify(programStageSectionHandler).handleMany(eq(programStageSections), any(ModelBuilder.class));
     }
 
     @Test
     public void call_style_handler() throws Exception {
-        programStageHandler.handle(programStage, programStageModelBuilder);
+        programStageHandler.handle(programStage);
         verify(styleHandler).handle(eq(objectStyle), any(ObjectStyleModelBuilder.class));
     }
 
     @Test
     public void clean_orphan_data_elements_after_update() {
-        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Update);
-        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Update);
+        programStageHandler.handle(programStage);
         verify(programStageDataElementCleaner).deleteOrphan(programStage, programStageDataElements);
     }
 
     @Test
     public void not_clean_orphan_data_elements_after_insert() {
-        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Insert);
-        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Insert);
+        programStageHandler.handle(programStage);
         verify(programStageDataElementCleaner, never()).deleteOrphan(programStage, programStageDataElements);
     }
 
     @Test
     public void clean_orphan_sections_after_update() {
-        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Update);
-        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Update);
+        programStageHandler.handle(programStage);
         verify(programStageSectionCleaner).deleteOrphan(programStage, programStageSections);
     }
 
     @Test
     public void not_clean_orphan_sections_after_insert() {
-        when(programStageStore.updateOrInsert(any(ProgramStageModel.class))).thenReturn(HandleAction.Insert);
-        programStageHandler.handle(programStage, new ProgramStageModelBuilder());
+        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Insert);
+        programStageHandler.handle(programStage);
         verify(programStageSectionCleaner, never()).deleteOrphan(programStage, programStageSections);
     }
 
     @Test
     public void call_collection_cleaner_when_calling_handle_many() {
         List<ProgramStage> programStages = Collections.singletonList(programStage);
-        programStageHandler.handleMany(programStages, new ProgramStageModelBuilder());
+        programStageHandler.handleMany(programStages);
         verify(collectionCleaner).deleteNotPresent(programStages);
     }
 
@@ -215,7 +216,7 @@ public class ProgramStageHandlerShould {
         when(programStage.captureCoordinates()).thenReturn(true);
         when(programStage.featureType()).thenReturn(FeatureType.POINT);
 
-        programStageHandler.handle(programStage, programStageModelBuilder);
+        programStageHandler.handle(programStage);
         assertThat(programStageHandler.beforeObjectHandled(programStage).featureType()).isEqualTo(FeatureType.POINT);
     }
 
@@ -225,7 +226,7 @@ public class ProgramStageHandlerShould {
         when(programStage.featureType()).thenReturn(FeatureType.POLYGON);
         when(programStage.captureCoordinates()).thenReturn(true);
 
-        programStageHandler.handle(programStage, programStageModelBuilder);
+        programStageHandler.handle(programStage);
         assertThat(programStageHandler.beforeObjectHandled(programStage).captureCoordinates()).isTrue();
     }
 }

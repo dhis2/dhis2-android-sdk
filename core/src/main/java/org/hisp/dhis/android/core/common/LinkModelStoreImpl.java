@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -34,12 +34,12 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class LinkModelStoreImpl<M extends Model>
+public class LinkModelStoreImpl<M extends Model>
         extends ObjectStoreImpl<M> implements LinkModelStore<M> {
 
     private final String masterColumn;
 
-    LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
+    protected LinkModelStoreImpl(DatabaseAdapter databaseAdapter,
                        SQLiteStatement insertStatement,
                        SQLStatementBuilder builder,
                        String masterColumn,

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,29 +46,28 @@ public final class ProgramSectionStore {
 
     private ProgramSectionStore() {}
 
-    private static StatementBinder<ProgramSectionModel> BINDER
-            = new IdentifiableStatementBinder<ProgramSectionModel>() {
+    private static StatementBinder<ProgramSection> BINDER
+            = new IdentifiableStatementBinder<ProgramSection>() {
 
         @Override
-        public void bindToStatement(@NonNull ProgramSectionModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull ProgramSection o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, o.program());
+            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.program()));
             sqLiteBind(sqLiteStatement, 9, o.sortOrder());
             sqLiteBind(sqLiteStatement, 10, o.formName());
         }
     };
 
-    private static final CursorModelFactory<ProgramSectionModel> FACTORY
-            = new CursorModelFactory<ProgramSectionModel>() {
+    private static final CursorModelFactory<ProgramSection> FACTORY
+            = new CursorModelFactory<ProgramSection>() {
         @Override
-        public ProgramSectionModel fromCursor(Cursor cursor) {
-            return ProgramSectionModel.create(cursor);
+        public ProgramSection fromCursor(Cursor cursor) {
+            return ProgramSection.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<ProgramSectionModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionModel.TABLE,
-                new ProgramSectionModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<ProgramSection> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

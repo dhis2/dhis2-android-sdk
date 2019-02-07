@@ -14,7 +14,21 @@
     "name": "John Barnes",
     "id": "M0fCOxtkURr",
     "displayName": "John Barnes",
-    "username": "android"
+    "username": "android",
+    "userRoles": [
+      {
+        "created": "2018-10-01T14:22:46.030",
+        "lastUpdated": "2018-10-01T14:22:46.030",
+        "name": "Superuser",
+        "id": "Ufph3mGRmMo",
+        "displayName": "Superuser",
+        "programs": [
+          {
+            "id": "lxAQ7Zs9VYR"
+          }
+        ]
+      }
+    ]
   },
   "organisationUnits": [
     {

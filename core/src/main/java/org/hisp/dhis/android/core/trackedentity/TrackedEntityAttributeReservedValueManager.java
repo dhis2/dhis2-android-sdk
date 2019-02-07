@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
-import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -47,15 +44,20 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkMo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@Reusable
 public final class TrackedEntityAttributeReservedValueManager {
 
     private static final Integer MIN_TO_TRY_FILL = 50;
@@ -63,22 +65,23 @@ public final class TrackedEntityAttributeReservedValueManager {
 
     private final TrackedEntityAttributeReservedValueStoreInterface store;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final DatabaseAdapter databaseAdapter;
-    private final Downloader<SystemInfo> systemInfoDownloader;
+    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final QueryCallFactory<TrackedEntityAttributeReservedValue,
             TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory;
 
-    private TrackedEntityAttributeReservedValueManager(
+    @Inject
+    TrackedEntityAttributeReservedValueManager(
             DatabaseAdapter databaseAdapter,
-            Downloader<SystemInfo> systemInfoDownloader,
+            ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityAttributeReservedValueStoreInterface store,
             IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-            TrackedEntityAttributeStore trackedEntityAttributeStore,
+            IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
             QueryCallFactory<TrackedEntityAttributeReservedValue,
                     TrackedEntityAttributeReservedValueQuery> trackedEntityAttributeReservedValueQueryCallFactory) {
         this.databaseAdapter = databaseAdapter;
-        this.systemInfoDownloader = systemInfoDownloader;
+        this.systemInfoRepository = systemInfoRepository;
         this.store = store;
         this.organisationUnitStore = organisationUnitStore;
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
@@ -158,11 +161,12 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        executor.executeD2Call(systemInfoDownloader.download());
+        executor.executeD2Call(systemInfoRepository.download());
 
         String trackedEntityAttributePattern;
         try {
-            trackedEntityAttributePattern = trackedEntityAttributeStore.getPattern(trackedEntityAttributeUid);
+            trackedEntityAttributePattern =
+                    trackedEntityAttributeStore.selectByUid(trackedEntityAttributeUid).pattern();
         } catch (Exception e) {
             trackedEntityAttributePattern = "";
         }
@@ -184,19 +188,22 @@ public final class TrackedEntityAttributeReservedValueManager {
                 + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
         String oUPLProgram = OrganisationUnitProgramLinkModel.TABLE + dot
                 + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
-        String pTEAProgram = ProgramTrackedEntityAttributeModel.TABLE + dot
-                + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
-        String pTEATrackedEntityAttribute = ProgramTrackedEntityAttributeModel.TABLE + dot
-                + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
-        String tEAUid = TrackedEntityAttributeModel.TABLE + dot + BaseIdentifiableObjectModel.Columns.UID;
-        String tEAPattern = TrackedEntityAttributeModel.TABLE + dot + TrackedEntityAttributeModel.Columns.PATTERN;
+        String pTEAProgram = ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
+                + ProgramTrackedEntityAttributeFields.PROGRAM;
+        String pTEATrackedEntityAttribute =  ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
+                + ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE;
+        String tEAUid =  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
+                BaseIdentifiableObjectModel.Columns.UID;
+        String tEAPattern =  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot +
+                TrackedEntityAttributeFields.PATTERN;
 
         String queryStatement = "SELECT " + OrganisationUnitTableInfo.TABLE_INFO.name() + ".* FROM (" +
                 OrganisationUnitTableInfo.TABLE_INFO.name() +
                 join + OrganisationUnitProgramLinkModel.TABLE + on + oUUid + eq + oUPLOrganisationUnit +
                 join + ProgramTableInfo.TABLE_INFO.name() + on + oUPLProgram + eq + programUid +
-                join + ProgramTrackedEntityAttributeModel.TABLE + on + programUid + eq + pTEAProgram +
-                join + TrackedEntityAttributeModel.TABLE + on + tEAUid + eq + pTEATrackedEntityAttribute + ") " +
+                join + ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + programUid + eq + pTEAProgram +
+                join +  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + tEAUid +
+                eq + pTEATrackedEntityAttribute + ") " +
                 " WHERE " + new WhereClauseBuilder()
                 .appendKeyStringValue(tEAUid, attribute)
                 .appendKeyLikeStringValue(tEAPattern, "%ORG_UNIT_CODE%").build() + ";";
@@ -231,18 +238,18 @@ public final class TrackedEntityAttributeReservedValueManager {
     }
 
     private static String generateAllTrackedEntityAttributeReservedValuesSelectStatement(String organisationUnitUid) {
-        String tEAUidColumn = "t." + TrackedEntityAttributeModel.Columns.UID;
-        String tEAGeneratedColumn = "t." + TrackedEntityAttributeModel.Columns.GENERATED;
+        String tEAUidColumn = "t." + BaseIdentifiableObjectModel.Columns.UID;
+        String tEAGeneratedColumn = "t." + TrackedEntityAttributeFields.GENERATED;
         String oUPLProgramColumn = "o." + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
         String oUPLOrganisationUnitColumn = "o." + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
-        String pTEATEAColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE;
-        String pTEAProgramColumn = "p." + ProgramTrackedEntityAttributeModel.Columns.PROGRAM;
+        String pTEATEAColumn = "p." + ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE;
+        String pTEAProgramColumn = "p." + ProgramTrackedEntityAttributeFields.PROGRAM;
 
         String selectStatement = "SELECT DISTINCT " + tEAUidColumn + " " +
                 "FROM " +
-                TrackedEntityAttributeModel.TABLE + " t, " +
+                TrackedEntityAttributeTableInfo.TABLE_INFO.name() + " t, " +
                 OrganisationUnitProgramLinkModel.TABLE + " o, " +
-                ProgramTrackedEntityAttributeModel.TABLE + " p " +
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + " p " +
 
                 "WHERE " + tEAGeneratedColumn + " = 1";
 
@@ -253,18 +260,5 @@ public final class TrackedEntityAttributeReservedValueManager {
         }
 
         return selectStatement.concat(";");
-    }
-
-    public static TrackedEntityAttributeReservedValueManager create(GenericCallData data,
-                                                                    D2InternalModules internalModules) {
-        return new TrackedEntityAttributeReservedValueManager(
-                data.databaseAdapter(),
-                internalModules.systemInfo,
-                TrackedEntityAttributeReservedValueStore.create(data.databaseAdapter()),
-                OrganisationUnitStore.create(data.databaseAdapter()),
-                new TrackedEntityAttributeStoreImpl(data.databaseAdapter()),
-                new TrackedEntityAttributeReservedValueEndpointCallFactory(data,
-                        APICallExecutorImpl.create(data.databaseAdapter()))
-        );
     }
 }

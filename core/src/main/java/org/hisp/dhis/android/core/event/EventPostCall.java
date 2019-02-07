@@ -1,24 +1,52 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.android.core.event;
 
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
 
-public final class EventPostCall extends SyncCall<WebResponse> {
+import dagger.Reusable;
+
+@Reusable
+public final class EventPostCall implements Callable<WebResponse> {
     // retrofit service
     private final EventService eventService;
 
@@ -28,7 +56,8 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
     private final APICallExecutor apiCallExecutor;
 
-    private EventPostCall(@NonNull EventService eventService,
+    @Inject
+    EventPostCall(@NonNull EventService eventService,
                           @NonNull EventStore eventStore,
                           @NonNull TrackedEntityDataValueStore trackedEntityDataValueStore,
                           @NonNull APICallExecutor apiCallExecutor) {
@@ -40,8 +69,6 @@ public final class EventPostCall extends SyncCall<WebResponse> {
 
     @Override
     public WebResponse call() throws Exception {
-        setExecuted();
-
         List<Event> eventsToPost = queryEventsToPost();
 
         // if there is nothing to send, return null
@@ -74,11 +101,7 @@ public final class EventPostCall extends SyncCall<WebResponse> {
             Event event = events.get(i);
             List<TrackedEntityDataValue> dataValuesForEvent = dataValueMap.get(event.uid());
 
-            eventRecreated.add(Event.create(event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(), event.program(), event.programStage(),
-                    event.organisationUnit(), event.eventDate(), event.status(), event.coordinates(),
-                    event.completedDate(), event.dueDate(), event.deleted(), dataValuesForEvent,
-                    event.attributeOptionCombo(), event.trackedEntityInstance()));
+            eventRecreated.add(event.toBuilder().trackedEntityDataValues(dataValuesForEvent).build());
         }
 
         return eventRecreated;
@@ -89,13 +112,5 @@ public final class EventPostCall extends SyncCall<WebResponse> {
         eventImportHandler.handleEventImportSummaries(
                 webResponse.importSummaries().importSummaries()
         );
-    }
-
-    public static EventPostCall create(DatabaseAdapter databaseAdapter, Retrofit retrofit) {
-        return new EventPostCall(
-                retrofit.create(EventService.class),
-                new EventStoreImpl(databaseAdapter),
-                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
-                APICallExecutorImpl.create(databaseAdapter));
     }
 }

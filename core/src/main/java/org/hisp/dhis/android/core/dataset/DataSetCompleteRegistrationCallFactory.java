@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,35 +24,45 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Call;
 
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
+@Reusable
+final class DataSetCompleteRegistrationCallFactory extends QueryCallFactoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationQuery> {
 
-    public DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData, APICallExecutor apiCallExecutor) {
+    private final SyncHandler<DataSetCompleteRegistration> handler;
+    private final DataSetCompleteRegistrationService service;
+
+    @Inject
+    DataSetCompleteRegistrationCallFactory(GenericCallData genericCallData,
+                                           APICallExecutor apiCallExecutor,
+                                           SyncHandler<DataSetCompleteRegistration> handler,
+                                           DataSetCompleteRegistrationService service) {
         super(genericCallData, apiCallExecutor);
+        this.handler = handler;
+        this.service = service;
     }
 
     @Override
     protected CallFetcher<DataSetCompleteRegistration> fetcher(
             final DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
-
-        final DataSetCompleteRegistrationService dataSetCompleteRegistrationService =
-                data.retrofit().create(DataSetCompleteRegistrationService.class);
 
         return new DataSetCompleteRegistrationCallFetcher(
                 dataSetCompleteRegistrationQuery.dataSetUids(),
@@ -63,7 +73,7 @@ public final class DataSetCompleteRegistrationCallFactory extends QueryCallFacto
             @Override
             protected Call<DataSetCompleteRegistrationPayload> getCall(
                     DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery) {
-                return dataSetCompleteRegistrationService.getDataSetCompleteRegistrations(
+                return service.getDataSetCompleteRegistrations(
                         DataSetCompleteRegistrationFields.allFields,
                         commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.dataSetUids()),
                         commaSeparatedCollectionValues(dataSetCompleteRegistrationQuery.periodIds()),
@@ -76,8 +86,6 @@ public final class DataSetCompleteRegistrationCallFactory extends QueryCallFacto
 
     @Override
     protected CallProcessor<DataSetCompleteRegistration> processor(DataSetCompleteRegistrationQuery query) {
-
-        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                DataSetCompleteRegistrationHandler.create(data.databaseAdapter()));
+        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(), handler);
     }
 }

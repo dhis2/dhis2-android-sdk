@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,8 +40,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-public class OrganisationUnitOrganisationUnitGroupLinkStore {
+final class OrganisationUnitOrganisationUnitGroupLinkStore {
 
     private OrganisationUnitOrganisationUnitGroupLinkStore() {}
 

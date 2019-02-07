@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -37,14 +36,15 @@ import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -103,7 +103,7 @@ public abstract class BaseCallShould {
         when(genericCallData.retrofit()).thenReturn(retrofit);
         when(genericCallData.resourceHandler()).thenReturn(resourceHandler);
 
-        when(resourceHandler.getLastUpdated(any(ResourceModel.Type.class))).thenReturn(null);
+        when(resourceHandler.getLastUpdated(any(Resource.Type.class))).thenReturn(null);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
 
@@ -116,7 +116,7 @@ public abstract class BaseCallShould {
         dhis2MockServer.shutdown();
     }
 
-    protected void whenEndpointCallFails(Call<?> endpointCall) throws Exception {
+    protected void whenEndpointCallFails(Callable<?> endpointCall) throws Exception {
         when(endpointCall.call()).thenThrow(new Exception());
     }
 

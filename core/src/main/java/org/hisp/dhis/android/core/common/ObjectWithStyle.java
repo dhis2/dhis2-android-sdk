@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,15 +28,17 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.support.annotation.Nullable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
 
-import android.support.annotation.Nullable;
-
 public interface ObjectWithStyle<O, B extends ObjectWithStyle.Builder<O, B>> {
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(IgnoreObjectStyleAdapter.class)
     ObjectStyle style();
 

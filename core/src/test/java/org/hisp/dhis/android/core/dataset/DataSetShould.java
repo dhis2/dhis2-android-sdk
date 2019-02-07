@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 
@@ -81,7 +82,7 @@ public class DataSetShould extends BaseObjectShould implements ObjectShould {
         assertThat(dataSet.dataSetElements().size()).isEqualTo(3);
         assertThat(dataSet.dataInputPeriods().size()).isEqualTo(1);
         assertThat(dataSet.dataInputPeriods().get(0).period()).isEqualTo(ObjectWithUid.create("201801"));
-        assertThat(dataSet.indicators().get(0)).isEqualTo(ObjectWithUid.create("OEWO2PpiUKx"));
+        assertThat(dataSet.indicators().get(0)).isEqualTo(Indicator.builder().uid("OEWO2PpiUKx").build());
         assertThat(dataSet.sections().size()).isEqualTo(1);
         assertThat(dataSet.sections().get(0).uid()).isEqualTo("Y2rk0vzgvAx");
         assertThat(dataSet.compulsoryDataElementOperands().size()).isEqualTo(1);

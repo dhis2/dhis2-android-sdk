@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,32 +41,31 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-public class OrganisationUnitGroupStore {
+final class OrganisationUnitGroupStore {
 
     private OrganisationUnitGroupStore() {}
 
-    private static StatementBinder<OrganisationUnitGroupModel> BINDER
-            = new IdentifiableStatementBinder<OrganisationUnitGroupModel>() {
+    private static StatementBinder<OrganisationUnitGroup> BINDER
+            = new IdentifiableStatementBinder<OrganisationUnitGroup>() {
         @Override
-        public void bindToStatement(@NonNull OrganisationUnitGroupModel organisationUnitGroupModel,
+        public void bindToStatement(@NonNull OrganisationUnitGroup organisationUnitGroup,
                                     @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(organisationUnitGroupModel, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, organisationUnitGroupModel.shortName());
-            sqLiteBind(sqLiteStatement, 8, organisationUnitGroupModel.displayShortName());
+            super.bindToStatement(organisationUnitGroup, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, organisationUnitGroup.shortName());
+            sqLiteBind(sqLiteStatement, 8, organisationUnitGroup.displayShortName());
         }
     };
 
-    private static final CursorModelFactory<OrganisationUnitGroupModel> FACTORY
-            = new CursorModelFactory<OrganisationUnitGroupModel>() {
+    private static final CursorModelFactory<OrganisationUnitGroup> FACTORY
+            = new CursorModelFactory<OrganisationUnitGroup>() {
         @Override
-        public OrganisationUnitGroupModel fromCursor(Cursor cursor) {
-            return OrganisationUnitGroupModel.create(cursor);
+        public OrganisationUnitGroup fromCursor(Cursor cursor) {
+            return OrganisationUnitGroup.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<OrganisationUnitGroupModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitGroupModel.TABLE,
-                new OrganisationUnitGroupModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<OrganisationUnitGroup> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(
+                databaseAdapter, OrganisationUnitGroupTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

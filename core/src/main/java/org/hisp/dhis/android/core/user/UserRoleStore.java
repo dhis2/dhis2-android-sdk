@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,33 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+public final class UserRoleStore {
 
-public interface UserRoleStore extends DeletableStore {
-    long insert(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated);
+    private UserRoleStore() {}
 
-    int update(
-            @NonNull String uid,
-            @Nullable String code,
-            @Nullable String name,
-            @Nullable String displayName,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String whereUid);
+    private static StatementBinder<UserRole> BINDER = new IdentifiableStatementBinder<UserRole>() {
+        @Override
+        public void bindToStatement(@NonNull UserRole o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+        }
+    };
 
-    int delete(@NonNull String uid);
+    private static final CursorModelFactory<UserRole> FACTORY = new CursorModelFactory<UserRole>() {
+        @Override
+        public UserRole fromCursor(Cursor cursor) {
+            return UserRole.create(cursor);
+        }
+    };
 
+    public static IdentifiableObjectStore<UserRole> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, UserRoleTableInfo.TABLE_INFO, BINDER, FACTORY);
+    }
 }

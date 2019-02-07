@@ -1,14 +1,42 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,10 +47,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -35,7 +62,7 @@ public class EnrollmentHandlerShould {
     private EnrollmentStore enrollmentStore;
 
     @Mock
-    private EventHandler eventHandler;
+    private SyncHandlerWithTransformer<Event> eventHandler;
 
     @Mock
     private SyncHandler<Note> noteHandler;
@@ -78,118 +105,47 @@ public class EnrollmentHandlerShould {
         enrollmentHandler.handle(null);
 
         // verify that store or event handler is never called
-        verify(enrollmentStore, never()).delete(anyString());
-        verify(enrollmentStore, never()).update(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class), anyString()
-        );
-        verify(enrollmentStore, never()).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class)
-        );
+        verify(enrollmentStore, never()).deleteIfExists(anyString());
+        verify(enrollmentStore, never()).updateOrInsert(any(Enrollment.class));
 
         verify(eventHandler, never()).handle(any(Event.class));
         verify(eventCleaner, never()).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
+        verify(noteHandler, never()).handleMany(anyCollectionOf(Note.class));
     }
 
     @Test
     public void invoke_only_delete_when_a_enrollment_is_set_as_deleted() throws Exception {
         when(enrollment.deleted()).thenReturn(Boolean.TRUE);
 
-        enrollmentHandler.handle(Collections.singletonList(enrollment));
+        enrollmentHandler.handleMany(Collections.singletonList(enrollment));
 
         // verify that enrollment store is only invoked with delete
-        verify(enrollmentStore, times(1)).delete(anyString());
+        verify(enrollmentStore, times(1)).deleteIfExists(anyString());
 
 
-        verify(enrollmentStore, never()).update(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class), anyString()
-        );
-        verify(enrollmentStore, never()).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class)
-        );
+        verify(enrollmentStore, never()).updateOrInsert(any(Enrollment.class));
 
         // event handler should not be invoked
         verify(eventHandler, never()).handle(any(Event.class));
         verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
+        verify(noteHandler, never()).handleMany(anyCollectionOf(Note.class));
     }
 
     @Test
-    public void invoke_only_update_when_handle_enrollment_inserted() throws Exception {
-        when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class), anyString())
-        ).thenReturn(1);
+    public void invoke_only_update_or_insert_when_handle_enrollment_is_valid() throws Exception {
+        when(enrollment.deleted()).thenReturn(Boolean.FALSE);
+        when(enrollmentStore.updateOrInsert(any(Enrollment.class))).thenReturn(HandleAction.Update);
 
-        enrollmentHandler.handle(Collections.singletonList(enrollment));
+        enrollmentHandler.handleMany(Collections.singletonList(enrollment));
 
         // verify that enrollment store is only invoked with update
-        verify(enrollmentStore, times(1)).update(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class), anyString()
-        );
+        verify(enrollmentStore, times(1)).updateOrInsert(any(Enrollment.class));
 
-        verify(enrollmentStore, never()).delete(anyString());
-
-        verify(enrollmentStore, never()).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class)
-        );
+        verify(enrollmentStore, never()).deleteIfExists(anyString());
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handleMany(any(ArrayList.class));
-
+        verify(eventHandler, times(1)).handleMany(any(ArrayList.class), any(ModelBuilder.class));
         verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
-    }
-
-    @Test
-    public void invoke_update_and_insert_when_handle_enrollment_not_inserted() throws Exception {
-        when(enrollmentStore.update(anyString(), any(Date.class), any(Date.class), anyString(), anyString(),
-                anyString(), anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class), anyString())
-        ).thenReturn(0);
-
-        enrollmentHandler.handle(Collections.singletonList(enrollment));
-
-        // verify that enrollment store is only invoked with insert
-        verify(enrollmentStore, times(1)).insert(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class)
-        );
-
-        // verify that update is also invoked since we're trying to update before we insert
-        verify(enrollmentStore, times(1)).update(
-                anyString(), any(Date.class), any(Date.class), anyString(), anyString(), anyString(),
-                anyString(), any(Date.class), any(Date.class), anyBoolean(),
-                any(EnrollmentStatus.class), anyString(), anyString(),
-                anyString(), any(State.class), anyString()
-        );
-
-        // verify that delete is never invoked
-        verify(enrollmentStore, never()).delete(anyString());
-
-
-        // event handler should be invoked once
-        verify(eventHandler, times(1)).handleMany(any(ArrayList.class));
-
-        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
+        verify(noteHandler, times(1)).handleMany(anyCollectionOf(Note.class));
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -59,8 +59,6 @@ public class CategoryOptionComboShould extends BaseObjectShould implements Objec
                 BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:25.319"));
 
         assertThat(categoryOptionCombo.name()).isEqualTo("0-11m");
-        assertThat(categoryOptionCombo.shortName()).isEqualTo("0-11m");
         assertThat(categoryOptionCombo.displayName()).isEqualTo("0-11m");
-        assertThat(categoryOptionCombo.displayShortName()).isEqualTo("0-11m");
     }
 }

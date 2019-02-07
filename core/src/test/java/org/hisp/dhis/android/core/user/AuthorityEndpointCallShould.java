@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.junit.After;
@@ -41,6 +41,7 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import retrofit2.Response;
 
@@ -54,12 +55,15 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
     private AuthorityService authorityService;
 
     @Mock
+    private SyncHandler<Authority> handler;
+
+    @Mock
     private retrofit2.Call<List<String>> retrofitCall;
 
     @Mock
     private List<String> payload;
 
-    private Call<List<Authority>> endpointCall;
+    private Callable<List<Authority>> endpointCall;
 
 
     @Before
@@ -68,7 +72,8 @@ public class AuthorityEndpointCallShould extends BaseCallShould {
         super.setUp();
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        endpointCall = new AuthorityEndpointCall(genericCallData, apiCallExecutor).create();
+        endpointCall = new AuthorityEndpointCallFactory(genericCallData, apiCallExecutor, handler,
+                retrofit.create(AuthorityService.class)).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(authorityService.getAuthorities()).thenReturn(retrofitCall);

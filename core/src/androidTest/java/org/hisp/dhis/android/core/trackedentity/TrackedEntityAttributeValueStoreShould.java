@@ -33,7 +33,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -43,13 +46,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
@@ -58,7 +58,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     //TrackedEntityAttributeValueModel:
     private static final String VALUE = "test_value";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttributeUid";
-    private static final String TRACKED_ENTITY_ATTRIBUTE_2 = "test_trackedEntityAttributeUid";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_2 = "test_trackedEntityAttributeUid_2";
     private static final String TRACKED_ENTITY_INSTANCE = "test_trackedEntityInstanceUid";
     private static final String TRACKED_ENTITY_INSTANCE_2 = "test_trackedEntityInstanceUid_2";
     private static final String ORGANIZATION_UNIT = "test_organizationUnitUid";
@@ -75,6 +75,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     private TrackedEntityAttributeValueStore store;
     private Date date;
     private String dateString;
+    private TrackedEntityAttributeValue trackedEntityAttributeValue;
 
     @Override
     public void setUp() throws IOException {
@@ -83,7 +84,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         this.date = new Date();
         this.dateString = BaseIdentifiableObject.DATE_FORMAT.format(date);
 
-        this.store = new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
+        this.store = TrackedEntityAttributeValueStoreImpl.create(databaseAdapter());
 
         OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANIZATION_UNIT);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
@@ -99,13 +100,17 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance_2);
-        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
+
+        trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
+                .value(VALUE).created(date).lastUpdated(date).trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE)
+                .trackedEntityInstance(TRACKED_ENTITY_INSTANCE).build();
+
     }
 
     @Test
     public void insert_tracked_entity_attribute_value_in_data_base_when_insert() {
-        long rowId = store.insert(VALUE, date, date,
-                TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_INSTANCE);
+        long rowId = store.insert(trackedEntityAttributeValue);
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 PROJECTION, null, null, null, null, null);
@@ -123,14 +128,15 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         final String deferredTrackedEntityInstance = "deferredTrackedEntityInstance";
 
         database().beginTransaction();
-        long rowId = store.insert(VALUE, date, date,
-                deferredTrackedEntityAttribute, deferredTrackedEntityInstance);
+        long rowId = store.insert(trackedEntityAttributeValue.toBuilder()
+                .trackedEntityAttribute(deferredTrackedEntityAttribute)
+                .trackedEntityInstance(deferredTrackedEntityInstance).build());
         ContentValues trackedEntityInstance = CreateTrackedEntityInstanceUtils.create(
                 deferredTrackedEntityInstance, ORGANIZATION_UNIT, TRACKED_ENTITY);
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
                 deferredTrackedEntityAttribute, null);
         database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
-        database().insert(TrackedEntityAttributeModel.TABLE, null, trackedEntityAttribute);
+        database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
         database().setTransactionSuccessful();
         database().endTransaction();
 
@@ -146,8 +152,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
     @Test
     public void insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value() {
-        long rowId = store.insert(null, date, date, TRACKED_ENTITY_ATTRIBUTE,
-                TRACKED_ENTITY_INSTANCE);
+        long rowId = store.insert(trackedEntityAttributeValue.toBuilder().value(null).build());
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
                 PROJECTION,
@@ -162,13 +167,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
     @Test
     public void update_event_in_data_base_after_update() throws Exception {
-        long rowId = store.insert(
-                "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
-                TRACKED_ENTITY_INSTANCE);
-
-        store.update(
-                "4", date, date, TRACKED_ENTITY_ATTRIBUTE,
-                TRACKED_ENTITY_INSTANCE);
+        store.insert(trackedEntityAttributeValue.toBuilder().value("0").build());
+        store.updateOrInsertWhere(trackedEntityAttributeValue.toBuilder().value("4").build());
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE, PROJECTION, null,
                 null, null,
@@ -184,47 +184,45 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
     @Test
-    public void delete_tracked_entity_attribute_value_by_instance_and_attribute_uids()
-            throws Exception {
-        store.insert(
-                "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
-                TRACKED_ENTITY_INSTANCE);
+    public void delete_tracked_entity_attribute_value_by_instance_and_attribute_uids() {
+        store.insert(trackedEntityAttributeValue.toBuilder().build());
 
-        store.insert(
-                "0", date, date, TRACKED_ENTITY_ATTRIBUTE_2,
-                TRACKED_ENTITY_INSTANCE);
+        store.insert(trackedEntityAttributeValue.toBuilder()
+                .trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE_2).build());
 
-        store.insert(
-                "0", date, date, TRACKED_ENTITY_ATTRIBUTE,
-                TRACKED_ENTITY_INSTANCE_2);
+        store.insert(trackedEntityAttributeValue.toBuilder()
+                .trackedEntityInstance(TRACKED_ENTITY_INSTANCE_2).build());
 
-        store.insert(
-                "0", date, date, TRACKED_ENTITY_ATTRIBUTE_2,
-                TRACKED_ENTITY_INSTANCE_2);
+        store.insert(trackedEntityAttributeValue.toBuilder()
+                .trackedEntityAttribute(TRACKED_ENTITY_ATTRIBUTE_2)
+                .trackedEntityInstance(TRACKED_ENTITY_INSTANCE_2).build());
 
-        store.deleteByInstanceAndAttributes(TRACKED_ENTITY_INSTANCE,
-                Arrays.asList(TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE_2));
+        store.deleteByInstanceAndNotInAttributes(TRACKED_ENTITY_INSTANCE,
+                Lists.newArrayList(TRACKED_ENTITY_ATTRIBUTE, TRACKED_ENTITY_ATTRIBUTE_2));
+        Assert.assertThat(store.count(), is(4));
+        Assert.assertThat(store.queryByTrackedEntityInstance(TRACKED_ENTITY_INSTANCE).size(), is(2));
+        Assert.assertThat(store.queryByTrackedEntityInstance(TRACKED_ENTITY_INSTANCE_2).size(), is(2));
 
-        Map<String, List<TrackedEntityAttributeValue>> trackedEntityAttributeValues =
-                store.queryAll();
+        store.deleteByInstanceAndNotInAttributes(TRACKED_ENTITY_INSTANCE, Lists.newArrayList(TRACKED_ENTITY_ATTRIBUTE));
+        Assert.assertThat(store.count(), is(3));
+        Assert.assertThat(store.queryByTrackedEntityInstance(TRACKED_ENTITY_INSTANCE).size(), is(1));
 
-        Assert.assertThat(
-                trackedEntityAttributeValues.get(TRACKED_ENTITY_INSTANCE), is(nullValue()));
-        Assert.assertThat(
-                trackedEntityAttributeValues.get(TRACKED_ENTITY_INSTANCE_2).size(), is(2));
+        store.deleteByInstanceAndNotInAttributes(TRACKED_ENTITY_INSTANCE, new ArrayList<String>());
+        Assert.assertThat(store.count(), is(2));
+        Assert.assertThat(store.queryByTrackedEntityInstance(TRACKED_ENTITY_INSTANCE).size(), is(0));
     }
 
     //@Test(expected = SQLiteConstraintException.class)
     //TODO Solve the foreign keys for missing attributes
     public void
     throw_sqlite_constraint_exception_when_insert_tracked_entity_attribute_value_with_invalid_tracked_entity_attribute() {
-        store.insert(VALUE, date, date, "wrong", TRACKED_ENTITY_INSTANCE);
+        store.insert(trackedEntityAttributeValue.toBuilder().trackedEntityAttribute("wrong").build());
     }
 
     @Test(expected = SQLiteConstraintException.class)
     public void
     throw_sqlite_constraint_exception_when_insert_tracked_entity_attribute_value_with_invalid_tracked_entity_instance() {
-        store.insert(VALUE, date, date, TRACKED_ENTITY_ATTRIBUTE, "wrong");
+        store.insert(trackedEntityAttributeValue.toBuilder().trackedEntityInstance("wrong").build());
     }
 
     //@Test
@@ -232,8 +230,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_attribute_value_in_data_base_when_delete_tracked_entity_attribute() {
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
-        database().delete(TrackedEntityAttributeModel.TABLE,
-                TrackedEntityAttributeModel.Columns.UID + "=?",
+        database().delete(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID + "=?",
                 new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
@@ -255,13 +253,13 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity() {
-        store.insert(VALUE, date, date, null, TRACKED_ENTITY_INSTANCE);
+        store.insert(trackedEntityAttributeValue.toBuilder().trackedEntityAttribute(null).build());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = SQLiteConstraintException.class)
     public void throw_illegal_argument_exception_when_insert_null_tracked_entity_instance() {
-        store.insert(VALUE, date, date, TRACKED_ENTITY_ATTRIBUTE, null);
+        store.insert(trackedEntityAttributeValue.toBuilder().trackedEntityInstance(null).build());
     }
 }

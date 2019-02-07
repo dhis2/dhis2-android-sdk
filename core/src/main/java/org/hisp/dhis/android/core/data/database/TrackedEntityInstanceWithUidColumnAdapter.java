@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -34,8 +34,6 @@ public class TrackedEntityInstanceWithUidColumnAdapter extends IdentifiableObjec
 
     @Override
     protected TrackedEntityInstance build(String uid) {
-        return TrackedEntityInstance.create(uid, null, null, null, null, null,
-                null, null, null, null, null, null,
-                null);
+        return TrackedEntityInstance.builder().uid(uid).build();
     }
 }

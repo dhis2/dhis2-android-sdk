@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,21 +28,49 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
 
-final class CategoryOptionCollectionRepository {
+import javax.inject.Inject;
 
-    private CategoryOptionCollectionRepository() {
+import dagger.Reusable;
+
+@Reusable
+public final class CategoryOptionCollectionRepository
+        extends ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository> {
+
+    @Inject
+    CategoryOptionCollectionRepository(final IdentifiableObjectStore<CategoryOption> store,
+                                       final Collection<ChildrenAppender<CategoryOption>> childrenAppenders,
+                                       List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<CategoryOptionCollectionRepository>() {
+
+                    @Override
+                    public CategoryOptionCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new CategoryOptionCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<CategoryOption> create(DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                CategoryOptionStore.create(databaseAdapter),
-                Collections.<ChildrenAppender<CategoryOption>>emptyList()
-        );
+    public DateFilterConnector<CategoryOptionCollectionRepository> byStartDate() {
+        return cf.date(CategoryOptionFields.START_DATE);
+    }
+
+    public DateFilterConnector<CategoryOptionCollectionRepository> byEndDate() {
+        return cf.date(CategoryOptionFields.END_DATE);
+    }
+
+    public BooleanFilterConnector<CategoryOptionCollectionRepository> byAccessDataWrite() {
+        return cf.bool(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE);
     }
 }

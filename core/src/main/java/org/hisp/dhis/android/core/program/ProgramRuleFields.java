@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 final class ProgramRuleFields {
 
-    private static final String PRIORITY = "priority";
-    private static final String CONDITION = "condition";
-    private static final String PROGRAM = "program";
-    private static final String PROGRAM_STAGE = "programStage";
+    static final String PRIORITY = "priority";
+    static final String CONDITION = "condition";
+    static final String PROGRAM = "program";
+    static final String PROGRAM_STAGE = "programStage";
     private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
     private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
@@ -47,7 +47,7 @@ final class ProgramRuleFields {
                     fh.<String>field(CONDITION),
                     fh.nestedFieldWithUid(PROGRAM),
                     fh.nestedFieldWithUid(PROGRAM_STAGE),
-                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleAction.allFields)
+                    fh.<ProgramRuleAction>nestedField(PROGRAM_RULE_ACTIONS).with(ProgramRuleActionFields.allFields)
             ).build();
 
     private ProgramRuleFields() {

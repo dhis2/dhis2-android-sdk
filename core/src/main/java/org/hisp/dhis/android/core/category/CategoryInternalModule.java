@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,39 +27,30 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
+import android.support.annotation.VisibleForTesting;
+
+import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
-public final class CategoryInternalModule implements WipeableModule {
+public final class CategoryInternalModule {
 
-    private final DatabaseAdapter databaseAdapter;
-    public final CategoryModule publicModule;
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    final UidsCallFactory<Category> categoryCallFactory;
+
+    @VisibleForTesting
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
+    final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
 
     @Inject
-    CategoryInternalModule(DatabaseAdapter databaseAdapter,
-                           CategoryModule publicModule) {
-        this.databaseAdapter = databaseAdapter;
-        this.publicModule = publicModule;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        CategoryStore.create(databaseAdapter).delete();
-        CategoryOptionStore.create(databaseAdapter).delete();
-        CategoryOptionComboStoreImpl.create(databaseAdapter).delete();
-        CategoryCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter).delete();
-        CategoryComboStore.create(databaseAdapter).delete();
-        CategoryCategoryComboLinkStore.create(databaseAdapter).delete();
-    }
-
-    @Override
-    public void wipeData() {
-        // Without data to wipe
+    CategoryInternalModule(UidsCallFactory<Category> categoryCallFactory,
+                           UidsCallFactory<CategoryCombo> categoryComboCallFactory) {
+        this.categoryCallFactory = categoryCallFactory;
+        this.categoryComboCallFactory = categoryComboCallFactory;
     }
 }

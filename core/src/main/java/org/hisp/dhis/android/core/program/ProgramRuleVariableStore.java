@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,31 +28,50 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public interface ProgramRuleVariableStore extends DeletableStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable Boolean useCodeForOptionSet, @NonNull String program,
-                @Nullable String programStage, @Nullable String dataElement,
-                @Nullable String trackedEntityAttribute,
-                @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType
-    );
+public final class ProgramRuleVariableStore {
 
-    int update(
-            @NonNull String uid, @Nullable String code, @NonNull String name,
-            @NonNull String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable Boolean useCodeForOptionSet, @NonNull String program,
-            @Nullable String programStage, @Nullable String dataElement,
-            @Nullable String trackedEntityAttribute,
-            @Nullable ProgramRuleVariableSourceType programRuleVariableSourceType,
-            @NonNull String whereProgramRuleVariableUid
-    );
+    private ProgramRuleVariableStore() {}
 
-    int delete(String uid);
+    private static StatementBinder<ProgramRuleVariable> BINDER =
+            new IdentifiableStatementBinder<ProgramRuleVariable>() {
+
+        @Override
+        public void bindToStatement(@NonNull ProgramRuleVariable o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.useCodeForOptionSet());
+            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.program()));
+            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.programStage()));
+            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.dataElement()));
+            sqLiteBind(sqLiteStatement, 11, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
+            sqLiteBind(sqLiteStatement, 12, o.programRuleVariableSourceType());
+        }
+    };
+
+    private static final CursorModelFactory<ProgramRuleVariable> FACTORY =
+            new CursorModelFactory<ProgramRuleVariable>() {
+        @Override
+        public ProgramRuleVariable fromCursor(Cursor cursor) {
+            return ProgramRuleVariable.create(cursor);
+        }
+    };
+
+    public static IdentifiableObjectStore<ProgramRuleVariable> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(
+                databaseAdapter, ProgramRuleVariableTableInfo.TABLE_INFO, BINDER, FACTORY);
+    }
 }

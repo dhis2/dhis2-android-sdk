@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,37 +29,18 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface TrackedEntityAttributeValueStore extends DeletableStore {
+public interface TrackedEntityAttributeValueStore extends ObjectWithoutUidStore<TrackedEntityAttributeValue> {
 
-    long insert(
-            @Nullable String value,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String trackedEntityAttribute,
-            @NonNull String trackedEntityInstance);
-
-    int update(
-            @Nullable String value,
-            @Nullable Date created,
-            @Nullable Date lastUpdated,
-            @NonNull String trackedEntityAttribute,
-            @NonNull String trackedEntityInstance);
-
-    int deleteByInstanceAndAttributes(
-            @NonNull String trackedEntityInstanceUId,
-            @NonNull List<String> trackedEntityAttributeUIds);
-
-    Map<String, List<TrackedEntityAttributeValue>> query();
-
-    Map<String, List<TrackedEntityAttributeValue>> queryAll();
+    Map<String, List<TrackedEntityAttributeValue>> queryTrackedEntityAttributeValueToPost();
 
     List<TrackedEntityAttributeValue> queryByTrackedEntityInstance(String trackedEntityInstanceUid);
+
+    void deleteByInstanceAndNotInAttributes(@NonNull String trackedEntityInstanceUid,
+                                            @NonNull List<String> trackedEntityAttributeUids);
 }

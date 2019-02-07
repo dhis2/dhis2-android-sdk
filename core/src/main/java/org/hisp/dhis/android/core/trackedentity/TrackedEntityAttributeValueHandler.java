@@ -1,92 +1,71 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-@SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
-public class TrackedEntityAttributeValueHandler {
+final class TrackedEntityAttributeValueHandler extends ObjectWithoutUidSyncHandlerImpl<TrackedEntityAttributeValue> {
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    private TrackedEntityAttributeValueHandler(
-            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+    TrackedEntityAttributeValueHandler(TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+        super(trackedEntityAttributeValueStore);
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }
 
-    public void handle(String trackedEntityInstanceUid,
-            List<TrackedEntityAttributeValue> attributeValues) {
-        if (trackedEntityInstanceUid == null || attributeValues == null) {
+    @Override
+    protected void afterCollectionHandled(Collection<TrackedEntityAttributeValue> trackedEntityAttributeValues) {
+        removeNotExistingAttributeValuesInServer(trackedEntityAttributeValues);
+    }
+
+    private void removeNotExistingAttributeValuesInServer(
+            Collection<TrackedEntityAttributeValue> trackedEntityAttributeValues) {
+        if (trackedEntityAttributeValues.isEmpty()) {
             return;
         }
 
-        removeAttributeValuesNotExistingInServer(trackedEntityInstanceUid, attributeValues);
+        String teiUid = trackedEntityAttributeValues.iterator().next().trackedEntityInstance();
 
-        for (TrackedEntityAttributeValue attValue : attributeValues) {
-            handle(trackedEntityInstanceUid, attValue);
-        }
-    }
-
-    private void removeAttributeValuesNotExistingInServer(String trackedEntityInstanceUid,
-            List<TrackedEntityAttributeValue> attributeValues) {
-
-        List<String> uIds = getAttributeUIdsToRemove(trackedEntityInstanceUid, attributeValues);
-
-        if (!uIds.isEmpty()) {
-            trackedEntityAttributeValueStore.deleteByInstanceAndAttributes(
-                    trackedEntityInstanceUid, uIds);
-        }
-    }
-
-    private List<String> getAttributeUIdsToRemove(String trackedEntityInstanceUid,
-            List<TrackedEntityAttributeValue> attributeValues) {
-        List<String> attributeUIdsToRemove = new ArrayList<>();
-
-        List<TrackedEntityAttributeValue> attributeValuesInDB =
-                trackedEntityAttributeValueStore.queryByTrackedEntityInstance(
-                        trackedEntityInstanceUid);
-
-        for (TrackedEntityAttributeValue attributeValue : attributeValuesInDB) {
-            if (!existsTrackedEntityAttribute(attributeValues,
-                    attributeValue.trackedEntityAttribute())) {
-                attributeUIdsToRemove.add(attributeValue.trackedEntityAttribute());
-            }
+        List<String> attributeUids = new ArrayList<>();
+        for (TrackedEntityAttributeValue value : trackedEntityAttributeValues) {
+            attributeUids.add(value.trackedEntityAttribute());
         }
 
-        return attributeUIdsToRemove;
+        trackedEntityAttributeValueStore.deleteByInstanceAndNotInAttributes(teiUid, attributeUids);
     }
 
-    private boolean existsTrackedEntityAttribute(List<TrackedEntityAttributeValue> attributeValues,
-            String trackedEntityAttributeUid) {
-        for (TrackedEntityAttributeValue attributeValue : attributeValues) {
-            if (attributeValue.trackedEntityAttribute().equals(trackedEntityAttributeUid)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void handle(String trackedEntityInstanceUid,
-            TrackedEntityAttributeValue dataValue) {
-
-        int updatedRow = trackedEntityAttributeValueStore.update(
-                dataValue.value(), dataValue.created(), dataValue.lastUpdated(),
-                dataValue.trackedEntityAttribute(),
-                trackedEntityInstanceUid);
-
-        if (updatedRow <= 0) {
-            trackedEntityAttributeValueStore.insert(
-                    dataValue.value(), dataValue.created(), dataValue.lastUpdated()
-                    , dataValue.trackedEntityAttribute(),
-                    trackedEntityInstanceUid);
-        }
-    }
-
-    public static TrackedEntityAttributeValueHandler create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityAttributeValueHandler(
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter)
-        );
+    public static SyncHandlerWithTransformer<TrackedEntityAttributeValue> create(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityAttributeValueHandler(TrackedEntityAttributeValueStoreImpl.create(databaseAdapter));
     }
 }
-

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
-public class DataSetCompleteRegistrationImportHandler {
+final class DataSetCompleteRegistrationImportHandler {
 
     private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
 
@@ -43,8 +43,8 @@ public class DataSetCompleteRegistrationImportHandler {
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
     }
 
-    public void handleImportSummary(@NonNull DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
-                                    @NonNull ImportSummary importSummary) {
+    void handleImportSummary(@NonNull DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
+                             @NonNull ImportSummary importSummary) {
 
         if (importSummary == null || dataSetCompleteRegistrationPayload == null) {
             return;

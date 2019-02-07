@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.arch.handlers;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
 
@@ -39,8 +41,9 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
         if (o == null) {
             return;
         }
-        HandleAction action = deleteOrPersist(o);
-        afterObjectHandled(o, action);
+        O object = beforeObjectHandled(o);
+        HandleAction action = deleteOrPersist(object);
+        afterObjectHandled(object, action);
     }
 
     @Override
@@ -48,9 +51,23 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
         if (o == null) {
             return;
         }
-        O oTransformed = modelBuilder.buildModel(o);
+        handleInternal(o, modelBuilder);
+    }
+
+    private void handle(O o, ModelBuilder<O, O> modelBuilder, List<O> oTransformedCollection) {
+        if (o == null) {
+            return;
+        }
+        O oTransformed = handleInternal(o, modelBuilder);
+        oTransformedCollection.add(oTransformed);
+    }
+
+    private O handleInternal(O o, ModelBuilder<O, O> modelBuilder) {
+        O object = beforeObjectHandled(o);
+        O oTransformed = modelBuilder.buildModel(object);
         HandleAction action = deleteOrPersist(oTransformed);
         afterObjectHandled(oTransformed, action);
+        return oTransformed;
     }
 
     @Override
@@ -66,14 +83,19 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     @Override
     public final void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder) {
         if (oCollection != null) {
+            List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
             for(O o : oCollection) {
-                handle(o, modelBuilder);
+                handle(o, modelBuilder, oTransformedCollection);
             }
-            afterCollectionHandled(oCollection);
+            afterCollectionHandled(oTransformedCollection);
         }
     }
 
     protected abstract HandleAction deleteOrPersist(O o);
+
+    protected O beforeObjectHandled(O o) {
+        return o;
+    }
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
     protected void afterObjectHandled(O o, HandleAction action) {

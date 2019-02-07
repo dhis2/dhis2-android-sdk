@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,34 +28,45 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 
-public final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final OrderedLinkModelHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
 
-    private TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
-                                     SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
+    @Inject
+    TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
+                             SyncHandlerWithTransformer<ObjectStyle> styleHandler,
+                             OrderedLinkModelHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
+                                     attributeHandler) {
         super(trackedEntityTypeStore);
         this.styleHandler = styleHandler;
+        this.attributeHandler = attributeHandler;
     }
 
     @Override
     protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
         styleHandler.handle(trackedEntityType.style(), new ObjectStyleModelBuilder(trackedEntityType.uid(),
                 TrackedEntityTypeTableInfo.TABLE_INFO.name()));
-    }
 
-    public static SyncHandler<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
-        return new TrackedEntityTypeHandler(
-                TrackedEntityTypeStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter));
+        attributeHandler.handleMany(trackedEntityType.uid(), trackedEntityType.trackedEntityTypeAttributes(),
+                new OrderedLinkModelBuilder<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>() {
+                    @Override
+                    public TrackedEntityTypeAttribute buildModel(TrackedEntityTypeAttribute attr, Integer sortOrder) {
+                        return attr.toBuilder().sortOrder(sortOrder).build();
+                    }
+                });
     }
 }

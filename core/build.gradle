@@ -142,7 +142,7 @@ dependencies {
     testCompile "com.android.support.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
-    androidTestCompile "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestCompile "com.linkedin.dexmaker:dexmaker-mockito:${libraries.dexmaker}"
     androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
     androidTestCompile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"

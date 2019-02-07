@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 public final class TrackedEntityTypeFields {
 
     private final static String STYLE = "style";
+    private final static String TRACKED_ENTITY_TYPE_ATTRIBUTES = "trackedEntityTypeAttributes";
 
     private static final FieldsHelper<TrackedEntityType> fh = new FieldsHelper<>();
 
@@ -46,6 +47,9 @@ public final class TrackedEntityTypeFields {
 
     public static final Fields<TrackedEntityType> allFields = Fields.<TrackedEntityType>builder()
             .fields(fh.getNameableFields())
+            .fields(
+                    fh.<TrackedEntityTypeAttribute>nestedField(TRACKED_ENTITY_TYPE_ATTRIBUTES)
+                            .with(TrackedEntityTypeAttributeFields.allFields))
             .fields(
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields)
             ).build();

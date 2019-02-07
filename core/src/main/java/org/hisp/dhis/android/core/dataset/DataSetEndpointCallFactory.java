@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
@@ -37,28 +38,39 @@ import org.hisp.dhis.android.core.calls.processors.TransactionalResourceSyncCall
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Call;
 
+@Reusable
 final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
 
-    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_SET;
+    private final DataSetService dataSetService;
+    private final SyncHandler<DataSet> dataSetHandler;
+    private final Resource.Type resourceType = Resource.Type.DATA_SET;
 
-    DataSetEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    @Inject
+    DataSetEndpointCallFactory(GenericCallData data,
+                               APICallExecutor apiCallExecutor,
+                               DataSetService dataSetService,
+                               SyncHandler<DataSet> dataSetHandler) {
         super(data, apiCallExecutor);
+        this.dataSetService = dataSetService;
+        this.dataSetHandler = dataSetHandler;
     }
 
     @Override
     protected CallFetcher<DataSet> fetcher() {
-        final DataSetService service = data.retrofit().create(DataSetService.class);
 
         return new PayloadResourceCallFetcher<DataSet>(data.resourceHandler(), resourceType, apiCallExecutor) {
 
             @Override
             protected Call<Payload<DataSet>> getCall(String lastUpdated) {
                 String accessDataReadFilter = "access.data." + DataAccess.read.eq(true).generateString();
-                return service.getDataSets(DataSetFields.allFields, accessDataReadFilter, Boolean.FALSE);
+                return dataSetService.getDataSets(DataSetFields.allFields, accessDataReadFilter, Boolean.FALSE);
             }
         };
     }
@@ -67,7 +79,7 @@ final class DataSetEndpointCallFactory extends ListCallFactoryImpl<DataSet> {
     protected CallProcessor<DataSet> processor() {
         return new TransactionalResourceSyncCallProcessor<>(
                 data,
-                DataSetHandler.create(data.databaseAdapter()),
+                dataSetHandler,
                 resourceType
         );
     }

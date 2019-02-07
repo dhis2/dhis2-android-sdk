@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -46,14 +46,17 @@ public class ResourceHandler {
         this.serverDate = new Date(serverDate.getTime());
     }
 
-    public void handleResource(ResourceModel.Type resourceType) {
+    public void handleResource(Resource.Type resourceType) {
         if (resourceType == null || serverDate == null) {
             return;
         }
-        int updatedResourceRow = resourceStore.update(resourceType.name(), serverDate, resourceType.name());
-        if (updatedResourceRow <= 0) {
-            resourceStore.insert(resourceType.name(), serverDate);
-        }
+
+        Resource resource = Resource.builder()
+                .resourceType(resourceType.name())
+                .lastSynced(serverDate)
+                .build();
+
+        resourceStore.updateOrInsertWhere(resource);
     }
 
     /**
@@ -62,7 +65,7 @@ public class ResourceHandler {
      * @param type Type of the resource.
      * @return a string representing the last synched date
      */
-    public String getLastUpdated(ResourceModel.Type type) {
+    public String getLastUpdated(Resource.Type type) {
         return resourceStore.getLastUpdated(type);
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,13 +29,11 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class DataSetElementLinkTableInfo {
-
-    private DataSetElementLinkTableInfo() {
-    }
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
@@ -49,6 +47,13 @@ public final class DataSetElementLinkTableInfo {
             return new Columns();
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            DataSetElementLinkTableInfo.TABLE_INFO,
+            DataSetElementFields.DATA_SET);
+
+    private DataSetElementLinkTableInfo() {
+    }
 
     static class Columns extends BaseModel.Columns {
 

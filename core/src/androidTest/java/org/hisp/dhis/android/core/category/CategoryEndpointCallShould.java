@@ -3,9 +3,6 @@ package org.hisp.dhis.android.core.category;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -17,6 +14,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static junit.framework.Assert.assertFalse;
 
@@ -41,9 +39,8 @@ public class CategoryEndpointCallShould extends AbsStoreTestCase {
     @Test
     public void parse_category_successful() throws Exception {
         D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        Call<List<Category>> callEndpoint =
-                new CategoryEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(new HashSet<>(
+        Callable<List<Category>> callEndpoint =
+                getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(new HashSet<>(
                         Lists.newArrayList("vGs6omsRekv", "KfdsGBcoiCa", "cX5k9anHEHd", "x3uo8LqiTBk")));
 
         dhis2MockServer.enqueueMockResponse("category/categories.json");

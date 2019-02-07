@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,45 +27,9 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
-public class SearchOrganisationUnitHandler extends IdentifiableSyncHandlerImpl<OrganisationUnit> {
-
-    private final ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
-    private final User user;
-
-    SearchOrganisationUnitHandler(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                                  @NonNull ObjectWithoutUidStore<UserOrganisationUnitLinkModel>
-                                          userOrganisationUnitLinkStore,
-                                  @NonNull User user) {
-        super(organisationUnitStore);
-        this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
-        this.user = user;
-    }
-
-    @Override
-    protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
-        UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
-                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, user);
-
-        userOrganisationUnitLinkStore.updateOrInsertWhere(modelBuilder.buildModel(organisationUnit));
-    }
-
-    public static SearchOrganisationUnitHandler create(DatabaseAdapter databaseAdapter,
-                                                       User user) {
-        return new SearchOrganisationUnitHandler(
-                OrganisationUnitStore.create(databaseAdapter),
-                UserOrganisationUnitLinkStore.create(databaseAdapter),
-                user);
-    }
+interface SearchOrganisationUnitHandler extends SyncHandlerWithTransformer<OrganisationUnit> {
+    void setUser(User user);
 }

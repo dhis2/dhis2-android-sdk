@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -33,27 +33,27 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.LinkModelStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo.Columns;
 
 import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreImpl<UserOrganisationUnitLinkModel>
-        implements UserOrganisationUnitLinkStoreInterface{
+public final class UserOrganisationUnitLinkStore extends LinkModelStoreImpl<UserOrganisationUnitLinkModel>
+        implements UserOrganisationUnitLinkStoreInterface {
 
     private UserOrganisationUnitLinkStore(DatabaseAdapter databaseAdapter,
                                           SQLiteStatement insertStatement,
-                                          SQLiteStatement updateWhereStatement,
+                                          String masterColumn,
                                           SQLStatementBuilder builder,
-                                          StatementBinder<UserOrganisationUnitLinkModel> binder,
-                                          WhereStatementBinder<UserOrganisationUnitLinkModel> whereBinder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, FACTORY);
+                                          StatementBinder<UserOrganisationUnitLinkModel> binder) {
+
+        super(databaseAdapter, insertStatement, builder, masterColumn, binder, FACTORY);
     }
 
     private static final StatementBinder<UserOrganisationUnitLinkModel> BINDER
@@ -68,18 +68,6 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
         }
     };
 
-    private static final WhereStatementBinder<UserOrganisationUnitLinkModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<UserOrganisationUnitLinkModel>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull UserOrganisationUnitLinkModel o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 5, o.user());
-            sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 7, o.organisationUnitScope());
-            sqLiteBind(sqLiteStatement, 8, o.root());
-        }
-    };
-
     private static final CursorModelFactory<UserOrganisationUnitLinkModel> FACTORY
             = new CursorModelFactory<UserOrganisationUnitLinkModel>() {
         @Override
@@ -89,23 +77,21 @@ public final class UserOrganisationUnitLinkStore extends ObjectWithoutUidStoreIm
     };
 
     public static UserOrganisationUnitLinkStoreInterface create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
-                UserOrganisationUnitLinkModel.TABLE, new UserOrganisationUnitLinkModel.Columns());
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(UserOrganisationUnitLinkTableInfo.TABLE_INFO);
 
         return new UserOrganisationUnitLinkStore(
                 databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
-                databaseAdapter.compileStatement(statementBuilder.updateWhere()),
+                UserOrganisationUnitLinkTableInfo.Columns.USER,
                 statementBuilder,
-                BINDER,
-                WHERE_UPDATE_BINDER);
+                BINDER);
     }
 
     @Override
     public List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException {
-        return selectStringColumnsWhereClause(UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT,
-                        UserOrganisationUnitLinkModel.Columns.ROOT + " = 1 " + "AND "
-                                + UserOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT_SCOPE + " = '"
+        return selectStringColumnsWhereClause(Columns.ORGANISATION_UNIT,
+                        Columns.ROOT + " = 1 " + "AND "
+                                + Columns.ORGANISATION_UNIT_SCOPE + " = '"
                                 + OrganisationUnit.Scope.SCOPE_DATA_CAPTURE + "'");
     }
 }

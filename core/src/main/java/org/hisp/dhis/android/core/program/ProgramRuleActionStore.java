@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,33 +28,49 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.DeletableStore;
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public interface ProgramRuleActionStore extends DeletableStore {
-    long insert(@NonNull String uid, @Nullable String code, @NonNull String name,
-                @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-                @Nullable String data, @Nullable String content, @Nullable String location,
-                @Nullable String trackedEntityAttribute, @Nullable String programIndicator,
-                @Nullable String programStageSection,
-                @NonNull ProgramRuleActionType programRuleActionType,
-                @Nullable String programStage, @Nullable String dataElement,
-                @Nullable String programRule);
+public final class ProgramRuleActionStore {
 
-    int update(
-            @NonNull String uid, @Nullable String code, @NonNull String name,
-            @Nullable String displayName, @NonNull Date created, @NonNull Date lastUpdated,
-            @Nullable String data, @Nullable String content, @Nullable String location,
-            @Nullable String trackedEntityAttribute, @Nullable String programIndicator,
-            @Nullable String programStageSection,
-            @NonNull ProgramRuleActionType programRuleActionType,
-            @Nullable String programStage, @Nullable String dataElement,
-            @Nullable String programRule, @NonNull String whereProgramRuleActionUid
-    );
+    private ProgramRuleActionStore() {}
 
-    int delete(String uid);
+    private static StatementBinder<ProgramRuleAction> BINDER = new IdentifiableStatementBinder<ProgramRuleAction>() {
+        @Override
+        public void bindToStatement(@NonNull ProgramRuleAction o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, o.data());
+            sqLiteBind(sqLiteStatement, 8, o.content());
+            sqLiteBind(sqLiteStatement, 9, o.location());
+            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
+            sqLiteBind(sqLiteStatement, 11, UidsHelper.getUidOrNull(o.programIndicator()));
+            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.programStageSection()));
+            sqLiteBind(sqLiteStatement, 13, o.programRuleActionType());
+            sqLiteBind(sqLiteStatement, 14, UidsHelper.getUidOrNull(o.programStage()));
+            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.dataElement()));
+            sqLiteBind(sqLiteStatement, 16, UidsHelper.getUidOrNull(o.programRule()));
+        }
+    };
+
+    private static final CursorModelFactory<ProgramRuleAction> FACTORY = new CursorModelFactory<ProgramRuleAction>() {
+        @Override
+        public ProgramRuleAction fromCursor(Cursor cursor) {
+            return ProgramRuleAction.create(cursor);
+        }
+    };
+
+    public static IdentifiableObjectStore<ProgramRuleAction> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramRuleActionTableInfo.TABLE_INFO, BINDER, FACTORY);
+    }
 }

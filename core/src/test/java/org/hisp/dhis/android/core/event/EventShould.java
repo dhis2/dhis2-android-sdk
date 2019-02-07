@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -49,14 +49,6 @@ public class EventShould extends BaseObjectShould implements ObjectShould {
         EventModel.builder().uid(null).build();
     }
 
-    // ToDo: Consider re-evaluating usage of EqualsVerifier for store models
-//    @Test
-//    public void have_the_equals_method_conform_to_contract() {
-//        EqualsVerifier.forClass(EventModel.builder().uid("a1b2c3d4e5f").build().getClass())
-//                .suppress(Warning.NULL_FIELDS)
-//                .verify();
-//    }
-
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {
@@ -67,7 +59,7 @@ public class EventShould extends BaseObjectShould implements ObjectShould {
         assertThat(event.organisationUnit()).isEqualTo("DiszpKrYNg8");
         assertThat(event.program()).isEqualTo("eBAyeGv0exc");
         assertThat(event.programStage()).isEqualTo("Zj7UnCAulEk");
-        assertThat(event.enrollmentUid()).isEqualTo("RiLEKhWHlxZ");
+        assertThat(event.enrollment()).isEqualTo("RiLEKhWHlxZ");
 
         assertThat(event.created()).isEqualTo(
                 BaseIdentifiableObject.DATE_FORMAT.parse("2015-09-08T21:40:22.000"));

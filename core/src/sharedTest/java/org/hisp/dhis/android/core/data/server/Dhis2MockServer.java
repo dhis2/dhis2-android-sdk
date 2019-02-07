@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -91,6 +91,17 @@ public class Dhis2MockServer {
                 "user/user.json",
                 "organisationunit/organisation_units.json");
     }
+
+    public void enqueueEventResponses() throws IOException {
+        enqueueMockResponse("systeminfo/system_info.json");
+        enqueueMockResponse("event/events.json");
+    }
+
+    public void enqueueTrackedEntityInstanceResponses() throws IOException {
+        enqueueMockResponse("systeminfo/system_info.json");
+        enqueueMockResponse("trackedentity/tracked_entity_instances.json");
+    }
+
     public void enqueueMetadataWithDescendentsResponses() throws IOException {
         enqueueMetadataResponsesWithUserAndOrgUnits(
                 "user/admin_user.json",

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,13 +27,17 @@
  */
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
+import dagger.Reusable;
+
+@Reusable
+final class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
     private final GenericHandler<ValueTypeDeviceRendering,
             ValueTypeDeviceRenderingModel> deviceRenderingHandler;
 
+    @Inject
     ValueTypeRenderingHandler(GenericHandler<ValueTypeDeviceRendering,
             ValueTypeDeviceRenderingModel> deviceRenderingHandler) {
         this.deviceRenderingHandler = deviceRenderingHandler;
@@ -47,10 +51,5 @@ public class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTy
             deviceRenderingHandler.handle(renderType.mobile(),
                     new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.MOBILE));
         }
-    }
-
-    public static ValueTypeRenderingHandler create(DatabaseAdapter databaseAdapter) {
-        return new ValueTypeRenderingHandler(
-                ValueTypeDeviceRenderingHandler.create(databaseAdapter));
     }
 }

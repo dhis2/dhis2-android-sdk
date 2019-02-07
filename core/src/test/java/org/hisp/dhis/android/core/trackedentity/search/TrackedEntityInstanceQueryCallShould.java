@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -47,6 +47,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -94,7 +95,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     private TrackedEntityInstanceQuery query;
 
     // object to test
-    private TrackedEntityInstanceQueryCall call;
+    private Callable<List<TrackedEntityInstance>> call;
 
     @Before
     public void setUp() throws Exception {
@@ -115,7 +116,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         when(mapper.transform(any(SearchGrid.class))).thenReturn(teis);
 
         // Metadata call
-        call = new TrackedEntityInstanceQueryCall(service, query, mapper, apiCallExecutor);
+        call = new TrackedEntityInstanceQueryCallFactory(service, mapper, apiCallExecutor).getCall(query);
     }
 
     @After

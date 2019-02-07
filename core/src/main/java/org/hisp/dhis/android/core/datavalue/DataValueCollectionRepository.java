@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,32 +28,55 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryImpl<DataValue>
-        implements ReadWriteCollectionRepository<DataValue> {
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class DataValueCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>
+        implements ReadWriteWithUploadCollectionRepository<DataValue> {
 
     private final DataValueStore dataValueStore;
-    private final DataValueHandler dataValueHandler;
+    private final SyncHandler<DataValue> dataValueHandler;
+    private final DataValuePostCall postCall;
 
-    private DataValueCollectionRepository(DataValueStore dataValueStore,
-                                          DataValueHandler dataValueHandler) {
-        super(dataValueStore);
+    @Inject
+    DataValueCollectionRepository(final DataValueStore dataValueStore,
+                                  final Collection<ChildrenAppender<DataValue>> childrenAppenders,
+                                  final List<RepositoryScopeItem> scope,
+                                  final SyncHandler<DataValue> dataValueHandler,
+                                  final DataValuePostCall postCall) {
+        super(dataValueStore, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<DataValueCollectionRepository>() {
+
+                    @Override
+                    public DataValueCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new DataValueCollectionRepository(dataValueStore, childrenAppenders, updatedScope,
+                                dataValueHandler, postCall);
+                    }
+                }));
         this.dataValueHandler = dataValueHandler;
         this.dataValueStore = dataValueStore;
-    }
-
-    static DataValueCollectionRepository create(DatabaseAdapter databaseAdapter) {
-
-        return new DataValueCollectionRepository(DataValueStore.create(databaseAdapter),
-                DataValueHandler.create(databaseAdapter));
-
+        this.postCall = postCall;
     }
 
     @Override
@@ -71,4 +94,8 @@ final class DataValueCollectionRepository extends ReadOnlyCollectionRepositoryIm
         dataValueHandler.handle(dataValue.toBuilder().state(State.TO_POST).build());
     }
 
+    @Override
+    public Callable<ImportSummary> upload() {
+        return postCall;
+    }
 }

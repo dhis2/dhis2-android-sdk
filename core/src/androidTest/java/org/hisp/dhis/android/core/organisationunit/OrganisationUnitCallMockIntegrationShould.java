@@ -37,9 +37,8 @@ import com.google.common.collect.Sets;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -47,12 +46,13 @@ import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.ProgramModel;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
+import org.hisp.dhis.android.core.resource.ResourceTableInfo;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +64,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -71,14 +72,14 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase {
     private static String[] RESOURCE_PROJECTION = {
-            ResourceModel.Columns.RESOURCE_TYPE,
-            ResourceModel.Columns.LAST_SYNCED
+            ResourceTableInfo.Columns.RESOURCE_TYPE,
+            ResourceTableInfo.Columns.LAST_SYNCED
     };
 
     private Dhis2MockServer dhis2MockServer;
 
     //The return of the organisationUnitCall to be tested:
-    private Call<List<OrganisationUnit>> organisationUnitCall;
+    private Callable<List<OrganisationUnit>> organisationUnitCall;
 
     private OrganisationUnit expectedAfroArabicClinic = OrganisationUnitSamples.getAfroArabClinic();
     private OrganisationUnit expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP();
@@ -104,24 +105,23 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
         // Create a user with the root as assigned organisation unit (for the test):
         User user = User.builder().uid("user_uid").organisationUnits(organisationUnits).build();
-        database().insert(UserModel.TABLE, null, user.toContentValues());
+        database().insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues());
 
         ContentValues userContentValues = new ContentValues();
-        userContentValues.put(UserModel.Columns.ID, "user_uid");
-        database().insert(UserModel.TABLE, null, userContentValues);
+        userContentValues.put(BaseIdentifiableObjectModel.Columns.UID, "user_uid");
+        database().insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues);
 
         // inserting programs for creating OrgUnitProgramLinks
         String programUid = "lxAQ7Zs9VYR";
         insertProgramWithUid(programUid);
         Set<String> programUids = Sets.newHashSet(Lists.newArrayList(programUid));
 
-        SyncHandlerWithTransformer<OrganisationUnit> organisationUnitHandler =
-                OrganisationUnitHandler.create(databaseAdapter(), programUids, null,
-                        OrganisationUnit.Scope.SCOPE_DATA_CAPTURE, user);
+        OrganisationUnitHandler organisationUnitHandler =
+                OrganisationUnitHandlerImpl.create(databaseAdapter());
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        organisationUnitCall = new OrganisationUnitCall(user, organisationUnitService,
-                getGenericCallData(d2), organisationUnitHandler, apiCallExecutor);
+        organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService,
+                organisationUnitHandler, apiCallExecutor, resourceHandler).create(user, programUids, null);
     }
 
     private void insertProgramWithUid(String uid) {
@@ -163,10 +163,10 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     public void update_resource_handler() throws Exception {
        organisationUnitCall.call();
 
-        Cursor resourceCursor = database().query(ResourceModel.TABLE,
+        Cursor resourceCursor = database().query(ResourceTableInfo.TABLE_INFO.name(),
                 RESOURCE_PROJECTION, null, null, null, null, null);
 
-        assertThatCursor(resourceCursor).hasRow(ResourceModel.Type.ORGANISATION_UNIT,
+        assertThatCursor(resourceCursor).hasRow(Resource.Type.ORGANISATION_UNIT,
                 BaseIdentifiableObject.dateToDateStr(serverDate));
 
         resourceCursor.close();

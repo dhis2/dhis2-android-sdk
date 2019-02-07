@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,11 +28,10 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,14 +48,13 @@ public class SearchOrganisationUnitHandlerShould {
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
-    private ObjectWithoutUidStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
+    private UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkHandler;
 
     private OrganisationUnit organisationUnit;
 
-    private String userUid = "userUid";
     private String organisationUnitUid = "orgUnitUid";
 
-    private SyncHandlerWithTransformer<OrganisationUnit> handler;
+    private SearchOrganisationUnitHandler handler;
 
     @Before
     public void setUp() throws Exception {
@@ -64,14 +62,14 @@ public class SearchOrganisationUnitHandlerShould {
 
         organisationUnit = OrganisationUnit.builder().uid(organisationUnitUid).build();
 
-        handler = new SearchOrganisationUnitHandler(
+        handler = new SearchOrganisationUnitHandlerImpl(
                 organisationUnitStore,
-                userOrganisationUnitLinkStore,
-                User.builder().uid(userUid).build());
+                userOrganisationUnitLinkHandler);
     }
 
     @Test
     public void persist_organisation_unit_user_link() {
+        String userUid = "userUid";
         UserOrganisationUnitLinkModel linkModel = UserOrganisationUnitLinkModel
                 .builder()
                 .organisationUnit(organisationUnitUid)
@@ -79,7 +77,8 @@ public class SearchOrganisationUnitHandlerShould {
                 .organisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH.toString())
                 .build();
 
+        handler.setUser(User.builder().uid(userUid).build());
         handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitDisplayPathTransformer());
-        verify(userOrganisationUnitLinkStore).updateOrInsertWhere(linkModel);
+        verify(userOrganisationUnitLinkHandler).insert(linkModel);
     }
 }

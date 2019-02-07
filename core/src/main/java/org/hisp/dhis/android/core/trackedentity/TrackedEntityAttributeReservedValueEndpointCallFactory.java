@@ -1,6 +1,7 @@
-/* * Copyright (c) 2017, University of Oslo
- *
+/*
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -22,11 +23,13 @@
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceCallFetcher;
@@ -36,20 +39,32 @@ import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class TrackedEntityAttributeReservedValueEndpointCallFactory
         extends QueryCallFactoryImpl<TrackedEntityAttributeReservedValue,
         TrackedEntityAttributeReservedValueQuery> {
 
-    TrackedEntityAttributeReservedValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final TrackedEntityAttributeReservedValueService service;
+    private final SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler;
+
+    @Inject
+    TrackedEntityAttributeReservedValueEndpointCallFactory(
+            GenericCallData data,
+            APICallExecutor apiCallExecutor,
+            TrackedEntityAttributeReservedValueService service,
+            SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<TrackedEntityAttributeReservedValue> fetcher(
             final TrackedEntityAttributeReservedValueQuery query) {
-
-        final TrackedEntityAttributeReservedValueService service
-                = data.retrofit().create(TrackedEntityAttributeReservedValueService.class);
 
         return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>(apiCallExecutor) {
             @Override
@@ -64,7 +79,8 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
                             query.numberToReserve(),
                             query.organisationUnit().code());
                 }
-            }};
+            }
+        };
     }
 
     @Override
@@ -72,7 +88,7 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
             final TrackedEntityAttributeReservedValueQuery query) {
         return new TransactionalNoResourceSyncCallWithTransformerProcessor<>(
                 data.databaseAdapter(),
-                TrackedEntityAttributeReservedValueHandler.create(data.databaseAdapter()),
+                handler,
                 new TrackedEntityAttributeReservedValueModelBuilder(
                         query.organisationUnit(), query.trackedEntityAttributePattern())
         );

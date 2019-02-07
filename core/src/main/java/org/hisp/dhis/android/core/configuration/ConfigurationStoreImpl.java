@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,85 +25,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.configuration;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-import static org.hisp.dhis.android.core.utils.Utils.isNull;
-
 import android.database.Cursor;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.ObjectStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ConfigurationStoreImpl implements ConfigurationStore {
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-    private static final long CONFIGURATION_ID = 1L;
+public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration> implements ConfigurationStore {
+    private ConfigurationStoreImpl(DatabaseAdapter databaseAdapter,
+                                   SQLStatementBuilder builder) {
+        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()), builder, BINDER, FACTORY);
+    }
 
-    public static final String INSERT_STATEMENT = "INSERT INTO " + ConfigurationModel.CONFIGURATION
-            + " (" + ConfigurationModel.Columns.ID + ", " +
-            ConfigurationModel.Columns.SERVER_URL + ") " +
-            "VALUES(?,?);";
-
-    private static final String[] PROJECTION = {
-            ConfigurationModel.Columns.ID,
-            ConfigurationModel.Columns.SERVER_URL
+    private static final StatementBinder<Configuration> BINDER = new StatementBinder<Configuration>() {
+        @Override
+        public void bindToStatement(@NonNull Configuration configuration,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, ConfigurationHelper.getConfigurationStr(configuration.serverUrl()));
+        }
     };
 
-    private final DatabaseAdapter databaseAdapter;
-    private final SQLiteStatement insertStatement;
-
-
-    public ConfigurationStoreImpl(DatabaseAdapter databaseAdapter) {
-        this.databaseAdapter = databaseAdapter;
-        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
-    }
-
-    @Override
-    public long save(@NonNull String serverUrl) {
-        isNull(serverUrl);
-
-        delete(); // Delete all rows from table. We only allow one row.
-        sqLiteBind(insertStatement, 1, CONFIGURATION_ID);
-        sqLiteBind(insertStatement, 2, serverUrl);
-
-        long ret = databaseAdapter.executeInsert(ConfigurationModel.CONFIGURATION, insertStatement);
-        insertStatement.clearBindings();
-        return ret;
-    }
-
-    @Nullable
-    @Override
-    public ConfigurationModel query() {
-
-        String sqlQuery = SQLiteQueryBuilder.buildQueryString(false, ConfigurationModel.CONFIGURATION,
-                PROJECTION, ConfigurationModel.Columns.ID + " = " + CONFIGURATION_ID,
-                null, null, null, null);
-
-        Cursor queryCursor = databaseAdapter.query(sqlQuery);
-
-        ConfigurationModel configuration = null;
-
-        try {
-            if (queryCursor != null && queryCursor.getCount() > 0) {
-                queryCursor.moveToFirst();
-
-                configuration = ConfigurationModel.create(queryCursor);
-            }
-        } finally {
-            if (queryCursor != null) {
-                queryCursor.close();
-            }
+    private static final CursorModelFactory<Configuration> FACTORY =
+            new CursorModelFactory<Configuration>() {
+        @Override
+        public Configuration fromCursor(Cursor cursor) {
+            return Configuration.create(cursor);
         }
-
-        return configuration;
-    }
+    };
 
     @Override
-    public int delete() {
-        return databaseAdapter.delete(ConfigurationModel.CONFIGURATION, null, null);
+    public void save(Configuration configuration) {
+        delete();
+        insert(configuration);
+    }
+
+    public static ConfigurationStore create(DatabaseAdapter databaseAdapter) {
+
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ConfigurationTableInfo.TABLE_INFO.name(),
+                ConfigurationTableInfo.TABLE_INFO.columns());
+
+        return new ConfigurationStoreImpl(databaseAdapter, statementBuilder);
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -35,9 +35,9 @@ import static junit.framework.Assert.fail;
 public class ConfigurationShould {
 
     @Test
-    public void thrown_illegal_state_exception_when_build_configuration_model_with_null_url() {
+    public void thrown_illegal_state_exception_when_build_configuration_with_null_url() {
         try {
-            ConfigurationModel.builder().build();
+            Configuration.builder().build();
 
             fail("IllegalStateException was expected but nothing was thrown");
         } catch (IllegalStateException illegalStateException) {

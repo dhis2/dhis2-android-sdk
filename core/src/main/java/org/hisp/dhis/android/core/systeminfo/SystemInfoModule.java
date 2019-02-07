@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,15 +27,23 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
 public final class SystemInfoModule {
 
     public final DHISVersionManager versionManager;
-    public final ReadOnlyObjectRepository<SystemInfo> systemInfo;
+    public final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfo;
 
+    @Inject
     SystemInfoModule(DHISVersionManager versionManager,
-                     ReadOnlyObjectRepository<SystemInfo> systemInfoRepository) {
+                     ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
         this.versionManager = versionManager;
         this.systemInfo = systemInfoRepository;
     }

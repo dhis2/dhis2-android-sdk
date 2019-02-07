@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.calls.processors;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -40,11 +40,11 @@ import java.util.concurrent.Callable;
 public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<O> {
     private final GenericCallData data;
     private final SyncHandler<O> handler;
-    private final ResourceModel.Type resourceType;
+    private final Resource.Type resourceType;
 
     public TransactionalResourceSyncCallProcessor(GenericCallData data,
                                                   SyncHandler<O> handler,
-                                                  ResourceModel.Type resourceType) {
+                                                  Resource.Type resourceType) {
         this.data = data;
         this.handler = handler;
         this.resourceType = resourceType;

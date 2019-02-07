@@ -8,7 +8,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel;
-import org.hisp.dhis.android.core.user.UserModel;
+import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class DataBaseMigrationShould {
     @Test
     public void have_user_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(UserModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter), is(true));
     }
 
     @Test

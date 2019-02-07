@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,58 +28,73 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class TrackedEntityAttributeValue {
-    private static final String ATTRIBUTE = "attribute";
-    private static final String VALUE = "value";
-    private final static String CREATED = "created";
-    private final static String LAST_UPDATED = "lastUpdated";
-
-    private static final Field<TrackedEntityAttributeValue, String> trackedEntityAttribute =
-            Field.create(ATTRIBUTE);
-    private static final Field<TrackedEntityAttributeValue, String> value = Field.create(VALUE);
-    private static final Field<TrackedEntityAttributeValue, Date> created = Field.create(CREATED);
-    private static final Field<TrackedEntityAttributeValue, Date> lastUpdated = Field.create(
-            LAST_UPDATED);
-
-    public static final Fields<TrackedEntityAttributeValue> allFields = Fields
-            .<TrackedEntityAttributeValue>builder().fields(
-            trackedEntityAttribute, value, created, lastUpdated
-    ).build();
+@JsonDeserialize(builder = AutoValue_TrackedEntityAttributeValue.Builder.class)
+public abstract class TrackedEntityAttributeValue implements Model {
 
     @Nullable
-    @JsonProperty(ATTRIBUTE)
+    @JsonProperty(TrackedEntityAttributeValueFields.ATTRIBUTE)
     public abstract String trackedEntityAttribute();
 
     @Nullable
-    @JsonProperty(VALUE)
+    @JsonProperty()
     public abstract String value();
 
     @Nullable
-    @JsonProperty(CREATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty(LAST_UPDATED)
+    @JsonProperty()
+    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
-    @JsonCreator
-    public static TrackedEntityAttributeValue create(
-            @JsonProperty(ATTRIBUTE) String attribute,
-            @JsonProperty(VALUE) String value,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated) {
-        return new AutoValue_TrackedEntityAttributeValue(attribute, value, created, lastUpdated);
+    @Nullable
+    @JsonIgnore()
+    public abstract String trackedEntityInstance();
+
+    public static Builder builder() {
+        return new $$AutoValue_TrackedEntityAttributeValue.Builder();
+    }
+
+    static TrackedEntityAttributeValue create(Cursor cursor) {
+        return $AutoValue_TrackedEntityAttributeValue.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+        public abstract Builder id(Long id);
+
+        @JsonProperty(TrackedEntityAttributeValueFields.ATTRIBUTE)
+        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
+
+        public abstract Builder value(String value);
+
+        public abstract Builder created(Date created);
+
+        public abstract Builder lastUpdated(Date lastUpdated);
+
+        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract TrackedEntityAttributeValue build();
     }
 }

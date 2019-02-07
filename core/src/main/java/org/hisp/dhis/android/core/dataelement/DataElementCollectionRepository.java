@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,29 +28,79 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ValueType;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.List;
 
-final class DataElementCollectionRepository {
+import javax.inject.Inject;
 
-    private DataElementCollectionRepository() {
+import dagger.Reusable;
+
+@Reusable
+public final class DataElementCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository> {
+
+    @Inject
+    DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,
+                                    final Collection<ChildrenAppender<DataElement>> childrenAppenders,
+                                    List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                new CollectionRepositoryFactory<DataElementCollectionRepository>() {
+
+                    @Override
+                    public DataElementCollectionRepository newWithScope(
+                            List<RepositoryScopeItem> updatedScope) {
+                        return new DataElementCollectionRepository(store, childrenAppenders, updatedScope);
+                    }
+                }));
     }
 
-    static ReadOnlyIdentifiableCollectionRepository<DataElement> create(DatabaseAdapter databaseAdapter) {
-        ChildrenAppender<DataElement> childrenAppender =
-                new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
-                        ObjectStyleStoreImpl.create(databaseAdapter),
-                        DataElementTableInfo.TABLE_INFO
-                );
+    public EnumFilterConnector<DataElementCollectionRepository, ValueType> byValueType() {
+        return cf.enumC(DataElementFields.VALUE_TYPE);
+    }
 
-        return new ReadOnlyIdentifiableCollectionRepositoryImpl<>(
-                DataElementStore.create(databaseAdapter),
-                Collections.singletonList(childrenAppender)
-        );
+    public BooleanFilterConnector<DataElementCollectionRepository> byZeroIsSignificant() {
+        return cf.bool(DataElementFields.ZERO_IS_SIGNIFICANT);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byAggregationType() {
+        return cf.string(DataElementFields.AGGREGATION_TYPE);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byFormName() {
+        return cf.string(DataElementFields.FORM_NAME);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byNumberType() {
+        return cf.string(DataElementFields.NUMBER_TYPE);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byDomainType() {
+        return cf.string(DataElementFields.DOMAIN_TYPE);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byDimension() {
+        return cf.string(DataElementFields.DIMENSION);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byDisplayFormName() {
+        return cf.string(DataElementFields.DISPLAY_FORM_NAME);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byOptionSetUid() {
+        return cf.string(DataElementFields.OPTION_SET);
+    }
+
+    public StringFilterConnector<DataElementCollectionRepository> byCategoryComboUid() {
+        return cf.string(DataElementFields.CATEGORY_COMBO);
     }
 }

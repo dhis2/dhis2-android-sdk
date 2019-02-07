@@ -35,12 +35,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.category.CategoryComboModel;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -49,7 +48,8 @@ import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +58,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
@@ -99,7 +100,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<List<Program>> programEndpointCall;
+    private Callable<List<Program>> programEndpointCall;
 
     @Override
     @Before
@@ -126,9 +127,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
 
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        programEndpointCall = new ProgramEndpointCallFactory(getGenericCallData(d2), apiCallExecutor,
-                d2.retrofit().create(ProgramService.class)).create();
+        programEndpointCall = getD2DIComponent(d2).programCallFactory().create();
     }
 
     @Test
@@ -215,24 +214,25 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                ProgramTrackedEntityAttributeModel.Columns.CODE,
-                ProgramTrackedEntityAttributeModel.Columns.NAME,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_NAME,
-                ProgramTrackedEntityAttributeModel.Columns.CREATED,
-                ProgramTrackedEntityAttributeModel.Columns.LAST_UPDATED,
-                ProgramTrackedEntityAttributeModel.Columns.SHORT_NAME,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
-                ProgramTrackedEntityAttributeModel.Columns.DESCRIPTION,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
-                ProgramTrackedEntityAttributeModel.Columns.MANDATORY,
-                ProgramTrackedEntityAttributeModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramTrackedEntityAttributeModel.Columns.ALLOW_FUTURE_DATE,
-                ProgramTrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST,
-                ProgramTrackedEntityAttributeModel.Columns.PROGRAM,
-                ProgramTrackedEntityAttributeModel.Columns.SORT_ORDER
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                BaseNameableObjectModel.Columns.SHORT_NAME,
+                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
+                BaseNameableObjectModel.Columns.DESCRIPTION,
+                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
+                ProgramTrackedEntityAttributeFields.MANDATORY,
+                ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramTrackedEntityAttributeFields.ALLOW_FUTURE_DATE,
+                ProgramTrackedEntityAttributeFields.DISPLAY_IN_LIST,
+                ProgramTrackedEntityAttributeFields.PROGRAM,
+                ProgramTrackedEntityAttributeFields.SORT_ORDER
         };
 
-        Cursor programTrackedEntityAttributeCursor = database().query(ProgramTrackedEntityAttributeModel.TABLE,
+        Cursor programTrackedEntityAttributeCursor = database().query(
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
                 projection,
                 UID + "=?",
                 new String[]{"l2T72XzBCLd"},
@@ -263,32 +263,32 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                TrackedEntityAttributeModel.Columns.CODE,
-                TrackedEntityAttributeModel.Columns.NAME,
-                TrackedEntityAttributeModel.Columns.DISPLAY_NAME,
-                TrackedEntityAttributeModel.Columns.CREATED,
-                TrackedEntityAttributeModel.Columns.LAST_UPDATED,
-                TrackedEntityAttributeModel.Columns.SHORT_NAME,
-                TrackedEntityAttributeModel.Columns.DISPLAY_SHORT_NAME,
-                TrackedEntityAttributeModel.Columns.DESCRIPTION,
-                TrackedEntityAttributeModel.Columns.DISPLAY_DESCRIPTION,
-                TrackedEntityAttributeModel.Columns.PATTERN,
-                TrackedEntityAttributeModel.Columns.SORT_ORDER_IN_LIST_NO_PROGRAM,
-                TrackedEntityAttributeModel.Columns.OPTION_SET,
-                TrackedEntityAttributeModel.Columns.VALUE_TYPE,
-                TrackedEntityAttributeModel.Columns.EXPRESSION,
-                TrackedEntityAttributeModel.Columns.SEARCH_SCOPE,
-                TrackedEntityAttributeModel.Columns.PROGRAM_SCOPE,
-                TrackedEntityAttributeModel.Columns.DISPLAY_IN_LIST_NO_PROGRAM,
-                TrackedEntityAttributeModel.Columns.GENERATED,
-                TrackedEntityAttributeModel.Columns.DISPLAY_ON_VISIT_SCHEDULE,
-                TrackedEntityAttributeModel.Columns.ORG_UNIT_SCOPE,
-                TrackedEntityAttributeModel.Columns.UNIQUE,
-                TrackedEntityAttributeModel.Columns.INHERIT
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                BaseNameableObjectModel.Columns.SHORT_NAME,
+                BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
+                BaseNameableObjectModel.Columns.DESCRIPTION,
+                BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
+                TrackedEntityAttributeFields.PATTERN,
+                TrackedEntityAttributeFields.SORT_ORDER_IN_LIST_NO_PROGRAM,
+                TrackedEntityAttributeFields.OPTION_SET,
+                TrackedEntityAttributeFields.VALUE_TYPE,
+                TrackedEntityAttributeFields.EXPRESSION,
+                TrackedEntityAttributeFields.SEARCH_SCOPE,
+                TrackedEntityAttributeFields.PROGRAM_SCOPE,
+                TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM,
+                TrackedEntityAttributeFields.GENERATED,
+                TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE,
+                TrackedEntityAttributeFields.ORG_UNIT_SCOPE,
+                TrackedEntityAttributeTableInfo.Columns.UNIQUE,
+                TrackedEntityAttributeFields.INHERIT
         };
 
-        Cursor trackedEntityAttributeCursor = database().query(TrackedEntityAttributeModel.TABLE, projection,
-                UID + "=?", new String[]{"w75KJ2mc4zz"}, null, null, null);
+        Cursor trackedEntityAttributeCursor = database().query(TrackedEntityAttributeTableInfo.TABLE_INFO.name(),
+                projection, UID + "=?", new String[]{"w75KJ2mc4zz"}, null, null, null);
 
         assertThatCursor(trackedEntityAttributeCursor).hasRow(
                 "w75KJ2mc4zz",
@@ -395,18 +395,18 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                ProgramRuleModel.Columns.CODE,
-                ProgramRuleModel.Columns.NAME,
-                ProgramRuleModel.Columns.DISPLAY_NAME,
-                ProgramRuleModel.Columns.CREATED,
-                ProgramRuleModel.Columns.LAST_UPDATED,
-                ProgramRuleModel.Columns.PRIORITY,
-                ProgramRuleModel.Columns.CONDITION,
-                ProgramRuleModel.Columns.PROGRAM,
-                ProgramRuleModel.Columns.PROGRAM_STAGE
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                ProgramRuleFields.PRIORITY,
+                ProgramRuleFields.CONDITION,
+                ProgramRuleFields.PROGRAM,
+                ProgramRuleFields.PROGRAM_STAGE
         };
 
-        Cursor programRuleCursor = database().query(ProgramRuleModel.TABLE, projection,
+        Cursor programRuleCursor = database().query(ProgramRuleTableInfo.TABLE_INFO.name(), projection,
                 UID + "=?", new String[]{"NAgjOfWMXg6"}, null, null, null);
 
         assertThatCursor(programRuleCursor).hasRow(

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -42,9 +43,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class SectionStore {
-
-    private SectionStore() {}
+final class SectionStore {
 
     private static StatementBinder<Section> BINDER = new IdentifiableStatementBinder<Section>() {
         @Override
@@ -58,12 +57,17 @@ public final class SectionStore {
         }
     };
 
-    private static final CursorModelFactory<Section> FACTORY = new CursorModelFactory<Section>() {
+    static final CursorModelFactory<Section> FACTORY = new CursorModelFactory<Section>() {
         @Override
         public Section fromCursor(Cursor cursor) {
             return Section.create(cursor);
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            SectionTableInfo.TABLE_INFO, SectionFields.DATA_SET);
+
+    private SectionStore() {}
 
     public static IdentifiableObjectStore<Section> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, SectionTableInfo.TABLE_INFO, BINDER, FACTORY);

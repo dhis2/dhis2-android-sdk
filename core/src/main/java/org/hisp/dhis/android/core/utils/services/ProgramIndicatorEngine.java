@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -33,25 +33,17 @@ import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.constant.ConstantModel;
-import org.hisp.dhis.android.core.constant.ConstantStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
-import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramIndicatorStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.support.DateUtils;
 import org.hisp.dhis.android.core.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.core.utils.support.MathUtils;
@@ -66,6 +58,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
 /**
  * @author Chau Thu Tran
  */
@@ -79,6 +75,7 @@ import java.util.regex.Pattern;
         "PMD.StdCyclomaticComplexity",
         "PMD.GodClass"
 })
+@Reusable
 public class ProgramIndicatorEngine {
     private static final String NULL_REPLACEMENT = "null";
 
@@ -106,15 +103,16 @@ public class ProgramIndicatorEngine {
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
     private final IdentifiableObjectStore<DataElement> dataElementStore;
-    private final IdentifiableObjectStore<ConstantModel> constantStore;
+    private final IdentifiableObjectStore<Constant> constantStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
+    @Inject
     ProgramIndicatorEngine(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
                            TrackedEntityDataValueStore trackedEntityDataValueStore,
                            EnrollmentStore enrollmentStore,
                            EventStore eventStore,
                            IdentifiableObjectStore<DataElement> dataElementStore,
-                           IdentifiableObjectStore<ConstantModel> constantStore,
+                           IdentifiableObjectStore<Constant> constantStore,
                            TrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
         this.programIndicatorStore = programIndicatorStore;
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
@@ -173,7 +171,7 @@ public class ProgramIndicatorEngine {
         int zeroPosValueCount = 0;
 
         Map<String, List<Event>> cachedEvents = new HashMap<>();
-        EnrollmentModel cachedEnrollment = null;
+        Enrollment cachedEnrollment = null;
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
 
         Date currentDate = new Date();
@@ -216,7 +214,7 @@ public class ProgramIndicatorEngine {
 
                 if (uid != null) {
                     if (cachedEnrollment == null) {
-                        cachedEnrollment = enrollmentStore.queryByUid(enrollment);
+                        cachedEnrollment = enrollmentStore.selectByUid(enrollment);
                         attributeToAttributeValues = getTrackedEntityAttributeValues(cachedEnrollment
                                 .trackedEntityInstance());
                     }
@@ -234,7 +232,7 @@ public class ProgramIndicatorEngine {
                     matcher.appendReplacement(buffer, TextUtils.quote(value));
                 }
             } else if (KEY_CONSTANT.equals(key)) {
-                ConstantModel constant = constantStore.selectByUid(uid);
+                Constant constant = constantStore.selectByUid(uid);
 
                 if (constant != null) {
                     matcher.appendReplacement(buffer, String.valueOf(constant.value()));
@@ -244,7 +242,7 @@ public class ProgramIndicatorEngine {
 
                 if (enrollment != null) { //in case of single event without reg
                     if (cachedEnrollment == null) {
-                        cachedEnrollment = enrollmentStore.queryByUid(enrollment);
+                        cachedEnrollment = enrollmentStore.selectByUid(enrollment);
                     }
 
                     if (ENROLLMENT_DATE.equals(uid)) {
@@ -255,7 +253,7 @@ public class ProgramIndicatorEngine {
                 }
 
                 if (EVENT_DATE.equals(uid) && event != null) {
-                    Event targetEvent = eventStore.queryByUid(event);
+                    Event targetEvent = eventStore.selectByUid(event);
                     date = targetEvent.eventDate();
                 }
 
@@ -303,7 +301,7 @@ public class ProgramIndicatorEngine {
     private List<Event> getEventsInStage(String enrollmentUid, String eventUid, String programStageUid) {
         List<Event> events;
         if (enrollmentUid == null) {
-            events = Collections.singletonList(eventStore.queryByUid(eventUid));
+            events = Collections.singletonList(eventStore.selectByUid(eventUid));
         } else {
             events = eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid);
         }
@@ -319,10 +317,7 @@ public class ProgramIndicatorEngine {
         List<TrackedEntityDataValue> dataValues =
                 trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(e.uid());
 
-        return Event.create(e.uid(), e.enrollmentUid(), e.created(), e.lastUpdated(), e.createdAtClient(),
-                e.lastUpdatedAtClient(), e.program(), e.programStage(), e.organisationUnit(), e.eventDate(),
-                e.status(), e.coordinates(), e.completedDate(), e.dueDate(), e.deleted(), dataValues,
-                e.attributeOptionCombo(), e.trackedEntityInstance());
+        return e.toBuilder().trackedEntityDataValues(dataValues).build();
     }
 
     private TrackedEntityDataValue evaluateDataElementInStage(String deId,
@@ -368,15 +363,5 @@ public class ProgramIndicatorEngine {
 
     private static boolean isZeroOrPositive(String value) {
         return MathUtils.isNumeric(value) && Double.valueOf(value) >= 0d;
-    }
-
-    public static ProgramIndicatorEngine create(DatabaseAdapter databaseAdapter) {
-        return new ProgramIndicatorEngine(ProgramIndicatorStore.create(databaseAdapter),
-                TrackedEntityDataValueStoreImpl.create(databaseAdapter),
-                new EnrollmentStoreImpl(databaseAdapter),
-                new EventStoreImpl(databaseAdapter),
-                DataElementStore.create(databaseAdapter),
-                ConstantStore.create(databaseAdapter),
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter));
     }
 }

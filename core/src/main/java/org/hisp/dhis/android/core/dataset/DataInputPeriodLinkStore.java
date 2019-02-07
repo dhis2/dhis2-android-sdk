@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,6 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -41,9 +42,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataInputPeriodLinkStore {
-
-    private DataInputPeriodLinkStore() {}
+final class DataInputPeriodLinkStore {
 
     private static final StatementBinder<DataInputPeriod> BINDER =
             new StatementBinder<DataInputPeriod>() {
@@ -57,7 +56,7 @@ public final class DataInputPeriodLinkStore {
                 }
             };
 
-    private static final CursorModelFactory<DataInputPeriod> FACTORY
+    static final CursorModelFactory<DataInputPeriod> FACTORY
             = new CursorModelFactory<DataInputPeriod>() {
         @Override
         public DataInputPeriod fromCursor(Cursor cursor) {
@@ -65,12 +64,17 @@ public final class DataInputPeriodLinkStore {
         }
     };
 
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET);
+
+    private DataInputPeriodLinkStore() {}
+
     public static LinkModelStore<DataInputPeriod> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.linkModelStore(
                 databaseAdapter,
                 DataInputPeriodTableInfo.TABLE_INFO,
-                DataInputPeriodTableInfo.DATA_SET,
+                DataInputPeriodTableInfo.Columns.DATA_SET,
                 BINDER,
                 FACTORY);
     }

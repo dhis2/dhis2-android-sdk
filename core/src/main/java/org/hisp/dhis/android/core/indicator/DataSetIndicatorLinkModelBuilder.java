@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.indicator;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSet;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<ObjectWithUid, DataSetIndicatorLinkModel> {
+public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
 
     private final DataSetIndicatorLinkModel.Builder builder;
 
@@ -42,7 +41,7 @@ public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<ObjectWithUid
     }
 
     @Override
-    public DataSetIndicatorLinkModel buildModel(ObjectWithUid pojo) {
+    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
         return builder
                 .indicator(pojo.uid())
                 .build();

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -36,10 +36,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public class RelationshipDHISVersionManager {
 
     private final DHISVersionManager versionManager;
 
+    @Inject
     public RelationshipDHISVersionManager(DHISVersionManager versionManager) {
         this.versionManager = versionManager;
     }
@@ -132,9 +138,10 @@ public class RelationshipDHISVersionManager {
 
         String relatedTEIUid = teiUid.equals(fromTEIUid) ? toTEIUid : fromTEIUid;
 
-        return TrackedEntityInstance.create(relatedTEIUid, null, null,
-                null, null, null, null, null,
-                null, false, null,
-                Collections.<Relationship229Compatible>emptyList(), null);
+        return TrackedEntityInstance.builder()
+                .uid(relatedTEIUid)
+                .deleted(false)
+                .relationships(Collections.<Relationship229Compatible>emptyList())
+                .build();
     }
 }

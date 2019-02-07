@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -36,26 +36,30 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 class SearchGridMapper {
     private static final Integer NON_ATTRIBUTE_LENGTH = 7;
+
+    @Inject
+    SearchGridMapper() {
+        // Empty constructor to add Dagger annotation
+    }
 
     public List<TrackedEntityInstance> transform(SearchGrid searchGrid) throws ParseException {
         List<TrackedEntityInstance> teis = new ArrayList<>(searchGrid.rows().size());
         for (List<String> row : searchGrid.rows()) {
-            TrackedEntityInstance tei = TrackedEntityInstance.create(
-                    row.get(0),
-                    BaseIdentifiableObject.parseSpaceDate(row.get(1)),
-                    BaseIdentifiableObject.parseSpaceDate(row.get(2)),
-                    null,
-                    null,
-                    row.get(3),
-                    row.get(5),
-                    null,
-                    null,
-                    null,
-                    getAttributes(searchGrid.headers(), row),
-                    null,
-                    null);
+            TrackedEntityInstance tei = TrackedEntityInstance.builder()
+                    .uid(row.get(0))
+                    .created(BaseIdentifiableObject.parseSpaceDate(row.get(1)))
+                    .lastUpdated(BaseIdentifiableObject.parseSpaceDate(row.get(2)))
+                    .organisationUnit(row.get(3))
+                    .trackedEntityType(row.get(5))
+                    .trackedEntityAttributeValues(getAttributes(searchGrid.headers(), row))
+                    .build();
 
             teis.add(tei);
         }
@@ -67,12 +71,11 @@ class SearchGridMapper {
                 - NON_ATTRIBUTE_LENGTH);
 
         for (int i = NON_ATTRIBUTE_LENGTH; i < row.size(); i++) {
-            TrackedEntityAttributeValue attribute = TrackedEntityAttributeValue.create(
-                    headers.get(i).name(),
-                    row.get(i),
-                    null,
-                    null);
-            attributeValues.add(attribute);
+            TrackedEntityAttributeValue attributeValue = TrackedEntityAttributeValue.builder()
+                    .trackedEntityAttribute(headers.get(i).name())
+                    .value(row.get(i))
+                    .build();
+            attributeValues.add(attributeValue);
         }
 
         return attributeValues;

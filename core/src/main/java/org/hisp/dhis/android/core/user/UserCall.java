@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -32,22 +32,26 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 
-public final class UserCall extends SyncCall<User> {
+import java.util.concurrent.Callable;
+
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class UserCall implements Callable<User> {
     private final GenericCallData genericCallData;
     private final APICallExecutor apiCallExecutor;
     private final UserService userService;
     private final SyncHandler<User> userHandler;
 
+    @Inject
     UserCall(GenericCallData genericCallData,
              APICallExecutor apiCallExecutor,
              UserService userService,
@@ -60,13 +64,12 @@ public final class UserCall extends SyncCall<User> {
 
     @Override
     public User call() throws D2Error {
-        setExecuted();
 
         User user = apiCallExecutor.executeObjectCall(userService.getUser(UserFields.allFieldsWithOrgUnit));
         Transaction transaction = genericCallData.databaseAdapter().beginNewTransaction();
         try {
             userHandler.handle(user);
-            genericCallData.resourceHandler().handleResource(ResourceModel.Type.USER);
+            genericCallData.resourceHandler().handleResource(Resource.Type.USER);
 
             transaction.setSuccessful();
         } catch (SQLiteConstraintException constraintException) {
@@ -78,17 +81,4 @@ public final class UserCall extends SyncCall<User> {
         }
         return user;
     }
-
-    public static final GenericCallFactory<User> FACTORY = new GenericCallFactory<User>() {
-
-        @Override
-        public Call<User> create(GenericCallData genericCallData) {
-            return new UserCall(
-                    genericCallData,
-                    APICallExecutorImpl.create(genericCallData.databaseAdapter()),
-                    genericCallData.retrofit().create(UserService.class),
-                    UserHandler.create(genericCallData.databaseAdapter())
-            );
-        }
-    };
 }

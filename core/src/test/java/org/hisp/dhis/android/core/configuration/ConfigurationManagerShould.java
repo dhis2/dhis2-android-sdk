@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -39,9 +39,8 @@ import okhttp3.HttpUrl;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,10 +62,11 @@ public class ConfigurationManagerShould {
     @Test
     public void return_correct_values_when_configuration_manager_is_configured_with_saved_store() {
         HttpUrl httpUrl = HttpUrl.parse("http://testserver.org/");
-        when(configurationStore.save("http://testserver.org/api/")).thenReturn(1L);
-        ConfigurationModel savedConfiguration = configurationManager.configure(httpUrl);
+        when(configurationStore.selectFirst()).thenReturn(Configuration.builder().id(1L)
+                .serverUrl(HttpUrl.parse("http://testserver.org/api/")).build());
+        Configuration savedConfiguration = configurationManager.configure(httpUrl);
 
-        verify(configurationStore).save("http://testserver.org/api/");
+        verify(configurationStore).save(Configuration.builder().serverUrl(httpUrl).build());
         assertThat(savedConfiguration.id()).isEqualTo(1L);
         assertThat(savedConfiguration.serverUrl().toString()).isEqualTo("http://testserver.org/api/");
     }
@@ -84,20 +84,20 @@ public class ConfigurationManagerShould {
 
     @Test
     public void invoke_configuration_store_query_when_call_configuration_manager_get_method() {
-        ConfigurationModel configurationModel = mock(ConfigurationModel.class);
-        when(configurationStore.query()).thenReturn(configurationModel);
+        Configuration configuration = mock(Configuration.class);
+        when(configurationStore.selectFirst()).thenReturn(configuration);
 
-        ConfigurationModel configuration = configurationManager.get();
+        Configuration configurationSaved = configurationManager.get();
 
-        verify(configurationStore).query();
-        assertThat(configuration).isEqualTo(configurationModel);
+        verify(configurationStore).selectFirst();
+        assertThat(configuration).isEqualTo(configurationSaved);
     }
 
     @Test
     public void return_null_if_configuration_is_not_persisted() {
-        ConfigurationModel configuration = configurationManager.get();
+        Configuration configuration = configurationManager.get();
 
-        verify(configurationStore).query();
+        verify(configurationStore).selectFirst();
         assertThat(configuration).isNull();
     }
 
@@ -128,7 +128,6 @@ public class ConfigurationManagerShould {
 
             fail("illegalArgumentException was expected but nothing was thrown");
         } catch (IllegalArgumentException illegalArgumentException) {
-            verify(configurationStore, never()).save(anyString());
         }
     }
 
@@ -136,11 +135,14 @@ public class ConfigurationManagerShould {
     public void invoke_save_configuration_store_when_configuration_manager_configure_a_valid_base_url() {
         HttpUrl baseUrl = HttpUrl.parse("https://play.dhis2.org/demo/");
 
-        ConfigurationModel configurationModel = configurationManager.configure(baseUrl);
+        when(configurationStore.selectFirst()).thenReturn(Configuration.builder().id(1L)
+                .serverUrl(HttpUrl.parse("https://play.dhis2.org/demo/api/")).build());
 
-        assertThat(configurationModel.serverUrl().toString())
+        Configuration configuration = configurationManager.configure(baseUrl);
+
+        assertThat(configuration.serverUrl().toString())
                 .isEqualTo("https://play.dhis2.org/demo/api/");
 
-        verify(configurationStore).save("https://play.dhis2.org/demo/api/");
+        verify(configurationStore).save(any(Configuration.class));
     }
 }

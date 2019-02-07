@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,93 +27,35 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementHandler;
-import org.hisp.dhis.android.core.dataelement.DataElementStore;
 
-import java.util.List;
+import javax.inject.Inject;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import dagger.Reusable;
 
-public class ProgramStageDataElementHandler {
-    private final ProgramStageDataElementStore programStageDataElementStore;
+@Reusable
+final class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<ProgramStageDataElement> {
+
     private final SyncHandler<DataElement> dataElementHandler;
-    private final IdentifiableObjectStore<DataElement> dataElementStore;
 
-    ProgramStageDataElementHandler(ProgramStageDataElementStore programStageDataElementStore,
-                                   SyncHandler<DataElement> dataElementHandler,
-                                   IdentifiableObjectStore<DataElement> dataElementStore) {
-        this.programStageDataElementStore = programStageDataElementStore;
+    @Inject
+    ProgramStageDataElementHandler(
+            IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
+            SyncHandler<DataElement> dataElementHandler) {
+
+        super(programStageDataElementStore);
         this.dataElementHandler = dataElementHandler;
-        this.dataElementStore = dataElementStore;
     }
 
-    void handleProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        if (programStageDataElements == null) {
-            return;
+    @Override
+    protected void afterObjectHandled(ProgramStageDataElement programStageDataElement, HandleAction action) {
+
+        if (programStageDataElement.dataElement() != null) {
+            dataElementHandler.handle(programStageDataElement.dataElement());
         }
-        deleteOrPersistProgramStageDataElements(programStageDataElements);
-    }
-
-    /**
-     * This method deletes or persists program stage data elements and applies the changes to database.
-     * Method will call update with or without programStageSectionUid depending if it exists.
-     *
-     *
-     * @param programStageDataElements
-     */
-    private void deleteOrPersistProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        int size = programStageDataElements.size();
-        for (int i = 0; i < size; i++) {
-            ProgramStageDataElement programStageDataElement = programStageDataElements.get(i);
-            if (programStageDataElement.dataElement() == null) {
-                continue;
-            }
-            boolean readableDataElement = programStageDataElement.dataElement().access().read();
-
-            if (isDeleted(programStageDataElement) || !readableDataElement) {
-                programStageDataElementStore.delete(programStageDataElement.uid());
-                if (!readableDataElement) {
-                    dataElementStore.deleteIfExists(programStageDataElement.dataElement().uid());
-                }
-            } else {
-                int updatedRow;
-
-                updatedRow = programStageDataElementStore.update(
-                        programStageDataElement.uid(),
-                        programStageDataElement.code(), programStageDataElement.name(),
-                        programStageDataElement.displayName(), programStageDataElement.created(),
-                        programStageDataElement.lastUpdated(), programStageDataElement.displayInReports(),
-                        programStageDataElement.compulsory(), programStageDataElement.allowProvidedElsewhere(),
-                        programStageDataElement.sortOrder(), programStageDataElement.allowFutureDate(),
-                        programStageDataElement.dataElement().uid(), programStageDataElement.programStage().uid(),
-                        programStageDataElement.uid());
-
-
-                if (updatedRow <= 0) {
-                    programStageDataElementStore.insert(
-                            programStageDataElement.uid(), programStageDataElement.code(),
-                            programStageDataElement.name(), programStageDataElement.displayName(),
-                            programStageDataElement.created(), programStageDataElement.lastUpdated(),
-                            programStageDataElement.displayInReports(), programStageDataElement.compulsory(),
-                            programStageDataElement.allowProvidedElsewhere(), programStageDataElement.sortOrder(),
-                            programStageDataElement.allowFutureDate(), programStageDataElement.dataElement().uid(),
-                            programStageDataElement.programStage().uid()
-                    );
-                }
-                dataElementHandler.handle(programStageDataElement.dataElement());
-            }
-        }
-    }
-
-    public static ProgramStageDataElementHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageDataElementHandler(
-                new ProgramStageDataElementStoreImpl(databaseAdapter),
-                DataElementHandler.create(databaseAdapter),
-                DataElementStore.create(databaseAdapter)
-        );
     }
 }

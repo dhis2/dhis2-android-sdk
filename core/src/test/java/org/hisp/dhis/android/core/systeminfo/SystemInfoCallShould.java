@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +47,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Date;
+import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
@@ -96,7 +97,7 @@ public class SystemInfoCallShould {
     @Mock
     private Date serverDate;
 
-    private Call<SystemInfo> systemInfoSyncCall;
+    private Callable<Unit> systemInfoSyncCall;
 
 
     @Before
@@ -154,50 +155,13 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void return_true_when_ask_if_is_executed_before_throw_d2_call_exception_on_consecutive_calls() throws Exception {
-        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
-
-        systemInfoSyncCall.call();
-
-        assertThat(systemInfoSyncCall.isExecuted()).isTrue();
-
-        try {
-            systemInfoSyncCall.call();
-            fail("Multiple executions of a call should throw exception");
-        } catch (D2Error ex) {
-            // do nothing
-        }
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void return_true_when_ask_if_is_executed_before_exception() throws Exception {
-        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenThrow(d2Error);
-
-        try {
-            systemInfoSyncCall.call();
-        } catch (D2Error d2Exception) {
-            // do nothing
-        }
-
-        assertThat(systemInfoSyncCall.isExecuted()).isTrue();
-
-        try {
-            systemInfoSyncCall.call();
-            fail("Multiple executions of a call should throw exception");
-        } catch (Exception exception) {
-            // ignore exception
-        }
-    }
-
-    @Test
-    public void invoke_stores_after_successful_call() throws Exception {
+    public void invoke_handler_after_successful_call() throws Exception {
         when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
 
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler).handle(systemInfo);
-        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO));
+        verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
 
     }
 
@@ -209,6 +173,6 @@ public class SystemInfoCallShould {
         systemInfoSyncCall.call();
 
         verify(systemInfoHandler).handle(systemInfo);
-        verify(resourceHandler).handleResource(eq(ResourceModel.Type.SYSTEM_INFO));
+        verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
     }
 }

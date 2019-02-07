@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -34,9 +34,11 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.AccessHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,10 +47,10 @@ public final class ProgramStageStore {
 
     private ProgramStageStore() {}
 
-    private static StatementBinder<ProgramStageModel> BINDER = new IdentifiableStatementBinder<ProgramStageModel>() {
+    private static StatementBinder<ProgramStage> BINDER = new IdentifiableStatementBinder<ProgramStage>() {
 
         @Override
-        public void bindToStatement(@NonNull ProgramStageModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull ProgramStage o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.description());
             sqLiteBind(sqLiteStatement, 8, o.displayDescription());
@@ -68,23 +70,23 @@ public final class ProgramStageStore {
             sqLiteBind(sqLiteStatement, 22, o.blockEntryForm());
             sqLiteBind(sqLiteStatement, 23, o.minDaysFromStart());
             sqLiteBind(sqLiteStatement, 24, o.standardInterval());
-            sqLiteBind(sqLiteStatement, 25, o.program());
+            sqLiteBind(sqLiteStatement, 25, UidsHelper.getUidOrNull(o.program()));
             sqLiteBind(sqLiteStatement, 26, o.periodType());
-            sqLiteBind(sqLiteStatement, 27, o.accessDataWrite());
+            sqLiteBind(sqLiteStatement, 27, AccessHelper.getAccessDataWrite(o.access()));
             sqLiteBind(sqLiteStatement, 28, o.remindCompleted());
             sqLiteBind(sqLiteStatement, 29, o.featureType());
         }
     };
 
-    private static final CursorModelFactory<ProgramStageModel> FACTORY = new CursorModelFactory<ProgramStageModel>() {
+    private static final CursorModelFactory<ProgramStage> FACTORY = new CursorModelFactory<ProgramStage>() {
         @Override
-        public ProgramStageModel fromCursor(Cursor cursor) {
-            return ProgramStageModel.create(cursor);
+        public ProgramStage fromCursor(Cursor cursor) {
+            return ProgramStage.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<ProgramStageModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageModel.TABLE,
-                new ProgramStageModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<ProgramStage> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageTableInfo.TABLE_INFO,
+                BINDER, FACTORY);
     }
 }

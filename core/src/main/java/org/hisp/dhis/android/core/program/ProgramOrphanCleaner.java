@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -74,14 +74,14 @@ final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
                         ProgramRuleVariableModel.Columns.PROGRAM, databaseAdapter),
                 new OrphanCleanerImpl<Program, ProgramIndicator>(ProgramIndicatorTableInfo.TABLE_INFO.name(),
                         ProgramIndicatorFields.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ProgramRule>(ProgramRuleModel.TABLE,
-                        ProgramRuleModel.Columns.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ProgramTrackedEntityAttribute>(ProgramTrackedEntityAttributeModel.TABLE,
-                        ProgramTrackedEntityAttributeModel.Columns.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ProgramSection>(ProgramSectionModel.TABLE,
-                        ProgramSectionModel.Columns.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ObjectWithUid>(ProgramStageModel.TABLE,
-                        ProgramStageModel.Columns.PROGRAM, databaseAdapter)
+                new OrphanCleanerImpl<Program, ProgramRule>(ProgramRuleTableInfo.TABLE_INFO.name(),
+                        ProgramRuleFields.PROGRAM, databaseAdapter),
+                new OrphanCleanerImpl<Program, ProgramTrackedEntityAttribute>(ProgramTrackedEntityAttributeTableInfo.
+                        TABLE_INFO.name(), ProgramTrackedEntityAttributeFields.PROGRAM, databaseAdapter),
+                new OrphanCleanerImpl<Program, ProgramSection>(ProgramSectionTableInfo.TABLE_INFO.name(),
+                        ProgramSectionFields.PROGRAM, databaseAdapter),
+                new OrphanCleanerImpl<Program, ObjectWithUid>(ProgramStageTableInfo.TABLE_INFO.name(),
+                        ProgramStageFields.PROGRAM, databaseAdapter)
         );
     }
 }

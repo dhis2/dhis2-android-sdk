@@ -32,6 +32,7 @@ import android.database.MatrixCursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.user.UserRoleModel.Columns;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,12 +98,12 @@ public class UserRoleModelShould {
 
         ContentValues contentValues = model.toContentValues();
 
-        assertThat(contentValues.getAsLong(UserModel.Columns.ID)).isEqualTo(ID);
-        assertThat(contentValues.getAsString(UserModel.Columns.UID)).isEqualTo(UID);
-        assertThat(contentValues.getAsString(UserModel.Columns.CODE)).isEqualTo(CODE);
-        assertThat(contentValues.getAsString(UserModel.Columns.NAME)).isEqualTo(NAME);
-        assertThat(contentValues.getAsString(UserModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
-        assertThat(contentValues.getAsString(UserModel.Columns.CREATED)).isEqualTo(dateString);
-        assertThat(contentValues.getAsString(UserModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsLong(BaseIdentifiableObjectModel.Columns.ID)).isEqualTo(ID);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.UID)).isEqualTo(UID);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.CODE)).isEqualTo(CODE);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.NAME)).isEqualTo(NAME);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME)).isEqualTo(DISPLAY_NAME);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.CREATED)).isEqualTo(dateString);
+        assertThat(contentValues.getAsString(BaseIdentifiableObjectModel.Columns.LAST_UPDATED)).isEqualTo(dateString);
     }
 }

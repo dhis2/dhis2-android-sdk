@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ import java.util.Collection;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
-public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
+class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
@@ -106,10 +106,10 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
         }
     };
 
-    public Collection<DataValue> getDataValuesWithState(State state) {
+    Collection<DataValue> getDataValuesWithState(State state) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(DataValue.Columns.STATE, state.name()).build();
-        return selectWhereClause(whereClause);
+        return selectWhere(whereClause);
     }
 
     /**
@@ -131,7 +131,7 @@ public class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
                 .appendKeyStringValue(DataValueFields.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
                 .appendKeyStringValue(DataValueFields.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
                 .build();
-        return selectWhereClause(whereClause).size() > 0;
+        return selectWhere(whereClause).size() > 0;
     }
 
 }

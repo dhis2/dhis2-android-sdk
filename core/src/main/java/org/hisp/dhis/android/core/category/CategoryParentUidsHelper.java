@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -31,12 +31,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class CategoryParentUidsHelper {
+final class CategoryParentUidsHelper {
 
     private CategoryParentUidsHelper() {
     }
 
-    public static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
+    static Set<String> getCategoryUids(List<CategoryCombo> categoryCombos) {
         Set<String> uids = new HashSet<>();
         for (CategoryCombo categoryCombo : categoryCombos) {
             List<Category> categories = categoryCombo.categories();

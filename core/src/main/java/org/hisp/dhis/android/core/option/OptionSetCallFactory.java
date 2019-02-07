@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
@@ -40,20 +41,32 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
 
     private static final int MAX_UID_LIST_SIZE = 130;
 
-    public OptionSetCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final OptionSetService service;
+    private final SyncHandler<OptionSet> handler;
+
+    @Inject
+    public OptionSetCallFactory(GenericCallData data,
+                                APICallExecutor apiCallExecutor,
+                                OptionSetService service,
+                                SyncHandler<OptionSet> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<OptionSet> fetcher(Set<String> uids) {
 
         return new UidsNoResourceCallFetcher<OptionSet>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
-
-            final OptionSetService service = data.retrofit().create(OptionSetService.class);
 
             @Override
             protected retrofit2.Call<Payload<OptionSet>> getCall(UidsQuery query) {
@@ -67,7 +80,6 @@ public final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
     protected CallProcessor<OptionSet> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                OptionSetHandler.create(data.databaseAdapter())
-        );
+                handler);
     }
 }

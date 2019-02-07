@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class ProgramSectionShould extends BaseObjectShould implements ObjectShou
         assertThat(programSection.displayName()).isEqualTo("My Program Section");
 
         assertThat(programSection.description()).isEqualTo("Description");
-        assertThat(programSection.programUid()).isEqualTo("IpHINAT79UW");
+        assertThat(UidsHelper.getUidOrNull(programSection.program())).isEqualTo("IpHINAT79UW");
         assertThat(programSection.attributes().get(0).uid()).isEqualTo("zDhUuAYrxNC");
         assertThat(programSection.sortOrder()).isEqualTo(1);
         assertThat(programSection.formName()).isEqualTo("formName");

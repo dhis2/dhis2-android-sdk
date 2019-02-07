@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,27 +28,50 @@
 
 package org.hisp.dhis.android.core.relationship;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbRelationshipConstraintTypeColumnAdapter;
+import org.hisp.dhis.android.core.data.database.RelationshipItemEnrollmentColumnAdapter;
+import org.hisp.dhis.android.core.data.database.RelationshipItemEventColumnAdapter;
+import org.hisp.dhis.android.core.data.database.RelationshipItemTrackedEntityInstanceColumnAdapter;
+import org.hisp.dhis.android.core.data.database.RelationshipWithUidColumnAdapter;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_RelationshipItem.Builder.class)
-public abstract class RelationshipItem {
+public abstract class RelationshipItem implements Model {
+
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(RelationshipWithUidColumnAdapter.class)
+    public abstract Relationship relationship();
+
+    @Nullable
+    @JsonIgnore()
+    @ColumnAdapter(DbRelationshipConstraintTypeColumnAdapter.class)
+    public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(RelationshipItemTrackedEntityInstanceColumnAdapter.class)
     public abstract RelationshipItemTrackedEntityInstance trackedEntityInstance();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(RelationshipItemEnrollmentColumnAdapter.class)
     public abstract RelationshipItemEnrollment enrollment();
 
     @Nullable
     @JsonProperty()
+    @ColumnAdapter(RelationshipItemEventColumnAdapter.class)
     public abstract RelationshipItemEvent event();
 
     public boolean hasTrackedEntityInstance() {
@@ -77,14 +100,27 @@ public abstract class RelationshipItem {
         return new AutoValue_RelationshipItem.Builder();
     }
 
+    static RelationshipItem create(Cursor cursor) {
+        return $AutoValue_RelationshipItem.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
+
+        public abstract Builder id(Long id);
+
         public abstract Builder trackedEntityInstance(RelationshipItemTrackedEntityInstance trackedEntityInstance);
 
         public abstract Builder enrollment(RelationshipItemEnrollment enrollment);
 
         public abstract Builder event(RelationshipItemEvent event);
+
+        public abstract Builder relationship(Relationship relationship);
+
+        public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
 
         protected abstract RelationshipItem autoBuild();
 

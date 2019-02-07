@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -42,36 +42,36 @@ import org.hisp.dhis.android.core.period.PeriodType;
 
 final class ProgramStageFields {
 
-    private final static String DESCRIPTION = "description";
-    private final static String DISPLAY_DESCRIPTION = "displayDescription";
-    private static final String EXECUTION_DATE_LABEL = "executionDateLabel";
-    private static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
-    private static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
-    private static final String REPORT_DATE_TO_USE = "reportDateToUse";
-    private static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
+    final static String DESCRIPTION = "description";
+    final static String DISPLAY_DESCRIPTION = "displayDescription";
+    static final String EXECUTION_DATE_LABEL = "executionDateLabel";
+    static final String ALLOW_GENERATE_NEXT_VISIT = "allowGenerateNextVisit";
+    static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
+    static final String REPORT_DATE_TO_USE = "reportDateToUse";
+    static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
     private static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
-    private static final String REPEATABLE = "repeatable";
+    static final String REPEATABLE = "repeatable";
     /**
      * @deprecated since 2.29, replaced by {@link #FEATURE_TYPE}
      */
     @Deprecated
-    private static final String CAPTURE_COORDINATES = "captureCoordinates";
-    private static final String FEATURE_TYPE = "featureType";
-    private static final String FORM_TYPE = "formType";
-    private static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
-    private static final String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
-    private static final String AUTO_GENERATE_EVENT = "autoGenerateEvent";
-    private static final String SORT_ORDER = "sortOrder";
-    private static final String HIDE_DUE_DATE = "hideDueDate";
-    private static final String BLOCK_ENTRY_FORM = "blockEntryForm";
-    private static final String MIN_DAYS_FROM_START = "minDaysFromStart";
-    private static final String STANDARD_INTERVAL = "standardInterval";
+    static final String CAPTURE_COORDINATES = "captureCoordinates";
+    static final String FEATURE_TYPE = "featureType";
+    static final String FORM_TYPE = "formType";
+    static final String DISPLAY_GENERATE_EVENT_BOX = "displayGenerateEventBox";
+    static final String GENERATED_BY_ENROLMENT_DATE = "generatedByEnrollmentDate";
+    static final String AUTO_GENERATE_EVENT = "autoGenerateEvent";
+    static final String SORT_ORDER = "sortOrder";
+    static final String HIDE_DUE_DATE = "hideDueDate";
+    static final String BLOCK_ENTRY_FORM = "blockEntryForm";
+    static final String MIN_DAYS_FROM_START = "minDaysFromStart";
+    static final String STANDARD_INTERVAL = "standardInterval";
     private static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
     private static final String STYLE = "style";
-    private static final String PERIOD_TYPE = "periodType";
-    private static final String PROGRAM = "program";
+    static final String PERIOD_TYPE = "periodType";
+    static final String PROGRAM = "program";
     private final static String ACCESS = "access";
-    private final static String REMIND_COMPLETED = "remindCompleted";
+    final static String REMIND_COMPLETED = "remindCompleted";
 
 
     private static FieldsHelper<ProgramStage> fh = new FieldsHelper<>();
@@ -102,7 +102,7 @@ final class ProgramStageFields {
                     fh.<ProgramStageSection>nestedField(PROGRAM_STAGE_SECTIONS)
                             .with(ProgramStageSectionFields.allFields),
                     fh.<ProgramStageDataElement>nestedField(PROGRAM_STAGE_DATA_ELEMENTS)
-                            .with(ProgramStageDataElement.allFields),
+                            .with(ProgramStageDataElementFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<PeriodType>field(PERIOD_TYPE),
                     fh.<ObjectWithUid>field(PROGRAM),

@@ -33,9 +33,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -51,6 +48,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -61,7 +59,7 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
 
     private static final String uid = "nEenWmSyUEp";
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private Call<List<TrackedEntityType>> trackedEntityTypeCall;
+    private Callable<List<TrackedEntityType>> trackedEntityTypeCall;
 
     @Before
     @Override
@@ -76,8 +74,7 @@ public class TrackedEntityTypeCallMockIntegrationShould extends AbsStoreTestCase
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         HashSet<String> uids = new HashSet<>(Collections.singletonList(uid));
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter());
-        trackedEntityTypeCall = new TrackedEntityTypeCallFactory(getGenericCallData(d2), apiCallExecutor).create(uids);
+        trackedEntityTypeCall = getD2DIComponent(d2).trackedEntityTypeCallFactory().create(uids);
     }
 
     @Test

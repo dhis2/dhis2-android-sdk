@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadResourceCallFetcher;
@@ -36,19 +37,26 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.Resource;
 
 import javax.inject.Inject;
 
+import dagger.Reusable;
+
 import static org.hisp.dhis.android.core.utils.Utils.commaSeparatedCollectionValues;
 
-public final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
+@Reusable
+final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<DataValue, DataValueQuery> {
 
-    private final ResourceModel.Type resourceType = ResourceModel.Type.DATA_VALUE;
+    private final Resource.Type resourceType = Resource.Type.DATA_VALUE;
+    private final SyncHandler<DataValue> dataValueHandler;
 
     @Inject
-    public DataValueEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    DataValueEndpointCallFactory(GenericCallData data,
+                                 APICallExecutor apiCallExecutor,
+                                 SyncHandler<DataValue> dataValueHandler) {
         super(data, apiCallExecutor);
+        this.dataValueHandler = dataValueHandler;
     }
 
     @Override
@@ -73,7 +81,6 @@ public final class DataValueEndpointCallFactory extends QueryCallFactoryImpl<Dat
 
     @Override
     protected CallProcessor<DataValue> processor(DataValueQuery query) {
-        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(),
-                DataValueHandler.create(data.databaseAdapter()));
+        return new TransactionalNoResourceSyncCallProcessor<>(data.databaseAdapter(), dataValueHandler);
     }
 }

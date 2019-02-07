@@ -34,7 +34,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
@@ -43,6 +44,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSetUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
@@ -55,7 +57,7 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
      * metadataSyncCall. It works against the demo server.
      */
     private D2 d2;
-    private Call<List<DataValue>> dataValueCall;
+    private Callable<List<DataValue>> dataValueCall;
 
     @Before
     @Override
@@ -65,16 +67,18 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
         dataValueCall = createCall();
     }
 
-    private Call<List<DataValue>> createCall() {
+    private Callable<List<DataValue>> createCall() {
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
-        return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
+        SyncHandler<DataValue> dataValueHandler =  new ObjectWithoutUidSyncHandlerImpl<>(
+                DataValueStore.create(databaseAdapter()));
+        return new DataValueEndpointCallFactory(getGenericCallData(d2), apiCallExecutor, dataValueHandler).create(
                 DataValueQuery.create(getDataSetUids(), getPeriodIds(), getOrgUnitUids()));
     }
 
     // @Test
     public void download_data_values() throws Exception {
-        if (!d2.isUserLoggedIn().call()) {
-            d2.logIn("android", "Android123").call();
+        if (!d2.userModule().isLogged().call()) {
+            d2.userModule().logIn("android", "Android123").call();
         }
 
         /*  This test won't pass independently of the sync of metadata, as the foreign keys

@@ -31,12 +31,12 @@ public class TrackedEntityInstanceCallRealIntegrationShould extends AbsStoreTest
 
     //@Test
     public void download_tei_enrollments_and_events() throws Exception {
-        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
         d2.syncMetaData().call();
 
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899"));
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList("IaxoagO9899"));
 
         List<TrackedEntityInstance> teiResponse = trackedEntityInstanceByUidEndPointCall.call();
 

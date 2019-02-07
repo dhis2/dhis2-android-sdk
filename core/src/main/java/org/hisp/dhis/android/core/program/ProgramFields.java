@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -94,21 +94,22 @@ final class ProgramFields {
                     fh.nestedFieldWithUid(RELATIONSHIP_TYPE),
                     fh.<String>field(RELATIONSHIP_TEXT),
                     fh.<ProgramTrackedEntityAttribute>nestedField(PROGRAM_TRACKED_ENTITY_ATTRIBUTES).with(
-                            ProgramTrackedEntityAttribute.allFields),
+                            ProgramTrackedEntityAttributeFields.allFields),
                     fh.nestedFieldWithUid(RELATED_PROGRAM),
                     fh.nestedFieldWithUid(TRACKED_ENTITY_TYPE),
                     fh.nestedFieldWithUid(CATEGORY_COMBO),
                     fh.<Access>nestedField(ACCESS).with(Access.data.with(DataAccess.write)),
                     fh.<ProgramIndicator>nestedField(PROGRAM_INDICATORS).with(ProgramIndicatorFields.allFields),
                     fh.nestedFieldWithUid(PROGRAM_STAGES),
-                    fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES).with(ProgramRuleVariable.allFields),
+                    fh.<ProgramRuleVariable>nestedField(PROGRAM_RULE_VARIABLES)
+                            .with(ProgramRuleVariableFields.allFields),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
                     fh.<Integer>field(EXPIRY_DAYS),
                     fh.<Integer>field(COMPLETE_EVENTS_EXPIRY_DAYS),
                     fh.<PeriodType>field(EXPIRY_PERIOD_TYPE),
                     fh.<Integer>field(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
                     fh.<Integer>field(MAX_TEI_COUNT_TO_RETURN),
-                    fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSection.allFields)
+                    fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields)
             ).build();
 
     private ProgramFields() {

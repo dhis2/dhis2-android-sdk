@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,14 +28,19 @@
 package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
 
-public class PeriodHandler {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+public final class PeriodHandler {
     private final ObjectWithoutUidStore<PeriodModel> store;
     private final ParentPeriodGenerator generator;
 
+    @Inject
     PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, ParentPeriodGenerator generator) {
         this.store = store;
         this.generator = generator;
@@ -47,11 +52,5 @@ public class PeriodHandler {
             store.updateOrInsertWhere(p);
         }
         return periods;
-    }
-
-    public static PeriodHandler create(DatabaseAdapter databaseAdapter) {
-        return new PeriodHandler(
-                PeriodStore.create(databaseAdapter),
-                ParentPeriodGeneratorImpl.create());
     }
 }

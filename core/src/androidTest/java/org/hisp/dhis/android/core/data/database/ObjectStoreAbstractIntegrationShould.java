@@ -80,7 +80,9 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
 
     @Test
     public void insert_as_content_values_and_select_first_object() {
-        databaseAdapter.database().insert(tableInfo.name(), null, object.toContentValues());
+        long rowsInserted = databaseAdapter.database()
+                .insert(tableInfo.name(), null, object.toContentValues());
+        assertThat(rowsInserted).isEqualTo(1);
         M objectFromDb = store.selectFirst();
         assertThat(objectFromDb).isEqualTo(object);
     }
@@ -101,7 +103,7 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
 
     @Test
     public void select_inserted_object_where_clause() {
-        // TODO Implement test for store.selectWhereClause() method
+        // TODO Implement test for store.selectWhere() method
     }
 
     @Test

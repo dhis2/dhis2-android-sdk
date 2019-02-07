@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceCallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.GenericCallData;
 import org.hisp.dhis.android.core.common.Payload;
@@ -41,17 +42,30 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<ProgramStage> {
 
     private static final int MAX_UID_LIST_SIZE = 64;
 
-    public ProgramStageEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final ProgramStageService service;
+    private final SyncHandler<ProgramStage> handler;
+
+    @Inject
+    ProgramStageEndpointCallFactory(GenericCallData data,
+                                    APICallExecutor apiCallExecutor,
+                                    ProgramStageService service,
+                                    SyncHandler<ProgramStage> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<ProgramStage> fetcher(Set<String> uids) {
-        final ProgramStageService service = data.retrofit().create(ProgramStageService.class);
 
         return new UidsNoResourceCallFetcher<ProgramStage>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
@@ -69,10 +83,9 @@ public final class ProgramStageEndpointCallFactory extends UidsCallFactoryImpl<P
 
     @Override
     protected CallProcessor<ProgramStage> processor() {
-        return new TransactionalNoResourceCallProcessor<>(
+        return new TransactionalNoResourceSyncCallProcessor<>(
                 data.databaseAdapter(),
-                ProgramStageHandler.create(data.databaseAdapter(), data.versionManager()),
-                new ProgramStageModelBuilder()
+                handler
         );
     }
 }

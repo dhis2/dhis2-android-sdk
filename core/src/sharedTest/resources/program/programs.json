@@ -7,28 +7,44 @@
       "name": "Antenatal care visit",
       "shortName": "Antenatal care",
       "displayName": "Antenatal care visit",
-      "ignoreOverdueEvents": false,
+      "ignoreOverdueEvents": true,
       "displayShortName": "Antenatal care",
       "captureCoordinates": false,
       "displayFrontPageList": false,
       "enrollmentDateLabel": "Enrollment Date",
       "onlyEnrollOnce": false,
       "programType": "WITHOUT_REGISTRATION",
-      "relationshipFromA": false,
+      "relationshipFromA": true,
+      "dataEntryMethod": true,
       "version": 3,
       "selectIncidentDatesInFuture": false,
       "incidentDateLabel": "Incident Date",
       "displayIncidentDate": false,
       "selectEnrollmentDatesInFuture": false,
       "registration": false,
-      "useFirstStageDuringRegistration": false,
+      "useFirstStageDuringRegistration": true,
+      "expiryDays": 2,
+      "completeEventsExpiryDays": 4,
+      "expiryPeriodType": "BiMonthly",
+      "minAttributesRequiredToSearch": 7,
+      "maxTeiCountToReturn": 20,
       "access": {
         "data": {
           "write": true
         }
       },
+      "relationshipType": {
+        "id": "V2kkHafqs8G"
+      },
+      "relationshipText": "Relationship text",
       "trackedEntityType": {
         "id": "nEenWmSyUEp"
+      },
+      "relatedProgram": {
+        "id": "lxAQ7Zs9VYR"
+      },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
       },
       "programRuleVariables": [
         {

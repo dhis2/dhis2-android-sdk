@@ -1,0 +1,11 @@
+{
+  "displayInList": true,
+  "searchable": true,
+  "mandatory": false,
+  "trackedEntityType": {
+    "id": "nEenWmSyUEp"
+  },
+  "trackedEntityAttribute": {
+    "id": "w75KJ2mc4zz"
+  }
+}

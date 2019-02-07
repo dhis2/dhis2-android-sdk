@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.EndpointCall;
 import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
@@ -47,6 +47,7 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import retrofit2.Response;
 
@@ -62,6 +63,9 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Mock
     private ProgramService programService;
 
+    @Mock
+    private SyncHandler<Program> programHandler;
+
     @Captor
     private ArgumentCaptor<Fields<Program>> fieldsCaptor;
 
@@ -74,7 +78,7 @@ public class ProgramEndpointCallShould extends BaseCallShould {
     @Mock
     private Payload<Program> payload;
 
-    private Call<List<Program>> endpointCall;
+    private Callable<List<Program>> endpointCall;
 
 
     @Before
@@ -83,7 +87,8 @@ public class ProgramEndpointCallShould extends BaseCallShould {
         super.setUp();
 
         APICallExecutor apiCallExecutor = APICallExecutorImpl.create(databaseAdapter);
-        endpointCall = new ProgramEndpointCallFactory(genericCallData, apiCallExecutor, programService).create();
+        endpointCall = new ProgramEndpointCallFactory(genericCallData, apiCallExecutor,
+                programService, programHandler).create();
         when(retrofitCall.execute()).thenReturn(Response.success(payload));
 
         when(programService.getPrograms(any(Fields.class), anyString(), anyBoolean())

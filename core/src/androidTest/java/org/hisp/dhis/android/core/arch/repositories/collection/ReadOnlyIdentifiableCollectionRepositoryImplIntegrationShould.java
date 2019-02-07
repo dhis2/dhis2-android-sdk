@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,19 +52,19 @@ import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSampl
 @RunWith(AndroidJUnit4.class)
 public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
 
-    private ReadOnlyIdentifiableCollectionRepository<RelationshipType> relationshipTypeCollectionRepository;
+    private ReadOnlyIdentifiableCollectionRepository<RelationshipType, ?> relationshipTypeCollectionRepository;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
 
-        SyncHandler<RelationshipType> handler = RelationshipTypeHandler.create(databaseAdapter());
+        D2 d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+
+        SyncHandler<RelationshipType> handler = getD2DIComponent(d2).relationshipTypeHandler();
 
         handler.handle(RELATIONSHIP_TYPE_1);
         handler.handle(RELATIONSHIP_TYPE_2);
-
-        D2 d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
 
         this.relationshipTypeCollectionRepository = d2.relationshipModule().relationshipTypes;
     }

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
-import org.hisp.dhis.android.core.common.EventCallFactory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -24,6 +23,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -33,6 +33,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
+    private EventStore eventStore;
 
     @Override
     @Before
@@ -42,6 +43,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
+        eventStore = EventStoreImpl.create(databaseAdapter());
     }
 
     @Override
@@ -56,13 +58,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     public void download_events_according_to_default_query() throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
 
         List<Event> events = eventEndpointCall.call();
 
-        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
 
         verifyDownloadedEvents("event/events_1.json");
     }
@@ -73,17 +75,15 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         int pageSize = 3;
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize);
 
         dhis2MockServer.enqueueMockResponse("event/events_2.json");
 
         List<Event> events = eventEndpointCall.call();
 
-        EventPersistenceCall.create(databaseAdapter(), d2.retrofit(), events).call();
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
 
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
-        List<Event> downloadedEvents = eventStore.queryAll();
+        List<Event> downloadedEvents = eventStore.selectAll();
 
         assertThat(downloadedEvents.size(), is(pageSize));
     }
@@ -94,7 +94,7 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
             throws Exception {
         givenAMetadataInDatabase();
 
-        EventEndpointCall eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", 0);
 
         dhis2MockServer.enqueueMockResponse(
                 "event/two_events_first_good_second_wrong_foreign_key.json");
@@ -112,8 +112,6 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void verifyNumberOfDownloadedEvents(int numEvents) {
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
         List<Event> downloadedEvents = eventStore.querySingleEvents();
 
         assertThat(downloadedEvents.size(), is(numEvents));
@@ -139,13 +137,13 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
     private List<Event> getDownloadedEvents() {
         List<Event> downloadedEvents = new ArrayList<>();
 
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
-
         List<Event> downloadedEventsWithoutValues = eventStore.querySingleEvents();
 
         TrackedEntityDataValueStore trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl.create(databaseAdapter());
 
-        for (Event event : downloadedEventsWithoutValues) {
+        for (int i = 0; i < downloadedEventsWithoutValues.size(); ++i) {
+
+            Event event = downloadedEventsWithoutValues.get(i);
 
             List<TrackedEntityDataValue> trackedEntityDataValues =
                     trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(event.uid());
@@ -156,15 +154,11 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                         trackedEntityDataValue.toBuilder().id(null).event(null).build());
             }
 
-            event = Event.create(
-                    event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(),
-                    event.program(), event.programStage(), event.organisationUnit(),
-                    event.eventDate(), event.status(), event.coordinates(), event.completedDate(),
-                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
-                    event.attributeOptionCombo(), event.trackedEntityInstance());
-
-            downloadedEvents.add(event);
+            downloadedEvents.add(event.toBuilder()
+                    .id(null)
+                    .state(null)
+                    .deleted(false)
+                    .trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build());
         }
 
         return downloadedEvents;

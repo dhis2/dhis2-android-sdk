@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,33 +29,31 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandHandler;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkStore;
+import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.Collection;
 
-public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
@@ -68,9 +66,10 @@ public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     private final LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler;
     private final LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
-    private final LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
+    private final LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
 
+    @Inject
     DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
                    SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                    SyncHandler<Section> sectionHandler,
@@ -81,7 +80,7 @@ public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
                            dataSetCompulsoryDataElementOperandLinkHandler,
                    LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler,
                    LinkSyncHandler<DataSetElement> dataSetElementLinkHandler,
-                   LinkModelHandler<ObjectWithUid, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler,
+                   LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler,
                    CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);
@@ -132,25 +131,5 @@ public class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
     @Override
     protected void afterCollectionHandled(Collection<DataSet> dataSets) {
         collectionCleaner.deleteNotPresent(dataSets);
-    }
-
-    public static DataSetHandler create(DatabaseAdapter databaseAdapter) {
-
-        return new DataSetHandler(
-                DataSetStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter),
-                SectionHandler.create(databaseAdapter),
-                new OrphanCleanerImpl<DataSet, Section>(SectionTableInfo.TABLE_INFO.name(),
-                        SectionFields.DATA_SET, databaseAdapter),
-                DataElementOperandHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<DataElementOperand,
-                        DataSetCompulsoryDataElementOperandLinkModel>(
-                        DataSetCompulsoryDataElementOperandLinkStore.create(databaseAdapter)),
-                new LinkSyncHandlerImpl<>(DataInputPeriodLinkStore.create(databaseAdapter)),
-                new LinkSyncHandlerImpl<>(DataSetDataElementLinkStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<ObjectWithUid, DataSetIndicatorLinkModel>(
-                        DataSetIndicatorLinkStore.create(databaseAdapter)),
-                new CollectionCleanerImpl<DataSet>(DataSetModel.TABLE, databaseAdapter)
-        );
     }
 }

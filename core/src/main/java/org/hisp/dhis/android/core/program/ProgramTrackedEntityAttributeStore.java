@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
@@ -45,33 +46,33 @@ public final class ProgramTrackedEntityAttributeStore {
 
     private ProgramTrackedEntityAttributeStore() {}
 
-    private static StatementBinder<ProgramTrackedEntityAttributeModel> BINDER
-            = new NameableStatementBinder<ProgramTrackedEntityAttributeModel>() {
+    private static StatementBinder<ProgramTrackedEntityAttribute> BINDER
+            = new NameableStatementBinder<ProgramTrackedEntityAttribute>() {
 
         @Override
-        public void bindToStatement(@NonNull ProgramTrackedEntityAttributeModel o,
+        public void bindToStatement(@NonNull ProgramTrackedEntityAttribute o,
                                     @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 11, o.mandatory());
-            sqLiteBind(sqLiteStatement, 12, o.trackedEntityAttribute());
+            sqLiteBind(sqLiteStatement, 12, UidsHelper.getUidOrNull(o.trackedEntityAttribute()));
             sqLiteBind(sqLiteStatement, 13, o.allowFutureDate());
             sqLiteBind(sqLiteStatement, 14, o.displayInList());
-            sqLiteBind(sqLiteStatement, 15, o.program());
+            sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.program()));
             sqLiteBind(sqLiteStatement, 16, o.sortOrder());
             sqLiteBind(sqLiteStatement, 17, o.searchable());
         }
     };
 
-    private static final CursorModelFactory<ProgramTrackedEntityAttributeModel> FACTORY
-            = new CursorModelFactory<ProgramTrackedEntityAttributeModel>() {
+    private static final CursorModelFactory<ProgramTrackedEntityAttribute> FACTORY
+            = new CursorModelFactory<ProgramTrackedEntityAttribute>() {
         @Override
-        public ProgramTrackedEntityAttributeModel fromCursor(Cursor cursor) {
-            return ProgramTrackedEntityAttributeModel.create(cursor);
+        public ProgramTrackedEntityAttribute fromCursor(Cursor cursor) {
+            return ProgramTrackedEntityAttribute.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramTrackedEntityAttributeModel.TABLE,
-                new ProgramTrackedEntityAttributeModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<ProgramTrackedEntityAttribute> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
+                BINDER, FACTORY);
     }
 }

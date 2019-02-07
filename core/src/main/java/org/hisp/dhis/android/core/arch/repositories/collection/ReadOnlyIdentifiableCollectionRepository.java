@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,11 +27,12 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.IdentifiableFilters;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-public interface ReadOnlyIdentifiableCollectionRepository<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepository<M> {
-    ReadOnlyObjectRepository<M> uid(String uid);
+public interface ReadOnlyIdentifiableCollectionRepository
+        <M extends Model & IdentifiableObject, R extends ReadOnlyCollectionRepository<?>>
+        extends ReadOnlyWithUidCollectionRepository<M>,
+        IdentifiableFilters<R> {
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -46,24 +46,22 @@ public final class ConstantStore {
     private ConstantStore() {
     }
 
-    private static StatementBinder<ConstantModel> BINDER = new IdentifiableStatementBinder<ConstantModel>() {
+    private static StatementBinder<Constant> BINDER = new IdentifiableStatementBinder<Constant>() {
         @Override
-        public void bindToStatement(@NonNull ConstantModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull Constant o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.value());
-
         }
     };
 
-    private static final CursorModelFactory<ConstantModel> FACTORY = new CursorModelFactory<ConstantModel>() {
+    private static final CursorModelFactory<Constant> FACTORY = new CursorModelFactory<Constant>() {
         @Override
-        public ConstantModel fromCursor(Cursor cursor) {
-            return ConstantModel.create(cursor);
+        public Constant fromCursor(Cursor cursor) {
+            return Constant.create(cursor);
         }
     };
 
-    public static IdentifiableObjectStore<ConstantModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantModel.TABLE,
-                new ConstantModel.Columns().all(), BINDER, FACTORY);
+    public static IdentifiableObjectStore<Constant> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantTableInfo.TABLE_INFO, BINDER, FACTORY);
     }
 }

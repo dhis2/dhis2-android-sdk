@@ -1,102 +1,91 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.android.core.enrollment;
 
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteHandler;
-import org.hisp.dhis.android.core.enrollment.note.NoteStore;
 import org.hisp.dhis.android.core.enrollment.note.NoteToStoreTransformer;
 import org.hisp.dhis.android.core.enrollment.note.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventHandler;
-import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import javax.inject.Inject;
 
-public class EnrollmentHandler {
+import dagger.Reusable;
+
+@Reusable
+final class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
     private final DHISVersionManager versionManager;
-    private final EnrollmentStore enrollmentStore;
-    private final EventHandler eventHandler;
+    private final SyncHandlerWithTransformer<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;
     private final ObjectWithoutUidStore<Note> noteStore;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
+    @Inject
     EnrollmentHandler(@NonNull DHISVersionManager versionManager,
                       @NonNull EnrollmentStore enrollmentStore,
-                      @NonNull EventHandler eventHandler,
+                      @NonNull SyncHandlerWithTransformer<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull SyncHandler<Note> noteHandler,
                       @NonNull ObjectWithoutUidStore<Note> noteStore) {
+        super(enrollmentStore);
         this.versionManager = versionManager;
-        this.enrollmentStore = enrollmentStore;
         this.eventHandler = eventHandler;
         this.noteHandler = noteHandler;
         this.noteStore = noteStore;
         this.eventOrphanCleaner = eventOrphanCleaner;
     }
 
-    public void handle(@NonNull List<Enrollment> enrollments) {
-
-        if (enrollments != null && !enrollments.isEmpty()) {
-            int size = enrollments.size();
-
-            for (int i = 0; i < size; i++) {
-                Enrollment enrollment = enrollments.get(i);
-                handle(enrollment);
-            }
-        }
-    }
-
-    private void handle(@NonNull Enrollment enrollment) {
-        if (enrollment == null) {
-            return;
-        }
-
-        if (isDeleted(enrollment)) {
-            enrollmentStore.delete(enrollment.uid());
-        } else {
-            String latitude = null;
-            String longitude = null;
-            if (enrollment.coordinate() != null) {
-                latitude = enrollment.coordinate().latitude().toString();
-                longitude = enrollment.coordinate().longitude().toString();
-            }
-
-            int updatedRow = enrollmentStore.update(enrollment.uid(), enrollment.created(),
-                    enrollment.lastUpdated(),
-                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                    enrollment.organisationUnit(),
-                    enrollment.program(), enrollment.enrollmentDate(),
-                    enrollment.incidentDate(),
-                    enrollment.followUp(), enrollment.enrollmentStatus(),
-                    enrollment.trackedEntityInstance(),
-                    latitude, longitude,
-                    State.SYNCED, enrollment.uid());
-
-            if (updatedRow <= 0) {
-                enrollmentStore.insert(enrollment.uid(), enrollment.created(),
-                        enrollment.lastUpdated(),
-                        enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                        enrollment.organisationUnit(), enrollment.program(),
-                        enrollment.enrollmentDate(),
-                        enrollment.incidentDate(), enrollment.followUp(),
-                        enrollment.enrollmentStatus(),
-                        enrollment.trackedEntityInstance(), latitude, longitude,
-                        State.SYNCED);
-            }
-
-            eventHandler.handleMany(enrollment.events());
+    @Override
+    protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
+        if (action != HandleAction.Delete) {
+            eventHandler.handleMany(enrollment.events(),
+                    new ModelBuilder<Event, Event>() {
+                        @Override
+                        public Event buildModel(Event event) {
+                            return event.toBuilder()
+                                    .state(State.SYNCED)
+                                    .build();
+                        }
+                    });
 
             Collection<Note> notes = new ArrayList<>();
             NoteToStoreTransformer transformer = new NoteToStoreTransformer(enrollment, versionManager);
@@ -105,21 +94,9 @@ public class EnrollmentHandler {
                     notes.add(transformer.transform(note));
                 }
             }
-
             noteHandler.handleMany(NoteUniquenessManager.buildUniqueCollection(notes, enrollment.uid(), noteStore));
         }
-        eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
-    }
 
-    public static EnrollmentHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
-        return new EnrollmentHandler(
-                versionManager,
-                new EnrollmentStoreImpl(databaseAdapter),
-                EventHandler.create(databaseAdapter),
-                new DataOrphanCleanerImpl<Enrollment, Event>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
-                        EventModel.Columns.STATE, databaseAdapter),
-                NoteHandler.create(databaseAdapter),
-                NoteStore.create(databaseAdapter)
-        );
+        eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());
     }
 }

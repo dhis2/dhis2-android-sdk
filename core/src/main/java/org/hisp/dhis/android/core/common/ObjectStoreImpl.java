@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -48,8 +48,8 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     final StatementBinder<M> binder;
     final CursorModelFactory<M> modelFactory;
 
-    ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement, SQLStatementBuilder builder,
-                    StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
+    public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
+                           SQLStatementBuilder builder, StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
         this.databaseAdapter = databaseAdapter;
         this.insertStatement = insertStatement;
         this.builder = builder;
@@ -99,18 +99,17 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public List<M> selectWhereClause(String whereClause) {
+    public List<M> selectWhere(String whereClause) {
         List<M> list = new ArrayList<>();
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
         addObjectsToCollection(cursor, list);
         return list;
     }
 
-    public List<M> selectWhereClauseAsList(String whereClause) {
-        List<M> list = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
-        addObjectsToCollection(cursor, list);
-        return list;
+    @Override
+    public M selectOneWhere(@NonNull String whereClause) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
+        return getFirstFromCursor(cursor);
     }
 
     @Override
@@ -122,11 +121,6 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     @Override
     public boolean deleteById(@NonNull M m) {
         return deleteWhereClause(BaseModel.Columns.ID + "='" + m.id() + "';");
-    }
-
-    protected M selectOneWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
-        return getFirstFromCursor(cursor);
     }
 
     private M getFirstFromCursor(@NonNull Cursor cursor) {

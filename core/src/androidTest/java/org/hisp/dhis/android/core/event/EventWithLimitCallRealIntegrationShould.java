@@ -25,11 +25,11 @@ public class EventWithLimitCallRealIntegrationShould extends AbsStoreTestCase {
 
     //@Test
     public void download_tracked_entity_instances() throws Exception {
-        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
         d2.syncMetaData().call();
 
-         d2.downloadSingleEvents(20,  false).call();
-        assertThat(new EventStoreImpl(databaseAdapter()).queryAll().size()).isEqualTo(20);
+         d2.eventModule().downloadSingleEvents(20,  false).call();
+        assertThat(EventStoreImpl.create(databaseAdapter()).selectAll().size()).isEqualTo(20);
     }
 }

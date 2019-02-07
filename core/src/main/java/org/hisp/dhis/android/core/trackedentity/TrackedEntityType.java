@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,19 +29,30 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
+import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
+
+import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityType.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_TrackedEntityType.Builder.class)
 public abstract class TrackedEntityType extends BaseNameableObject implements Model,
         ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreTrackedEntityTypeAttributeListColumnAdapter.class)
+    public abstract List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes();
 
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityType.Builder();
@@ -59,6 +70,8 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Mo
             implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
 
         public abstract Builder id(Long id);
+
+        public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);
 
         public abstract TrackedEntityType build();
     }

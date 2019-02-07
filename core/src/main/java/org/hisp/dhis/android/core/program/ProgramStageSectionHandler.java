@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -32,21 +32,24 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.List;
 
-public class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<ProgramStageSection> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<ProgramStageSection> {
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
     private final LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
             programStageSectionProgramIndicatorLinkHandler;
     private final OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel>
             programStageSectionDataElementLinkHandler;
 
+    @Inject
     ProgramStageSectionHandler(IdentifiableObjectStore<ProgramStageSection> programStageSectionStore,
                                SyncHandler<ProgramIndicator> programIndicatorHandler,
                                LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
@@ -76,16 +79,5 @@ public class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<Prog
         programIndicatorHandler.handleMany(programStageSection.programIndicators());
         programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSection.uid(),
                 programStageSection.programIndicators(), programStageSectionProgramIndicatorLinkModelBuilder);
-    }
-
-    public static ProgramStageSectionHandler create(DatabaseAdapter databaseAdapter) {
-        return new ProgramStageSectionHandler(
-                ProgramStageSectionStore.create(databaseAdapter),
-                ProgramIndicatorHandler.create(databaseAdapter),
-                new LinkModelHandlerImpl<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>(
-                        ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter)),
-                new OrderedLinkModelHandlerImpl<DataElement, ProgramStageSectionDataElementLinkModel>(
-                        ProgramStageSectionDataElementLinkStore.create(databaseAdapter))
-        );
     }
 }

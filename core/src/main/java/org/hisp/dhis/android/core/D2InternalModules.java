@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,50 +29,23 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryInternalModule;
-import org.hisp.dhis.android.core.dataelement.DataElementInternalModule;
-import org.hisp.dhis.android.core.datavalue.DataValueInternalModule;
-import org.hisp.dhis.android.core.maintenance.MaintenanceInternalModule;
-import org.hisp.dhis.android.core.relationship.RelationshipInternalModule;
-import org.hisp.dhis.android.core.settings.SystemSettingInternalModule;
-import org.hisp.dhis.android.core.systeminfo.SystemInfoInternalModule;
-import org.hisp.dhis.android.core.wipe.WipeableModule;
-
-import java.util.Arrays;
-import java.util.List;
+import org.hisp.dhis.android.core.user.UserInternalModule;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Reusable
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 public final class D2InternalModules {
-    public final SystemInfoInternalModule systemInfo;
-    public final SystemSettingInternalModule systemSetting;
-    public final RelationshipInternalModule relationshipModule;
-    public final CategoryInternalModule categoryModule;
-    public final DataElementInternalModule dataElementModule;
-    public final DataValueInternalModule dataValueModule;
-    public final MaintenanceInternalModule maintenanceModule;
+    public final CategoryInternalModule category;
+    public final UserInternalModule user;
 
     @Inject
-    public D2InternalModules(SystemInfoInternalModule systemInfo,
-                             SystemSettingInternalModule systemSetting,
-                             RelationshipInternalModule relationshipModule,
-                             CategoryInternalModule categoryModule,
-                             DataElementInternalModule dataElementModule,
-                             DataValueInternalModule dataValueModule,
-                             MaintenanceInternalModule maintenanceModule) {
-        this.systemInfo = systemInfo;
-        this.systemSetting = systemSetting;
-        this.relationshipModule = relationshipModule;
-        this.categoryModule = categoryModule;
-        this.dataElementModule = dataElementModule;
-        this.dataValueModule = dataValueModule;
-        this.maintenanceModule = maintenanceModule;
-    }
-
-    public List<WipeableModule> getWipeableModules() {
-        return Arrays.asList(systemInfo, systemSetting, relationshipModule, categoryModule, dataElementModule,
-                dataValueModule, maintenanceModule);
+    public D2InternalModules(CategoryInternalModule category,
+                             UserInternalModule user) {
+        this.category = category;
+        this.user = user;
     }
 }

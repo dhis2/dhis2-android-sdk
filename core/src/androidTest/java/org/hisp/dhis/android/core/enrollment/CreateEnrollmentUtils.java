@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.enrollment;
 import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.State;
 
 public class CreateEnrollmentUtils {
@@ -50,16 +52,16 @@ public class CreateEnrollmentUtils {
                                        @NonNull String organisationUnitUid,
                                        @NonNull String trackedEntityInstanceUid) {
         ContentValues enrollment = new ContentValues();
-        enrollment.put(EnrollmentModel.Columns.UID, uid);
-        enrollment.put(EnrollmentModel.Columns.ORGANISATION_UNIT, organisationUnitUid);
-        enrollment.put(EnrollmentModel.Columns.PROGRAM, programUid);
-        enrollment.put(EnrollmentModel.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid);
-        enrollment.put(EnrollmentModel.Columns.FOLLOW_UP, FOLLOW_UP);
-        enrollment.put(EnrollmentModel.Columns.LATITUDE, LATITUDE);
-        enrollment.put(EnrollmentModel.Columns.LONGITUDE, LONGITUDE);
-        enrollment.put(EnrollmentModel.Columns.STATE, STATE.name());
-        enrollment.put(EnrollmentModel.Columns.CREATED, DATE);
-        enrollment.put(EnrollmentModel.Columns.LAST_UPDATED, DATE);
+        enrollment.put(BaseIdentifiableObjectModel.Columns.UID, uid);
+        enrollment.put(EnrollmentTableInfo.Columns.ORGANISATION_UNIT, organisationUnitUid);
+        enrollment.put(EnrollmentFields.PROGRAM, programUid);
+        enrollment.put(EnrollmentFields.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid);
+        enrollment.put(EnrollmentFields.FOLLOW_UP, FOLLOW_UP);
+        enrollment.put(EnrollmentTableInfo.Columns.LATITUDE, LATITUDE);
+        enrollment.put(EnrollmentTableInfo.Columns.LONGITUDE, LONGITUDE);
+        enrollment.put(BaseDataModel.Columns.STATE, STATE.name());
+        enrollment.put(EnrollmentFields.CREATED, DATE);
+        enrollment.put(EnrollmentFields.LAST_UPDATED, DATE);
 
         return enrollment;
     }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -27,29 +27,33 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import org.hisp.dhis.android.core.common.GenericHandler;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.TO;
 
+@Reusable
 final class RelationshipHandlerImpl implements RelationshipHandler {
 
     private final IdentifiableObjectStore<Relationship> relationshipStore;
     private final RelationshipItemStore relationshipItemStore;
-    private final GenericHandler<RelationshipItem, RelationshipItemModel> relationshipItemHandler;
+    private final SyncHandler<RelationshipItem> relationshipItemHandler;
     private final RelationshipItemElementStoreSelector storeSelector;
     private final RelationshipDHISVersionManager versionManager;
 
+    @Inject
     RelationshipHandlerImpl(
             IdentifiableObjectStore<Relationship> relationshipStore,
             RelationshipItemStore relationshipItemStore,
-            GenericHandler<RelationshipItem, RelationshipItemModel> relationshipItemHandler,
+            SyncHandler<RelationshipItem> relationshipItemHandler,
             RelationshipItemElementStoreSelector storeSelector,
             RelationshipDHISVersionManager versionManager) {
         this.relationshipStore = relationshipStore;
@@ -83,8 +87,10 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
         }
 
         relationshipStore.updateOrInsert(relationship);
-        relationshipItemHandler.handle(relationship.from(), new RelationshipItemModelBuilder(relationship, FROM));
-        relationshipItemHandler.handle(relationship.to(), new RelationshipItemModelBuilder(relationship, TO));
+        relationshipItemHandler.handle(relationship.from().toBuilder()
+                .relationship(relationship).relationshipItemType(FROM).build());
+        relationshipItemHandler.handle(relationship.to().toBuilder()
+                .relationship(relationship).relationshipItemType(TO).build());
     }
 
     public boolean doesRelationshipExist(Relationship relationship) {
@@ -108,15 +114,5 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
             }
         }
         return null;
-    }
-
-    public static RelationshipHandler create(DatabaseAdapter databaseAdapter, DHISVersionManager versionManager) {
-        return new RelationshipHandlerImpl(
-                RelationshipStore.create(databaseAdapter),
-                RelationshipItemStoreImpl.create(databaseAdapter),
-                RelationshipItemHandler.create(databaseAdapter),
-                RelationshipItemElementStoreSelectorImpl.create(databaseAdapter),
-                new RelationshipDHISVersionManager(versionManager)
-        );
     }
 }

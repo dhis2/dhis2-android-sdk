@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,19 +29,8 @@
 package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.DeletableStore;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeModel;
-import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
-import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +38,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.never;
@@ -66,25 +55,9 @@ public class WipeModuleShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private IdentifiableObjectStore<UserModel> userStore;
-
+    private ModuleWiper moduleWiperA;
     @Mock
-    private IdentifiableObjectStore<UserCredentials> userCredentialsStore;
-
-    @Mock
-    private ObjectStore<UserOrganisationUnitLinkModel> userOrganisationUnitLinkStore;
-
-    @Mock
-    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
-
-    @Mock
-    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-
-    @Mock
-    private ObjectWithoutUidStore<DataValue> dataValueStore;
-
-    @Mock
-    private IdentifiableObjectStore<ProgramTrackedEntityAttributeModel> trackedEntityAttributeStore;
+    private ModuleWiper moduleWiperB;
 
     private WipeModule wipeModule;
 
@@ -93,59 +66,42 @@ public class WipeModuleShould {
         MockitoAnnotations.initMocks(this);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
-        List<DeletableStore> metadataStoreList = new ArrayList<>();
-        metadataStoreList.add(userStore);
-        metadataStoreList.add(userCredentialsStore);
-        metadataStoreList.add(userOrganisationUnitLinkStore);
-        metadataStoreList.add(authenticatedUserStore);
-        metadataStoreList.add(organisationUnitStore);
 
-        List<DeletableStore> dataStoreList = new ArrayList<>();
-        dataStoreList.add(dataValueStore);
-        dataStoreList.add(trackedEntityAttributeStore);
-        wipeModule = new WipeModuleImpl(metadataStoreList, dataStoreList, new D2CallExecutor(databaseAdapter),
-                new ArrayList<WipeableModule>());
+        List<ModuleWiper> wipers = Arrays.asList(moduleWiperA, moduleWiperB);
+
+        wipeModule = new WipeModuleImpl(new D2CallExecutor(databaseAdapter), wipers);
     }
 
     @Test
-    public void wipe_all_tables() throws Exception {
+    public void wipe_all_modules() throws Exception {
         wipeModule.wipeEverything();
 
-        verify(userStore).delete();
-        verify(userCredentialsStore).delete();
-        verify(userOrganisationUnitLinkStore).delete();
-        verify(authenticatedUserStore).delete();
-        verify(organisationUnitStore).delete();
+        verify(moduleWiperA).wipeMetadata();
+        verify(moduleWiperB).wipeMetadata();
 
-        verify(dataValueStore).delete();
-        verify(trackedEntityAttributeStore).delete();
+        verify(moduleWiperA).wipeData();
+        verify(moduleWiperB).wipeData();
     }
 
     @Test
-    public void wipe_metadata_tables() throws Exception {
+    public void wipe_metadata_in_modules() throws Exception {
         wipeModule.wipeMetadata();
 
-        verify(userStore).delete();
-        verify(userCredentialsStore).delete();
-        verify(userOrganisationUnitLinkStore).delete();
-        verify(authenticatedUserStore).delete();
-        verify(organisationUnitStore).delete();
+        verify(moduleWiperA).wipeMetadata();
+        verify(moduleWiperB).wipeMetadata();
 
-        verify(dataValueStore, never()).delete();
-        verify(trackedEntityAttributeStore, never()).delete();
+        verify(moduleWiperA, never()).wipeData();
+        verify(moduleWiperB, never()).wipeData();
     }
 
     @Test
-    public void wipe_data_tables() throws Exception {
+    public void wipe_data_in_modules() throws Exception {
         wipeModule.wipeData();
 
-        verify(userStore, never()).delete();
-        verify(userCredentialsStore, never()).delete();
-        verify(userOrganisationUnitLinkStore, never()).delete();
-        verify(authenticatedUserStore, never()).delete();
-        verify(organisationUnitStore, never()).delete();
+        verify(moduleWiperA, never()).wipeMetadata();
+        verify(moduleWiperB, never()).wipeMetadata();
 
-        verify(dataValueStore).delete();
-        verify(trackedEntityAttributeStore).delete();
+        verify(moduleWiperA).wipeData();
+        verify(moduleWiperB).wipeData();
     }
 }

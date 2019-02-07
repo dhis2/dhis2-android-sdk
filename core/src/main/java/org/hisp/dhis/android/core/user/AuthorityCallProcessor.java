@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class AuthorityCallProcessor implements CallProcessor<Authority> {
+class AuthorityCallProcessor implements CallProcessor<Authority> {
 
     private final DatabaseAdapter databaseAdapter;
     private final SyncHandler<Authority> handler;

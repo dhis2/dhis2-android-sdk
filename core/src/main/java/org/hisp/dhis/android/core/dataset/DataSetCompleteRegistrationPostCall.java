@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,25 +31,27 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.imports.ImportSummary;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-import retrofit2.Retrofit;
+import javax.inject.Inject;
 
-public final class DataSetCompleteRegistrationPostCall extends SyncCall<ImportSummary> {
+import dagger.Reusable;
+
+@Reusable
+final class DataSetCompleteRegistrationPostCall implements Callable<ImportSummary> {
 
     private final DataSetCompleteRegistrationService dataSetCompleteRegistrationService;
-    private final DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+    private final DataSetCompleteRegistrationStore  dataSetCompleteRegistrationStore;
     private final APICallExecutor apiCallExecutor;
 
-    private DataSetCompleteRegistrationPostCall(
+    @Inject
+    DataSetCompleteRegistrationPostCall(
             @NonNull DataSetCompleteRegistrationService dataSetCompleteRegistrationService,
             @NonNull DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore,
             @NonNull APICallExecutor apiCallExecutor) {
@@ -61,9 +63,6 @@ public final class DataSetCompleteRegistrationPostCall extends SyncCall<ImportSu
 
     @Override
     public ImportSummary call() throws Exception {
-
-        setExecuted();
-
         List<DataSetCompleteRegistration> toPostDataSetCompleteRegistrations = new ArrayList<>();
 
         appendPostableDataValues(toPostDataSetCompleteRegistrations);
@@ -104,14 +103,4 @@ public final class DataSetCompleteRegistrationPostCall extends SyncCall<ImportSu
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
                 dataSetCompleteRegistrationPayload, importSummary);
     }
-
-    public static DataSetCompleteRegistrationPostCall create(@NonNull DatabaseAdapter databaseAdapter,
-                                           @NonNull Retrofit retrofit) {
-
-        return new DataSetCompleteRegistrationPostCall(
-                retrofit.create(DataSetCompleteRegistrationService.class),
-                DataSetCompleteRegistrationStore.create(databaseAdapter),
-                APICallExecutorImpl.create(databaseAdapter));
-    }
-
 }

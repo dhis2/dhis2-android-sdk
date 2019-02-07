@@ -4,9 +4,6 @@ package org.hisp.dhis.android.core.category;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelStore;
@@ -17,6 +14,7 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -24,27 +22,25 @@ import static junit.framework.Assert.assertTrue;
 public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
-    private APICallExecutor apiCallExecutor;
 
     @Override
     @Before
     public void setUp() throws IOException {
         super.setUp();
         d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
-        apiCallExecutor = APICallExecutorImpl.create(d2.databaseAdapter());
     }
 
     //@Test
     public void download_categories_combos_and_relatives() throws Exception {
-        d2.logIn(RealServerMother.user, RealServerMother.password).call();
+        d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
 
         d2.databaseAdapter().database().setForeignKeyConstraintsEnabled(false);
 
         assertNotCombosInDB();
         assertTrue(getCategoryCategoryComboLinkModels().isEmpty());
 
-        Call<List<CategoryCombo>> categoryComboEndpointCall =
-                new CategoryComboEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
+        Callable<List<CategoryCombo>> categoryComboEndpointCall =
+                getD2DIComponent(d2).internalModules().category.categoryComboCallFactory.create(
                         new HashSet<>(Lists.newArrayList("bjDvmb4bfuf")));
         List<CategoryCombo> categoryCombos = categoryComboEndpointCall.call();
 
@@ -63,7 +59,7 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
     }
 
     private void downloadCategories() throws Exception {
-        new CategoryEndpointCallFactory(getGenericCallData(d2), apiCallExecutor).create(
+        getD2DIComponent(d2).internalModules().category.categoryCallFactory.create(
                 new HashSet<>(Lists.newArrayList("GLevLNI9wkl"))).call();
     }
 

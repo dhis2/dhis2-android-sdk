@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -33,13 +33,15 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 final class UserCredentialsFields {
     static final String USERNAME = "username";
+    static final String USER_ROLES = "userRoles";
 
     private static final FieldsHelper<UserCredentials> fh = new FieldsHelper<>();
 
     public static final Fields<UserCredentials> allFields = Fields.<UserCredentials>builder()
             .fields(fh.getIdentifiableFields())
             .fields(
-                    fh.<String>field(USERNAME)
+                    fh.<String>field(USERNAME),
+                    fh.<UserRole>nestedField(USER_ROLES).with(UserRoleFields.allFields)
             ).build();
 
     private UserCredentialsFields() {

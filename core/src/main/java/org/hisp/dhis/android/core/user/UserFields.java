@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -35,24 +35,23 @@ import org.hisp.dhis.android.core.data.api.NestedField;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields;
 
-public final class UserFields {
-    private static final String BIRTHDAY = "birthday";
-    private static final String EDUCATION = "education";
-    private static final String GENDER = "gender";
-    private static final String JOB_TITLE = "jobTitle";
-    private static final String SURNAME = "surname";
-    private static final String FIRST_NAME = "firstName";
-    private static final String INTRODUCTION = "introduction";
-    private static final String EMPLOYER = "employer";
-    private static final String INTERESTS = "interests";
-    private static final String LANGUAGES = "languages";
-    private static final String EMAIL = "email";
-    private static final String PHONE_NUMBER = "phoneNumber";
-    private static final String NATIONALITY = "nationality";
-    private static final String USER_CREDENTIALS = "userCredentials";
-    private static final String ORGANISATION_UNITS = "organisationUnits";
-    private static final String TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
-    // private static final String DATA_VIEW_ORGANISATION_UNITS = "dataViewOrganisationUnits";
+final class UserFields {
+    static final String BIRTHDAY = "birthday";
+    static final String EDUCATION = "education";
+    static final String GENDER = "gender";
+    static final String JOB_TITLE = "jobTitle";
+    static final String SURNAME = "surname";
+    static final String FIRST_NAME = "firstName";
+    static final String INTRODUCTION = "introduction";
+    static final String EMPLOYER = "employer";
+    static final String INTERESTS = "interests";
+    static final String LANGUAGES = "languages";
+    static final String EMAIL = "email";
+    static final String PHONE_NUMBER = "phoneNumber";
+    static final String NATIONALITY = "nationality";
+    static final String USER_CREDENTIALS = "userCredentials";
+    static final String ORGANISATION_UNITS = "organisationUnits";
+    static final String TEI_SEARCH_ORGANISATION_UNITS = "teiSearchOrganisationUnits";
 
     private static final Field<User, String> uid = Field.create(BaseIdentifiableObject.UID);
     private static final Field<User, String> code = Field.create(BaseIdentifiableObject.CODE);

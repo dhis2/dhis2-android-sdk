@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.UidsNoResourceCallFetcher;
@@ -41,18 +42,30 @@ import org.hisp.dhis.android.core.common.UidsQuery;
 
 import java.util.Set;
 
-public final class ProgramRuleEndpointCallFactory extends UidsCallFactoryImpl<ProgramRule> {
+import javax.inject.Inject;
 
-    // TODO calculate
+import dagger.Reusable;
+
+@Reusable
+final class ProgramRuleEndpointCallFactory extends UidsCallFactoryImpl<ProgramRule> {
+
     private static final int MAX_UID_LIST_SIZE = 64;
 
-    public ProgramRuleEndpointCallFactory(GenericCallData data, APICallExecutor apiCallExecutor) {
+    private final ProgramRuleService service;
+    private final SyncHandler<ProgramRule> handler;
+
+    @Inject
+    ProgramRuleEndpointCallFactory(GenericCallData data,
+                                   APICallExecutor apiCallExecutor,
+                                   ProgramRuleService service,
+                                   SyncHandler<ProgramRule> handler) {
         super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
     @Override
     protected CallFetcher<ProgramRule> fetcher(Set<String> uids) {
-        final ProgramRuleService service = data.retrofit().create(ProgramRuleService.class);
 
         return new UidsNoResourceCallFetcher<ProgramRule>(uids, MAX_UID_LIST_SIZE, apiCallExecutor) {
 
@@ -70,8 +83,6 @@ public final class ProgramRuleEndpointCallFactory extends UidsCallFactoryImpl<Pr
     @Override
     protected CallProcessor<ProgramRule> processor() {
         return new TransactionalNoResourceSyncCallProcessor<>(
-                data.databaseAdapter(),
-                ProgramRuleHandler.create(data.databaseAdapter())
-        );
+                data.databaseAdapter(), handler);
     }
 }

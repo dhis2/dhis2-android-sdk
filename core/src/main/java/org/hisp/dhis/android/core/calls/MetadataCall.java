@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -29,144 +29,86 @@ package org.hisp.dhis.android.core.calls;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.D2InternalModules;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.modules.Downloader;
-import org.hisp.dhis.android.core.calls.factories.GenericCallFactory;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.category.Category;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryComboEndpointCallFactory;
-import org.hisp.dhis.android.core.category.CategoryComboUidsSeeker;
-import org.hisp.dhis.android.core.category.CategoryEndpointCallFactory;
-import org.hisp.dhis.android.core.category.CategoryParentUidsHelper;
+import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.SyncCall;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetParentCall;
+import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyCleanerImpl;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCall;
-import org.hisp.dhis.android.core.organisationunit.SearchOrganisationUnitCall;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
 import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramParentCall;
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.Authority;
-import org.hisp.dhis.android.core.user.AuthorityEndpointCall;
+import org.hisp.dhis.android.core.program.ProgramModuleDownloader;
+import org.hisp.dhis.android.core.settings.SystemSettingModuleDownloader;
+import org.hisp.dhis.android.core.systeminfo.SystemInfoModuleDownloader;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserCall;
+import org.hisp.dhis.android.core.user.UserModuleDownloader;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
-public class MetadataCall extends SyncCall<Unit> {
+import javax.inject.Inject;
 
-    private final GenericCallData genericCallData;
+import dagger.Reusable;
 
-    private final Downloader<SystemInfo> systemInfoDownloader;
-    private final Downloader<SystemSetting> systemSettingDownloader;
-    private final GenericCallFactory<User> userCallFactory;
-    private final ListCallFactory<Authority> authorityCallFactory;
-    private final UidsCallFactory<Category> categoryCallFactory;
-    private final UidsCallFactory<CategoryCombo> categoryComboCallFactory;
-    private final CategoryComboUidsSeeker categoryComboUidsSeeker;
-    private final GenericCallFactory<List<Program>> programParentCallFactory;
-    private final OrganisationUnitCall.Factory organisationUnitCallFactory;
-    private final SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory;
-    private final GenericCallFactory<List<DataSet>> dataSetParentCallFactory;
+@Reusable
+public class MetadataCall implements Callable<Unit> {
+
+    private final D2CallExecutor d2CallExecutor;
+
+    private final SystemInfoModuleDownloader systemInfoDownloader;
+    private final SystemSettingModuleDownloader systemSettingDownloader;
+    private final UserModuleDownloader userModuleDownloader;
+    private final CategoryModuleDownloader categoryDownloader;
+    private final ProgramModuleDownloader programDownloader;
+    private final OrganisationUnitModuleDownloader organisationUnitDownloadModule;
+    private final DataSetModuleDownloader dataSetDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
-    public MetadataCall(@NonNull GenericCallData genericCallData,
-                        @NonNull Downloader<SystemInfo> systemInfoDownloader,
-                        @NonNull Downloader<SystemSetting> systemSettingDownloader,
-                        @NonNull GenericCallFactory<User> userCallFactory,
-                        @NonNull ListCallFactory<Authority> authorityCallFactory,
-                        @NonNull UidsCallFactory<Category> categoryCallFactory,
-                        @NonNull UidsCallFactory<CategoryCombo> categoryComboCallFactory,
-                        @NonNull CategoryComboUidsSeeker categoryComboUidsSeeker,
-                        @NonNull GenericCallFactory<List<Program>> programParentCallFactory,
-                        @NonNull OrganisationUnitCall.Factory organisationUnitCallFactory,
-                        @NonNull SearchOrganisationUnitCall.Factory searchOrganisationUnitCallFactory,
-                        @NonNull GenericCallFactory<List<DataSet>> dataSetParentCallFactory,
+    @Inject
+    public MetadataCall(@NonNull D2CallExecutor d2CallExecutor,
+                        @NonNull SystemInfoModuleDownloader systemInfoDownloader,
+                        @NonNull SystemSettingModuleDownloader systemSettingDownloader,
+                        @NonNull UserModuleDownloader userModuleDownloader,
+                        @NonNull CategoryModuleDownloader categoryDownloader,
+                        @NonNull ProgramModuleDownloader programDownloader,
+                        @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
+                        @NonNull DataSetModuleDownloader dataSetDownloader,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
-        this.genericCallData = genericCallData;
+        this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
         this.systemSettingDownloader = systemSettingDownloader;
-        this.userCallFactory = userCallFactory;
-        this.authorityCallFactory = authorityCallFactory;
-        this.categoryCallFactory = categoryCallFactory;
-        this.categoryComboCallFactory = categoryComboCallFactory;
-        this.categoryComboUidsSeeker = categoryComboUidsSeeker;
-        this.programParentCallFactory = programParentCallFactory;
-        this.organisationUnitCallFactory = organisationUnitCallFactory;
-        this.searchOrganisationUnitCallFactory = searchOrganisationUnitCallFactory;
-        this.dataSetParentCallFactory = dataSetParentCallFactory;
+        this.userModuleDownloader = userModuleDownloader;
+        this.categoryDownloader = categoryDownloader;
+        this.programDownloader = programDownloader;
+        this.organisationUnitDownloadModule = organisationUnitDownloadModule;
+        this.dataSetDownloader = dataSetDownloader;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     @Override
     public Unit call() throws Exception {
-        setExecuted();
 
-        final D2CallExecutor executor = new D2CallExecutor(genericCallData.databaseAdapter());
-
-        return executor.executeD2CallTransactionally(new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
             @Override
             public Unit call() throws Exception {
-                systemInfoDownloader.download().call();
+                systemInfoDownloader.downloadMetadata().call();
 
-                systemSettingDownloader.download().call();
+                systemSettingDownloader.downloadMetadata().call();
 
-                User user = userCallFactory.create(genericCallData).call();
+                User user = userModuleDownloader.downloadMetadata().call();
 
-                authorityCallFactory.create().call();
+                List<Program> programs = programDownloader.downloadMetadata().call();
 
-                List<Program> programs = programParentCallFactory.create(genericCallData).call();
+                List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
 
-                List<DataSet> dataSets = dataSetParentCallFactory.create(genericCallData).call();
+                categoryDownloader.downloadMetadata().call();
 
-                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(
-                        categoryComboUidsSeeker.seekUids()).call();
-
-                categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
-
-                organisationUnitCallFactory.create(
-                        genericCallData, user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
-
-                searchOrganisationUnitCallFactory.create(genericCallData, user).call();
+                organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
 
                 foreignKeyCleaner.cleanForeignKeyErrors();
 
                 return new Unit();
             }
         });
-    }
-
-    public static MetadataCall create(GenericCallData genericCallData,
-                                      D2InternalModules internalModules) {
-        APICallExecutor apiCallExecutor = APICallExecutorImpl.create(genericCallData.databaseAdapter());
-
-        return new MetadataCall(
-                genericCallData,
-                internalModules.systemInfo,
-                internalModules.systemSetting,
-                UserCall.FACTORY,
-                new AuthorityEndpointCall(genericCallData, apiCallExecutor),
-                new CategoryEndpointCallFactory(genericCallData, apiCallExecutor),
-                new CategoryComboEndpointCallFactory(genericCallData, apiCallExecutor),
-                new CategoryComboUidsSeeker(genericCallData.databaseAdapter()),
-                ProgramParentCall.FACTORY,
-                OrganisationUnitCall.FACTORY,
-                SearchOrganisationUnitCall.FACTORY,
-                DataSetParentCall.FACTORY,
-                ForeignKeyCleanerImpl.create(genericCallData.databaseAdapter())
-        );
     }
 }

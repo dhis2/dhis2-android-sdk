@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public interface DataValueService {
+interface DataValueService {
     @GET("dataValueSets")
     Call<Payload<DataValue>> getDataValues(@Query("fields") @Which Fields<DataValue> fields,
                                            @Query("filter") @Where Filter<DataValue, String> lastUpdated,

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
@@ -14,8 +15,12 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.junit.After;
@@ -61,7 +66,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
@@ -78,13 +83,13 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         givenAMetadataInDatabase();
 
         Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
-                d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_payload.json");
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        trackedEntityInstanceByUidEndPointCall = d2.downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
+        trackedEntityInstanceByUidEndPointCall = d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid));
 
 
         dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance_with_removed_data_payload.json");
@@ -137,41 +142,25 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         for (Enrollment enrollment : trackedEntityInstance.enrollments()) {
             for (Event event : enrollment.events()) {
                 if (!event.deleted()) {
-                    if (expectedEvents.get(event.enrollmentUid()) == null) {
-                        expectedEvents.put(event.enrollmentUid(), new ArrayList<Event>());
+                    if (expectedEvents.get(event.enrollment()) == null) {
+                        expectedEvents.put(event.enrollment(), new ArrayList<Event>());
                     }
 
-                    expectedEvents.get(event.enrollmentUid()).add(event);
+                    expectedEvents.get(event.enrollment()).add(event);
 
                 }
             }
             if (!enrollment.deleted()) {
-                enrollment = Enrollment.create(
-                        enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                        enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                        enrollment.organisationUnit(), enrollment.program(),
-                        enrollment.enrollmentDate(), enrollment.incidentDate(),
-                        enrollment.followUp(),
-                        enrollment.enrollmentStatus(), trackedEntityInstance.uid(),
-                        enrollment.coordinate(),
-                        enrollment.deleted(), expectedEvents.get(enrollment.uid()), enrollment.notes());
+                enrollment = enrollment.toBuilder()
+                        .trackedEntityInstance(trackedEntityInstance.uid())
+                        .events(expectedEvents.get(enrollment.uid()))
+                        .build();
 
                 expectedEnrollments.add(enrollment);
             }
         }
 
-        trackedEntityInstance = TrackedEntityInstance.create(
-                trackedEntityInstance.uid(), trackedEntityInstance.created(),
-                trackedEntityInstance.lastUpdated(),
-                trackedEntityInstance.createdAtClient(),
-                trackedEntityInstance.lastUpdatedAtClient(),
-                trackedEntityInstance.organisationUnit(),
-                trackedEntityInstance.trackedEntityType(),
-                trackedEntityInstance.coordinates(),
-                trackedEntityInstance.featureType(),
-                trackedEntityInstance.deleted(),
-                trackedEntityInstance.trackedEntityAttributeValues(),
-                trackedEntityInstance.relationships(), expectedEnrollments);
+        trackedEntityInstance = trackedEntityInstance.toBuilder().enrollments(expectedEnrollments).build();
 
         return trackedEntityInstance;
     }
@@ -180,23 +169,37 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         TrackedEntityInstance downloadedTei;
 
         TrackedEntityAttributeValueStore teiAttributeValuesStore =
-                new TrackedEntityAttributeValueStoreImpl(databaseAdapter());
+                TrackedEntityAttributeValueStoreImpl.create(databaseAdapter());
 
-        Map<String, List<TrackedEntityAttributeValue>> attValues =
-                teiAttributeValuesStore.queryAll();
+        List<TrackedEntityAttributeValue> attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid);
+        List<TrackedEntityAttributeValue> attValuesWithoutIdAndTEI = new ArrayList<>();
+        for (TrackedEntityAttributeValue trackedEntityAttributeValue : attValues) {
+            attValuesWithoutIdAndTEI.add(
+                    trackedEntityAttributeValue.toBuilder().id(null).trackedEntityInstance(null).build());
+        }
 
-        TrackedEntityInstanceStoreImpl teiStore =
-                new TrackedEntityInstanceStoreImpl(databaseAdapter());
+        TrackedEntityInstanceStore teiStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
 
-        downloadedTei = teiStore.queryAll().get(teiUid);
+        downloadedTei = teiStore.selectByUid(teiUid);
 
-        EnrollmentStoreImpl enrollmentStore = new EnrollmentStoreImpl(databaseAdapter());
+        EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
 
-        Map<String, List<Enrollment>> downloadedEnrollments = enrollmentStore.queryAll();
+        List<Enrollment> downloadedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
+                .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, teiUid).build());
+        List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
+        for (Enrollment enrollment : downloadedEnrollments) {
+            downloadedEnrollmentsWithoutIdAndDeleteFalse.add(
+                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<Note>()).build());
+        }
 
-        EventStoreImpl eventStore = new EventStoreImpl(databaseAdapter());
+        EventStore eventStore = EventStoreImpl.create(databaseAdapter());
 
-        List<Event> downloadedEventsWithoutValues = eventStore.queryAll();
+        List<Event> downloadedEventsWithoutValues = eventStore.selectAll();
+        List<Event> downloadedEventsWithoutValuesAndDeleteFalse = new ArrayList<>();
+        for (Event event : downloadedEventsWithoutValues) {
+            downloadedEventsWithoutValuesAndDeleteFalse.add(
+                    event.toBuilder().deleted(false).state(null).build());
+        }
 
         List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter()).selectAll();
         Map<String, List<TrackedEntityDataValue>> downloadedValues = new HashMap<>();
@@ -208,16 +211,15 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             downloadedValues.get(dataValue.event()).add(dataValue);
         }
 
-        return createTei(downloadedTei, attValues, downloadedEnrollments.get(teiUid),
-                downloadedEventsWithoutValues, downloadedValues);
+        return createTei(downloadedTei, attValuesWithoutIdAndTEI, downloadedEnrollmentsWithoutIdAndDeleteFalse,
+                downloadedEventsWithoutValuesAndDeleteFalse, downloadedValues);
     }
 
     private TrackedEntityInstance createTei(TrackedEntityInstance downloadedTei,
-            Map<String, List<TrackedEntityAttributeValue>> attValues,
-            List<Enrollment> downloadedEnrollmentsWithoutEvents,
-            List<Event> downloadedEventsWithoutValues,
-            Map<String, List<TrackedEntityDataValue>> downloadedValues) {
-
+                                            List<TrackedEntityAttributeValue> attValuesWithoutIdAndTEI,
+                                            List<Enrollment> downloadedEnrollmentsWithoutEvents,
+                                            List<Event> downloadedEventsWithoutValues,
+                                            Map<String, List<TrackedEntityDataValue>> downloadedValues) {
 
         Map<String, List<Event>> downloadedEvents = new HashMap<>();
 
@@ -231,32 +233,20 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
                         trackedEntityDataValue.toBuilder().id(null).event(null).build());
             }
 
-            event = Event.create(
-                    event.uid(), event.enrollmentUid(), event.created(), event.lastUpdated(),
-                    event.createdAtClient(), event.lastUpdatedAtClient(),
-                    event.program(), event.programStage(), event.organisationUnit(),
-                    event.eventDate(), event.status(), event.coordinates(),
-                    event.completedDate(),
-                    event.dueDate(), event.deleted(), trackedEntityDataValuesWithNullIdsAndEvents,
-                    event.attributeOptionCombo(),
-                    event.trackedEntityInstance());
+            event = event.toBuilder().trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build();
 
-            if (downloadedEvents.get(event.enrollmentUid()) == null) {
-                downloadedEvents.put(event.enrollmentUid(), new ArrayList<Event>());
+            if (downloadedEvents.get(event.enrollment()) == null) {
+                downloadedEvents.put(event.enrollment(), new ArrayList<Event>());
             }
 
-            downloadedEvents.get(event.enrollmentUid()).add(event);
+            downloadedEvents.get(event.enrollment()).add(event);
         }
 
         for (Enrollment enrollment : downloadedEnrollmentsWithoutEvents) {
-            enrollment = Enrollment.create(
-                    enrollment.uid(), enrollment.created(), enrollment.lastUpdated(),
-                    enrollment.createdAtClient(), enrollment.lastUpdatedAtClient(),
-                    enrollment.organisationUnit(), enrollment.program(),
-                    enrollment.enrollmentDate(), enrollment.incidentDate(),
-                    enrollment.followUp(),
-                    enrollment.enrollmentStatus(), downloadedTei.uid(), enrollment.coordinate(),
-                    enrollment.deleted(), downloadedEvents.get(enrollment.uid()), enrollment.notes());
+            enrollment = enrollment.toBuilder()
+                    .trackedEntityInstance(downloadedTei.uid())
+                    .events(downloadedEvents.get(enrollment.uid()))
+                    .build();
 
             downloadedEnrollments.add(enrollment);
         }
@@ -267,12 +257,14 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             relationships = downloadedTei.relationships();
         }
 
-        downloadedTei = TrackedEntityInstance.create(
-                downloadedTei.uid(), downloadedTei.created(), downloadedTei.lastUpdated(),
-                downloadedTei.createdAtClient(), downloadedTei.lastUpdatedAtClient(),
-                downloadedTei.organisationUnit(), downloadedTei.trackedEntityType(), downloadedTei.coordinates(),
-                downloadedTei.featureType(), downloadedTei.deleted(), attValues.get(downloadedTei.uid()),
-                relationships, downloadedEnrollments);
+        downloadedTei = downloadedTei.toBuilder()
+                .id(null)
+                .state(null)
+                .deleted(false)
+                .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
+                .relationships(relationships)
+                .enrollments(downloadedEnrollments)
+                .build();
 
         return downloadedTei;
     }

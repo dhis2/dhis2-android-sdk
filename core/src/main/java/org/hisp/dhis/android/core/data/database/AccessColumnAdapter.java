@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -35,22 +35,19 @@ import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
 
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AccessHelper;
-import org.hisp.dhis.android.core.common.DataAccess;
 
 public class AccessColumnAdapter implements ColumnTypeAdapter<Access> {
 
     @Override
     public Access fromCursor(Cursor cursor, String columnName) {
-        int columnIndex = cursor.getColumnIndex(columnName);
+        int columnIndex = cursor.getColumnIndex(Access.ACCESS_DATA_WRITE);
         Integer accessDataWrite = cursor.getInt(columnIndex);
-
-        return Access.create(null, null, null, null, null, null,
-                DataAccess.create(true, accessDataWrite == 1));
+        return Access.createForDataWrite(accessDataWrite == 1);
     }
 
     @Override
     public void toContentValues(ContentValues values, String columnName, Access value) {
         Integer accessDataWrite = AccessHelper.getAccessDataWrite(value);
-        values.put(columnName, accessDataWrite);
+        values.put(Access.ACCESS_DATA_WRITE, accessDataWrite);
     }
 }

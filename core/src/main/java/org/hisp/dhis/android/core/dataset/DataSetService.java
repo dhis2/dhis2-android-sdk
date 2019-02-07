@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -36,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface DataSetService {
+interface DataSetService {
     @GET("dataSets")
     Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
                                        @Query("filter") @Where String accessDataReadFilter,

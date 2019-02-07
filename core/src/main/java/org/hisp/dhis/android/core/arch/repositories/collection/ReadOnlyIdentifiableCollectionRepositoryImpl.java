@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,28 +28,57 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
+import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
+import java.util.List;
 
-public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface>
-        extends ReadOnlyCollectionRepositoryImpl<M>
-        implements ReadOnlyIdentifiableCollectionRepository<M> {
+public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & IdentifiableObject,
+        R extends ReadOnlyCollectionRepository<M>>
+        extends ReadOnlyWithUidCollectionRepositoryImpl<M, R>
+        implements ReadOnlyIdentifiableCollectionRepository<M, R> {
 
-    private final IdentifiableObjectStore<M> store;
-
-    public ReadOnlyIdentifiableCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                        Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(store, childrenAppenders);
-        this.store = store;
+    public ReadOnlyIdentifiableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
+                                                        final Collection<ChildrenAppender<M>> childrenAppenders,
+                                                        List<RepositoryScopeItem> scope,
+                                                        FilterConnectorFactory<R> cf) {
+        super(store, childrenAppenders, scope, cf);
     }
 
     @Override
-    public ReadOnlyObjectRepository<M> uid(String uid) {
-        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
+    public StringFilterConnector<R> byUid() {
+        return cf.string(Columns.UID);
+    }
+
+    @Override
+    public StringFilterConnector<R> byCode() {
+        return cf.string(Columns.CODE);
+    }
+
+    @Override
+    public StringFilterConnector<R> byName() {
+        return cf.string(Columns.NAME);
+    }
+
+    @Override
+    public StringFilterConnector<R> byDisplayName() {
+        return cf.string(Columns.DISPLAY_NAME);
+    }
+
+    @Override
+    public DateFilterConnector<R> byCreated() {
+        return cf.date(Columns.CREATED);
+    }
+
+    @Override
+    public DateFilterConnector<R> byLastUpdated() {
+        return cf.date(Columns.LAST_UPDATED);
     }
 }

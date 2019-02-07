@@ -52,8 +52,8 @@ ext {
             buildToolsVersion: "28.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
-            versionCode      : 118,
-            versionName      : "0.13.2-SNAPSHOT"
+            versionCode      : 119,
+            versionName      : "0.14.0-SNAPSHOT"
     ]
 
     libraries = [
@@ -77,6 +77,7 @@ ext {
             junit           : "4.12",
             assertj         : "3.5.2",
             mockito         : "1.10.19",
+            dexmaker        : "2.21.0",
             truth           : "0.31",
             testrunner      : "0.5",
             equalsverifier  : "2.1.8",

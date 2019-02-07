@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.common;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
-import org.hisp.dhis.android.core.resource.ResourceModel;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import retrofit2.Retrofit;
@@ -49,7 +49,7 @@ public abstract class GenericCallData {
         return new AutoValue_GenericCallData(databaseAdapter, retrofit, resourceHandler, versionManager);
     }
 
-    public void handleResource(ResourceModel.Type type) {
+    public void handleResource(Resource.Type type) {
         resourceHandler().handleResource(type);
     }
 }

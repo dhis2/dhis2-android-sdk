@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public final class DataSetCompulsoryDataElementOperandLinkStore {
+final class DataSetCompulsoryDataElementOperandLinkStore {
 
     private DataSetCompulsoryDataElementOperandLinkStore() {}
 
@@ -65,8 +65,7 @@ public final class DataSetCompulsoryDataElementOperandLinkStore {
     public static LinkModelStore<DataSetCompulsoryDataElementOperandLinkModel> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetCompulsoryDataElementOperandLinkModel.TABLE,
-                new DataSetCompulsoryDataElementOperandLinkModel.Columns(),
+                DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
                 DataSetCompulsoryDataElementOperandLinkModel.Columns.DATA_SET,
                 BINDER,
                 FACTORY);

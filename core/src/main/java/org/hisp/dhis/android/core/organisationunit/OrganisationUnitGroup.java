@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2018, University of Oslo
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,69 +28,51 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-
-import java.util.Date;
+import org.hisp.dhis.android.core.common.Model;
 
 @AutoValue
-public abstract class OrganisationUnitGroup extends BaseIdentifiableObject {
-
-    public static final String SHORT_NAME = "shortName";
-    public static final String DISPLAY_SHORT_NAME = "displayShortName";
-
-    private static final Field<OrganisationUnitGroup, String> uid = Field.create(UID);
-    private static final Field<OrganisationUnitGroup, String> code = Field.create(CODE);
-    private static final Field<OrganisationUnitGroup, String> name = Field.create(NAME);
-    private static final Field<OrganisationUnitGroup, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<OrganisationUnitGroup, String> created = Field.create(CREATED);
-    private static final Field<OrganisationUnitGroup, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<OrganisationUnitGroup, Boolean> deleted = Field.create(DELETED);
-
-    private static final Field<OrganisationUnitGroup, String> shortName = Field.create(SHORT_NAME);
-    private static final Field<OrganisationUnitGroup, String> displayShortName = Field.create(DISPLAY_SHORT_NAME);
-
-
-    static final Fields<OrganisationUnitGroup> allFields
-            = Fields.<OrganisationUnitGroup>builder().fields(
-            uid, code, name, displayName,
-            created, lastUpdated, deleted,
-            shortName, displayShortName
-    ).build();
+@JsonDeserialize(builder = AutoValue_OrganisationUnitGroup.Builder.class)
+public abstract class OrganisationUnitGroup extends BaseIdentifiableObject implements Model {
 
     @Nullable
-    @JsonProperty(SHORT_NAME)
+    @JsonProperty()
     public abstract String shortName();
 
     @Nullable
-    @JsonProperty(DISPLAY_SHORT_NAME)
+    @JsonProperty()
     public abstract String displayShortName();
 
-    @JsonCreator
-    public static OrganisationUnitGroup create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-
-            @JsonProperty(SHORT_NAME) String shortName,
-            @JsonProperty(DISPLAY_SHORT_NAME) String displayShortName,
-            @JsonProperty(DELETED) Boolean deleted) {
-
-        return new AutoValue_OrganisationUnitGroup(
-                uid, code, name, displayName,
-                created, lastUpdated, deleted,
-                shortName, displayShortName
-        );
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnitGroup.Builder();
     }
 
+    @NonNull
+    public static OrganisationUnitGroup create(Cursor cursor) {
+        return AutoValue_OrganisationUnitGroup.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder shortName(String shortName);
+
+        public abstract Builder displayShortName(String displayShortName);
+
+        public abstract OrganisationUnitGroup build();
+    }
 }

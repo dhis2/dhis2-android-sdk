@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -33,29 +33,25 @@ import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.ValueTypeRenderingHandler;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
+final class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
+    @Inject
     DataElementHandler(IdentifiableObjectStore<DataElement> dataElementStore,
                        SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                        DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(dataElementStore);
         this.styleHandler = styleHandler;
         this.renderTypeHandler = renderTypeHandler;
-    }
-
-    public static DataElementHandler create(DatabaseAdapter databaseAdapter) {
-        return new DataElementHandler(
-                DataElementStore.create(databaseAdapter),
-                ObjectStyleHandler.create(databaseAdapter),
-                ValueTypeRenderingHandler.create(databaseAdapter));
     }
 
     @Override

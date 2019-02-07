@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -45,8 +45,8 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
     private final DatabaseAdapter databaseAdapter;
     private final ObjectStore<ForeignKeyViolation> foreignKeyViolationStore;
 
-    private ForeignKeyCleanerImpl(DatabaseAdapter databaseAdapter,
-                                  ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
+    ForeignKeyCleanerImpl(DatabaseAdapter databaseAdapter,
+                          ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
         this.databaseAdapter = databaseAdapter;
         this.foreignKeyViolationStore = foreignKeyViolationStore;
     }
@@ -183,13 +183,17 @@ public final class ForeignKeyCleanerImpl implements ForeignKeyCleaner {
 
         String columnValue;
         switch (fromColumnType) {
-            case 1:  columnValue = String.valueOf(cursor.getInt(fromColumnIndex));
+            case 1:
+                columnValue = String.valueOf(cursor.getInt(fromColumnIndex));
                 break;
-            case 2:  columnValue = String.valueOf(cursor.getFloat(fromColumnIndex));
+            case 2:
+                columnValue = String.valueOf(cursor.getFloat(fromColumnIndex));
                 break;
-            case 3:  columnValue = cursor.getString(fromColumnIndex);
+            case 3:
+                columnValue = cursor.getString(fromColumnIndex);
                 break;
-            default: columnValue = null;
+            default:
+                columnValue = null;
                 break;
         }
 

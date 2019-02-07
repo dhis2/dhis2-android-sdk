@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -31,367 +31,134 @@ package org.hisp.dhis.android.core.event;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.StoreWithStateImpl;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.CoordinateHelper;
+import org.hisp.dhis.android.core.common.CursorModelFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
+import org.hisp.dhis.android.core.common.SQLStatementBuilder;
+import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.event.EventModel.Columns;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.parse;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@SuppressWarnings({
-        "PMD.AvoidDuplicateLiterals",
-        "PMD.NPathComplexity",
-        "PMD.CyclomaticComplexity",
-        "PMD.ModifiedCyclomaticComplexity",
-        "PMD.StdCyclomaticComplexity",
-        "PMD.AvoidInstantiatingObjectsInLoops"
-})
-public class EventStoreImpl extends StoreWithStateImpl implements EventStore {
+public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> implements EventStore {
 
-    private static final String INSERT_STATEMENT = "INSERT INTO " + EventModel.TABLE + " (" +
-            Columns.UID + ", " +
-            Columns.ENROLLMENT + ", " +
-            Columns.CREATED + ", " +
-            Columns.LAST_UPDATED + ", " +
-            Columns.CREATED_AT_CLIENT + ", " +
-            Columns.LAST_UPDATED_AT_CLIENT + ", " +
-            Columns.STATUS + ", " +
-            Columns.LATITUDE + ", " +
-            Columns.LONGITUDE + ", " +
-            Columns.PROGRAM + ", " +
-            Columns.PROGRAM_STAGE + ", " +
-            Columns.ORGANISATION_UNIT + ", " +
-            Columns.EVENT_DATE + ", " +
-            Columns.COMPLETE_DATE + ", " +
-            Columns.DUE_DATE + ", " +
-            Columns.STATE + ", " +
-            Columns.ATTRIBUTE_OPTION_COMBO + ", " +
-            Columns.TRACKED_ENTITY_INSTANCE + ") " +
-            "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment ISNULL";
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + EventModel.TABLE + " SET " +
-            Columns.UID + " =? , " +
-            Columns.ENROLLMENT + " =? , " +
-            Columns.CREATED + " =? , " +
-            Columns.LAST_UPDATED + " =? ," +
-            Columns.CREATED_AT_CLIENT + " =? , " +
-            Columns.LAST_UPDATED_AT_CLIENT + " =? , " +
-            Columns.STATUS + " =? ," +
-            Columns.LATITUDE + " =? ," +
-            Columns.LONGITUDE + " =? ," +
-            Columns.PROGRAM + " =? ," +
-            Columns.PROGRAM_STAGE + " =? , " +
-            Columns.ORGANISATION_UNIT + " =?, " +
-            Columns.EVENT_DATE + " =? , " +
-            Columns.COMPLETE_DATE + " =? , " +
-            Columns.DUE_DATE + " =? , " +
-            Columns.STATE + " =?, " +
-            Columns.ATTRIBUTE_OPTION_COMBO + " =?, " +
-            Columns.TRACKED_ENTITY_INSTANCE + " =? " +
-            " WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String DELETE_STATEMENT = "DELETE FROM " +
-            EventModel.TABLE + " WHERE " +
-            Columns.UID + " =?;";
-
-    private static final String FIELDS =
-            "  Event.uid, " +
-            "  Event.created, " +
-            "  Event.lastUpdated, " +
-            "  Event.createdAtClient, " +
-            "  Event.lastUpdatedAtClient, " +
-            "  Event.status, " +
-            "  Event.latitude, " +
-            "  Event.longitude, " +
-            "  Event.program, " +
-            "  Event.programStage, " +
-            "  Event.organisationUnit, " +
-            "  Event.enrollment, " +
-            "  Event.eventDate, " +
-            "  Event.completedDate, " +
-            "  Event.dueDate, "  +
-            "  Event.state, " +
-            "  Event.attributeOptionCombo, "  +
-            "  Event.trackedEntityInstance ";
-
-    private static final String QUERY_EVENTS_ATTACHED_TO_ENROLLMENTS = "SELECT " +
-            FIELDS +
-            " FROM (Event INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
-            "  INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
-            "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
-            "      OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
-            "OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE';";
-
-    private static final String QUERY_SINGLE_EVENTS = "SELECT " +
-            FIELDS +
-            "FROM Event WHERE Event.enrollment ISNULL";
-
-    private static final String QUERY_ALL_EVENTS = "SELECT " +
-            FIELDS + " FROM Event ";
-
-    private static final String QUERY_SINGLE_EVENTS_TO_POST =
-            QUERY_SINGLE_EVENTS + "  AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
-
-    private static final String QUERY_BY_UID = "SELECT " +
-            FIELDS +
-            " FROM Event WHERE Event.uid = '?'";
-
-    private static final String QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE = "SELECT " +
-            FIELDS +
-            " FROM Event WHERE Event.enrollment = '_enrollment' AND Event.programStage = '_programStage'" +
-            " ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
-
-    private final SQLiteStatement insertStatement;
-    private final SQLiteStatement updateStatement;
-    private final SQLiteStatement deleteStatement;
-
-    public EventStoreImpl(DatabaseAdapter databaseAdapter) {
-        super(databaseAdapter, EventModel.TABLE);
-        this.insertStatement = databaseAdapter.compileStatement(INSERT_STATEMENT);
-        this.updateStatement = databaseAdapter.compileStatement(UPDATE_STATEMENT);
-        this.deleteStatement = databaseAdapter.compileStatement(DELETE_STATEMENT);
-    }
-
-    @Override
-    public long insert(@NonNull String uid, @Nullable String enrollmentUid,
-                       @Nullable Date created, @Nullable Date lastUpdated,
-                       @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                       @Nullable EventStatus status, @Nullable String latitude,
-                       @Nullable String longitude, @NonNull String program,
-                       @NonNull String programStage, @NonNull String organisationUnit,
-                       @Nullable Date eventDate, @Nullable Date completedDate,
-                       @Nullable Date dueDate, @Nullable State state,
-                       @Nullable String attributeOptionCombo,
-                       @Nullable String trackedEntityInstance) {
-        sqLiteBind(insertStatement, 1, uid);
-        sqLiteBind(insertStatement, 2, enrollmentUid);
-        sqLiteBind(insertStatement, 3, created);
-        sqLiteBind(insertStatement, 4, lastUpdated);
-        sqLiteBind(insertStatement, 5, createdAtClient);
-        sqLiteBind(insertStatement, 6, lastUpdatedAtClient);
-        sqLiteBind(insertStatement, 7, status);
-        sqLiteBind(insertStatement, 8, latitude);
-        sqLiteBind(insertStatement, 9, longitude);
-        sqLiteBind(insertStatement, 10, program);
-        sqLiteBind(insertStatement, 11, programStage);
-        sqLiteBind(insertStatement, 12, organisationUnit);
-        sqLiteBind(insertStatement, 13, eventDate);
-        sqLiteBind(insertStatement, 14, completedDate);
-        sqLiteBind(insertStatement, 15, dueDate);
-        sqLiteBind(insertStatement, 16, state);
-        sqLiteBind(insertStatement, 17, attributeOptionCombo);
-        sqLiteBind(insertStatement, 18, trackedEntityInstance);
-
-        long insert = databaseAdapter.executeInsert(EventModel.TABLE, insertStatement);
-
-        insertStatement.clearBindings();
-        return insert;
-    }
-
-    @Override
-    public int update(@NonNull String uid, @Nullable String enrollmentUid,
-                      @NonNull Date created, @NonNull Date lastUpdated,
-                      @Nullable String createdAtClient, @Nullable String lastUpdatedAtClient,
-                      @NonNull EventStatus eventStatus, @Nullable String latitude,
-                      @Nullable String longitude, @NonNull String program,
-                      @NonNull String programStage, @NonNull String organisationUnit,
-                      @Nullable Date eventDate, @Nullable Date completedDate,
-                      @Nullable Date dueDate, @NonNull State state,
-                      @Nullable String attributeOptionCombo,
-                      @Nullable String trackedEntityInstance, @NonNull String whereEventUid) {
-
-        sqLiteBind(updateStatement, 1, uid);
-        sqLiteBind(updateStatement, 2, enrollmentUid);
-        sqLiteBind(updateStatement, 3, created);
-        sqLiteBind(updateStatement, 4, lastUpdated);
-        sqLiteBind(updateStatement, 5, createdAtClient);
-        sqLiteBind(updateStatement, 6, lastUpdatedAtClient);
-        sqLiteBind(updateStatement, 7, eventStatus);
-        sqLiteBind(updateStatement, 8, latitude);
-        sqLiteBind(updateStatement, 9, longitude);
-        sqLiteBind(updateStatement, 10, program);
-        sqLiteBind(updateStatement, 11, programStage);
-        sqLiteBind(updateStatement, 12, organisationUnit);
-        sqLiteBind(updateStatement, 13, eventDate);
-        sqLiteBind(updateStatement, 14, completedDate);
-        sqLiteBind(updateStatement, 15, dueDate);
-        sqLiteBind(updateStatement, 16, state);
-        sqLiteBind(updateStatement, 17, attributeOptionCombo);
-        sqLiteBind(updateStatement, 18, trackedEntityInstance);
-
-        // bind the where clause
-        sqLiteBind(updateStatement, 19, whereEventUid);
-
-        int rowId = databaseAdapter.executeUpdateDelete(EventModel.TABLE, updateStatement);
-        updateStatement.clearBindings();
-
-        return rowId;
-    }
-
-    @Override
-    public int delete(@NonNull String uid) {
-        sqLiteBind(deleteStatement, 1, uid);
-
-        int rowId = deleteStatement.executeUpdateDelete();
-        deleteStatement.clearBindings();
-
-        return rowId;
+    private EventStoreImpl(DatabaseAdapter databaseAdapter,
+                           SQLStatementWrapper statementWrapper,
+                           SQLStatementBuilder builder,
+                           StatementBinder<Event> binder,
+                           CursorModelFactory<Event> modelFactory) {
+        super(databaseAdapter, statementWrapper, builder, binder, modelFactory);
     }
 
     @Override
     public Map<String, List<Event>> queryEventsAttachedToEnrollmentToPost() {
-        Cursor cursor = databaseAdapter.query(QUERY_EVENTS_ATTACHED_TO_ENROLLMENTS);
-        Map<String, List<Event>> events = new HashMap<>(cursor.getCount());
+        String eventsAttachedToEnrollmentsQuery = "SELECT Event.* FROM " +
+                "(Event INNER JOIN Enrollment ON Event.enrollment = Enrollment.uid " +
+                "INNER JOIN TrackedEntityInstance ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
+                "WHERE TrackedEntityInstance.state = 'TO_POST' OR TrackedEntityInstance.state = 'TO_UPDATE' " +
+                "OR Enrollment.state = 'TO_POST' OR Enrollment.state = 'TO_UPDATE' OR Event.state = 'TO_POST' " +
+                "OR Event.state = 'TO_UPDATE' OR Event.state = 'TO_DELETE';";
 
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    Event event = mapEventFromCursor(cursor);
+        List<Event> eventList = eventListFromQuery(eventsAttachedToEnrollmentsQuery);
 
-                    if (events.get(event.enrollmentUid()) == null) {
-                        events.put(event.enrollmentUid(), new ArrayList<Event>());
-                    }
-
-                    events.get(event.enrollmentUid()).add(event);
-
-                }
-                while (cursor.moveToNext());
-            }
-
-        } finally {
-            cursor.close();
+        Map<String, List<Event>> eventsMap = new HashMap<>();
+        for (Event event : eventList) {
+            addEventsToMap(eventsMap, event);
         }
-        return events;
+
+        return eventsMap;
     }
 
     @Override
     public List<Event> querySingleEventsToPost() {
-        Cursor cursor = databaseAdapter.query(QUERY_SINGLE_EVENTS_TO_POST);
-
-        return mapEventsFromCursor(cursor);
+        String singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
+                " AND (Event.state = 'TO_POST' OR Event.state = 'TO_UPDATE')";
+        return eventListFromQuery(singleEventsToPostQuery);
     }
 
     @Override
     public List<Event> querySingleEvents() {
-        Cursor cursor = databaseAdapter.query(QUERY_SINGLE_EVENTS);
-
-        return mapEventsFromCursor(cursor);
-    }
-
-    @Override
-    public List<Event> queryAll() {
-        Cursor cursor = databaseAdapter.query(QUERY_ALL_EVENTS);
-
-        return mapEventsFromCursor(cursor);
-    }
-
-    @Override
-    public Event queryByUid(String eventUid) {
-        String queryStatement = QUERY_BY_UID.replace("?", eventUid);
-
-        Cursor cursor = databaseAdapter.query(queryStatement);
-
-        Event object = null;
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                object = mapEventFromCursor(cursor);
-            }
-        } finally {
-            cursor.close();
-        }
-
-        return object;
+        return eventListFromQuery(QUERY_SINGLE_EVENTS);
     }
 
     @Override
     public List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid) {
-        String queryStatement = QUERY_BY_ENROLLMENT_AND_PROGRAM_STAGE;
-        queryStatement = queryStatement.replace("_enrollment", enrollmentUid);
-        queryStatement = queryStatement.replace("_programStage", programStageUid);
+        String byEnrollmentAndProgramStageQuery = "SELECT Event.* FROM Event " +
+                "WHERE Event.enrollment = '" + enrollmentUid + "' " +
+                "AND Event.programStage = '" + programStageUid + "' " +
+                "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
 
-        Cursor cursor = databaseAdapter.query(queryStatement);
-
-        return mapEventsFromCursor(cursor);
+        return eventListFromQuery(byEnrollmentAndProgramStageQuery);
     }
 
-    private List<Event> mapEventsFromCursor(Cursor cursor) {
-        List<Event> events = new ArrayList<>(cursor.getCount());
-
-        try {
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-
-                do {
-                    Event event = mapEventFromCursor(cursor);
-
-                    events.add(event);
-                }
-                while (cursor.moveToNext());
-            }
-
-        } finally {
-            cursor.close();
-        }
-        return events;
+    private List<Event> eventListFromQuery(String query) {
+        List<Event> eventList = new ArrayList<>();
+        Cursor cursor = databaseAdapter.query(query);
+        addObjectsToCollection(cursor, eventList);
+        return eventList;
     }
 
-    private Event mapEventFromCursor(Cursor cursor) {
-        Event event;
-
-        String uid = cursor.getString(0);
-        Date created = cursor.getString(1) == null ? null : parse(cursor.getString(1));
-        Date lastUpdated = cursor.getString(2) == null ? null : parse(cursor.getString(2));
-        String createdAtClient = cursor.getString(3) == null ? null : cursor.getString(3);
-        String lastUpdatedAtClient = cursor.getString(4) == null ? null : cursor.getString(4);
-        EventStatus eventStatus =
-                cursor.getString(5) == null ? null : EventStatus.valueOf(cursor.getString(5));
-        Double latitude = cursor.getString(6) == null ?
-                null : Double.parseDouble(cursor.getString(6));
-        Double longitude = cursor.getString(7) == null ?
-                null : Double.parseDouble(cursor.getString(7));
-        String program = cursor.getString(8) == null ? null : cursor.getString(8);
-        String programStage = cursor.getString(9) == null ? null : cursor.getString(9);
-        String organisationUnit = cursor.getString(10) == null ? null : cursor.getString(10);
-        String enrollment = cursor.getString(11) == null ? null : cursor.getString(11);
-        Date eventDate = cursor.getString(12) == null ? null : parse(cursor.getString(12));
-        Date completedDate = cursor.getString(13) == null ? null : parse(cursor.getString(13));
-        Date dueDate = cursor.getString(14) == null ? null : parse(cursor.getString(14));
-        String stateStr = cursor.getString(15) == null ? null : cursor.getString(15);
-        String optionCombo = cursor.getString(16) == null ? null : cursor.getString(16);
-        String trackedEntityInstance = cursor.getString(17) == null ? null : cursor.getString(17);
-
-        Coordinates coordinates = null;
-
-        if (latitude != null && longitude != null) {
-            coordinates = Coordinates.create(latitude, longitude);
+    private void addEventsToMap(Map<String, List<Event>> eventsMap, Event event) {
+        if (eventsMap.get(event.enrollment()) == null) {
+            eventsMap.put(event.enrollment(), new ArrayList<Event>());
         }
 
-        Boolean deleted = stateStr != null && stateStr.equals(State.TO_DELETE.toString());
-
-        event = Event.create(
-                uid, enrollment, created, lastUpdated, createdAtClient, lastUpdatedAtClient,
-                program, programStage, organisationUnit, eventDate, eventStatus,
-                coordinates, completedDate,
-                dueDate, deleted, null, optionCombo, trackedEntityInstance);
-
-        return event;
+        eventsMap.get(event.enrollment()).add(event);
     }
 
-    @Override
-    public int delete() {
-        return databaseAdapter.delete(EventModel.TABLE);
+    private static final StatementBinder<Event> BINDER = new StatementBinder<Event>() {
+        @Override
+        public void bindToStatement(@NonNull Event o, @NonNull SQLiteStatement sqLiteStatement) {
+            sqLiteBind(sqLiteStatement, 1, o.uid());
+            sqLiteBind(sqLiteStatement, 2, o.enrollment());
+            sqLiteBind(sqLiteStatement, 3, o.created());
+            sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
+            sqLiteBind(sqLiteStatement, 5, o.createdAtClient());
+            sqLiteBind(sqLiteStatement, 6, o.lastUpdatedAtClient());
+            sqLiteBind(sqLiteStatement, 7, o.status());
+            sqLiteBind(sqLiteStatement, 8, CoordinateHelper.getLatitude(o.coordinate()));
+            sqLiteBind(sqLiteStatement, 9, CoordinateHelper.getLongitude(o.coordinate()));
+            sqLiteBind(sqLiteStatement, 10, o.program());
+            sqLiteBind(sqLiteStatement, 11, o.programStage());
+            sqLiteBind(sqLiteStatement, 12, o.organisationUnit());
+            sqLiteBind(sqLiteStatement, 13, o.eventDate());
+            sqLiteBind(sqLiteStatement, 14, o.completedDate());
+            sqLiteBind(sqLiteStatement, 15, o.dueDate());
+            sqLiteBind(sqLiteStatement, 16, o.state());
+            sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
+            sqLiteBind(sqLiteStatement, 18, o.trackedEntityInstance());
+        }
+    };
+
+    private static final CursorModelFactory<Event> FACTORY = new CursorModelFactory<Event>() {
+        @Override
+        public Event fromCursor(Cursor cursor) {
+            return Event.create(cursor);
+        }
+    };
+
+    public static EventStore create(DatabaseAdapter databaseAdapter) {
+        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
+                EventTableInfo.TABLE_INFO.name(),
+                EventTableInfo.TABLE_INFO.columns());
+        SQLStatementWrapper statementWrapper = new SQLStatementWrapper(statementBuilder, databaseAdapter);
+
+        return new EventStoreImpl(
+                databaseAdapter,
+                statementWrapper,
+                statementBuilder,
+                BINDER,
+                FACTORY
+        );
     }
 }

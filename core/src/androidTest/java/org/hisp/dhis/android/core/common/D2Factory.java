@@ -5,7 +5,7 @@ import android.support.test.InstrumentationRegistry;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.configuration.ConfigurationModel;
+import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -17,7 +17,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 public class D2Factory {
     public static D2 create(String url, DatabaseAdapter databaseAdapter) {
-        ConfigurationModel config = ConfigurationModel.builder()
+        Configuration config = Configuration.builder()
                 .serverUrl(HttpUrl.parse(url))
                 .build();
 

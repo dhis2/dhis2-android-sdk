@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,37 +28,34 @@
 
 package org.hisp.dhis.android.core.user;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import android.database.Cursor;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.common.Model;
 
-import java.util.Date;
-
-// TODO: Tests
 @AutoValue
-public abstract class UserRole extends BaseIdentifiableObject {
+@JsonDeserialize(builder = AutoValue_UserRole.Builder.class)
+public abstract class UserRole extends BaseIdentifiableObject implements Model {
 
-    public static final Field<UserRole, String> uid = Field.create(UID);
-    public static final Field<UserRole, String> code = Field.create(CODE);
-    public static final Field<UserRole, String> name = Field.create(NAME);
-    public static final Field<UserRole, String> displayName = Field.create(DISPLAY_NAME);
-    public static final Field<UserRole, String> created = Field.create(CREATED);
-    public static final Field<UserRole, String> lastUpdated = Field.create(LAST_UPDATED);
-    public static final Field<UserRole, Boolean> deleted = Field.create(DELETED);
+    public static Builder builder() {
+        return new $$AutoValue_UserRole.Builder();
+    }
 
-    @JsonCreator
-    public static UserRole create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
-            @JsonProperty(DELETED) Boolean deleted) {
+    static UserRole create(Cursor cursor) {
+        return $AutoValue_UserRole.createFromCursor(cursor);
+    }
 
-        return new AutoValue_UserRole(uid, code, name, displayName, created, lastUpdated, deleted);
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract UserRole build();
     }
 }

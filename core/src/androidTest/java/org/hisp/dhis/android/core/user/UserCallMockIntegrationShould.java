@@ -35,7 +35,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.calls.Call;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -49,36 +48,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
 
 @RunWith(AndroidJUnit4.class)
 public class UserCallMockIntegrationShould extends AbsStoreTestCase {
-    private static final String[] USER_PROJECTION = {
-            UserModel.Columns.ID,
-            UserModel.Columns.UID,
-            UserModel.Columns.CODE,
-            UserModel.Columns.NAME,
-            UserModel.Columns.DISPLAY_NAME,
-            UserModel.Columns.CREATED,
-            UserModel.Columns.LAST_UPDATED,
-            UserModel.Columns.BIRTHDAY,
-            UserModel.Columns.EDUCATION,
-            UserModel.Columns.GENDER,
-            UserModel.Columns.JOB_TITLE,
-            UserModel.Columns.SURNAME,
-            UserModel.Columns.FIRST_NAME,
-            UserModel.Columns.INTRODUCTION,
-            UserModel.Columns.EMPLOYER,
-            UserModel.Columns.INTERESTS,
-            UserModel.Columns.LANGUAGES,
-            UserModel.Columns.EMAIL,
-            UserModel.Columns.PHONE_NUMBER,
-            UserModel.Columns.NATIONALITY
-    };
 
     private Dhis2MockServer dhis2MockServer;
-    private Call<User> userCall;
+    private Callable<User> userCall;
 
     @Override
     @Before
@@ -94,7 +72,7 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         objectMapper.setDateFormat(BaseIdentifiableObject.DATE_FORMAT.raw());
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        userCall = UserCall.FACTORY.create(getGenericCallData(d2));
+        userCall = getD2DIComponent(d2).internalModules().user.userCall;
 
         ContentValues program1 = CreateProgramUtils.create(1L, "eBAyeGv0exc", null, null, null);
         ContentValues program2 = CreateProgramUtils.create(2L, "ur1Edk5Oe2n", null, null, null);
@@ -113,10 +91,9 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
     public void persist_user_in_data_base_when_call() throws Exception {
         userCall.call();
 
-        Cursor userCursor = database().query(UserModel.TABLE, USER_PROJECTION, null, null, null, null, null);
+        Cursor userCursor = database().query(UserTableInfo.TABLE_INFO.name(), UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
 
         assertThatCursor(userCursor).hasRow(
-                1L,
                 "DXyJmlo9rge",
                 null,
                 "John Barnes",

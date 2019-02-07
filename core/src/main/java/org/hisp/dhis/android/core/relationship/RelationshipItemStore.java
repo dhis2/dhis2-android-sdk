@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
 import java.util.List;
 
-interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItemModel> {
+interface RelationshipItemStore extends ObjectWithoutUidStore<RelationshipItem> {
     List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to);
 
-    RelationshipItemModel getForRelationshipUidAndConstraintType(
+    RelationshipItem getForRelationshipUidAndConstraintType(
             @NonNull String uid,
             @NonNull RelationshipConstraintType constraintType);
 }

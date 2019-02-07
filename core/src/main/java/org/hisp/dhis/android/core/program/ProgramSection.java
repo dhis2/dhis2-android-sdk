@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,101 +28,79 @@
 
 package org.hisp.dhis.android.core.program;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleFields;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.NestedField;
+import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
-import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramSection extends BaseIdentifiableObject {
-    private static final String DESCRIPTION = "description";
-    private static final String PROGRAM = "program";
-    private static final String ATTRIBUTES = "programTrackedEntityAttribute";
-    private static final String SORT_ORDER = "sortOrder";
-    private static final String STYLE = "style";
-    private static final String FORM_NAME = "formName";
-
-    private static final Field<ProgramSection, String> uid = Field.create(UID);
-    private static final Field<ProgramSection, String> code = Field.create(CODE);
-    private static final Field<ProgramSection, String> name = Field.create(NAME);
-    private static final Field<ProgramSection, String> displayName = Field.create(DISPLAY_NAME);
-    private static final Field<ProgramSection, String> created = Field.create(CREATED);
-    private static final Field<ProgramSection, String> lastUpdated = Field.create(LAST_UPDATED);
-    private static final Field<ProgramSection, Boolean> deleted = Field.create(DELETED);
-
-    private static final Field<ProgramSection, String> description = Field.create(DESCRIPTION);
-    private static final NestedField<ProgramSection, ObjectWithUid> program = NestedField.create(PROGRAM);
-    private static final NestedField<ProgramSection, ObjectWithUid> attributes =
-            NestedField.create(ATTRIBUTES);
-    private static final Field<ProgramSection, Integer> sortOrder = Field.create(SORT_ORDER);
-    private static final NestedField<ProgramSection, ObjectStyle> style = NestedField.create(STYLE);
-    private static final Field<ProgramSection, String> formName = Field.create(FORM_NAME);
-
-    static final Fields<ProgramSection> allFields = Fields.<ProgramSection>builder().fields(
-            uid, code, name, displayName, created, lastUpdated, deleted, description, program.with(ObjectWithUid.uid),
-            sortOrder, formName, attributes.with(ObjectWithUid.uid), style.with(ObjectStyleFields.allFields)).build();
+@JsonDeserialize(builder = AutoValue_ProgramSection.Builder.class)
+public abstract class ProgramSection extends BaseIdentifiableObject
+        implements Model, ObjectWithStyle<ProgramSection, ProgramSection.Builder> {
 
     @Nullable
-    @JsonProperty(DESCRIPTION)
+    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty(PROGRAM)
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
-    String programUid() {
-        ObjectWithUid program = program();
-        return program == null ? null : program.uid();
-    }
-
     @Nullable
-    @JsonProperty(ATTRIBUTES)
+    @JsonProperty(ProgramSectionFields.ATTRIBUTES)
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> attributes();
 
     @Nullable
-    @JsonProperty(SORT_ORDER)
+    @JsonProperty()
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty(STYLE)
-    public abstract ObjectStyle style();
-
-    @Nullable
-    @JsonProperty(FORM_NAME)
+    @JsonProperty()
     public abstract String formName();
 
-    @JsonCreator
-    public static ProgramSection create(
-            @JsonProperty(UID) String uid,
-            @JsonProperty(CODE) String code,
-            @JsonProperty(NAME) String name,
-            @JsonProperty(DISPLAY_NAME) String displayName,
-            @JsonProperty(CREATED) Date created,
-            @JsonProperty(LAST_UPDATED) Date lastUpdated,
+    public static Builder builder() {
+        return new AutoValue_ProgramSection.Builder();
+    }
 
-            @JsonProperty(DESCRIPTION) String description,
-            @JsonProperty(PROGRAM) ObjectWithUid program,
-            @JsonProperty(ATTRIBUTES) List<ObjectWithUid> attributes,
-            @JsonProperty(SORT_ORDER) Integer sortOrder,
-            @JsonProperty(STYLE) ObjectStyle style,
-            @JsonProperty(FORM_NAME) String formName,
-            @JsonProperty(DELETED) Boolean deleted) {
+    static ProgramSection create(Cursor cursor) {
+        return $AutoValue_ProgramSection.createFromCursor(cursor);
+    }
 
-        return new AutoValue_ProgramSection(
-                uid, code, name, displayName, created, lastUpdated, deleted, description, program,
-                attributes, sortOrder, style, formName
-        );
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<ProgramSection, Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder description(String description);
+
+        public abstract Builder program(ObjectWithUid program);
+
+        @JsonProperty(ProgramSectionFields.ATTRIBUTES)
+        public abstract Builder attributes(List<ObjectWithUid> attributes);
+
+        public abstract Builder sortOrder(Integer sortOrder);
+
+        public abstract Builder formName(String formName);
+
+        public abstract ProgramSection build();
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -34,13 +34,11 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 import java.util.Collection;
 import java.util.Collections;
 
-public final class ReadOnlyFirstObjectRepositoryImpl<M extends Model>
-        extends ReadOnlyObjectRepositoryImpl<M> {
+public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
 
     private final ObjectStore<M> store;
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store,
-                                             Collection<ChildrenAppender<M>> childrenAppenders) {
+    ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
         super(childrenAppenders);
         this.store = store;
     }

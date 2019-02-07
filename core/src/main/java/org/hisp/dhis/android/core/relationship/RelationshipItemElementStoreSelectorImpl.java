@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -36,13 +36,19 @@ import org.hisp.dhis.android.core.event.EventStoreImpl;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
+
+@Reusable
 final class RelationshipItemElementStoreSelectorImpl implements RelationshipItemElementStoreSelector {
 
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentStore enrollmentStore;
     private final EventStore eventStore;
 
-    private RelationshipItemElementStoreSelectorImpl(
+    @Inject
+    RelationshipItemElementStoreSelectorImpl(
             TrackedEntityInstanceStore trackedEntityInstanceStore,
             EnrollmentStore enrollmentStore,
             EventStore eventStore) {
@@ -65,9 +71,9 @@ final class RelationshipItemElementStoreSelectorImpl implements RelationshipItem
 
     public static RelationshipItemElementStoreSelectorImpl create(DatabaseAdapter databaseAdapter) {
         return new RelationshipItemElementStoreSelectorImpl(
-                new TrackedEntityInstanceStoreImpl(databaseAdapter),
-                new EnrollmentStoreImpl(databaseAdapter),
-                new EventStoreImpl(databaseAdapter)
+                TrackedEntityInstanceStoreImpl.create(databaseAdapter),
+                EnrollmentStoreImpl.create(databaseAdapter),
+                EventStoreImpl.create(databaseAdapter)
         );
     }
 }

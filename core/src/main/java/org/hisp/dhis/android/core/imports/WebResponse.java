@@ -28,6 +28,32 @@
 
 package org.hisp.dhis.android.core.imports;
 
-public interface WebResponse {
-    String message();
+import android.support.annotation.NonNull;
+
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
+public abstract class WebResponse {
+
+    @NonNull
+    public abstract String httpStatus();
+
+    @NonNull
+    public abstract Integer httpStatusCode();
+
+    @NonNull
+    public abstract String status();
+
+    @NonNull
+    public abstract String message();
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder<T extends Builder> {
+        public abstract T httpStatus(String httpStatus);
+
+        public abstract T httpStatusCode(Integer httpStatusCode);
+
+        public abstract T status(String status);
+
+        public abstract T message(String message);
+    }
 }

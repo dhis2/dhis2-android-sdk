@@ -33,9 +33,8 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
-import org.hisp.dhis.android.core.event.EventImportHandler;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TEIImportSummary;
 
 import java.util.List;
@@ -45,14 +44,11 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.getState;
 public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
-    private final EventImportHandler eventImportHandler;
 
-    public TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                              @NonNull EnrollmentImportHandler enrollmentImportHandler,
-                                              @NonNull EventImportHandler eventImportHandler) {
+    TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+                                       @NonNull EnrollmentImportHandler enrollmentImportHandler) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentImportHandler = enrollmentImportHandler;
-        this.eventImportHandler = eventImportHandler;
     }
 
     public void handleTrackedEntityInstanceImportSummaries(@NonNull List<TEIImportSummary> importSummaries) {
@@ -79,15 +75,6 @@ public final class TrackedEntityInstanceImportHandler {
 
                 enrollmentImportHandler.handleEnrollmentImportSummary(importEnrollment.importSummaries());
             }
-
-            // TODO Review if it makes sense
-            /**
-            if (importSummary.events() != null) {
-                ImportEvent events = importSummary.events();
-
-                eventImportHandler.handleEventImportSummaries(events.response());
-            }
-             */
         }
 
 

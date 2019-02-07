@@ -213,12 +213,10 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         );
 
         TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler =
-                new TrackedEntityInstanceImportHandler(
-                        trackedEntityInstanceStore, enrollmentImportHandler, eventImportHandler
-                );
-        TEIWebResponseHandler TEIWebResponseHandler = new TEIWebResponseHandler(trackedEntityInstanceImportHandler);
+                new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler);
+        TEIWebResponseHandler teiWebResponseHandler = new TEIWebResponseHandler(trackedEntityInstanceImportHandler);
 
-        TEIWebResponseHandler.handleWebResponse(webResponse);
+        teiWebResponseHandler.handleWebResponse(webResponse);
 
     }
 }

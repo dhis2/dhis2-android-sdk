@@ -30,10 +30,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
-import org.hisp.dhis.android.core.event.EventImportHandler;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TEIImportSummary;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,9 +61,6 @@ public class TrackedEntityInstanceImportHandlerShould {
     private EnrollmentImportHandler enrollmentImportHandler;
 
     @Mock
-    private EventImportHandler eventImportHandler;
-
-    @Mock
     private TEIImportSummary importSummary;
 
     @Mock
@@ -81,9 +77,8 @@ public class TrackedEntityInstanceImportHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        trackedEntityInstanceImportHandler = new TrackedEntityInstanceImportHandler(
-                trackedEntityInstanceStore, enrollmentImportHandler, eventImportHandler
-        );
+        trackedEntityInstanceImportHandler =
+                new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler);
     }
 
     @Test
@@ -131,26 +126,5 @@ public class TrackedEntityInstanceImportHandlerShould {
 
         verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.SYNCED);
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(enrollmentSummaries);
-
     }
-
-    // TODO Check if it makes sense
-    /*
-    @Test
-    public void update_tracker_entity_instance_status_success_status_and_handle_import_event_on_import_success() throws Exception {
-        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
-        when(importSummary.reference()).thenReturn("test_tei_uid");
-        when(importSummary.events()).thenReturn(events);
-        List<ImportSummary> eventSummaries = Collections.singletonList(eventSummary);
-        when(events.response()).thenReturn(eventSummaries);
-
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                Collections.singletonList(importSummary)
-        );
-
-        verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.SYNCED);
-        verify(eventImportHandler, times(1)).handleEventImportSummaries(eventSummaries);
-
-    }
-    */
 }

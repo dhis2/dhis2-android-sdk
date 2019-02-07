@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.EventWebResponse;
-import org.hisp.dhis.android.core.imports.TEIWebResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

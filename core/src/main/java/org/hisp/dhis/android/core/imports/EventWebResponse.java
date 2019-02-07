@@ -37,13 +37,9 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_EventWebResponse.Builder.class)
-public abstract class EventWebResponse implements WebResponse {
-    private static final String MESSAGE = "message";
-    private static final String IMPORT_SUMMARIES = "response"; // is called response from api
+public abstract class EventWebResponse extends WebResponse {
 
-    @NonNull
-    @JsonProperty(MESSAGE)
-    public abstract String message();
+    private static final String IMPORT_SUMMARIES = "response"; // is called response from api
 
     @NonNull
     @JsonProperty(IMPORT_SUMMARIES)
@@ -55,9 +51,7 @@ public abstract class EventWebResponse implements WebResponse {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
-        public abstract Builder message(String message);
-
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
         public abstract Builder response(EventImportSummaries response);
 
         public abstract EventWebResponse build();

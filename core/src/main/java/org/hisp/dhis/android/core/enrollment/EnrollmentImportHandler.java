@@ -91,7 +91,7 @@ public class EnrollmentImportHandler {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
-        List<Note> notes = noteStore.selectWhereClause(whereClause);
+        List<Note> notes = noteStore.selectWhere(whereClause);
         for (Note note : notes) {
             noteStore.updateWhere(note.toBuilder().state(state).build());
         }

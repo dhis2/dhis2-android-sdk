@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,15 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.Model;
+package org.hisp.dhis.android.core.arch.api.responses;
 
-import java.util.List;
+import android.support.annotation.NonNull;
 
-public interface ReadOnlyCollectionRepository<M extends Model> {
-    List<M> get();
-    ReadOnlyObjectRepository<M> one();
-    List<M> getWithAllChildren();
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+@JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
+public abstract class HttpMessageResponse {
+
+    @NonNull
+    public abstract String httpStatus();
+
+    @NonNull
+    public abstract Integer httpStatusCode();
+
+    @NonNull
+    public abstract String status();
+
+    @NonNull
+    public abstract String message();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder httpStatus(String httpStatus);
+
+        public abstract Builder httpStatusCode(Integer httpStatusCode);
+
+        public abstract Builder status(String status);
+
+        public abstract Builder message(String message);
+
+        public abstract HttpMessageResponse build();
+    }
 }

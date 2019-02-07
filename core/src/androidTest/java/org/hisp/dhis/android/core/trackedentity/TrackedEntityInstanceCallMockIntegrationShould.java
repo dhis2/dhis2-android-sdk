@@ -72,7 +72,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_payload.json", teiUid);
+        verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
 
     @Test
@@ -96,13 +96,40 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
+        verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
                 teiUid);
+    }
+
+    @Test
+    public void download_glass_protected_tracked_entity_instance() throws Exception {
+        String teiUid = "PgmUFEQYZdt";
+
+        givenAMetadataInDatabase();
+
+        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid), "program");
+
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/glass/break_glass_successful.json");
+        dhis2MockServer.enqueueMockResponse(401, "trackedentity/glass/glass_protected_tei_failure.json");
+
+        trackedEntityInstanceByUidEndPointCall.call();
+
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
     }
 
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
+    }
+
+    private void verifyDownloadedTrackedEntityInstancePayload(String file, String teiUid)
+            throws IOException {
+        TrackedEntityInstance expectedEnrollmentResponse = parseTrackedEntityInstanceResponsePayload(file);
+
+        TrackedEntityInstance downloadedTei = getDownloadedTei(teiUid);
+
+        assertThat(downloadedTei, is(expectedEnrollmentResponse));
     }
 
     private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)
@@ -114,7 +141,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         assertThat(downloadedTei, is(expectedEnrollmentResponse));
     }
 
-    private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
+    private TrackedEntityInstance parseTrackedEntityInstanceResponsePayload(String file)
             throws IOException {
         String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
@@ -131,6 +158,20 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
 
         return trackedEntityInstance;
+    }
+
+    private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
+            throws IOException {
+        String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        TrackedEntityInstance trackedEntityInstance = objectMapper.readValue(
+                expectedEventsResponseJson,
+                new TypeReference<TrackedEntityInstance>() {});
+
+        return removeDeletedData(trackedEntityInstance);
     }
 
     @NonNull
@@ -184,7 +225,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         EnrollmentStore enrollmentStore = EnrollmentStoreImpl.create(databaseAdapter());
 
-        List<Enrollment> downloadedEnrollments = enrollmentStore.selectWhereClause(new WhereClauseBuilder()
+        List<Enrollment> downloadedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentFields.TRACKED_ENTITY_INSTANCE, teiUid).build());
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {

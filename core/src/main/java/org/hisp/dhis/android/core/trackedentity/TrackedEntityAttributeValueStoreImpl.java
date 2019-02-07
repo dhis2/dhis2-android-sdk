@@ -81,7 +81,7 @@ public final class TrackedEntityAttributeValueStoreImpl
         String selectByTrackedEntityInstanceQuery = new WhereClauseBuilder().appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build();
 
-        return selectWhereClause(selectByTrackedEntityInstanceQuery);
+        return selectWhere(selectByTrackedEntityInstanceQuery);
     }
 
     @Override

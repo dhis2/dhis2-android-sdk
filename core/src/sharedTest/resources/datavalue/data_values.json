@@ -2,7 +2,7 @@
   "dataValues": [
     {
       "dataElement": "g9eOBujte1U",
-      "period": "201712",
+      "period": "201807",
       "orgUnit": "DiszpKrYNg8",
       "categoryOptionCombo": "Gmbgme7z9BF",
       "attributeOptionCombo": "bRowv6yZOF2",
@@ -11,7 +11,33 @@
       "created": "2011-01-11T00:00:00.000+0000",
       "lastUpdated": "2011-01-11T00:00:00.000+0000",
       "comment": "",
-      "followUp": false
+      "followup": false
+    },
+    {
+      "dataElement": "g9eOBujte1U",
+      "period": "201809",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "Gmbgme7z9BF",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "10",
+      "storedBy": "android",
+      "created": "2010-01-11T00:00:00.000+0000",
+      "lastUpdated": "2010-01-11T00:00:00.000+0000",
+      "comment": "N/A",
+      "followup": true
+    },
+    {
+      "dataElement": "g9eOBujte1U",
+      "period": "201808",
+      "orgUnit": "DiszpKrYNg8",
+      "categoryOptionCombo": "Gmbgme7z9BF",
+      "attributeOptionCombo": "bRowv6yZOF2",
+      "value": "11",
+      "storedBy": "android",
+      "created": "2012-01-11T00:00:00.000+0000",
+      "lastUpdated": "2012-01-11T00:00:00.000+0000",
+      "comment": "Relevant comment",
+      "followup": false
     }
   ]
 }

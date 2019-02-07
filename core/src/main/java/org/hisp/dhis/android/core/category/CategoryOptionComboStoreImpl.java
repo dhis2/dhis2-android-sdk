@@ -61,7 +61,7 @@ final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreImpl<Cat
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(CategoryOptionComboFields.CATEGORY_COMBO, categoryComboUid)
                 .build();
-        return selectWhereClause(whereClause);
+        return selectWhere(whereClause);
     }
 
     private static StatementBinder<CategoryOptionCombo> BINDER

@@ -38,7 +38,9 @@ public interface ObjectStore<M> extends DeletableStore {
 
     List<M> selectAll();
 
-    List<M> selectWhereClause(String whereClause);
+    List<M> selectWhere(String whereClause);
+
+    M selectOneWhere(String whereClause);
 
     M selectFirst();
 

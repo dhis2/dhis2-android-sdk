@@ -25,41 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class SectionGreyedFieldsLinkTableInfo {
 
-import dagger.Reusable;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-@Reusable
-public final class DataSetModuleWiper implements ModuleWiper {
+        @Override
+        public String name() {
+            return "SectionGreyedFieldsLink";
+        }
 
-    private final TableWiper tableWiper;
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-    @Inject
-    DataSetModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            Columns.SECTION,
+            Columns.DATA_ELEMENT_OPERAND);
+
+    private SectionGreyedFieldsLinkTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                DataInputPeriodTableInfo.TABLE_INFO.name(),
-                DataSetCompulsoryDataElementOperandLinkModel.TABLE,
-                DataSetDataElementLinkModel.TABLE,
-                DataSetOrganisationUnitLinkModel.TABLE,
-                DataSetTableInfo.TABLE_INFO.name(),
-                SectionDataElementLinkModel.TABLE,
-                SectionTableInfo.TABLE_INFO.name(),
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO.name()
-        );
-    }
+    static class Columns extends BaseModel.Columns {
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(DataSetCompleteRegistrationTableInfo.TABLE_INFO);
+        private static final String SECTION = "section";
+        static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    SECTION, DATA_ELEMENT_OPERAND);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

@@ -66,4 +66,12 @@ public class SectionCollectionRepositoryMockIntegrationShould extends MockIntegr
                 .get();
         assertThat(sections.size(), is(1));
     }
+
+    @Test
+    public void return_greyed_fields_as_children() {
+        Section section = d2.dataSetModule().sections
+                .one().getWithAllChildren();
+        assertThat(section.greyedFields().size(), is(1));
+        assertThat(section.greyedFields().get(0).uid(), is("ca8lfO062zg.Prlt0C1RF0s"));
+    }
 }

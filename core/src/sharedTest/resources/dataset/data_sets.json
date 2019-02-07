@@ -154,7 +154,12 @@
           "showRowTotals": true,
           "dataSet": {
             "id": "lyLU2wR22tC"
-          }
+          },
+          "greyedFields": [
+            {
+              "id": "ca8lfO062zg.Prlt0C1RF0s"
+            }
+          ]
         }
       ],
       "compulsoryDataElementOperands": [

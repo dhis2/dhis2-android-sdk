@@ -27,39 +27,36 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
 
-import javax.inject.Inject;
+final class SectionGreyedFieldsChildrenAppender extends ChildrenAppender<Section> {
 
-import dagger.Reusable;
+    private final LinkModelChildStore<Section, DataElementOperand> linkModelChildStore;
 
-@Reusable
-public final class DataSetModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    DataSetModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private SectionGreyedFieldsChildrenAppender(LinkModelChildStore<Section, DataElementOperand> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                DataInputPeriodTableInfo.TABLE_INFO.name(),
-                DataSetCompulsoryDataElementOperandLinkModel.TABLE,
-                DataSetDataElementLinkModel.TABLE,
-                DataSetOrganisationUnitLinkModel.TABLE,
-                DataSetTableInfo.TABLE_INFO.name(),
-                SectionDataElementLinkModel.TABLE,
-                SectionTableInfo.TABLE_INFO.name(),
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO.name()
+    protected Section appendChildren(Section section) {
+        Section.Builder builder = section.toBuilder();
+        builder.greyedFields(linkModelChildStore.getChildren(section));
+        return builder.build();
+    }
+
+    static ChildrenAppender<Section> create(DatabaseAdapter databaseAdapter) {
+        return new SectionGreyedFieldsChildrenAppender(
+                StoreFactory.<Section, DataElementOperand>linkModelChildStore(
+                        databaseAdapter,
+                        SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
+                        SectionGreyedFieldsLinkTableInfo.CHILD_PROJECTION,
+                        DataElementOperandStore.FACTORY
+                )
         );
-    }
-
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(DataSetCompleteRegistrationTableInfo.TABLE_INFO);
     }
 }

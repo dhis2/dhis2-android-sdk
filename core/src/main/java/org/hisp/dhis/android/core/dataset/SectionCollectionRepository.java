@@ -30,7 +30,10 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
@@ -57,5 +60,25 @@ public final class SectionCollectionRepository
                         return new SectionCollectionRepository(store, childrenAppenders, updatedScope);
                     }
                 }));
+    }
+
+    public StringFilterConnector<SectionCollectionRepository> byDescription() {
+        return cf.string(SectionFields.DESCRIPTION);
+    }
+
+    public IntegerFilterConnector<SectionCollectionRepository> bySortOrder() {
+        return cf.integer(SectionFields.SORT_ORDER);
+    }
+
+    public BooleanFilterConnector<SectionCollectionRepository> byShowRowTotals() {
+        return cf.bool(SectionFields.SHOW_ROW_TOTALS);
+    }
+
+    public BooleanFilterConnector<SectionCollectionRepository> byShowColumnTotals() {
+        return cf.bool(SectionFields.SHOW_COLUMN_TOTALS);
+    }
+
+    public StringFilterConnector<SectionCollectionRepository> byDataSetUid() {
+        return cf.string(SectionFields.DATA_SET);
     }
 }

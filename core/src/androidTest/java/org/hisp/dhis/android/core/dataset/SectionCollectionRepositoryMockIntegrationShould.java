@@ -26,4 +26,44 @@ public class SectionCollectionRepositoryMockIntegrationShould extends MockIntegr
         assertThat(sections.size(), is(1));
         assertThat(sections.get(0).name(), is("Immunization"));
     }
+
+    @Test
+    public void filter_by_description() {
+        List<Section> sections = d2.dataSetModule().sections
+                .byDescription().eq("Immunization dose administration")
+                .get();
+        assertThat(sections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_sort_order() {
+        List<Section> sections = d2.dataSetModule().sections
+                .bySortOrder().eq(1)
+                .get();
+        assertThat(sections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_show_row_totals() {
+        List<Section> sections = d2.dataSetModule().sections
+                .byShowRowTotals().isTrue()
+                .get();
+        assertThat(sections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_show_column_totals() {
+        List<Section> sections = d2.dataSetModule().sections
+                .byShowColumnTotals().isFalse()
+                .get();
+        assertThat(sections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_data_set_uid() {
+        List<Section> sections = d2.dataSetModule().sections
+                .byDataSetUid().eq("lyLU2wR22tC")
+                .get();
+        assertThat(sections.size(), is(1));
+    }
 }

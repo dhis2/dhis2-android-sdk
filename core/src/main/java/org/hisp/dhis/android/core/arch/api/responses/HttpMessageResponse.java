@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,16 +26,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors;
+package org.hisp.dhis.android.core.arch.api.responses;
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import retrofit2.Response;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
+public abstract class HttpMessageResponse {
 
-public interface APICallErrorCatcher {
-    Boolean mustBeStored();
+    @NonNull
+    public abstract String httpStatus();
 
-    D2ErrorCode catchError(Response<?> response) throws IOException;
+    @NonNull
+    public abstract Integer httpStatusCode();
+
+    @NonNull
+    public abstract String status();
+
+    @NonNull
+    public abstract String message();
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder {
+        public abstract Builder httpStatus(String httpStatus);
+
+        public abstract Builder httpStatusCode(Integer httpStatusCode);
+
+        public abstract Builder status(String status);
+
+        public abstract Builder message(String message);
+
+        public abstract HttpMessageResponse build();
+    }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,16 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors;
+package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.ObjectMapperFactory;
+import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.api.responses.HttpMessageResponse;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 
 import java.io.IOException;
 
 import retrofit2.Response;
 
-public interface APICallErrorCatcher {
-    Boolean mustBeStored();
+final class TrackedEntityInstanceCallErrorCatcher implements APICallErrorCatcher {
 
-    D2ErrorCode catchError(Response<?> response) throws IOException;
+    @Override
+    public Boolean mustBeStored() {
+        return false;
+    }
+
+    @Override
+    public D2ErrorCode catchError(Response<?> response) throws IOException {
+        HttpMessageResponse parsed = ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(),
+                HttpMessageResponse.class);
+
+        if (parsed.httpStatusCode() == 401 && parsed.message().equals("OWNERSHIP_ACCESS_DENIED")) {
+            return D2ErrorCode.OWNERSHIP_ACCESS_DENIED;
+        } else {
+            return null;
+        }
+    }
 }

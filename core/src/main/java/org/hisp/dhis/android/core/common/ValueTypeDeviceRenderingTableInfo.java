@@ -28,28 +28,56 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.io.IOException;
-import java.text.ParseException;
+public final class ValueTypeDeviceRenderingTableInfo {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class ValueTypeRenderingShould extends BaseObjectShould implements ObjectShould {
-
-    public ValueTypeRenderingShould() {
-        super("common/value_type_rendering.json");
+    private ValueTypeDeviceRenderingTableInfo() {
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ValueTypeRendering valueTypeRendering = objectMapper.readValue(jsonStream, ValueTypeRendering.class);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        assertThat(valueTypeRendering.desktop()).isEqualTo(ValueTypeDeviceRendering.builder()
-                .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build());
-        assertThat(valueTypeRendering.mobile()).isEqualTo(ValueTypeDeviceRendering.builder()
-                .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1)
-                .build());
+        @Override
+        public String name() {
+            return "ValueTypeDeviceRendering";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        static final String OBJECT_TABLE = "objectTable";
+        static final String DEVICE_TYPE = "deviceType";
+        static final String TYPE = "type";
+        static final String MIN = "min";
+        static final String MAX = "max";
+        static final String STEP = "step";
+        static final String DECIMAL_POINTS = "decimalPoints";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    BaseIdentifiableObjectModel.Columns.UID,
+                    OBJECT_TABLE,
+                    DEVICE_TYPE,
+                    TYPE,
+                    MIN,
+                    MAX,
+                    STEP,
+                    DECIMAL_POINTS
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    BaseIdentifiableObjectModel.Columns.UID,
+                    DEVICE_TYPE
+            );
+        }
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,28 +28,38 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.junit.Test;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.io.IOException;
-import java.text.ParseException;
+import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.junit.runner.RunWith;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+@RunWith(AndroidJUnit4.class)
+public class ValueTypeDeviceRenderingStoreIntegrationShould 
+        extends ObjectWithoutUidStoreAbstractIntegrationShould<ValueTypeDeviceRendering> {
 
-public class ValueTypeRenderingShould extends BaseObjectShould implements ObjectShould {
-
-    public ValueTypeRenderingShould() {
-        super("common/value_type_rendering.json");
+    public ValueTypeDeviceRenderingStoreIntegrationShould() {
+        super(ValueTypeDeviceRenderingStore.create(DatabaseAdapterFactory.get(false)),
+                ValueTypeDeviceRenderingTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        ValueTypeRendering valueTypeRendering = objectMapper.readValue(jsonStream, ValueTypeRendering.class);
+    protected ValueTypeDeviceRendering buildObject() {
+        return ValueTypeDeviceRenderingSamples.getValueTypeDeviceRendering();
+    }
 
-        assertThat(valueTypeRendering.desktop()).isEqualTo(ValueTypeDeviceRendering.builder()
-                .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build());
-        assertThat(valueTypeRendering.mobile()).isEqualTo(ValueTypeDeviceRendering.builder()
-                .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1)
-                .build());
+    @Override
+    protected ValueTypeDeviceRendering buildObjectToUpdate() {
+        return ValueTypeDeviceRenderingSamples.getValueTypeDeviceRendering().toBuilder()
+                .step(20)
+                .build();
+    }
+
+    @Override
+    protected ValueTypeDeviceRendering buildObjectWithId() {
+        return ValueTypeDeviceRenderingSamples.getValueTypeDeviceRendering().toBuilder()
+                .id(1L)
+                .build();
     }
 }

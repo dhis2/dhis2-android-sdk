@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -34,22 +36,34 @@ import dagger.Reusable;
 @Reusable
 final class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTypeRendering> {
 
-    private final GenericHandler<ValueTypeDeviceRendering,
-            ValueTypeDeviceRenderingModel> deviceRenderingHandler;
+    private final SyncHandlerWithTransformer<ValueTypeDeviceRendering> valueTypeDeviceRenderingHandler;
 
     @Inject
-    ValueTypeRenderingHandler(GenericHandler<ValueTypeDeviceRendering,
-            ValueTypeDeviceRenderingModel> deviceRenderingHandler) {
-        this.deviceRenderingHandler = deviceRenderingHandler;
+    ValueTypeRenderingHandler(SyncHandlerWithTransformer<ValueTypeDeviceRendering> valueTypeDeviceRenderingHandler) {
+        this.valueTypeDeviceRenderingHandler = valueTypeDeviceRenderingHandler;
     }
 
     @Override
-    public void handle(ValueTypeRendering renderType, String uid, String objectTable) {
+    public void handle(ValueTypeRendering renderType, final String uid, final String objectTable) {
         if (renderType != null) {
-            deviceRenderingHandler.handle(renderType.desktop(),
-                    new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.DESKTOP));
-            deviceRenderingHandler.handle(renderType.mobile(),
-                    new ValueTypeDeviceRenderingModelBuilder(uid, objectTable, ValueTypeRendering.MOBILE));
+
+            valueTypeDeviceRenderingHandler.handle(renderType.desktop(),
+                    new ModelBuilder<ValueTypeDeviceRendering, ValueTypeDeviceRendering>() {
+                        @Override
+                        public ValueTypeDeviceRendering buildModel(ValueTypeDeviceRendering value) {
+                            return  value.toBuilder().uid(uid).objectTable(objectTable)
+                                    .deviceType(ValueTypeRendering.DESKTOP).build();
+                        }
+                    });
+
+            valueTypeDeviceRenderingHandler.handle(renderType.mobile(),
+                    new ModelBuilder<ValueTypeDeviceRendering, ValueTypeDeviceRendering>() {
+                        @Override
+                        public ValueTypeDeviceRendering buildModel(ValueTypeDeviceRendering value) {
+                            return  value.toBuilder().uid(uid).objectTable(objectTable)
+                                    .deviceType(ValueTypeRendering.MOBILE).build();
+                        }
+                    });
         }
     }
 }

@@ -48,8 +48,8 @@ public final class CommonModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                ObjectStyleTableInfo.TABLE_INFO.name(),
-                ValueTypeDeviceRenderingModel.TABLE);
+                ObjectStyleTableInfo.TABLE_INFO,
+                ValueTypeDeviceRenderingTableInfo.TABLE_INFO);
     }
 
     @Override

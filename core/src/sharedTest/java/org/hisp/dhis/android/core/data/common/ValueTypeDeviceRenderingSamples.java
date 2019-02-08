@@ -26,28 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.data.common;
 
-public class ValueTypeDeviceRenderingModelBuilder extends ModelBuilder<ValueTypeDeviceRendering,
-        ValueTypeDeviceRenderingModel> {
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
 
-    private final ValueTypeDeviceRenderingModel.Builder builder;
+public class ValueTypeDeviceRenderingSamples {
 
-    ValueTypeDeviceRenderingModelBuilder(String uid, String objectTable, String deviceType) {
-        this.builder = ValueTypeDeviceRenderingModel.builder()
-                .uid(uid)
-                .objectTable(objectTable)
-                .deviceType(deviceType);
-    }
-
-    @Override
-    public ValueTypeDeviceRenderingModel buildModel(ValueTypeDeviceRendering deviceRendering) {
-        return builder
-                .type(deviceRendering.type())
-                .min(deviceRendering.min())
-                .max(deviceRendering.max())
-                .step(deviceRendering.step())
-                .decimalPoints(deviceRendering.decimalPoints())
+    public static ValueTypeDeviceRendering getValueTypeDeviceRendering() {
+        return ValueTypeDeviceRendering.builder()
+                .uid("uid")
+                .objectTable("object_table")
+                .deviceType("device_type")
+                .type(ValueTypeRenderingType.DROPDOWN)
+                .min(0)
+                .max(10)
+                .step(1)
+                .decimalPoints(0)
                 .build();
     }
 }

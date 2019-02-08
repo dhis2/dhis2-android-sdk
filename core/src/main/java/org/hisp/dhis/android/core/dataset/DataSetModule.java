@@ -39,11 +39,14 @@ public final class DataSetModule {
 
     public final DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations;
     public final DataSetCollectionRepository dataSets;
+    public final SectionCollectionRepository sections;
 
     @Inject
     DataSetModule(DataSetCompleteRegistrationCollectionRepository dataSetCompleteRegistrations,
-                  DataSetCollectionRepository dataSets) {
+                  DataSetCollectionRepository dataSets,
+                  SectionCollectionRepository sections) {
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations;
         this.dataSets = dataSets;
+        this.sections = sections;
     }
 }

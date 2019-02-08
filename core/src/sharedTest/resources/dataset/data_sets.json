@@ -150,8 +150,8 @@
           "displayName": "Immunization",
           "description": "Immunization dose administration",
           "showColumnTotals": false,
-          "sortOrder": 2,
-          "showRowTotals": false,
+          "sortOrder": 1,
+          "showRowTotals": true,
           "dataSet": {
             "id": "lyLU2wR22tC"
           }

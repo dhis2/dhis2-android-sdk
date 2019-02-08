@@ -44,7 +44,7 @@ public final class PeriodHandler {
         this.generator = generator;
     }
 
-    public final void generateAndPersist() {
+    public void generateAndPersist() {
         for (Period period : generator.generatePeriods()) {
             store.updateOrInsertWhere(period);
         }

@@ -28,22 +28,32 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import java.util.ArrayList;
+import java.util.List;
 
-final class SystemSettingHandlerImpl implements SystemSettingHandler {
+import javax.inject.Inject;
 
-    private final ObjectWithoutUidStore<SystemSettingModel> store;
+import dagger.Reusable;
 
-    SystemSettingHandlerImpl(ObjectWithoutUidStore<SystemSettingModel> store) {
-        this.store = store;
+@Reusable
+class SystemSettingsSplitter {
+
+    /**
+     * Empty constructor to add Inject annotation
+     */
+    @Inject
+    SystemSettingsSplitter() {
+        /* Empty constructor to add Inject annotation */
     }
 
-    @Override
-    public void handle(SystemSetting setting, SystemSettingModelBuilder modelBuilder) {
-        if (setting != null) {
-            for (SystemSettingModel settingModel: modelBuilder.splitSettings(setting)) {
-                store.updateOrInsertWhere(settingModel);
-            }
-        }
+    List<SystemSetting> splitSettings(SystemSettings settings) {
+        SystemSetting flag = SystemSetting.builder().key("flag").value(settings.keyFlag()).build();
+        SystemSetting style = SystemSetting.builder().key("style").value(settings.keyStyle()).build();
+
+        List<SystemSetting> settingList = new ArrayList<>(2);
+        settingList.add(flag);
+        settingList.add(style);
+
+        return settingList;
     }
 }

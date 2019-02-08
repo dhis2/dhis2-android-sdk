@@ -26,8 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.data.settings;
 
-interface SystemSettingHandler {
-    void handle(SystemSetting setting, SystemSettingModelBuilder modelBuilder);
+import org.hisp.dhis.android.core.settings.SystemSetting;
+
+public class SystemSettingSamples {
+
+    public static SystemSetting getSystemSetting() {
+        return SystemSetting.builder()
+                .key("key")
+                .value("value")
+                .build();
+    }
 }

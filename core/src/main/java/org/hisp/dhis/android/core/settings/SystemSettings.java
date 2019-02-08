@@ -28,32 +28,44 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import javax.inject.Inject;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import dagger.Reusable;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_SystemSettings.Builder.class)
+public abstract class SystemSettings {
 
-@Reusable
-class SystemSettingModelBuilder {
+    @Nullable
+    @JsonProperty()
+    public abstract String keyFlag();
 
-    /**
-     * Empty constructor to add Inject annotation
-     */
-    @Inject
-    SystemSettingModelBuilder() {
-        /* Empty constructor to add Inject annotation */
+    @Nullable
+    @JsonProperty()
+    public abstract String keyStyle();
+
+    static SystemSettings create(Cursor cursor) {
+        return AutoValue_SystemSettings.createFromCursor(cursor);
     }
 
-    List<SystemSettingModel> splitSettings(SystemSetting settings) {
-        SystemSettingModel flag = SystemSettingModel.builder().key("flag").value(settings.keyFlag()).build();
-        SystemSettingModel style = SystemSettingModel.builder().key("style").value(settings.keyStyle()).build();
+    public abstract Builder toBuilder();
 
-        List<SystemSettingModel> settingModelList = new ArrayList<>(2);
-        settingModelList.add(flag);
-        settingModelList.add(style);
+    public static Builder builder() {
+        return new AutoValue_SystemSettings.Builder();
+    }
 
-        return settingModelList;
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder {
+
+        public abstract Builder keyFlag(String keyFlag);
+
+        public abstract Builder keyStyle(String keyStyle);
+
+        public abstract SystemSettings build();
     }
 }

@@ -28,27 +28,45 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.io.IOException;
-import java.text.ParseException;
+public final class SystemSettingTableInfo {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-public class SystemSettingShould extends BaseObjectShould implements ObjectShould {
-
-    public SystemSettingShould() {
-        super("settings/system_setting.json");
+    private SystemSettingTableInfo() {
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        SystemSetting settings = objectMapper.readValue(jsonStream, SystemSetting.class);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-        assertThat(settings.keyFlag()).isEqualTo("sierra_leone");
-        assertThat(settings.keyStyle()).isEqualTo("light_blue/light_blue.css");
+        @Override
+        public String name() {
+            return "SystemSetting";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        public static final String KEY = "key";
+        public static final String VALUE = "value";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    KEY,
+                    VALUE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    KEY
+            );
+        }
     }
 }

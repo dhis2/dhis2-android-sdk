@@ -39,24 +39,24 @@ import java.util.List;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class SystemSettingModelBuilderShould {
+public class SystemSettingSplitterShould {
 
-    private SystemSetting settingsPojo = SystemSetting.create("aFlag", "aStyle");
-    private SystemSettingModelBuilder modelBuilder = new SystemSettingModelBuilder();
+    private SystemSettings settingsPojo = SystemSettings.builder().keyFlag("aFlag").keyStyle("aStyle").build();
+    private SystemSettingsSplitter modelBuilder = new SystemSettingsSplitter();
 
     @Test
     public void build_flag_setting() throws IOException, ParseException {
-        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
-        SystemSettingModel flagModel = modelList.get(0);
-        assertThat(flagModel.key()).isEqualTo("flag");
-        assertThat(flagModel.value()).isEqualTo("aFlag");
+        List<SystemSetting> settingList = modelBuilder.splitSettings(settingsPojo);
+        SystemSetting flag = settingList.get(0);
+        assertThat(flag.key()).isEqualTo("flag");
+        assertThat(flag.value()).isEqualTo("aFlag");
     }
 
     @Test
     public void build_style_setting() throws IOException, ParseException {
-        List<SystemSettingModel> modelList = modelBuilder.splitSettings(settingsPojo);
-        SystemSettingModel flagModel = modelList.get(1);
-        assertThat(flagModel.key()).isEqualTo("style");
-        assertThat(flagModel.value()).isEqualTo("aStyle");
+        List<SystemSetting> settingList = modelBuilder.splitSettings(settingsPojo);
+        SystemSetting style = settingList.get(1);
+        assertThat(style.key()).isEqualTo("style");
+        assertThat(style.value()).isEqualTo("aStyle");
     }
 }

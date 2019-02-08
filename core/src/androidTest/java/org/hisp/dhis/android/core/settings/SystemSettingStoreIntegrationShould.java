@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,32 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
 
-@Reusable
-public final class SystemSettingModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    SystemSettingModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public SystemSettingStoreIntegrationShould() {
+        super(SystemSettingStore.create(DatabaseAdapterFactory.get(false)), SystemSettingTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
+    protected SystemSetting buildObject() {
+        return SystemSettingSamples.getSystemSetting();
     }
 
     @Override
-    public void wipeData() {
-        // No data to wipe
+    protected SystemSetting buildObjectToUpdate() {
+        return SystemSettingSamples.getSystemSetting().toBuilder()
+                .value("new_value")
+                .build();
+    }
+
+    @Override
+    protected SystemSetting buildObjectWithId() {
+        return SystemSettingSamples.getSystemSetting().toBuilder()
+                .id(1L)
+                .build();
     }
 }

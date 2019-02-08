@@ -25,59 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings;
 
-import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.junit.Before;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.io.IOException;
+import java.text.ParseException;
 
-@RunWith(JUnit4.class)
-public class SystemSettingHandlerShould {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    @Mock
-    private ObjectWithoutUidStore<SystemSettingModel> store;
+public class SystemSettingsShould extends BaseObjectShould implements ObjectShould {
 
-    @Mock
-    private SystemSettingModelBuilder modelBuilder;
-
-    @Mock
-    private SystemSetting pojo;
-
-    @Mock
-    private SystemSettingModel m1;
-
-    @Mock
-    private SystemSettingModel m2;
-
-    // object to test
-    private SystemSettingHandlerImpl handler;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        handler = new SystemSettingHandlerImpl(store);
-
-        when(modelBuilder.splitSettings(pojo)).thenReturn(Lists.newArrayList(m1, m2));
+    public SystemSettingsShould() {
+        super("settings/system_settings.json");
     }
 
+    @Override
     @Test
-    public void call_model_builder_to_split_settings() throws Exception {
-        handler.handle(pojo, modelBuilder);
-        verify(modelBuilder).splitSettings(pojo);
-    }
+    public void map_from_json_string() throws IOException, ParseException {
+        SystemSettings settings = objectMapper.readValue(jsonStream, SystemSettings.class);
 
-    @Test
-    public void call_store_to_persist_models() throws Exception {
-        handler.handle(pojo, modelBuilder);
-        verify(store).updateOrInsertWhere(m1);
-        verify(store).updateOrInsertWhere(m2);
+        assertThat(settings.keyFlag()).isEqualTo("sierra_leone");
+        assertThat(settings.keyStyle()).isEqualTo("light_blue/light_blue.css");
     }
 }

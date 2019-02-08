@@ -52,7 +52,7 @@ public final class DataSetModuleWiper implements ModuleWiper {
                 DataSetDataElementLinkModel.TABLE,
                 DataSetOrganisationUnitLinkModel.TABLE,
                 DataSetTableInfo.TABLE_INFO.name(),
-                SectionDataElementLinkModel.TABLE,
+                SectionDataElementLinkTableInfo.TABLE_INFO.name(),
                 SectionTableInfo.TABLE_INFO.name(),
                 SectionGreyedFieldsLinkTableInfo.TABLE_INFO.name()
         );

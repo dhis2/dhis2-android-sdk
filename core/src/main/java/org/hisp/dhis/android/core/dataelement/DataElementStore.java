@@ -62,7 +62,7 @@ public final class DataElementStore {
         }
     };
 
-    private static final CursorModelFactory<DataElement> FACTORY = new CursorModelFactory<DataElement>() {
+    public static final CursorModelFactory<DataElement> FACTORY = new CursorModelFactory<DataElement>() {
         @Override
         public DataElement fromCursor(Cursor cursor) {
             return DataElement.create(cursor);

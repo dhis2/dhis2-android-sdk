@@ -28,39 +28,50 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.Arrays;
-import java.util.Collection;
+public final class SectionDataElementLinkTableInfo {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-@Module
-public final class SectionEntityDIModule {
+        @Override
+        public String name() {
+            return "SectionDataElementLink";
+        }
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Section> store(DatabaseAdapter databaseAdapter) {
-        return SectionStore.create(databaseAdapter);
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            DataElementTableInfo.TABLE_INFO,
+            Columns.SECTION,
+            Columns.DATA_ELEMENT);
+
+    private SectionDataElementLinkTableInfo() {
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<Section> handler(SectionHandler impl) {
-        return impl;
-    }
+    static class Columns extends BaseModel.Columns {
 
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Arrays.asList(
-                SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
-                SectionDataElementChildrenAppender.create(databaseAdapter)
-        );
+        static final String SECTION = "section";
+        static final String DATA_ELEMENT = "dataElement";
+        static final String SORT_ORDER = "sortOrder";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    SECTION, DATA_ELEMENT, SORT_ORDER);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

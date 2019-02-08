@@ -25,42 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
 
-import java.util.Arrays;
-import java.util.Collection;
+final class SectionDataElementChildrenAppender extends ChildrenAppender<Section> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private final LinkModelChildStore<Section, DataElement> linkModelChildStore;
 
-@Module
-public final class SectionEntityDIModule {
-
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Section> store(DatabaseAdapter databaseAdapter) {
-        return SectionStore.create(databaseAdapter);
+    private SectionDataElementChildrenAppender(LinkModelChildStore<Section, DataElement> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<Section> handler(SectionHandler impl) {
-        return impl;
+    @Override
+    protected Section appendChildren(Section section) {
+        Section.Builder builder = section.toBuilder();
+        builder.dataElements(linkModelChildStore.getChildren(section));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Arrays.asList(
-                SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
-                SectionDataElementChildrenAppender.create(databaseAdapter)
+    static ChildrenAppender<Section> create(DatabaseAdapter databaseAdapter) {
+        return new SectionDataElementChildrenAppender(
+                StoreFactory.<Section, DataElement>linkModelChildStore(
+                        databaseAdapter,
+                        SectionDataElementLinkTableInfo.TABLE_INFO,
+                        SectionDataElementLinkTableInfo.CHILD_PROJECTION,
+                        DataElementStore.FACTORY
+                )
         );
     }
 }

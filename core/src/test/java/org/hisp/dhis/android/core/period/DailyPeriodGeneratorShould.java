@@ -47,9 +47,9 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     @Test
     public void generate_daily_periods_for_one_day() throws Exception {
         calendar.set(2018, 1, 1);
-        PeriodModel period = generateExpectedPeriod("20180201", calendar);
+        Period period = generateExpectedPeriod("20180201", calendar);
 
-        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(1);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -57,12 +57,12 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     @Test
     public void generate_daily_periods() throws Exception {
         calendar.set(2018,2,4);
-        PeriodModel period1 = generateExpectedPeriod("20180304", calendar);
+        Period period1 = generateExpectedPeriod("20180304", calendar);
         calendar.set(2018, 2, 5);
-        PeriodModel period2 = generateExpectedPeriod("20180305", calendar);
+        Period period2 = generateExpectedPeriod("20180305", calendar);
 
-        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(2);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(2);
+        List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }
@@ -70,14 +70,14 @@ public class DailyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     @Test
     public void generate_daily_periods_for_changing_year() throws Exception {
         calendar.set(2017,11,31);
-        PeriodModel period1 = generateExpectedPeriod("20171231", calendar);
+        Period period1 = generateExpectedPeriod("20171231", calendar);
         calendar.set(2018, 0, 1);
-        PeriodModel period2 = generateExpectedPeriod("20180101", calendar);
+        Period period2 = generateExpectedPeriod("20180101", calendar);
         calendar.set(2018, 0, 2);
-        PeriodModel period3 = generateExpectedPeriod("20180102", calendar);
+        Period period3 = generateExpectedPeriod("20180102", calendar);
 
-        List<PeriodModel> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(3);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2, period3);
+        List<Period> generatedPeriods = new DailyPeriodGenerator(calendar).generateLastPeriods(3);
+        List<Period> expectedPeriods = Lists.newArrayList(period1, period2, period3);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }

@@ -49,9 +49,9 @@ public class WeeklyPeriodGeneratorShould {
     @Test
     public void generate_weekly_periods_for_one_week() throws Exception {
         calendar.set(2018, 2, 8);
-        PeriodModel period = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        Period period = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
 
-        List<PeriodModel> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
+        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
                 .generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
@@ -60,11 +60,11 @@ public class WeeklyPeriodGeneratorShould {
     @Test
     public void generate_weekly_periods() throws Exception {
         calendar.set(2018,2,8);
-        PeriodModel period1 = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        Period period1 = generateExpectedPeriod("2018W10", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2018, 2, 15);
-        PeriodModel period2 = generateExpectedPeriod("2018W11", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        Period period2 = generateExpectedPeriod("2018W11", calendar, Calendar.MONDAY, PeriodType.Weekly);
 
-        List<PeriodModel> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
+        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
                 .generateLastPeriods(2);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
@@ -73,13 +73,13 @@ public class WeeklyPeriodGeneratorShould {
     @Test
     public void generate_weekly_periods_for_changing_year() throws Exception {
         calendar.set(2016,11,31);
-        PeriodModel period1 = generateExpectedPeriod("2016W52", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        Period period1 = generateExpectedPeriod("2016W52", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2017, 0, 7);
-        PeriodModel period2 = generateExpectedPeriod("2017W1", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        Period period2 = generateExpectedPeriod("2017W1", calendar, Calendar.MONDAY, PeriodType.Weekly);
         calendar.set(2017, 0, 14);
-        PeriodModel period3 = generateExpectedPeriod("2017W2", calendar, Calendar.MONDAY, PeriodType.Weekly);
+        Period period3 = generateExpectedPeriod("2017W2", calendar, Calendar.MONDAY, PeriodType.Weekly);
 
-        List<PeriodModel> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
+        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory.weekly(calendar)
                 .generateLastPeriods(3);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
@@ -89,26 +89,26 @@ public class WeeklyPeriodGeneratorShould {
     public void generate_the_first_week_including_january_4() throws Exception {
         calendar.set(2018, 0, 4);
 
-        List<PeriodModel> generatedPeriods = WeeklyPeriodGeneratorFactory
+        List<Period> generatedPeriods = WeeklyPeriodGeneratorFactory
                 .weekly(calendar).generateLastPeriods(1);
-        List<PeriodModel> generatedWedPeriods = WeeklyPeriodGeneratorFactory
+        List<Period> generatedWedPeriods = WeeklyPeriodGeneratorFactory
                 .wednesday(calendar).generateLastPeriods(1);
-        List<PeriodModel> generatedThuPeriods = WeeklyPeriodGeneratorFactory
+        List<Period> generatedThuPeriods = WeeklyPeriodGeneratorFactory
                 .thursday(calendar).generateLastPeriods(1);
-        List<PeriodModel> generatedSatPeriods = WeeklyPeriodGeneratorFactory
+        List<Period> generatedSatPeriods = WeeklyPeriodGeneratorFactory
                 .saturday(calendar).generateLastPeriods(1);
-        List<PeriodModel> generatedSunPeriods = WeeklyPeriodGeneratorFactory
+        List<Period> generatedSunPeriods = WeeklyPeriodGeneratorFactory
                 .sunday(calendar).generateLastPeriods(1);
 
-        PeriodModel period = generateExpectedPeriod("2018W1", calendar,
+        Period period = generateExpectedPeriod("2018W1", calendar,
                 Calendar.MONDAY, PeriodType.Weekly);
-        PeriodModel periodWednesday = generateExpectedPeriod("2018WedW1", calendar,
+        Period periodWednesday = generateExpectedPeriod("2018WedW1", calendar,
                 Calendar.WEDNESDAY, PeriodType.WeeklyWednesday);
-        PeriodModel periodThursday = generateExpectedPeriod("2018ThuW1", calendar,
+        Period periodThursday = generateExpectedPeriod("2018ThuW1", calendar,
                 Calendar.THURSDAY, PeriodType.WeeklyThursday);
-        PeriodModel periodSaturday = generateExpectedPeriod("2018SatW1", calendar,
+        Period periodSaturday = generateExpectedPeriod("2018SatW1", calendar,
                 Calendar.SATURDAY, PeriodType.WeeklySaturday);
-        PeriodModel periodSunday = generateExpectedPeriod("2018SunW1", calendar,
+        Period periodSunday = generateExpectedPeriod("2018SunW1", calendar,
                 Calendar.SUNDAY, PeriodType.WeeklySunday);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
@@ -118,14 +118,14 @@ public class WeeklyPeriodGeneratorShould {
         assertThat(generatedSunPeriods).isEqualTo(Lists.newArrayList(periodSunday));
     }
 
-    private PeriodModel generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {
+    private Period generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {
         Calendar startCalendar = (Calendar) cal.clone();
         AbstractPeriodGenerator.setCalendarToStartTimeOfADay(startCalendar);
         setFirstDayOfWeekAndMinimalDaysInFirstWeek(startCalendar, weekStartDay);
         Calendar endCalendar = (Calendar) startCalendar.clone();
         endCalendar.add(Calendar.WEEK_OF_YEAR, 1);
         endCalendar.add(Calendar.MILLISECOND, -1);
-        return PeriodModel.builder()
+        return Period.builder()
                 .periodId(id)
                 .periodType(periodType)
                 .startDate(startCalendar.getTime())

@@ -40,7 +40,7 @@ public final class PeriodEntityDIModule {
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<PeriodModel> store(DatabaseAdapter databaseAdapter) {
+    ObjectWithoutUidStore<Period> store(DatabaseAdapter databaseAdapter) {
         return PeriodStore.create(databaseAdapter);
     }
 }

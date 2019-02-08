@@ -25,28 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.data.period;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 
-import dagger.Reusable;
+import java.text.ParseException;
+import java.util.Date;
 
-@Reusable
-public final class PeriodHandler {
-    private final ObjectWithoutUidStore<Period> store;
-    private final ParentPeriodGenerator generator;
+public class PeriodSamples {
 
-    @Inject
-    PeriodHandler(ObjectWithoutUidStore<Period> store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    public static Period getPeriod() {
+        return Period.builder()
+                .periodId("20171231")
+                .periodType(PeriodType.Daily)
+                .startDate(getDate("2017-12-31T00:00:00.000"))
+                .startDate(getDate("2017-12-31T23:59:59.999"))
+                .build();
     }
 
-    public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
-            store.updateOrInsertWhere(period);
+    private static Date getDate(String dateStr) {
+        try {
+            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

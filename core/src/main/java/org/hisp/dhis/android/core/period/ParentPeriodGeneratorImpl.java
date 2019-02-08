@@ -64,8 +64,8 @@ class ParentPeriodGeneratorImpl implements ParentPeriodGenerator {
         this.yearly = yearly;
     }
 
-    public List<PeriodModel> generatePeriods() {
-        List<PeriodModel> periods = new ArrayList<>();
+    public List<Period> generatePeriods() {
+        List<Period> periods = new ArrayList<>();
         periods.addAll(daily.generateLastPeriods(DAILY_PERIODS));
 
         periods.addAll(weekly.weekly.generateLastPeriods(WEEKLY_PERIODS));

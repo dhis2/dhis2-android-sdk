@@ -25,28 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class PeriodTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class PeriodHandler {
-    private final ObjectWithoutUidStore<Period> store;
-    private final ParentPeriodGenerator generator;
-
-    @Inject
-    PeriodHandler(ObjectWithoutUidStore<Period> store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    private PeriodTableInfo() {
     }
 
-    public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
-            store.updateOrInsertWhere(period);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "Period";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+        static final String PERIOD_ID = "periodId";
+        static final String PERIOD_TYPE = "periodType";
+        static final String START_DATE = "startDate";
+        static final String END_DATE = "endDate";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    PERIOD_ID,
+                    PERIOD_TYPE,
+                    START_DATE,
+                    END_DATE
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.whereUpdate(),
+                    PERIOD_ID
+            );
         }
     }
 }

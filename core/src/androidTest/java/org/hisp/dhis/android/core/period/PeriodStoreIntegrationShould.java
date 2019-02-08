@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -25,28 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.period.PeriodSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+import java.util.Date;
 
-@Reusable
-public final class PeriodHandler {
-    private final ObjectWithoutUidStore<Period> store;
-    private final ParentPeriodGenerator generator;
+@RunWith(AndroidJUnit4.class)
+public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<Period> {
 
-    @Inject
-    PeriodHandler(ObjectWithoutUidStore<Period> store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    public PeriodStoreIntegrationShould() {
+        super(PeriodStore.create(DatabaseAdapterFactory.get(false)), PeriodTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
-    public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
-            store.updateOrInsertWhere(period);
-        }
+    @Override
+    protected Period buildObject() {
+        return PeriodSamples.getPeriod();
+    }
+
+    @Override
+    protected Period buildObjectToUpdate() {
+        return PeriodSamples.getPeriod().toBuilder()
+                .startDate(new Date())
+                .build();
+    }
+
+    @Override
+    protected Period buildObjectWithId() {
+        return PeriodSamples.getPeriod().toBuilder()
+                .id(1L)
+                .build();
     }
 }

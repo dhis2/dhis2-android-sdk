@@ -47,14 +47,14 @@ public abstract class PeriodGeneratorBaseShould {
         this.incrementsAmount = incrementsAmount;
     }
 
-    PeriodModel generateExpectedPeriod(String id, Calendar cal) {
+    Period generateExpectedPeriod(String id, Calendar cal) {
         Calendar startCalendar = (Calendar) cal.clone();
         AbstractPeriodGenerator.setCalendarToStartTimeOfADay(startCalendar);
         setStartCalendar(startCalendar);
         Calendar endCalendar = (Calendar) startCalendar.clone();
         endCalendar.add(calendarCode, incrementsAmount);
         endCalendar.add(Calendar.MILLISECOND, -1);
-        return PeriodModel.builder()
+        return Period.builder()
                 .periodId(id)
                 .periodType(periodType)
                 .startDate(startCalendar.getTime())

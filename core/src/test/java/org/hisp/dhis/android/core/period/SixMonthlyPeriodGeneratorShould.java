@@ -47,11 +47,11 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     @Test
     public void generate_last_period() throws Exception {
         calendar.set(2018, 0, 1);
-        PeriodModel period = generateExpectedPeriod("2018S1", calendar);
+        Period period = generateExpectedPeriod("2018S1", calendar);
 
         calendar.set(2018, 1, 21);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
-        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
+        List<Period> generatedPeriods = generator.generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -59,11 +59,11 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     @Test
     public void generate_starting_period_on_first_day_for_january() throws Exception {
         calendar.set(2018, 0, 1);
-        PeriodModel period = generateExpectedPeriod("2018S1", calendar);
+        Period period = generateExpectedPeriod("2018S1", calendar);
 
         calendar.set(2018, 0, 1);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
-        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
+        List<Period> generatedPeriods = generator.generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -71,11 +71,11 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     @Test
     public void generate_ending_period_on_last_day_for_january() throws Exception {
         calendar.set(2017, 6, 1);
-        PeriodModel period = generateExpectedPeriod("2017S2", calendar);
+        Period period = generateExpectedPeriod("2017S2", calendar);
 
         calendar.set(2017, 11, 31);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
-        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(1);
+        List<Period> generatedPeriods = generator.generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -83,14 +83,14 @@ public class SixMonthlyPeriodGeneratorShould extends PeriodGeneratorBaseShould {
     @Test
     public void generate_last_two_periods() throws Exception {
         calendar.set(2017, 6, 1);
-        PeriodModel period1 = generateExpectedPeriod("2017S2", calendar);
+        Period period1 = generateExpectedPeriod("2017S2", calendar);
         calendar.set(2018, 0, 1);
-        PeriodModel period2 = generateExpectedPeriod("2018S1", calendar);
-        List<PeriodModel> expectedPeriods = Lists.newArrayList(period1, period2);
+        Period period2 = generateExpectedPeriod("2018S1", calendar);
+        List<Period> expectedPeriods = Lists.newArrayList(period1, period2);
 
         calendar.set(2018, 1, 21);
         NMonthlyPeriodGenerator generator = NMonthlyPeriodGeneratorFactory.sixMonthly(calendar);
-        List<PeriodModel> generatedPeriods = generator.generateLastPeriods(2);
+        List<Period> generatedPeriods = generator.generateLastPeriods(2);
 
         assertThat(generatedPeriods).isEqualTo(expectedPeriods);
     }

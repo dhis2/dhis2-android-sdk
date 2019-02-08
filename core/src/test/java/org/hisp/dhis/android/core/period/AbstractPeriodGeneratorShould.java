@@ -60,13 +60,13 @@ public class AbstractPeriodGeneratorShould {
 
     @Test
     public void generate_one_requested_period() throws Exception {
-        List<PeriodModel> periods = generator.generateLastPeriods(1);
+        List<Period> periods = generator.generateLastPeriods(1);
         assertThat(periods.size()).isEqualTo(1);
     }
 
     @Test
     public void generate_many_requested_period() throws Exception {
-        List<PeriodModel> periods = generator.generateLastPeriods(5);
+        List<Period> periods = generator.generateLastPeriods(5);
         assertThat(periods.size()).isEqualTo(5);
     }
 

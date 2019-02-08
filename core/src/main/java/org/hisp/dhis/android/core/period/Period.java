@@ -32,69 +32,47 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
-@Deprecated
 @AutoValue
-public abstract class PeriodModel extends BaseModel {
-
-    public static final String TABLE = "Period";
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String PERIOD_ID = "periodId";
-        public static final String PERIOD_TYPE = "periodType";
-        public static final String START_DATE = "startDate";
-        public static final String END_DATE = "endDate";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    PERIOD_ID, PERIOD_TYPE, START_DATE, END_DATE);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{PERIOD_ID};
-        }
-    }
-
-    public static PeriodModel create(Cursor cursor) {
-        return AutoValue_PeriodModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $AutoValue_PeriodModel.Builder();
-    }
+public abstract class Period implements Model {
 
     @Nullable
-    @ColumnName(Columns.PERIOD_ID)
     public abstract String periodId();
 
     @Nullable
-    @ColumnName(Columns.PERIOD_TYPE)
     @ColumnAdapter(DbPeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
-    @ColumnName(Columns.START_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date startDate();
 
     @Nullable
-    @ColumnName(Columns.END_DATE)
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
 
+    static Period create(Cursor cursor) {
+        return $AutoValue_Period.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_Period.Builder();
+    }
+
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
         public abstract Builder periodId(String periodId);
 
         public abstract Builder periodType(PeriodType periodType);
@@ -103,6 +81,6 @@ public abstract class PeriodModel extends BaseModel {
 
         public abstract Builder endDate(Date endDate);
 
-        public abstract PeriodModel build();
+        public abstract Period build();
     }
 }

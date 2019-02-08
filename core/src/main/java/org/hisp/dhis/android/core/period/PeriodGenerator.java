@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.period;
 import java.util.List;
 
 interface PeriodGenerator {
-    List<PeriodModel> generateLastPeriods(int count) throws RuntimeException;
+    List<Period> generateLastPeriods(int count) throws RuntimeException;
 }

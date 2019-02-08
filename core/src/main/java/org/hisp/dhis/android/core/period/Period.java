@@ -59,10 +59,6 @@ public abstract class Period implements Model {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
 
-    public static Builder builder() {
-        return new AutoValue_Period.Builder();
-    }
-
     static Period create(Cursor cursor) {
         return $AutoValue_Period.createFromCursor(cursor);
     }

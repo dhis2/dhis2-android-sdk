@@ -15,16 +15,6 @@ public abstract class TEIImportSummaries extends BaseImportSummaries implements 
 
     private static final String IMPORT_SUMMARIES = "importSummaries";
 
-    /**
-    static final TEIImportSummaries EMPTY = TEIImportSummaries.create(
-            ImportStatus.SUCCESS,
-            ImportCount.EMPTY,
-            "ImportSummaries",
-            0, 0, 0, 0,
-            Collections.<ImportSummary>emptyList()
-    );
-     */
-
     @Override
     @Nullable
     @JsonProperty(IMPORT_SUMMARIES)

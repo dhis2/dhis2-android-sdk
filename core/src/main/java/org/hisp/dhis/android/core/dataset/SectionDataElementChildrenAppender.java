@@ -25,27 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataelement.DataElementStore;
 
-public class SectionDataElementLinkModelBuilder
-        extends OrderedLinkModelBuilder<DataElement, SectionDataElementLinkModel> {
+final class SectionDataElementChildrenAppender extends ChildrenAppender<Section> {
 
-    private final SectionDataElementLinkModel.Builder builder;
+    private final LinkModelChildStore<Section, DataElement> linkModelChildStore;
 
-    SectionDataElementLinkModelBuilder(Section section) {
-        this.builder = SectionDataElementLinkModel.builder()
-                .section(section.uid());
+    private SectionDataElementChildrenAppender(LinkModelChildStore<Section, DataElement> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
     @Override
-    public SectionDataElementLinkModel buildModel(DataElement dataElement, Integer sortOrder) {
-        return builder
-                .dataElement(dataElement.uid())
-                .sortOrder(sortOrder)
-                .build();
+    protected Section appendChildren(Section section) {
+        Section.Builder builder = section.toBuilder();
+        builder.dataElements(linkModelChildStore.getChildren(section));
+        return builder.build();
+    }
+
+    static ChildrenAppender<Section> create(DatabaseAdapter databaseAdapter) {
+        return new SectionDataElementChildrenAppender(
+                StoreFactory.<Section, DataElement>linkModelChildStore(
+                        databaseAdapter,
+                        SectionDataElementLinkTableInfo.TABLE_INFO,
+                        SectionDataElementLinkTableInfo.CHILD_PROJECTION,
+                        DataElementStore.FACTORY
+                )
+        );
     }
 }

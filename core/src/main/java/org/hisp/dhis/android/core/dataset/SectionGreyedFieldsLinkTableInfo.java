@@ -28,24 +28,49 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class SectionDataElementLinkModelBuilder
-        extends OrderedLinkModelBuilder<DataElement, SectionDataElementLinkModel> {
+public final class SectionGreyedFieldsLinkTableInfo {
 
-    private final SectionDataElementLinkModel.Builder builder;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    SectionDataElementLinkModelBuilder(Section section) {
-        this.builder = SectionDataElementLinkModel.builder()
-                .section(section.uid());
+        @Override
+        public String name() {
+            return "SectionGreyedFieldsLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            Columns.SECTION,
+            Columns.DATA_ELEMENT_OPERAND);
+
+    private SectionGreyedFieldsLinkTableInfo() {
     }
 
-    @Override
-    public SectionDataElementLinkModel buildModel(DataElement dataElement, Integer sortOrder) {
-        return builder
-                .dataElement(dataElement.uid())
-                .sortOrder(sortOrder)
-                .build();
+    static class Columns extends BaseModel.Columns {
+
+        private static final String SECTION = "section";
+        static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    SECTION, DATA_ELEMENT_OPERAND);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

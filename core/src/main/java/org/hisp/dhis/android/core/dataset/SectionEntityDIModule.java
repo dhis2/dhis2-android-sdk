@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +57,10 @@ public final class SectionEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Section>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Arrays.asList(
+                SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
+                SectionDataElementChildrenAppender.create(databaseAdapter)
+        );
     }
 }

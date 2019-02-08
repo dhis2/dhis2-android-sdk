@@ -44,29 +44,25 @@ public final class DataSetIndicatorLinkStore {
 
     private DataSetIndicatorLinkStore() {}
 
-    private static final StatementBinder<DataSetIndicatorLinkModel> BINDER
-            = new StatementBinder<DataSetIndicatorLinkModel>() {
+    private static final StatementBinder<DataSetIndicatorLink> BINDER
+            = new StatementBinder<DataSetIndicatorLink>() {
         @Override
-        public void bindToStatement(@NonNull DataSetIndicatorLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull DataSetIndicatorLink o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.dataSet());
             sqLiteBind(sqLiteStatement, 2, o.indicator());
         }
     };
 
-    private static final CursorModelFactory<DataSetIndicatorLinkModel> FACTORY
-            = new CursorModelFactory<DataSetIndicatorLinkModel>() {
+    private static final CursorModelFactory<DataSetIndicatorLink> FACTORY
+            = new CursorModelFactory<DataSetIndicatorLink>() {
         @Override
-        public DataSetIndicatorLinkModel fromCursor(Cursor cursor) {
-            return DataSetIndicatorLinkModel.create(cursor);
+        public DataSetIndicatorLink fromCursor(Cursor cursor) {
+            return DataSetIndicatorLink.create(cursor);
         }
     };
 
-    public static LinkModelStore<DataSetIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetIndicatorLinkModel.TABLE,
-                new DataSetIndicatorLinkModel.Columns(),
-                DataSetIndicatorLinkModel.Columns.DATA_SET,
-                BINDER,
-                FACTORY);
+    public static LinkModelStore<DataSetIndicatorLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, DataSetIndicatorLinkTableInfo.TABLE_INFO,
+                DataSetIndicatorLinkModel.Columns.DATA_SET, BINDER, FACTORY);
     }
 }

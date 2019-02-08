@@ -25,37 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class UserCredentialsEntityDIModule {
+@Reusable
+final class UserCredentialsChildrenAppender extends ChildrenAppender<User> {
 
-    @Provides
-    @Reusable
-    UserCredentialsStore store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStoreImpl.create(databaseAdapter);
+    private final UserCredentialsStore childStore;
+
+    @Inject
+    UserCredentialsChildrenAppender(UserCredentialsStore childStore) {
+        this.childStore = childStore;
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<UserCredentials> handler(UserCredentialsStore store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    ReadOnlyObjectRepository<UserCredentials> repository(UserCredentialsStore store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    @Override
+    protected User appendChildren(User user) {
+        User.Builder builder = user.toBuilder();
+        builder.userCredentials(childStore.getForUser(user.uid()));
+        return builder.build();
     }
 }

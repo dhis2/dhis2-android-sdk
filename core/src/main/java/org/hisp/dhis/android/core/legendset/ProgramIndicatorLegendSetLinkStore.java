@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -44,29 +39,15 @@ public final class ProgramIndicatorLegendSetLinkStore {
 
     private ProgramIndicatorLegendSetLinkStore() {}
 
-    private static final StatementBinder<ProgramIndicatorLegendSetLinkModel> BINDER
-            = new StatementBinder<ProgramIndicatorLegendSetLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull ProgramIndicatorLegendSetLinkModel o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.programIndicator());
-            sqLiteBind(sqLiteStatement, 2, o.legendSet());
-        }
-    };
+    private static final StatementBinder<ProgramIndicatorLegendSetLink> BINDER
+            = (o, sqLiteStatement) -> {
+                sqLiteBind(sqLiteStatement, 1, o.programIndicator());
+                sqLiteBind(sqLiteStatement, 2, o.legendSet());
+            };
 
-    private static final CursorModelFactory<ProgramIndicatorLegendSetLinkModel> FACTORY
-            = new CursorModelFactory<ProgramIndicatorLegendSetLinkModel>() {
-        @Override
-        public ProgramIndicatorLegendSetLinkModel fromCursor(Cursor cursor) {
-            return ProgramIndicatorLegendSetLinkModel.create(cursor);
-        }
-    };
-
-    public static LinkModelStore<ProgramIndicatorLegendSetLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkModel.TABLE,
-                new ProgramIndicatorLegendSetLinkModel.Columns(),
-                ProgramIndicatorLegendSetLinkModel.Columns.PROGRAM_INDICATOR,
-                BINDER,
-                FACTORY);
+    public static LinkModelStore<ProgramIndicatorLegendSetLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR,
+                BINDER, ProgramIndicatorLegendSetLink::create);
     }
 }

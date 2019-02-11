@@ -4,7 +4,9 @@ import android.content.Context;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -19,6 +21,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final Context context;
     private final UserModule userModule;
     private final EventStore eventStore;
+    private final EnrollmentStore enrollmentStore;
     private final static String CONFIG_FILE = "smsconfig";
     private final static String KEY_GATEWAY = "gateway";
     private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
@@ -26,10 +29,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     public LocalDbRepositoryImpl(Context ctx,
                                  UserModule userModule,
-                                 EventStore eventStore) {
+                                 EventStore eventStore,
+                                 EnrollmentStore enrollmentStore) {
         this.context = ctx;
         this.userModule = userModule;
         this.eventStore = eventStore;
+        this.enrollmentStore = enrollmentStore;
     }
 
 
@@ -97,12 +102,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Completable updateSubmissionState(BaseDataModel item, State state) {
-        if (item instanceof Event) {
-            String uid = ((Event) item).uid();
-            if (uid != null) {
-                return Completable.fromAction(() -> eventStore.setState(uid, state));
-            }
-            return Completable.error(new NullPointerException("Event uid param null"));
+        if (item instanceof EventModel) {
+            String uid = ((EventModel) item).uid();
+            return Completable.fromAction(() -> eventStore.setState(uid, state));
+        } else if (item instanceof EnrollmentModel) {
+            String uid = ((EnrollmentModel) item).uid();
+            return Completable.fromAction(() -> enrollmentStore.setState(uid, state));
         }
         return Completable.error(new IllegalArgumentException("Not supported data type"));
     }

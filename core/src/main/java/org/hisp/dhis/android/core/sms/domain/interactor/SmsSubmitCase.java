@@ -46,9 +46,10 @@ public class SmsSubmitCase {
     public Observable<SmsRepository.SmsSendingState> submit(final EnrollmentModel enrollmentModel,
                                                             final Collection<TrackedEntityAttributeValueModel>
                                                                     attributes) {
-        return submit(
+        return localDbRepository.getUserName().flatMapObservable(user -> submit(
                 new EnrollmentConverter(),
-                new EnrollmentConverter.EnrollmentData(enrollmentModel, attributes));
+                new EnrollmentConverter.EnrollmentData(enrollmentModel, attributes, user))
+        );
     }
 
     public Completable checkConfirmationSms(EventModel event) {

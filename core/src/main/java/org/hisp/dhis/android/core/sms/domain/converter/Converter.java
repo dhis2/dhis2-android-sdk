@@ -11,7 +11,7 @@ public interface Converter<P extends Converter.DataToConvert, T extends BaseData
      * @param dataItem object to convert
      * @return text ready to be sent by sms
      */
-    String format(@NonNull P dataItem);
+    String format(@NonNull P dataItem) throws Exception;
 
     /**
      * @return a texts list, that when they exists in a response confirmation sms, it means that

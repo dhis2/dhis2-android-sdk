@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class UserOrganisationUnitLinkTableInfo {
@@ -47,6 +49,10 @@ public final class UserOrganisationUnitLinkTableInfo {
         }
     };
 
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            OrganisationUnitTableInfo.TABLE_INFO,
+            Columns.USER,
+            Columns.ORGANISATION_UNIT);
 
     private UserOrganisationUnitLinkTableInfo() {
     }

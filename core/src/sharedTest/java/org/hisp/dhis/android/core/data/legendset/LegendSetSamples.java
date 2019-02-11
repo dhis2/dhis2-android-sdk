@@ -26,24 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.legend;
+package org.hisp.dhis.android.core.data.legendset;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-public class LegendSamples {
+public class LegendSetSamples {
 
-    public static Legend getLegend() {
-        Legend.Builder legendBuilder = Legend.builder();
+    public static LegendSet getLegendSet() {
+        LegendSet.Builder legendSetBuilder = LegendSet.builder();
 
-        fillIdentifiableProperties(legendBuilder);
-        legendBuilder
-                .startValue(30.5)
-                .endValue(40.0)
-                .color("#d9f0a3")
-                .legendSet(ObjectWithUid.create("legend_set_uid"));
-        return legendBuilder.build();
+        fillIdentifiableProperties(legendSetBuilder);
+        legendSetBuilder
+                .symbolizer("color")
+                .legends(null);
+        return legendSetBuilder.build();
     }
 }

@@ -25,44 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collections;
+import javax.inject.Inject;
 
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
 
-@Module
-public final class UserCredentialsEntityDIModule {
+@Reusable
+final class UserRoleChildrenAppender extends ChildrenAppender<UserCredentials> {
 
-    @Provides
-    @Reusable
-    UserCredentialsStore store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStoreImpl.create(databaseAdapter);
+
+    private final IdentifiableObjectStore<UserRole> store;
+
+    @Inject
+    UserRoleChildrenAppender(IdentifiableObjectStore<UserRole> store) {
+        this.store = store;
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<UserCredentials> handler(UserCredentialsStore store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    ReadOnlyObjectRepository<UserCredentials> repository(UserCredentialsStore store,
-                                                         UserRoleChildrenAppender userRoleChildrenAppender) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(
-                store,
-                Collections.<ChildrenAppender<UserCredentials>>singletonList(userRoleChildrenAppender)
-        );
+    @Override
+    protected UserCredentials appendChildren(UserCredentials userCredentials) {
+        UserCredentials.Builder builder = userCredentials.toBuilder();
+        builder.userRoles(store.selectAll());
+        return builder.build();
     }
 }

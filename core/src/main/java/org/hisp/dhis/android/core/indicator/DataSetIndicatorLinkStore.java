@@ -63,6 +63,6 @@ public final class DataSetIndicatorLinkStore {
 
     public static LinkModelStore<DataSetIndicatorLink> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, DataSetIndicatorLinkTableInfo.TABLE_INFO,
-                DataSetIndicatorLinkModel.Columns.DATA_SET, BINDER, FACTORY);
+                DataSetIndicatorLinkTableInfo.Columns.DATA_SET, BINDER, FACTORY);
     }
 }

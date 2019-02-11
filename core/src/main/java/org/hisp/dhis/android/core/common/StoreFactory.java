@@ -40,14 +40,13 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-@SuppressWarnings("PMD.UseVarargs")
 public final class StoreFactory {
 
     private StoreFactory() {}
 
-    public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I>
-    objectWithUidStore(DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
-                       CursorModelFactory<I> modelFactory) {
+    public static <I extends Model & ObjectWithUidInterface> IdentifiableObjectStore<I> objectWithUidStore(
+            DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
+            CursorModelFactory<I> modelFactory) {
         SQLStatementBuilder statementBuilder =
                 new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(), new String[]{});
         SQLStatementWrapper statements = new SQLStatementWrapper(statementBuilder, databaseAdapter);
@@ -64,22 +63,15 @@ public final class StoreFactory {
                 statementBuilder, binder, modelFactory);
     }
 
-    @Deprecated
     public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
-            DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns, StatementBinder<I> binder,
+            DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
             WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
+        SQLStatementBuilder statementBuilder =
+                new SQLStatementBuilder(tableInfo.name(), tableInfo.columns().all(), tableInfo.columns().whereUpdate());
         return new ObjectWithoutUidStoreImpl<>(databaseAdapter,
                 databaseAdapter.compileStatement(statementBuilder.insert()),
                 databaseAdapter.compileStatement(statementBuilder.updateWhere()),
                 statementBuilder, binder, whereBinder, modelFactory);
-    }
-
-    public static <I extends Model> ObjectWithoutUidStore<I> objectWithoutUidStore(
-            DatabaseAdapter databaseAdapter, TableInfo tableInfo, StatementBinder<I> binder,
-            WhereStatementBinder<I> whereBinder, CursorModelFactory<I> modelFactory) {
-        return objectWithoutUidStore(databaseAdapter, tableInfo.name(), tableInfo.columns(), binder, whereBinder,
-                modelFactory);
     }
 
     @Deprecated

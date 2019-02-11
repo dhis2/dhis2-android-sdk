@@ -26,25 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.data.legendset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 
-public class ProgramIndicatorLegendSetLinkModelBuilder extends ModelBuilder<LegendSet,
-        ProgramIndicatorLegendSetLinkModel> {
+public class ProgramIndicatorLegendSetLinkSamples {
 
-    private final ProgramIndicatorLegendSetLinkModel.Builder builder;
-
-    public ProgramIndicatorLegendSetLinkModelBuilder(ProgramIndicator programIndicator) {
-        this.builder = ProgramIndicatorLegendSetLinkModel.builder()
-                .programIndicator(programIndicator.uid());
-    }
-
-    @Override
-    public ProgramIndicatorLegendSetLinkModel buildModel(LegendSet legendSet) {
-        return builder
-                .legendSet(legendSet.uid())
+    public static ProgramIndicatorLegendSetLink getProgramIndicatorLegendSetLink() {
+        return ProgramIndicatorLegendSetLink.builder()
+                .legendSet("legend_set")
+                .programIndicator("program_indicator")
                 .build();
     }
 }

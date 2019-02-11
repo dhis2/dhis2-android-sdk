@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,11 +82,11 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
                 = d2.dataSetModule().dataSetCompleteRegistrations;
         repository.add(dataValueModel);
 
-        ImportSummary importSummary = repository.upload().call();
+        DataValueImportSummary dataValueImportSummary = repository.upload().call();
 
-        int importCountTotal = importSummary.importCount().imported() +
-                importSummary.importCount().updated() +
-                importSummary.importCount().ignored();
+        int importCountTotal = dataValueImportSummary.importCount().imported() +
+                dataValueImportSummary.importCount().updated() +
+                dataValueImportSummary.importCount().ignored();
 
         assertThat(importCountTotal == 1).isTrue();
     }
@@ -103,10 +103,10 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
 
         assertThat(insertToPostDataSetCompleteRegistration(dataSetCompleteRegistration)).isTrue();
 
-        ImportSummary importSummary = d2.dataSetModule().dataSetCompleteRegistrations.upload().call();
+        DataValueImportSummary dataValueImportSummary = d2.dataSetModule().dataSetCompleteRegistrations.upload().call();
 
-        int importCountTotal = importSummary.importCount().updated() +
-                importSummary.importCount().ignored();
+        int importCountTotal = dataValueImportSummary.importCount().updated() +
+                dataValueImportSummary.importCount().ignored();
 
         assertThat(importCountTotal == 1).isTrue();
     }

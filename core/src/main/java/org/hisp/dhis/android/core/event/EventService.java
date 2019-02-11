@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.EventWebResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -56,7 +56,7 @@ public interface EventService {
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
 
     @POST(EVENTS)
-    Call<WebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
+    Call<EventWebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
 
     @GET(EVENTS)
     Call<Payload<Event>> getEvents(

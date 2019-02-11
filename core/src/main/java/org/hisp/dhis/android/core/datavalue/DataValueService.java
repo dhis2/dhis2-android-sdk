@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Filter;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -52,5 +52,5 @@ interface DataValueService {
                                            @Query("paging") Boolean paging);
 
     @POST("dataValueSets")
-    Call<ImportSummary> postDataValues(@Body DataValueSet dataValueSet);
+    Call<DataValueImportSummary> postDataValues(@Body DataValueSet dataValueSet);
 }

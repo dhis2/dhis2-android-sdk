@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,33 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.imports;
 
-import org.hisp.dhis.android.core.ObjectMapperFactory;
-import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
-import org.hisp.dhis.android.core.imports.HttpMessageResponse;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import retrofit2.Response;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_EventWebResponse.Builder.class)
+public abstract class EventWebResponse extends WebResponse {
 
-final class TrackedEntityInstanceCallErrorCatcher implements APICallErrorCatcher {
+    private static final String IMPORT_SUMMARIES = "response"; // is called response from api
 
-    @Override
-    public Boolean mustBeStored() {
-        return false;
+    @NonNull
+    @JsonProperty(IMPORT_SUMMARIES)
+    public abstract EventImportSummaries response();
+
+    public static Builder builder() {
+        return new AutoValue_EventWebResponse.Builder();
     }
 
-    @Override
-    public D2ErrorCode catchError(Response<?> response) throws IOException {
-        HttpMessageResponse parsed = ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(),
-                HttpMessageResponse.class);
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
+        public abstract Builder response(EventImportSummaries response);
 
-        if (parsed.httpStatusCode() == 401 && parsed.message().equals("OWNERSHIP_ACCESS_DENIED")) {
-            return D2ErrorCode.OWNERSHIP_ACCESS_DENIED;
-        } else {
-            return null;
-        }
+        public abstract EventWebResponse build();
     }
 }

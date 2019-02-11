@@ -28,36 +28,34 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.hisp.dhis.android.core.Inject;
-import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(JUnit4.class)
-public class WebResponseShould {
+public class TEIImportSummariesShould extends BaseObjectShould implements ObjectShould {
 
-    @Test
-    public void map_from_json_string() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
-
-        String responseStr = new ResourcesFileReader().getStringFromFile("imports/web_response.json");
-        WebResponse webResponse = objectMapper.readValue(responseStr, WebResponse.class);
-
-        assertThat(webResponse.message()).isEqualTo("Import was successful.");
-        assertThat(webResponse.importSummaries()).isNotNull();
+    public TEIImportSummariesShould() {
+        super("imports/import_summaries.json");
     }
 
+    @Override
     @Test
-    public void map_from_json_string_with_import_conflicts() throws Exception {
-        ObjectMapper objectMapper = Inject.objectMapper();
+    public void map_from_json_string() throws IOException, ParseException {
+        TEIImportSummaries importSummaries = objectMapper.readValue(jsonStream, TEIImportSummaries.class);
 
-        String webResponseStr = new ResourcesFileReader().getStringFromFile(
-                "imports/web_response_with_import_conflicts.json");
-        objectMapper.readValue(webResponseStr, WebResponse.class);
+        assertThat(importSummaries.responseType()).isEqualTo("ImportSummaries");
+        assertThat(importSummaries.status()).isEqualTo(ImportStatus.SUCCESS);
+        assertThat(importSummaries.imported()).isEqualTo(1);
+        assertThat(importSummaries.updated()).isEqualTo(2);
+        assertThat(importSummaries.deleted()).isEqualTo(3);
+        assertThat(importSummaries.ignored()).isEqualTo(4);
     }
 }

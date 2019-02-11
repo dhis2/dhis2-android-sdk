@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,11 +76,11 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        ImportSummary importSummary = d2.dataValueModule().dataValues.upload().call();
+        DataValueImportSummary dataValueImportSummary = d2.dataValueModule().dataValues.upload().call();
 
-        int importCountTotal = importSummary.importCount().imported() +
-                importSummary.importCount().updated() +
-                importSummary.importCount().ignored();
+        int importCountTotal = dataValueImportSummary.importCount().imported() +
+                dataValueImportSummary.importCount().updated() +
+                dataValueImportSummary.importCount().ignored();
 
         assertThat(importCountTotal == 1).isTrue();
     }
@@ -96,10 +96,10 @@ public class DataValuePostCallRealIntegrationShould extends AbsStoreTestCase {
 
         assertThat(insertToPostDataValue(dataValue)).isTrue();
 
-        ImportSummary importSummary = d2.dataValueModule().dataValues.upload().call();
+        DataValueImportSummary dataValueImportSummary = d2.dataValueModule().dataValues.upload().call();
 
-        int importCountTotal = importSummary.importCount().updated() +
-                importSummary.importCount().ignored();
+        int importCountTotal = dataValueImportSummary.importCount().updated() +
+                dataValueImportSummary.importCount().ignored();
 
         assertThat(importCountTotal == 1).isTrue();
     }

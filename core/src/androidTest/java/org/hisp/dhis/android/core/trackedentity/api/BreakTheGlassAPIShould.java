@@ -3,15 +3,15 @@ package org.hisp.dhis.android.core.trackedentity.api;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.arch.api.responses.HttpMessageResponse;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.imports.ImportSummary;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.HttpMessageResponse;
+import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.imports.TEIWebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
@@ -36,10 +36,11 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
     /**
      * Expected configuration to run these tests:
      * - user: android
-     * - capture orgunit:
-     * - search orgunit:
+     * - role: not a superuser
+     * - capture orgunit: DiszpKrYNg8 - Negelhun CHC
+     * - search orgunit: YuQRtpLP10I - Badja
      *
-     * - read/write access to program:
+     * - read/write access to PROTECTED program: IpHINAT79UW
      */
 
     private String captureOrgunit = "DiszpKrYNg8";      // Ngelehun CHC
@@ -90,13 +91,14 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
         TrackedEntityInstance tei = teiWithEventInSearchScope();
 
         for (int i = 0; i < 2; i++) {
-            WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+            TEIWebResponse response =
+                    executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                             .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                    WebResponse.class);
+                    TEIWebResponse.class);
 
-            assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+            assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-            for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+            for (TEIImportSummary importSummary : response.response().importSummaries()) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
                 assertEvents(importSummary, SUCCESS);
@@ -110,26 +112,26 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
 
         TrackedEntityInstance tei = teiWithEventInSearchScope();
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                WebResponse.class);
+                TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             assertTei(importSummary, SUCCESS);
             assertEnrollments(importSummary, SUCCESS);
             assertEvents(importSummary, SUCCESS);
         }
 
-        WebResponse response2 =
+        TEIWebResponse response2 =
                 executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                WebResponse.class);
+                        TEIWebResponse.class);
 
-        assertThat(response2.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response2.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response2.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response2.response().importSummaries()) {
             assertTei(importSummary, SUCCESS);
             assertEnrollments(importSummary, SUCCESS);
             assertEvents(importSummary, SUCCESS);
@@ -142,25 +144,25 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
 
         TrackedEntityInstance tei = teiWithEnollmentInSearchScope();
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                WebResponse.class);
+                TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             assertTei(importSummary, SUCCESS);
             assertEnrollments(importSummary, SUCCESS);  // Because it is the first upload.Ownership is not defined
             assertEvents(importSummary, ERROR);         // It takes enrollment ownership
         }
 
-        WebResponse response2 = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+        TEIWebResponse response2 = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                WebResponse.class);
+                TEIWebResponse.class);
 
-        assertThat(response2.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response2.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response2.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response2.response().importSummaries()) {
             assertTei(importSummary, SUCCESS);
             assertEnrollments(importSummary, ERROR);    // Because ownership was previously set
         }
@@ -172,13 +174,13 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
 
         TrackedEntityInstance tei = teiWithEnollmentInSearchScope();
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                WebResponse.class);
+                TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             assertTei(importSummary, SUCCESS);
             assertEnrollments(importSummary, SUCCESS);  // Because it is the first upload.Ownership is not defined
             assertEvents(importSummary, ERROR);         // It takes enrollment ownership
@@ -187,13 +189,13 @@ public class BreakTheGlassAPIShould extends AbsStoreTestCase {
         HttpMessageResponse glassResponse =
                 executor.executeObjectCall(trackedEntityInstanceService.breakGlass(tei.uid(), program, "Sync"));
 
-        WebResponse response2 = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+        TEIWebResponse response2 = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
                         .postTrackedEntityInstances(wrapPayload(tei), this.strategy), Collections.singletonList(409),
-                WebResponse.class);
+                TEIWebResponse.class);
 
-        assertThat(response2.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response2.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response2.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response2.response().importSummaries()) {
             assertTei(importSummary, SUCCESS);
             assertEnrollments(importSummary, SUCCESS);
             assertEvents(importSummary, SUCCESS);

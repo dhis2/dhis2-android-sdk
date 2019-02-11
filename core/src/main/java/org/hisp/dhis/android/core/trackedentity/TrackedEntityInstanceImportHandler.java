@@ -33,11 +33,9 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
-import org.hisp.dhis.android.core.event.EventImportHandler;
-import org.hisp.dhis.android.core.imports.ImportEnrollment;
-import org.hisp.dhis.android.core.imports.ImportEvent;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.TEIImportSummary;
 
 import java.util.List;
 
@@ -46,46 +44,36 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.getState;
 public final class TrackedEntityInstanceImportHandler {
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final EnrollmentImportHandler enrollmentImportHandler;
-    private final EventImportHandler eventImportHandler;
 
-    public TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                              @NonNull EnrollmentImportHandler enrollmentImportHandler,
-                                              @NonNull EventImportHandler eventImportHandler) {
+    TrackedEntityInstanceImportHandler(@NonNull TrackedEntityInstanceStore trackedEntityInstanceStore,
+                                       @NonNull EnrollmentImportHandler enrollmentImportHandler) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.enrollmentImportHandler = enrollmentImportHandler;
-        this.eventImportHandler = eventImportHandler;
     }
 
-    public void handleTrackedEntityInstanceImportSummaries(@NonNull List<ImportSummary> importSummaries) {
+    public void handleTrackedEntityInstanceImportSummaries(@NonNull List<TEIImportSummary> importSummaries) {
         if (importSummaries == null) {
             return;
         }
 
         int size = importSummaries.size();
         for (int i = 0; i < size; i++) {
-            ImportSummary importSummary = importSummaries.get(i);
+            TEIImportSummary importSummary = importSummaries.get(i);
 
             if (importSummary == null) {
                 break;
             }
 
-            ImportStatus importStatus = importSummary.importStatus();
+            ImportStatus importStatus = importSummary.status();
             State state = getState(importStatus);
 
             // store the state in database
             trackedEntityInstanceStore.setState(importSummary.reference(), state);
 
-            if (importSummary.importEnrollment() != null) {
-                ImportEnrollment importEnrollment = importSummary.importEnrollment();
+            if (importSummary.enrollments() != null) {
+                EnrollmentImportSummaries importEnrollment = importSummary.enrollments();
 
                 enrollmentImportHandler.handleEnrollmentImportSummary(importEnrollment.importSummaries());
-            }
-
-
-            if (importSummary.importEvent() != null) {
-                ImportEvent importEvent = importSummary.importEvent();
-
-                eventImportHandler.handleEventImportSummaries(importEvent.importSummaries());
             }
         }
 

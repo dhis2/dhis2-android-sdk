@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
@@ -120,8 +120,8 @@ class EventUtils {
 
     // Assertions
 
-    static void assertEvent(ImportSummary eventSummary, ImportStatus status) {
-        assertThat(eventSummary.importStatus()).isEqualTo(status);
+    static void assertEvent(EventImportSummary eventSummary, ImportStatus status) {
+        assertThat(eventSummary.status()).isEqualTo(status);
     }
 
 }

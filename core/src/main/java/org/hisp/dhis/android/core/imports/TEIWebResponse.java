@@ -30,26 +30,30 @@ package org.hisp.dhis.android.core.imports;
 
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-public final class WebResponseHandler {
-    private final TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
+@AutoValue
+@JsonDeserialize(builder = AutoValue_TEIWebResponse.Builder.class)
+public abstract class TEIWebResponse extends WebResponse {
 
-    public WebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {
-        this.trackedEntityInstanceImportHandler = trackedEntityInstanceImportHandler;
+    private static final String RESPONSE = "response"; // is called response from api
+
+    @NonNull
+    @JsonProperty(RESPONSE)
+    public abstract TEIImportSummaries response();
+
+    public static Builder builder() {
+        return new AutoValue_TEIWebResponse.Builder();
     }
 
-    public void handleWebResponse(@NonNull WebResponse webResponse) {
-        if (webResponse == null || webResponse.importSummaries() == null) {
-            return;
-        }
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
+        public abstract Builder response(TEIImportSummaries response);
 
-        ImportSummaries importSummaries = webResponse.importSummaries();
-
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                importSummaries.importSummaries()
-        );
-
+        public abstract TEIWebResponse build();
     }
-
 }

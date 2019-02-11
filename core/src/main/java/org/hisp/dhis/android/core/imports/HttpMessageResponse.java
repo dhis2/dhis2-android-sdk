@@ -26,9 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.responses;
-
-import android.support.annotation.NonNull;
+package org.hisp.dhis.android.core.imports;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -36,31 +34,13 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
-public abstract class HttpMessageResponse {
-
-    @NonNull
-    public abstract String httpStatus();
-
-    @NonNull
-    public abstract Integer httpStatusCode();
-
-    @NonNull
-    public abstract String status();
-
-    @NonNull
-    public abstract String message();
+public abstract class HttpMessageResponse extends WebResponse {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder {
-        public abstract Builder httpStatus(String httpStatus);
-
-        public abstract Builder httpStatusCode(Integer httpStatusCode);
-
-        public abstract Builder status(String status);
-
-        public abstract Builder message(String message);
+    public static abstract class Builder extends WebResponse.Builder<Builder> {
 
         public abstract HttpMessageResponse build();
+
     }
 }

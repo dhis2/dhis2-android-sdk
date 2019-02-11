@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -52,6 +52,6 @@ interface DataSetCompleteRegistrationService {
     );
 
     @POST("completeDataSetRegistrations")
-    Call<ImportSummary> postDataSetCompleteRegistrations(
+    Call<DataValueImportSummary> postDataSetCompleteRegistrations(
             @Body DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload);
 }

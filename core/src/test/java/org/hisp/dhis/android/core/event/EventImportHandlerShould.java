@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -51,10 +50,7 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class EventImportHandlerShould {
     @Mock
-    private List<ImportSummary> importSummaries;
-
-    @Mock
-    private ImportSummary importSummary;
+    private EventImportSummary importSummary;
 
     @Mock
     private EventStore eventStore;
@@ -66,7 +62,7 @@ public class EventImportHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
         eventImportHandler = new EventImportHandler(eventStore);
 
@@ -81,7 +77,7 @@ public class EventImportHandlerShould {
 
     @Test
     public void invoke_set_state_after_handle_event_import_summaries_with_success_status_and_reference() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary));
@@ -91,7 +87,7 @@ public class EventImportHandlerShould {
 
     @Test
     public void invoke_set_state_after_handle_event_import_summaries_with_error_status_and_reference() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.ERROR);
+        when(importSummary.status()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
         eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary));

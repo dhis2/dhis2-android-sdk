@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,31 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.responses;
+package org.hisp.dhis.android.core.imports;
 
-import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.ObjectShould;
-import org.junit.Test;
+import android.support.annotation.NonNull;
 
-import java.io.IOException;
-import java.text.ParseException;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceImportHandler;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+public final class TEIWebResponseHandler {
+    private final TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
 
-public class HttpMessageResponseShould extends BaseObjectShould implements ObjectShould {
-
-    public HttpMessageResponseShould() {
-        super("trackedentity/glass/break_glass_successful.json");
+    public TEIWebResponseHandler(@NonNull TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler) {
+        this.trackedEntityInstanceImportHandler = trackedEntityInstanceImportHandler;
     }
 
-    @Override
-    @Test
-    public void map_from_json_string() throws IOException, ParseException {
-        HttpMessageResponse response = objectMapper.readValue(jsonStream, HttpMessageResponse.class);
+    public void handleWebResponse(@NonNull TEIWebResponse webResponse) {
+        if (webResponse == null || webResponse.response() == null) {
+            return;
+        }
 
-        assertThat(response.httpStatus()).isEqualTo("OK");
-        assertThat(response.httpStatusCode()).isEqualTo(200);
-        assertThat(response.status()).isEqualTo("OK");
-        assertThat(response.message()).isEqualTo("Temporary Ownership granted");
+        TEIImportSummaries importSummaries = webResponse.response();
+
+        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
+                importSummaries.importSummaries()
+        );
+
     }
+
 }

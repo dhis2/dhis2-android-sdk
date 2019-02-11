@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.imports.EventWebResponse;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
@@ -68,12 +69,12 @@ public final class EventPostCall implements Callable<WebResponse> {
     }
 
     @Override
-    public WebResponse call() throws Exception {
+    public EventWebResponse call() throws Exception {
         List<Event> eventsToPost = queryEventsToPost();
 
         // if there is nothing to send, return null
         if (eventsToPost.isEmpty()) {
-            return WebResponse.EMPTY;
+            return EventWebResponse.builder().build();
         }
 
         EventPayload eventPayload = new EventPayload();
@@ -81,8 +82,9 @@ public final class EventPostCall implements Callable<WebResponse> {
 
         String strategy = "CREATE_AND_UPDATE";
 
-        WebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
-                eventService.postEvents(eventPayload, strategy), Collections.singletonList(409), WebResponse.class);
+        EventWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+                eventService.postEvents(eventPayload, strategy), Collections.singletonList(409),
+                EventWebResponse.class);
 
         handleWebResponse(webResponse);
         return webResponse;
@@ -107,10 +109,10 @@ public final class EventPostCall implements Callable<WebResponse> {
         return eventRecreated;
     }
 
-    private void handleWebResponse(WebResponse webResponse) {
+    private void handleWebResponse(EventWebResponse webResponse) {
         EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
         eventImportHandler.handleEventImportSummaries(
-                webResponse.importSummaries().importSummaries()
+                webResponse.response().importSummaries()
         );
     }
 }

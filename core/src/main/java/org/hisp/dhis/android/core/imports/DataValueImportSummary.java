@@ -40,15 +40,24 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.Utils.safeUnmodifiableList;
 
 @AutoValue
-public abstract class ImportEnrollment {
+public abstract class DataValueImportSummary {
+
+    private static final String IMPORT_COUNT = "importCount";
     private static final String IMPORT_STATUS = "status";
     private static final String RESPONSE_TYPE = "responseType";
-    private static final String IMPORT_EVENT = "events";
-    private static final String IMPORTED = "imported";
-    private static final String UPDATED = "updated";
-    private static final String DELETED = "deleted";
-    private static final String IGNORED = "ignored";
-    private static final String IMPORT_SUMMARIES = "importSummaries";
+    private static final String REFERENCE = "reference";
+    private static final String IMPORT_CONFLICT = "conflicts";
+
+    public static final DataValueImportSummary EMPTY = DataValueImportSummary.create(
+            ImportCount.EMPTY,
+            ImportStatus.SUCCESS,
+            "ImportSummary",
+            null, null
+    );
+
+    @NonNull
+    @JsonProperty(IMPORT_COUNT)
+    public abstract ImportCount importCount();
 
     @NonNull
     @JsonProperty(IMPORT_STATUS)
@@ -58,42 +67,24 @@ public abstract class ImportEnrollment {
     @JsonProperty(RESPONSE_TYPE)
     public abstract String responseType();
 
+    //TODO: Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
     @Nullable
-    @JsonProperty(IMPORT_EVENT)
-    public abstract ImportEvent importEvent();
-
-    @NonNull
-    @JsonProperty(IMPORTED)
-    public abstract Integer imported();
-
-    @NonNull
-    @JsonProperty(UPDATED)
-    public abstract Integer updated();
-
-    @NonNull
-    @JsonProperty(DELETED)
-    public abstract Integer deleted();
-
-    @NonNull
-    @JsonProperty(IGNORED)
-    public abstract Integer ignored();
+    @JsonProperty(REFERENCE)
+    public abstract String reference();
 
     @Nullable
-    @JsonProperty(IMPORT_SUMMARIES)
-    public abstract List<ImportSummary> importSummaries();
+    @JsonProperty(IMPORT_CONFLICT)
+    public abstract List<ImportConflict> importConflicts();
 
     @JsonCreator
-    public static ImportEnrollment create(
+    public static DataValueImportSummary create(
+            @JsonProperty(IMPORT_COUNT) ImportCount importCount,
             @JsonProperty(IMPORT_STATUS) ImportStatus importStatus,
             @JsonProperty(RESPONSE_TYPE) String responseType,
-            @JsonProperty(IMPORT_EVENT) ImportEvent importEvent,
-            @JsonProperty(IMPORTED) Integer imported,
-            @JsonProperty(UPDATED) Integer updated,
-            @JsonProperty(DELETED) Integer deleted,
-            @JsonProperty(IGNORED) Integer ignored,
-            @JsonProperty(IMPORT_SUMMARIES) List<ImportSummary> importSummaries) {
-        return new AutoValue_ImportEnrollment(importStatus, responseType, importEvent,
-                imported, updated, deleted, ignored,
-                safeUnmodifiableList(importSummaries));
+            @JsonProperty(REFERENCE) String reference,
+            @JsonProperty(IMPORT_CONFLICT) List<ImportConflict> importConflicts) {
+        return new AutoValue_DataValueImportSummary(importCount, importStatus,
+                responseType, reference,
+                safeUnmodifiableList(importConflicts));
     }
 }

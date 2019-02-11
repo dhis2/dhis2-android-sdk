@@ -5,15 +5,15 @@ import junit.framework.Assert;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.TEIWebResponse;
+import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePayload;
@@ -82,12 +82,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
+        assertThat(response.response().status()).isEqualTo(ERROR);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
             }
@@ -122,12 +122,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
+        assertThat(response.response().status()).isEqualTo(ERROR);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
             }
@@ -162,12 +162,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
             }
@@ -196,12 +196,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
@@ -233,12 +233,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
@@ -246,8 +246,8 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
             else if (invalidTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, ERROR);
-                assertThat(importSummary.importEnrollment().imported()).isEqualTo(1);
-                assertThat(importSummary.importEnrollment().ignored()).isEqualTo(1);
+                assertThat(importSummary.enrollments().imported()).isEqualTo(1);
+                assertThat(importSummary.enrollments().ignored()).isEqualTo(1);
             }
         }
 
@@ -272,12 +272,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI1, validTEI2);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI1.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
@@ -314,12 +314,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI1, validTEI2);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI1.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
@@ -356,12 +356,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
@@ -399,12 +399,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
@@ -445,12 +445,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(validTEI, invalidTEI);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (validTEI.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);
@@ -490,12 +490,12 @@ public abstract class TrackedEntityInstanceAPIShould extends AbsStoreTestCase {
         TrackedEntityInstancePayload payload = new TrackedEntityInstancePayload();
         payload.trackedEntityInstances = Arrays.asList(completedEnrollment);
 
-        WebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
-                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        TEIWebResponse response = executor.executeObjectCallWithAcceptedErrorCodes(trackedEntityInstanceService
+                .postTrackedEntityInstances(payload, this.strategy), Collections.singletonList(409), TEIWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (TEIImportSummary importSummary : response.response().importSummaries()) {
             if (completedEnrollment.uid().equals(importSummary.reference())) {
                 assertTei(importSummary, SUCCESS);
                 assertEnrollments(importSummary, SUCCESS);

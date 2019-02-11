@@ -28,48 +28,41 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import java.io.IOException;
+import com.google.auto.value.AutoValue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-@RunWith(JUnit4.class)
-public class ProgramIndicatorLegendSetLinkModelBuilderShould {
+@AutoValue
+public abstract class ProgramIndicatorLegendSetLink implements Model {
 
-    @Mock
-    private ProgramIndicator programIndicator;
+    @Nullable
+    public abstract String programIndicator();
 
-    @Mock
-    private LegendSet legendSet;
+    @Nullable
+    public abstract String legendSet();
 
-    private ProgramIndicatorLegendSetLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(programIndicator.uid()).thenReturn("program_indicator_uid");
-        when(legendSet.uid()).thenReturn("legend_set_uid");
-
-        model = buildModel();
+    public static ProgramIndicatorLegendSetLink create(Cursor cursor) {
+        return AutoValue_ProgramIndicatorLegendSetLink.createFromCursor(cursor);
     }
 
-    private ProgramIndicatorLegendSetLinkModel buildModel() {
-        return new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator).buildModel(legendSet);
+    public static Builder builder() {
+        return new $$AutoValue_ProgramIndicatorLegendSetLink.Builder();
     }
 
-    @Test
-    public void copy_link_properties() {
-        assertThat(model.programIndicator()).isEqualTo(programIndicator.uid());
-        assertThat(model.legendSet()).isEqualTo(legendSet.uid());
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder programIndicator(String programIndicator);
+
+        public abstract Builder legendSet(String legendSet);
+
+        public abstract ProgramIndicatorLegendSetLink build();
     }
 }

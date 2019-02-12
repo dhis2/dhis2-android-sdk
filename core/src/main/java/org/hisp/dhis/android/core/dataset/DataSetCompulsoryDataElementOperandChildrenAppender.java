@@ -52,7 +52,7 @@ final class DataSetCompulsoryDataElementOperandChildrenAppender extends Children
 
     static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new DataSetCompulsoryDataElementOperandChildrenAppender(
-                StoreFactory.<DataSet, DataElementOperand>linkModelChildStore(
+                StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
                         DataSetCompulsoryDataElementOperandLinkTableInfo.CHILD_PROJECTION,

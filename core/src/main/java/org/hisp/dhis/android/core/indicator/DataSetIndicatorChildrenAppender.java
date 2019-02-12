@@ -51,7 +51,7 @@ public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<Dat
 
     public static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new DataSetIndicatorChildrenAppender(
-                StoreFactory.<DataSet, Indicator>linkModelChildStore(
+                StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         DataSetIndicatorLinkTableInfo.TABLE_INFO,
                         DataSetIndicatorLinkTableInfo.CHILD_PROJECTION,

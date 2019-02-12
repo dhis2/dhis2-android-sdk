@@ -88,8 +88,8 @@ public class PerformanceHintsServiceShould {
         when(programRule4.program()).thenReturn(program2);
 
         when(organisationUnitStore.count()).thenReturn(0);
-        when(programStore.selectAll()).thenReturn(Collections.<Program>emptyList());
-        when(programRuleStore.selectAll()).thenReturn(Collections.<ProgramRule>emptyList());
+        when(programStore.selectAll()).thenReturn(Collections.emptyList());
+        when(programRuleStore.selectAll()).thenReturn(Collections.emptyList());
 
         int ORGANISATION_UNIT_THRESHOLD = 3;
         int PROGRAM_RULES_PER_PROGRAM_THRESHOLD = 2;

@@ -51,7 +51,7 @@ final class SectionDataElementChildrenAppender extends ChildrenAppender<Section>
 
     static ChildrenAppender<Section> create(DatabaseAdapter databaseAdapter) {
         return new SectionDataElementChildrenAppender(
-                StoreFactory.<Section, DataElement>linkModelChildStore(
+                StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         SectionDataElementLinkTableInfo.TABLE_INFO,
                         SectionDataElementLinkTableInfo.CHILD_PROJECTION,

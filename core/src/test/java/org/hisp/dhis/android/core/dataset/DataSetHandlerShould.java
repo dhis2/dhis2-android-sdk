@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -180,7 +179,7 @@ public class DataSetHandlerShould {
 
         verify(dataInputPeriodHandler, never()).handleMany(anyString(),
                 anyListOf(DataInputPeriod.class),
-                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
+                Matchers.any());
     }
 
     @Test
@@ -233,7 +232,7 @@ public class DataSetHandlerShould {
 
         verify(dataInputPeriodHandler).handleMany(anyString(),
                 anyListOf(DataInputPeriod.class),
-                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
+                Matchers.any());
     }
 
     @Test

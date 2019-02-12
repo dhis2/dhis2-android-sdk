@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -62,7 +61,7 @@ public final class UserCredentialsEntityDIModule {
                                                          UserRoleChildrenAppender userRoleChildrenAppender) {
         return new ReadOnlyFirstObjectRepositoryImpl<>(
                 store,
-                Collections.<ChildrenAppender<UserCredentials>>singletonList(userRoleChildrenAppender)
+                Collections.singletonList(userRoleChildrenAppender)
         );
     }
 }

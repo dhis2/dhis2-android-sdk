@@ -73,7 +73,7 @@ public class EventHandlerShould {
 
     @Test
     public void do_nothing_when_passing_empty_list_argument() throws Exception {
-        eventHandler.handleMany(new ArrayList<Event>());
+        eventHandler.handleMany(new ArrayList<>());
 
         // verify that store is never invoked
         verify(eventStore, never()).deleteIfExists(anyString());

@@ -82,7 +82,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
     @Override
     public <P> P executeObjectCall(Call<P> call) throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<Integer>(), null, null);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, null);
     }
 
     @Override
@@ -94,7 +94,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
     @Override
     public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
             throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<Integer>(), null, errorCatcher);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, errorCatcher);
     }
 
     private <P> P executeObjectCallInternal(Call<P> call,

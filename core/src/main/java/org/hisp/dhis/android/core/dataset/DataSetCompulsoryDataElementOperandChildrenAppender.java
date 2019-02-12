@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
 
 final class DataSetCompulsoryDataElementOperandChildrenAppender extends ChildrenAppender<DataSet> {
 
@@ -56,7 +55,7 @@ final class DataSetCompulsoryDataElementOperandChildrenAppender extends Children
                         databaseAdapter,
                         DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
                         DataSetCompulsoryDataElementOperandLinkTableInfo.CHILD_PROJECTION,
-                        DataElementOperandStore.FACTORY)
+                        DataElementOperand::create)
         );
     }
 }

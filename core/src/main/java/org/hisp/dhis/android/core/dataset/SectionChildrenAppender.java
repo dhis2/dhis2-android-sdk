@@ -52,7 +52,7 @@ final class SectionChildrenAppender extends ChildrenAppender<DataSet> {
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
                         SectionStore.CHILD_PROJECTION,
-                        SectionStore.FACTORY)
+                        Section::create)
         );
     }
 }

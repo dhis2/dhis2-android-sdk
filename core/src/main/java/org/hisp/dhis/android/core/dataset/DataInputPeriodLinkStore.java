@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -45,24 +40,12 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 final class DataInputPeriodLinkStore {
 
     private static final StatementBinder<DataInputPeriod> BINDER =
-            new StatementBinder<DataInputPeriod>() {
-                @Override
-                public void bindToStatement(@NonNull DataInputPeriod dataInputPeriod,
-                                            @NonNull SQLiteStatement sqLiteStatement) {
-                    sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(dataInputPeriod.dataSet()));
-                    sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(dataInputPeriod.period()));
-                    sqLiteBind(sqLiteStatement, 3, dataInputPeriod.openingDate());
-                    sqLiteBind(sqLiteStatement, 4, dataInputPeriod.closingDate());
-                }
+            (dataInputPeriod, sqLiteStatement) -> {
+                sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(dataInputPeriod.dataSet()));
+                sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(dataInputPeriod.period()));
+                sqLiteBind(sqLiteStatement, 3, dataInputPeriod.openingDate());
+                sqLiteBind(sqLiteStatement, 4, dataInputPeriod.closingDate());
             };
-
-    static final CursorModelFactory<DataInputPeriod> FACTORY
-            = new CursorModelFactory<DataInputPeriod>() {
-        @Override
-        public DataInputPeriod fromCursor(Cursor cursor) {
-            return DataInputPeriod.create(cursor);
-        }
-    };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET);
@@ -76,6 +59,6 @@ final class DataInputPeriodLinkStore {
                 DataInputPeriodTableInfo.TABLE_INFO,
                 DataInputPeriodTableInfo.Columns.DATA_SET,
                 BINDER,
-                FACTORY);
+                DataInputPeriod::create);
     }
 }

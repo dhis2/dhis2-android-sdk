@@ -27,12 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -40,26 +35,15 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ConfigurationStoreImpl extends ObjectStoreImpl<Configuration> implements ConfigurationStore {
+
+    private static final StatementBinder<Configuration> BINDER = (configuration, sqLiteStatement) ->
+            sqLiteBind(sqLiteStatement, 1, ConfigurationHelper.getConfigurationStr(configuration.serverUrl()));
+
     private ConfigurationStoreImpl(DatabaseAdapter databaseAdapter,
                                    SQLStatementBuilder builder) {
-        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()), builder, BINDER, FACTORY);
+        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()), builder, BINDER,
+                Configuration::create);
     }
-
-    private static final StatementBinder<Configuration> BINDER = new StatementBinder<Configuration>() {
-        @Override
-        public void bindToStatement(@NonNull Configuration configuration,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, ConfigurationHelper.getConfigurationStr(configuration.serverUrl()));
-        }
-    };
-
-    private static final CursorModelFactory<Configuration> FACTORY =
-            new CursorModelFactory<Configuration>() {
-        @Override
-        public Configuration fromCursor(Cursor cursor) {
-            return Configuration.create(cursor);
-        }
-    };
 
     @Override
     public void save(Configuration configuration) {

@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -43,30 +38,19 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class DataSetDataElementLinkStore {
 
+    private static final StatementBinder<DataSetElement> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.dataSet()));
+        sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
+        sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryCombo()));
+    };
+
     private DataSetDataElementLinkStore() {}
-
-    private static final StatementBinder<DataSetElement> BINDER = new StatementBinder<DataSetElement>() {
-        @Override
-        public void bindToStatement(@NonNull DataSetElement o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.dataSet()));
-            sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
-            sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryCombo()));
-        }
-    };
-
-    static final CursorModelFactory<DataSetElement> FACTORY
-            = new CursorModelFactory<DataSetElement>() {
-        @Override
-        public DataSetElement fromCursor(Cursor cursor) {
-            return DataSetElement.create(cursor);
-        }
-    };
 
     public static LinkModelStore<DataSetElement> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
                 DataSetElementLinkTableInfo.TABLE_INFO,
                 DataSetElementFields.DATA_SET,
                 BINDER,
-                FACTORY);
+                DataSetElement::create);
     }
 }

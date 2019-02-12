@@ -50,6 +50,24 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStoreImpl<TrackedEntityDataValue>
         implements TrackedEntityDataValueStore {
 
+    private static final StatementBinder<TrackedEntityDataValue> BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.event());
+        sqLiteBind(sqLiteStatement, 2, o.created());
+        sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
+        sqLiteBind(sqLiteStatement, 4, o.dataElement());
+        sqLiteBind(sqLiteStatement, 5, o.storedBy());
+        sqLiteBind(sqLiteStatement, 6, o.value());
+        sqLiteBind(sqLiteStatement, 7, o.providedElsewhere());
+    };
+
+
+    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 8, o.event());
+        sqLiteBind(sqLiteStatement, 9, o.dataElement());
+    };
+
     private TrackedEntityDataValueStoreImpl(DatabaseAdapter databaseAdapter,
                                             SQLiteStatement insertStatement,
                                             SQLiteStatement updateWhereStatement,
@@ -120,44 +138,11 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
     private void addDataValuesToMap(Map<String, List<TrackedEntityDataValue>> dataValuesMap,
                                     TrackedEntityDataValue dataValue) {
         if (dataValuesMap.get(dataValue.event()) == null) {
-            dataValuesMap.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
+            dataValuesMap.put(dataValue.event(), new ArrayList<>());
         }
 
         dataValuesMap.get(dataValue.event()).add(dataValue);
     }
-
-    private static final StatementBinder<TrackedEntityDataValue> BINDER
-            = new StatementBinder<TrackedEntityDataValue>() {
-        @Override
-        public void bindToStatement(@NonNull TrackedEntityDataValue o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.event());
-            sqLiteBind(sqLiteStatement, 2, o.created());
-            sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 4, o.dataElement());
-            sqLiteBind(sqLiteStatement, 5, o.storedBy());
-            sqLiteBind(sqLiteStatement, 6, o.value());
-            sqLiteBind(sqLiteStatement, 7, o.providedElsewhere());
-        }
-    };
-
-
-    private static final WhereStatementBinder<TrackedEntityDataValue> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<TrackedEntityDataValue>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull TrackedEntityDataValue o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 8, o.event());
-            sqLiteBind(sqLiteStatement, 9, o.dataElement());
-        }
-    };
-
-    private static final CursorModelFactory<TrackedEntityDataValue> FACTORY
-            = new CursorModelFactory<TrackedEntityDataValue>() {
-        @Override
-        public TrackedEntityDataValue fromCursor(Cursor cursor) {
-            return TrackedEntityDataValue.create(cursor);
-        }
-    };
 
     public static TrackedEntityDataValueStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
@@ -171,7 +156,7 @@ public final class TrackedEntityDataValueStoreImpl extends ObjectWithoutUidStore
                 statementBuilder,
                 BINDER,
                 WHERE_UPDATE_BINDER,
-                FACTORY
+                TrackedEntityDataValue::create
         );
     }
 }

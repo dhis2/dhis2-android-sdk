@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,32 +37,22 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ForeignKeyViolationStore {
 
+    private static final StatementBinder<ForeignKeyViolation> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.fromTable());
+        sqLiteBind(sqLiteStatement, 2, o.fromColumn());
+        sqLiteBind(sqLiteStatement, 3, o.toTable());
+        sqLiteBind(sqLiteStatement, 4, o.toColumn());
+        sqLiteBind(sqLiteStatement, 5, o.notFoundValue());
+        sqLiteBind(sqLiteStatement, 6, o.fromObjectUid());
+        sqLiteBind(sqLiteStatement, 7, o.fromObjectRow());
+        sqLiteBind(sqLiteStatement, 8, o.created());
+    };
+
     private ForeignKeyViolationStore() {
     }
 
-    private static final StatementBinder<ForeignKeyViolation> BINDER = new StatementBinder<ForeignKeyViolation>() {
-        @Override
-        public void bindToStatement(@NonNull ForeignKeyViolation o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.fromTable());
-            sqLiteBind(sqLiteStatement, 2, o.fromColumn());
-            sqLiteBind(sqLiteStatement, 3, o.toTable());
-            sqLiteBind(sqLiteStatement, 4, o.toColumn());
-            sqLiteBind(sqLiteStatement, 5, o.notFoundValue());
-            sqLiteBind(sqLiteStatement, 6, o.fromObjectUid());
-            sqLiteBind(sqLiteStatement, 7, o.fromObjectRow());
-            sqLiteBind(sqLiteStatement, 8, o.created());
-        }
-    };
-
-    private static final CursorModelFactory<ForeignKeyViolation> FACTORY =
-            new CursorModelFactory<ForeignKeyViolation>() {
-        @Override
-        public ForeignKeyViolation fromCursor(Cursor cursor) {
-            return ForeignKeyViolation.create(cursor);
-        }
-    };
-
     public static ObjectStore<ForeignKeyViolation> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectStore(databaseAdapter, ForeignKeyViolationTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectStore(databaseAdapter, ForeignKeyViolationTableInfo.TABLE_INFO, BINDER,
+                ForeignKeyViolation::create);
     }
 }

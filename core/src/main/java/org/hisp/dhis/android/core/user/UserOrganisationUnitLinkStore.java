@@ -28,12 +28,9 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -47,34 +44,21 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public final class UserOrganisationUnitLinkStore extends LinkModelStoreImpl<UserOrganisationUnitLinkModel>
         implements UserOrganisationUnitLinkStoreInterface {
 
+    private static final StatementBinder<UserOrganisationUnitLinkModel> BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.user());
+        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+        sqLiteBind(sqLiteStatement, 3, o.organisationUnitScope());
+        sqLiteBind(sqLiteStatement, 4, o.root());
+    };
+
     private UserOrganisationUnitLinkStore(DatabaseAdapter databaseAdapter,
                                           SQLiteStatement insertStatement,
                                           String masterColumn,
                                           SQLStatementBuilder builder,
                                           StatementBinder<UserOrganisationUnitLinkModel> binder) {
-
-        super(databaseAdapter, insertStatement, builder, masterColumn, binder, FACTORY);
+        super(databaseAdapter, insertStatement, builder, masterColumn, binder, UserOrganisationUnitLinkModel::create);
     }
-
-    private static final StatementBinder<UserOrganisationUnitLinkModel> BINDER
-            = new StatementBinder<UserOrganisationUnitLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull UserOrganisationUnitLinkModel o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.user());
-            sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 3, o.organisationUnitScope());
-            sqLiteBind(sqLiteStatement, 4, o.root());
-        }
-    };
-
-    private static final CursorModelFactory<UserOrganisationUnitLinkModel> FACTORY
-            = new CursorModelFactory<UserOrganisationUnitLinkModel>() {
-        @Override
-        public UserOrganisationUnitLinkModel fromCursor(Cursor cursor) {
-            return UserOrganisationUnitLinkModel.create(cursor);
-        }
-    };
 
     public static UserOrganisationUnitLinkStoreInterface create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(UserOrganisationUnitLinkTableInfo.TABLE_INFO);

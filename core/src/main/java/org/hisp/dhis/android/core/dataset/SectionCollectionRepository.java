@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
@@ -53,13 +52,7 @@ public final class SectionCollectionRepository
                                 final Collection<ChildrenAppender<Section>> childrenAppenders,
                                 List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<SectionCollectionRepository>() {
-
-                    @Override
-                    public SectionCollectionRepository newWithScope(List<RepositoryScopeItem> updatedScope) {
-                        return new SectionCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new SectionCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 
     public StringFilterConnector<SectionCollectionRepository> byDescription() {

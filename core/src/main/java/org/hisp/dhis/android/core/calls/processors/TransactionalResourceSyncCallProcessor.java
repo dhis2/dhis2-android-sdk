@@ -53,14 +53,10 @@ public class TransactionalResourceSyncCallProcessor<O> implements CallProcessor<
     @Override
     public final void process(final List<O> objectList) throws D2Error {
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor(data.databaseAdapter()).executeD2CallTransactionally(new Callable<Void>() {
-
-                @Override
-                public Void call() {
-                    handler.handleMany(objectList);
-                    data.handleResource(resourceType);
-                    return null;
-                }
+            new D2CallExecutor(data.databaseAdapter()).executeD2CallTransactionally((Callable<Void>) () -> {
+                handler.handleMany(objectList);
+                data.handleResource(resourceType);
+                return null;
             });
         }
     }

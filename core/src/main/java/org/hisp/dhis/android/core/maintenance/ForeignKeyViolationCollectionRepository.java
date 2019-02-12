@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.maintenance;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -51,13 +50,6 @@ public final class ForeignKeyViolationCollectionRepository
                                             final Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
                                             final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<ForeignKeyViolationCollectionRepository>() {
-
-                    @Override
-                    public ForeignKeyViolationCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new ForeignKeyViolationCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

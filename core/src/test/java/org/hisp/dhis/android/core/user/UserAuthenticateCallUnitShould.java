@@ -52,7 +52,6 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 
@@ -166,12 +165,9 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
         when(userStore.selectFirst()).thenReturn(loggedUser);
         when(systemInfoRepository.get()).thenReturn(systemInfoFromDb);
 
-        when(databaseAdapter.beginNewTransaction()).then(new Answer<Transaction>() {
-            @Override
-            public Transaction answer(InvocationOnMock invocation) {
-                transaction.begin();
-                return transaction;
-            }
+        when(databaseAdapter.beginNewTransaction()).then((Answer<Transaction>) invocation -> {
+            transaction.begin();
+            return transaction;
         });
 
         when(apiUrlProvider.getAPIUrl()).thenReturn(baseEndpoint + "/api/");

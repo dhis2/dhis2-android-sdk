@@ -68,12 +68,7 @@ public final class TrackedEntityInstanceQueryCallFactory {
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQuery query) {
-        return new Callable<List<TrackedEntityInstance>>() {
-            @Override
-            public List<TrackedEntityInstance> call() throws Exception {
-                return queryTrackedEntityInstances(query);
-            }
-        };
+        return () -> queryTrackedEntityInstances(query);
     }
 
     private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) throws D2Error {

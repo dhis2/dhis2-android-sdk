@@ -163,18 +163,15 @@ public class OptionSetCallShould extends AbsStoreTestCase {
 
     private List<OptionSet> executeOptionSetCall() throws Exception{
 
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<List<OptionSet>>() {
-            @Override
-            public List<OptionSet> call() {
-                List<OptionSet> optionSets = null;
-                try {
-                    optionSets = optionSetCall.call();
-                } catch (Exception ignored) {
-                }
-
-                ForeignKeyCleanerImpl.create(databaseAdapter()).cleanForeignKeyErrors();
-                return optionSets;
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            List<OptionSet> optionSets = null;
+            try {
+                optionSets = optionSetCall.call();
+            } catch (Exception ignored) {
             }
+
+            ForeignKeyCleanerImpl.create(databaseAdapter()).cleanForeignKeyErrors();
+            return optionSets;
         });
     }
 

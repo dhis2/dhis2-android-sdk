@@ -50,13 +50,10 @@ public class UserModuleDownloader implements MetadataModuleDownloader<User> {
 
     @Override
     public Callable<User> downloadMetadata() {
-        return new Callable<User>() {
-            @Override
-            public User call() throws Exception {
-                User user = userCall.call();
-                authorityCallFactory.create().call();
-                return user;
-            }
+        return () -> {
+            User user = userCall.call();
+            authorityCallFactory.create().call();
+            return user;
         };
     }
 }

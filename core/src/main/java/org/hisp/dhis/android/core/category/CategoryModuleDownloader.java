@@ -57,15 +57,12 @@ public class CategoryModuleDownloader implements MetadataModuleDownloader<Unit> 
 
     @Override
     public Callable<Unit> downloadMetadata() {
-        return new Callable<Unit>() {
-            @Override
-            public Unit call() throws Exception {
-                Set<String> comboUids = categoryComboUidsSeeker.seekUids();
-                List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
-                categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
+        return () -> {
+            Set<String> comboUids = categoryComboUidsSeeker.seekUids();
+            List<CategoryCombo> categoryCombos = categoryComboCallFactory.create(comboUids).call();
+            categoryCallFactory.create(CategoryParentUidsHelper.getCategoryUids(categoryCombos)).call();
 
-                return new Unit();
-            }
+            return new Unit();
         };
     }
 }

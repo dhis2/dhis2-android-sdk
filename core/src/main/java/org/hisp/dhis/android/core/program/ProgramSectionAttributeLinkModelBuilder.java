@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 public class ProgramSectionAttributeLinkModelBuilder
-        extends ModelBuilder<ObjectWithUid, ProgramSectionAttributeLinkModel> {
+        implements ModelBuilder<ObjectWithUid, ProgramSectionAttributeLinkModel> {
 
     private final ProgramSectionAttributeLinkModel.Builder builder;
 

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 public class DataSetCompulsoryDataElementOperandLinkModelBuilder
-        extends ModelBuilder<DataElementOperand, DataSetCompulsoryDataElementOperandLinkModel> {
+        implements ModelBuilder<DataElementOperand, DataSetCompulsoryDataElementOperandLinkModel> {
 
     private final DataSetCompulsoryDataElementOperandLinkModel.Builder builder;
 

@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -112,12 +111,7 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
         dataInputPeriodHandler.handleMany(dataSet.uid(),
                 dataSet.dataInputPeriods(),
-                new ModelBuilder<DataInputPeriod, DataInputPeriod>() {
-            @Override
-            public DataInputPeriod buildModel(DataInputPeriod dataInputPeriod) {
-                return dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build();
-            }
-        });
+                dataInputPeriod -> dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build());
 
         dataSetElementLinkHandler.handleMany(dataSet.uid(), dataSet.dataSetElements());
 

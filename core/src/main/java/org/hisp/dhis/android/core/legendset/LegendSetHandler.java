@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 
@@ -57,12 +56,7 @@ final class LegendSetHandler extends IdentifiableSyncHandlerImpl<LegendSet> {
     @Override
     protected void afterObjectHandled(final LegendSet legendSet, HandleAction action) {
         legendHandler.handleMany(legendSet.legends(),
-                new ModelBuilder<Legend, Legend>() {
-                    @Override
-                    public Legend buildModel(Legend legend) {
-                        return legend.toBuilder().legendSet(ObjectWithUid.create(legendSet.uid())).build();
-                    }
-                });
+                legend -> legend.toBuilder().legendSet(ObjectWithUid.create(legendSet.uid())).build());
 
         if (action == HandleAction.Update) {
             legendCleaner.deleteOrphan(legendSet, legendSet.legends());

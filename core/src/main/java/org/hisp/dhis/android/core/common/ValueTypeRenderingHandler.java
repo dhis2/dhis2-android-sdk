@@ -48,22 +48,12 @@ final class ValueTypeRenderingHandler implements DictionaryTableHandler<ValueTyp
         if (renderType != null) {
 
             valueTypeDeviceRenderingHandler.handle(renderType.desktop(),
-                    new ModelBuilder<ValueTypeDeviceRendering, ValueTypeDeviceRendering>() {
-                        @Override
-                        public ValueTypeDeviceRendering buildModel(ValueTypeDeviceRendering value) {
-                            return  value.toBuilder().uid(uid).objectTable(objectTable)
-                                    .deviceType(ValueTypeRendering.DESKTOP).build();
-                        }
-                    });
+                    value -> value.toBuilder().uid(uid).objectTable(objectTable)
+                            .deviceType(ValueTypeRendering.DESKTOP).build());
 
             valueTypeDeviceRenderingHandler.handle(renderType.mobile(),
-                    new ModelBuilder<ValueTypeDeviceRendering, ValueTypeDeviceRendering>() {
-                        @Override
-                        public ValueTypeDeviceRendering buildModel(ValueTypeDeviceRendering value) {
-                            return  value.toBuilder().uid(uid).objectTable(objectTable)
-                                    .deviceType(ValueTypeRendering.MOBILE).build();
-                        }
-                    });
+                    value -> value.toBuilder().uid(uid).objectTable(objectTable)
+                            .deviceType(ValueTypeRendering.MOBILE).build());
         }
     }
 }

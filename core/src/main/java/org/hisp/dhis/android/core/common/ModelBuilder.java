@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-public abstract class ModelBuilder<P, M> {
-    public abstract M buildModel(P pojo);
+public interface ModelBuilder<P, M> {
+    M buildModel(P pojo);
 }

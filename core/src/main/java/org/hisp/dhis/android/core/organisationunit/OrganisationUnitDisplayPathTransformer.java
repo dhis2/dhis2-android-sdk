@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
-class OrganisationUnitDisplayPathTransformer extends ModelBuilder<OrganisationUnit, OrganisationUnit> {
+class OrganisationUnitDisplayPathTransformer implements ModelBuilder<OrganisationUnit, OrganisationUnit> {
 
     @Override
     public OrganisationUnit buildModel(OrganisationUnit organisationUnit) {

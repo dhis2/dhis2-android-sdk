@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.State;
 
-public final class TrackedEntityInstanceModelBuilder extends ModelBuilder<TrackedEntityInstance,
-        TrackedEntityInstanceModel> {
+public final class TrackedEntityInstanceModelBuilder
+        implements ModelBuilder<TrackedEntityInstance, TrackedEntityInstanceModel> {
 
     @Override
     public TrackedEntityInstanceModel buildModel(TrackedEntityInstance tei) {

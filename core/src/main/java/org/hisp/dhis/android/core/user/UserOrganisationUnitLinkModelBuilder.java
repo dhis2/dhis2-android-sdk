@@ -37,7 +37,7 @@ import java.util.Set;
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
 public class UserOrganisationUnitLinkModelBuilder
-        extends ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
+        implements ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
 
     private final UserOrganisationUnitLinkModel.Builder builder;
     private final User user;

@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,25 +37,14 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class SectionDataElementLinkStore {
 
-    private SectionDataElementLinkStore() {}
-
     private static final StatementBinder<SectionDataElementLinkModel> BINDER
-            = new StatementBinder<SectionDataElementLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull SectionDataElementLinkModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.section());
-            sqLiteBind(sqLiteStatement, 2, o.dataElement());
-            sqLiteBind(sqLiteStatement, 3, o.sortOrder());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.section());
+        sqLiteBind(sqLiteStatement, 2, o.dataElement());
+        sqLiteBind(sqLiteStatement, 3, o.sortOrder());
     };
 
-    private static final CursorModelFactory<SectionDataElementLinkModel> FACTORY
-            = new CursorModelFactory<SectionDataElementLinkModel>() {
-        @Override
-        public SectionDataElementLinkModel fromCursor(Cursor cursor) {
-            return SectionDataElementLinkModel.create(cursor);
-        }
-    };
+    private SectionDataElementLinkStore() {}
 
     public static LinkModelStore<SectionDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
@@ -68,7 +52,6 @@ final class SectionDataElementLinkStore {
                 new SectionDataElementLinkModel.Columns(),
                 SectionDataElementLinkModel.Columns.SECTION,
                 BINDER,
-                FACTORY);
-
+                SectionDataElementLinkModel::create);
     }
 }

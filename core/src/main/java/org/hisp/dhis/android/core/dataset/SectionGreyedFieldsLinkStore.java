@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,25 +37,13 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class SectionGreyedFieldsLinkStore {
 
-    private SectionGreyedFieldsLinkStore() {}
-
     private static final StatementBinder<SectionGreyedFieldsLinkModel> BINDER
-            = new StatementBinder<SectionGreyedFieldsLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull SectionGreyedFieldsLinkModel o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.section());
-            sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.section());
+        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
     };
 
-    private static final CursorModelFactory<SectionGreyedFieldsLinkModel> FACTORY
-            = new CursorModelFactory<SectionGreyedFieldsLinkModel>() {
-        @Override
-        public SectionGreyedFieldsLinkModel fromCursor(Cursor cursor) {
-            return SectionGreyedFieldsLinkModel.create(cursor);
-        }
-    };
+    private SectionGreyedFieldsLinkStore() {}
 
     public static LinkModelStore<SectionGreyedFieldsLinkModel> create(DatabaseAdapter databaseAdapter) {
 
@@ -68,6 +51,6 @@ final class SectionGreyedFieldsLinkStore {
                 SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
                 SectionGreyedFieldsLinkModel.Columns.SECTION,
                 BINDER,
-                FACTORY);
+                SectionGreyedFieldsLinkModel::create);
     }
 }

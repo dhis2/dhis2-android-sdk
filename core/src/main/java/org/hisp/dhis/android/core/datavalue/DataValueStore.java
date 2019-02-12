@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
@@ -48,11 +45,34 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
 
+    private static final StatementBinder<DataValue> BINDER = (dataValue, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, dataValue.dataElement());
+        sqLiteBind(sqLiteStatement, 2, dataValue.period());
+        sqLiteBind(sqLiteStatement, 3, dataValue.organisationUnit());
+        sqLiteBind(sqLiteStatement, 4, dataValue.categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 5, dataValue.attributeOptionCombo());
+        sqLiteBind(sqLiteStatement, 6, dataValue.value());
+        sqLiteBind(sqLiteStatement, 7, dataValue.storedBy());
+        sqLiteBind(sqLiteStatement, 8, dataValue.created());
+        sqLiteBind(sqLiteStatement, 9, dataValue.lastUpdated());
+        sqLiteBind(sqLiteStatement, 10, dataValue.comment());
+        sqLiteBind(sqLiteStatement, 11, dataValue.followUp());
+        sqLiteBind(sqLiteStatement, 12, dataValue.state());
+    };
+
+    private static final WhereStatementBinder<DataValue> WHERE_UPDATE_BINDER
+            = (dataValue, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 13, dataValue.dataElement());
+        sqLiteBind(sqLiteStatement, 14, dataValue.period());
+        sqLiteBind(sqLiteStatement, 15, dataValue.organisationUnit());
+        sqLiteBind(sqLiteStatement, 16, dataValue.categoryOptionCombo());
+        sqLiteBind(sqLiteStatement, 17, dataValue.attributeOptionCombo());
+    };
+
     private DataValueStore(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
-
         super(databaseAdapter, insertStatement, updateWhereStatement,
-                builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                builder, BINDER, WHERE_UPDATE_BINDER, DataValue::create);
     }
 
     public static DataValueStore create(DatabaseAdapter databaseAdapter) {
@@ -66,45 +86,6 @@ class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
                 databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
                 sqlStatementBuilder);
     }
-
-    private static final StatementBinder<DataValue> BINDER = new StatementBinder<DataValue>() {
-        @Override
-        public void bindToStatement(@NonNull DataValue dataValue,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, dataValue.dataElement());
-            sqLiteBind(sqLiteStatement, 2, dataValue.period());
-            sqLiteBind(sqLiteStatement, 3, dataValue.organisationUnit());
-            sqLiteBind(sqLiteStatement, 4, dataValue.categoryOptionCombo());
-            sqLiteBind(sqLiteStatement, 5, dataValue.attributeOptionCombo());
-            sqLiteBind(sqLiteStatement, 6, dataValue.value());
-            sqLiteBind(sqLiteStatement, 7, dataValue.storedBy());
-            sqLiteBind(sqLiteStatement, 8, dataValue.created());
-            sqLiteBind(sqLiteStatement, 9, dataValue.lastUpdated());
-            sqLiteBind(sqLiteStatement, 10, dataValue.comment());
-            sqLiteBind(sqLiteStatement, 11, dataValue.followUp());
-            sqLiteBind(sqLiteStatement, 12, dataValue.state());
-        }
-    };
-
-    private static final WhereStatementBinder<DataValue> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<DataValue>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull DataValue dataValue,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 13, dataValue.dataElement());
-            sqLiteBind(sqLiteStatement, 14, dataValue.period());
-            sqLiteBind(sqLiteStatement, 15, dataValue.organisationUnit());
-            sqLiteBind(sqLiteStatement, 16, dataValue.categoryOptionCombo());
-            sqLiteBind(sqLiteStatement, 17, dataValue.attributeOptionCombo());
-        }
-    };
-
-    private static final CursorModelFactory<DataValue> FACTORY = new CursorModelFactory<DataValue>() {
-        @Override
-        public DataValue fromCursor(Cursor cursor) {
-            return DataValue.create(cursor);
-        }
-    };
 
     Collection<DataValue> getDataValuesWithState(State state) {
         String whereClause = new WhereClauseBuilder()
@@ -133,5 +114,4 @@ class DataValueStore extends ObjectWithoutUidStoreImpl<DataValue> {
                 .build();
         return selectWhere(whereClause).size() > 0;
     }
-
 }

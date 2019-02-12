@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,31 +37,21 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class D2ErrorStore {
 
+    private static final StatementBinder<D2Error> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.resourceType());
+        sqLiteBind(sqLiteStatement, 2, o.uid());
+        sqLiteBind(sqLiteStatement, 3, o.url());
+        sqLiteBind(sqLiteStatement, 4, o.errorComponent());
+        sqLiteBind(sqLiteStatement, 5, o.errorCode());
+        sqLiteBind(sqLiteStatement, 6, o.errorDescription());
+        sqLiteBind(sqLiteStatement, 7, o.httpErrorCode());
+        sqLiteBind(sqLiteStatement, 8, o.created());
+    };
+
     private D2ErrorStore() {
     }
 
-    private static final StatementBinder<D2Error> BINDER = new StatementBinder<D2Error>() {
-        @Override
-        public void bindToStatement(@NonNull D2Error o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.resourceType());
-            sqLiteBind(sqLiteStatement, 2, o.uid());
-            sqLiteBind(sqLiteStatement, 3, o.url());
-            sqLiteBind(sqLiteStatement, 4, o.errorComponent());
-            sqLiteBind(sqLiteStatement, 5, o.errorCode());
-            sqLiteBind(sqLiteStatement, 6, o.errorDescription());
-            sqLiteBind(sqLiteStatement, 7, o.httpErrorCode());
-            sqLiteBind(sqLiteStatement, 8, o.created());
-        }
-    };
-
-    private static final CursorModelFactory<D2Error> FACTORY = new CursorModelFactory<D2Error>() {
-        @Override
-        public D2Error fromCursor(Cursor cursor) {
-            return D2Error.create(cursor);
-        }
-    };
-
     public static ObjectStore<D2Error> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectStore(databaseAdapter, D2ErrorTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectStore(databaseAdapter, D2ErrorTableInfo.TABLE_INFO, BINDER, D2Error::create);
     }
 }

@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,28 +37,18 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class RelationshipStore {
 
+    private static StatementBinder<Relationship> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.name());
+        sqLiteBind(sqLiteStatement, 3, o.created());
+        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
+        sqLiteBind(sqLiteStatement, 5, o.relationshipType());
+    };
+
     private RelationshipStore() {}
 
-    private static StatementBinder<Relationship> BINDER = new StatementBinder<Relationship>() {
-
-        @Override
-        public void bindToStatement(@NonNull Relationship o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.name());
-            sqLiteBind(sqLiteStatement, 3, o.created());
-            sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 5, o.relationshipType());
-        }
-    };
-
-    private static final CursorModelFactory<Relationship> FACTORY = new CursorModelFactory<Relationship>() {
-        @Override
-        public Relationship fromCursor(Cursor cursor) {
-            return Relationship.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<Relationship> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, RelationshipTableInfo.TABLE_INFO, BINDER,
+                Relationship::create);
     }
 }

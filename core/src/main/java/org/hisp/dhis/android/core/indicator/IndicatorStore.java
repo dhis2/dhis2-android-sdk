@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -60,14 +58,8 @@ public final class IndicatorStore {
         }
     };
 
-    static final CursorModelFactory<Indicator> FACTORY = new CursorModelFactory<Indicator>() {
-        @Override
-        public Indicator fromCursor(Cursor cursor) {
-            return Indicator.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<Indicator> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, IndicatorTableInfo.TABLE_INFO, BINDER,
+                Indicator::create);
     }
 }

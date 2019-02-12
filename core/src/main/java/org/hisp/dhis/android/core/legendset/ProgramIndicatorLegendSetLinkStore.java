@@ -37,13 +37,13 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramIndicatorLegendSetLinkStore {
 
-    private ProgramIndicatorLegendSetLinkStore() {}
-
     private static final StatementBinder<ProgramIndicatorLegendSetLink> BINDER
             = (o, sqLiteStatement) -> {
-                sqLiteBind(sqLiteStatement, 1, o.programIndicator());
-                sqLiteBind(sqLiteStatement, 2, o.legendSet());
-            };
+        sqLiteBind(sqLiteStatement, 1, o.programIndicator());
+        sqLiteBind(sqLiteStatement, 2, o.legendSet());
+    };
+
+    private ProgramIndicatorLegendSetLinkStore() {}
 
     public static LinkModelStore<ProgramIndicatorLegendSetLink> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,

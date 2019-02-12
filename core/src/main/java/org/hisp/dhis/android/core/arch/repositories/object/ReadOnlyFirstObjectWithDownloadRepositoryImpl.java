@@ -50,7 +50,7 @@ public final class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model
     }
 
     public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store, Callable<Unit> downloadCall) {
-        this(store, Collections.<ChildrenAppender<M>>emptyList(), downloadCall);
+        this(store, Collections.emptyList(), downloadCall);
     }
 
     @Override

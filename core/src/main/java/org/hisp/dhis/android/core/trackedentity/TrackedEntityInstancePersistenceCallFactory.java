@@ -66,24 +66,21 @@ final class TrackedEntityInstancePersistenceCallFactory {
 
     public Callable<Void> getCall(final List<TrackedEntityInstance> trackedEntityInstances) {
 
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false);
+        return () -> {
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, false);
 
-                Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
+            Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
-                if (!searchOrgUnitUids.isEmpty()) {
-                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
+            if (!searchOrgUnitUids.isEmpty()) {
+                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
-                    Callable<List<OrganisationUnit>> organisationUnitCall =
-                            organisationUnitDownloader.downloadSearchOrganisationUnits(searchOrgUnitUids,
-                                    User.builder().uid(authenticatedUserModel.user()).build());
-                    organisationUnitCall.call();
-                }
-
-                return null;
+                Callable<List<OrganisationUnit>> organisationUnitCall =
+                        organisationUnitDownloader.downloadSearchOrganisationUnits(searchOrgUnitUids,
+                                User.builder().uid(authenticatedUserModel.user()).build());
+                organisationUnitCall.call();
             }
+
+            return null;
         };
     }
 }

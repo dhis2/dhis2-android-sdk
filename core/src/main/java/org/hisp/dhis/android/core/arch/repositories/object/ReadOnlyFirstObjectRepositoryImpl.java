@@ -44,7 +44,7 @@ public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnly
     }
 
     public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
-        this(store, Collections.<ChildrenAppender<M>>emptyList());
+        this(store, Collections.emptyList());
     }
 
     public M get() {

@@ -141,7 +141,7 @@ public class RelationshipDHISVersionManager {
         return TrackedEntityInstance.builder()
                 .uid(relatedTEIUid)
                 .deleted(false)
-                .relationships(Collections.<Relationship229Compatible>emptyList())
+                .relationships(Collections.emptyList())
                 .build();
     }
 }

@@ -66,7 +66,7 @@ public abstract class EventQuery extends BaseQuery {
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
                 .ouMode(OuMode.SELECTED)
-                .uIds(Collections.<String>emptyList());
+                .uIds(Collections.emptyList());
     }
 
     @AutoValue.Builder

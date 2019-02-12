@@ -51,7 +51,7 @@ final class SectionGreyedFieldsChildrenAppender extends ChildrenAppender<Section
 
     static ChildrenAppender<Section> create(DatabaseAdapter databaseAdapter) {
         return new SectionGreyedFieldsChildrenAppender(
-                StoreFactory.<Section, DataElementOperand>linkModelChildStore(
+                StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
                         SectionGreyedFieldsLinkTableInfo.CHILD_PROJECTION,

@@ -71,24 +71,21 @@ class OrganisationUnitCallFactory {
                                                    final Set<String> programUids,
                                                    final Set<String> dataSetUids) {
 
-        return new Callable<List<OrganisationUnit>>() {
-            @Override
-            public List<OrganisationUnit> call() throws Exception {
-                Set<OrganisationUnit> organisationUnits = new HashSet<>();
-                Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
-                for (String uid : rootOrgUnitUids) {
-                    organisationUnits.addAll(apiCallExecutor.executePayloadCall(
-                            getOrganisationUnitAndDescendants(uid)));
-                }
-
-                handler.setData(programUids, dataSetUids, user);
-
-                handler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
-
-                resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
-
-                return new ArrayList<>(organisationUnits);
+        return () -> {
+            Set<OrganisationUnit> organisationUnits = new HashSet<>();
+            Set<String> rootOrgUnitUids = findRoots(user.organisationUnits());
+            for (String uid : rootOrgUnitUids) {
+                organisationUnits.addAll(apiCallExecutor.executePayloadCall(
+                        getOrganisationUnitAndDescendants(uid)));
             }
+
+            handler.setData(programUids, dataSetUids, user);
+
+            handler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
+
+            resourceHandler.handleResource(Resource.Type.ORGANISATION_UNIT);
+
+            return new ArrayList<>(organisationUnits);
         };
     }
 

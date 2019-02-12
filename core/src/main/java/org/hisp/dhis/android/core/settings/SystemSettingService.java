@@ -36,5 +36,5 @@ import retrofit2.http.Query;
 
 interface SystemSettingService {
     @GET("systemSettings")
-    Call<SystemSetting> getSystemSettings(@Query("fields") @Which Fields<SystemSetting> fields);
+    Call<SystemSettings> getSystemSettings(@Query("fields") @Which Fields<SystemSettings> fields);
 }

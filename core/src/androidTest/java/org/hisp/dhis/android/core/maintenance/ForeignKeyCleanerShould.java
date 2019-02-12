@@ -24,7 +24,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
@@ -191,7 +191,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
                         .build();
 
                 IdentifiableObjectStore<UserCredentials> userCredentialsStore =
-                        UserCredentialsStore.create(d2.databaseAdapter());
+                        UserCredentialsStoreImpl.create(d2.databaseAdapter());
                 userCredentialsStore.insert(userCredentials);
 
                 assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(true));

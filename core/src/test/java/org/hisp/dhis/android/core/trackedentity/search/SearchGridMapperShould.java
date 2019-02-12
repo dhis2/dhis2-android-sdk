@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
-import org.hisp.dhis.android.core.common.IdentifiableObject;
-import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.junit.Test;

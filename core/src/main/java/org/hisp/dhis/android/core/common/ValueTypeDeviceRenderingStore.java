@@ -42,11 +42,11 @@ public final class ValueTypeDeviceRenderingStore {
 
     private ValueTypeDeviceRenderingStore() {}
 
-    private static final StatementBinder<ValueTypeDeviceRenderingModel> BINDER
-            = new StatementBinder<ValueTypeDeviceRenderingModel>() {
+    private static final StatementBinder<ValueTypeDeviceRendering> BINDER
+            = new StatementBinder<ValueTypeDeviceRendering>() {
 
         @Override
-        public void bindToStatement(@NonNull ValueTypeDeviceRenderingModel o,
+        public void bindToStatement(@NonNull ValueTypeDeviceRendering o,
                                     @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.uid());
             sqLiteBind(sqLiteStatement, 2, o.objectTable());
@@ -59,10 +59,10 @@ public final class ValueTypeDeviceRenderingStore {
         }
     };
 
-    private static final WhereStatementBinder<ValueTypeDeviceRenderingModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<ValueTypeDeviceRenderingModel>() {
+    private static final WhereStatementBinder<ValueTypeDeviceRendering> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<ValueTypeDeviceRendering>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull ValueTypeDeviceRenderingModel o,
+        public void bindToUpdateWhereStatement(@NonNull ValueTypeDeviceRendering o,
                                                @NonNull SQLiteStatement sqLiteStatement) {
 
             sqLiteBind(sqLiteStatement, 9, o.uid());
@@ -70,16 +70,16 @@ public final class ValueTypeDeviceRenderingStore {
         }
     };
 
-    private static final CursorModelFactory<ValueTypeDeviceRenderingModel> FACTORY
-            = new CursorModelFactory<ValueTypeDeviceRenderingModel>() {
+    private static final CursorModelFactory<ValueTypeDeviceRendering> FACTORY
+            = new CursorModelFactory<ValueTypeDeviceRendering>() {
         @Override
-        public ValueTypeDeviceRenderingModel fromCursor(Cursor cursor) {
-            return ValueTypeDeviceRenderingModel.create(cursor);
+        public ValueTypeDeviceRendering fromCursor(Cursor cursor) {
+            return ValueTypeDeviceRendering.create(cursor);
         }
     };
 
-    public static ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, ValueTypeDeviceRenderingModel.TABLE,
-                new ValueTypeDeviceRenderingModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
+    public static ObjectWithoutUidStore<ValueTypeDeviceRendering> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, ValueTypeDeviceRenderingTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

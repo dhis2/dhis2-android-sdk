@@ -10,8 +10,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventFields;
 import org.hisp.dhis.android.core.event.EventPayload;
 import org.hisp.dhis.android.core.event.EventService;
-import org.hisp.dhis.android.core.imports.ImportSummary;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.EventImportSummary;
+import org.hisp.dhis.android.core.imports.EventWebResponse;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,12 +70,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent1, validEvent2);
 
-        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
-                .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        EventWebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
+                .postEvents(payload, this.strategy), Collections.singletonList(409), EventWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (EventImportSummary importSummary : response.response().importSummaries()) {
             if (validEvent1.uid().equals(importSummary.reference())) {
                 assertEvent(importSummary, SUCCESS);
             }
@@ -103,12 +103,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
-                .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        EventWebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
+                .postEvents(payload, this.strategy), Collections.singletonList(409), EventWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
+        assertThat(response.response().status()).isEqualTo(ERROR);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (EventImportSummary importSummary : response.response().importSummaries()) {
             if (validEvent.uid().equals(importSummary.reference())) {
                 assertEvent(importSummary, SUCCESS);
             }
@@ -141,12 +141,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
-                .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        EventWebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
+                .postEvents(payload, this.strategy), Collections.singletonList(409), EventWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
+        assertThat(response.response().status()).isEqualTo(ERROR);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (EventImportSummary importSummary : response.response().importSummaries()) {
             if (validEvent.uid().equals(importSummary.reference())) {
                 assertEvent(importSummary, SUCCESS);
             }
@@ -179,12 +179,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent1, validEvent2);
 
-        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
-                .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        EventWebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
+                .postEvents(payload, this.strategy), Collections.singletonList(409), EventWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(SUCCESS);
+        assertThat(response.response().status()).isEqualTo(SUCCESS);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (EventImportSummary importSummary : response.response().importSummaries()) {
             if (validEvent1.uid().equals(importSummary.reference())) {
                 assertEvent(importSummary, SUCCESS);
             }
@@ -212,12 +212,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
-                .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        EventWebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
+                .postEvents(payload, this.strategy), Collections.singletonList(409), EventWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(ERROR);
+        assertThat(response.response().status()).isEqualTo(ERROR);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (EventImportSummary importSummary : response.response().importSummaries()) {
             if (validEvent.uid().equals(importSummary.reference())) {
                 assertEvent(importSummary, SUCCESS);
             }
@@ -250,12 +250,12 @@ public abstract class EventAPIShould extends AbsStoreTestCase {
         EventPayload payload = new EventPayload();
         payload.events = Arrays.asList(validEvent, invalidEvent);
 
-        WebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
-                .postEvents(payload, this.strategy), Collections.singletonList(409), WebResponse.class);
+        EventWebResponse response = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(eventService
+                .postEvents(payload, this.strategy), Collections.singletonList(409), EventWebResponse.class);
 
-        assertThat(response.importSummaries().importStatus()).isEqualTo(WARNING);
+        assertThat(response.response().status()).isEqualTo(WARNING);
 
-        for (ImportSummary importSummary : response.importSummaries().importSummaries()) {
+        for (EventImportSummary importSummary : response.response().importSummaries()) {
             if (validEvent.uid().equals(importSummary.reference())) {
                 assertEvent(importSummary, SUCCESS);
             }

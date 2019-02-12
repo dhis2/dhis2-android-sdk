@@ -48,9 +48,9 @@ public final class LegendSetModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                LegendTableInfo.TABLE_INFO.name(),
-                LegendSetTableInfo.TABLE_INFO.name(),
-                ProgramIndicatorLegendSetLinkModel.TABLE);
+                LegendTableInfo.TABLE_INFO,
+                LegendSetTableInfo.TABLE_INFO,
+                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO);
     }
 
     @Override

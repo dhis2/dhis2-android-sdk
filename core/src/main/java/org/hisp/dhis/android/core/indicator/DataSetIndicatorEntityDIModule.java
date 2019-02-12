@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -42,13 +42,13 @@ public final class DataSetIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    LinkModelStore<DataSetIndicatorLinkModel> store(DatabaseAdapter databaseAdapter) {
+    LinkModelStore<DataSetIndicatorLink> store(DatabaseAdapter databaseAdapter) {
         return DataSetIndicatorLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    LinkModelHandler<Indicator, DataSetIndicatorLinkModel> handler(LinkModelStore<DataSetIndicatorLinkModel> store) {
-        return new LinkModelHandlerImpl<>(store);
+    LinkSyncHandler<DataSetIndicatorLink> handler(LinkModelStore<DataSetIndicatorLink> store) {
+        return new LinkSyncHandlerImpl<>(store);
     }
 }

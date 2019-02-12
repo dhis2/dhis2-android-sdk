@@ -33,4 +33,5 @@ import java.util.List;
 
 public interface LinkModelChildStore<P extends ObjectWithUidInterface, C extends ObjectWithUidInterface> {
     List<C> getChildren(P p);
+    List<C> getChildrenWhere(P p, String whereClause);
 }

@@ -65,8 +65,7 @@ final class SectionGreyedFieldsLinkStore {
     public static LinkModelStore<SectionGreyedFieldsLinkModel> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.linkModelStore(databaseAdapter,
-                SectionGreyedFieldsLinkModel.TABLE,
-                new SectionGreyedFieldsLinkModel.Columns(),
+                SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
                 SectionGreyedFieldsLinkModel.Columns.SECTION,
                 BINDER,
                 FACTORY);

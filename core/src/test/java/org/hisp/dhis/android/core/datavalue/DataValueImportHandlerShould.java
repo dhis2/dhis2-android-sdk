@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +54,7 @@ public class DataValueImportHandlerShould {
     DataValueStore dataValueStore;
 
     @Mock
-    ImportSummary importSummary;
+    DataValueImportSummary dataValueImportSummary;
 
     @Mock
     DataValueSet dataValueSet;
@@ -74,7 +74,7 @@ public class DataValueImportHandlerShould {
     @Test
     public void passingNullDataValueSet_shouldNotPerformAnyAction() {
 
-        dataValueImportHandler.handleImportSummary(null, importSummary);
+        dataValueImportHandler.handleImportSummary(null, dataValueImportSummary);
 
         verify(dataValueStore, never()).setState(any(DataValue.class), any(State.class));
     }
@@ -95,9 +95,9 @@ public class DataValueImportHandlerShould {
 
         dataValueSet.dataValues = dataValueCollection;
 
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
+        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
 
         verify(dataValueStore, times(1)).setState(dataValue, State.SYNCED);
     }
@@ -110,9 +110,9 @@ public class DataValueImportHandlerShould {
 
         dataValueSet.dataValues = dataValueCollection;
 
-        when(importSummary.importStatus()).thenReturn(ImportStatus.ERROR);
+        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, importSummary);
+        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
 
         verify(dataValueStore, times(1)).setState(dataValue, State.ERROR);
     }

@@ -33,7 +33,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legend.LegendSamples;
+import org.hisp.dhis.android.core.data.legendset.LegendSamples;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)

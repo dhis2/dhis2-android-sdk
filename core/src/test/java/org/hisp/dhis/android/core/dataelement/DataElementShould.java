@@ -43,11 +43,11 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class DataElementShould extends BaseObjectShould implements ObjectShould {
 
-    private static ValueTypeDeviceRendering desktopRendering = ValueTypeDeviceRendering.create(
-            ValueTypeRenderingType.VERTICAL_RADIOBUTTONS, 0, 10, 1, 0);
+    private static ValueTypeDeviceRendering desktopRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build();
 
-    private static ValueTypeDeviceRendering mobileRendering = ValueTypeDeviceRendering.create(
-            ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS, 3, 15, 2, 1);
+    private static ValueTypeDeviceRendering mobileRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1).build();
 
     public DataElementShould() {
         super("dataelement/data_element.json");

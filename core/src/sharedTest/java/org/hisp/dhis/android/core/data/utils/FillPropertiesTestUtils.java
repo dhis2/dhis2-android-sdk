@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
 
 import java.text.ParseException;
@@ -63,12 +62,6 @@ public class FillPropertiesTestUtils {
     public static final String TABLE = "test_table";
     public static final String DEVICE_TYPE = "test_device_type";
     public static final ValueTypeRenderingType VALUE_TYPE_RENDERING_TYPE = ValueTypeRenderingType.DROPDOWN;
-    public static final Integer MIN = 0;
-    public static final Integer MAX = 10;
-    public static final Integer STEP = 1;
-    public static final Integer DECIMAL_POINTS = 0;
-    public static final ValueTypeDeviceRendering VALUE_TYPE_DEVICE_RENDERING_MODEL =
-            ValueTypeDeviceRendering.create(VALUE_TYPE_RENDERING_TYPE, MIN, MAX, STEP, DECIMAL_POINTS);
 
     public static final String FUTURE_DATE_STR = "3000-12-20T15:08:27.882";
     public static final Date FUTURE_DATE = parseDate(FUTURE_DATE_STR);

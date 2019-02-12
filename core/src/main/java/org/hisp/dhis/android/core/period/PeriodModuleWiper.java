@@ -47,7 +47,7 @@ public final class PeriodModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeMetadata() {
-        tableWiper.wipeTables(PeriodModel.TABLE);
+        tableWiper.wipeTables(PeriodTableInfo.TABLE_INFO);
     }
 
     @Override

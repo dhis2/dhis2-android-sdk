@@ -46,9 +46,10 @@ public class ValueTypeRenderingShould extends BaseObjectShould implements Object
     public void map_from_json_string() throws IOException, ParseException {
         ValueTypeRendering valueTypeRendering = objectMapper.readValue(jsonStream, ValueTypeRendering.class);
 
-        assertThat(valueTypeRendering.desktop()).isEqualTo(ValueTypeDeviceRendering.create(
-                ValueTypeRenderingType.VERTICAL_RADIOBUTTONS, 0, 10, 1, 0));
-        assertThat(valueTypeRendering.mobile()).isEqualTo(ValueTypeDeviceRendering.create(
-                ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS, 3, 15, 2, 1));
+        assertThat(valueTypeRendering.desktop()).isEqualTo(ValueTypeDeviceRendering.builder()
+                .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build());
+        assertThat(valueTypeRendering.mobile()).isEqualTo(ValueTypeDeviceRendering.builder()
+                .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1)
+                .build());
     }
 }

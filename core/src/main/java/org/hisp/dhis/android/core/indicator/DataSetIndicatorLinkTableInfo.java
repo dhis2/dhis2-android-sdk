@@ -58,7 +58,7 @@ public final class DataSetIndicatorLinkTableInfo {
 
     static class Columns extends BaseModel.Columns {
 
-        private static final String DATA_SET = "dataSet";
+        static final String DATA_SET = "dataSet";
         private static final String INDICATOR = "indicator";
 
         @Override

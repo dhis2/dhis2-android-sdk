@@ -45,9 +45,9 @@ public final class PeriodStore {
 
     private PeriodStore() {}
 
-    private static final StatementBinder<PeriodModel> BINDER = new StatementBinder<PeriodModel>() {
+    private static final StatementBinder<Period> BINDER = new StatementBinder<Period>() {
         @Override
-        public void bindToStatement(@NonNull PeriodModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToStatement(@NonNull Period o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 1, o.periodId());
             sqLiteBind(sqLiteStatement, 2, o.periodType());
             sqLiteBind(sqLiteStatement, 3, o.startDate());
@@ -55,23 +55,23 @@ public final class PeriodStore {
         }
     };
 
-    private static final WhereStatementBinder<PeriodModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<PeriodModel>() {
+    private static final WhereStatementBinder<Period> WHERE_UPDATE_BINDER
+            = new WhereStatementBinder<Period>() {
         @Override
-        public void bindToUpdateWhereStatement(@NonNull PeriodModel o, @NonNull SQLiteStatement sqLiteStatement) {
+        public void bindToUpdateWhereStatement(@NonNull Period o, @NonNull SQLiteStatement sqLiteStatement) {
             sqLiteBind(sqLiteStatement, 5, o.periodId());
         }
     };
 
-    private static final CursorModelFactory<PeriodModel> FACTORY = new CursorModelFactory<PeriodModel>() {
+    private static final CursorModelFactory<Period> FACTORY = new CursorModelFactory<Period>() {
         @Override
-        public PeriodModel fromCursor(Cursor cursor) {
-            return PeriodModel.create(cursor);
+        public Period fromCursor(Cursor cursor) {
+            return Period.create(cursor);
         }
     };
 
-    public static ObjectWithoutUidStore<PeriodModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodModel.TABLE, new PeriodModel.Columns(),
+    public static ObjectWithoutUidStore<Period> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodTableInfo.TABLE_INFO,
                 BINDER, WHERE_UPDATE_BINDER, FACTORY);
     }
 }

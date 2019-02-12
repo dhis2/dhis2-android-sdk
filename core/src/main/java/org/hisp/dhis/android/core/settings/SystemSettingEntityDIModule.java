@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.settings;
 
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -37,18 +39,18 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreProvider<SystemSettingModel> {
+public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreProvider<SystemSetting> {
 
     @Override
     @Provides
     @Reusable
-    public ObjectWithoutUidStore<SystemSettingModel> store(DatabaseAdapter databaseAdapter) {
+    public ObjectWithoutUidStore<SystemSetting> store(DatabaseAdapter databaseAdapter) {
         return SystemSettingStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    SystemSettingHandler handler(ObjectWithoutUidStore<SystemSettingModel> store) {
-        return new SystemSettingHandlerImpl(store);
+    SyncHandler<SystemSetting> handler(ObjectWithoutUidStore<SystemSetting> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.common;
 
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -39,14 +41,14 @@ public final class ValueTypeDeviceRenderingEntityDIModule {
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store(DatabaseAdapter databaseAdapter) {
+    ObjectWithoutUidStore<ValueTypeDeviceRendering> store(DatabaseAdapter databaseAdapter) {
         return ValueTypeDeviceRenderingStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    GenericHandler<ValueTypeDeviceRendering, ValueTypeDeviceRenderingModel> handler(
-            ObjectWithoutUidStore<ValueTypeDeviceRenderingModel> store) {
-        return new ObjectWithoutUidHandlerImpl<>(store);
+    SyncHandlerWithTransformer<ValueTypeDeviceRendering> handler(
+            ObjectWithoutUidStore<ValueTypeDeviceRendering> store) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }
 }

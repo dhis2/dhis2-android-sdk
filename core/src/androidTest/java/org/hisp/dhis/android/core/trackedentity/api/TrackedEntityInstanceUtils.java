@@ -5,8 +5,11 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.imports.BaseImportSummary;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.TEIImportSummary;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -314,25 +317,26 @@ class TrackedEntityInstanceUtils {
 
     // Assertions
 
-    static void assertTei(ImportSummary importSummary, ImportStatus status) {
+    static void assertTei(TEIImportSummary importSummary, ImportStatus status) {
         assertSummary(importSummary, status);
     }
 
-    static void assertEnrollments(ImportSummary importSummary, ImportStatus status) {
-        for (ImportSummary enrollmentSummary : importSummary.importEnrollment().importSummaries()) {
+    static void assertEnrollments(TEIImportSummary importSummary, ImportStatus status) {
+        for (EnrollmentImportSummary enrollmentSummary : importSummary.enrollments().importSummaries()) {
             assertSummary(enrollmentSummary, status);
         }
     }
 
-    static void assertEvents(ImportSummary importSummary, ImportStatus status) {
-        for (ImportSummary enrollmentSummary : importSummary.importEnrollment().importSummaries()) {
-            for (ImportSummary eventSummary : enrollmentSummary.importEvent().importSummaries()) {
+    static void assertEvents(TEIImportSummary importSummary, ImportStatus status) {
+        for (EnrollmentImportSummary enrollmentSummary :
+                importSummary.enrollments().importSummaries()) {
+            for (EventImportSummary eventSummary : enrollmentSummary.events().importSummaries()) {
                 assertSummary(eventSummary, status);
             }
         }
     }
 
-    private static void assertSummary(ImportSummary importSummary, ImportStatus status) {
-        assertThat(importSummary.importStatus()).isEqualTo(status);
+    private static void assertSummary(BaseImportSummary importSummary, ImportStatus status) {
+        assertThat(importSummary.status()).isEqualTo(status);
     }
 }

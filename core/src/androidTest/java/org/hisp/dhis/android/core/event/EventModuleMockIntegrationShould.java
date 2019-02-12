@@ -25,12 +25,14 @@ public class EventModuleMockIntegrationShould extends MockIntegrationShould {
     public void allow_access_to_all_events_without_children() {
         List<Event> events = d2.eventModule().events.get();
         assertThat(events.size(), is(1));
-        for (Event event: events) {
-            assertThat(event.uid(), is("V1CerIi3sdL"));
-            assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
-            assertThat(event.programStage(), is("dBwrot7S420"));
-            assertThat(event.trackedEntityDataValues() == null, is(true));
-        }
+
+        Event event = events.get(0);
+
+        assertThat(event.uid(), is("V1CerIi3sdL"));
+        assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
+        assertThat(event.programStage(), is("dBwrot7S420"));
+        assertThat(event.trackedEntityDataValues() == null, is(true));
+
     }
 
     @Test

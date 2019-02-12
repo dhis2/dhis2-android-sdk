@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CoordinateHelper;
@@ -51,6 +49,27 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<Event> implements EventStore {
 
     private static final String QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment ISNULL";
+
+    private static final StatementBinder<Event> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.enrollment());
+        sqLiteBind(sqLiteStatement, 3, o.created());
+        sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
+        sqLiteBind(sqLiteStatement, 5, o.createdAtClient());
+        sqLiteBind(sqLiteStatement, 6, o.lastUpdatedAtClient());
+        sqLiteBind(sqLiteStatement, 7, o.status());
+        sqLiteBind(sqLiteStatement, 8, CoordinateHelper.getLatitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 9, CoordinateHelper.getLongitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 10, o.program());
+        sqLiteBind(sqLiteStatement, 11, o.programStage());
+        sqLiteBind(sqLiteStatement, 12, o.organisationUnit());
+        sqLiteBind(sqLiteStatement, 13, o.eventDate());
+        sqLiteBind(sqLiteStatement, 14, o.completedDate());
+        sqLiteBind(sqLiteStatement, 15, o.dueDate());
+        sqLiteBind(sqLiteStatement, 16, o.state());
+        sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
+        sqLiteBind(sqLiteStatement, 18, o.trackedEntityInstance());
+    };
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementWrapper statementWrapper,
@@ -110,42 +129,11 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
 
     private void addEventsToMap(Map<String, List<Event>> eventsMap, Event event) {
         if (eventsMap.get(event.enrollment()) == null) {
-            eventsMap.put(event.enrollment(), new ArrayList<Event>());
+            eventsMap.put(event.enrollment(), new ArrayList<>());
         }
 
         eventsMap.get(event.enrollment()).add(event);
     }
-
-    private static final StatementBinder<Event> BINDER = new StatementBinder<Event>() {
-        @Override
-        public void bindToStatement(@NonNull Event o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.enrollment());
-            sqLiteBind(sqLiteStatement, 3, o.created());
-            sqLiteBind(sqLiteStatement, 4, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 5, o.createdAtClient());
-            sqLiteBind(sqLiteStatement, 6, o.lastUpdatedAtClient());
-            sqLiteBind(sqLiteStatement, 7, o.status());
-            sqLiteBind(sqLiteStatement, 8, CoordinateHelper.getLatitude(o.coordinate()));
-            sqLiteBind(sqLiteStatement, 9, CoordinateHelper.getLongitude(o.coordinate()));
-            sqLiteBind(sqLiteStatement, 10, o.program());
-            sqLiteBind(sqLiteStatement, 11, o.programStage());
-            sqLiteBind(sqLiteStatement, 12, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 13, o.eventDate());
-            sqLiteBind(sqLiteStatement, 14, o.completedDate());
-            sqLiteBind(sqLiteStatement, 15, o.dueDate());
-            sqLiteBind(sqLiteStatement, 16, o.state());
-            sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
-            sqLiteBind(sqLiteStatement, 18, o.trackedEntityInstance());
-        }
-    };
-
-    private static final CursorModelFactory<Event> FACTORY = new CursorModelFactory<Event>() {
-        @Override
-        public Event fromCursor(Cursor cursor) {
-            return Event.create(cursor);
-        }
-    };
 
     public static EventStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
@@ -158,7 +146,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
                 statementWrapper,
                 statementBuilder,
                 BINDER,
-                FACTORY
+                Event::create
         );
     }
 }

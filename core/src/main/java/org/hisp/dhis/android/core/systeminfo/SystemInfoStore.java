@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,36 +38,22 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class SystemInfoStore {
 
+    private static final StatementBinder<SystemInfo> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.serverDate());
+        sqLiteBind(sqLiteStatement, 2, o.dateFormat());
+        sqLiteBind(sqLiteStatement, 3, o.version());
+        sqLiteBind(sqLiteStatement, 4, o.contextPath());
+        sqLiteBind(sqLiteStatement, 5, o.systemName());
+    };
+
+    private static final WhereStatementBinder<SystemInfo> WHERE_UPDATE_BINDER =
+            (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 6, o.contextPath());
+
     private SystemInfoStore() {
     }
 
-    static final StatementBinder<SystemInfo> BINDER = new StatementBinder<SystemInfo>() {
-        @Override
-        public void bindToStatement(@NonNull SystemInfo o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.serverDate());
-            sqLiteBind(sqLiteStatement, 2, o.dateFormat());
-            sqLiteBind(sqLiteStatement, 3, o.version());
-            sqLiteBind(sqLiteStatement, 4, o.contextPath());
-            sqLiteBind(sqLiteStatement, 5, o.systemName());
-        }
-    };
-
-    static final WhereStatementBinder<SystemInfo> WHERE_UPDATE_BINDER = new WhereStatementBinder<SystemInfo>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull SystemInfo o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 6, o.contextPath());
-        }
-    };
-
-    private static final CursorModelFactory<SystemInfo> FACTORY = new CursorModelFactory<SystemInfo>() {
-        @Override
-        public SystemInfo fromCursor(Cursor cursor) {
-            return SystemInfo.create(cursor);
-        }
-    };
-
     static ObjectWithoutUidStore<SystemInfo> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemInfoTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                BINDER, WHERE_UPDATE_BINDER, SystemInfo::create);
     }
 }

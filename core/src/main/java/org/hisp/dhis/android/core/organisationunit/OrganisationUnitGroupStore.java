@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -56,16 +54,8 @@ final class OrganisationUnitGroupStore {
         }
     };
 
-    private static final CursorModelFactory<OrganisationUnitGroup> FACTORY
-            = new CursorModelFactory<OrganisationUnitGroup>() {
-        @Override
-        public OrganisationUnitGroup fromCursor(Cursor cursor) {
-            return OrganisationUnitGroup.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<OrganisationUnitGroup> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(
-                databaseAdapter, OrganisationUnitGroupTableInfo.TABLE_INFO, BINDER, FACTORY);
+                databaseAdapter, OrganisationUnitGroupTableInfo.TABLE_INFO, BINDER, OrganisationUnitGroup::create);
     }
 }

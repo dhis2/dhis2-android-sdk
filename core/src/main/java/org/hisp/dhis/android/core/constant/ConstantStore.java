@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -54,14 +52,7 @@ public final class ConstantStore {
         }
     };
 
-    private static final CursorModelFactory<Constant> FACTORY = new CursorModelFactory<Constant>() {
-        @Override
-        public Constant fromCursor(Cursor cursor) {
-            return Constant.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<Constant> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, ConstantTableInfo.TABLE_INFO, BINDER, Constant::create);
     }
 }

@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -43,27 +38,17 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataElementOperandStore {
 
-    private DataElementOperandStore() {}
-
     private static final StatementBinder<DataElementOperand> BINDER
-            = new StatementBinder<DataElementOperand>() {
-        @Override
-        public void bindToStatement(@NonNull DataElementOperand o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
-            sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryOptionCombo()));
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, UidsHelper.getUidOrNull(o.dataElement()));
+        sqLiteBind(sqLiteStatement, 3, UidsHelper.getUidOrNull(o.categoryOptionCombo()));
     };
 
-    public static final CursorModelFactory<DataElementOperand> FACTORY = new CursorModelFactory<DataElementOperand>() {
-        @Override
-        public DataElementOperand fromCursor(Cursor cursor) {
-            return DataElementOperand.create(cursor);
-        }
-    };
+    private DataElementOperandStore() {}
 
     public static IdentifiableObjectStore<DataElementOperand> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, DataElementOperandTableInfo.TABLE_INFO,
-                BINDER, FACTORY);
+                BINDER, DataElementOperand::create);
     }
 }

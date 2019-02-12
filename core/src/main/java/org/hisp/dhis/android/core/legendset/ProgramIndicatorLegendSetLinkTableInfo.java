@@ -28,23 +28,53 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class ProgramIndicatorLegendSetLinkModelBuilder extends ModelBuilder<LegendSet,
-        ProgramIndicatorLegendSetLinkModel> {
+public final class ProgramIndicatorLegendSetLinkTableInfo {
 
-    private final ProgramIndicatorLegendSetLinkModel.Builder builder;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public ProgramIndicatorLegendSetLinkModelBuilder(ProgramIndicator programIndicator) {
-        this.builder = ProgramIndicatorLegendSetLinkModel.builder()
-                .programIndicator(programIndicator.uid());
+        @Override
+        public String name() {
+            return "ProgramIndicatorLegendSetLink";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+            Columns.PROGRAM_INDICATOR,
+            Columns.LEGEND_SET);
+
+    private ProgramIndicatorLegendSetLinkTableInfo() {
     }
 
-    @Override
-    public ProgramIndicatorLegendSetLinkModel buildModel(LegendSet legendSet) {
-        return builder
-                .legendSet(legendSet.uid())
-                .build();
+    static class Columns extends BaseModel.Columns {
+
+        static final String PROGRAM_INDICATOR = "programIndicator";
+        static final String LEGEND_SET = "legendSet";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    PROGRAM_INDICATOR,
+                    LEGEND_SET
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    PROGRAM_INDICATOR,
+                    LEGEND_SET
+            );
+        }
     }
 }

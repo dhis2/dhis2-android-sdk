@@ -26,50 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.data.legendset;
 
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.legendset.Legend;
 
-import java.io.IOException;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
+public class LegendSamples {
 
-@RunWith(JUnit4.class)
-public class ProgramIndicatorLegendSetLinkModelBuilderShould {
+    public static Legend getLegend() {
+        Legend.Builder legendBuilder = Legend.builder();
 
-    @Mock
-    private ProgramIndicator programIndicator;
-
-    @Mock
-    private LegendSet legendSet;
-
-    private ProgramIndicatorLegendSetLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(programIndicator.uid()).thenReturn("program_indicator_uid");
-        when(legendSet.uid()).thenReturn("legend_set_uid");
-
-        model = buildModel();
-    }
-
-    private ProgramIndicatorLegendSetLinkModel buildModel() {
-        return new ProgramIndicatorLegendSetLinkModelBuilder(programIndicator).buildModel(legendSet);
-    }
-
-    @Test
-    public void copy_link_properties() {
-        assertThat(model.programIndicator()).isEqualTo(programIndicator.uid());
-        assertThat(model.legendSet()).isEqualTo(legendSet.uid());
+        fillIdentifiableProperties(legendBuilder);
+        legendBuilder
+                .startValue(30.5)
+                .endValue(40.0)
+                .color("#d9f0a3")
+                .legendSet(ObjectWithUid.create("legend_set_uid"));
+        return legendBuilder.build();
     }
 }

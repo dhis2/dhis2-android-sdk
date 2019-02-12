@@ -26,24 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.legend;
+package org.hisp.dhis.android.core.data.legendset;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.Legend;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+public class ProgramIndicatorLegendSetLinkSamples {
 
-public class LegendSamples {
-
-    public static Legend getLegend() {
-        Legend.Builder legendBuilder = Legend.builder();
-
-        fillIdentifiableProperties(legendBuilder);
-        legendBuilder
-                .startValue(30.5)
-                .endValue(40.0)
-                .color("#d9f0a3")
-                .legendSet(ObjectWithUid.create("legend_set_uid"));
-        return legendBuilder.build();
+    public static ProgramIndicatorLegendSetLink getProgramIndicatorLegendSetLink() {
+        return ProgramIndicatorLegendSetLink.builder()
+                .legendSet("legend_set")
+                .programIndicator("program_indicator")
+                .build();
     }
 }

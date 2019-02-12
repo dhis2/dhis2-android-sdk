@@ -30,35 +30,41 @@ package org.hisp.dhis.android.core.legendset;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.LegendSamples;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
-public class LegendStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Legend> {
+public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
 
-    public LegendStoreIntegrationShould() {
-        super(LegendStore.create(DatabaseAdapterFactory.get(false)), LegendTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    public ProgramIndicatorLegendSetLinkStoreIntegrationShould() {
+        super(ProgramIndicatorLegendSetLinkStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    protected Legend buildObject() {
-        return LegendSamples.getLegend();
+    protected String addMasterUid() {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink().programIndicator();
     }
 
     @Override
-    protected Legend buildObjectWithId() {
-        return LegendSamples.getLegend().toBuilder()
-                .id(1L)
+    protected ProgramIndicatorLegendSetLink buildObject() {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink();
+    }
+
+    @Override
+    protected ProgramIndicatorLegendSetLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .programIndicator("new_program_indicator")
                 .build();
     }
 
     @Override
-    protected Legend buildObjectToUpdate() {
-        return LegendSamples.getLegend().toBuilder()
-                .legendSet(ObjectWithUid.create("new_legend_set_uid"))
+    protected ProgramIndicatorLegendSetLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
                 .build();
     }
 }

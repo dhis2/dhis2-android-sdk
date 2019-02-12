@@ -26,31 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import com.google.auto.value.AutoValue;
 
-@Module
-public final class ProgramIndicatorLegendSetEntityDIModule {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    @Provides
-    @Reusable
-    public LinkModelStore<ProgramIndicatorLegendSetLink> store(DatabaseAdapter databaseAdapter) {
-        return ProgramIndicatorLegendSetLinkStore.create(databaseAdapter);
+@AutoValue
+public abstract class ProgramIndicatorLegendSetLink implements Model {
+
+    @Nullable
+    public abstract String programIndicator();
+
+    @Nullable
+    public abstract String legendSet();
+
+    public static ProgramIndicatorLegendSetLink create(Cursor cursor) {
+        return AutoValue_ProgramIndicatorLegendSetLink.createFromCursor(cursor);
     }
 
-    @Provides
-    @Reusable
-    public LinkSyncHandler<ProgramIndicatorLegendSetLink> handler(LinkModelStore<ProgramIndicatorLegendSetLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    public static Builder builder() {
+        return new $$AutoValue_ProgramIndicatorLegendSetLink.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder programIndicator(String programIndicator);
+
+        public abstract Builder legendSet(String legendSet);
+
+        public abstract ProgramIndicatorLegendSetLink build();
     }
 }

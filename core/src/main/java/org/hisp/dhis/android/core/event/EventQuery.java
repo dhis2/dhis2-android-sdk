@@ -33,7 +33,6 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseQuery;
 import org.hisp.dhis.android.core.data.api.OuMode;
 
@@ -54,9 +53,6 @@ public abstract class EventQuery extends BaseQuery {
 
     @NonNull
     public abstract OuMode ouMode();
-
-    @Nullable
-    public abstract CategoryCombo categoryCombo();
 
     @Nullable
     public abstract String lastUpdatedStartDate();
@@ -82,8 +78,6 @@ public abstract class EventQuery extends BaseQuery {
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
 
         public abstract Builder ouMode(OuMode ouMode);
-
-        public abstract Builder categoryCombo(CategoryCombo categoryCombo);
 
         public abstract Builder lastUpdatedStartDate(String lastUpdatedStartDate);
 

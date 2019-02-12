@@ -58,11 +58,9 @@ final class EventEndpointCallFactory {
             @Override
             public List<Event> call() throws Exception {
 
-                String categoryComboId = eventQuery.categoryCombo() == null ? null : eventQuery.categoryCombo().uid();
-
                 Call<Payload<Event>> call = service.getEvents(eventQuery.orgUnit(), eventQuery.program(),
                         eventQuery.trackedEntityInstance(), EventFields.allFields, Boolean.TRUE,
-                        eventQuery.page(), eventQuery.pageSize(), categoryComboId, eventQuery.lastUpdatedStartDate());
+                        eventQuery.page(), eventQuery.pageSize(), eventQuery.lastUpdatedStartDate());
 
                 return apiCallExecutor.executePayloadCall(call);
             }

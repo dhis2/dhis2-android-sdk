@@ -42,7 +42,6 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
     private String programStageUid;
     private String dataElementUid;
     private String attributeOptionCombo;
-    private String categoryComboUID;
     private String user = "admin";
     private String password = "district";
 
@@ -60,7 +59,6 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         programStageUid = "aNLq9ZYoy9W";
         dataElementUid = "b6dOUjAarHD";
         attributeOptionCombo = "nvLjum6Xbv5";
-        categoryComboUID = "nM3u9s5a52V";
         codeGenerator = new CodeGeneratorImpl();
 
         eventUid1 = codeGenerator.generate();
@@ -99,7 +97,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         downloadMetadata();
 
-        downloadEventsBy(categoryComboUID);
+        downloadEvents();
 
         assertThatEventPushedIsDownloaded(pushedEvent);
     }
@@ -123,7 +121,7 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         downloadMetadata();
 
-        downloadEventsBy(categoryComboUID);
+        downloadEvents();
 
         assertThatEventPushedIsDownloaded(pushedEvent);
     }
@@ -157,9 +155,9 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
         assertTrue(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents));
     }
 
-    private void downloadEventsBy(String categoryComboUID) throws Exception {
+    private void downloadEvents() throws Exception {
         Callable<List<Event>> eventEndpointCall = EventCallFactory.create(
-                d2.retrofit(), d2.databaseAdapter(), orgUnitUid, 50, categoryComboUID);
+                d2.retrofit(), d2.databaseAdapter(), orgUnitUid, 50);
 
         List<Event> events = eventEndpointCall.call();
 

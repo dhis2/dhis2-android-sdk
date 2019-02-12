@@ -1,7 +1,6 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.List;
@@ -18,27 +17,6 @@ public class EventCallFactory {
         EventQuery eventQuery = EventQuery.builder()
                 .orgUnit(orgUnit)
                 .pageSize(pageSize)
-                .build();
-
-        return new EventEndpointCallFactory(retrofit.create(EventService.class),
-                APICallExecutorImpl.create(databaseAdapter)).getCall(eventQuery);
-    }
-
-    public static Callable<List<Event>> create(Retrofit retrofit,
-                                               DatabaseAdapter databaseAdapter,
-                                               String orgUnit,
-                                               int pageSize,
-                                               String categoryComboUID) {
-
-        CategoryCombo categoryCombo = CategoryCombo
-                .builder()
-                .uid(categoryComboUID)
-                .build();
-
-        EventQuery eventQuery = EventQuery.builder()
-                .orgUnit(orgUnit)
-                .pageSize(pageSize)
-                .categoryCombo(categoryCombo)
                 .build();
 
         return new EventEndpointCallFactory(retrofit.create(EventService.class),

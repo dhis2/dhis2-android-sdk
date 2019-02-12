@@ -115,7 +115,7 @@ public class CategoryHandlerShould {
     public void not_handle_category_options_for_category_options_when_access_data_read_is_false() {
         when(dataAccess.read()).thenReturn(false);
         categoryHandler.handle(category);
-        verify(categoryOptionHandler).handleMany(new ArrayList<CategoryOption>());
+        verify(categoryOptionHandler).handleMany(new ArrayList<>());
     }
 
     @Test

@@ -18,7 +18,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
-import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -184,7 +183,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             for (Event event : enrollment.events()) {
                 if (!event.deleted()) {
                     if (expectedEvents.get(event.enrollment()) == null) {
-                        expectedEvents.put(event.enrollment(), new ArrayList<Event>());
+                        expectedEvents.put(event.enrollment(), new ArrayList<>());
                     }
 
                     expectedEvents.get(event.enrollment()).add(event);
@@ -230,7 +229,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {
             downloadedEnrollmentsWithoutIdAndDeleteFalse.add(
-                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<Note>()).build());
+                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<>()).build());
         }
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter());
@@ -246,7 +245,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Map<String, List<TrackedEntityDataValue>> downloadedValues = new HashMap<>();
         for (TrackedEntityDataValue dataValue : dataValueList) {
             if (downloadedValues.get(dataValue.event()) == null) {
-                downloadedValues.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
+                downloadedValues.put(dataValue.event(), new ArrayList<>());
             }
 
             downloadedValues.get(dataValue.event()).add(dataValue);
@@ -277,7 +276,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             event = event.toBuilder().trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build();
 
             if (downloadedEvents.get(event.enrollment()) == null) {
-                downloadedEvents.put(event.enrollment(), new ArrayList<Event>());
+                downloadedEvents.put(event.enrollment(), new ArrayList<>());
             }
 
             downloadedEvents.get(event.enrollment()).add(event);

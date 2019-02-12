@@ -71,7 +71,7 @@ public class DbOpenHelper extends SQLBriteOpenHelper {
         Map<String, List<String>> versionMigrations = super.parse(newVersion);
         List<String> seeds = versionMigrations.get("seeds");
         if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<String>());
+            versionMigrations.put("seeds", new ArrayList<>());
         }
         return versionMigrations;
     }

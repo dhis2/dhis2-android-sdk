@@ -76,7 +76,7 @@ public class PerformanceHintsService {
 
         List<Program> programsWithEmptyProgramRules = new ArrayList<>(programs.size());
         for (Program program : programs) {
-            programsWithEmptyProgramRules.add(program.toBuilder().programRules(new ArrayList<ProgramRule>()).build());
+            programsWithEmptyProgramRules.add(program.toBuilder().programRules(new ArrayList<>()).build());
         }
 
         Map<String, Program> programsMap = UidsHelper.mapByUid(programsWithEmptyProgramRules);

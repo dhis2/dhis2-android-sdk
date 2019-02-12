@@ -54,7 +54,7 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
                 .created(today)
                 .name("Births attended by")
                 .displayName("Births attended by")
-                .categoryOptions(new ArrayList<CategoryOption>())
+                .categoryOptions(new ArrayList<>())
                 .dataDimensionType("DISAGGREGATION").build();
     }
 

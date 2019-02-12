@@ -217,18 +217,18 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     public static OrganisationUnitHandler create(DatabaseAdapter databaseAdapter) {
         return new OrganisationUnitHandlerImpl(
                 OrganisationUnitStore.create(databaseAdapter),
-                new LinkModelHandlerImpl<OrganisationUnit, UserOrganisationUnitLinkModel>(
+                new LinkModelHandlerImpl<>(
                         UserOrganisationUnitLinkStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<Program, OrganisationUnitProgramLinkModel>(
+                new LinkModelHandlerImpl<>(
                         OrganisationUnitProgramLinkStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<DataSet, DataSetOrganisationUnitLinkModel>(
+                new LinkModelHandlerImpl<>(
                         DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
-                new CollectionCleanerImpl<ObjectWithUid>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter),
-                new CollectionCleanerImpl<ObjectWithUid>(DataSetModel.TABLE, databaseAdapter),
-                new CollectionCleanerImpl<ObjectWithUid>(
+                new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter),
+                new CollectionCleanerImpl<>(DataSetModel.TABLE, databaseAdapter),
+                new CollectionCleanerImpl<>(
                         OrganisationUnitGroupTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new IdentifiableSyncHandlerImpl<>(OrganisationUnitGroupStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<ObjectWithUid, OrganisationUnitOrganisationUnitGroupLinkModel>(
+                new LinkModelHandlerImpl<>(
                         OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)));
     }
 }

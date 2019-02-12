@@ -61,7 +61,7 @@ public final class DataElementEntityDIModule {
     @Reusable
     Collection<ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataElement> childrenAppender =
-                new ObjectStyleChildrenAppender<DataElement, DataElement.Builder>(
+                new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataElementTableInfo.TABLE_INFO
                 );

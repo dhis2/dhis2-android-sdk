@@ -300,7 +300,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         trackedEntityDataValueStore.insert(trackedEntityDataValueBuilder.id(2L).dataElement(DATA_ELEMENT_2).build());
         trackedEntityDataValueStore.insert(trackedEntityDataValueBuilder.id(3L).event(EVENT_2).build());
 
-        trackedEntityDataValueStore.deleteByEventAndNotInDataElements(EVENT_1, new ArrayList<String>());
+        trackedEntityDataValueStore.deleteByEventAndNotInDataElements(EVENT_1, new ArrayList<>());
 
         List<TrackedEntityDataValue> dataValuesByEvent =
                 trackedEntityDataValueStore.queryTrackedEntityDataValuesByEventUid(EVENT_1);

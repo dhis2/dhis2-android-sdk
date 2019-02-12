@@ -26,24 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.data.indicator;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
 
-public class DataSetIndicatorLinkModelBuilder extends ModelBuilder<Indicator, DataSetIndicatorLinkModel> {
+public class DataSetIndicatorLinkSamples {
 
-    private final DataSetIndicatorLinkModel.Builder builder;
-
-    public DataSetIndicatorLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetIndicatorLinkModel.builder()
-                .dataSet(dataSet.uid());
-    }
-
-    @Override
-    public DataSetIndicatorLinkModel buildModel(Indicator pojo) {
-        return builder
-                .indicator(pojo.uid())
+    public static DataSetIndicatorLink getDataSetIndicatorLink() {
+        return DataSetIndicatorLink.builder()
+                .dataSet("data_set")
+                .indicator("indicator")
                 .build();
-    }
+        }
 }

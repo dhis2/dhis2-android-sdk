@@ -30,55 +30,39 @@ package org.hisp.dhis.android.core.indicator;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.Model;
 
-@Deprecated
 @AutoValue
-public abstract class DataSetIndicatorLinkModel extends BaseModel {
-    public static final String TABLE = "DataSetIndicatorLink";
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String DATA_SET = "dataSet";
-        public static final String INDICATOR = "indicator";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    DATA_SET, INDICATOR);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{DATA_SET, INDICATOR};
-        }
-    }
-
-    public static DataSetIndicatorLinkModel create(Cursor cursor) {
-        return AutoValue_DataSetIndicatorLinkModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_DataSetIndicatorLinkModel.Builder();
-    }
+public abstract class DataSetIndicatorLink implements Model {
 
     @Nullable
-    @ColumnName(Columns.DATA_SET)
     public abstract String dataSet();
 
     @Nullable
-    @ColumnName(Columns.INDICATOR)
     public abstract String indicator();
 
+    public static DataSetIndicatorLink create(Cursor cursor) {
+        return AutoValue_DataSetIndicatorLink.createFromCursor(cursor);
+    }
+
+    public static Builder builder() {
+        return new $$AutoValue_DataSetIndicatorLink.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
         public abstract Builder dataSet(String dataSet);
 
         public abstract Builder indicator(String indicator);
 
-        public abstract DataSetIndicatorLinkModel build();
+        public abstract DataSetIndicatorLink build();
     }
 }

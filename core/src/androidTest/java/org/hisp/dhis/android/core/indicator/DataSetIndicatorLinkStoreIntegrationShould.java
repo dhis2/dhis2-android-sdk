@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,27 +28,43 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.indicator.DataSetIndicatorLinkSamples;
+import org.junit.runner.RunWith;
 
-@Module
-public final class DataSetIndicatorEntityDIModule {
+@RunWith(AndroidJUnit4.class)
+public class DataSetIndicatorLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<DataSetIndicatorLink> {
 
-    @Provides
-    @Reusable
-    LinkModelStore<DataSetIndicatorLink> store(DatabaseAdapter databaseAdapter) {
-        return DataSetIndicatorLinkStore.create(databaseAdapter);
+    public DataSetIndicatorLinkStoreIntegrationShould() {
+        super(DataSetIndicatorLinkStore.create(DatabaseAdapterFactory.get(false)),
+                DataSetIndicatorLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    @Provides
-    @Reusable
-    LinkSyncHandler<DataSetIndicatorLink> handler(LinkModelStore<DataSetIndicatorLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    @Override
+    protected String addMasterUid() {
+        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink().dataSet();
+    }
+
+    @Override
+    protected DataSetIndicatorLink buildObject() {
+        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink();
+    }
+
+    @Override
+    protected DataSetIndicatorLink buildObjectWithOtherMasterUid() {
+        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink().toBuilder()
+                .dataSet("new_data_set")
+                .build();
+    }
+
+    @Override
+    protected DataSetIndicatorLink buildObjectWithId() {
+        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink().toBuilder()
+                .id(1L)
+                .build();
     }
 }

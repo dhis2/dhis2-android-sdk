@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
 
 public class EventQueryShould {
 

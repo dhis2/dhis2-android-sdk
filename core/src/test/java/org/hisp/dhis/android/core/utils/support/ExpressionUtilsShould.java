@@ -32,8 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import nl.jqno.equalsverifier.internal.lib.bytebuddy.implementation.bytecode.constant.DoubleConstant;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

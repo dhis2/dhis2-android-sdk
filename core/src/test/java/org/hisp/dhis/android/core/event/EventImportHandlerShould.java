@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.EventImportSummary;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

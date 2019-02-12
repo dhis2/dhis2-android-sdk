@@ -31,12 +31,8 @@ package org.hisp.dhis.android.core.data.program;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraint;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipEntityType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 

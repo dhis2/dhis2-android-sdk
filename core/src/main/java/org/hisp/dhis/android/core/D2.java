@@ -53,7 +53,6 @@ import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
-
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;

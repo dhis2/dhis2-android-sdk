@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.dataset;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 
 final class DataSetCompleteRegistrationImportHandler {
 

@@ -60,11 +60,13 @@ final class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramI
     protected void afterObjectHandled(ProgramIndicator programIndicator, HandleAction action) {
         legendSetHandler.handleMany(programIndicator.legendSets());
 
-        List<ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinks = new ArrayList<>();
-        for (LegendSet legendSet : programIndicator.legendSets()) {
-            programIndicatorLegendSetLinks.add(ProgramIndicatorLegendSetLink.builder()
-                    .programIndicator(programIndicator.uid()).legendSet(legendSet.uid()).build());
+        if (programIndicator.legendSets() != null) {
+            List<ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinks = new ArrayList<>();
+            for (LegendSet legendSet : programIndicator.legendSets()) {
+                programIndicatorLegendSetLinks.add(ProgramIndicatorLegendSetLink.builder()
+                        .programIndicator(programIndicator.uid()).legendSet(legendSet.uid()).build());
+            }
+            programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicatorLegendSetLinks);
         }
-        programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicatorLegendSetLinks);
     }
 }

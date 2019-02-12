@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class TransactionalNoResourceCallProcessor<P, M extends Model> implements CallProcessor<P> {
     private final DatabaseAdapter databaseAdapter;
@@ -54,7 +53,7 @@ public class TransactionalNoResourceCallProcessor<P, M extends Model> implements
     @Override
     public final void process(final List<P> objectList) throws D2Error {
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally((Callable<Void>) () -> {
+            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(() -> {
                 handler.handleMany(objectList, modelBuilder);
                 return null;
             });

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 class AuthorityCallProcessor implements CallProcessor<Authority> {
 
@@ -52,7 +51,7 @@ class AuthorityCallProcessor implements CallProcessor<Authority> {
         AuthorityStore.create(databaseAdapter).delete();
 
         if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally((Callable<Void>) () -> {
+            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(() -> {
                 handler.handleMany(objectList);
                 return null;
             });

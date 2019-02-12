@@ -52,7 +52,7 @@ final class DataSetElementChildrenAppender extends ChildrenAppender<DataSet> {
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
                         DataSetElementLinkTableInfo.CHILD_PROJECTION,
-                        DataSetDataElementLinkStore.FACTORY)
+                        DataSetElement::create)
         );
     }
 }

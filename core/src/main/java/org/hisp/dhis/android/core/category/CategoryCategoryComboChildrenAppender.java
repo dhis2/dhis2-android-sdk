@@ -54,7 +54,7 @@ final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<Categ
                         databaseAdapter,
                         CategoryCategoryComboLinkTableInfo.TABLE_INFO,
                         CategoryCategoryComboLinkTableInfo.CHILD_PROJECTION,
-                        CategoryStore.FACTORY
+                        Category::create
                 )
         );
     }

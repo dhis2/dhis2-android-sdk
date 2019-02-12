@@ -55,7 +55,7 @@ public final class DataSetIndicatorChildrenAppender extends ChildrenAppender<Dat
                         databaseAdapter,
                         DataSetIndicatorLinkTableInfo.TABLE_INFO,
                         DataSetIndicatorLinkTableInfo.CHILD_PROJECTION,
-                        IndicatorStore.FACTORY)
+                        Indicator::create)
         );
     }
 }

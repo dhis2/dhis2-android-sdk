@@ -109,7 +109,7 @@ public abstract class DataElement extends BaseNameableObject
         return new $$AutoValue_DataElement.Builder();
     }
 
-    static DataElement create(Cursor cursor) {
+    public static DataElement create(Cursor cursor) {
         return $AutoValue_DataElement.createFromCursor(cursor);
     }
 

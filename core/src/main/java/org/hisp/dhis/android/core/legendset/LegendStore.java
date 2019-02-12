@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -57,14 +55,7 @@ public final class LegendStore {
         }
     };
 
-    private static final CursorModelFactory<Legend> FACTORY = new CursorModelFactory<Legend>() {
-        @Override
-        public Legend fromCursor(Cursor cursor) {
-            return Legend.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<Legend> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, LegendTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, LegendTableInfo.TABLE_INFO, BINDER, Legend::create);
     }
 }

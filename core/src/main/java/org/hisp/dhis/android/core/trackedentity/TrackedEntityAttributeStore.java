@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -69,16 +67,8 @@ public final class TrackedEntityAttributeStore {
         }
     };
 
-    private static final CursorModelFactory<TrackedEntityAttribute> FACTORY = 
-            new CursorModelFactory<TrackedEntityAttribute>() {
-        @Override
-        public TrackedEntityAttribute fromCursor(Cursor cursor) {
-            return TrackedEntityAttribute.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<TrackedEntityAttribute> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter,
-                TrackedEntityAttributeTableInfo.TABLE_INFO, BINDER, FACTORY);
+                TrackedEntityAttributeTableInfo.TABLE_INFO, BINDER, TrackedEntityAttribute::create);
     }
 }

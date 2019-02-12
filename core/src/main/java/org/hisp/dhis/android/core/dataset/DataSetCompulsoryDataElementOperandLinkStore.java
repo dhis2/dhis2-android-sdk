@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,25 +37,14 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class DataSetCompulsoryDataElementOperandLinkStore {
 
-    private DataSetCompulsoryDataElementOperandLinkStore() {}
-
     private static final StatementBinder<DataSetCompulsoryDataElementOperandLinkModel> BINDER
-            = new StatementBinder<DataSetCompulsoryDataElementOperandLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull DataSetCompulsoryDataElementOperandLinkModel o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.dataSet());
-            sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.dataSet());
+        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
     };
 
-    private static final CursorModelFactory<DataSetCompulsoryDataElementOperandLinkModel> FACTORY
-            = new CursorModelFactory<DataSetCompulsoryDataElementOperandLinkModel>() {
-        @Override
-        public DataSetCompulsoryDataElementOperandLinkModel fromCursor(Cursor cursor) {
-            return DataSetCompulsoryDataElementOperandLinkModel.create(cursor);
-        }
-    };
+    private DataSetCompulsoryDataElementOperandLinkStore() {
+    }
 
     public static LinkModelStore<DataSetCompulsoryDataElementOperandLinkModel> create(DatabaseAdapter databaseAdapter) {
 
@@ -68,6 +52,6 @@ final class DataSetCompulsoryDataElementOperandLinkStore {
                 DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
                 DataSetCompulsoryDataElementOperandLinkModel.Columns.DATA_SET,
                 BINDER,
-                FACTORY);
+                DataSetCompulsoryDataElementOperandLinkModel::create);
     }
 }

@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,27 +37,16 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataSetIndicatorLinkStore {
 
-    private DataSetIndicatorLinkStore() {}
-
     private static final StatementBinder<DataSetIndicatorLink> BINDER
-            = new StatementBinder<DataSetIndicatorLink>() {
-        @Override
-        public void bindToStatement(@NonNull DataSetIndicatorLink o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.dataSet());
-            sqLiteBind(sqLiteStatement, 2, o.indicator());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.dataSet());
+        sqLiteBind(sqLiteStatement, 2, o.indicator());
     };
 
-    private static final CursorModelFactory<DataSetIndicatorLink> FACTORY
-            = new CursorModelFactory<DataSetIndicatorLink>() {
-        @Override
-        public DataSetIndicatorLink fromCursor(Cursor cursor) {
-            return DataSetIndicatorLink.create(cursor);
-        }
-    };
+    private DataSetIndicatorLinkStore() {}
 
     public static LinkModelStore<DataSetIndicatorLink> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, DataSetIndicatorLinkTableInfo.TABLE_INFO,
-                DataSetIndicatorLinkTableInfo.Columns.DATA_SET, BINDER, FACTORY);
+                DataSetIndicatorLinkTableInfo.Columns.DATA_SET, BINDER, DataSetIndicatorLink::create);
     }
 }

@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.AccessHelper;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
@@ -52,7 +51,7 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
     private ProgramStore(DatabaseAdapter databaseAdapter,
                          SQLStatementWrapper statementWrapper,
                          SQLStatementBuilder statementBuilder) {
-        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, FACTORY);
+        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, Program::create);
     }
     
     private static StatementBinder<Program> BINDER = new NameableStatementBinder<Program>() {
@@ -80,19 +79,12 @@ public final class ProgramStore extends IdentifiableObjectStoreImpl<Program> imp
             sqLiteBind(sqLiteStatement, 28, UidsHelper.getUidOrNull(o.relatedProgram()));
             sqLiteBind(sqLiteStatement, 29, UidsHelper.getUidOrNull(o.trackedEntityType()));
             sqLiteBind(sqLiteStatement, 30, o.categoryComboUid());
-            sqLiteBind(sqLiteStatement, 31, o.access().data().write());
+            sqLiteBind(sqLiteStatement, 31, AccessHelper.getAccessDataWrite(o.access()));
             sqLiteBind(sqLiteStatement, 32, o.expiryDays());
             sqLiteBind(sqLiteStatement, 33, o.completeEventsExpiryDays());
             sqLiteBind(sqLiteStatement, 34, o.expiryPeriodType());
             sqLiteBind(sqLiteStatement, 35, o.minAttributesRequiredToSearch());
             sqLiteBind(sqLiteStatement, 36, o.maxTeiCountToReturn());
-        }
-    };
-
-    private static final CursorModelFactory<Program> FACTORY = new CursorModelFactory<Program>() {
-        @Override
-        public Program fromCursor(Cursor cursor) {
-            return Program.create(cursor);
         }
     };
 

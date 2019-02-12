@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -50,13 +49,6 @@ public final class RelationshipTypeCollectionRepository
                                          final Collection<ChildrenAppender<RelationshipType>> childrenAppenders,
                                          List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<RelationshipTypeCollectionRepository>() {
-
-                    @Override
-                    public RelationshipTypeCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new RelationshipTypeCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new RelationshipTypeCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

@@ -76,35 +76,31 @@ final class EventPersistenceCallFactory {
 
     public Callable<Void> getCall(final Collection<Event> events) {
 
-        return new Callable<Void>() {
+        return () -> {
+            eventHandler.handleMany(events,
+                    new ModelBuilder<Event, Event>() {
+                        @Override
+                        public Event buildModel(Event event) {
+                            return event.toBuilder()
+                                    .state(State.SYNCED)
+                                    .build();
+                        }
+                    });
 
-            @Override
-            public Void call() throws Exception {
-                eventHandler.handleMany(events,
-                        new ModelBuilder<Event, Event>() {
-                            @Override
-                            public Event buildModel(Event event) {
-                                return event.toBuilder()
-                                        .state(State.SYNCED)
-                                        .build();
-                            }
-                        });
+            Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 
-                Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
+            if (!searchOrgUnitUids.isEmpty()) {
+                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
-                if (!searchOrgUnitUids.isEmpty()) {
-                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
-
-                    Callable<List<OrganisationUnit>> organisationUnitCall =
-                            organisationUnitDownloader.downloadSearchOrganisationUnits(
-                                searchOrgUnitUids, User.builder().uid(authenticatedUserModel.user()).build());
-                    organisationUnitCall.call();
-                }
-
-                foreignKeyCleaner.cleanForeignKeyErrors();
-
-                return null;
+                Callable<List<OrganisationUnit>> organisationUnitCall =
+                        organisationUnitDownloader.downloadSearchOrganisationUnits(
+                            searchOrgUnitUids, User.builder().uid(authenticatedUserModel.user()).build());
+                organisationUnitCall.call();
             }
+
+            foreignKeyCleaner.cleanForeignKeyErrors();
+
+            return null;
         };
     }
 

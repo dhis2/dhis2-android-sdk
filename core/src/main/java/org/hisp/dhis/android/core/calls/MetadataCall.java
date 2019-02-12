@@ -88,27 +88,24 @@ public class MetadataCall implements Callable<Unit> {
     @Override
     public Unit call() throws Exception {
 
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
-            @Override
-            public Unit call() throws Exception {
-                systemInfoDownloader.downloadMetadata().call();
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            systemInfoDownloader.downloadMetadata().call();
 
-                systemSettingDownloader.downloadMetadata().call();
+            systemSettingDownloader.downloadMetadata().call();
 
-                User user = userModuleDownloader.downloadMetadata().call();
+            User user = userModuleDownloader.downloadMetadata().call();
 
-                List<Program> programs = programDownloader.downloadMetadata().call();
+            List<Program> programs = programDownloader.downloadMetadata().call();
 
-                List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
+            List<DataSet> dataSets = dataSetDownloader.downloadMetadata().call();
 
-                categoryDownloader.downloadMetadata().call();
+            categoryDownloader.downloadMetadata().call();
 
-                organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
+            organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
 
-                foreignKeyCleaner.cleanForeignKeyErrors();
+            foreignKeyCleaner.cleanForeignKeyErrors();
 
-                return new Unit();
-            }
+            return new Unit();
         });
     }
 }

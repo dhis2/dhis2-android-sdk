@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
@@ -54,14 +53,7 @@ public final class ProgramCollectionRepository
                                 final Collection<ChildrenAppender<Program>> childrenAppenders,
                                 List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<ProgramCollectionRepository>() {
-
-                    @Override
-                    public ProgramCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new ProgramCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new ProgramCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byVersion() {

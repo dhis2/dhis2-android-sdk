@@ -89,12 +89,7 @@ final class EventWithLimitCallFactory {
     }
 
     public Callable<Unit> getCall(final int eventLimit, final boolean limitByOrgUnit) {
-        return new Callable<Unit>() {
-            @Override
-            public Unit call() throws Exception {
-                return getEvents(eventLimit, limitByOrgUnit);
-            }
-        };
+        return () -> getEvents(eventLimit, limitByOrgUnit);
     }
 
     private Unit getEvents(int eventLimit, boolean limitByOrgUnit) throws Exception {

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 public class SectionGreyedFieldsLinkModelBuilder
-        extends ModelBuilder<DataElementOperand, SectionGreyedFieldsLinkModel> {
+        implements ModelBuilder<DataElementOperand, SectionGreyedFieldsLinkModel> {
 
     private final SectionGreyedFieldsLinkModel.Builder builder;
 

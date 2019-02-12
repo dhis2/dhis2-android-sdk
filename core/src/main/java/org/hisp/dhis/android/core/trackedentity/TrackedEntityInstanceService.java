@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.imports.HttpMessageResponse;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
+import org.hisp.dhis.android.core.imports.HttpMessageResponse;
 import org.hisp.dhis.android.core.imports.TEIWebResponse;
 import org.hisp.dhis.android.core.trackedentity.search.SearchGrid;
 

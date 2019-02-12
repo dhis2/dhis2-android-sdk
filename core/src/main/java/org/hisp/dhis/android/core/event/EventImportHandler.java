@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.EventImportSummary;
+import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.List;
 

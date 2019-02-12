@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -136,7 +135,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         final Program program = Program.builder().uid("nonexisent-program").build();
 
-        executor.executeD2CallTransactionally((Callable<Void>) () -> {
+        executor.executeD2CallTransactionally(() -> {
             ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()
                     .uid(PROGRAM_RULE_UID).name("Rule").program(program).build());
 
@@ -177,7 +176,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         final D2CallExecutor executor = new D2CallExecutor(d2.databaseAdapter());
 
-        executor.executeD2CallTransactionally((Callable<Void>) () -> {
+        executor.executeD2CallTransactionally(() -> {
             givenAMetadataInDatabase();
             User user = User.builder().uid("no_user_uid").build();
             UserCredentials userCredentials = UserCredentials.builder()

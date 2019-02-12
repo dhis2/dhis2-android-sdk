@@ -86,7 +86,7 @@ final class SearchOrganisationUnitOnDemandCallFactory {
     private CallProcessor<OrganisationUnit> processor(final User user) {
         return objectList -> {
             if (objectList != null && !objectList.isEmpty()) {
-                d2CallExecutor.executeD2CallTransactionally((Callable<Void>) () -> {
+                d2CallExecutor.executeD2CallTransactionally(() -> {
                     handler.setUser(user);
                     handler.handleMany(objectList, new OrganisationUnitDisplayPathTransformer());
                     return null;

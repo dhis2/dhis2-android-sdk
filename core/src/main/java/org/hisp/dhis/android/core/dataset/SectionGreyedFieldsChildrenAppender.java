@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.DataElementOperandStore;
 
 final class SectionGreyedFieldsChildrenAppender extends ChildrenAppender<Section> {
 
@@ -55,7 +54,7 @@ final class SectionGreyedFieldsChildrenAppender extends ChildrenAppender<Section
                         databaseAdapter,
                         SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
                         SectionGreyedFieldsLinkTableInfo.CHILD_PROJECTION,
-                        DataElementOperandStore.FACTORY
+                        DataElementOperand::create
                 )
         );
     }

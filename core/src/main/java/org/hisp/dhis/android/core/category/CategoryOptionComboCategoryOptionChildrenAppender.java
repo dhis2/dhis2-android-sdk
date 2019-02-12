@@ -55,7 +55,7 @@ final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAp
                         databaseAdapter,
                         CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
                         CategoryOptionComboCategoryOptionLinkTableInfo.CHILD_PROJECTION,
-                        CategoryOptionStore.FACTORY)
+                        CategoryOption::create)
         );
     }
 }

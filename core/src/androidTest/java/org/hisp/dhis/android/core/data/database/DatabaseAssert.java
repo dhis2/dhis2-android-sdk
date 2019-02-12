@@ -1,9 +1,9 @@
 package org.hisp.dhis.android.core.data.database;
 
+import android.database.Cursor;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-
-import android.database.Cursor;
 
 public final class DatabaseAssert {
 

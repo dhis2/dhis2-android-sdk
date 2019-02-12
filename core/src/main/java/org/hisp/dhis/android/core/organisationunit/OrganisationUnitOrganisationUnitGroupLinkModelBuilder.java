@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 public class OrganisationUnitOrganisationUnitGroupLinkModelBuilder
-        extends ModelBuilder<ObjectWithUid, OrganisationUnitOrganisationUnitGroupLinkModel> {
+        implements ModelBuilder<ObjectWithUid, OrganisationUnitOrganisationUnitGroupLinkModel> {
 
     private final OrganisationUnitOrganisationUnitGroupLinkModel.Builder builder;
 

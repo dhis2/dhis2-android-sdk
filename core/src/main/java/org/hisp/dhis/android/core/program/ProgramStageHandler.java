@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -100,16 +99,11 @@ final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage
         programStageDataElementHandler.handleMany(programStage.programStageDataElements());
 
         programStageSectionHandler.handleMany(programStage.programStageSections(),
-                new ModelBuilder<ProgramStageSection, ProgramStageSection>() {
-                    @Override
-                    public ProgramStageSection buildModel(ProgramStageSection programStageSection) {
-                        return programStageSection.toBuilder()
-                                .programStage(ObjectWithUid.create(programStage.uid()))
-                                .desktopRenderType(desktopRenderType(programStageSection.renderType()))
-                                .mobileRenderType(mobileRenderType(programStageSection.renderType()))
-                                .build();
-                    }
-                });
+                programStageSection -> programStageSection.toBuilder()
+                        .programStage(ObjectWithUid.create(programStage.uid()))
+                        .desktopRenderType(desktopRenderType(programStageSection.renderType()))
+                        .mobileRenderType(mobileRenderType(programStageSection.renderType()))
+                        .build());
 
         styleHandler.handle(programStage.style(),
                 new ObjectStyleModelBuilder(programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name()));

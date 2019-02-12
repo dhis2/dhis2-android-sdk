@@ -31,7 +31,8 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
-public class DataSetOrganisationUnitLinkModelBuilder extends ModelBuilder<DataSet, DataSetOrganisationUnitLinkModel> {
+public class DataSetOrganisationUnitLinkModelBuilder
+        implements ModelBuilder<DataSet, DataSetOrganisationUnitLinkModel> {
 
     private final DataSetOrganisationUnitLinkModel.Builder builder;
 

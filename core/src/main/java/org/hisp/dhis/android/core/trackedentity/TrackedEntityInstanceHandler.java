@@ -80,23 +80,13 @@ final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<Tra
         if (action != HandleAction.Delete) {
             trackedEntityAttributeValueHandler.handleMany(
                     trackedEntityInstance.trackedEntityAttributeValues(),
-                    new ModelBuilder<TrackedEntityAttributeValue, TrackedEntityAttributeValue>() {
-                        @Override
-                        public TrackedEntityAttributeValue buildModel(TrackedEntityAttributeValue value) {
-                            return value.toBuilder().trackedEntityInstance(trackedEntityInstance.uid()).build();
-                        }
-                    });
+                    value -> value.toBuilder().trackedEntityInstance(trackedEntityInstance.uid()).build());
 
             List<Enrollment> enrollments = trackedEntityInstance.enrollments();
             if (enrollments != null) {
-                enrollmentHandler.handleMany(enrollments, new ModelBuilder<Enrollment, Enrollment>() {
-                    @Override
-                    public Enrollment buildModel(Enrollment enrollment) {
-                        return enrollment.toBuilder()
-                                .state(State.SYNCED)
-                                .build();
-                    }
-                });
+                enrollmentHandler.handleMany(enrollments, enrollment -> enrollment.toBuilder()
+                        .state(State.SYNCED)
+                        .build());
             }
 
             handleRelationships(trackedEntityInstance);
@@ -133,29 +123,21 @@ final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<Tra
             handleMany(trackedEntityInstances, relationshipModelBuilder());
         } else {
             handleMany(trackedEntityInstances,
-                    new ModelBuilder<TrackedEntityInstance, TrackedEntityInstance>() {
-                        @Override
-                        public TrackedEntityInstance buildModel(TrackedEntityInstance trackedEntityInstance) {
-                            return trackedEntityInstance.toBuilder()
-                                    .state(State.SYNCED)
-                                    .build();
-                        }
-                    });
+                    trackedEntityInstance -> trackedEntityInstance.toBuilder()
+                            .state(State.SYNCED)
+                            .build());
         }
     }
 
     private ModelBuilder<TrackedEntityInstance, TrackedEntityInstance> relationshipModelBuilder() {
-        return new ModelBuilder<TrackedEntityInstance, TrackedEntityInstance>() {
-            @Override
-            public TrackedEntityInstance buildModel(TrackedEntityInstance trackedEntityInstance) {
-                State currentState = trackedEntityInstanceStore.getState(trackedEntityInstance.uid());
-                if (currentState == State.RELATIONSHIP || currentState == null) {
-                    return trackedEntityInstance.toBuilder()
-                            .state(State.RELATIONSHIP)
-                            .build();
-                } else {
-                    return trackedEntityInstance;
-                }
+        return trackedEntityInstance -> {
+            State currentState = trackedEntityInstanceStore.getState(trackedEntityInstance.uid());
+            if (currentState == State.RELATIONSHIP || currentState == null) {
+                return trackedEntityInstance.toBuilder()
+                        .state(State.RELATIONSHIP)
+                        .build();
+            } else {
+                return trackedEntityInstance;
             }
         };
     }

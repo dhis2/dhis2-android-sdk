@@ -97,7 +97,7 @@ public class RelationshipHandlerShould extends RelationshipSamples {
         when(itemElementStore.exists(TEI_3_UID)).thenReturn(true);
         when(itemElementStore.exists(TEI_4_UID)).thenReturn(true);
         when(relationshipItemStore.getRelationshipUidsForItems(fromItem, toItem)).thenReturn(Collections.singletonList(UID));
-        when(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(Collections.<String>emptyList());
+        when(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(Collections.emptyList());
         when(relationshipStore.selectByUid(UID)).thenReturn(get230());
         when(versionManager.isRelationshipSupported(any(Relationship.class))).thenReturn(true);
     }

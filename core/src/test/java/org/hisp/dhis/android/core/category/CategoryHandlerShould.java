@@ -139,7 +139,7 @@ public class CategoryHandlerShould {
         categoryHandler.handle(category);
         verify(categoryCategoryOptionLinkHandler).handleMany(
                 same(categoryUid),
-                eq(Collections.<CategoryOption>emptyList()),
+                eq(Collections.emptyList()),
                 any(CategoryCategoryOptionLinkModelBuilder.class));
     }
 }

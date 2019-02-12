@@ -101,10 +101,10 @@ public class FieldsHelper<O> {
     public List<Property<O, String>> getNameableFields() {
         List<Property<O, String>> list = new ArrayList<>(11);
         addIdentifiableFields(list);
-        list.add(this.<String>field(BaseNameableObject.SHORT_NAME));
-        list.add(this.<String>field(BaseNameableObject.DISPLAY_SHORT_NAME));
-        list.add(this.<String>field(BaseNameableObject.DESCRIPTION));
-        list.add(this.<String>field(BaseNameableObject.DISPLAY_DESCRIPTION));
+        list.add(this.field(BaseNameableObject.SHORT_NAME));
+        list.add(this.field(BaseNameableObject.DISPLAY_SHORT_NAME));
+        list.add(this.field(BaseNameableObject.DESCRIPTION));
+        list.add(this.field(BaseNameableObject.DISPLAY_DESCRIPTION));
         return list;
     }
 }

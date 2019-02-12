@@ -2,7 +2,6 @@ package org.hisp.dhis.android.core.trackedentity.api;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.imports.BaseImportSummary;
@@ -74,8 +73,8 @@ class TrackedEntityInstanceUtils {
                 codeGenerator.generate(),
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
-                Collections.<Enrollment>emptyList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithInvalidAttribute() {
@@ -83,8 +82,8 @@ class TrackedEntityInstanceUtils {
                 codeGenerator.generate(),
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue("invalid_uid", "9")),
-                Collections.<Relationship229Compatible>emptyList(),
-                Collections.<Enrollment>emptyList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithInvalidOrgunit() {
@@ -92,8 +91,8 @@ class TrackedEntityInstanceUtils {
                 codeGenerator.generate(),
                 "invalid_ou_uid",
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
-                Collections.<Enrollment>emptyList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     static TrackedEntityInstance createValidTrackedEntityInstanceAndEnrollment() {
@@ -102,7 +101,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createValidEnrollment(teiUid)));
     }
 
@@ -112,7 +111,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Arrays.asList(createValidEnrollment(teiUid), createValidEnrollment(teiUid)));
     }
 
@@ -122,7 +121,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createFutureEnrollment(teiUid)));
     }
 
@@ -132,7 +131,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createValidEnrollmentAndEvent(teiUid)));
     }
 
@@ -142,7 +141,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createEnrollmentAndFutureEvent(teiUid)));
     }
 
@@ -152,7 +151,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createEnrollmentAndEventWithInvalidDataElement(teiUid)));
     }
 
@@ -162,7 +161,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createEnrollmentAndEventWithValidAndInvalidDataValue(teiUid)));
     }
 
@@ -172,7 +171,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createCompletedEnrollmentWithEvent(teiUid)));
     }
 
@@ -240,7 +239,7 @@ class TrackedEntityInstanceUtils {
         return Enrollment.builder().uid(enrollmentUid).created(refDate).lastUpdated(refDate)
                 .organisationUnit(validOrgUnitUid).program(validProgramUid).enrollmentDate(refDate).incidentDate(refDate)
                 .followUp(false).status(EnrollmentStatus.ACTIVE).trackedEntityInstance(teiUid).deleted(false)
-                .events(Collections.<Event>emptyList()).notes(Collections.<Note>emptyList()).build();
+                .events(Collections.emptyList()).notes(Collections.emptyList()).build();
     }
 
     private static Event createValidEvent(String teiUid, String enrollmentUid) {
@@ -268,7 +267,7 @@ class TrackedEntityInstanceUtils {
     }
 
     private static Event createFutureEvent(String teiUid, String enrollmentUid) {
-        return createEvent(teiUid, enrollmentUid, getFutureDate(), Collections.<TrackedEntityDataValue>emptyList());
+        return createEvent(teiUid, enrollmentUid, getFutureDate(), Collections.emptyList());
     }
 
     private static Event createEventWithInvalidDataElement(String teiUid, String enrollmentUid) {

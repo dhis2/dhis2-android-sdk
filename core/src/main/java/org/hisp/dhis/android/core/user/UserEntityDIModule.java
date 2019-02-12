@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -61,9 +60,11 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
     @Provides
     @Reusable
     ReadOnlyObjectRepository<User> repository(IdentifiableObjectStore<User> store,
-                                              UserCredentialsChildrenAppender userCredentialsChildrenAppender) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store, Arrays.<ChildrenAppender<User>>asList(
-                userCredentialsChildrenAppender)
+                                              UserCredentialsChildrenAppender userCredentialsChildrenAppender,
+                                              DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(store, Arrays.asList(
+                userCredentialsChildrenAppender,
+                UserOrganisationUnitChildrenAppender.create(databaseAdapter))
         );
     }
 }

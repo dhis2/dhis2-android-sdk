@@ -3,9 +3,12 @@ package org.hisp.dhis.android.core.user;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -31,5 +34,13 @@ public class UserObjectRepositoryMockIntegrationShould extends MockIntegrationSh
         assertThat(user.userCredentials().user().uid(), is(user.uid()));
         assertThat(user.userCredentials().username(), is("android"));
         assertThat(user.userCredentials().name(), is("John Barnes"));
+    }
+
+    @Test
+    public void return_organisation_units_as_children() {
+        User user = d2.userModule().user.getWithAllChildren();
+        List<OrganisationUnit> organisationUnits = user.organisationUnits();
+        assertThat(organisationUnits.size(), is(1));
+        assertThat(organisationUnits.get(0).name(), is("Ngelehun CHC"));
     }
 }

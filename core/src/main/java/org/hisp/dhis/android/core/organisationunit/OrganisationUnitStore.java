@@ -61,7 +61,7 @@ public final class OrganisationUnitStore {
         }
     };
 
-    private static final CursorModelFactory<OrganisationUnit> FACTORY
+    public static final CursorModelFactory<OrganisationUnit> FACTORY
             = new CursorModelFactory<OrganisationUnit>() {
         @Override
         public OrganisationUnit fromCursor(Cursor cursor) {

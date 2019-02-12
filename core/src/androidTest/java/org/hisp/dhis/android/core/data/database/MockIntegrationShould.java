@@ -60,7 +60,7 @@ public abstract class MockIntegrationShould {
 
     protected static void downloadEvents() throws Exception {
         dhis2MockServer.enqueueEventResponses();
-        d2.eventModule().downloadSingleEvents(1, false).call();
+        d2.eventModule().downloadSingleEvents(2, false).call();
     }
 
     protected static void downloadTrackedEntityInstances() throws Exception {

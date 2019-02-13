@@ -25,44 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+final class ProgramSectionChildrenAppender extends ChildrenAppender<Program> {
 
-public final class ProgramSectionStore {
+    private final SingleParentChildStore<Program, ProgramSection> childStore;
 
-    private ProgramSectionStore() {}
+    private ProgramSectionChildrenAppender(SingleParentChildStore<Program, ProgramSection> childStore) {
+        this.childStore = childStore;
+    }
 
-    private static StatementBinder<ProgramSection> BINDER
-            = new IdentifiableStatementBinder<ProgramSection>() {
+    @Override
+    protected Program appendChildren(Program program) {
+        Program.Builder builder = program.toBuilder();
+        builder.programSections(childStore.getChildren(program));
+        return builder.build();
+    }
 
-        @Override
-        public void bindToStatement(@NonNull ProgramSection o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.description());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 9, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 10, o.formName());
-        }
-    };
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramSectionTableInfo.TABLE_INFO, ProgramSectionFields.PROGRAM);
-
-    public static IdentifiableObjectStore<ProgramSection> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionTableInfo.TABLE_INFO, BINDER,
-                ProgramSection::create);
+    static ChildrenAppender<Program> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramSectionChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        ProgramSectionStore.CHILD_PROJECTION,
+                        ProgramSection::create)
+        );
     }
 }

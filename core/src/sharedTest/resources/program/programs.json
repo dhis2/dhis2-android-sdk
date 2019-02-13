@@ -161,6 +161,24 @@
         {
           "id": "dBwrot7S420"
         }
+      ],
+      "programSections": [
+        {
+          "code": "Code",
+          "lastUpdated": "2018-05-15T08:14:06.767",
+          "id": "Nc8OxbNuVH3",
+          "created": "2018-05-15T08:14:06.767",
+          "name": "My Program Section",
+          "displayName": "My Program Section",
+          "description": "Description",
+          "externalAccess": false,
+          "formName": "formName",
+          "sortOrder": 1,
+          "favorite": false,
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          }
+        }
       ]
     }
   ]

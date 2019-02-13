@@ -285,4 +285,12 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
         assertThat(program.programTrackedEntityAttributes().size(), is(1));
         assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
     }
+
+    @Test
+    public void include_program_sections_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programSections().size(), is(1));
+        assertThat(program.programSections().get(0).name(), is("My Program Section"));
+    }
 }

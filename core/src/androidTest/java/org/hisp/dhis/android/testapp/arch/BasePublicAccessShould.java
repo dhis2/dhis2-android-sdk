@@ -5,7 +5,7 @@ import org.junit.Test;
 
 public abstract class BasePublicAccessShould<M extends Model> {
 
-    public abstract M buildObject();
+    public abstract M object();
 
     @Test(expected = NullPointerException.class)
     public abstract void has_public_create_method();
@@ -13,11 +13,11 @@ public abstract class BasePublicAccessShould<M extends Model> {
     @Test
     public abstract void has_public_builder_method();
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public abstract void has_public_to_builder_method();
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void has_public_to_content_values_method() {
-        buildObject().toContentValues();
+        object().toContentValues();
     }
 }

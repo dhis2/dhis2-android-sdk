@@ -2,17 +2,20 @@ package org.hisp.dhis.android.testapp.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples;
 import org.hisp.dhis.android.core.dataset.DataInputPeriod;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 @RunWith(AndroidJUnit4.class)
 public class DataInputPeriodPublicAccessShould extends BasePublicAccessShould<DataInputPeriod> {
 
+    @Mock
+    private DataInputPeriod dataInputPeriod;
+
     @Override
-    public DataInputPeriod buildObject() {
-        return DataInputPeriodSamples.getDataInputPeriod();
+    public DataInputPeriod object() {
+        return dataInputPeriod;
     }
 
     @Override
@@ -27,6 +30,6 @@ public class DataInputPeriodPublicAccessShould extends BasePublicAccessShould<Da
 
     @Override
     public void has_public_to_builder_method() {
-        buildObject().toBuilder();
+        object().toBuilder();
     }
 }

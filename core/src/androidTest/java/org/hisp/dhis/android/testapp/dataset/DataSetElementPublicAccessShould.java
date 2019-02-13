@@ -2,17 +2,20 @@ package org.hisp.dhis.android.testapp.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.dataset.DataSetElementSamples;
 import org.hisp.dhis.android.core.dataset.DataSetElement;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 @RunWith(AndroidJUnit4.class)
 public class DataSetElementPublicAccessShould extends BasePublicAccessShould<DataSetElement> {
 
+    @Mock
+    private DataSetElement dataSetElement;
+
     @Override
-    public DataSetElement buildObject() {
-        return DataSetElementSamples.getDataSetElement();
+    public DataSetElement object() {
+        return dataSetElement;
     }
 
     @Override
@@ -27,6 +30,6 @@ public class DataSetElementPublicAccessShould extends BasePublicAccessShould<Dat
 
     @Override
     public void has_public_to_builder_method() {
-        buildObject().toBuilder();
+        object().toBuilder();
     }
 }

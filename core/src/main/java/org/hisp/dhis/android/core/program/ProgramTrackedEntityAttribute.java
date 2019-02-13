@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
@@ -38,12 +39,14 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityAttributeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramTrackedEntityAttribute.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramTrackedEntityAttribute.Builder.class)
 public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject implements Model {
 
     @Nullable
@@ -69,8 +72,13 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     @Nullable
     public abstract Boolean searchable();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
+    public abstract ValueTypeRendering renderType();
+
     public static Builder builder() {
-        return new AutoValue_ProgramTrackedEntityAttribute.Builder();
+        return new $$AutoValue_ProgramTrackedEntityAttribute.Builder();
     }
 
     public static ProgramTrackedEntityAttribute create(Cursor cursor) {
@@ -97,6 +105,8 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
         public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract Builder searchable(Boolean searchable);
+
+        public abstract Builder renderType(ValueTypeRendering renderType);
 
         public abstract ProgramTrackedEntityAttribute build();
     }

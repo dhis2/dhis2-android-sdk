@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,6 +41,12 @@ import java.text.ParseException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class ProgramTrackedEntityAttributeShould extends BaseObjectShould implements ObjectShould {
+
+    private static ValueTypeDeviceRendering desktopRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build();
+
+    private static ValueTypeDeviceRendering mobileRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1).build();
 
     public ProgramTrackedEntityAttributeShould() {
         super("program/program_tracked_entity_attribute.json");
@@ -67,5 +75,7 @@ public class ProgramTrackedEntityAttributeShould extends BaseObjectShould implem
         assertThat(programTrackedEntityAttribute.allowFutureDate()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.displayInList()).isEqualTo(false);
         assertThat(programTrackedEntityAttribute.sortOrder()).isEqualTo(1);
+        assertThat(programTrackedEntityAttribute.renderType().desktop()).isEqualTo(desktopRendering);
+        assertThat(programTrackedEntityAttribute.renderType().mobile()).isEqualTo(mobileRendering);
     }
 }

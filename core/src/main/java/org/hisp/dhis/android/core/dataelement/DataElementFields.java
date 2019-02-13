@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Field;
 import org.hisp.dhis.android.core.data.api.Fields;
 
@@ -51,7 +50,6 @@ public final class DataElementFields {
     final static String OPTION_SET = "optionSet";
     final static String CATEGORY_COMBO = "categoryCombo";
     final static String STYLE = "style";
-    final static String RENDER_TYPE = "renderType";
     final static String ACCESS = "access";
 
     private static final FieldsHelper<DataElement> fh = new FieldsHelper<>();
@@ -78,8 +76,7 @@ public final class DataElementFields {
                     fh.<ObjectStyle>nestedField(STYLE)
                             .with(ObjectStyleFields.allFields),
                     fh.<Access>nestedField(ACCESS)
-                            .with(Access.read),
-                    fh.<ValueTypeRendering>nestedField(RENDER_TYPE)
+                            .with(Access.read)
             ).build();
 
     private DataElementFields() {

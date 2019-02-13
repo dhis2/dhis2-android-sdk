@@ -166,7 +166,7 @@ public class OrganisationUnitCallUnitShould {
         when(user.nationality()).thenReturn("user_nationality");
 
         organisationUnitCall = new OrganisationUnitCallFactory(organisationUnitService, organisationUnitHandler,
-                apiCallExecutor, resourceHandler).create(user, new HashSet<String>(), new HashSet<String>());
+                apiCallExecutor, resourceHandler).create(user, new HashSet<>(), new HashSet<>());
 
         //Return only one organisationUnit.
         organisationUnits = Collections.singletonList(organisationUnit);

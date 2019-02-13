@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
-public class ProgramStageSectionProgramIndicatorLinkModelBuilder extends ModelBuilder<ProgramIndicator,
-        ProgramStageSectionProgramIndicatorLinkModel> {
+public class ProgramStageSectionProgramIndicatorLinkModelBuilder
+        implements ModelBuilder<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel> {
 
     private final ProgramStageSectionProgramIndicatorLinkModel.Builder builder;
 

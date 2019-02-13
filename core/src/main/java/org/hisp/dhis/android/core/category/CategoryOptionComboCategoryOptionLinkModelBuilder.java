@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.category;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 
 public class CategoryOptionComboCategoryOptionLinkModelBuilder
-        extends ModelBuilder<CategoryOption, CategoryOptionComboCategoryOptionLinkModel> {
+        implements ModelBuilder<CategoryOption, CategoryOptionComboCategoryOptionLinkModel> {
 
     private final CategoryOptionComboCategoryOptionLinkModel.Builder builder;
 

@@ -31,7 +31,8 @@ package org.hisp.dhis.android.core.organisationunit;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.program.Program;
 
-public class OrganisationUnitProgramLinkModelBuilder extends ModelBuilder<Program, OrganisationUnitProgramLinkModel> {
+public class OrganisationUnitProgramLinkModelBuilder
+        implements ModelBuilder<Program, OrganisationUnitProgramLinkModel> {
 
     private final OrganisationUnitProgramLinkModel.Builder builder;
 

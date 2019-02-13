@@ -114,7 +114,7 @@ public class OrganisationUnitTreeShould {
 
     @Test
     public void return_all_root_empty_uids_list_when_find_roots_with_empty_list() {
-        Set<String> rootUids = OrganisationUnitTree.findRoots(new ArrayList<OrganisationUnit>());
+        Set<String> rootUids = OrganisationUnitTree.findRoots(new ArrayList<>());
         assertThat(rootUids.isEmpty()).isTrue();
     }
 

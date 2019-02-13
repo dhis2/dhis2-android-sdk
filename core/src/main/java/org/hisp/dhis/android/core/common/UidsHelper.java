@@ -40,7 +40,7 @@ public final class UidsHelper {
     private UidsHelper() {}
 
     public static <O extends IdentifiableObject> Set<String> getUids(Collection<O> objects) {
-        return addUids(new HashSet<String>(), objects);
+        return addUids(new HashSet<>(), objects);
     }
 
     public static String getUidOrNull(ObjectWithUidInterface object) {

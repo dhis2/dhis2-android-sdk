@@ -251,6 +251,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
         assertThat(program.programStages().size(), is(1));
+        assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
     }
 
     @Test
@@ -258,5 +259,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
         assertThat(program.programRuleVariables().size(), is(2));
+        assertThat(program.programRuleVariables().get(0).name(), is("hemoglobin"));
+    }
+
+    @Test
+    public void include_program_indicators_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programIndicators().size(), is(1));
+        assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
 }

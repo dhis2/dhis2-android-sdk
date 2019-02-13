@@ -28,6 +28,10 @@
       "expiryPeriodType": "BiMonthly",
       "minAttributesRequiredToSearch": 7,
       "maxTeiCountToReturn": 20,
+      "style": {
+        "color": "#333",
+        "icon": "program-icon"
+      },
       "access": {
         "data": {
           "write": true

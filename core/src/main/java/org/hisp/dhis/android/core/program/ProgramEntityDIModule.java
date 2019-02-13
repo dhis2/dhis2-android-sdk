@@ -32,11 +32,13 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,8 +61,17 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Program>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<Program>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<Program> objectStyleChildrenAppender =
+                new ObjectStyleChildrenAppender<>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        ProgramTableInfo.TABLE_INFO
+                );
+
+        return Arrays.asList(
+                objectStyleChildrenAppender,
+                ProgramStageChildrenAppender.create(databaseAdapter)
+        );
     }
 
     @Provides

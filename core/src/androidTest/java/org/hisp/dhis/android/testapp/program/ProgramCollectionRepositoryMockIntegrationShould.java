@@ -237,4 +237,19 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
                 .get();
         assertThat(programs.size(), is(1));
     }
+
+    @Test
+    public void include_object_style_as_chidren() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.style().icon(), is("program-icon"));
+        assertThat(program.style().color(), is("#333"));
+    }
+
+    @Test
+    public void include_program_stages_as_chidren() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programStages().size(), is(1));
+    }
 }

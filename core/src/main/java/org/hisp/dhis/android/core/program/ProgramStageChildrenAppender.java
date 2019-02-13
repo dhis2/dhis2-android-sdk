@@ -25,44 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
+final class ProgramStageChildrenAppender extends ChildrenAppender<Program> {
 
-import dagger.Reusable;
+    private final SingleParentChildStore<Program, ProgramStage> childStore;
 
-@Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private ProgramStageChildrenAppender(SingleParentChildStore<Program, ProgramStage> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableTableInfo.TABLE_INFO.name(),
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleTableInfo.TABLE_INFO.name(),
-                ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageTableInfo.TABLE_INFO.name());
+    protected Program appendChildren(Program program) {
+        Program.Builder builder = program.toBuilder();
+        builder.programStages(childStore.getChildren(program));
+        return builder.build();
     }
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    static ChildrenAppender<Program> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        ProgramStageStore.CHILD_PROJECTION,
+                        ProgramStage::create)
+        );
     }
 }

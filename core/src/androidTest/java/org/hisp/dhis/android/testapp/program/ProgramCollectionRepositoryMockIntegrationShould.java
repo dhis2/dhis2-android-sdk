@@ -300,4 +300,11 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
                 .one().getWithAllChildren();
         assertThat(program.categoryCombo().name(), is("Births"));
     }
+
+    @Test
+    public void include_related_program_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.relatedProgram().name(), is("Antenatal care visit"));
+    }
 }

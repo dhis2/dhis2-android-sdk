@@ -11,11 +11,11 @@ import org.mockito.Mock;
 public class DataSetCompleteRegistrationPublicAccessShould extends BasePublicAccessShould<DataSetCompleteRegistration> {
 
     @Mock
-    private DataSetCompleteRegistration dataSetCompleteRegistration;
+    private DataSetCompleteRegistration object;
 
     @Override
     public DataSetCompleteRegistration object() {
-        return dataSetCompleteRegistration;
+        return object;
     }
 
     @Override

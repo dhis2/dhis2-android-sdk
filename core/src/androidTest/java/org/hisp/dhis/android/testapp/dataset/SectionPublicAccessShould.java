@@ -11,11 +11,11 @@ import org.mockito.Mock;
 public class SectionPublicAccessShould extends BasePublicAccessShould<Section> {
 
     @Mock
-    private Section section;
+    private Section object;
 
     @Override
     public Section object() {
-        return section;
+        return object;
     }
 
     @Override

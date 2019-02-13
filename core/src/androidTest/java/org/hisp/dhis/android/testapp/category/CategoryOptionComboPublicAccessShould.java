@@ -1,31 +1,31 @@
-package org.hisp.dhis.android.testapp.dataset;
+package org.hisp.dhis.android.testapp.category;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 @RunWith(AndroidJUnit4.class)
-public class DataSetPublicAccessShould extends BasePublicAccessShould<DataSet> {
+public class CategoryOptionComboPublicAccessShould extends BasePublicAccessShould<CategoryOptionCombo> {
 
     @Mock
-    private DataSet object;
+    private CategoryOptionCombo object;
 
     @Override
-    public DataSet object() {
+    public CategoryOptionCombo object() {
         return object;
     }
 
     @Override
     public void has_public_create_method() {
-        DataSet.create(null);
+        CategoryOptionCombo.create(null);
     }
 
     @Override
     public void has_public_builder_method() {
-        DataSet.builder();
+        CategoryOptionCombo.builder();
     }
 
     @Override

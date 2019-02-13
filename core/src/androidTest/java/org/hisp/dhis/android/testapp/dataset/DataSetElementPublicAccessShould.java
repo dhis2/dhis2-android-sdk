@@ -11,11 +11,11 @@ import org.mockito.Mock;
 public class DataSetElementPublicAccessShould extends BasePublicAccessShould<DataSetElement> {
 
     @Mock
-    private DataSetElement dataSetElement;
+    private DataSetElement object;
 
     @Override
     public DataSetElement object() {
-        return dataSetElement;
+        return object;
     }
 
     @Override

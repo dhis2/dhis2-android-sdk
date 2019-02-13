@@ -11,11 +11,11 @@ import org.mockito.Mock;
 public class DataInputPeriodPublicAccessShould extends BasePublicAccessShould<DataInputPeriod> {
 
     @Mock
-    private DataInputPeriod dataInputPeriod;
+    private DataInputPeriod object;
 
     @Override
     public DataInputPeriod object() {
-        return dataInputPeriod;
+        return object;
     }
 
     @Override

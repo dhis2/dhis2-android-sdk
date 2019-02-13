@@ -48,7 +48,7 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class DataSetCompleteRegistrationCollectionRepository
+public final class DataSetCompleteRegistrationCollectionRepository
         extends ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration,
         DataSetCompleteRegistrationCollectionRepository>
         implements ReadWriteWithUploadCollectionRepository<DataSetCompleteRegistration> {

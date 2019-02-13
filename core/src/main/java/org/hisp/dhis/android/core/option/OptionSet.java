@@ -67,7 +67,7 @@ public abstract class OptionSet extends BaseIdentifiableObject implements Model 
         return new $$AutoValue_OptionSet.Builder();
     }
 
-    static OptionSet create(Cursor cursor) {
+    public static OptionSet create(Cursor cursor) {
         return $AutoValue_OptionSet.createFromCursor(cursor);
     }
 

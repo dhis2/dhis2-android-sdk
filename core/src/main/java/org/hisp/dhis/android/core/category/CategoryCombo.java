@@ -62,7 +62,7 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Mo
     @ColumnAdapter(IgnoreCategoryOptionComboListColumnAdapter.class)
     public abstract List<CategoryOptionCombo> categoryOptionCombos();
 
-    static CategoryCombo create(Cursor cursor) {
+    public static CategoryCombo create(Cursor cursor) {
         return $AutoValue_CategoryCombo.createFromCursor(cursor);
     }
 

@@ -73,7 +73,7 @@ public abstract class RelationshipConstraint extends BaseModel {
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
-    static RelationshipConstraint create(Cursor cursor) {
+    public static RelationshipConstraint create(Cursor cursor) {
         return AutoValue_RelationshipConstraint.createFromCursor(cursor);
     }
 

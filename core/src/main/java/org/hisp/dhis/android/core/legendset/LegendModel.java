@@ -54,7 +54,7 @@ public abstract class LegendModel extends BaseIdentifiableObjectModel {
         }
     }
 
-    static LegendModel create(Cursor cursor) {
+    public static LegendModel create(Cursor cursor) {
         return AutoValue_LegendModel.createFromCursor(cursor);
     }
 

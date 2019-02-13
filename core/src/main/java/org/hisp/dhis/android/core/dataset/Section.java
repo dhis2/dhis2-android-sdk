@@ -87,7 +87,7 @@ public abstract class Section extends BaseIdentifiableObject implements Model {
         return new $$AutoValue_Section.Builder();
     }
 
-    static Section create(Cursor cursor) {
+    public static Section create(Cursor cursor) {
         return $AutoValue_Section.createFromCursor(cursor);
     }
 

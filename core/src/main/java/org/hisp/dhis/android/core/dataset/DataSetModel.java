@@ -73,7 +73,7 @@ public abstract class DataSetModel extends BaseNameableObjectModel {
         }
     }
 
-    static DataSetModel create(Cursor cursor) {
+    public static DataSetModel create(Cursor cursor) {
         return AutoValue_DataSetModel.createFromCursor(cursor);
     }
 

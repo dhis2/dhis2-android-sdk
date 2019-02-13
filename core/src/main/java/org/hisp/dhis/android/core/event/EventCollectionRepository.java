@@ -70,6 +70,10 @@ public final class EventCollectionRepository
         return postCall;
     }
 
+    public StringFilterConnector<EventCollectionRepository> byUid() {
+        return cf.string(EventTableInfo.Columns.UID);
+    }
+
     public StringFilterConnector<EventCollectionRepository> byEnrollmentUid() {
         return cf.string(EventFields.ENROLLMENT);
     }

@@ -73,7 +73,7 @@ public abstract class TrackedEntityAttributeValue implements Model {
         return new $$AutoValue_TrackedEntityAttributeValue.Builder();
     }
 
-    static TrackedEntityAttributeValue create(Cursor cursor) {
+    public static TrackedEntityAttributeValue create(Cursor cursor) {
         return $AutoValue_TrackedEntityAttributeValue.createFromCursor(cursor);
     }
 

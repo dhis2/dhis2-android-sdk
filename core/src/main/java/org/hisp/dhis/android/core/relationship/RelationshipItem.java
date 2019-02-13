@@ -100,7 +100,7 @@ public abstract class RelationshipItem implements Model {
         return new AutoValue_RelationshipItem.Builder();
     }
 
-    static RelationshipItem create(Cursor cursor) {
+    public static RelationshipItem create(Cursor cursor) {
         return $AutoValue_RelationshipItem.createFromCursor(cursor);
     }
 

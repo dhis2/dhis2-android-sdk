@@ -52,7 +52,7 @@ public abstract class IndicatorTypeModel extends BaseIdentifiableObjectModel {
         }
     }
 
-    static IndicatorTypeModel create(Cursor cursor) {
+    public static IndicatorTypeModel create(Cursor cursor) {
         return AutoValue_IndicatorTypeModel.createFromCursor(cursor);
     }
 

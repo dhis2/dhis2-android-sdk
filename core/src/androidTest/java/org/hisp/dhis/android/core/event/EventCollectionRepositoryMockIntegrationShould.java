@@ -63,6 +63,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
     }
 
     @Test
+    public void filter_by_uid() {
+        List<Event> events =
+                d2.eventModule().events
+                        .byUid().eq("V1CerIi3sdL")
+                        .get();
+
+        assertThat(events.size(), is(1));
+    }
+
+    @Test
     public void filter_by_enrollment() {
         List<Event> events =
                 d2.eventModule().events

@@ -25,14 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,46 +40,59 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class DataElementHandlerShould {
+public class ProgramStageDataElementHandlerShould {
 
     @Mock
-    private IdentifiableObjectStore<DataElement> dataElementStore;
+    private IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private SyncHandler<DataElement> dataElementHandler;
+
+    @Mock
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
+
+    @Mock
+    private ProgramStageDataElement programStageDataElement;
 
     @Mock
     private DataElement dataElement;
 
     @Mock
-    private ObjectWithUid categoryCombo;
+    private ValueTypeRendering valueTypeRendering;
 
     // object to test
-    private DataElementHandler dataElementHandler;
+    private ProgramStageDataElementHandler handler;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataElementStore, styleHandler);
+        handler = new ProgramStageDataElementHandler(programStageDataElementStore, dataElementHandler, renderTypeHandler);
+        when(programStageDataElement.uid()).thenReturn("program_stage_data_element");
+        when(programStageDataElement.dataElement()).thenReturn(dataElement);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
-        when(dataElement.categoryCombo()).thenReturn(categoryCombo);
+        when(programStageDataElement.renderType()).thenReturn(valueTypeRendering);
     }
 
     @Test
-    public void call_style_handler() throws Exception {
-        dataElementHandler.handle(dataElement);
-        verify(styleHandler).handle(eq(dataElement.style()), any(ObjectStyleModelBuilder.class));
+    public void call_data_element_handler() throws Exception {
+        handler.handle(programStageDataElement);
+        verify(dataElementHandler).handle(dataElement);
+    }
+
+    @Test
+    public void call_value_type_rendering_handler() throws Exception {
+        handler.handle(programStageDataElement);
+        verify(renderTypeHandler).handle(programStageDataElement.renderType(), programStageDataElement.uid(),
+                ProgramStageDataElementTableInfo.TABLE_INFO.name());
     }
 
     @Test
     public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<DataElement> genericHandler =
-                new DataElementHandler(null, null);
+        IdentifiableSyncHandlerImpl<ProgramStageDataElement> genericHandler =
+                new ProgramStageDataElementHandler(null, null, null);
     }
 }

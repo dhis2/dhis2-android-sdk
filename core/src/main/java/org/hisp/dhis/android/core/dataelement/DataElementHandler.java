@@ -29,12 +29,10 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 
 import javax.inject.Inject;
 
@@ -43,21 +41,17 @@ import dagger.Reusable;
 @Reusable
 final class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
-    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     @Inject
     DataElementHandler(IdentifiableObjectStore<DataElement> dataElementStore,
-                       SyncHandlerWithTransformer<ObjectStyle> styleHandler,
-                       DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
+                       SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(dataElementStore);
         this.styleHandler = styleHandler;
-        this.renderTypeHandler = renderTypeHandler;
     }
 
     @Override
     protected void afterObjectHandled(DataElement dateElement, HandleAction action) {
         styleHandler.handle(dateElement.style(),
                 new ObjectStyleModelBuilder(dateElement.uid(), DataElementTableInfo.TABLE_INFO.name()));
-        renderTypeHandler.handle(dateElement.renderType(), dateElement.uid(), DataElementTableInfo.TABLE_INFO.name());
     }
 }

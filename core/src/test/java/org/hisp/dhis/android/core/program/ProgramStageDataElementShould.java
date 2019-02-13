@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,6 +44,12 @@ import nl.jqno.equalsverifier.Warning;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class ProgramStageDataElementShould extends BaseObjectShould implements ObjectShould {
+
+    private static ValueTypeDeviceRendering desktopRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.VERTICAL_RADIOBUTTONS).min(0).max(10).step(1).decimalPoints(0).build();
+
+    private static ValueTypeDeviceRendering mobileRendering = ValueTypeDeviceRendering.builder()
+            .type(ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS).min(3).max(15).step(2).decimalPoints(1).build();
 
     public ProgramStageDataElementShould() {
         super("program/program_stage_data_element.json");
@@ -70,6 +78,8 @@ public class ProgramStageDataElementShould extends BaseObjectShould implements O
         assertThat(programStageDataElement.sortOrder()).isEqualTo(11);
         assertThat(programStageDataElement.allowProvidedElsewhere()).isFalse();
         assertThat(programStageDataElement.displayInReports()).isFalse();
+        assertThat(programStageDataElement.renderType().desktop()).isEqualTo(desktopRendering);
+        assertThat(programStageDataElement.renderType().mobile()).isEqualTo(mobileRendering);
     }
 
 }

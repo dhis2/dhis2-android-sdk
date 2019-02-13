@@ -29,11 +29,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,12 +61,6 @@ public class TrackedEntityAttributeHandlerShould {
     @Mock
     private ObjectStyle objectStyle;
 
-    @Mock
-    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
-
-    @Mock
-    private ValueTypeRendering renderType;
-
     // object to test
     private List<TrackedEntityAttribute> trackedEntityAttributes;
     private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
@@ -76,33 +68,24 @@ public class TrackedEntityAttributeHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore,
-                styleHandler, renderTypeHandler);
+        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(trackedEntityAttributeStore, styleHandler);
 
         trackedEntityAttributes = new ArrayList<>();
         trackedEntityAttributes.add(trackedEntityAttribute);
 
         when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
         when(trackedEntityAttribute.style()).thenReturn(objectStyle);
-        when(trackedEntityAttribute.renderType()).thenReturn(renderType);
     }
 
     @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableSyncHandlerImpl<TrackedEntityAttribute> genericHandler =
-                new TrackedEntityAttributeHandler(null, null, null);
+                new TrackedEntityAttributeHandler(null, null);
     }
 
     @Test
     public void call_object_style_handler() throws Exception {
         trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
         verify(styleHandler).handle(any(ObjectStyle.class), any(ModelBuilder.class));
-    }
-
-    @Test
-    public void call_render_type_handler() throws Exception {
-        trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
-        verify(renderTypeHandler).handle(renderType, trackedEntityAttribute.uid(),
-                TrackedEntityAttributeTableInfo.TABLE_INFO.name());
     }
 }

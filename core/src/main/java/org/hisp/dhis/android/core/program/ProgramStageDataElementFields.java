@@ -57,8 +57,8 @@ public final class ProgramStageDataElementFields {
                     fh.<Boolean>field(ALLOW_PROVIDED_ELSEWHERE),
                     fh.<Integer>field(SORT_ORDER),
                     fh.<Boolean>field(ALLOW_FUTURE_DATE),
-                    fh.<ObjectWithUid>nestedField(PROGRAM_STAGE),
-                    fh.<ValueTypeRendering>nestedField(RENDER_TYPE)
+                    fh.<ValueTypeRendering>field(RENDER_TYPE),
+                    fh.<ObjectWithUid>nestedField(PROGRAM_STAGE).with(ObjectWithUid.uid)
             ).build();
 
 

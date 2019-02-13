@@ -44,15 +44,13 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackedEntityAttribute.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
 public abstract class TrackedEntityAttribute extends BaseNameableObject
         implements Model, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder>  {
 
@@ -115,11 +113,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
-    public abstract ValueTypeRendering renderType();
-
-    @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreAccessAdapter.class)
     public abstract Access access();
 
@@ -168,8 +161,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder inherit(Boolean inherit);
 
         public abstract Builder style(ObjectStyle style);
-
-        public abstract Builder renderType(ValueTypeRendering renderType);
 
         public abstract Builder access(Access access);
 

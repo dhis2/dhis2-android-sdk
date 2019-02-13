@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
@@ -42,6 +43,7 @@ public final class ProgramTrackedEntityAttributeFields {
     public static final String PROGRAM = "program";
     static final String SORT_ORDER = "sortOrder";
     static final String SEARCHABLE = "searchable";
+    private static final String RENDER_TYPE = "renderType";
 
     private static FieldsHelper<ProgramTrackedEntityAttribute> fh = new FieldsHelper<>();
 
@@ -56,7 +58,8 @@ public final class ProgramTrackedEntityAttributeFields {
                     fh.<Integer>field(SORT_ORDER),
                     fh.<Boolean>field(SEARCHABLE),
                     fh.<TrackedEntityAttribute>nestedField(TRACKED_ENTITY_ATTRIBUTE)
-                            .with(TrackedEntityAttributeFields.allFields)
+                            .with(TrackedEntityAttributeFields.allFields),
+                    fh.<ValueTypeRendering>field(RENDER_TYPE)
                     ).build();
 
     private ProgramTrackedEntityAttributeFields() {

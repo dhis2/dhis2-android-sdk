@@ -29,12 +29,10 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 
 import javax.inject.Inject;
 
@@ -43,16 +41,12 @@ import dagger.Reusable;
 @Reusable
 final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityAttribute> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
-    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
-
 
     @Inject
     TrackedEntityAttributeHandler(IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
-                                  SyncHandlerWithTransformer<ObjectStyle> styleHandler,
-                                  DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
+                                  SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(trackedEntityAttributeStore);
         this.styleHandler = styleHandler;
-        this.renderTypeHandler = renderTypeHandler;
     }
 
     @Override
@@ -61,8 +55,6 @@ final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<Tr
             styleHandler.handle(trackedEntityAttribute.style(),
                     new ObjectStyleModelBuilder(trackedEntityAttribute.uid(),
                             TrackedEntityAttributeTableInfo.TABLE_INFO.name()));
-            renderTypeHandler.handle(trackedEntityAttribute.renderType(), trackedEntityAttribute.uid(),
-                    TrackedEntityAttributeTableInfo.TABLE_INFO.name());
         }
     }
 }

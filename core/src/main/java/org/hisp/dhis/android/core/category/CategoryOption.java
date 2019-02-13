@@ -66,7 +66,7 @@ public abstract class CategoryOption extends BaseNameableObject implements Model
     @ColumnName(CategoryOptionTableInfo.Columns.ACCESS_DATA_WRITE)
     public abstract Access access();
 
-    static CategoryOption create(Cursor cursor) {
+    public static CategoryOption create(Cursor cursor) {
         return $AutoValue_CategoryOption.createFromCursor(cursor);
     }
 

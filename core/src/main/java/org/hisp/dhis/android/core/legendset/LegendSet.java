@@ -56,7 +56,7 @@ public abstract class LegendSet extends BaseIdentifiableObject implements Model 
     @ColumnAdapter(IgnoreLegendListColumnAdapter.class)
     public abstract List<Legend> legends();
 
-    static LegendSet create(Cursor cursor) {
+    public static LegendSet create(Cursor cursor) {
         return $AutoValue_LegendSet.createFromCursor(cursor);
     }
 

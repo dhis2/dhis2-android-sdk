@@ -221,7 +221,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
         return new $$AutoValue_Program.Builder();
     }
 
-    static Program create(Cursor cursor) {
+    public static Program create(Cursor cursor) {
         return $AutoValue_Program.createFromCursor(cursor);
     }
 

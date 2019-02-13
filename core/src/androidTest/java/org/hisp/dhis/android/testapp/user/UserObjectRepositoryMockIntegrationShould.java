@@ -1,9 +1,10 @@
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.testapp.user;
 
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.User;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

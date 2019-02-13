@@ -63,7 +63,7 @@ public abstract class Legend extends BaseIdentifiableObject implements Model {
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid legendSet();
 
-    static Legend create(Cursor cursor) {
+    public static Legend create(Cursor cursor) {
         return $AutoValue_Legend.createFromCursor(cursor);
     }
 

@@ -65,7 +65,7 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
         return new $$AutoValue_Option.Builder();
     }
 
-    static Option create(Cursor cursor) {
+    public static Option create(Cursor cursor) {
         return $AutoValue_Option.createFromCursor(cursor);
     }
 

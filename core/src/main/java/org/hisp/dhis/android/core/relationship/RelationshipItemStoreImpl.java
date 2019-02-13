@@ -29,13 +29,11 @@
 package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -49,18 +47,37 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<RelationshipItem>
         implements RelationshipItemStore {
 
+    private static final StatementBinder<RelationshipItem> BINDER = (o, sqLiteStatement) -> {
+        String trackedEntityInstance = o.trackedEntityInstance() == null ? null :
+                o.trackedEntityInstance().trackedEntityInstance();
+        String enrollment = o.enrollment() == null ? null : o.enrollment().enrollment();
+        String event = o.event() == null ? null : o.event().event();
+
+        sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationship()));
+        sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
+        sqLiteBind(sqLiteStatement, 3, trackedEntityInstance);
+        sqLiteBind(sqLiteStatement, 4, enrollment);
+        sqLiteBind(sqLiteStatement, 5, event);
+    };
+
+    private static final WhereStatementBinder<RelationshipItem> WHERE_UPDATE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 6, UidsHelper.getUidOrNull(o.relationship()));
+        sqLiteBind(sqLiteStatement, 7, o.relationshipItemType());
+    };
+
     private RelationshipItemStoreImpl(DatabaseAdapter databaseAdapter,
                                       SQLStatementBuilder builder) {
         super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER,
+                RelationshipItem::create);
     }
 
     @Override
     public List<String> getRelationshipUidsForItems(@NonNull RelationshipItem from, @NonNull RelationshipItem to) {
-        Cursor cursor = this.getAllItemsOfSameType(from, to);
         List<String> relationships = new ArrayList<>();
-        try {
-            if(cursor.getCount() > 0) {
+        try (Cursor cursor = this.getAllItemsOfSameType(from, to)) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
                     String relationshipInDb = cursor.getString(0);
@@ -71,10 +88,8 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
                         relationships.add(relationshipInDb);
                     }
                 }
-                while(cursor.moveToNext());
+                while (cursor.moveToNext());
             }
-        } finally {
-            cursor.close();
         }
 
         return relationships;
@@ -112,41 +127,6 @@ final class RelationshipItemStoreImpl extends ObjectWithoutUidStoreImpl<Relation
             return RelationshipItemFields.EVENT;
         }
     }
-
-    private static final StatementBinder<RelationshipItem> BINDER = new StatementBinder<RelationshipItem>() {
-        @Override
-        public void bindToStatement(@NonNull RelationshipItem o, @NonNull SQLiteStatement sqLiteStatement) {
-            String trackedEntityInstance = o.trackedEntityInstance() == null ? null :
-                    o.trackedEntityInstance().trackedEntityInstance();
-            String enrollment = o.enrollment() == null ? null : o.enrollment().enrollment();
-            String event = o.event() == null ? null : o.event().event();
-
-            sqLiteBind(sqLiteStatement, 1, UidsHelper.getUidOrNull(o.relationship()));
-            sqLiteBind(sqLiteStatement, 2, o.relationshipItemType());
-            sqLiteBind(sqLiteStatement, 3, trackedEntityInstance);
-            sqLiteBind(sqLiteStatement, 4, enrollment);
-            sqLiteBind(sqLiteStatement, 5, event);
-        }
-    };
-
-
-    private static final WhereStatementBinder<RelationshipItem> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<RelationshipItem>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull RelationshipItem o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 6, UidsHelper.getUidOrNull(o.relationship()));
-            sqLiteBind(sqLiteStatement, 7, o.relationshipItemType());
-        }
-    };
-
-    private static final CursorModelFactory<RelationshipItem> FACTORY
-            = new CursorModelFactory<RelationshipItem>() {
-        @Override
-        public RelationshipItem fromCursor(Cursor cursor) {
-            return RelationshipItem.create(cursor);
-        }
-    };
 
     public static RelationshipItemStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(

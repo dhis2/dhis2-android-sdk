@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -37,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -51,6 +49,24 @@ public final class TrackedEntityAttributeReservedValueStore
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue>
         implements TrackedEntityAttributeReservedValueStoreInterface {
 
+    private static final StatementBinder<TrackedEntityAttributeReservedValue> BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.ownerObject());
+        sqLiteBind(sqLiteStatement, 2, o.ownerUid());
+        sqLiteBind(sqLiteStatement, 3, o.key());
+        sqLiteBind(sqLiteStatement, 4, o.value());
+        sqLiteBind(sqLiteStatement, 5, o.created());
+        sqLiteBind(sqLiteStatement, 6, o.expiryDate());
+        sqLiteBind(sqLiteStatement, 7, o.organisationUnit());
+        sqLiteBind(sqLiteStatement, 8, o.temporalValidityDate());
+    };
+
+    private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_UPDATE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 9, o.ownerUid());
+        sqLiteBind(sqLiteStatement, 10, o.value());
+        sqLiteBind(sqLiteStatement, 11, o.organisationUnit());
+    };
     private TrackedEntityAttributeReservedValueStore(DatabaseAdapter databaseAdapter,
                                                      SQLiteStatement insertStatement,
                                                      SQLiteStatement updateWhereStatement,
@@ -58,7 +74,8 @@ public final class TrackedEntityAttributeReservedValueStore
                                                      StatementBinder<TrackedEntityAttributeReservedValue> binder,
                                                      WhereStatementBinder<TrackedEntityAttributeReservedValue>
                                                              whereBinder) {
-        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder, FACTORY);
+        super(databaseAdapter, insertStatement, updateWhereStatement, builder, binder, whereBinder,
+                TrackedEntityAttributeReservedValue::create);
     }
 
     @Override
@@ -99,41 +116,6 @@ public final class TrackedEntityAttributeReservedValueStore
                 .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
                 .build();
     }
-
-    private static final StatementBinder<TrackedEntityAttributeReservedValue> BINDER
-            = new StatementBinder<TrackedEntityAttributeReservedValue>() {
-        @Override
-        public void bindToStatement(@NonNull TrackedEntityAttributeReservedValue o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.ownerObject());
-            sqLiteBind(sqLiteStatement, 2, o.ownerUid());
-            sqLiteBind(sqLiteStatement, 3, o.key());
-            sqLiteBind(sqLiteStatement, 4, o.value());
-            sqLiteBind(sqLiteStatement, 5, o.created());
-            sqLiteBind(sqLiteStatement, 6, o.expiryDate());
-            sqLiteBind(sqLiteStatement, 7, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 8, o.temporalValidityDate());
-        }
-    };
-
-    private static final WhereStatementBinder<TrackedEntityAttributeReservedValue> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<TrackedEntityAttributeReservedValue>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull TrackedEntityAttributeReservedValue o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 9, o.ownerUid());
-            sqLiteBind(sqLiteStatement, 10, o.value());
-            sqLiteBind(sqLiteStatement, 11, o.organisationUnit());
-        }
-    };
-
-    private static final CursorModelFactory<TrackedEntityAttributeReservedValue> FACTORY
-            = new CursorModelFactory<TrackedEntityAttributeReservedValue>() {
-        @Override
-        public TrackedEntityAttributeReservedValue fromCursor(Cursor cursor) {
-            return TrackedEntityAttributeReservedValue.create(cursor);
-        }
-    };
 
     public static TrackedEntityAttributeReservedValueStoreInterface create(DatabaseAdapter databaseAdapter) {
 

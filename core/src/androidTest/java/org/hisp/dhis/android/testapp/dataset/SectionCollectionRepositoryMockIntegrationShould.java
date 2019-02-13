@@ -1,8 +1,9 @@
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.testapp.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.dataset.Section;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

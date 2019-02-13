@@ -81,7 +81,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
         return new $$AutoValue_ProgramTrackedEntityAttribute.Builder();
     }
 
-    static ProgramTrackedEntityAttribute create(Cursor cursor) {
+    public static ProgramTrackedEntityAttribute create(Cursor cursor) {
         return $AutoValue_ProgramTrackedEntityAttribute.createFromCursor(cursor);
     }
 

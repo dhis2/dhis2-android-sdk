@@ -26,13 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.testapp.event;
 
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +62,16 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
                         .get();
 
         assertThat(events.size(), is(3));
+    }
+
+    @Test
+    public void filter_by_uid() {
+        List<Event> events =
+                d2.eventModule().events
+                        .byUid().eq("V1CerIi3sdL")
+                        .get();
+
+        assertThat(events.size(), is(1));
     }
 
     @Test

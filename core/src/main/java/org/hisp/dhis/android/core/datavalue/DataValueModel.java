@@ -75,7 +75,7 @@ public abstract class DataValueModel extends BaseDataModel {
         }
     }
 
-    static DataValueModel create(Cursor cursor) {
+    public static DataValueModel create(Cursor cursor) {
         return AutoValue_DataValueModel.createFromCursor(cursor);
     }
 

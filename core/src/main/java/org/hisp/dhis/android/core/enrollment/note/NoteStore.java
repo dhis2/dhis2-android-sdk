@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,40 +38,27 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class NoteStore {
 
-    private NoteStore() {}
-
-    private static final StatementBinder<Note> BINDER = new StatementBinder<Note>() {
-        @Override
-        public void bindToStatement(@NonNull Note o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.enrollment());
-            sqLiteBind(sqLiteStatement, 2, o.value());
-            sqLiteBind(sqLiteStatement, 3, o.storedBy());
-            sqLiteBind(sqLiteStatement, 4, o.storedDate());
-            sqLiteBind(sqLiteStatement, 5, o.uid());
-            sqLiteBind(sqLiteStatement, 6, o.state());
-        }
+    private static final StatementBinder<Note> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.enrollment());
+        sqLiteBind(sqLiteStatement, 2, o.value());
+        sqLiteBind(sqLiteStatement, 3, o.storedBy());
+        sqLiteBind(sqLiteStatement, 4, o.storedDate());
+        sqLiteBind(sqLiteStatement, 5, o.uid());
+        sqLiteBind(sqLiteStatement, 6, o.state());
     };
 
     private static final WhereStatementBinder<Note> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<Note>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull Note o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 7, o.enrollment());
-            sqLiteBind(sqLiteStatement, 8, o.value());
-            sqLiteBind(sqLiteStatement, 9, o.storedBy());
-            sqLiteBind(sqLiteStatement, 10, o.storedDate());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 7, o.enrollment());
+        sqLiteBind(sqLiteStatement, 8, o.value());
+        sqLiteBind(sqLiteStatement, 9, o.storedBy());
+        sqLiteBind(sqLiteStatement, 10, o.storedDate());
     };
 
-    private static final CursorModelFactory<Note> FACTORY = new CursorModelFactory<Note>() {
-        @Override
-        public Note fromCursor(Cursor cursor) {
-            return Note.create(cursor);
-        }
-    };
+    private NoteStore() {}
 
     public static ObjectWithoutUidStore<Note> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, NoteTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                BINDER, WHERE_UPDATE_BINDER, Note::create);
     }
 }

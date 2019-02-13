@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
@@ -42,6 +40,16 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<ObjectStyle>
         implements ObjectStyleStore {
+
+    private static final StatementBinder<ObjectStyle> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.objectTable());
+        sqLiteBind(sqLiteStatement, 3, o.color());
+        sqLiteBind(sqLiteStatement, 4, o.icon());
+    };
+
+    private static final WhereStatementBinder<ObjectStyle> WHERE_UPDATE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 5, o.uid());
 
     private ObjectStyleStoreImpl(DatabaseAdapter databaseAdapter,
                                  SQLiteStatement insertStatement,
@@ -63,31 +71,6 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
         return selectOneWhere(whereClause);
     }
 
-    private static final StatementBinder<ObjectStyle> BINDER = new StatementBinder<ObjectStyle>() {
-        @Override
-        public void bindToStatement(@NonNull ObjectStyle o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.objectTable());
-            sqLiteBind(sqLiteStatement, 3, o.color());
-            sqLiteBind(sqLiteStatement, 4, o.icon());
-        }
-    };
-
-    private static final WhereStatementBinder<ObjectStyle> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<ObjectStyle>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull ObjectStyle o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 5, o.uid());
-        }
-    };
-
-    private static final CursorModelFactory<ObjectStyle> FACTORY = new CursorModelFactory<ObjectStyle>() {
-        @Override
-        public ObjectStyle fromCursor(Cursor cursor) {
-            return ObjectStyle.create(cursor);
-        }
-    };
-
     public static ObjectStyleStore create(DatabaseAdapter databaseAdapter) {
 
         BaseModel.Columns columns = ObjectStyleTableInfo.TABLE_INFO.columns();
@@ -101,6 +84,6 @@ public final class ObjectStyleStoreImpl extends ObjectWithoutUidStoreImpl<Object
                 statementBuilder,
                 BINDER,
                 WHERE_UPDATE_BINDER,
-                FACTORY);
+                ObjectStyle::create);
     }
 }

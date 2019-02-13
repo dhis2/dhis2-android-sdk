@@ -46,7 +46,7 @@ public abstract class Configuration implements Model {
     @ColumnAdapter(HttpUrlColumnAdapter.class)
     public abstract HttpUrl serverUrl();
 
-    static Configuration create(Cursor cursor) {
+    public static Configuration create(Cursor cursor) {
         return $AutoValue_Configuration.createFromCursor(cursor);
     }
 

@@ -1,9 +1,10 @@
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.testapp.dataelement;
 
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;

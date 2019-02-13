@@ -63,7 +63,7 @@ public abstract class UserCredentials extends BaseIdentifiableObject implements 
     @ColumnAdapter(UserWithUidColumnAdapter.class)
     public abstract User user();
 
-    static UserCredentials create(Cursor cursor) {
+    public static UserCredentials create(Cursor cursor) {
         return $AutoValue_UserCredentials.createFromCursor(cursor);
     }
 

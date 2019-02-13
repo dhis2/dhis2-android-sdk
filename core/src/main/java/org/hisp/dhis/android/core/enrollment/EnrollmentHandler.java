@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
@@ -78,14 +77,9 @@ final class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
     protected void afterObjectHandled(Enrollment enrollment, HandleAction action) {
         if (action != HandleAction.Delete) {
             eventHandler.handleMany(enrollment.events(),
-                    new ModelBuilder<Event, Event>() {
-                        @Override
-                        public Event buildModel(Event event) {
-                            return event.toBuilder()
-                                    .state(State.SYNCED)
-                                    .build();
-                        }
-                    });
+                    event -> event.toBuilder()
+                            .state(State.SYNCED)
+                            .build());
 
             Collection<Note> notes = new ArrayList<>();
             NoteToStoreTransformer transformer = new NoteToStoreTransformer(enrollment, versionManager);

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-public class ObjectStyleModelBuilder extends ModelBuilder<ObjectStyle, ObjectStyle> {
+public class ObjectStyleModelBuilder implements ModelBuilder<ObjectStyle, ObjectStyle> {
 
     private final ObjectStyle.Builder builder;
 

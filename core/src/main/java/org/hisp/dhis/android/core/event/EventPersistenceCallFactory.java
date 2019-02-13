@@ -32,7 +32,6 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
@@ -78,14 +77,9 @@ final class EventPersistenceCallFactory {
 
         return () -> {
             eventHandler.handleMany(events,
-                    new ModelBuilder<Event, Event>() {
-                        @Override
-                        public Event buildModel(Event event) {
-                            return event.toBuilder()
-                                    .state(State.SYNCED)
-                                    .build();
-                        }
-                    });
+                    event -> event.toBuilder()
+                            .state(State.SYNCED)
+                            .build());
 
             Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 

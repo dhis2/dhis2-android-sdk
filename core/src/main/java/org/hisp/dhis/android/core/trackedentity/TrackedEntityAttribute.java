@@ -127,7 +127,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         return new $$AutoValue_TrackedEntityAttribute.Builder();
     }
 
-    static TrackedEntityAttribute create(Cursor cursor) {
+    public static TrackedEntityAttribute create(Cursor cursor) {
         return $AutoValue_TrackedEntityAttribute.createFromCursor(cursor);
     }
 

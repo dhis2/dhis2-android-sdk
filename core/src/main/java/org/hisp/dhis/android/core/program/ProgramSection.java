@@ -77,7 +77,7 @@ public abstract class ProgramSection extends BaseIdentifiableObject
         return new AutoValue_ProgramSection.Builder();
     }
 
-    static ProgramSection create(Cursor cursor) {
+    public static ProgramSection create(Cursor cursor) {
         return $AutoValue_ProgramSection.createFromCursor(cursor);
     }
 

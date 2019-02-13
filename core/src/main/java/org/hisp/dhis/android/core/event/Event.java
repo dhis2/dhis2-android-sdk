@@ -142,7 +142,7 @@ public abstract class Event extends BaseDataModel implements ObjectWithDeleteInt
         return new $$AutoValue_Event.Builder();
     }
 
-    static Event create(Cursor cursor) {
+    public static Event create(Cursor cursor) {
         return $AutoValue_Event.createFromCursor(cursor);
     }
 

@@ -72,7 +72,7 @@ public abstract class Resource implements Model {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastSynced();
 
-    static Resource create(Cursor cursor) {
+    public static Resource create(Cursor cursor) {
         return $AutoValue_Resource.createFromCursor(cursor);
     }
 

@@ -87,7 +87,7 @@ public abstract class TrackedEntityAttributeReservedValue implements Model {
         return new $$AutoValue_TrackedEntityAttributeReservedValue.Builder();
     }
 
-    static TrackedEntityAttributeReservedValue create(Cursor cursor) {
+    public static TrackedEntityAttributeReservedValue create(Cursor cursor) {
         return $AutoValue_TrackedEntityAttributeReservedValue.createFromCursor(cursor);
     }
 

@@ -136,7 +136,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
         return new $$AutoValue_Enrollment.Builder();
     }
 
-    static Enrollment create(Cursor cursor) {
+    public static Enrollment create(Cursor cursor) {
         return $AutoValue_Enrollment.createFromCursor(cursor);
     }
 

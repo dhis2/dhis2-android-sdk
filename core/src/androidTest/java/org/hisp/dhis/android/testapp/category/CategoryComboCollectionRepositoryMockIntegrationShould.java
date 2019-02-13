@@ -1,7 +1,9 @@
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.testapp.category;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.junit.BeforeClass;

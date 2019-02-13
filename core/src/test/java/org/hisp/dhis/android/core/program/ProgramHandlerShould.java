@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
@@ -95,7 +94,7 @@ public class ProgramHandlerShould {
     private Access access;
 
     @Mock
-    private List<ObjectWithUid> programStages;
+    private List<ProgramStage> programStages;
 
     @Mock
     private Program relatedProgram;

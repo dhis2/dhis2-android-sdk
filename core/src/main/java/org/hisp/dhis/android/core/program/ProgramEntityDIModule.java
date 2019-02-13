@@ -61,7 +61,9 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Program>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    Collection<ChildrenAppender<Program>> childrenAppenders(
+            DatabaseAdapter databaseAdapter,
+            ProgramCategoryComboChildrenAppender categoryComboChildrenAppender) {
         ChildrenAppender<Program> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
@@ -75,7 +77,8 @@ public final class ProgramEntityDIModule {
                 ProgramIndicatorChildrenAppender.create(databaseAdapter),
                 ProgramRuleChildrenAppender.create(databaseAdapter),
                 ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter),
-                ProgramSectionChildrenAppender.create(databaseAdapter)
+                ProgramSectionChildrenAppender.create(databaseAdapter),
+                categoryComboChildrenAppender
         );
     }
 

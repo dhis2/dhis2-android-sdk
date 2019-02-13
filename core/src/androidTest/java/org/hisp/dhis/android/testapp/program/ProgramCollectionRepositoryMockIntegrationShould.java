@@ -293,4 +293,11 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
         assertThat(program.programSections().size(), is(1));
         assertThat(program.programSections().get(0).name(), is("My Program Section"));
     }
+
+    @Test
+    public void include_category_combo_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.categoryCombo().name(), is("Births"));
+    }
 }

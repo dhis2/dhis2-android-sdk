@@ -87,7 +87,7 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Mod
     @ColumnAdapter(IgnoreLegendSetListColumnAdapter.class)
     public abstract List<LegendSet> legendSets();
 
-    static ProgramIndicator create(Cursor cursor) {
+    public static ProgramIndicator create(Cursor cursor) {
         return $AutoValue_ProgramIndicator.createFromCursor(cursor);
     }
 

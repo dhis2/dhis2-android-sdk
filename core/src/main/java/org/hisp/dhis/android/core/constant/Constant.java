@@ -51,7 +51,7 @@ public abstract class Constant extends BaseIdentifiableObject implements Model {
         return new AutoValue_Constant.Builder();
     }
 
-    static Constant create(Cursor cursor) {
+    public static Constant create(Cursor cursor) {
         return $AutoValue_Constant.createFromCursor(cursor);
     }
 

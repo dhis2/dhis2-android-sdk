@@ -59,7 +59,7 @@ public abstract class IndicatorModel extends BaseNameableObjectModel {
         }
     }
 
-    static IndicatorModel create(Cursor cursor) {
+    public static IndicatorModel create(Cursor cursor) {
         return AutoValue_IndicatorModel.createFromCursor(cursor);
     }
 

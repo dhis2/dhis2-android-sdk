@@ -71,7 +71,7 @@ public abstract class ValueTypeDeviceRendering implements Model {
     @JsonProperty()
     public abstract Integer decimalPoints();
 
-    static ValueTypeDeviceRendering create(Cursor cursor) {
+    public static ValueTypeDeviceRendering create(Cursor cursor) {
         return $AutoValue_ValueTypeDeviceRendering.createFromCursor(cursor);
     }
 

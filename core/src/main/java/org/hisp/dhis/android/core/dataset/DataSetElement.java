@@ -66,7 +66,7 @@ public abstract class DataSetElement implements Model {
         return new $$AutoValue_DataSetElement.Builder();
     }
 
-    static DataSetElement create(Cursor cursor) {
+    public static DataSetElement create(Cursor cursor) {
         return $AutoValue_DataSetElement.createFromCursor(cursor);
     }
 

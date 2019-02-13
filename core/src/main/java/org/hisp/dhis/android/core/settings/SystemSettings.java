@@ -48,7 +48,7 @@ public abstract class SystemSettings {
     @JsonProperty()
     public abstract String keyStyle();
 
-    static SystemSettings create(Cursor cursor) {
+    public static SystemSettings create(Cursor cursor) {
         return AutoValue_SystemSettings.createFromCursor(cursor);
     }
 

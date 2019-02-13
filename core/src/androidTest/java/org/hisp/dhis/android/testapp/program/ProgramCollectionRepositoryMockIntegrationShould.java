@@ -307,4 +307,11 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
                 .one().getWithAllChildren();
         assertThat(program.relatedProgram().name(), is("Antenatal care visit"));
     }
+
+    @Test
+    public void include_tracked_entity_type_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.trackedEntityType().name(), is("Person"));
+    }
 }

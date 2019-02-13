@@ -269,4 +269,12 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
         assertThat(program.programIndicators().size(), is(1));
         assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
+
+    @Test
+    public void include_program_rules_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programRules().size(), is(3));
+        assertThat(program.programRules().get(0).name(), is("Show error for high hemoglobin value"));
+    }
 }

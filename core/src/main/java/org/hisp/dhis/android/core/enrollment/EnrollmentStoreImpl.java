@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.CoordinateHelper;
@@ -49,6 +47,24 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class EnrollmentStoreImpl
         extends IdentifiableObjectWithStateStoreImpl<Enrollment> implements EnrollmentStore {
+
+    private static final StatementBinder<Enrollment> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.created());
+        sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
+        sqLiteBind(sqLiteStatement, 4, o.createdAtClient());
+        sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
+        sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
+        sqLiteBind(sqLiteStatement, 7, o.program());
+        sqLiteBind(sqLiteStatement, 8, o.enrollmentDate());
+        sqLiteBind(sqLiteStatement, 9, o.incidentDate());
+        sqLiteBind(sqLiteStatement, 10, o.followUp());
+        sqLiteBind(sqLiteStatement, 11, o.status());
+        sqLiteBind(sqLiteStatement, 12, o.trackedEntityInstance());
+        sqLiteBind(sqLiteStatement, 13, CoordinateHelper.getLatitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 14, CoordinateHelper.getLongitude(o.coordinate()));
+        sqLiteBind(sqLiteStatement, 15, o.state());
+    };
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementWrapper statementWrapper,
@@ -89,39 +105,11 @@ public final class EnrollmentStoreImpl
 
     private void addEnrollmentToMap(Map<String, List<Enrollment>> enrollmentMap, Enrollment enrollment) {
         if (enrollmentMap.get(enrollment.trackedEntityInstance()) == null) {
-            enrollmentMap.put(enrollment.trackedEntityInstance(), new ArrayList<Enrollment>());
+            enrollmentMap.put(enrollment.trackedEntityInstance(), new ArrayList<>());
         }
 
         enrollmentMap.get(enrollment.trackedEntityInstance()).add(enrollment);
     }
-
-    private static final StatementBinder<Enrollment> BINDER = new StatementBinder<Enrollment>() {
-        @Override
-        public void bindToStatement(@NonNull Enrollment o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.created());
-            sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 4, o.createdAtClient());
-            sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
-            sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 7, o.program());
-            sqLiteBind(sqLiteStatement, 8, o.enrollmentDate());
-            sqLiteBind(sqLiteStatement, 9, o.incidentDate());
-            sqLiteBind(sqLiteStatement, 10, o.followUp());
-            sqLiteBind(sqLiteStatement, 11, o.status());
-            sqLiteBind(sqLiteStatement, 12, o.trackedEntityInstance());
-            sqLiteBind(sqLiteStatement, 13, CoordinateHelper.getLatitude(o.coordinate()));
-            sqLiteBind(sqLiteStatement, 14, CoordinateHelper.getLongitude(o.coordinate()));
-            sqLiteBind(sqLiteStatement, 15, o.state());
-        }
-    };
-
-    private static final CursorModelFactory<Enrollment> FACTORY = new CursorModelFactory<Enrollment>() {
-        @Override
-        public Enrollment fromCursor(Cursor cursor) {
-            return Enrollment.create(cursor);
-        }
-    };
 
     public static EnrollmentStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(
@@ -134,7 +122,7 @@ public final class EnrollmentStoreImpl
                 statementWrapper,
                 statementBuilder,
                 BINDER,
-                FACTORY
+                Enrollment::create
         );
     }
 }

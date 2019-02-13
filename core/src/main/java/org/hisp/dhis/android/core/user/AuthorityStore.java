@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,34 +38,16 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class AuthorityStore {
 
-    private AuthorityStore() {}
-
     private static final StatementBinder<Authority> BINDER
-            = new StatementBinder<Authority>() {
-        @Override
-        public void bindToStatement(@NonNull Authority o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.name());
-        }
-    };
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.name());
 
     private static final WhereStatementBinder<Authority> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<Authority>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull Authority o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.name());
-        }
-    };
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 1, o.name());
 
-
-    private static final CursorModelFactory<Authority> FACTORY = new CursorModelFactory<Authority>() {
-        @Override
-        public Authority fromCursor(Cursor cursor) {
-            return Authority.create(cursor);
-        }
-    };
+    private AuthorityStore() {}
 
     public static ObjectWithoutUidStore<Authority> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthorityTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                BINDER, WHERE_UPDATE_BINDER, Authority::create);
     }
 }

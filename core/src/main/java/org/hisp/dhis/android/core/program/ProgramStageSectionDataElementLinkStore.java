@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,32 +37,20 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramStageSectionDataElementLinkStore {
 
-    private ProgramStageSectionDataElementLinkStore() {}
-
     private static final StatementBinder<ProgramStageSectionDataElementLinkModel> BINDER
-            = new StatementBinder<ProgramStageSectionDataElementLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull ProgramStageSectionDataElementLinkModel o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.programStageSection());
-            sqLiteBind(sqLiteStatement, 2, o.dataElement());
-            sqLiteBind(sqLiteStatement, 3, o.sortOrder());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.programStageSection());
+        sqLiteBind(sqLiteStatement, 2, o.dataElement());
+        sqLiteBind(sqLiteStatement, 3, o.sortOrder());
     };
 
-    private static final CursorModelFactory<ProgramStageSectionDataElementLinkModel> FACTORY
-            = new CursorModelFactory<ProgramStageSectionDataElementLinkModel>() {
-        @Override
-        public ProgramStageSectionDataElementLinkModel fromCursor(Cursor cursor) {
-            return ProgramStageSectionDataElementLinkModel.create(cursor);
-        }
-    };
+    private ProgramStageSectionDataElementLinkStore() {}
 
     public static LinkModelStore<ProgramStageSectionDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter, ProgramStageSectionDataElementLinkModel.TABLE,
                 new ProgramStageSectionDataElementLinkModel.Columns(),
                 ProgramStageSectionDataElementLinkModel.Columns.PROGRAM_STAGE_SECTION,
                 BINDER,
-                FACTORY);
+                ProgramStageSectionDataElementLinkModel::create);
     }
 }

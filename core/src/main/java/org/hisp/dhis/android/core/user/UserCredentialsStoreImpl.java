@@ -28,14 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
@@ -50,7 +48,7 @@ public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<
     private UserCredentialsStoreImpl(DatabaseAdapter databaseAdapter,
                                      SQLStatementWrapper statementWrapper,
                                      SQLStatementBuilder statementBuilder) {
-        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, FACTORY);
+        super(databaseAdapter, statementWrapper, statementBuilder, BINDER, UserCredentials::create);
     }
 
     @Override
@@ -67,13 +65,6 @@ public final class UserCredentialsStoreImpl extends IdentifiableObjectStoreImpl<
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.username());
             sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.user()));
-        }
-    };
-
-    private static final CursorModelFactory<UserCredentials> FACTORY = new CursorModelFactory<UserCredentials>() {
-        @Override
-        public UserCredentials fromCursor(Cursor cursor) {
-            return UserCredentials.create(cursor);
         }
     };
 

@@ -27,12 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -41,25 +36,13 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class OrganisationUnitProgramLinkStore {
 
-    private OrganisationUnitProgramLinkStore() {}
-
     private static final StatementBinder<OrganisationUnitProgramLinkModel> BINDER
-            = new StatementBinder<OrganisationUnitProgramLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull OrganisationUnitProgramLinkModel o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.program());
-            sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.program());
+        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
     };
 
-    private static final CursorModelFactory<OrganisationUnitProgramLinkModel> FACTORY
-            = new CursorModelFactory<OrganisationUnitProgramLinkModel>() {
-        @Override
-        public OrganisationUnitProgramLinkModel fromCursor(Cursor cursor) {
-            return OrganisationUnitProgramLinkModel.create(cursor);
-        }
-    };
+    private OrganisationUnitProgramLinkStore() {}
 
     public static LinkModelStore<OrganisationUnitProgramLinkModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
@@ -67,6 +50,6 @@ public final class OrganisationUnitProgramLinkStore {
                 new OrganisationUnitProgramLinkModel.Columns(),
                 OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT,
                 BINDER,
-                FACTORY);
+                OrganisationUnitProgramLinkModel::create);
     }
 }

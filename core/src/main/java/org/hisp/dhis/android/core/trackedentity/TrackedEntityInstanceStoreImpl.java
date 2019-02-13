@@ -28,14 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
@@ -49,10 +44,23 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWithStateStoreImpl<TrackedEntityInstance>
         implements TrackedEntityInstanceStore {
 
+    private static final StatementBinder<TrackedEntityInstance> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.uid());
+        sqLiteBind(sqLiteStatement, 2, o.created());
+        sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
+        sqLiteBind(sqLiteStatement, 4, o.createdAtClient());
+        sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
+        sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
+        sqLiteBind(sqLiteStatement, 7, o.trackedEntityType());
+        sqLiteBind(sqLiteStatement, 8, o.coordinates());
+        sqLiteBind(sqLiteStatement, 9, o.featureType());
+        sqLiteBind(sqLiteStatement, 10, o.state());
+    };
+
     public TrackedEntityInstanceStoreImpl(DatabaseAdapter databaseAdapter,
                                           SQLStatementWrapper statementWrapper,
                                           SQLStatementBuilder builder) {
-        super(databaseAdapter, statementWrapper, builder, BINDER, FACTORY);
+        super(databaseAdapter, statementWrapper, builder, BINDER, TrackedEntityInstance::create);
     }
 
     @Override
@@ -84,30 +92,6 @@ public final class TrackedEntityInstanceStoreImpl extends IdentifiableObjectWith
 
         return selectUidsWhere(whereRelationshipsClause);
     }
-
-    private static final StatementBinder<TrackedEntityInstance> BINDER = new StatementBinder<TrackedEntityInstance>() {
-        @Override
-        public void bindToStatement(@NonNull TrackedEntityInstance o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.uid());
-            sqLiteBind(sqLiteStatement, 2, o.created());
-            sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 4, o.createdAtClient());
-            sqLiteBind(sqLiteStatement, 5, o.lastUpdatedAtClient());
-            sqLiteBind(sqLiteStatement, 6, o.organisationUnit());
-            sqLiteBind(sqLiteStatement, 7, o.trackedEntityType());
-            sqLiteBind(sqLiteStatement, 8, o.coordinates());
-            sqLiteBind(sqLiteStatement, 9, o.featureType());
-            sqLiteBind(sqLiteStatement, 10, o.state());
-        }
-    };
-
-    private static final CursorModelFactory<TrackedEntityInstance> FACTORY =
-            new CursorModelFactory<TrackedEntityInstance>() {
-        @Override
-        public TrackedEntityInstance fromCursor(Cursor cursor) {
-            return TrackedEntityInstance.create(cursor);
-        }
-    };
 
     public static TrackedEntityInstanceStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(

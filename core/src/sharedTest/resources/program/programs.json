@@ -80,7 +80,51 @@
           }
         }
       ],
-      "programTrackedEntityAttributes": [],
+      "programTrackedEntityAttributes": [
+        {
+          "lastUpdated": "2016-10-11T10:41:40.401",
+          "id": "YhqgQ6Iy4c4",
+          "href": "https://play.dhis2.org/dev/api/programTrackedEntityAttributes/YhqgQ6Iy4c4",
+          "created": "2016-10-11T10:41:40.401",
+          "name": "Child Programme Gender",
+          "shortName": "Child Programme Gender",
+          "displayName": "Child Programme Gender",
+          "mandatory": false,
+          "displayShortName": "Child Programme Gender",
+          "externalAccess": false,
+          "valueType": "TEXT",
+          "allowFutureDate": false,
+          "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
+          "displayInList": false,
+          "sortOrder": 1,
+          "dimensionItemType": "PROGRAM_ATTRIBUTE",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "trackedEntityAttribute": {
+            "id": "cejWyOfXge6",
+            "lastUpdated": "2016-08-04T11:48:56.928",
+            "href": "https://play.dhis2.org/dev/api/trackedEntityAttributes/ruQQnf6rswq",
+            "created": "2014-01-09T19:12:46.551",
+            "name": "TB number",
+            "shortName": "TB number",
+            "programScope": false,
+            "displayInListNoProgram": false,
+            "displayName": "TB number",
+            "access": {
+              "read": true,
+              "updateWithSection": true,
+              "externalize": false,
+              "delete": true,
+              "write": true,
+              "manage": false
+            }
+          },
+          "translations": [],
+          "userGroupAccesses": [],
+          "attributeValues": []
+        }
+      ],
       "programIndicators": [
         {
           "lastUpdated": "2015-09-21T23:47:57.820",

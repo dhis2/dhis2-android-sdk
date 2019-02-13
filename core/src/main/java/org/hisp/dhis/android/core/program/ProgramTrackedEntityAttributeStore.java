@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -60,6 +61,9 @@ public final class ProgramTrackedEntityAttributeStore {
             sqLiteBind(sqLiteStatement, 17, o.searchable());
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, ProgramTrackedEntityAttributeFields.PROGRAM);
 
     public static IdentifiableObjectStore<ProgramTrackedEntityAttribute> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,

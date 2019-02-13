@@ -277,4 +277,12 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
         assertThat(program.programRules().size(), is(3));
         assertThat(program.programRules().get(0).name(), is("Show error for high hemoglobin value"));
     }
+
+    @Test
+    public void include_program_tracked_entity_attributes_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programTrackedEntityAttributes().size(), is(1));
+        assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
+    }
 }

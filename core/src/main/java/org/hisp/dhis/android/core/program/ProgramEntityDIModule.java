@@ -73,7 +73,8 @@ public final class ProgramEntityDIModule {
                 ProgramStageChildrenAppender.create(databaseAdapter),
                 ProgramRuleVariableChildrenAppender.create(databaseAdapter),
                 ProgramIndicatorChildrenAppender.create(databaseAdapter),
-                ProgramRuleChildrenAppender.create(databaseAdapter)
+                ProgramRuleChildrenAppender.create(databaseAdapter),
+                ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter)
         );
     }
 

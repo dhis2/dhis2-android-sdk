@@ -75,7 +75,7 @@ public class TrackedEntityInstanceUidHelperShould {
 
     @Test
     public void call_organisation_unit_select_uids() {
-        uidHelper.getMissingOrganisationUnitUids(new ArrayList<TrackedEntityInstance>());
+        uidHelper.getMissingOrganisationUnitUids(new ArrayList<>());
         verify(organisationUnitStore).selectUids();
     }
 

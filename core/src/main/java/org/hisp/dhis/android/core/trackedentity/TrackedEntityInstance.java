@@ -123,7 +123,7 @@ public abstract class TrackedEntityInstance extends BaseDataModel
         return new $$AutoValue_TrackedEntityInstance.Builder();
     }
 
-    static TrackedEntityInstance create(Cursor cursor) {
+    public static TrackedEntityInstance create(Cursor cursor) {
         return $AutoValue_TrackedEntityInstance.createFromCursor(cursor);
     }
 

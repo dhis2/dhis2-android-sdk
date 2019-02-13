@@ -45,7 +45,7 @@ public abstract class SystemSetting implements Model {
     @Nullable
     public abstract String value();
 
-    static SystemSetting create(Cursor cursor) {
+    public static SystemSetting create(Cursor cursor) {
         return $AutoValue_SystemSetting.createFromCursor(cursor);
     }
 

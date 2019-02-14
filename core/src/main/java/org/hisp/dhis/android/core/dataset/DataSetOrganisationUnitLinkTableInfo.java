@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import android.support.annotation.VisibleForTesting;
+
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -50,7 +52,8 @@ public final class DataSetOrganisationUnitLinkTableInfo {
     private DataSetOrganisationUnitLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    @VisibleForTesting
+    public static class Columns extends BaseModel.Columns {
 
         public static final String DATA_SET = "dataSet";
         public static final String ORGANISATION_UNIT = "organisationUnit";

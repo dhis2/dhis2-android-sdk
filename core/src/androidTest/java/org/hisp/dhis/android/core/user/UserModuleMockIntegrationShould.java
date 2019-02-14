@@ -22,7 +22,7 @@ public class UserModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_authenticated_user() {
-        AuthenticatedUserModel authenticatedUser = d2.userModule().authenticatedUser.get();
+        AuthenticatedUser authenticatedUser = d2.userModule().authenticatedUser.get();
         assertThat(authenticatedUser.user(), is("DXyJmlo9rge"));
         assertThat(authenticatedUser.credentials(), is("YW5kcm9pZDpBbmRyb2lkMTIz"));
     }

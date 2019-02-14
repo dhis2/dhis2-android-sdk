@@ -3,7 +3,7 @@ package org.hisp.dhis.android.testapp.program;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
-import org.hisp.dhis.android.core.program.ProgramStage;
+import org.hisp.dhis.android.core.program.ProgramSection;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramStageCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
+public class ProgramSectionCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
 
     @BeforeClass
     public static void setUpAll() throws Exception {
@@ -23,8 +23,8 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends MockI
 
     @Test
     public void find_all() {
-        List<ProgramStage> stages = d2.programModule().programStages
+        List<ProgramSection> sections = d2.programModule().programSections
                 .get();
-        assertThat(stages.size(), is(1));
+        assertThat(sections.size(), is(1));
     }
 }

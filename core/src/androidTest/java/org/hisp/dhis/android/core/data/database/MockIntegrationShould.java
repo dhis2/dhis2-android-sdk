@@ -65,6 +65,6 @@ public abstract class MockIntegrationShould {
 
     protected static void downloadTrackedEntityInstances() throws Exception {
         dhis2MockServer.enqueueTrackedEntityInstanceResponses();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(1, false).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).call();
     }
 }

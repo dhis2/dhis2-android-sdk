@@ -81,7 +81,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
                         .byEnrollmentUid().eq("JILLTkO4LKQ")
                         .get();
 
-        assertThat(events.size(), is(2));
+        assertThat(events.size(), is(1));
     }
 
     @Test

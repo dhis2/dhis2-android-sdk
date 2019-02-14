@@ -30,9 +30,15 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.Collection;
 import java.util.List;
@@ -66,5 +72,46 @@ public final class TrackedEntityInstanceCollectionRepository
     @Override
     public Callable<WebResponse> upload() {
         return postCall;
+    }
+
+
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byUid() {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.UID);
+    }
+
+    public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byCreated() {
+        return cf.date(TrackedEntityInstanceFields.CREATED);
+    }
+
+    public DateFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdated() {
+        return cf.date(TrackedEntityInstanceFields.LAST_UPDATED);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCreatedAtClient() {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.CREATED_AT_CLIENT);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byLastUpdatedAtClient() {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.LAST_UPDATED_AT_CLIENT);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byOrganisationUnitUid() {
+        return cf.string(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byTrackedEntityType() {
+        return cf.string(TrackedEntityInstanceFields.TRACKED_ENTITY_TYPE);
+    }
+
+    public StringFilterConnector<TrackedEntityInstanceCollectionRepository> byCoordinates() {
+        return cf.string(TrackedEntityInstanceFields.COORDINATES);
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, FeatureType> byFeatureType() {
+        return cf.enumC(TrackedEntityInstanceFields.FEATURE_TYPE);
+    }
+
+    public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
+        return cf.enumC(BaseDataModel.Columns.STATE);
     }
 }

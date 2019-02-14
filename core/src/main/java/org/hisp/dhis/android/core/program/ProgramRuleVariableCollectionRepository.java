@@ -25,40 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.utils.services.ProgramIndicatorEngine;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+
+import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class ProgramModule {
-
-    public final ProgramCollectionRepository programs;
-    public final ProgramRuleCollectionRepository programRules;
-    public final ProgramRuleVariableCollectionRepository programRuleVariables;
-    public final ProgramSectionCollectionRepository programSections;
-    public final ProgramStageCollectionRepository programStages;
-
-    public final ProgramIndicatorEngine programIndicatorEngine;
+public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
+        <ProgramRuleVariable, ProgramRuleVariableCollectionRepository> {
 
     @Inject
-    ProgramModule(ProgramCollectionRepository programs,
-                  ProgramRuleCollectionRepository programRules,
-                  ProgramRuleVariableCollectionRepository programRuleVariables,
-                  ProgramSectionCollectionRepository programSections,
-                  ProgramStageCollectionRepository programStages,
-                  ProgramIndicatorEngine programIndicatorEngine) {
-        this.programs = programs;
-        this.programRules = programRules;
-        this.programRuleVariables = programRuleVariables;
-        this.programSections = programSections;
-        this.programStages = programStages;
-        this.programIndicatorEngine = programIndicatorEngine;
+    ProgramRuleVariableCollectionRepository(final IdentifiableObjectStore<ProgramRuleVariable> store,
+                                            final Collection<ChildrenAppender<ProgramRuleVariable>> childrenAppenders,
+                                            List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

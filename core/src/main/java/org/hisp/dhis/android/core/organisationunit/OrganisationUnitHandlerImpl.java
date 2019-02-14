@@ -31,6 +31,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
@@ -42,8 +44,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModelBuilder;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
@@ -63,7 +64,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
         implements OrganisationUnitHandler {
     private final LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
     private final LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
-    private final LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel> dataSetOrganisationUnitLinkHandler;
+    private final LinkSyncHandler<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
     private final SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
     private final LinkModelHandler<ObjectWithUid,
             OrganisationUnitOrganisationUnitGroupLinkModel> organisationUnitGroupLinkHandler;
@@ -86,7 +87,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                                     userOrganisationUnitLinkHandler,
                                 @NonNull LinkModelHandler<Program, OrganisationUnitProgramLinkModel>
                                     organisationUnitProgramLinkHandler,
-                                @NonNull LinkModelHandler<DataSet, DataSetOrganisationUnitLinkModel>
+                                @NonNull LinkSyncHandler<DataSetOrganisationUnitLink>
                                     dataSetOrganisationUnitLinkHandler,
                                 @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
                                 @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
@@ -159,9 +160,12 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                 }
             }
 
-            DataSetOrganisationUnitLinkModelBuilder modelBuilder
-                    = new DataSetOrganisationUnitLinkModelBuilder(organisationUnit);
-            dataSetOrganisationUnitLinkHandler.handleMany(organisationUnit.uid(), dataSetsToAdd, modelBuilder);
+            List<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinks = new ArrayList<>();
+            for (DataSet dataSet : dataSetsToAdd) {
+                dataSetOrganisationUnitLinks.add(DataSetOrganisationUnitLink.builder()
+                .dataSet(dataSet.uid()).organisationUnit(organisationUnit.uid()).build());
+            }
+            dataSetOrganisationUnitLinkHandler.handleMany(organisationUnit.uid(), dataSetOrganisationUnitLinks);
         }
     }
 
@@ -221,7 +225,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                         UserOrganisationUnitLinkStore.create(databaseAdapter)),
                 new LinkModelHandlerImpl<>(
                         OrganisationUnitProgramLinkStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<>(
+                new LinkSyncHandlerImpl<>(
                         DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
                 new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new CollectionCleanerImpl<>(DataSetModel.TABLE, databaseAdapter),

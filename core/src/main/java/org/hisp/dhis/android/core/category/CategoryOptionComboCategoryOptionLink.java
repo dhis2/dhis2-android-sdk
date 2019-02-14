@@ -28,22 +28,42 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-public class CategoryOptionComboCategoryOptionLinkModelBuilder
-        implements ModelBuilder<CategoryOption, CategoryOptionComboCategoryOptionLinkModel> {
+import com.google.auto.value.AutoValue;
 
-    private final CategoryOptionComboCategoryOptionLinkModel.Builder builder;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    CategoryOptionComboCategoryOptionLinkModelBuilder(CategoryOptionCombo categoryOptionCombo) {
-        this.builder = CategoryOptionComboCategoryOptionLinkModel.builder()
-                .categoryOptionCombo(categoryOptionCombo.uid());
+@AutoValue
+public abstract class CategoryOptionComboCategoryOptionLink implements Model {
+
+    @Nullable
+    public abstract String categoryOptionCombo();
+
+    @Nullable
+    public abstract String categoryOption();
+
+    public static Builder builder() {
+        return new AutoValue_CategoryOptionComboCategoryOptionLink.Builder();
     }
 
-    @Override
-    public CategoryOptionComboCategoryOptionLinkModel buildModel(CategoryOption categoryOption) {
-        return builder
-                .categoryOption(categoryOption.uid())
-                .build();
+    static CategoryOptionComboCategoryOptionLink create(Cursor cursor) {
+        return AutoValue_CategoryOptionComboCategoryOptionLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder categoryOptionCombo(@Nullable String categoryOptionCombo);
+
+        public abstract Builder categoryOption(@Nullable String categoryOption);
+
+        public abstract CategoryOptionComboCategoryOptionLink build();
     }
 }

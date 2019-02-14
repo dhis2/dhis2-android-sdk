@@ -26,30 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.data.category;
 
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+public class CategoryOptionComboCategoryOptionLinkSamples {
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-final class CategoryOptionComboCategoryOptionLinkStore {
-
-    private static final StatementBinder<CategoryOptionComboCategoryOptionLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.categoryOptionCombo());
-        sqLiteBind(sqLiteStatement, 2, o.categoryOption());
-    };
-
-    private CategoryOptionComboCategoryOptionLinkStore() {}
-
-    public static LinkModelStore<CategoryOptionComboCategoryOptionLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
-                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO, BINDER,
-                CategoryOptionComboCategoryOptionLink::create
-        );
+    public static CategoryOptionComboCategoryOptionLink getCategoryOptionComboCategoryOptionLink() {
+        return CategoryOptionComboCategoryOptionLink.builder()
+                .categoryOptionCombo("category_option_combo")
+                .categoryOption("category_option")
+                .build();
     }
 }

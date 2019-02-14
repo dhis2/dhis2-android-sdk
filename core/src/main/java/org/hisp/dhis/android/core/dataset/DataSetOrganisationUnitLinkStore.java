@@ -32,13 +32,12 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class DataSetOrganisationUnitLinkStore {
 
-    private static final StatementBinder<DataSetOrganisationUnitLinkModel> BINDER
+    private static final StatementBinder<DataSetOrganisationUnitLink> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.dataSet());
         sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
@@ -46,12 +45,11 @@ public final class DataSetOrganisationUnitLinkStore {
 
     private DataSetOrganisationUnitLinkStore() {}
 
-    public static LinkModelStore<DataSetOrganisationUnitLinkModel> create(DatabaseAdapter databaseAdapter) {
+    public static LinkModelStore<DataSetOrganisationUnitLink> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetOrganisationUnitLinkModel.TABLE,
-                new DataSetOrganisationUnitLinkModel.Columns(),
-                OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT,
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
+                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
                 BINDER,
-                DataSetOrganisationUnitLinkModel::create);
+                DataSetOrganisationUnitLink::create);
     }
 }

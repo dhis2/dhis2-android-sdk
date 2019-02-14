@@ -40,6 +40,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class ProgramModule {
 
     public final ProgramCollectionRepository programs;
+    public final ProgramRuleCollectionRepository programRules;
     public final ProgramSectionCollectionRepository programSections;
     public final ProgramStageCollectionRepository programStages;
 
@@ -48,10 +49,12 @@ public final class ProgramModule {
 
     @Inject
     ProgramModule(ProgramCollectionRepository programs,
+                  ProgramRuleCollectionRepository programRules,
                   ProgramSectionCollectionRepository programSections,
                   ProgramStageCollectionRepository programStages,
                   ProgramIndicatorEngine programIndicatorEngine) {
         this.programs = programs;
+        this.programRules = programRules;
         this.programSections = programSections;
         this.programStages = programStages;
         this.programIndicatorEngine = programIndicatorEngine;

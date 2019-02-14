@@ -25,48 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class ProgramRuleEntityDIModule {
+@Reusable
+public final class ProgramRuleCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRule, ProgramRuleCollectionRepository> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramRule> store(DatabaseAdapter databaseAdapter) {
-        return ProgramRuleStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramRule> handler(ProgramRuleHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    public OrphanCleaner<ProgramRule, ProgramRuleAction> actionCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<ProgramRule>> childrenAppenders() {
-        return Collections.emptyList();
+    @Inject
+    ProgramRuleCollectionRepository(final IdentifiableObjectStore<ProgramRule> store,
+                                    final Collection<ChildrenAppender<ProgramRule>> childrenAppenders,
+                                    List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramRuleCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

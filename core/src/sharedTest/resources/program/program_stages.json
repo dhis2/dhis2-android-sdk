@@ -137,7 +137,21 @@
           }
         }
       ],
-      "programStageSections": []
+      "programStageSections": [
+        {
+          "created": "2015-01-26T13:14:09.957",
+          "lastUpdated": "2015-10-14T13:37:29.904",
+          "name": "Care at Birth",
+          "href": "https://play.dhis2.org/dev/api/programStageSections/bbjzL5gp0NZ",
+          "id": "bbjzL5gp0NZ",
+          "displayName": "Care at Birth",
+          "externalAccess": false,
+          "sortOrder": 0,
+          "programStage": {
+            "id": "dBwrot7S420"
+          }
+        }
+      ]
     }
   ]
 }

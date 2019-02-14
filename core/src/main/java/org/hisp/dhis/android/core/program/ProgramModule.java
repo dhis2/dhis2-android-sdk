@@ -46,6 +46,7 @@ public final class ProgramModule {
     public final ProgramRuleVariableCollectionRepository programRuleVariables;
     public final ProgramSectionCollectionRepository programSections;
     public final ProgramStageCollectionRepository programStages;
+    public final ProgramStageSectionsCollectionRepository programStageSections;
 
     public final ProgramIndicatorEngine programIndicatorEngine;
 
@@ -57,6 +58,7 @@ public final class ProgramModule {
                   ProgramRuleVariableCollectionRepository programRuleVariables,
                   ProgramSectionCollectionRepository programSections,
                   ProgramStageCollectionRepository programStages,
+                  ProgramStageSectionsCollectionRepository programStageSections,
                   ProgramIndicatorEngine programIndicatorEngine) {
         this.programs = programs;
         this.programIndicators = programIndicators;
@@ -65,6 +67,7 @@ public final class ProgramModule {
         this.programRuleVariables = programRuleVariables;
         this.programSections = programSections;
         this.programStages = programStages;
+        this.programStageSections = programStageSections;
         this.programIndicatorEngine = programIndicatorEngine;
     }
 }

@@ -25,39 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class ProgramStageSectionEntityDIModule {
+@Reusable
+public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
+        <ProgramStageSection, ProgramStageSectionsCollectionRepository> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramStageSection> store(DatabaseAdapter databaseAdapter) {
-        return ProgramStageSectionStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<ProgramStageSection> handler(ProgramStageSectionHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders() {
-        return Collections.emptyList();
+    @Inject
+    ProgramStageSectionsCollectionRepository(final IdentifiableObjectStore<ProgramStageSection> store,
+                                             final Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders,
+                                             List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

@@ -39,12 +39,14 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DataElementWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramStageDataElement.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_ProgramStageDataElement.Builder.class)
 public abstract class ProgramStageDataElement extends BaseIdentifiableObject implements Model {
 
     @Nullable
@@ -70,12 +72,16 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
+    @Nullable
+    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
+    public abstract ValueTypeRendering renderType();
+
     public static ProgramStageDataElement create(Cursor cursor) {
         return AutoValue_ProgramStageDataElement.createFromCursor(cursor);
     }
 
     public static Builder builder() {
-        return new AutoValue_ProgramStageDataElement.Builder();
+        return new $$AutoValue_ProgramStageDataElement.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -99,6 +105,8 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
         public abstract Builder dataElement(DataElement dataElement);
 
         public abstract Builder programStage(ObjectWithUid programStage);
+
+        public abstract Builder renderType(ValueTypeRendering renderType);
 
         public abstract ProgramStageDataElement build();
     }

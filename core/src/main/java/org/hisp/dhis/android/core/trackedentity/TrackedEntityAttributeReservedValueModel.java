@@ -69,7 +69,7 @@ public abstract class TrackedEntityAttributeReservedValueModel extends BaseModel
         }
     }
 
-    static TrackedEntityAttributeReservedValueModel create(Cursor cursor) {
+    public static TrackedEntityAttributeReservedValueModel create(Cursor cursor) {
         return AutoValue_TrackedEntityAttributeReservedValueModel.createFromCursor(cursor);
     }
 

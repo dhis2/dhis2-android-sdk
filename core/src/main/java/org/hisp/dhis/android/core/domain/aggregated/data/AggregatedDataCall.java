@@ -90,34 +90,30 @@ final class AggregatedDataCall implements Callable<Unit> {
 
     @Override
     public Unit call() throws Exception {
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            systemInfoRepository.download().call();
 
-            @Override
-            public Unit call() throws Exception {
-                systemInfoRepository.download().call();
+            List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
+            Set<String> periodIds = Collections.unmodifiableSet(
+                    selectPeriodIds(periodStore.selectAll()));
+            List<String> organisationUnitUids = Collections.unmodifiableList(
+                    organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 
-                List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
-                Set<String> periodIds = Collections.unmodifiableSet(
-                        selectPeriodIds(periodStore.selectAll()));
-                List<String> organisationUnitUids = Collections.unmodifiableList(
-                        organisationUnitStore.queryRootCaptureOrganisationUnitUids());
+            DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
+            dataValueCallFactory.create(dataValueQuery).call();
 
-                dataValueCallFactory.create(dataValueQuery).call();
+            DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
+                    DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
-                        DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
+            Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
+                    dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
 
-                Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
-                        dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
+            dataSetCompleteRegistrationCall.call();
 
-                dataSetCompleteRegistrationCall.call();
+            foreignKeyCleaner.cleanForeignKeyErrors();
 
-                foreignKeyCleaner.cleanForeignKeyErrors();
-
-                return new Unit();
-            }
+            return new Unit();
         });
 
     }

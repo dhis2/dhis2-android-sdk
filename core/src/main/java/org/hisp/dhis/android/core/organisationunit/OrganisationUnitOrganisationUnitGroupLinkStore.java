@@ -28,12 +28,7 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,39 +37,21 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class OrganisationUnitOrganisationUnitGroupLinkStore {
 
-    private OrganisationUnitOrganisationUnitGroupLinkStore() {}
-
     private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLinkModel> BINDER
-            = new StatementBinder<OrganisationUnitOrganisationUnitGroupLinkModel>() {
-        @Override
-        public void bindToStatement(@NonNull OrganisationUnitOrganisationUnitGroupLinkModel
-                                            organisationUnitOrganisationUnitGroupLinkModel,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-
-            sqLiteBind(sqLiteStatement, 1,
-                    organisationUnitOrganisationUnitGroupLinkModel.organisationUnit());
-
-            sqLiteBind(sqLiteStatement, 2,
-                    organisationUnitOrganisationUnitGroupLinkModel.organisationUnitGroup());
-        }
+            = (organisationUnitOrganisationUnitGroupLinkModel, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, organisationUnitOrganisationUnitGroupLinkModel.organisationUnit());
+        sqLiteBind(sqLiteStatement, 2, organisationUnitOrganisationUnitGroupLinkModel.organisationUnitGroup());
     };
 
-    private static final CursorModelFactory<OrganisationUnitOrganisationUnitGroupLinkModel> FACTORY
-            = new CursorModelFactory<OrganisationUnitOrganisationUnitGroupLinkModel>() {
-        @Override
-        public OrganisationUnitOrganisationUnitGroupLinkModel fromCursor(Cursor cursor) {
-            return OrganisationUnitOrganisationUnitGroupLinkModel.create(cursor);
-        }
-    };
+    private OrganisationUnitOrganisationUnitGroupLinkStore() {}
 
     public static LinkModelStore<OrganisationUnitOrganisationUnitGroupLinkModel> create(
             DatabaseAdapter databaseAdapter) {
-
         return StoreFactory.linkModelStore(databaseAdapter,
                 OrganisationUnitOrganisationUnitGroupLinkModel.TABLE,
                 new OrganisationUnitOrganisationUnitGroupLinkModel.Columns(),
                 OrganisationUnitOrganisationUnitGroupLinkModel.Columns.ORGANISATION_UNIT,
                 BINDER,
-                FACTORY);
+                OrganisationUnitOrganisationUnitGroupLinkModel::create);
     }
 }

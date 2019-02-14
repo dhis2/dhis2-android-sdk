@@ -54,7 +54,7 @@ public abstract class ConfigurationModel extends BaseModel {
     public abstract HttpUrl serverUrl();
 
     // package visible for access in the store and manager
-    static ConfigurationModel create(Cursor cursor) {
+    public static ConfigurationModel create(Cursor cursor) {
         return AutoValue_ConfigurationModel.createFromCursor(cursor);
     }
 

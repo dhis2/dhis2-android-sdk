@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,37 +38,20 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class AuthenticatedUserStore {
 
-    private AuthenticatedUserStore() {}
-
     private static final StatementBinder<AuthenticatedUserModel> BINDER
-            = new StatementBinder<AuthenticatedUserModel>() {
-        @Override
-        public void bindToStatement(@NonNull AuthenticatedUserModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.user());
-            sqLiteBind(sqLiteStatement, 2, o.credentials());
-            sqLiteBind(sqLiteStatement, 3, o.hash());
-        }
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.user());
+        sqLiteBind(sqLiteStatement, 2, o.credentials());
+        sqLiteBind(sqLiteStatement, 3, o.hash());
     };
 
     private static final WhereStatementBinder<AuthenticatedUserModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<AuthenticatedUserModel>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull AuthenticatedUserModel o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 4, o.user());
-        }
-    };
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 4, o.user());
 
-    private static final CursorModelFactory<AuthenticatedUserModel> FACTORY
-            = new CursorModelFactory<AuthenticatedUserModel>() {
-        @Override
-        public AuthenticatedUserModel fromCursor(Cursor cursor) {
-            return AuthenticatedUserModel.create(cursor);
-        }
-    };
+    private AuthenticatedUserStore() {}
 
     public static ObjectWithoutUidStore<AuthenticatedUserModel> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthenticatedUserTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                BINDER, WHERE_UPDATE_BINDER, AuthenticatedUserModel::create);
     }
 }

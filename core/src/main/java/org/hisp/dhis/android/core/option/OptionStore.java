@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -55,14 +53,7 @@ final class OptionStore {
         }
     };
 
-    private static final CursorModelFactory<Option> FACTORY = new CursorModelFactory<Option>() {
-        @Override
-        public Option fromCursor(Cursor cursor) {
-            return Option.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<Option> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OptionTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, OptionTableInfo.TABLE_INFO, BINDER, Option::create);
     }
 }

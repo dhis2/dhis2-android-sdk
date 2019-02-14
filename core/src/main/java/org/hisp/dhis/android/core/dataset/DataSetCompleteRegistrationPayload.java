@@ -46,7 +46,7 @@ class DataSetCompleteRegistrationPayload {
                     List<DataSetCompleteRegistration> dataSetCompleteRegistrations) {
 
         this.dataSetCompleteRegistrations = dataSetCompleteRegistrations == null ?
-                new ArrayList<DataSetCompleteRegistration>() :
+                new ArrayList<>() :
                 dataSetCompleteRegistrations;
     }
 }

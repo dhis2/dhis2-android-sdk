@@ -47,7 +47,7 @@ public abstract class Authority implements Model {
     @JsonIgnore()
     public abstract String name();
 
-    static Authority create(Cursor cursor) {
+    public static Authority create(Cursor cursor) {
         return $AutoValue_Authority.createFromCursor(cursor);
     }
 

@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.State;
@@ -48,11 +45,29 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 final class DataSetCompleteRegistrationStoreImpl extends
         ObjectWithoutUidStoreImpl<DataSetCompleteRegistration> implements DataSetCompleteRegistrationStore {
 
+    private static final StatementBinder<DataSetCompleteRegistration> BINDER =
+            (dataSetCompleteRegistration, sqLiteStatement) -> {
+                sqLiteBind(sqLiteStatement, 1, dataSetCompleteRegistration.period());
+                sqLiteBind(sqLiteStatement, 2, dataSetCompleteRegistration.dataSet());
+                sqLiteBind(sqLiteStatement, 3, dataSetCompleteRegistration.organisationUnit());
+                sqLiteBind(sqLiteStatement, 4, dataSetCompleteRegistration.attributeOptionCombo());
+                sqLiteBind(sqLiteStatement, 5, dataSetCompleteRegistration.date());
+                sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.storedBy());
+                sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.state());
+            };
+
+    private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_UPDATE_BINDER =
+            (dataSetCompleteRegistration, sqLiteStatement) -> {
+                sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.period());
+                sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.dataSet());
+                sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.organisationUnit());
+                sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.attributeOptionCombo());
+            };
+
     private DataSetCompleteRegistrationStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                                                  SQLiteStatement updateWhereStatement, SQLStatementBuilder builder) {
-
         super(databaseAdapter, insertStatement, updateWhereStatement,
-                builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                builder, BINDER, WHERE_UPDATE_BINDER, DataSetCompleteRegistration::create);
     }
 
     public static DataSetCompleteRegistrationStoreImpl create(DatabaseAdapter databaseAdapter) {
@@ -66,41 +81,6 @@ final class DataSetCompleteRegistrationStoreImpl extends
                 databaseAdapter.compileStatement(sqlStatementBuilder.updateWhere()),
                 sqlStatementBuilder);
     }
-
-    private static final StatementBinder<DataSetCompleteRegistration> BINDER =
-            new StatementBinder<DataSetCompleteRegistration>() {
-        @Override
-        public void bindToStatement(@NonNull DataSetCompleteRegistration dataSetCompleteRegistration,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, dataSetCompleteRegistration.period());
-            sqLiteBind(sqLiteStatement, 2, dataSetCompleteRegistration.dataSet());
-            sqLiteBind(sqLiteStatement, 3, dataSetCompleteRegistration.organisationUnit());
-            sqLiteBind(sqLiteStatement, 4, dataSetCompleteRegistration.attributeOptionCombo());
-            sqLiteBind(sqLiteStatement, 5, dataSetCompleteRegistration.date());
-            sqLiteBind(sqLiteStatement, 6, dataSetCompleteRegistration.storedBy());
-            sqLiteBind(sqLiteStatement, 7, dataSetCompleteRegistration.state());
-        }
-    };
-
-    private static final WhereStatementBinder<DataSetCompleteRegistration> WHERE_UPDATE_BINDER =
-            new WhereStatementBinder<DataSetCompleteRegistration>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull DataSetCompleteRegistration dataSetCompleteRegistration,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 8, dataSetCompleteRegistration.period());
-            sqLiteBind(sqLiteStatement, 9, dataSetCompleteRegistration.dataSet());
-            sqLiteBind(sqLiteStatement, 10, dataSetCompleteRegistration.organisationUnit());
-            sqLiteBind(sqLiteStatement, 11, dataSetCompleteRegistration.attributeOptionCombo());
-        }
-    };
-
-    private static final CursorModelFactory<DataSetCompleteRegistration> FACTORY
-            = new CursorModelFactory<DataSetCompleteRegistration>() {
-        @Override
-        public DataSetCompleteRegistration fromCursor(Cursor cursor) {
-            return DataSetCompleteRegistration.create(cursor);
-        }
-    };
 
     @Override
     public Collection<DataSetCompleteRegistration> getDataSetCompleteRegistrationsWithState(State state) {
@@ -122,5 +102,4 @@ final class DataSetCompleteRegistrationStoreImpl extends
 
         updateWhere(updatedDataSetCompleteRegistration);
     }
-
 }

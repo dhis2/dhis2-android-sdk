@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementFields;
@@ -43,6 +44,7 @@ public final class ProgramStageDataElementFields {
     static final String SORT_ORDER = "sortOrder";
     static final String ALLOW_FUTURE_DATE = "allowFutureDate";
     static final String PROGRAM_STAGE = "programStage";
+    static final String RENDER_TYPE = "renderType";
 
     private static FieldsHelper<ProgramStageDataElement> fh = new FieldsHelper<>();
 
@@ -55,7 +57,8 @@ public final class ProgramStageDataElementFields {
                     fh.<Boolean>field(ALLOW_PROVIDED_ELSEWHERE),
                     fh.<Integer>field(SORT_ORDER),
                     fh.<Boolean>field(ALLOW_FUTURE_DATE),
-                    fh.<ObjectWithUid>nestedField(PROGRAM_STAGE)
+                    fh.<ValueTypeRendering>field(RENDER_TYPE),
+                    fh.<ObjectWithUid>nestedField(PROGRAM_STAGE).with(ObjectWithUid.uid)
             ).build();
 
 

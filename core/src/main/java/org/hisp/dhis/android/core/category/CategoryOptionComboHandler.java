@@ -30,8 +30,11 @@ package org.hisp.dhis.android.core.category;
 
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,12 +44,11 @@ import dagger.Reusable;
 final class CategoryOptionComboHandler extends IdentifiableSyncHandlerImpl<CategoryOptionCombo> {
 
 
-    private final LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
-            categoryOptionComboCategoryOptionLinkHandler;
+    private final LinkSyncHandler<CategoryOptionComboCategoryOptionLink> categoryOptionComboCategoryOptionLinkHandler;
 
     @Inject
     CategoryOptionComboHandler(CategoryOptionComboStore store,
-                               LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
+                               LinkSyncHandler<CategoryOptionComboCategoryOptionLink>
                                        categoryOptionComboCategoryOptionLinkHandler) {
         super(store);
         this.categoryOptionComboCategoryOptionLinkHandler = categoryOptionComboCategoryOptionLinkHandler;
@@ -54,8 +56,14 @@ final class CategoryOptionComboHandler extends IdentifiableSyncHandlerImpl<Categ
 
     @Override
     protected void afterObjectHandled(CategoryOptionCombo optionCombo, HandleAction action) {
-        categoryOptionComboCategoryOptionLinkHandler.handleMany(optionCombo.uid(),
-                optionCombo.categoryOptions(),
-                new CategoryOptionComboCategoryOptionLinkModelBuilder(optionCombo));
+        if (optionCombo.categoryOptions() != null) {
+            List<CategoryOptionComboCategoryOptionLink> categoryOptionComboCategoryOptionLinks = new ArrayList<>();
+            for (CategoryOption categoryOption : optionCombo.categoryOptions()) {
+                categoryOptionComboCategoryOptionLinks.add(CategoryOptionComboCategoryOptionLink.builder()
+                        .categoryOptionCombo(optionCombo.uid()).categoryOption(categoryOption.uid()).build());
+            }
+            categoryOptionComboCategoryOptionLinkHandler.handleMany(optionCombo.uid(),
+                    categoryOptionComboCategoryOptionLinks);
+        }
     }
 }

@@ -60,7 +60,7 @@ public abstract class TeiQuery extends BaseQuery {
                 .pageSize(DEFAULT_PAGE_SIZE)
                 .paging(true)
                 .ouMode(OuMode.SELECTED)
-                .uIds(Collections.<String>emptyList());
+                .uIds(Collections.emptyList());
     }
 
     @AutoValue.Builder

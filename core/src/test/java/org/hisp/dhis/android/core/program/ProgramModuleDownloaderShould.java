@@ -140,10 +140,10 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         // Calls
         when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
         when(trackedEntityTypeCall.call()).thenReturn(Collections.singletonList(trackedEntityType));
-        when(relationshipTypeCall.call()).thenReturn(Collections.<RelationshipType>emptyList());
-        when(optionSetCall.call()).thenReturn(Collections.<OptionSet>emptyList());
-        when(programStageEndpointCall.call()).thenReturn(Collections.<ProgramStage>emptyList());
-        when(programRuleEndpointCall.call()).thenReturn(Collections.<ProgramRule>emptyList());
+        when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
+        when(optionSetCall.call()).thenReturn(Collections.emptyList());
+        when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
+        when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
 
         // Metadata call
         programDownloadCall = new ProgramModuleDownloader(

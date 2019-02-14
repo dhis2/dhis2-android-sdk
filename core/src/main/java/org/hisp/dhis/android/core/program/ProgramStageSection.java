@@ -91,7 +91,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
         return new $$AutoValue_ProgramStageSection.Builder();
     }
 
-    static ProgramStageSection create(Cursor cursor) {
+    public static ProgramStageSection create(Cursor cursor) {
         return $AutoValue_ProgramStageSection.createFromCursor(cursor);
     }
 

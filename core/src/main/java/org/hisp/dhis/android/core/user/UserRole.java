@@ -45,7 +45,7 @@ public abstract class UserRole extends BaseIdentifiableObject implements Model {
         return new $$AutoValue_UserRole.Builder();
     }
 
-    static UserRole create(Cursor cursor) {
+    public static UserRole create(Cursor cursor) {
         return $AutoValue_UserRole.createFromCursor(cursor);
     }
 

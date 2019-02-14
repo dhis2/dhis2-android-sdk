@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import java.util.Date;
 
 public class TrackedEntityAttributeReservedValueModelBuilder
-        extends ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValue> {
+        implements ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValue> {
 
     private final TrackedEntityAttributeReservedValue.Builder builder;
 

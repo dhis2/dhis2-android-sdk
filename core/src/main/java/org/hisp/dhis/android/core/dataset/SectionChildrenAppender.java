@@ -49,10 +49,10 @@ final class SectionChildrenAppender extends ChildrenAppender<DataSet> {
 
     static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new SectionChildrenAppender(
-                StoreFactory.<DataSet, Section>singleParentChildStore(
+                StoreFactory.singleParentChildStore(
                         databaseAdapter,
                         SectionStore.CHILD_PROJECTION,
-                        SectionStore.FACTORY)
+                        Section::create)
         );
     }
 }

@@ -80,60 +80,47 @@ public final class TrackedEntityInstanceListDownloadAndPersistCallFactory {
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids) {
-        return new Callable<List<TrackedEntityInstance>>() {
-            @Override
-            public List<TrackedEntityInstance> call() throws Exception {
-                return downloadAndPersist(trackedEntityInstanceUids, null);
-            }
-        };
+        return () -> downloadAndPersist(trackedEntityInstanceUids, null);
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final Collection<String> trackedEntityInstanceUids,
                                                          final String program) {
-        return new Callable<List<TrackedEntityInstance>>() {
-            @Override
-            public List<TrackedEntityInstance> call() throws Exception {
-                return downloadAndPersist(trackedEntityInstanceUids, program);
-            }
-        };
+        return () -> downloadAndPersist(trackedEntityInstanceUids, program);
     }
 
     private List<TrackedEntityInstance> downloadAndPersist(final Collection<String> trackedEntityInstanceUids,
                                                            final String program) throws D2Error {
 
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<List<TrackedEntityInstance>>() {
-            @Override
-            public List<TrackedEntityInstance> call() throws Exception {
-                if (trackedEntityInstanceUids == null) {
-                    throw new IllegalArgumentException("UID list is null");
-                }
-
-                List<TrackedEntityInstance> teis = new ArrayList<>();
-
-                for (String uid : trackedEntityInstanceUids) {
-                    List<TrackedEntityInstance> teiList;
-                    if (program == null) {
-                        Call<Payload<TrackedEntityInstance>> teiCall =
-                                trackedEntityInstanceService.getTrackedEntityInstance(uid,
-                                        TrackedEntityInstanceFields.allFields, true);
-                        teiList = apiCallExecutor.executePayloadCall(teiCall);
-                    } else {
-                        teiList = downloadGlassAware(uid, program);
-                    }
-
-                    teis.addAll(teiList);
-                }
-
-                d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
-
-                if (!versionManager.is2_29()) {
-                    d2CallExecutor.executeD2Call(relationshipsCallFactory.getCall());
-                }
-
-                foreignKeyCleaner.cleanForeignKeyErrors();
-
-                return teis;
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            if (trackedEntityInstanceUids == null) {
+                throw new IllegalArgumentException("UID list is null");
             }
+
+            List<TrackedEntityInstance> teis = new ArrayList<>();
+
+            for (String uid : trackedEntityInstanceUids) {
+                List<TrackedEntityInstance> teiList;
+                if (program == null) {
+                    Call<Payload<TrackedEntityInstance>> teiCall =
+                            trackedEntityInstanceService.getTrackedEntityInstance(uid,
+                                    TrackedEntityInstanceFields.allFields, true);
+                    teiList = apiCallExecutor.executePayloadCall(teiCall);
+                } else {
+                    teiList = downloadGlassAware(uid, program);
+                }
+
+                teis.addAll(teiList);
+            }
+
+            d2CallExecutor.executeD2Call(persistenceCallFactory.getCall(teis));
+
+            if (!versionManager.is2_29()) {
+                d2CallExecutor.executeD2Call(relationshipsCallFactory.getCall());
+            }
+
+            foreignKeyCleaner.cleanForeignKeyErrors();
+
+            return teis;
         });
     }
 

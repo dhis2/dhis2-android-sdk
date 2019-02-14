@@ -50,10 +50,10 @@ final class DataInputPeriodChildrenAppender extends ChildrenAppender<DataSet> {
 
     static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new DataInputPeriodChildrenAppender(
-                StoreFactory.<DataSet, DataInputPeriod>singleParentChildStore(
+                StoreFactory.singleParentChildStore(
                         databaseAdapter,
                         DataInputPeriodLinkStore.CHILD_PROJECTION,
-                        DataInputPeriodLinkStore.FACTORY)
+                        DataInputPeriod::create)
         );
     }
 }

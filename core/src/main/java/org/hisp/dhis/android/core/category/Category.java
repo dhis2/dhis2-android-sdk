@@ -56,7 +56,7 @@ public abstract class Category extends BaseIdentifiableObject implements Model {
     @ColumnAdapter(IgnoreCategoryOptionListColumnAdapter.class)
     public abstract List<CategoryOption> categoryOptions();
 
-    static Category create(Cursor cursor) {
+    public static Category create(Cursor cursor) {
         return $AutoValue_Category.createFromCursor(cursor);
     }
 

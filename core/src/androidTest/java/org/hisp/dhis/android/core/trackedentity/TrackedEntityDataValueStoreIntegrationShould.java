@@ -98,7 +98,7 @@ public class TrackedEntityDataValueStoreIntegrationShould
         assertThat(store.queryTrackedEntityDataValuesByEventUid("event_1").size()).isEqualTo(1);
         assertThat(store.queryTrackedEntityDataValuesByEventUid("event_2").size()).isEqualTo(2);
 
-        store.deleteByEventAndNotInDataElements("event_2", new ArrayList<String>());
+        store.deleteByEventAndNotInDataElements("event_2", new ArrayList<>());
         assertThat(store.selectAll().size()).isEqualTo(1);
         assertThat(store.queryTrackedEntityDataValuesByEventUid("event_2").size()).isEqualTo(0);
     }

@@ -29,12 +29,10 @@ package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,9 +55,6 @@ public class DataElementHandlerShould {
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
-    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
-
-    @Mock
     private DataElement dataElement;
 
     @Mock
@@ -71,7 +66,7 @@ public class DataElementHandlerShould {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataElementStore, styleHandler, renderTypeHandler);
+        dataElementHandler = new DataElementHandler(dataElementStore, styleHandler);
         when(dataElement.uid()).thenReturn("test_data_element_uid");
         when(dataElement.categoryCombo()).thenReturn(categoryCombo);
     }
@@ -83,14 +78,8 @@ public class DataElementHandlerShould {
     }
 
     @Test
-    public void call_render_type_handler() throws Exception {
-        dataElementHandler.handle(dataElement);
-        verify(renderTypeHandler).handle(dataElement.renderType(), dataElement.uid(), DataElementModel.TABLE);
-    }
-
-    @Test
     public void extend_identifiable_handler_impl() {
         IdentifiableSyncHandlerImpl<DataElement> genericHandler =
-                new DataElementHandler(null, null, renderTypeHandler);
+                new DataElementHandler(null, null);
     }
 }

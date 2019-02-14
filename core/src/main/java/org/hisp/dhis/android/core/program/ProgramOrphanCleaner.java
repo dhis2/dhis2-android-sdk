@@ -70,17 +70,17 @@ final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
 
     public static ProgramOrphanCleaner create(DatabaseAdapter databaseAdapter) {
         return new ProgramOrphanCleaner(
-                new OrphanCleanerImpl<Program, ProgramRuleVariable>(ProgramRuleVariableModel.TABLE,
+                new OrphanCleanerImpl<>(ProgramRuleVariableModel.TABLE,
                         ProgramRuleVariableModel.Columns.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ProgramIndicator>(ProgramIndicatorTableInfo.TABLE_INFO.name(),
+                new OrphanCleanerImpl<>(ProgramIndicatorTableInfo.TABLE_INFO.name(),
                         ProgramIndicatorFields.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ProgramRule>(ProgramRuleTableInfo.TABLE_INFO.name(),
+                new OrphanCleanerImpl<>(ProgramRuleTableInfo.TABLE_INFO.name(),
                         ProgramRuleFields.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ProgramTrackedEntityAttribute>(ProgramTrackedEntityAttributeTableInfo.
+                new OrphanCleanerImpl<>(ProgramTrackedEntityAttributeTableInfo.
                         TABLE_INFO.name(), ProgramTrackedEntityAttributeFields.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ProgramSection>(ProgramSectionTableInfo.TABLE_INFO.name(),
+                new OrphanCleanerImpl<>(ProgramSectionTableInfo.TABLE_INFO.name(),
                         ProgramSectionFields.PROGRAM, databaseAdapter),
-                new OrphanCleanerImpl<Program, ObjectWithUid>(ProgramStageTableInfo.TABLE_INFO.name(),
+                new OrphanCleanerImpl<>(ProgramStageTableInfo.TABLE_INFO.name(),
                         ProgramStageFields.PROGRAM, databaseAdapter)
         );
     }

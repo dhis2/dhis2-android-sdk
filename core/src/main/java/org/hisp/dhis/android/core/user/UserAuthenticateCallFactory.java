@@ -103,33 +103,29 @@ final class UserAuthenticateCallFactory {
     }
 
     public Callable<User> getCall(final String username, final String password) {
-        return new Callable<User>() {
+        return () -> {
+            throwExceptionIfUsernameNull(username);
+            throwExceptionIfPasswordNull(password);
+            throwExceptionIfAlreadyAuthenticated();
 
-            @Override
-            public User call() throws Exception {
-                throwExceptionIfUsernameNull(username);
-                throwExceptionIfPasswordNull(password);
-                throwExceptionIfAlreadyAuthenticated();
+            Call<User> authenticateCall =
+                    userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
 
-                Call<User> authenticateCall =
-                        userService.authenticate(basic(username, password), UserFields.allFieldsWithoutOrgUnit);
-
-                try {
-                    User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
-                            new UserAuthenticateCallErrorCatcher());
-                    return loginOnline(authenticatedUser, username, password);
-                } catch (D2Error d2Error) {
-                    if (
-                            d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
-                                    d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                                    d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
-                        return loginOffline(username, password);
-                    } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
-                        wipeModule.wipeEverything();
-                        throw d2Error;
-                    } else {
-                        throw d2Error;
-                    }
+            try {
+                User authenticatedUser = apiCallExecutor.executeObjectCallWithErrorCatcher(authenticateCall,
+                        new UserAuthenticateCallErrorCatcher());
+                return loginOnline(authenticatedUser, username, password);
+            } catch (D2Error d2Error) {
+                if (
+                        d2Error.errorCode() == D2ErrorCode.API_RESPONSE_PROCESS_ERROR ||
+                                d2Error.errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
+                                d2Error.errorCode() == D2ErrorCode.UNKNOWN_HOST) {
+                    return loginOffline(username, password);
+                } else if (d2Error.errorCode() == D2ErrorCode.USER_ACCOUNT_DISABLED) {
+                    wipeModule.wipeEverything();
+                    throw d2Error;
+                } else {
+                    throw d2Error;
                 }
             }
         };

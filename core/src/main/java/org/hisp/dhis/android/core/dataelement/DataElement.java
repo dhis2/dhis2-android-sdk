@@ -43,14 +43,12 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataElement.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_DataElement.Builder.class)
 public abstract class DataElement extends BaseNameableObject
         implements Model, ObjectWithStyle<DataElement, DataElement.Builder> {
 
@@ -98,10 +96,6 @@ public abstract class DataElement extends BaseNameableObject
     }
 
     @Nullable
-    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
-    public abstract ValueTypeRendering renderType();
-
-    @Nullable
     @ColumnAdapter(IgnoreAccessAdapter.class)
     public abstract Access access();
 
@@ -109,7 +103,7 @@ public abstract class DataElement extends BaseNameableObject
         return new $$AutoValue_DataElement.Builder();
     }
 
-    static DataElement create(Cursor cursor) {
+    public static DataElement create(Cursor cursor) {
         return $AutoValue_DataElement.createFromCursor(cursor);
     }
 
@@ -141,8 +135,6 @@ public abstract class DataElement extends BaseNameableObject
         public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
 
         public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
-
-        public abstract DataElement.Builder renderType(ValueTypeRendering renderType);
 
         public abstract DataElement.Builder access(Access access);
 

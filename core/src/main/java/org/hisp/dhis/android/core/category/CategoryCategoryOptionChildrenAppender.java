@@ -50,11 +50,11 @@ final class CategoryCategoryOptionChildrenAppender extends ChildrenAppender<Cate
 
     static ChildrenAppender<Category> create(DatabaseAdapter databaseAdapter) {
         return new CategoryCategoryOptionChildrenAppender(
-                StoreFactory.<Category, CategoryOption>linkModelChildStore(
+                StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
                         CategoryCategoryOptionLinkTableInfo.CHILD_PROJECTION,
-                        CategoryOptionStore.FACTORY)
+                        CategoryOption::create)
         );
     }
 }

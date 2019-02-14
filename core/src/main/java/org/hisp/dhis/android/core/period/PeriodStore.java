@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.period;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,35 +38,20 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class PeriodStore {
 
-    private PeriodStore() {}
-
-    private static final StatementBinder<Period> BINDER = new StatementBinder<Period>() {
-        @Override
-        public void bindToStatement(@NonNull Period o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.periodId());
-            sqLiteBind(sqLiteStatement, 2, o.periodType());
-            sqLiteBind(sqLiteStatement, 3, o.startDate());
-            sqLiteBind(sqLiteStatement, 4, o.endDate());
-        }
+    private static final StatementBinder<Period> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.periodId());
+        sqLiteBind(sqLiteStatement, 2, o.periodType());
+        sqLiteBind(sqLiteStatement, 3, o.startDate());
+        sqLiteBind(sqLiteStatement, 4, o.endDate());
     };
 
     private static final WhereStatementBinder<Period> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<Period>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull Period o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 5, o.periodId());
-        }
-    };
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 5, o.periodId());
 
-    private static final CursorModelFactory<Period> FACTORY = new CursorModelFactory<Period>() {
-        @Override
-        public Period fromCursor(Cursor cursor) {
-            return Period.create(cursor);
-        }
-    };
+    private PeriodStore() {}
 
     public static ObjectWithoutUidStore<Period> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                BINDER, WHERE_UPDATE_BINDER, Period::create);
     }
 }

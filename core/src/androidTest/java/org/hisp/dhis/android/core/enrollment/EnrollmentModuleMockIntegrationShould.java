@@ -24,12 +24,12 @@ public class EnrollmentModuleMockIntegrationShould extends MockIntegrationShould
     @Test
     public void allow_access_to_all_enrollments_without_children() {
         List<Enrollment> enrollments = d2.enrollmentModule().enrollments.get();
-        assertThat(enrollments.size(), is(1));
-        for (Enrollment enrollment: enrollments) {
-            assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
-            assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
-            assertThat(enrollment.events() == null, is(true));
-        }
+        assertThat(enrollments.size(), is(2));
+
+        Enrollment enrollment = enrollments.get(0);
+        assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
+        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.events() == null, is(true));
     }
 
     @Test

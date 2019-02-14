@@ -50,11 +50,11 @@ final class CategoryCategoryComboChildrenAppender extends ChildrenAppender<Categ
 
     static ChildrenAppender<CategoryCombo> create(DatabaseAdapter databaseAdapter) {
         return new CategoryCategoryComboChildrenAppender(
-                StoreFactory.<CategoryCombo, Category>linkModelChildStore(
+                StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         CategoryCategoryComboLinkTableInfo.TABLE_INFO,
                         CategoryCategoryComboLinkTableInfo.CHILD_PROJECTION,
-                        CategoryStore.FACTORY
+                        Category::create
                 )
         );
     }

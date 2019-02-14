@@ -70,7 +70,7 @@ public abstract class DataInputPeriod extends BaseModel {
     public abstract Date closingDate();
 
     @NonNull
-    static DataInputPeriod create(Cursor cursor) {
+    public static DataInputPeriod create(Cursor cursor) {
         return $AutoValue_DataInputPeriod.createFromCursor(cursor);
     }
 

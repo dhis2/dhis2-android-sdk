@@ -72,27 +72,24 @@ final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
 
     public Callable<Void> getCall(final Collection<TrackedEntityInstance> trackedEntityInstances) {
 
-        return new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                trackedEntityInstanceHandler.handleMany(trackedEntityInstances, true);
+        return () -> {
+            trackedEntityInstanceHandler.handleMany(trackedEntityInstances, true);
 
-                Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
+            Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
-                if (!searchOrgUnitUids.isEmpty()) {
-                    AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
+            if (!searchOrgUnitUids.isEmpty()) {
+                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
 
-                    Callable<List<OrganisationUnit>> organisationUnitCall =
-                            organisationUnitDownloader.downloadSearchOrganisationUnits(
-                                    searchOrgUnitUids,
-                                    User.builder().uid(authenticatedUserModel.user()).build());
-                    organisationUnitCall.call();
-                }
-
-                foreignKeyCleaner.cleanForeignKeyErrors();
-
-                return null;
+                Callable<List<OrganisationUnit>> organisationUnitCall =
+                        organisationUnitDownloader.downloadSearchOrganisationUnits(
+                                searchOrgUnitUids,
+                                User.builder().uid(authenticatedUserModel.user()).build());
+                organisationUnitCall.call();
             }
+
+            foreignKeyCleaner.cleanForeignKeyErrors();
+
+            return null;
         };
     }
 }

@@ -54,16 +54,13 @@ final class EventEndpointCallFactory {
     }
 
     Callable<List<Event>> getCall(final EventQuery eventQuery) {
-        return new Callable<List<Event>>() {
-            @Override
-            public List<Event> call() throws Exception {
+        return () -> {
 
-                Call<Payload<Event>> call = service.getEvents(eventQuery.orgUnit(), eventQuery.program(),
-                        eventQuery.trackedEntityInstance(), EventFields.allFields, Boolean.TRUE,
-                        eventQuery.page(), eventQuery.pageSize(), eventQuery.lastUpdatedStartDate());
+            Call<Payload<Event>> call = service.getEvents(eventQuery.orgUnit(), eventQuery.program(),
+                    eventQuery.trackedEntityInstance(), EventFields.allFields, Boolean.TRUE,
+                    eventQuery.page(), eventQuery.pageSize(), eventQuery.lastUpdatedStartDate());
 
-                return apiCallExecutor.executePayloadCall(call);
-            }
+            return apiCallExecutor.executePayloadCall(call);
         };
     }
 }

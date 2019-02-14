@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
@@ -73,15 +72,8 @@ public final class RelationshipCollectionRepository
                                      final RelationshipItemStore relationshipItemStore,
                                      final RelationshipItemElementStoreSelector storeSelector) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<RelationshipCollectionRepository>() {
-
-                    @Override
-                    public RelationshipCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new RelationshipCollectionRepository(store, childrenAppenders, updatedScope,
-                                relationshipHandler, relationshipItemStore, storeSelector);
-                    }
-                }));
+                updatedScope -> new RelationshipCollectionRepository(store, childrenAppenders, updatedScope,
+                        relationshipHandler, relationshipItemStore, storeSelector)));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -50,13 +49,6 @@ public final class EnrollmentCollectionRepository
             final Collection<ChildrenAppender<Enrollment>> childrenAppenders,
             final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<EnrollmentCollectionRepository>() {
-
-                    @Override
-                    public EnrollmentCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new EnrollmentCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new EnrollmentCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -51,13 +50,6 @@ public final class UserRoleCollectionRepository
             final Collection<ChildrenAppender<UserRole>> childrenAppenders,
             List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<UserRoleCollectionRepository>() {
-
-                    @Override
-                    public UserRoleCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new UserRoleCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new UserRoleCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

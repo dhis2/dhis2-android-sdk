@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
@@ -61,14 +60,7 @@ public final class EventCollectionRepository
                               final List<RepositoryScopeItem> scope,
                               final EventPostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<EventCollectionRepository>() {
-
-                    @Override
-                    public EventCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new EventCollectionRepository(store, childrenAppenders, updatedScope, postCall);
-                    }
-                }));
+                updatedScope -> new EventCollectionRepository(store, childrenAppenders, updatedScope, postCall)));
         this.postCall = postCall;
     }
 
@@ -76,6 +68,10 @@ public final class EventCollectionRepository
     @Override
     public Callable<WebResponse> upload() {
         return postCall;
+    }
+
+    public StringFilterConnector<EventCollectionRepository> byUid() {
+        return cf.string(EventTableInfo.Columns.UID);
     }
 
     public StringFilterConnector<EventCollectionRepository> byEnrollmentUid() {

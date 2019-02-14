@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
@@ -52,14 +51,7 @@ public final class CategoryOptionCollectionRepository
                                        final Collection<ChildrenAppender<CategoryOption>> childrenAppenders,
                                        List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<CategoryOptionCollectionRepository>() {
-
-                    @Override
-                    public CategoryOptionCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new CategoryOptionCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new CategoryOptionCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 
     public DateFilterConnector<CategoryOptionCollectionRepository> byStartDate() {

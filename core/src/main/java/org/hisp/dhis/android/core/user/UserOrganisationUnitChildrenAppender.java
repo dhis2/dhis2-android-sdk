@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 
 import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE;
 
@@ -67,7 +66,7 @@ final class UserOrganisationUnitChildrenAppender extends ChildrenAppender<User> 
                         databaseAdapter,
                         UserOrganisationUnitLinkTableInfo.TABLE_INFO,
                         UserOrganisationUnitLinkTableInfo.CHILD_PROJECTION,
-                        OrganisationUnitStore.FACTORY
+                        OrganisationUnit::create
                 )
         );
     }

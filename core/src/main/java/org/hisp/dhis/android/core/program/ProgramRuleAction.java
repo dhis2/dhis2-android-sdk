@@ -99,7 +99,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
     @ColumnAdapter(ProgramRuleWithUidColumnAdapter.class)
     public abstract ProgramRule programRule();
 
-    static ProgramRuleAction create(Cursor cursor) {
+    public static ProgramRuleAction create(Cursor cursor) {
         return $AutoValue_ProgramRuleAction.createFromCursor(cursor);
     }
 

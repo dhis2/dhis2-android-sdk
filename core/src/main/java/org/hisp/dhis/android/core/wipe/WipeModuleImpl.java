@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 final class WipeModuleImpl implements WipeModule {
 
@@ -48,38 +47,29 @@ final class WipeModuleImpl implements WipeModule {
 
     @Override
     public Unit wipeEverything() throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
-            @Override
-            public Unit call() {
-                wipeMetadataInternal();
-                wipeDataInternal();
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            wipeMetadataInternal();
+            wipeDataInternal();
 
-                return new Unit();
-            }
+            return new Unit();
         });
     }
 
     @Override
     public Unit wipeMetadata() throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
-            @Override
-            public Unit call() {
-                wipeMetadataInternal();
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            wipeMetadataInternal();
 
-                return new Unit();
-            }
+            return new Unit();
         });
     }
 
     @Override
     public Unit wipeData() throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
-            @Override
-            public Unit call() {
-                wipeDataInternal();
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            wipeDataInternal();
 
-                return new Unit();
-            }
+            return new Unit();
         });
     }
 

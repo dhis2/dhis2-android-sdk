@@ -43,7 +43,7 @@ public abstract class NestedField<Parent, Child> implements Property<Parent, Chi
     public abstract List<Property<Child, ?>> children();
 
     public static <T, K> NestedField<T, K> create(@NonNull String name) {
-        return new AutoValue_NestedField<>(name, Collections.<Property<K, ?>>emptyList());
+        return new AutoValue_NestedField<>(name, Collections.emptyList());
     }
 
     @SafeVarargs

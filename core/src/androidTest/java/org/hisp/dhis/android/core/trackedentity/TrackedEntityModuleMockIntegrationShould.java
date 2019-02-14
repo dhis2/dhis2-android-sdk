@@ -24,12 +24,13 @@ public class TrackedEntityModuleMockIntegrationShould extends MockIntegrationSho
     @Test
     public void allow_access_to_all_teis_without_children() {
         List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances.get();
-        assertThat(trackedEntityInstances.size(), is(1));
-        for (TrackedEntityInstance tei: trackedEntityInstances) {
-            assertThat(tei.uid(), is("nWrB0TfWlvh"));
-            assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));
-            assertThat(tei.trackedEntityAttributeValues() == null, is(true));
-        }
+        assertThat(trackedEntityInstances.size(), is(2));
+
+        TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
+        assertThat(trackedEntityInstance.uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstance.organisationUnit(), is("DiszpKrYNg8"));
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null, is(true));
+
     }
 
     @Test

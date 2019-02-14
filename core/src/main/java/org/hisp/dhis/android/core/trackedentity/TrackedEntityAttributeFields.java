@@ -33,9 +33,7 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.option.OptionSet;
 
 public final class TrackedEntityAttributeFields {
 
@@ -53,7 +51,6 @@ public final class TrackedEntityAttributeFields {
     private static final String UNIQUE = "unique";
     public static final String INHERIT = "inherit";
     private static final String STYLE = "style";
-    private static final String RENDER_TYPE = "renderType";
     private static final String ACCESS = "access";
 
     private static final FieldsHelper<TrackedEntityAttribute> fh = new FieldsHelper<>();
@@ -73,9 +70,8 @@ public final class TrackedEntityAttributeFields {
                     fh.<Boolean>field(ORG_UNIT_SCOPE),
                     fh.<Boolean>field(UNIQUE),
                     fh.<Boolean>field(INHERIT),
-                    fh.<OptionSet>nestedFieldWithUid(OPTION_SET),
+                    fh.nestedFieldWithUid(OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<ValueTypeRendering>field(RENDER_TYPE),
                     fh.<Access>nestedField(ACCESS).with(Access.read)
             ).build();
 

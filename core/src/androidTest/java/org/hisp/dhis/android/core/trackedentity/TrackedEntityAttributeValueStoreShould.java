@@ -207,7 +207,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         Assert.assertThat(store.count(), is(3));
         Assert.assertThat(store.queryByTrackedEntityInstance(TRACKED_ENTITY_INSTANCE).size(), is(1));
 
-        store.deleteByInstanceAndNotInAttributes(TRACKED_ENTITY_INSTANCE, new ArrayList<String>());
+        store.deleteByInstanceAndNotInAttributes(TRACKED_ENTITY_INSTANCE, new ArrayList<>());
         Assert.assertThat(store.count(), is(2));
         Assert.assertThat(store.queryByTrackedEntityInstance(TRACKED_ENTITY_INSTANCE).size(), is(0));
     }

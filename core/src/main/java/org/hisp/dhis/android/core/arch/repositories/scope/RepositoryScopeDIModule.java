@@ -41,6 +41,6 @@ public final class RepositoryScopeDIModule {
     @Provides
     @Reusable
     List<RepositoryScopeItem> emptyScope() {
-        return Collections.unmodifiableList(Collections.<RepositoryScopeItem>emptyList());
+        return Collections.unmodifiableList(Collections.emptyList());
     }
 }

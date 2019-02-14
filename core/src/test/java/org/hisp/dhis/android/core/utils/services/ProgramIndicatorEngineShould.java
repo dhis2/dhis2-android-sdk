@@ -396,7 +396,7 @@ public class ProgramIndicatorEngineShould {
         // Event2 does not exist
         when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
-                .thenReturn(Collections.<Event>emptyList());
+                .thenReturn(Collections.emptyList());
 
         String resultWithoutEvent = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
@@ -415,7 +415,7 @@ public class ProgramIndicatorEngineShould {
         // Event2 does not exist
         when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
-                .thenReturn(Collections.<Event>emptyList());
+                .thenReturn(Collections.emptyList());
 
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);

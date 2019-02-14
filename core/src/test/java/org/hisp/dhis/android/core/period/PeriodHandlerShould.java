@@ -44,16 +44,16 @@ import static org.mockito.Mockito.when;
 public class PeriodHandlerShould {
 
     @Mock
-    private ObjectWithoutUidStore<PeriodModel> store;
+    private ObjectWithoutUidStore<Period> store;
 
     @Mock
     private ParentPeriodGenerator generator;
 
     @Mock
-    private PeriodModel p1;
+    private Period p1;
 
     @Mock
-    private PeriodModel p2;
+    private Period p2;
 
     // object to test
     private PeriodHandler periodHandler;

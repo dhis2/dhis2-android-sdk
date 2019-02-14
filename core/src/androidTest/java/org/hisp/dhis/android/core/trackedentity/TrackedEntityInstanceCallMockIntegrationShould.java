@@ -18,7 +18,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
-import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
@@ -72,7 +71,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_payload.json", teiUid);
+        verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_payload.json", teiUid);
     }
 
     @Test
@@ -96,13 +95,40 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
         trackedEntityInstanceByUidEndPointCall.call();
 
-        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
+        verifyDownloadedTrackedEntityInstancePayload("trackedentity/tracked_entity_instance_with_removed_data_payload.json",
                 teiUid);
+    }
+
+    @Test
+    public void download_glass_protected_tracked_entity_instance() throws Exception {
+        String teiUid = "PgmUFEQYZdt";
+
+        givenAMetadataInDatabase();
+
+        Callable<List<TrackedEntityInstance>> trackedEntityInstanceByUidEndPointCall =
+                d2.trackedEntityModule().downloadTrackedEntityInstancesByUid(Lists.newArrayList(teiUid), "program");
+
+        dhis2MockServer.enqueueMockResponse("trackedentity/tracked_entity_instance.json");
+        dhis2MockServer.enqueueMockResponse("trackedentity/glass/break_glass_successful.json");
+        dhis2MockServer.enqueueMockResponse(401, "trackedentity/glass/glass_protected_tei_failure.json");
+
+        trackedEntityInstanceByUidEndPointCall.call();
+
+        verifyDownloadedTrackedEntityInstance("trackedentity/tracked_entity_instance.json", teiUid);
     }
 
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
+    }
+
+    private void verifyDownloadedTrackedEntityInstancePayload(String file, String teiUid)
+            throws IOException {
+        TrackedEntityInstance expectedEnrollmentResponse = parseTrackedEntityInstanceResponsePayload(file);
+
+        TrackedEntityInstance downloadedTei = getDownloadedTei(teiUid);
+
+        assertThat(downloadedTei, is(expectedEnrollmentResponse));
     }
 
     private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)
@@ -114,7 +140,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         assertThat(downloadedTei, is(expectedEnrollmentResponse));
     }
 
-    private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
+    private TrackedEntityInstance parseTrackedEntityInstanceResponsePayload(String file)
             throws IOException {
         String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
@@ -133,6 +159,20 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         return trackedEntityInstance;
     }
 
+    private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
+            throws IOException {
+        String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
+
+        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
+                BaseIdentifiableObject.DATE_FORMAT.raw());
+
+        TrackedEntityInstance trackedEntityInstance = objectMapper.readValue(
+                expectedEventsResponseJson,
+                new TypeReference<TrackedEntityInstance>() {});
+
+        return removeDeletedData(trackedEntityInstance);
+    }
+
     @NonNull
     private TrackedEntityInstance removeDeletedData(TrackedEntityInstance trackedEntityInstance) {
         Map<String, List<Event>> expectedEvents = new HashMap<>();
@@ -143,7 +183,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             for (Event event : enrollment.events()) {
                 if (!event.deleted()) {
                     if (expectedEvents.get(event.enrollment()) == null) {
-                        expectedEvents.put(event.enrollment(), new ArrayList<Event>());
+                        expectedEvents.put(event.enrollment(), new ArrayList<>());
                     }
 
                     expectedEvents.get(event.enrollment()).add(event);
@@ -189,7 +229,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Enrollment> downloadedEnrollmentsWithoutIdAndDeleteFalse = new ArrayList<>();
         for (Enrollment enrollment : downloadedEnrollments) {
             downloadedEnrollmentsWithoutIdAndDeleteFalse.add(
-                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<Note>()).build());
+                    enrollment.toBuilder().id(null).deleted(false).state(null).notes(new ArrayList<>()).build());
         }
 
         EventStore eventStore = EventStoreImpl.create(databaseAdapter());
@@ -205,7 +245,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         Map<String, List<TrackedEntityDataValue>> downloadedValues = new HashMap<>();
         for (TrackedEntityDataValue dataValue : dataValueList) {
             if (downloadedValues.get(dataValue.event()) == null) {
-                downloadedValues.put(dataValue.event(), new ArrayList<TrackedEntityDataValue>());
+                downloadedValues.put(dataValue.event(), new ArrayList<>());
             }
 
             downloadedValues.get(dataValue.event()).add(dataValue);
@@ -236,7 +276,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
             event = event.toBuilder().trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build();
 
             if (downloadedEvents.get(event.enrollment()) == null) {
-                downloadedEvents.put(event.enrollment(), new ArrayList<Event>());
+                downloadedEvents.put(event.enrollment(), new ArrayList<>());
             }
 
             downloadedEvents.get(event.enrollment()).add(event);

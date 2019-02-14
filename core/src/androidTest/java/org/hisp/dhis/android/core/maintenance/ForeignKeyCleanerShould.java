@@ -24,7 +24,7 @@ import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
 import org.hisp.dhis.android.core.user.UserCredentialsModel;
-import org.hisp.dhis.android.core.user.UserCredentialsStore;
+import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
@@ -35,7 +35,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -136,42 +135,39 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         final Program program = Program.builder().uid("nonexisent-program").build();
 
-        executor.executeD2CallTransactionally(new Callable<Void>() {
-            @Override
-            public Void call() throws D2Error {
-                ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()
-                        .uid(PROGRAM_RULE_UID).name("Rule").program(program).build());
+        executor.executeD2CallTransactionally(() -> {
+            ProgramRuleStore.create(d2.databaseAdapter()).insert(ProgramRule.builder()
+                    .uid(PROGRAM_RULE_UID).name("Rule").program(program).build());
 
-                ProgramRuleAction programRuleAction = ProgramRuleAction.builder()
-                        .uid("action_uid")
-                        .name("name")
-                        .programRuleActionType(ProgramRuleActionType.ASSIGN)
-                        .programRule(ProgramRule.builder().uid(PROGRAM_RULE_UID).build())
-                        .build();
+            ProgramRuleAction programRuleAction = ProgramRuleAction.builder()
+                    .uid("action_uid")
+                    .name("name")
+                    .programRuleActionType(ProgramRuleActionType.ASSIGN)
+                    .programRule(ProgramRule.builder().uid(PROGRAM_RULE_UID).build())
+                    .build();
 
-                ProgramRuleActionStore.create(d2.databaseAdapter()).insert(programRuleAction);
+            ProgramRuleActionStore.create(d2.databaseAdapter()).insert(programRuleAction);
 
-                Cursor programRuleCursor1 = getProgramRuleCursor();
-                Cursor programRuleActionCursor1 = getProgramRuleActionCursor();
-                assertThatCursorHasRowCount(programRuleCursor1, programRuleCount + 1);
-                assertThatCursorHasRowCount(programRuleActionCursor1, programRuleActionCount + 1);
-                programRuleCursor1.close();
-                programRuleActionCursor1.close();
+            Cursor programRuleCursor1 = getProgramRuleCursor();
+            Cursor programRuleActionCursor1 = getProgramRuleActionCursor();
+            assertThatCursorHasRowCount(programRuleCursor1, programRuleCount + 1);
+            assertThatCursorHasRowCount(programRuleActionCursor1, programRuleActionCount + 1);
+            programRuleCursor1.close();
+            programRuleActionCursor1.close();
 
-                ForeignKeyCleaner foreignKeyCleaner = ForeignKeyCleanerImpl.create(d2.databaseAdapter());
-                Integer rowsAffected = foreignKeyCleaner.cleanForeignKeyErrors();
+            ForeignKeyCleaner foreignKeyCleaner = ForeignKeyCleanerImpl.create(d2.databaseAdapter());
+            Integer rowsAffected = foreignKeyCleaner.cleanForeignKeyErrors();
 
-                Truth.assertThat(rowsAffected).isEqualTo(1);
+            Truth.assertThat(rowsAffected).isEqualTo(1);
 
-                Cursor programRuleCursor2 = getProgramRuleCursor();
-                Cursor programRuleActionCursor2 = getProgramRuleActionCursor();
-                assertThatCursorHasRowCount(programRuleCursor2, programRuleCount);
-                assertThatCursorHasRowCount(programRuleActionCursor2, programRuleActionCount);
-                programRuleCursor2.close();
-                programRuleActionCursor2.close();
-                
-                return null;
-            }
+            Cursor programRuleCursor2 = getProgramRuleCursor();
+            Cursor programRuleActionCursor2 = getProgramRuleActionCursor();
+            assertThatCursorHasRowCount(programRuleCursor2, programRuleCount);
+            assertThatCursorHasRowCount(programRuleActionCursor2, programRuleActionCount);
+            programRuleCursor2.close();
+            programRuleActionCursor2.close();
+
+            return null;
         });
 
     }
@@ -180,27 +176,24 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         final D2CallExecutor executor = new D2CallExecutor(d2.databaseAdapter());
 
-        executor.executeD2CallTransactionally(new Callable<Void>() {
-            @Override
-            public Void call() {
-                givenAMetadataInDatabase();
-                User user = User.builder().uid("no_user_uid").build();
-                UserCredentials userCredentials = UserCredentials.builder()
-                        .uid("user_credential_uid1")
-                        .user(user)
-                        .build();
+        executor.executeD2CallTransactionally(() -> {
+            givenAMetadataInDatabase();
+            User user = User.builder().uid("no_user_uid").build();
+            UserCredentials userCredentials = UserCredentials.builder()
+                    .uid("user_credential_uid1")
+                    .user(user)
+                    .build();
 
-                IdentifiableObjectStore<UserCredentials> userCredentialsStore =
-                        UserCredentialsStore.create(d2.databaseAdapter());
-                userCredentialsStore.insert(userCredentials);
+            IdentifiableObjectStore<UserCredentials> userCredentialsStore =
+                    UserCredentialsStoreImpl.create(d2.databaseAdapter());
+            userCredentialsStore.insert(userCredentials);
 
-                assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(true));
+            assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(true));
 
-                ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
+            ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
 
-                assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(false));
-                return null;
-            }
+            assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(false));
+            return null;
         });
     }
 

@@ -2,11 +2,13 @@ package org.hisp.dhis.android.core.trackedentity.api;
 
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
+import org.hisp.dhis.android.core.imports.BaseImportSummary;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.TEIImportSummary;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -71,8 +73,8 @@ class TrackedEntityInstanceUtils {
                 codeGenerator.generate(),
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
-                Collections.<Enrollment>emptyList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithInvalidAttribute() {
@@ -80,8 +82,8 @@ class TrackedEntityInstanceUtils {
                 codeGenerator.generate(),
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue("invalid_uid", "9")),
-                Collections.<Relationship229Compatible>emptyList(),
-                Collections.<Enrollment>emptyList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     static TrackedEntityInstance createTrackedEntityInstanceWithInvalidOrgunit() {
@@ -89,8 +91,8 @@ class TrackedEntityInstanceUtils {
                 codeGenerator.generate(),
                 "invalid_ou_uid",
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
-                Collections.<Enrollment>emptyList());
+                Collections.emptyList(),
+                Collections.emptyList());
     }
 
     static TrackedEntityInstance createValidTrackedEntityInstanceAndEnrollment() {
@@ -99,7 +101,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createValidEnrollment(teiUid)));
     }
 
@@ -109,7 +111,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Arrays.asList(createValidEnrollment(teiUid), createValidEnrollment(teiUid)));
     }
 
@@ -119,7 +121,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createFutureEnrollment(teiUid)));
     }
 
@@ -129,7 +131,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createValidEnrollmentAndEvent(teiUid)));
     }
 
@@ -139,7 +141,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createEnrollmentAndFutureEvent(teiUid)));
     }
 
@@ -149,7 +151,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createEnrollmentAndEventWithInvalidDataElement(teiUid)));
     }
 
@@ -159,7 +161,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createEnrollmentAndEventWithValidAndInvalidDataValue(teiUid)));
     }
 
@@ -169,7 +171,7 @@ class TrackedEntityInstanceUtils {
                 teiUid,
                 validOrgUnitUid,
                 Collections.singletonList(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
-                Collections.<Relationship229Compatible>emptyList(),
+                Collections.emptyList(),
                 Collections.singletonList(createCompletedEnrollmentWithEvent(teiUid)));
     }
 
@@ -237,7 +239,7 @@ class TrackedEntityInstanceUtils {
         return Enrollment.builder().uid(enrollmentUid).created(refDate).lastUpdated(refDate)
                 .organisationUnit(validOrgUnitUid).program(validProgramUid).enrollmentDate(refDate).incidentDate(refDate)
                 .followUp(false).status(EnrollmentStatus.ACTIVE).trackedEntityInstance(teiUid).deleted(false)
-                .events(Collections.<Event>emptyList()).notes(Collections.<Note>emptyList()).build();
+                .events(Collections.emptyList()).notes(Collections.emptyList()).build();
     }
 
     private static Event createValidEvent(String teiUid, String enrollmentUid) {
@@ -265,7 +267,7 @@ class TrackedEntityInstanceUtils {
     }
 
     private static Event createFutureEvent(String teiUid, String enrollmentUid) {
-        return createEvent(teiUid, enrollmentUid, getFutureDate(), Collections.<TrackedEntityDataValue>emptyList());
+        return createEvent(teiUid, enrollmentUid, getFutureDate(), Collections.emptyList());
     }
 
     private static Event createEventWithInvalidDataElement(String teiUid, String enrollmentUid) {
@@ -314,25 +316,26 @@ class TrackedEntityInstanceUtils {
 
     // Assertions
 
-    static void assertTei(ImportSummary importSummary, ImportStatus status) {
+    static void assertTei(TEIImportSummary importSummary, ImportStatus status) {
         assertSummary(importSummary, status);
     }
 
-    static void assertEnrollments(ImportSummary importSummary, ImportStatus status) {
-        for (ImportSummary enrollmentSummary : importSummary.importEnrollment().importSummaries()) {
+    static void assertEnrollments(TEIImportSummary importSummary, ImportStatus status) {
+        for (EnrollmentImportSummary enrollmentSummary : importSummary.enrollments().importSummaries()) {
             assertSummary(enrollmentSummary, status);
         }
     }
 
-    static void assertEvents(ImportSummary importSummary, ImportStatus status) {
-        for (ImportSummary enrollmentSummary : importSummary.importEnrollment().importSummaries()) {
-            for (ImportSummary eventSummary : enrollmentSummary.importEvent().importSummaries()) {
+    static void assertEvents(TEIImportSummary importSummary, ImportStatus status) {
+        for (EnrollmentImportSummary enrollmentSummary :
+                importSummary.enrollments().importSummaries()) {
+            for (EventImportSummary eventSummary : enrollmentSummary.events().importSummaries()) {
                 assertSummary(eventSummary, status);
             }
         }
     }
 
-    private static void assertSummary(ImportSummary importSummary, ImportStatus status) {
-        assertThat(importSummary.importStatus()).isEqualTo(status);
+    private static void assertSummary(BaseImportSummary importSummary, ImportStatus status) {
+        assertThat(importSummary.status()).isEqualTo(status);
     }
 }

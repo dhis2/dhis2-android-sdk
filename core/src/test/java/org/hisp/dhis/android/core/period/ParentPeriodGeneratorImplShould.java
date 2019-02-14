@@ -99,52 +99,52 @@ public class ParentPeriodGeneratorImplShould {
     private PeriodGenerator financialOctPeriodGenerator;
 
     @Mock
-    private PeriodModel dailyPeriod;
+    private Period dailyPeriod;
 
     @Mock
-    private PeriodModel weeklyPeriod;
+    private Period weeklyPeriod;
 
     @Mock
-    private PeriodModel weeklyWednesdayPeriod;
+    private Period weeklyWednesdayPeriod;
 
     @Mock
-    private PeriodModel weeklyThursdayPeriod;
+    private Period weeklyThursdayPeriod;
 
     @Mock
-    private PeriodModel weeklySaturdayPeriod;
+    private Period weeklySaturdayPeriod;
 
     @Mock
-    private PeriodModel weeklySundayPeriod;
+    private Period weeklySundayPeriod;
 
     @Mock
-    private PeriodModel biWeeklyPeriod;
+    private Period biWeeklyPeriod;
 
     @Mock
-    private PeriodModel monthlyPeriod;
+    private Period monthlyPeriod;
 
     @Mock
-    private PeriodModel biMonthlyPeriod;
+    private Period biMonthlyPeriod;
 
     @Mock
-    private PeriodModel quarterPeriod;
+    private Period quarterPeriod;
 
     @Mock
-    private PeriodModel sixMonthlyPeriod;
+    private Period sixMonthlyPeriod;
 
     @Mock
-    private PeriodModel sixMonthlyAprilPeriod;
+    private Period sixMonthlyAprilPeriod;
 
     @Mock
-    private PeriodModel yearlyPeriod;
+    private Period yearlyPeriod;
 
     @Mock
-    private PeriodModel financialAprilPeriod;
+    private Period financialAprilPeriod;
 
     @Mock
-    private PeriodModel financialJulyPeriod;
+    private Period financialJulyPeriod;
 
     @Mock
-    private PeriodModel financialOctPeriod;
+    private Period financialOctPeriod;
 
     // object to test
     private ParentPeriodGeneratorImpl periodGenerator;
@@ -182,15 +182,15 @@ public class ParentPeriodGeneratorImplShould {
         mockGenerator(financialOctPeriodGenerator, YEARLY_PERIODS, financialOctPeriod);
     }
 
-    private void mockGenerator(PeriodGenerator generator, int periodCount, PeriodModel periodModel) {
-        when(generator.generateLastPeriods(periodCount)).thenReturn(Lists.newArrayList(periodModel));
+    private void mockGenerator(PeriodGenerator generator, int periodCount, Period period) {
+        when(generator.generateLastPeriods(periodCount)).thenReturn(Lists.newArrayList(period));
     }
 
     private void verifyChildGeneratorCalled(PeriodGenerator generator, int periodCount) throws Exception {
         verify(generator).generateLastPeriods(periodCount);
     }
 
-    private void assertChildAnswerInParentAnswer(PeriodModel period) throws Exception {
+    private void assertChildAnswerInParentAnswer(Period period) throws Exception {
         assertThat(periodGenerator.generatePeriods().contains(period)).isEqualTo(true);
     }
 

@@ -34,6 +34,7 @@ import android.support.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 
+import org.hisp.dhis.android.core.AppContextDIModule;
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.D2DIComponent;
 import org.hisp.dhis.android.core.DaggerD2DIComponent;
@@ -97,6 +98,7 @@ public abstract class AbsStoreTestCase {
         return DaggerD2DIComponent.builder()
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter()))
                 .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
+                .appContextDIModule(new AppContextDIModule(InstrumentationRegistry.getTargetContext().getApplicationContext()))
                 .build();
     }
 }

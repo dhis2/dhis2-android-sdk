@@ -38,6 +38,11 @@ import retrofit2.Response;
 final class UserAuthenticateCallErrorCatcher implements APICallErrorCatcher {
 
     @Override
+    public Boolean mustBeStored() {
+        return true;
+    }
+
+    @Override
     public D2ErrorCode catchError(Response<?> response) throws IOException {
 
         String errorResponse = response.errorBody().string();

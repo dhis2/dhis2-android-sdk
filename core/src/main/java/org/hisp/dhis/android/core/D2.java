@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -89,6 +90,7 @@ public final class D2 {
         this.databaseAdapter = databaseAdapter;
 
         this.d2DIComponent = DaggerD2DIComponent.builder()
+                .appContextDIModule(new AppContextDIModule(context))
                 .databaseDIModule(new DatabaseDIModule(databaseAdapter))
                 .apiClientDIModule(new APIClientDIModule(retrofit))
                 .build();
@@ -169,6 +171,10 @@ public final class D2 {
 
     public WipeModule wipeModule() {
         return this.d2DIComponent.wipeModule();
+    }
+
+    public SmsModule smsModule() {
+        return modules.sms;
     }
 
     public static class Builder {

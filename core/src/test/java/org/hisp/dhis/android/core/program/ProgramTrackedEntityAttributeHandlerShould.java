@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,13 +64,16 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     private ProgramTrackedEntityAttribute programTrackedEntityAttribute;
 
     @Mock
-    private IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     @Mock
     private Access access;
 
     @Mock
     private ObjectWithUid program;
+
+    @Mock
+    private ValueTypeRendering valueTypeRendering;
 
     @Mock
     private TrackedEntityAttribute trackedEntityAttribute;
@@ -80,12 +85,13 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         handler = new ProgramTrackedEntityAttributeHandler(store, trackedEntityAttributeHandler,
-                trackedEntityAttributeStore);
+                renderTypeHandler);
         programTrackedEntityAttributes = new ArrayList<>();
         programTrackedEntityAttributes.add(programTrackedEntityAttribute);
 
         when(programTrackedEntityAttribute.trackedEntityAttribute()).thenReturn(trackedEntityAttribute);
         when(programTrackedEntityAttribute.uid()).thenReturn("program_tracked_entity_attribute_uid");
+        when(programTrackedEntityAttribute.renderType()).thenReturn(valueTypeRendering);
         when(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid");
         when(trackedEntityAttribute.access()).thenReturn(access);
         when(access.read()).thenReturn(true);
@@ -106,10 +112,16 @@ public class ProgramTrackedEntityAttributeHandlerShould {
     }
 
     @Test
-    public void delete_program_tea_and_tea_when_have_no_access() {
+    public void call_render_type_handler() throws Exception {
+        handler.handleMany(programTrackedEntityAttributes);
+        verify(renderTypeHandler).handle(valueTypeRendering, programTrackedEntityAttribute.uid(),
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name());
+    }
+
+    @Test
+    public void delete_program_tea_have_no_access() {
         when(access.read()).thenReturn(false);
         handler.handleMany(programTrackedEntityAttributes);
         verify(store).deleteIfExists(programTrackedEntityAttribute.uid());
-        verify(trackedEntityAttributeStore).delete(trackedEntityAttribute.uid());
     }
 }

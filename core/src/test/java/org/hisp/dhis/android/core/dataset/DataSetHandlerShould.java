@@ -37,15 +37,11 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
-import org.hisp.dhis.android.core.indicator.Indicator;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,7 +117,7 @@ public class DataSetHandlerShould {
     private LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
 
     @Mock
-    private LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
+    private LinkSyncHandler<DataSetIndicatorLink> dataSetIndicatorLinkHandler;
 
     @Mock
     private CollectionCleaner<DataSet> collectionCleaner;
@@ -183,7 +179,7 @@ public class DataSetHandlerShould {
 
         verify(dataInputPeriodHandler, never()).handleMany(anyString(),
                 anyListOf(DataInputPeriod.class),
-                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
+                Matchers.any());
     }
 
     @Test
@@ -236,7 +232,7 @@ public class DataSetHandlerShould {
 
         verify(dataInputPeriodHandler).handleMany(anyString(),
                 anyListOf(DataInputPeriod.class),
-                Matchers.<ModelBuilder<DataInputPeriod, DataInputPeriod>>any());
+                Matchers.any());
     }
 
     @Test
@@ -260,7 +256,6 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyListOf(Indicator.class),
-                any(DataSetIndicatorLinkModelBuilder.class));
+        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyListOf(DataSetIndicatorLink.class));
     }
 }

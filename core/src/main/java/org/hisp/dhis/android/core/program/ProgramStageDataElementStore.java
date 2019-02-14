@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -52,9 +50,7 @@ public final class ProgramStageDataElementStore {
         @Override
         public void bindToStatement(@NonNull ProgramStageDataElement programStageDataElement,
                                     @NonNull SQLiteStatement sqLiteStatement) {
-
             super.bindToStatement(programStageDataElement, sqLiteStatement);
-
             sqLiteBind(sqLiteStatement, 7, programStageDataElement.displayInReports());
             sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(programStageDataElement.dataElement()));
             sqLiteBind(sqLiteStatement, 9, programStageDataElement.compulsory());
@@ -66,19 +62,9 @@ public final class ProgramStageDataElementStore {
         }
     };
 
-    private static final CursorModelFactory<ProgramStageDataElement> FACTORY =
-            new CursorModelFactory<ProgramStageDataElement>() {
-
-        @Override
-        public ProgramStageDataElement fromCursor(Cursor cursor) {
-            return ProgramStageDataElement.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<ProgramStageDataElement> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.objectWithUidStore(databaseAdapter,
-                ProgramStageDataElementTableInfo.TABLE_INFO, BINDER, FACTORY);
+                ProgramStageDataElementTableInfo.TABLE_INFO, BINDER, ProgramStageDataElement::create);
     }
-
 }

@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.common.UidsQuery;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.List;
@@ -85,20 +84,13 @@ final class SearchOrganisationUnitOnDemandCallFactory {
     }
 
     private CallProcessor<OrganisationUnit> processor(final User user) {
-        return new CallProcessor<OrganisationUnit>() {
-            @Override
-            public void process(final List<OrganisationUnit> objectList) throws D2Error {
-                if (objectList != null && !objectList.isEmpty()) {
-                    d2CallExecutor.executeD2CallTransactionally(new Callable<Void>() {
-
-                        @Override
-                        public Void call() {
-                            handler.setUser(user);
-                            handler.handleMany(objectList, new OrganisationUnitDisplayPathTransformer());
-                            return null;
-                        }
-                    });
-                }
+        return objectList -> {
+            if (objectList != null && !objectList.isEmpty()) {
+                d2CallExecutor.executeD2CallTransactionally(() -> {
+                    handler.setUser(user);
+                    handler.handleMany(objectList, new OrganisationUnitDisplayPathTransformer());
+                    return null;
+                });
             }
         };
     }

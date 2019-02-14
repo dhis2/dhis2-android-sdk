@@ -29,13 +29,11 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -50,11 +48,26 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 public final class TrackedEntityAttributeValueStoreImpl
         extends ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue> implements TrackedEntityAttributeValueStore {
 
+    private static final StatementBinder<TrackedEntityAttributeValue> BINDER =
+            (o, sqLiteStatement) -> {
+                sqLiteBind(sqLiteStatement, 1, o.value());
+                sqLiteBind(sqLiteStatement, 2, o.created());
+                sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
+                sqLiteBind(sqLiteStatement, 4, o.trackedEntityAttribute());
+                sqLiteBind(sqLiteStatement, 5, o.trackedEntityInstance());
+            };
+
+    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_UPDATE_BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 6, o.trackedEntityAttribute());
+        sqLiteBind(sqLiteStatement, 7, o.trackedEntityInstance());
+    };
+
     private TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementBuilder builder) {
         super(databaseAdapter, databaseAdapter.compileStatement(builder.insert()),
                 databaseAdapter.compileStatement(builder.updateWhere()), builder,
-                BINDER, WHERE_UPDATE_BINDER, FACTORY);
+                BINDER, WHERE_UPDATE_BINDER, TrackedEntityAttributeValue::create);
     }
 
     @Override
@@ -108,41 +121,11 @@ public final class TrackedEntityAttributeValueStoreImpl
                                     TrackedEntityAttributeValue trackedEntityAttributeValue) {
         if (valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()) == null) {
             valueMap.put(trackedEntityAttributeValue.trackedEntityInstance(),
-                    new ArrayList<TrackedEntityAttributeValue>());
+                    new ArrayList<>());
         }
 
         valueMap.get(trackedEntityAttributeValue.trackedEntityInstance()).add(trackedEntityAttributeValue);
     }
-
-    private static final StatementBinder<TrackedEntityAttributeValue> BINDER =
-            new StatementBinder<TrackedEntityAttributeValue>() {
-        @Override
-        public void bindToStatement(@NonNull TrackedEntityAttributeValue o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.value());
-            sqLiteBind(sqLiteStatement, 2, o.created());
-            sqLiteBind(sqLiteStatement, 3, o.lastUpdated());
-            sqLiteBind(sqLiteStatement, 4, o.trackedEntityAttribute());
-            sqLiteBind(sqLiteStatement, 5, o.trackedEntityInstance());
-        }
-    };
-
-    private static final WhereStatementBinder<TrackedEntityAttributeValue> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<TrackedEntityAttributeValue>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull TrackedEntityAttributeValue o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 6, o.trackedEntityAttribute());
-            sqLiteBind(sqLiteStatement, 7, o.trackedEntityInstance());
-        }
-    };
-
-    private static final CursorModelFactory<TrackedEntityAttributeValue> FACTORY =
-            new CursorModelFactory<TrackedEntityAttributeValue>() {
-        @Override
-        public TrackedEntityAttributeValue fromCursor(Cursor cursor) {
-            return TrackedEntityAttributeValue.create(cursor);
-        }
-    };
 
     public static TrackedEntityAttributeValueStore create(DatabaseAdapter databaseAdapter) {
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(

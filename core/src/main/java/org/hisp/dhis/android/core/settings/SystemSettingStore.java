@@ -28,13 +28,8 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -43,34 +38,18 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class SystemSettingStore {
 
+    private static final StatementBinder<SystemSetting> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.key());
+        sqLiteBind(sqLiteStatement, 2, o.value());
+    };
+
+    private static final WhereStatementBinder<SystemSetting> WHERE_UPDATE_BINDER
+            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, o.key());
+
     private SystemSettingStore() {}
 
-    private static final StatementBinder<SystemSettingModel> BINDER = new StatementBinder<SystemSettingModel>() {
-        @Override
-        public void bindToStatement(@NonNull SystemSettingModel o, @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, o.key());
-            sqLiteBind(sqLiteStatement, 2, o.value());
-        }
-    };
-
-    private static final WhereStatementBinder<SystemSettingModel> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<SystemSettingModel>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull SystemSettingModel o,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 3, o.key());
-        }
-    };
-
-    private static final CursorModelFactory<SystemSettingModel> FACTORY = new CursorModelFactory<SystemSettingModel>() {
-        @Override
-        public SystemSettingModel fromCursor(Cursor cursor) {
-            return SystemSettingModel.create(cursor);
-        }
-    };
-
-    public static ObjectWithoutUidStore<SystemSettingModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingModel.TABLE,
-                new SystemSettingModel.Columns(), BINDER, WHERE_UPDATE_BINDER, FACTORY);
+    public static ObjectWithoutUidStore<SystemSetting> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, SystemSettingTableInfo.TABLE_INFO, BINDER,
+                WHERE_UPDATE_BINDER, SystemSetting::create);
     }
 }

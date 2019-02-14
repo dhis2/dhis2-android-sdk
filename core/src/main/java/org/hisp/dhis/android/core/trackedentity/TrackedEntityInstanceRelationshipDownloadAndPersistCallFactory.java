@@ -67,12 +67,7 @@ public final class TrackedEntityInstanceRelationshipDownloadAndPersistCallFactor
     }
 
     public Callable<List<TrackedEntityInstance>> getCall() {
-        return new Callable<List<TrackedEntityInstance>>() {
-            @Override
-            public List<TrackedEntityInstance> call() throws Exception {
-                return downloadAndPersist();
-            }
-        };
+        return this::downloadAndPersist;
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")

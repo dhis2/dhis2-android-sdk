@@ -28,48 +28,81 @@
 
 package org.hisp.dhis.android.core.common;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class ValueTypeDeviceRendering {
-    private static final String TYPE = "type";
-    private static final String MIN = "min";
-    private static final String MAX = "max";
-    private static final String STEP = "step";
-    private static final String DECIMAL_POINTS = "decimalPoints";
+@JsonDeserialize(builder = AutoValue_ValueTypeDeviceRendering.Builder.class)
+public abstract class ValueTypeDeviceRendering implements Model {
 
     @Nullable
-    @JsonProperty(TYPE)
+    public abstract String uid();
+
+    @Nullable
+    public abstract String objectTable();
+
+    @Nullable
+    public abstract String deviceType();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(ValueTypeRenderingTypeColumnAdapter.class)
     public abstract ValueTypeRenderingType type();
 
     @Nullable
-    @JsonProperty(MIN)
+    @JsonProperty()
     public abstract Integer min();
 
     @Nullable
-    @JsonProperty(MAX)
+    @JsonProperty()
     public abstract Integer max();
 
     @Nullable
-    @JsonProperty(STEP)
+    @JsonProperty()
     public abstract Integer step();
 
     @Nullable
-    @JsonProperty(DECIMAL_POINTS)
+    @JsonProperty()
     public abstract Integer decimalPoints();
 
-    @JsonCreator
-    public static ValueTypeDeviceRendering create(
-            @JsonProperty(TYPE) ValueTypeRenderingType type,
-            @JsonProperty(MIN) Integer min,
-            @JsonProperty(MAX) Integer max,
-            @JsonProperty(STEP) Integer step,
-            @JsonProperty(DECIMAL_POINTS) Integer decimalPoints) {
+    public static ValueTypeDeviceRendering create(Cursor cursor) {
+        return $AutoValue_ValueTypeDeviceRendering.createFromCursor(cursor);
+    }
 
-        return new AutoValue_ValueTypeDeviceRendering(type, min, max, step, decimalPoints);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_ValueTypeDeviceRendering.Builder();
+    }
+
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder uid(String uid);
+
+        public abstract Builder objectTable(String objectTable);
+
+        public abstract Builder deviceType(String deviceType);
+
+        public abstract Builder type(ValueTypeRenderingType type);
+
+        public abstract Builder min(Integer min);
+
+        public abstract Builder max(Integer max);
+
+        public abstract Builder step(Integer step);
+
+        public abstract Builder decimalPoints(Integer decimalPoints);
+
+        public abstract ValueTypeDeviceRendering build();
     }
 }

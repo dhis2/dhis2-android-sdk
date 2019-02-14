@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
-import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -42,12 +40,6 @@ import java.text.ParseException;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class DataElementShould extends BaseObjectShould implements ObjectShould {
-
-    private static ValueTypeDeviceRendering desktopRendering = ValueTypeDeviceRendering.create(
-            ValueTypeRenderingType.VERTICAL_RADIOBUTTONS, 0, 10, 1, 0);
-
-    private static ValueTypeDeviceRendering mobileRendering = ValueTypeDeviceRendering.create(
-            ValueTypeRenderingType.SHARED_HEADER_RADIOBUTTONS, 3, 15, 2, 1);
 
     public DataElementShould() {
         super("dataelement/data_element.json");
@@ -79,8 +71,6 @@ public class DataElementShould extends BaseObjectShould implements ObjectShould 
         assertThat(dataElement.optionSetUid()).isEqualTo("fUS7fy2HbaI");
         assertThat(dataElement.categoryComboUid()).isEqualTo("p0KPaWEg3cf");
         assertThat(dataElement.domainType()).isEqualTo("TRACKER");
-        assertThat(dataElement.renderType().desktop()).isEqualTo(desktopRendering);
-        assertThat(dataElement.renderType().mobile()).isEqualTo(mobileRendering);
         assertThat(dataElement.access().read()).isEqualTo(true);
     }
 }

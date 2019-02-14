@@ -28,38 +28,40 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class UserCredentialsEntityDIModule implements IdentifiableEntityDIModule<UserCredentials> {
+public final class UserCredentialsEntityDIModule {
 
-    @Override
     @Provides
     @Reusable
-    public IdentifiableObjectStore<UserCredentials> store(DatabaseAdapter databaseAdapter) {
-        return UserCredentialsStore.create(databaseAdapter);
+    UserCredentialsStore store(DatabaseAdapter databaseAdapter) {
+        return UserCredentialsStoreImpl.create(databaseAdapter);
     }
 
-    @Override
     @Provides
     @Reusable
-    public SyncHandler<UserCredentials> handler(IdentifiableObjectStore<UserCredentials> store) {
+    SyncHandler<UserCredentials> handler(UserCredentialsStore store) {
         return new IdentifiableSyncHandlerImpl<>(store);
     }
 
     @Provides
     @Reusable
-    ReadOnlyObjectRepository<UserCredentials> repository(IdentifiableObjectStore<UserCredentials> store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    ReadOnlyObjectRepository<UserCredentials> repository(UserCredentialsStore store,
+                                                         UserRoleChildrenAppender userRoleChildrenAppender) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(
+                store,
+                Collections.singletonList(userRoleChildrenAppender)
+        );
     }
 }

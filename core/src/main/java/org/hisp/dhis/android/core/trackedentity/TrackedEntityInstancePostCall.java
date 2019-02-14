@@ -43,8 +43,9 @@ import org.hisp.dhis.android.core.enrollment.note.NoteToPostTransformer;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventImportHandler;
 import org.hisp.dhis.android.core.event.EventStore;
+import org.hisp.dhis.android.core.imports.TEIWebResponse;
+import org.hisp.dhis.android.core.imports.TEIWebResponseHandler;
 import org.hisp.dhis.android.core.imports.WebResponse;
-import org.hisp.dhis.android.core.imports.WebResponseHandler;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
@@ -110,12 +111,12 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
     }
 
     @Override
-    public WebResponse call() throws D2Error {
+    public TEIWebResponse call() throws D2Error {
         List<TrackedEntityInstance> trackedEntityInstancesToPost = queryDataToSync();
 
         // if size is 0, then no need to do network request
         if (trackedEntityInstancesToPost.isEmpty()) {
-            return WebResponse.EMPTY;
+            return TEIWebResponse.builder().build();
         }
 
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();
@@ -128,9 +129,9 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
             strategy = "SYNC";
         }
 
-        WebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
+        TEIWebResponse webResponse = apiCallExecutor.executeObjectCallWithAcceptedErrorCodes(
                 trackedEntityInstanceService.postTrackedEntityInstances(trackedEntityInstancePayload, strategy),
-                Collections.singletonList(409), WebResponse.class);
+                Collections.singletonList(409), TEIWebResponse.class);
         handleWebResponse(webResponse);
         return webResponse;
     }
@@ -204,7 +205,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
 
     }
 
-    private void handleWebResponse(WebResponse webResponse) {
+    private void handleWebResponse(TEIWebResponse webResponse) {
         EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
 
         EnrollmentImportHandler enrollmentImportHandler = new EnrollmentImportHandler(
@@ -212,12 +213,10 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
         );
 
         TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler =
-                new TrackedEntityInstanceImportHandler(
-                        trackedEntityInstanceStore, enrollmentImportHandler, eventImportHandler
-                );
-        WebResponseHandler webResponseHandler = new WebResponseHandler(trackedEntityInstanceImportHandler);
+                new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler);
+        TEIWebResponseHandler teiWebResponseHandler = new TEIWebResponseHandler(trackedEntityInstanceImportHandler);
 
-        webResponseHandler.handleWebResponse(webResponse);
+        teiWebResponseHandler.handleWebResponse(webResponse);
 
     }
 }

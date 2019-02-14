@@ -57,7 +57,13 @@ public class LinkModelChildStoreImpl<P extends ObjectWithUidInterface, C extends
 
     @Override
     public List<C> getChildren(P p) {
-        String selectStatement = statementBuilder.selectChildrenWithLinkTable(linkTableChildProjection, p.uid());
+        return this.getChildrenWhere(p, null);
+    }
+
+    @Override
+    public List<C> getChildrenWhere(P p, String whereClause) {
+        String selectStatement = statementBuilder.selectChildrenWithLinkTable(
+                linkTableChildProjection, p.uid(), whereClause);
         return cursorExecutor.getObjects(databaseAdapter.query(selectStatement));
     }
 }

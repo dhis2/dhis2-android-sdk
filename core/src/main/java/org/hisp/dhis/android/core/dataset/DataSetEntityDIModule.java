@@ -78,7 +78,7 @@ public final class DataSetEntityDIModule {
     @Reusable
     Collection<ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataSet> objectStyleChildrenAppender =
-                new ObjectStyleChildrenAppender<DataSet, DataSet.Builder>(
+                new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataSetTableInfo.TABLE_INFO
                 );

@@ -98,51 +98,43 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     public Callable<Unit> getCall(final int teiLimit, final boolean limitByOrgUnit) {
-        return new Callable<Unit>() {
-            @Override
-            public Unit call() throws D2Error {
-                return getTrackedEntityInstances(teiLimit, limitByOrgUnit);
-            }
-        };
+        return () -> getTrackedEntityInstances(teiLimit, limitByOrgUnit);
     }
     
     private Unit getTrackedEntityInstances(final int teiLimit, final boolean limitByOrgUnit) throws D2Error {
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
-            @Override
-            public Unit call() throws Exception {
-                Collection<String> organisationUnitUids;
-                TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
-                int pageSize = teiQueryBuilder.build().pageSize();
-                List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            Collection<String> organisationUnitUids;
+            TeiQuery.Builder teiQueryBuilder = TeiQuery.builder();
+            int pageSize = teiQueryBuilder.build().pageSize();
+            List<Paging> pagingList = ApiPagingEngine.getPaginationList(pageSize, teiLimit);
 
-                String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
-                teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
+            String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
+            teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-                systemInfoRepository.download().call();
+            systemInfoRepository.download().call();
 
-                if (limitByOrgUnit) {
-                    organisationUnitUids = getOrgUnitUids();
-                    Set<String> orgUnitWrapper = new HashSet<>();
-                    for (String orgUnitUid : organisationUnitUids) {
-                        orgUnitWrapper.clear();
-                        orgUnitWrapper.add(orgUnitUid);
-                        teiQueryBuilder.orgUnits(orgUnitWrapper);
-                        getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
-                    }
-                } else {
-                    organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
-                    teiQueryBuilder.orgUnits(organisationUnitUids).ouMode(OuMode.DESCENDANTS);
+            if (limitByOrgUnit) {
+                organisationUnitUids = getOrgUnitUids();
+                Set<String> orgUnitWrapper = new HashSet<>();
+                for (String orgUnitUid : organisationUnitUids) {
+                    orgUnitWrapper.clear();
+                    orgUnitWrapper.add(orgUnitUid);
+                    teiQueryBuilder.orgUnits(orgUnitWrapper);
                     getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
                 }
-
-                if (!versionManager.is2_29()) {
-                    d2CallExecutor.executeD2Call(downloadAndPersistCallFactory.getCall());
-                }
-
-                foreignKeyCleaner.cleanForeignKeyErrors();
-
-                return new Unit();
+            } else {
+                organisationUnitUids = userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids();
+                teiQueryBuilder.orgUnits(organisationUnitUids).ouMode(OuMode.DESCENDANTS);
+                getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
             }
+
+            if (!versionManager.is2_29()) {
+                d2CallExecutor.executeD2Call(downloadAndPersistCallFactory.getCall());
+            }
+
+            foreignKeyCleaner.cleanForeignKeyErrors();
+
+            return new Unit();
         });
     }
 

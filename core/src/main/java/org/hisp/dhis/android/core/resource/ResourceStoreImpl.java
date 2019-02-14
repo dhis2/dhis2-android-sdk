@@ -27,15 +27,10 @@
  */
 package org.hisp.dhis.android.core.resource;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -45,37 +40,21 @@ import java.util.List;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource> implements ResourceStore {
-    private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
-                             SQLStatementBuilder builder) {
-        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()),
-                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER, FACTORY);
-    }
 
-    private static final StatementBinder<Resource> BINDER = new StatementBinder<Resource>() {
-        @Override
-        public void bindToStatement(@NonNull Resource resource,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 1, resource.resourceType());
-            sqLiteBind(sqLiteStatement, 2, resource.lastSynced());
-        }
+    private static final StatementBinder<Resource> BINDER = (resource, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, resource.resourceType());
+        sqLiteBind(sqLiteStatement, 2, resource.lastSynced());
     };
 
     private static final WhereStatementBinder<Resource> WHERE_UPDATE_BINDER
-            = new WhereStatementBinder<Resource>() {
-        @Override
-        public void bindToUpdateWhereStatement(@NonNull Resource resource,
-                                               @NonNull SQLiteStatement sqLiteStatement) {
-            sqLiteBind(sqLiteStatement, 3, resource.resourceType());
-        }
-    };
+            = (resource, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 3, resource.resourceType());
 
-    private static final CursorModelFactory<Resource> FACTORY =
-            new CursorModelFactory<Resource>() {
-        @Override
-        public Resource fromCursor(Cursor cursor) {
-            return Resource.create(cursor);
-        }
-    };
+    private ResourceStoreImpl(DatabaseAdapter databaseAdapter,
+                             SQLStatementBuilder builder) {
+        super(databaseAdapter,  databaseAdapter.compileStatement(builder.insert()),
+                databaseAdapter.compileStatement(builder.updateWhere()), builder, BINDER, WHERE_UPDATE_BINDER,
+                Resource::create);
+    }
 
     @Override
     public String getLastUpdated(Resource.Type type) {

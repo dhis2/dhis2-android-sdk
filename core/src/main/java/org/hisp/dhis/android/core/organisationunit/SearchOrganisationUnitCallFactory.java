@@ -63,21 +63,18 @@ class SearchOrganisationUnitCallFactory {
     }
 
     Callable<List<OrganisationUnit>> create(final User user) {
-        return new Callable<List<OrganisationUnit>>() {
-            @Override
-            public List<OrganisationUnit> call() throws Exception {
-                Set<OrganisationUnit> searchOrganisationUnits = new HashSet<>();
-                Set<String> rootOrgUnitUids = findRoots(user.teiSearchOrganisationUnits());
-                for (String uid : rootOrgUnitUids) {
-                    searchOrganisationUnits.addAll(
-                            apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
-                }
-
-                handler.setUser(user);
-                handler.handleMany(searchOrganisationUnits, new OrganisationUnitDisplayPathTransformer());
-
-                return new ArrayList<>(searchOrganisationUnits);
+        return () -> {
+            Set<OrganisationUnit> searchOrganisationUnits = new HashSet<>();
+            Set<String> rootOrgUnitUids = findRoots(user.teiSearchOrganisationUnits());
+            for (String uid : rootOrgUnitUids) {
+                searchOrganisationUnits.addAll(
+                        apiCallExecutor.executePayloadCall(getOrganisationUnitAndDescendants(uid)));
             }
+
+            handler.setUser(user);
+            handler.handleMany(searchOrganisationUnits, new OrganisationUnitDisplayPathTransformer());
+
+            return new ArrayList<>(searchOrganisationUnits);
         };
     }
 

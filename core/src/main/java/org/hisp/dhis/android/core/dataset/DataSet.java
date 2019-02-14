@@ -157,7 +157,7 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
         return new $$AutoValue_DataSet.Builder();
     }
 
-    static DataSet create(Cursor cursor) {
+    public static DataSet create(Cursor cursor) {
         return $AutoValue_DataSet.createFromCursor(cursor);
     }
 

@@ -63,15 +63,12 @@ public class OrganisationUnitModuleDownloader {
     public Callable<Unit> downloadMetadata(final User user,
                                            final Collection<Program> programs,
                                            final Collection<DataSet> dataSets) {
-        return new Callable<Unit>() {
-            @Override
-            public Unit call() throws Exception {
-                organisationUnitCallFactory.create(
-                        user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
-                searchOrganisationUnitCallFactory.create(user).call();
+        return () -> {
+            organisationUnitCallFactory.create(
+                    user, UidsHelper.getUids(programs), UidsHelper.getUids(dataSets)).call();
+            searchOrganisationUnitCallFactory.create(user).call();
 
-                return new Unit();
-            }
+            return new Unit();
         };
     }
 

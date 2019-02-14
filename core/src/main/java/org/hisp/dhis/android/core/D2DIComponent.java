@@ -61,6 +61,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipPackageDIModule;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
+import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -75,6 +76,7 @@ import dagger.Component;
 @SuppressWarnings("PMD.ExcessiveImports")
 @Singleton
 @Component(modules = {
+        AppContextDIModule.class,
         APIClientDIModule.class,
         DatabaseDIModule.class,
         WipeDIModule.class,
@@ -100,8 +102,10 @@ import dagger.Component;
         SystemInfoPackageDIModule.class,
         SystemSettingPackageDIModule.class,
         TrackedEntityPackageDIModule.class,
+        SmsDIModule.class,
         UserPackageDIModule.class}
 )
+
 public interface D2DIComponent {
 
     D2InternalModules internalModules();
@@ -125,6 +129,7 @@ public interface D2DIComponent {
 
     @Component.Builder
     interface Builder {
+        Builder appContextDIModule(AppContextDIModule appContextDIModule);
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);

@@ -90,6 +90,107 @@
         "color": "#000",
         "icon": "my-icon-name"
       }
+    },
+    {
+      "lastUpdated": "2015-08-09T12:35:36.743",
+      "id": "lyLU2wR22tC",
+      "created": "2012-06-10T00:36:10.036",
+      "name": "ART monthly summary",
+      "shortName": "ART 2010",
+      "code": "DS_394131",
+      "validCompleteOnly": false,
+      "skipOffline": false,
+      "version": 22,
+      "timelyDays": 3,
+      "dataElementDecoration": true,
+      "displayName": "ART monthly summary",
+      "notifyCompletingUser": false,
+      "noValueRequiresComment": true,
+      "displayShortName": "ART 2010",
+      "fieldCombinationRequired": false,
+      "renderHorizontally": false,
+      "renderAsTabs": true,
+      "mobile": false,
+      "periodType": "Monthly",
+      "openFuturePeriods": 2,
+      "expiryDays": 1,
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "dataSetElements": [
+        {
+          "dataSet": {
+            "id": "lyLU2wR22tC"
+          },
+          "dataElement": {
+            "id": "g9eOBujte1U"
+          },
+          "categoryCombo": {
+            "id": "m2jTvAj5kkm"
+          }
+        }
+      ],
+      "indicators": [
+        {
+          "id": "ReUHfIn0pTQ"
+        }
+      ],
+      "access": {
+        "data": {
+          "write": true
+        }
+      },
+      "sections": [
+        {
+          "lastUpdated": "2016-10-12T13:22:42.731",
+          "id": "Y2rk0vzgvAx",
+          "code": "Code123",
+          "created": "2012-04-26T19:26:02.933",
+          "name": "Immunization",
+          "displayName": "Immunization",
+          "description": "Immunization dose administration",
+          "showColumnTotals": false,
+          "sortOrder": 1,
+          "showRowTotals": true,
+          "dataSet": {
+            "id": "lyLU2wR22tC"
+          },
+          "greyedFields": [
+            {
+              "id": "ca8lfO062zg.Prlt0C1RF0s"
+            }
+          ],
+          "dataElements": [
+            {
+              "id": "g9eOBujte1U"
+            }
+          ]
+        }
+      ],
+      "compulsoryDataElementOperands": [
+        {
+          "id": "g9eOBujte1U.Gmbgme7z9BF",
+          "categoryOptionCombo": {
+            "id": "Gmbgme7z9BF"
+          },
+          "dataElement": {
+            "id": "g9eOBujte1U"
+          }
+        }
+      ],
+      "dataInputPeriods": [
+        {
+          "closingDate": "2018-01-09T23:00:00.000",
+          "openingDate": "2017-12-31T23:00:00.000",
+          "period": {
+            "id": "2019"
+          }
+        }
+      ],
+      "style": {
+        "color": "#000",
+        "icon": "my-icon-name"
+      }
     }
   ]
 }

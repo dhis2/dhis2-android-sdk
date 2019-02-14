@@ -36,17 +36,17 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModel;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkModelBuilder;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -66,7 +66,7 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     private final LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler;
     private final LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
-    private final LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler;
+    private final LinkSyncHandler<DataSetIndicatorLink> dataSetIndicatorLinkHandler;
     private final CollectionCleaner<DataSet> collectionCleaner;
 
     @Inject
@@ -80,7 +80,7 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
                            dataSetCompulsoryDataElementOperandLinkHandler,
                    LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler,
                    LinkSyncHandler<DataSetElement> dataSetElementLinkHandler,
-                   LinkModelHandler<Indicator, DataSetIndicatorLinkModel> dataSetIndicatorLinkHandler,
+                   LinkSyncHandler<DataSetIndicatorLink> dataSetIndicatorLinkHandler,
                    CollectionCleaner<DataSet> collectionCleaner) {
 
         super(dataSetStore);
@@ -111,17 +111,16 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
         dataInputPeriodHandler.handleMany(dataSet.uid(),
                 dataSet.dataInputPeriods(),
-                new ModelBuilder<DataInputPeriod, DataInputPeriod>() {
-            @Override
-            public DataInputPeriod buildModel(DataInputPeriod dataInputPeriod) {
-                return dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build();
-            }
-        });
+                dataInputPeriod -> dataInputPeriod.toBuilder().dataSet(ObjectWithUid.create(dataSet.uid())).build());
 
         dataSetElementLinkHandler.handleMany(dataSet.uid(), dataSet.dataSetElements());
 
-        dataSetIndicatorLinkHandler.handleMany(dataSet.uid(), dataSet.indicators(),
-                new DataSetIndicatorLinkModelBuilder(dataSet));
+        List<DataSetIndicatorLink> dataSetIndicatorLinks = new ArrayList<>();
+        for (Indicator indicator : dataSet.indicators()) {
+            dataSetIndicatorLinks.add(DataSetIndicatorLink.builder()
+                    .dataSet(dataSet.uid()).indicator(indicator.uid()).build());
+        }
+        dataSetIndicatorLinkHandler.handleMany(dataSet.uid(), dataSetIndicatorLinks);
 
         if (action == HandleAction.Update) {
             sectionOrphanCleaner.deleteOrphan(dataSet, dataSet.sections());

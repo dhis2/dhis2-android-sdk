@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.event;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class EventImportHandler {
         this.eventStore = eventStore;
     }
 
-    public void handleEventImportSummaries(@NonNull List<ImportSummary> importSummaries) {
+    public void handleEventImportSummaries(@NonNull List<EventImportSummary> importSummaries) {
         if (importSummaries == null) {
             return;
         }
@@ -53,13 +53,13 @@ public class EventImportHandler {
         int size = importSummaries.size();
 
         for (int i = 0; i < size; i++) {
-            ImportSummary importSummary = importSummaries.get(i);
+            EventImportSummary importSummary = importSummaries.get(i);
 
             if (importSummary == null) {
                 break;
             }
 
-            ImportStatus importStatus = importSummary.importStatus();
+            ImportStatus importStatus = importSummary.status();
             State state = getState(importStatus);
 
             eventStore.setState(importSummary.reference(), state);

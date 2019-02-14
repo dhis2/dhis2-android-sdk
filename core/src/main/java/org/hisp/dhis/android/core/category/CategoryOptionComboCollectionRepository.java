@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
@@ -52,14 +51,7 @@ public final class CategoryOptionComboCollectionRepository
             final Collection<ChildrenAppender<CategoryOptionCombo>> childrenAppenders,
             List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<CategoryOptionComboCollectionRepository>() {
-
-                    @Override
-                    public CategoryOptionComboCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new CategoryOptionComboCollectionRepository(store, childrenAppenders, updatedScope);
-                    }
-                }));
+                updatedScope -> new CategoryOptionComboCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 
     public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {

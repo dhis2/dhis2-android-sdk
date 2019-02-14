@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import javax.inject.Inject;
@@ -42,13 +44,17 @@ final class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<P
 
     private final SyncHandler<DataElement> dataElementHandler;
 
+    private final DictionaryTableHandler<ValueTypeRendering> valueTypeRenderingHandler;
+
     @Inject
     ProgramStageDataElementHandler(
             IdentifiableObjectStore<ProgramStageDataElement> programStageDataElementStore,
-            SyncHandler<DataElement> dataElementHandler) {
+            SyncHandler<DataElement> dataElementHandler,
+            DictionaryTableHandler<ValueTypeRendering> valueTypeRenderingHandler) {
 
         super(programStageDataElementStore);
         this.dataElementHandler = dataElementHandler;
+        this.valueTypeRenderingHandler = valueTypeRenderingHandler;
     }
 
     @Override
@@ -57,5 +63,8 @@ final class ProgramStageDataElementHandler extends IdentifiableSyncHandlerImpl<P
         if (programStageDataElement.dataElement() != null) {
             dataElementHandler.handle(programStageDataElement.dataElement());
         }
+
+        valueTypeRenderingHandler.handle(programStageDataElement.renderType(), programStageDataElement.uid(),
+                ProgramStageDataElementTableInfo.TABLE_INFO.name());
     }
 }

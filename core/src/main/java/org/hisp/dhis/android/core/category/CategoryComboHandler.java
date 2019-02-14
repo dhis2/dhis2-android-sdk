@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 
@@ -65,12 +64,7 @@ final class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCom
     @Override
     protected void afterObjectHandled(final CategoryCombo combo, HandleAction action) {
         optionComboHandler.handleMany(combo.categoryOptionCombos(),
-                new ModelBuilder<CategoryOptionCombo, CategoryOptionCombo>() {
-            @Override
-            public CategoryOptionCombo buildModel(CategoryOptionCombo optionCombo) {
-                return optionCombo.toBuilder().categoryCombo(combo).build();
-            }
-        });
+                optionCombo -> optionCombo.toBuilder().categoryCombo(combo).build());
 
         categoryCategoryComboLinkHandler.handleMany(combo.uid(), combo.categories(),
                 new CategoryCategoryComboLinkModelBuilder(combo));

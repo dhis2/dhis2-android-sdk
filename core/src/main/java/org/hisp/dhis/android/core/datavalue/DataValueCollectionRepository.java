@@ -30,13 +30,15 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -65,15 +67,8 @@ public final class DataValueCollectionRepository
                                   final SyncHandler<DataValue> dataValueHandler,
                                   final DataValuePostCall postCall) {
         super(dataValueStore, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                new CollectionRepositoryFactory<DataValueCollectionRepository>() {
-
-                    @Override
-                    public DataValueCollectionRepository newWithScope(
-                            List<RepositoryScopeItem> updatedScope) {
-                        return new DataValueCollectionRepository(dataValueStore, childrenAppenders, updatedScope,
-                                dataValueHandler, postCall);
-                    }
-                }));
+                updatedScope -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, updatedScope,
+                        dataValueHandler, postCall)));
         this.dataValueHandler = dataValueHandler;
         this.dataValueStore = dataValueStore;
         this.postCall = postCall;
@@ -95,7 +90,52 @@ public final class DataValueCollectionRepository
     }
 
     @Override
-    public Callable<ImportSummary> upload() {
+    public Callable<DataValueImportSummary> upload() {
         return postCall;
+    }
+
+
+    public StringFilterConnector<DataValueCollectionRepository> byDataElementUid() {
+        return cf.string(DataValueFields.DATA_ELEMENT);
+    }
+
+    public StringFilterConnector<DataValueCollectionRepository> byPeriod() {
+        return cf.string(DataValueFields.PERIOD);
+    }
+
+    public StringFilterConnector<DataValueCollectionRepository> byOrganisationUnitUid() {
+        return cf.string(DataValueTableInfo.ORGANISATION_UNIT);
+    }
+
+    public StringFilterConnector<DataValueCollectionRepository> byCategoryOptionComboUid() {
+        return cf.string(DataValueFields.CATEGORY_OPTION_COMBO);
+    }
+
+    public StringFilterConnector<DataValueCollectionRepository> byAttributeOptionComboUid() {
+        return cf.string(DataValueFields.ATTRIBUTE_OPTION_COMBO);
+    }
+
+    public StringFilterConnector<DataValueCollectionRepository> byValue() {
+        return cf.string(DataValueFields.VALUE);
+    }
+
+    public StringFilterConnector<DataValueCollectionRepository> byStoredBy() {
+        return cf.string(DataValueFields.STORED_BY);
+    }
+
+    public DateFilterConnector<DataValueCollectionRepository> byCreated() {
+        return cf.date(DataValueFields.CREATED);
+    }
+
+    public DateFilterConnector<DataValueCollectionRepository> byLastUpdated() {
+        return cf.date(DataValueFields.LAST_UPDATED);
+    }
+
+    public StringFilterConnector<DataValueCollectionRepository> byComment() {
+        return cf.string(DataValueFields.COMMENT);
+    }
+
+    public BooleanFilterConnector<DataValueCollectionRepository> byFollowUp() {
+        return cf.bool(DataValueFields.FOLLOW_UP);
     }
 }

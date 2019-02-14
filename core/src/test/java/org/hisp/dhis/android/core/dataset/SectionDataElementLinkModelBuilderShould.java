@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ public class SectionDataElementLinkModelBuilderShould {
     private Section section;
 
     @Mock
-    private ObjectWithUid dataElement;
+    private DataElement dataElement;
 
     private final Integer sortOrder = 1;
 

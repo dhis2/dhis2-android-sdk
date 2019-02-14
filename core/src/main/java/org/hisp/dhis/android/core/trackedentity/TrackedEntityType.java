@@ -58,7 +58,7 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Mo
         return new $$AutoValue_TrackedEntityType.Builder();
     }
 
-    static TrackedEntityType create(Cursor cursor) {
+    public static TrackedEntityType create(Cursor cursor) {
         return $AutoValue_TrackedEntityType.createFromCursor(cursor);
     }
 

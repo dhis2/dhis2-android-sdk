@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
+@Deprecated
 @AutoValue
 public abstract class PeriodModel extends BaseModel {
 

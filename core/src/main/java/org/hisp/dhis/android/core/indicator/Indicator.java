@@ -79,7 +79,7 @@ public abstract class Indicator extends BaseNameableObject implements Model {
         return new $$AutoValue_Indicator.Builder();
     }
 
-    static Indicator create(Cursor cursor) {
+    public static Indicator create(Cursor cursor) {
         return $AutoValue_Indicator.createFromCursor(cursor);
     }
 

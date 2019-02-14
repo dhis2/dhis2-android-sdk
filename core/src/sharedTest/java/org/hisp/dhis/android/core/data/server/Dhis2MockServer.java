@@ -92,6 +92,12 @@ public class Dhis2MockServer {
                 "organisationunit/organisation_units.json");
     }
 
+    public void enqueueAggregatedDataResponses() throws IOException {
+        enqueueMockResponse("systeminfo/system_info.json");
+        enqueueMockResponse("datavalue/data_values.json");
+        enqueueMockResponse("dataset/data_set_complete_registrations.json");
+    }
+
     public void enqueueEventResponses() throws IOException {
         enqueueMockResponse("systeminfo/system_info.json");
         enqueueMockResponse("event/events.json");
@@ -111,7 +117,7 @@ public class Dhis2MockServer {
     private void enqueueMetadataResponsesWithUserAndOrgUnits(String userPath, String orgUnitPath)
             throws IOException {
         enqueueMockResponse("systeminfo/system_info.json");
-        enqueueMockResponse("settings/system_setting.json");
+        enqueueMockResponse("settings/system_settings.json");
         enqueueMockResponse(userPath);
         enqueueMockResponse("user/authorities.json");
         enqueueMockResponse("program/programs.json");

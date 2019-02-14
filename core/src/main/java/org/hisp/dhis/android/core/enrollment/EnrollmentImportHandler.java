@@ -37,9 +37,9 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteTableInfo;
 import org.hisp.dhis.android.core.event.EventImportHandler;
-import org.hisp.dhis.android.core.imports.ImportEvent;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
+import org.hisp.dhis.android.core.imports.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
 
 import java.util.List;
 
@@ -58,28 +58,28 @@ public class EnrollmentImportHandler {
         this.eventImportHandler = eventImportHandler;
     }
 
-    public void handleEnrollmentImportSummary(@NonNull List<ImportSummary> importSummaries) {
+    public void handleEnrollmentImportSummary(@NonNull List<EnrollmentImportSummary> importSummaries) {
         if (importSummaries == null) {
             return;
         }
 
         int size = importSummaries.size();
         for (int i = 0; i < size; i++) {
-            ImportSummary importSummary = importSummaries.get(i);
+            EnrollmentImportSummary importSummary = importSummaries.get(i);
 
             if (importSummary == null) {
                 break;
             }
 
-            ImportStatus importStatus = importSummary.importStatus();
+            ImportStatus importStatus = importSummary.status();
             State state = getState(importStatus);
 
             enrollmentStore.setState(importSummary.reference(), state);
 
             handleNoteImportSummary(importSummary.reference(), state);
 
-            if (importSummary.importEvent() != null) {
-                ImportEvent importEvent = importSummary.importEvent();
+            if (importSummary.events() != null) {
+                EventImportSummaries importEvent = importSummary.events();
 
                 eventImportHandler.handleEventImportSummaries(importEvent.importSummaries());
 

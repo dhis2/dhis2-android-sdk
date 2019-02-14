@@ -38,13 +38,13 @@ public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnly
 
     private final ObjectStore<M> store;
 
-    ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
+    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
         super(childrenAppenders);
         this.store = store;
     }
 
     public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
-        this(store, Collections.<ChildrenAppender<M>>emptyList());
+        this(store, Collections.emptyList());
     }
 
     public M get() {

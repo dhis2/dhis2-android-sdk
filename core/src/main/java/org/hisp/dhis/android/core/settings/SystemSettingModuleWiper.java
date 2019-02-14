@@ -46,7 +46,7 @@ public final class SystemSettingModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeMetadata() {
-        tableWiper.wipeTable(SystemSettingModel.TABLE);
+        tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO);
     }
 
     @Override

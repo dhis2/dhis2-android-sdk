@@ -49,9 +49,9 @@ public class BiWeeklyPeriodGeneratorShould {
     @Test
     public void generate_bi_weekly_periods_for_one_bi_week() throws Exception {
         calendar.set(2018, 2, 8);
-        PeriodModel period = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        Period period = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
-        List<PeriodModel> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(1);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(1);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
@@ -59,11 +59,11 @@ public class BiWeeklyPeriodGeneratorShould {
     @Test
     public void generate_bi_weekly_periods() throws Exception {
         calendar.set(2018,2,8);
-        PeriodModel period1 = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        Period period1 = generateExpectedPeriod("2018BiW5", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2018, 2, 15);
-        PeriodModel period2 = generateExpectedPeriod("2018BiW6", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        Period period2 = generateExpectedPeriod("2018BiW6", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
-        List<PeriodModel> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(2);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(2);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2));
     }
@@ -71,13 +71,13 @@ public class BiWeeklyPeriodGeneratorShould {
     @Test
     public void generate_bi_weekly_periods_for_changing_year() throws Exception {
         calendar.set(2016,11,31);
-        PeriodModel period1 = generateExpectedPeriod("2016BiW26", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        Period period1 = generateExpectedPeriod("2016BiW26", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2017, 0, 7);
-        PeriodModel period2 = generateExpectedPeriod("2017BiW1", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        Period period2 = generateExpectedPeriod("2017BiW1", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
         calendar.set(2017, 0, 18);
-        PeriodModel period3 = generateExpectedPeriod("2017BiW2", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        Period period3 = generateExpectedPeriod("2017BiW2", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
-        List<PeriodModel> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(3);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(3);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period1, period2, period3));
     }
@@ -86,21 +86,21 @@ public class BiWeeklyPeriodGeneratorShould {
     public void generate_the_first_bi_week_including_january_4() throws Exception {
         calendar.set(2018, 0, 4);
 
-        List<PeriodModel> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(1);
+        List<Period> generatedPeriods = new BiWeeklyPeriodGenerator(calendar).generateLastPeriods(1);
 
-        PeriodModel period = generateExpectedPeriod("2018BiW1", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
+        Period period = generateExpectedPeriod("2018BiW1", calendar, Calendar.MONDAY, PeriodType.BiWeekly);
 
         assertThat(generatedPeriods).isEqualTo(Lists.newArrayList(period));
     }
 
-    private PeriodModel generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {
+    private Period generateExpectedPeriod(String id, Calendar cal, int weekStartDay, PeriodType periodType) {
         Calendar startCalendar = (Calendar) cal.clone();
         AbstractPeriodGenerator.setCalendarToStartTimeOfADay(startCalendar);
         setFirstDayOfBiWeekAndMinimalDaysInFirstWeek(startCalendar, weekStartDay);
         Calendar endCalendar = (Calendar) startCalendar.clone();
         endCalendar.add(Calendar.WEEK_OF_YEAR, 2);
         endCalendar.add(Calendar.MILLISECOND, -1);
-        return PeriodModel.builder()
+        return Period.builder()
                 .periodId(id)
                 .periodType(periodType)
                 .startDate(startCalendar.getTime())

@@ -104,7 +104,9 @@ public abstract class User extends BaseIdentifiableObject implements Model {
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
     public abstract List<OrganisationUnit> dataViewOrganisationUnits();
 
-    public static User.Builder builder() {
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
         return new AutoValue_User.Builder();
     }
 
@@ -115,7 +117,7 @@ public abstract class User extends BaseIdentifiableObject implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<User.Builder> {
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);
 

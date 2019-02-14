@@ -48,12 +48,12 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
     }
 
     @Override
-    public final List<PeriodModel> generateLastPeriods(int count) throws RuntimeException {
+    public final List<Period> generateLastPeriods(int count) throws RuntimeException {
         if (count < 1) {
             throw new RuntimeException("Number of last periods must be positive.");
         }
 
-        List<PeriodModel> periods = new ArrayList<>();
+        List<Period> periods = new ArrayList<>();
         setCalendarToStartTimeOfADay(calendar);
         moveToStartOfCurrentPeriod();
         movePeriods(1 - count);
@@ -66,7 +66,7 @@ abstract class AbstractPeriodGenerator implements PeriodGenerator {
             calendar.add(Calendar.MILLISECOND, -1);
             Date endDate = calendar.getTime();
 
-            PeriodModel period = PeriodModel.builder()
+            Period period = Period.builder()
                     .periodType(periodType)
                     .startDate(startDate)
                     .periodId(periodId)

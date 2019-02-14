@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationQuery;
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
-import org.hisp.dhis.android.core.period.PeriodModel;
+import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
 
@@ -64,7 +64,7 @@ final class AggregatedDataCall implements Callable<Unit> {
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
     private final IdentifiableObjectStore<DataSet> dataSetStore;
-    private final ObjectWithoutUidStore<PeriodModel> periodStore;
+    private final ObjectWithoutUidStore<Period> periodStore;
     private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
@@ -75,7 +75,7 @@ final class AggregatedDataCall implements Callable<Unit> {
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
                        @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
-                       @NonNull ObjectWithoutUidStore<PeriodModel> periodStore,
+                       @NonNull ObjectWithoutUidStore<Period> periodStore,
                        @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore,
                        @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.d2CallExecutor = d2CallExecutor;
@@ -90,42 +90,38 @@ final class AggregatedDataCall implements Callable<Unit> {
 
     @Override
     public Unit call() throws Exception {
-        return d2CallExecutor.executeD2CallTransactionally(new Callable<Unit>() {
+        return d2CallExecutor.executeD2CallTransactionally(() -> {
+            systemInfoRepository.download().call();
 
-            @Override
-            public Unit call() throws Exception {
-                systemInfoRepository.download().call();
+            List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
+            Set<String> periodIds = Collections.unmodifiableSet(
+                    selectPeriodIds(periodStore.selectAll()));
+            List<String> organisationUnitUids = Collections.unmodifiableList(
+                    organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 
-                List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
-                Set<String> periodIds = Collections.unmodifiableSet(
-                        selectPeriodIds(periodStore.selectAll()));
-                List<String> organisationUnitUids = Collections.unmodifiableList(
-                        organisationUnitStore.queryRootCaptureOrganisationUnitUids());
+            DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
+            dataValueCallFactory.create(dataValueQuery).call();
 
-                dataValueCallFactory.create(dataValueQuery).call();
+            DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
+                    DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-                DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
-                        DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
+            Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
+                    dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
 
-                Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
-                        dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
+            dataSetCompleteRegistrationCall.call();
 
-                dataSetCompleteRegistrationCall.call();
+            foreignKeyCleaner.cleanForeignKeyErrors();
 
-                foreignKeyCleaner.cleanForeignKeyErrors();
-
-                return new Unit();
-            }
+            return new Unit();
         });
 
     }
 
-    private Set<String> selectPeriodIds(Collection<PeriodModel> periodModels) {
+    private Set<String> selectPeriodIds(Collection<Period> periods) {
         Set<String> periodIds = new HashSet<>();
 
-        for (PeriodModel period : periodModels) {
+        for (Period period : periods) {
             periodIds.add(period.periodId());
         }
         return periodIds;

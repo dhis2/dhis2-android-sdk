@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
-import org.hisp.dhis.android.core.event.EventImportHandler;
-import org.hisp.dhis.android.core.imports.ImportEnrollment;
-import org.hisp.dhis.android.core.imports.ImportEvent;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
+import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.ImportSummary;
+import org.hisp.dhis.android.core.imports.TEIImportSummary;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,22 +61,13 @@ public class TrackedEntityInstanceImportHandlerShould {
     private EnrollmentImportHandler enrollmentImportHandler;
 
     @Mock
-    private EventImportHandler eventImportHandler;
+    private TEIImportSummary importSummary;
 
     @Mock
-    private ImportSummary importSummary;
+    private EnrollmentImportSummary enrollmentSummary;
 
     @Mock
-    private ImportSummary enrollmentSummary;
-
-    @Mock
-    private ImportSummary eventSummary;
-
-    @Mock
-    private ImportEnrollment importEnrollment;
-
-    @Mock
-    private ImportEvent importEvent;
+    private EnrollmentImportSummaries importEnrollment;
 
     // object to test
     private TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
@@ -87,9 +77,8 @@ public class TrackedEntityInstanceImportHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        trackedEntityInstanceImportHandler = new TrackedEntityInstanceImportHandler(
-                trackedEntityInstanceStore, enrollmentImportHandler, eventImportHandler
-        );
+        trackedEntityInstanceImportHandler =
+                new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler);
     }
 
     @Test
@@ -101,7 +90,7 @@ public class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     public void setStatus_shouldUpdateTrackedEntityInstanceStatusSuccess() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_tei_uid");
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
@@ -113,7 +102,7 @@ public class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     public void setStatus_shouldUpdateTrackedEntityInstanceStatusError() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.ERROR);
+        when(importSummary.status()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_tei_uid");
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
@@ -125,10 +114,10 @@ public class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     public void update_tracker_entity_instance_status_success_status_and_handle_import_enrollment_on_import_success() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+        when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_tei_uid");
-        when(importSummary.importEnrollment()).thenReturn(importEnrollment);
-        List<ImportSummary> enrollmentSummaries = Collections.singletonList(enrollmentSummary);
+        when(importSummary.enrollments()).thenReturn(importEnrollment);
+        List<EnrollmentImportSummary> enrollmentSummaries = Collections.singletonList(enrollmentSummary);
         when(importEnrollment.importSummaries()).thenReturn(enrollmentSummaries);
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
@@ -137,23 +126,5 @@ public class TrackedEntityInstanceImportHandlerShould {
 
         verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.SYNCED);
         verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(enrollmentSummaries);
-
-    }
-
-    @Test
-    public void update_tracker_entity_instance_status_success_status_and_handle_import_event_on_import_success() throws Exception {
-        when(importSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
-        when(importSummary.reference()).thenReturn("test_tei_uid");
-        when(importSummary.importEvent()).thenReturn(importEvent);
-        List<ImportSummary> eventSummaries = Collections.singletonList(eventSummary);
-        when(importEvent.importSummaries()).thenReturn(eventSummaries);
-
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                Collections.singletonList(importSummary)
-        );
-
-        verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.SYNCED);
-        verify(eventImportHandler, times(1)).handleEventImportSummaries(eventSummaries);
-
     }
 }

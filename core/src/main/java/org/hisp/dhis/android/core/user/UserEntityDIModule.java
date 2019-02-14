@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectReposit
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Arrays;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -57,7 +59,12 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
 
     @Provides
     @Reusable
-    ReadOnlyObjectRepository<User> repository(IdentifiableObjectStore<User> store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    ReadOnlyObjectRepository<User> repository(IdentifiableObjectStore<User> store,
+                                              UserCredentialsChildrenAppender userCredentialsChildrenAppender,
+                                              DatabaseAdapter databaseAdapter) {
+        return new ReadOnlyFirstObjectRepositoryImpl<>(store, Arrays.asList(
+                userCredentialsChildrenAppender,
+                UserOrganisationUnitChildrenAppender.create(databaseAdapter))
+        );
     }
 }

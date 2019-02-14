@@ -51,11 +51,11 @@ final class CategoryOptionComboCategoryOptionChildrenAppender extends ChildrenAp
 
     static ChildrenAppender<CategoryOptionCombo> create(DatabaseAdapter databaseAdapter) {
         return new CategoryOptionComboCategoryOptionChildrenAppender(
-                StoreFactory.<CategoryOptionCombo, CategoryOption>linkModelChildStore(
+                StoreFactory.linkModelChildStore(
                         databaseAdapter,
                         CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
                         CategoryOptionComboCategoryOptionLinkTableInfo.CHILD_PROJECTION,
-                        CategoryOptionStore.FACTORY)
+                        CategoryOption::create)
         );
     }
 }

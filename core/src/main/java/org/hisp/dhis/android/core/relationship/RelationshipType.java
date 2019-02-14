@@ -74,7 +74,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
         return new AutoValue_RelationshipType.Builder();
     }
 
-    static RelationshipType create(Cursor cursor) {
+    public static RelationshipType create(Cursor cursor) {
         return AutoValue_RelationshipType.createFromCursor(cursor);
     }
 

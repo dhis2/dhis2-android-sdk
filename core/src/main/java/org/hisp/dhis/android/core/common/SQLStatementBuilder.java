@@ -119,11 +119,15 @@ public class SQLStatementBuilder {
         return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    public String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid) {
+    public String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid,
+                                              String whereClause) {
+        String whereClauseStr = whereClause == null ? "" : AND + whereClause;
+
         return SELECT + "c.*" + FROM + tableName + " AS l, " +
                 projection.childTableInfo.name() + " AS c" +
                 WHERE + "l." + projection.childColumn + "=" + "c." + UID +
                 AND + "l." + projection.parentColumn + "='" + parentUid + "'" +
+                whereClauseStr +
                 orderBySortOrderClause() + ";";
     }
 

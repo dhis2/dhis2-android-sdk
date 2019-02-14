@@ -70,28 +70,25 @@ public class DataSetModuleDownloader implements MetadataModuleDownloader<List<Da
 
     @Override
     public Callable<List<DataSet>> downloadMetadata() {
-        return new Callable<List<DataSet>>() {
-            @Override
-            public List<DataSet> call() throws Exception {
+        return () -> {
 
-                List<DataSet> dataSets = dataSetCallFactory.create().call();
+            List<DataSet> dataSets = dataSetCallFactory.create().call();
 
-                List<DataElement> dataElements = dataElementCallFactory.create(
-                        DataSetParentUidsHelper.getDataElementUids(dataSets)).call();
+            List<DataElement> dataElements = dataElementCallFactory.create(
+                    DataSetParentUidsHelper.getDataElementUids(dataSets)).call();
 
-                List<Indicator> indicators = indicatorCallFactory.create(
-                        DataSetParentUidsHelper.getIndicatorUids(dataSets)).call();
+            List<Indicator> indicators = indicatorCallFactory.create(
+                    DataSetParentUidsHelper.getIndicatorUids(dataSets)).call();
 
-                indicatorTypeCallFactory.create(
-                        DataSetParentUidsHelper.getIndicatorTypeUids(indicators)).call();
+            indicatorTypeCallFactory.create(
+                    DataSetParentUidsHelper.getIndicatorTypeUids(indicators)).call();
 
-                Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
-                optionSetCallFactory.create(optionSetUids).call();
+            Set<String> optionSetUids = DataSetParentUidsHelper.getAssignedOptionSetUids(dataElements);
+            optionSetCallFactory.create(optionSetUids).call();
 
-                periodHandler.generateAndPersist();
+            periodHandler.generateAndPersist();
 
-                return dataSets;
-            }
+            return dataSets;
         };
     }
 }

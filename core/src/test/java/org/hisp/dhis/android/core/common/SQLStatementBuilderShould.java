@@ -219,15 +219,22 @@ public class SQLStatementBuilderShould {
 
     @Test
     public void generate_select_children_with_link_table() {
-        assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID")).isEqualTo(
+        assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", null)).isEqualTo(
                 "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID';"
+        );
+    }
+
+    @Test
+    public void generate_select_children_with_link_table_and_where_clause() {
+        assertThat(builder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", "l.bla=1")).isEqualTo(
+                "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID' AND l.bla=1;"
         );
     }
 
     @Test
     public void generate_select_children_with_link_table_with_sort_order() {
         SQLStatementBuilder builderWithSortOrder = new SQLStatementBuilder(TABLE_NAME, columns, columns, true);
-        assertThat(builderWithSortOrder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID")).isEqualTo(
+        assertThat(builderWithSortOrder.selectChildrenWithLinkTable(CHILD_PROJECTION, "UID", null)).isEqualTo(
                 "SELECT c.* FROM Test_Table AS l, Category AS c WHERE l." + COL_2 + "=c.uid AND l." + COL_1 + "='UID' ORDER BY sortOrder;"
         );
     }

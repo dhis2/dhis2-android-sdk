@@ -48,6 +48,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
+@SuppressWarnings("PMD.CyclomaticComplexity")
 public final class APICallExecutorImpl implements APICallExecutor {
 
     private final ObjectStore<D2Error> errorStore;
@@ -81,7 +82,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
     @Override
     public <P> P executeObjectCall(Call<P> call) throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<Integer>(), null, null);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, null);
     }
 
     @Override
@@ -93,7 +94,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
     @Override
     public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
             throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<Integer>(), null, errorCatcher);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, errorCatcher);
     }
 
     private <P> P executeObjectCallInternal(Call<P> call,
@@ -109,16 +110,20 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 return processSuccessfulResponse(errorBuilder, response);
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
-            } else if (errorCatcher == null) {
-                throw storeAndReturn(responseException(errorBuilder, response));
-            } else {
+            } else if (errorCatcher != null) {
                 D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
-                if (d2ErrorCode == null) {
-                    throw storeAndReturn(responseException(errorBuilder, response));
-                } else {
-                    throw storeAndReturn(errorBuilder.errorCode(d2ErrorCode).build());
+
+                if (d2ErrorCode != null) {
+                    D2Error d2error = errorBuilder.errorCode(d2ErrorCode).errorDescription("").build();
+
+                    if (errorCatcher.mustBeStored()) {
+                        throw storeAndReturn(d2error);
+                    } else {
+                        throw d2error;
+                    }
                 }
             }
+            throw storeAndReturn(responseException(errorBuilder, response));
         } catch (SocketTimeoutException e) {
             throw storeAndReturn(socketTimeoutException(errorBuilder, e));
         } catch (UnknownHostException e) {

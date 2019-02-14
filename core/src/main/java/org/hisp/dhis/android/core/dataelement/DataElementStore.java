@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -62,15 +60,8 @@ public final class DataElementStore {
         }
     };
 
-    private static final CursorModelFactory<DataElement> FACTORY = new CursorModelFactory<DataElement>() {
-        @Override
-        public DataElement fromCursor(Cursor cursor) {
-            return DataElement.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<DataElement> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter,
-                DataElementTableInfo.TABLE_INFO, BINDER, FACTORY);
+                DataElementTableInfo.TABLE_INFO, BINDER, DataElement::create);
     }
 }

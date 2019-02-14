@@ -70,27 +70,24 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
 
     @Override
     public Callable<List<Program>> downloadMetadata() {
-        return new Callable<List<Program>>() {
-            @Override
-            public List<Program> call() throws Exception {
-                List<Program> programs = programCallFactory.create().call();
+        return () -> {
+            List<Program> programs = programCallFactory.create().call();
 
-                Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
-                List<ProgramStage> programStages =
-                        programStageCallFactory.create(assignedProgramStageUids).call();
+            Set<String> assignedProgramStageUids = ProgramParentUidsHelper.getAssignedProgramStageUids(programs);
+            List<ProgramStage> programStages =
+                    programStageCallFactory.create(assignedProgramStageUids).call();
 
-                programRuleCallFactory.create(UidsHelper.getUids(programs)).call();
+            programRuleCallFactory.create(UidsHelper.getUids(programs)).call();
 
-                Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
+            Set<String> trackedEntityUids = ProgramParentUidsHelper.getAssignedTrackedEntityUids(programs);
 
-                trackedEntityTypeCallFactory.create(trackedEntityUids).call();
-                relationshipTypeCallFactory.create().call();
+            trackedEntityTypeCallFactory.create(trackedEntityUids).call();
+            relationshipTypeCallFactory.create().call();
 
-                Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
-                optionSetCallFactory.create(optionSetUids).call();
+            Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
+            optionSetCallFactory.create(optionSetUids).call();
 
-                return programs;
-            }
+            return programs;
         };
     }
 }

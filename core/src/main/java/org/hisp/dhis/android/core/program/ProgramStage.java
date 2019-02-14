@@ -176,7 +176,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
         return new AutoValue_ProgramStage.Builder();
     }
 
-    static ProgramStage create(Cursor cursor) {
+    public static ProgramStage create(Cursor cursor) {
         return AutoValue_ProgramStage.createFromCursor(cursor);
     }
 

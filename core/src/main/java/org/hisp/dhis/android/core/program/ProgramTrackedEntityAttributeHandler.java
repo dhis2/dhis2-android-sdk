@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.DictionaryTableHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import javax.inject.Inject;
@@ -41,25 +43,25 @@ import dagger.Reusable;
 final class ProgramTrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<ProgramTrackedEntityAttribute> {
 
     private final SyncHandler<TrackedEntityAttribute> trackedEntityAttributeHandler;
-    private final IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private final DictionaryTableHandler<ValueTypeRendering> renderTypeHandler;
 
     @Inject
     ProgramTrackedEntityAttributeHandler(
             IdentifiableObjectStore<ProgramTrackedEntityAttribute> store,
             SyncHandler<TrackedEntityAttribute> trackedEntityAttributeHandler,
-            IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore) {
+            DictionaryTableHandler<ValueTypeRendering> renderTypeHandler) {
         super(store);
         this.trackedEntityAttributeHandler = trackedEntityAttributeHandler;
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+        this.renderTypeHandler = renderTypeHandler;
     }
 
     @Override
     protected void afterObjectHandled(ProgramTrackedEntityAttribute programTrackedEntityAttribute,
                                       HandleAction action) {
-        if (action == HandleAction.Delete) {
-            this.trackedEntityAttributeStore.delete(programTrackedEntityAttribute.trackedEntityAttribute().uid());
-        } else {
+        if (action != HandleAction.Delete) {
             trackedEntityAttributeHandler.handle(programTrackedEntityAttribute.trackedEntityAttribute());
+            renderTypeHandler.handle(programTrackedEntityAttribute.renderType(), programTrackedEntityAttribute.uid(),
+                    ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name());
         }
     }
 

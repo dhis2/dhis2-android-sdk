@@ -55,7 +55,7 @@ public abstract class IndicatorType extends BaseIdentifiableObject implements Mo
         return new $$AutoValue_IndicatorType.Builder();
     }
 
-    static IndicatorType create(Cursor cursor) {
+    public static IndicatorType create(Cursor cursor) {
         return $AutoValue_IndicatorType.createFromCursor(cursor);
     }
 

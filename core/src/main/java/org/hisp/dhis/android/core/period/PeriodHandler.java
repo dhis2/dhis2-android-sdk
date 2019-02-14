@@ -29,28 +29,24 @@ package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
 public final class PeriodHandler {
-    private final ObjectWithoutUidStore<PeriodModel> store;
+    private final ObjectWithoutUidStore<Period> store;
     private final ParentPeriodGenerator generator;
 
     @Inject
-    PeriodHandler(ObjectWithoutUidStore<PeriodModel> store, ParentPeriodGenerator generator) {
+    PeriodHandler(ObjectWithoutUidStore<Period> store, ParentPeriodGenerator generator) {
         this.store = store;
         this.generator = generator;
     }
 
-    public List<PeriodModel> generateAndPersist() {
-        List<PeriodModel> periods = generator.generatePeriods();
-        for (PeriodModel p : periods) {
-            store.updateOrInsertWhere(p);
+    public void generateAndPersist() {
+        for (Period period : generator.generatePeriods()) {
+            store.updateOrInsertWhere(period);
         }
-        return periods;
     }
 }

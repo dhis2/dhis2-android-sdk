@@ -49,10 +49,10 @@ final class DataSetElementChildrenAppender extends ChildrenAppender<DataSet> {
 
     static ChildrenAppender<DataSet> create(DatabaseAdapter databaseAdapter) {
         return new DataSetElementChildrenAppender(
-                StoreFactory.<DataSet, DataSetElement>singleParentChildStore(
+                StoreFactory.singleParentChildStore(
                         databaseAdapter,
                         DataSetElementLinkTableInfo.CHILD_PROJECTION,
-                        DataSetDataElementLinkStore.FACTORY)
+                        DataSetElement::create)
         );
     }
 }

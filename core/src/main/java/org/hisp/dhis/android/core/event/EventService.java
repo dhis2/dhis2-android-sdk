@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.event;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
-import org.hisp.dhis.android.core.imports.WebResponse;
+import org.hisp.dhis.android.core.imports.EventWebResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -41,7 +41,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface EventService {
-    String FILTER = "filter";
     String ORG_UNIT = "orgUnit";
     String PROGRAM = "program";
     String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
@@ -50,13 +49,12 @@ public interface EventService {
     String PAGE_SIZE = "pageSize";
     String PAGE = "page";
     String EVENTS = "events";
-    String ATTRIBUTE_CATEGORY_COMBO = "attributeCc";
     String STRATEGY = "strategy";
     String EVENT_UID = "eventUid";
     String LAST_UPDATED_START_DATE = "lastUpdatedStartDate";
 
     @POST(EVENTS)
-    Call<WebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
+    Call<EventWebResponse> postEvents(@Body EventPayload events, @Query(STRATEGY) String strategy);
 
     @GET(EVENTS)
     Call<Payload<Event>> getEvents(
@@ -67,7 +65,6 @@ public interface EventService {
             @Query(PAGING) Boolean paging,
             @Query(PAGE) int page,
             @Query(PAGE_SIZE) int pageSize,
-            @Query(ATTRIBUTE_CATEGORY_COMBO) String categoryCombo,
             @Query(LAST_UPDATED_START_DATE) String lastUpdatedStartDate);
 
     @GET(EVENTS + "/{" + EVENT_UID + "}")

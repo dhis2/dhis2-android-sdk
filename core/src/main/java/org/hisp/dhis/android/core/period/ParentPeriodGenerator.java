@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.period;
 import java.util.List;
 
 interface ParentPeriodGenerator {
-    List<PeriodModel> generatePeriods();
+    List<Period> generatePeriods();
 }

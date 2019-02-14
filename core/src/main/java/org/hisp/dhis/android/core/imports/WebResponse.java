@@ -30,32 +30,30 @@ package org.hisp.dhis.android.core.imports;
 
 import android.support.annotation.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
-@AutoValue
 public abstract class WebResponse {
-    private static final String MESSAGE = "message";
-    private static final String IMPORT_SUMMARIES = "response"; // is called response from api
-
-    public static final WebResponse EMPTY = WebResponse.create(
-            "Nothing to update",
-            ImportSummaries.EMPTY
-    );
 
     @NonNull
-    @JsonProperty(MESSAGE)
+    public abstract String httpStatus();
+
+    @NonNull
+    public abstract Integer httpStatusCode();
+
+    @NonNull
+    public abstract String status();
+
+    @NonNull
     public abstract String message();
 
-    @NonNull
-    @JsonProperty(IMPORT_SUMMARIES)
-    public abstract ImportSummaries importSummaries();
+    @JsonPOJOBuilder(withPrefix = "")
+    public static abstract class Builder<T extends Builder> {
+        public abstract T httpStatus(String httpStatus);
 
-    @JsonCreator
-    public static WebResponse create(
-            @JsonProperty(MESSAGE) String message,
-            @JsonProperty(IMPORT_SUMMARIES) ImportSummaries importSummaries) {
-        return new AutoValue_WebResponse(message, importSummaries);
+        public abstract T httpStatusCode(Integer httpStatusCode);
+
+        public abstract T status(String status);
+
+        public abstract T message(String message);
     }
 }

@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -46,9 +44,7 @@ public final class OrganisationUnitStore {
 
     private OrganisationUnitStore() {}
 
-    private static StatementBinder<OrganisationUnit> BINDER =
-            new NameableStatementBinder<OrganisationUnit>() {
-
+    private static final StatementBinder<OrganisationUnit> BINDER = new NameableStatementBinder<OrganisationUnit>() {
         @Override
         public void bindToStatement(@NonNull OrganisationUnit o, @NonNull SQLiteStatement sqLiteStatement) {
             super.bindToStatement(o, sqLiteStatement);
@@ -61,15 +57,8 @@ public final class OrganisationUnitStore {
         }
     };
 
-    private static final CursorModelFactory<OrganisationUnit> FACTORY
-            = new CursorModelFactory<OrganisationUnit>() {
-        @Override
-        public OrganisationUnit fromCursor(Cursor cursor) {
-            return OrganisationUnit.create(cursor);
-        }
-    };
-
     public static IdentifiableObjectStore<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER, FACTORY);
+        return StoreFactory.objectWithUidStore(databaseAdapter, OrganisationUnitTableInfo.TABLE_INFO, BINDER,
+                OrganisationUnit::create);
     }
 }

@@ -28,41 +28,41 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
 @AutoValue
-public abstract class SystemSetting {
-    private static final String KEY_FLAG = "keyFlag";
-    private static final String KEY_STYLE = "keyStyle";
-
-    static final Fields<SystemSetting> allFields = Fields.<SystemSetting>builder().fields(
-            Field.<SystemSetting, String>create(KEY_FLAG),
-            Field.<SystemSetting, String>create(KEY_STYLE)
-    ).build();
+public abstract class SystemSetting implements Model {
 
     @Nullable
-    @JsonProperty(KEY_FLAG)
-    public abstract String keyFlag();
+    public abstract String key();
 
     @Nullable
-    @JsonProperty(KEY_STYLE)
-    public abstract String keyStyle();
+    public abstract String value();
 
-    @JsonCreator
-    public static SystemSetting create(
-            @JsonProperty(KEY_FLAG) String keyFlag,
-            @JsonProperty(KEY_STYLE) String keyStyle) {
+    public static SystemSetting create(Cursor cursor) {
+        return $AutoValue_SystemSetting.createFromCursor(cursor);
+    }
 
-        return new AutoValue_SystemSetting(
-                keyFlag,
-                keyStyle
-        );
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_SystemSetting.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder key(String key);
+
+        public abstract Builder value(String value);
+
+        public abstract SystemSetting build();
     }
 }

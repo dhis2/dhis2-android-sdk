@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.imports;
 
 public class ImportSummaryHandler {
 
-    public void handle(ImportSummary importSummary) {
+    public void handle(DataValueImportSummary dataValueImportSummary) {
         // handle the import summary
     }
 }

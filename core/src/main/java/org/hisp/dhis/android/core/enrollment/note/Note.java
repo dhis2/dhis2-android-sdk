@@ -68,7 +68,7 @@ public abstract class Note extends BaseDataModel implements ObjectWithUidInterfa
         return new $$AutoValue_Note.Builder();
     }
 
-    static Note create(Cursor cursor) {
+    public static Note create(Cursor cursor) {
         return $AutoValue_Note.createFromCursor(cursor);
     }
 

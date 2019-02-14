@@ -43,8 +43,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramTrackedEntityAttributeStore {
 
-    private ProgramTrackedEntityAttributeStore() {}
-
     private static StatementBinder<ProgramTrackedEntityAttribute> BINDER
             = new NameableStatementBinder<ProgramTrackedEntityAttribute>() {
 
@@ -64,6 +62,8 @@ public final class ProgramTrackedEntityAttributeStore {
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             ProgramTrackedEntityAttributeTableInfo.TABLE_INFO, ProgramTrackedEntityAttributeFields.PROGRAM);
+
+    private ProgramTrackedEntityAttributeStore() {}
 
     public static IdentifiableObjectStore<ProgramTrackedEntityAttribute> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,

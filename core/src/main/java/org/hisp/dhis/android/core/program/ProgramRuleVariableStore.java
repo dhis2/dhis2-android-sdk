@@ -43,8 +43,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramRuleVariableStore {
 
-    private ProgramRuleVariableStore() {}
-
     private static StatementBinder<ProgramRuleVariable> BINDER =
             new IdentifiableStatementBinder<ProgramRuleVariable>() {
 
@@ -63,6 +61,8 @@ public final class ProgramRuleVariableStore {
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             ProgramRuleVariableTableInfo.TABLE_INFO, ProgramRuleVariableFields.PROGRAM);
+
+    private ProgramRuleVariableStore() {}
 
     public static IdentifiableObjectStore<ProgramRuleVariable> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(

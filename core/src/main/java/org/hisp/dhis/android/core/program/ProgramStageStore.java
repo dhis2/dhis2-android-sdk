@@ -44,8 +44,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramStageStore {
 
-    private ProgramStageStore() {}
-
     private static StatementBinder<ProgramStage> BINDER = new IdentifiableStatementBinder<ProgramStage>() {
 
         @Override
@@ -79,6 +77,8 @@ public final class ProgramStageStore {
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             ProgramStageTableInfo.TABLE_INFO, ProgramStageFields.PROGRAM);
+
+    private ProgramStageStore() {}
 
     public static IdentifiableObjectStore<ProgramStage> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageTableInfo.TABLE_INFO,

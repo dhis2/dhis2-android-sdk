@@ -43,8 +43,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramSectionStore {
 
-    private ProgramSectionStore() {}
-
     private static StatementBinder<ProgramSection> BINDER
             = new IdentifiableStatementBinder<ProgramSection>() {
 
@@ -60,6 +58,8 @@ public final class ProgramSectionStore {
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             ProgramSectionTableInfo.TABLE_INFO, ProgramSectionFields.PROGRAM);
+
+    private ProgramSectionStore() {}
 
     public static IdentifiableObjectStore<ProgramSection> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionTableInfo.TABLE_INFO, BINDER,

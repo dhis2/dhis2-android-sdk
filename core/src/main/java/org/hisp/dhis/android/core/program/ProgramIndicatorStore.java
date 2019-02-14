@@ -43,27 +43,28 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramIndicatorStore {
 
-    private ProgramIndicatorStore() {
-    }
-
-    private static StatementBinder<ProgramIndicator> BINDER = new NameableStatementBinder<ProgramIndicator>() {
-
-                @Override
-                public void bindToStatement(@NonNull ProgramIndicator o,
-                                            @NonNull SQLiteStatement sqLiteStatement) {
-                    super.bindToStatement(o, sqLiteStatement);
-                    sqLiteBind(sqLiteStatement, 11, o.displayInForm());
-                    sqLiteBind(sqLiteStatement, 12, o.expression());
-                    sqLiteBind(sqLiteStatement, 13, o.dimensionItem());
-                    sqLiteBind(sqLiteStatement, 14, o.filter());
-                    sqLiteBind(sqLiteStatement, 15, o.decimals());
-                    sqLiteBind(sqLiteStatement, 16, o.aggregationType());
-                    sqLiteBind(sqLiteStatement, 17, UidsHelper.getUidOrNull(o.program()));
-                }
-            };
 
     static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
             ProgramIndicatorTableInfo.TABLE_INFO, ProgramIndicatorFields.PROGRAM);
+
+    private static StatementBinder<ProgramIndicator> BINDER = new NameableStatementBinder<ProgramIndicator>() {
+
+        @Override
+        public void bindToStatement(@NonNull ProgramIndicator o,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 11, o.displayInForm());
+            sqLiteBind(sqLiteStatement, 12, o.expression());
+            sqLiteBind(sqLiteStatement, 13, o.dimensionItem());
+            sqLiteBind(sqLiteStatement, 14, o.filter());
+            sqLiteBind(sqLiteStatement, 15, o.decimals());
+            sqLiteBind(sqLiteStatement, 16, o.aggregationType());
+            sqLiteBind(sqLiteStatement, 17, UidsHelper.getUidOrNull(o.program()));
+        }
+    };
+
+    private ProgramIndicatorStore() {
+    }
 
     public static IdentifiableObjectStore<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter,

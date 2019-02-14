@@ -42,6 +42,7 @@ public final class ProgramModule {
     public final ProgramCollectionRepository programs;
     public final ProgramIndicatorCollectionRepository programIndicators;
     public final ProgramRuleCollectionRepository programRules;
+    public final ProgramRuleActionCollectionRepository programRuleActions;
     public final ProgramRuleVariableCollectionRepository programRuleVariables;
     public final ProgramSectionCollectionRepository programSections;
     public final ProgramStageCollectionRepository programStages;
@@ -52,6 +53,7 @@ public final class ProgramModule {
     ProgramModule(ProgramCollectionRepository programs,
                   ProgramIndicatorCollectionRepository programIndicators,
                   ProgramRuleCollectionRepository programRules,
+                  ProgramRuleActionCollectionRepository programRuleActions,
                   ProgramRuleVariableCollectionRepository programRuleVariables,
                   ProgramSectionCollectionRepository programSections,
                   ProgramStageCollectionRepository programStages,
@@ -59,6 +61,7 @@ public final class ProgramModule {
         this.programs = programs;
         this.programIndicators = programIndicators;
         this.programRules = programRules;
+        this.programRuleActions = programRuleActions;
         this.programRuleVariables = programRuleVariables;
         this.programSections = programSections;
         this.programStages = programStages;

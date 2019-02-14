@@ -25,40 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class ProgramRuleActionEntityDIModule {
+@Reusable
+public final class ProgramRuleActionCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRuleAction, ProgramRuleActionCollectionRepository> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramRuleAction> store(DatabaseAdapter databaseAdapter) {
-        return ProgramRuleActionStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    SyncHandler<ProgramRuleAction> handler(IdentifiableObjectStore<ProgramRuleAction> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<ProgramRuleAction>> childrenAppenders() {
-        return Collections.emptyList();
+    @Inject
+    ProgramRuleActionCollectionRepository(final IdentifiableObjectStore<ProgramRuleAction> store,
+                                          final Collection<ChildrenAppender<ProgramRuleAction>> childrenAppenders,
+                                          List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramRuleActionCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

@@ -25,49 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ProgramStageDataElementTableInfo {
+final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<ProgramStage> {
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    private final SingleParentChildStore<ProgramStage, ProgramStageDataElement> childStore;
 
-        @Override
-        public String name() {
-            return "ProgramStageDataElement";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramStageDataElementTableInfo.TABLE_INFO,
-            ProgramStageDataElementFields.PROGRAM_STAGE);
-
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    ProgramStageDataElementFields.DISPLAY_IN_REPORTS,
-                    ProgramStageDataElementFields.DATA_ELEMENT,
-                    ProgramStageDataElementFields.COMPULSORY,
-                    ProgramStageDataElementFields.ALLOW_PROVIDED_ELSEWHERE,
-                    ProgramStageDataElementFields.SORT_ORDER,
-                    ProgramStageDataElementFields.ALLOW_FUTURE_DATE,
-                    ProgramStageDataElementFields.PROGRAM_STAGE
-            );
-        }
+    private ProgramStageDataElementChildrenAppender(
+            SingleParentChildStore<ProgramStage, ProgramStageDataElement> childStore) {
+        this.childStore = childStore;
     }
 
-    private ProgramStageDataElementTableInfo() {}
+    @Override
+    protected ProgramStage appendChildren(ProgramStage programStage) {
+        ProgramStage.Builder builder = programStage.toBuilder();
+        builder.programStageDataElements(childStore.getChildren(programStage));
+        return builder.build();
+    }
+
+    static ChildrenAppender<ProgramStage> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageDataElementChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        ProgramStageDataElementTableInfo.CHILD_PROJECTION,
+                        ProgramStageDataElement::create)
+        );
+    }
 }

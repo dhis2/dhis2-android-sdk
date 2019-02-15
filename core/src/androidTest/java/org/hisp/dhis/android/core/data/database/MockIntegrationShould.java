@@ -20,7 +20,7 @@ import java.io.IOException;
 public abstract class MockIntegrationShould {
 
     private static SQLiteDatabase sqLiteDatabase;
-    private static String dbName = null;
+    private static String dbName = "stde.db";
     protected static DatabaseAdapter databaseAdapter;
 
     private static Dhis2MockServer dhis2MockServer;

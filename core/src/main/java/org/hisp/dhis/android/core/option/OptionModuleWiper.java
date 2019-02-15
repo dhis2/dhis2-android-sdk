@@ -50,6 +50,7 @@ public final class OptionModuleWiper implements ModuleWiper {
         tableWiper.wipeTables(
                 OptionTableInfo.TABLE_INFO,
                 OptionGroupTableInfo.TABLE_INFO,
+                OptionGroupOptionLinkTableInfo.TABLE_INFO,
                 OptionSetTableInfo.TABLE_INFO);
     }
 

@@ -66,13 +66,7 @@ public abstract class DataElement extends BaseNameableObject
     public abstract String formName();
 
     @Nullable
-    public abstract String numberType();
-
-    @Nullable
     public abstract String domainType();
-
-    @Nullable
-    public abstract String dimension();
 
     @Nullable
     public abstract String displayFormName();
@@ -124,11 +118,7 @@ public abstract class DataElement extends BaseNameableObject
 
         public abstract DataElement.Builder formName(String formName);
 
-        public abstract DataElement.Builder numberType(String numberType);
-
         public abstract DataElement.Builder domainType(String domainType);
-
-        public abstract DataElement.Builder dimension(String dimension);
 
         public abstract DataElement.Builder displayFormName(String displayFormName);
 

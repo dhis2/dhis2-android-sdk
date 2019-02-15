@@ -72,16 +72,8 @@ public final class DataElementCollectionRepository
         return cf.string(DataElementFields.FORM_NAME);
     }
 
-    public StringFilterConnector<DataElementCollectionRepository> byNumberType() {
-        return cf.string(DataElementFields.NUMBER_TYPE);
-    }
-
     public StringFilterConnector<DataElementCollectionRepository> byDomainType() {
         return cf.string(DataElementFields.DOMAIN_TYPE);
-    }
-
-    public StringFilterConnector<DataElementCollectionRepository> byDimension() {
-        return cf.string(DataElementFields.DIMENSION);
     }
 
     public StringFilterConnector<DataElementCollectionRepository> byDisplayFormName() {

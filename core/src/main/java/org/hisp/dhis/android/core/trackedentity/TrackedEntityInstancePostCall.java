@@ -137,7 +137,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
     }
 
     @NonNull
-    private List<TrackedEntityInstance> queryDataToSync() {
+    List<TrackedEntityInstance> queryDataToSync() {
         Map<String, List<TrackedEntityDataValue>> dataValueMap =
                 trackedEntityDataValueStore.queryTrackerTrackedEntityDataValues();
         Map<String, List<Event>> eventMap = eventStore.queryEventsAttachedToEnrollmentToPost();
@@ -160,8 +160,8 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
             List<Enrollment> enrollments = enrollmentMap.get(trackedEntityInstanceUid);
 
             if (enrollments != null) {
-                List<Event> eventRecreated = new ArrayList<>();
                 for (Enrollment enrollment : enrollments) {
+                    List<Event> eventRecreated = new ArrayList<>();
                     List<Event> eventsForEnrollment = eventMap.get(enrollment.uid());
                     if (eventsForEnrollment != null) {
                         for (Event event : eventsForEnrollment) {

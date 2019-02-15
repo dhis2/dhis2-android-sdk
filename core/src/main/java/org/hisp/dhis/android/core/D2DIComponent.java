@@ -63,6 +63,7 @@ import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.hisp.dhis.android.core.user.UserPackageDIModule;
@@ -126,6 +127,8 @@ public interface D2DIComponent {
     UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory();
     @VisibleForTesting
     SyncHandler<RelationshipType> relationshipTypeHandler();
+    @VisibleForTesting
+    TrackedEntityInstancePostCall trackedEntityInstancePostCall();
 
     @Component.Builder
     interface Builder {

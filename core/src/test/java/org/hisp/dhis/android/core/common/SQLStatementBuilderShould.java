@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
 import org.hisp.dhis.android.core.dataset.DataSetModel;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendModel;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
@@ -149,18 +149,18 @@ public class SQLStatementBuilderShould {
     @Test
     public void generate_create_data_set_organisation_unit_table_statement() {
         String createDataSetOrganisationUnitLinkTable =
-                SQLStatementBuilder.createModelTable(DataSetOrganisationUnitLinkModel.TABLE,
-                        DataSetOrganisationUnitLinkModel.Columns.DATA_SET + " TEXT NOT NULL," +
-                                DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
-                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ") " +
+                SQLStatementBuilder.createModelTable(DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                        DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + " TEXT NOT NULL," +
+                                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
+                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + ") " +
                                 " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ") " +
+                                " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + ") " +
                                 " REFERENCES " + OrganisationUnitTableInfo.TABLE_INFO.name() + " (" +
                                 BaseIdentifiableObjectModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
-                                " UNIQUE (" + DataSetOrganisationUnitLinkModel.Columns.DATA_SET + ", " +
-                                DataSetOrganisationUnitLinkModel.Columns.ORGANISATION_UNIT + ")"
+                                " UNIQUE (" + DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + ", " +
+                                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + ")"
                 );
 
         assertThat(createDataSetOrganisationUnitLinkTable).isEqualTo("CREATE TABLE DataSetOrganisationUnitLink (_id INTEGER PRIMARY KEY AUTOINCREMENT, dataSet TEXT NOT NULL,organisationUnit TEXT NOT NULL, FOREIGN KEY (dataSet)  REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit)  REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataSet, organisationUnit));");

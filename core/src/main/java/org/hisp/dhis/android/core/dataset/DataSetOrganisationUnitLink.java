@@ -25,31 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import com.google.auto.value.AutoValue;
 
-public final class DataSetOrganisationUnitLinkStore {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    private static final StatementBinder<DataSetOrganisationUnitLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
-    };
+@AutoValue
+public abstract class DataSetOrganisationUnitLink implements Model {
 
-    private DataSetOrganisationUnitLinkStore() {}
+    @Nullable
+    public abstract String dataSet();
 
-    public static LinkModelStore<DataSetOrganisationUnitLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                BINDER,
-                DataSetOrganisationUnitLink::create);
+    @Nullable
+    public abstract String organisationUnit();
+
+    public static Builder builder() {
+        return new AutoValue_DataSetOrganisationUnitLink.Builder();
+    }
+
+    public static DataSetOrganisationUnitLink create(Cursor cursor) {
+        return AutoValue_DataSetOrganisationUnitLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder dataSet(String dataSet);
+
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract DataSetOrganisationUnitLink build();
     }
 }

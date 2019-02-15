@@ -28,28 +28,50 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.annotation.VisibleForTesting;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public final class DataSetOrganisationUnitLinkStore {
+public final class DataSetOrganisationUnitLinkTableInfo {
 
-    private static final StatementBinder<DataSetOrganisationUnitLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "DataSetOrganisationUnitLink";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
     };
 
-    private DataSetOrganisationUnitLinkStore() {}
+    private DataSetOrganisationUnitLinkTableInfo() {
+    }
 
-    public static LinkModelStore<DataSetOrganisationUnitLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-                DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                BINDER,
-                DataSetOrganisationUnitLink::create);
+    @VisibleForTesting
+    public static class Columns extends BaseModel.Columns {
+
+        public static final String DATA_SET = "dataSet";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DATA_SET,
+                    ORGANISATION_UNIT
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    DATA_SET,
+                    ORGANISATION_UNIT
+            );
+        }
     }
 }

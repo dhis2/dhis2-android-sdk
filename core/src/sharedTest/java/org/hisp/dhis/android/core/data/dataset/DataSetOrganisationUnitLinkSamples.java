@@ -26,25 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.data.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 
-public class DataSetOrganisationUnitLinkModelBuilder
-        implements ModelBuilder<DataSet, DataSetOrganisationUnitLinkModel> {
+public class DataSetOrganisationUnitLinkSamples {
 
-    private final DataSetOrganisationUnitLinkModel.Builder builder;
-
-    public DataSetOrganisationUnitLinkModelBuilder(OrganisationUnit organisationUnit) {
-        this.builder = DataSetOrganisationUnitLinkModel.builder()
-                .organisationUnit(organisationUnit.uid());
-    }
-
-    @Override
-    public DataSetOrganisationUnitLinkModel buildModel(DataSet pojo) {
-        return builder
-                .dataSet(pojo.uid())
+    public static DataSetOrganisationUnitLink getDataSetOrganisationUnitLink() {
+        return DataSetOrganisationUnitLink.builder()
+                .dataSet("data_set")
+                .organisationUnit("organisation_unit")
                 .build();
     }
 }

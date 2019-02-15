@@ -50,7 +50,7 @@ public final class DataSetModuleWiper implements ModuleWiper {
                 DataInputPeriodTableInfo.TABLE_INFO.name(),
                 DataSetCompulsoryDataElementOperandLinkModel.TABLE,
                 DataSetDataElementLinkModel.TABLE,
-                DataSetOrganisationUnitLinkModel.TABLE,
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
                 DataSetTableInfo.TABLE_INFO.name(),
                 SectionDataElementLinkTableInfo.TABLE_INFO.name(),
                 SectionTableInfo.TABLE_INFO.name(),

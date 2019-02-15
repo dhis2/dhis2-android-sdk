@@ -27,4 +27,12 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends MockIn
                 .get();
         assertThat(rules.size(), is(3));
     }
+
+    @Test
+    public void include_program_rule_actions_as_children() {
+        ProgramRule programRule = d2.programModule().programRules
+                .one().getWithAllChildren();
+        assertThat(programRule.programRuleActions().size(), is(1));
+        assertThat(programRule.programRuleActions().get(0).content(), is("The hemoglobin value cannot be above 99"));
+    }
 }

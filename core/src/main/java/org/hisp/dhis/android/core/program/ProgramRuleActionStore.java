@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -41,8 +42,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramRuleActionStore {
-
-    private ProgramRuleActionStore() {}
 
     private static StatementBinder<ProgramRuleAction> BINDER = new IdentifiableStatementBinder<ProgramRuleAction>() {
         @Override
@@ -60,6 +59,11 @@ public final class ProgramRuleActionStore {
             sqLiteBind(sqLiteStatement, 16, UidsHelper.getUidOrNull(o.programRule()));
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            ProgramRuleActionTableInfo.TABLE_INFO, ProgramRuleActionFields.PROGRAM_RULE);
+
+    private ProgramRuleActionStore() {}
 
     public static IdentifiableObjectStore<ProgramRuleAction> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramRuleActionTableInfo.TABLE_INFO, BINDER,

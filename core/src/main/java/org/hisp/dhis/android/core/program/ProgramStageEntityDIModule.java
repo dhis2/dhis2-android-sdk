@@ -95,7 +95,8 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
         return Arrays.asList(
                 objectStyleChildrenAppender,
-                ProgramStageDataElementChildrenAppender.create(databaseAdapter)
+                ProgramStageDataElementChildrenAppender.create(databaseAdapter),
+                ProgramStageSectionChildrenAppender.create(databaseAdapter)
         );
     }
 }

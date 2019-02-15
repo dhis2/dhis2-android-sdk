@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -41,8 +42,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramStageSectionStore {
-
-    private ProgramStageSectionStore() {}
 
     private static StatementBinder<ProgramStageSection> BINDER =
             new IdentifiableStatementBinder<ProgramStageSection>() {
@@ -55,6 +54,11 @@ public final class ProgramStageSectionStore {
             sqLiteBind(sqLiteStatement, 10, ProgramStageSectionRenderingHelper.mobileRenderType(o.renderType()));
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            ProgramStageSectionTableInfo.TABLE_INFO, ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE);
+
+    private ProgramStageSectionStore() {}
 
     public static IdentifiableObjectStore<ProgramStageSection> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageSectionTableInfo.TABLE_INFO,

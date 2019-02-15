@@ -28,41 +28,21 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-@Module(includes = {
-        OptionEntityDIModule.class,
-        OptionGroupEntityDIModule.class,
-        OptionSetEntityDIModule.class
-})
-public final class OptionPackageDIModule {
+public interface OptionGroupService {
 
-    @Provides
-    @Reusable
-    UidsCallFactory<OptionSet> optionSetCallFactory(OptionSetCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    OptionSetService optionSetService(Retrofit retrofit) {
-        return retrofit.create(OptionSetService.class);
-    }
-
-    @Provides
-    @Reusable
-    UidsCallFactory<OptionGroup> optionGroupCallFactory(OptionGroupCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    OptionGroupService optionGroupService(Retrofit retrofit) {
-        return retrofit.create(OptionGroupService.class);
-    }
+    @GET("optionGroups")
+    Call<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
+                                            @Query("filter") @Where String dataSetUidsFilter,
+                                            @Query("filter") @Where Filter<OptionGroup, String> lastUpdated,
+                                            @Query("paging") boolean paging);
 }

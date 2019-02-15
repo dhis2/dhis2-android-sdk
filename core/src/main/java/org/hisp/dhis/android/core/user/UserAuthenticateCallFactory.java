@@ -68,7 +68,7 @@ final class UserAuthenticateCallFactory {
 
     private final SyncHandler<User> userHandler;
     private final ResourceHandler resourceHandler;
-    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final IdentifiableObjectStore<User> userStore;
     private final WipeModule wipeModule;
@@ -82,7 +82,7 @@ final class UserAuthenticateCallFactory {
             @NonNull UserService userService,
             @NonNull SyncHandler<User> userHandler,
             @NonNull ResourceHandler resourceHandler,
-            @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
+            @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull IdentifiableObjectStore<User> userStore,
             @NonNull WipeModule wipeModule,
@@ -138,9 +138,9 @@ final class UserAuthenticateCallFactory {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(authenticatedUser.uid(),
+            AuthenticatedUser authenticatedUserToStore = buildAuthenticatedUser(authenticatedUser.uid(),
                     username, password);
-            authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUserToStore);
 
             new D2CallExecutor(databaseAdapter).executeD2Call(systemInfoRepository.download());
 
@@ -161,7 +161,7 @@ final class UserAuthenticateCallFactory {
                     .build();
         }
 
-        AuthenticatedUserModel existingUser = authenticatedUserStore.selectFirst();
+        AuthenticatedUser existingUser = authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
             throw D2Error.builder()
@@ -181,9 +181,9 @@ final class UserAuthenticateCallFactory {
 
         Transaction transaction = databaseAdapter.beginNewTransaction();
         try {
-            AuthenticatedUserModel authenticatedUserModel = buildAuthenticatedUserModel(existingUser.user(),
+            AuthenticatedUser authenticatedUser = buildAuthenticatedUser(existingUser.user(),
                     username, password);
-            authenticatedUserStore.updateOrInsertWhere(authenticatedUserModel);
+            authenticatedUserStore.updateOrInsertWhere(authenticatedUser);
             transaction.setSuccessful();
         } finally {
             transaction.end();
@@ -213,7 +213,7 @@ final class UserAuthenticateCallFactory {
     }
 
     private void throwExceptionIfAlreadyAuthenticated() throws D2Error {
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
+        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
         if (authenticatedUser != null && authenticatedUser.credentials() != null) {
             throw D2Error.builder()
                     .errorCode(D2ErrorCode.ALREADY_AUTHENTICATED)
@@ -240,8 +240,8 @@ final class UserAuthenticateCallFactory {
         resourceHandler.handleResource(Resource.Type.AUTHENTICATED_USER);
     }
 
-    private AuthenticatedUserModel buildAuthenticatedUserModel(String uid, String username, String password) {
-        return AuthenticatedUserModel.builder()
+    private AuthenticatedUser buildAuthenticatedUser(String uid, String username, String password) {
+        return AuthenticatedUser.builder()
                 .user(uid)
                 .credentials(base64(username, password))
                 .hash(md5(username, password))

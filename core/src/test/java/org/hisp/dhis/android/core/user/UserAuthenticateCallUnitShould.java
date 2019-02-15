@@ -87,7 +87,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private ResourceHandler resourceHandler;
 
     @Mock
-    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private retrofit2.Call<User> authenticateAPICall;
@@ -114,7 +114,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     private SystemInfo systemInfoFromDb;
 
     @Mock
-    private AuthenticatedUserModel authenticatedUser;
+    private AuthenticatedUser authenticatedUser;
 
     @Mock
     private IdentifiableObjectStore<User> userStore;
@@ -222,7 +222,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
             verifyNoTransactionStarted();
 
             // stores must not be invoked
-            verify(authenticatedUserStore, never()).updateOrInsertWhere(any(AuthenticatedUserModel.class));
+            verify(authenticatedUserStore, never()).updateOrInsertWhere(any(AuthenticatedUser.class));
             verifyNoMoreInteractions(userHandler);
         }
     }
@@ -357,8 +357,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     private void verifySuccess() {
-        AuthenticatedUserModel authenticatedUserModel =
-                AuthenticatedUserModel.builder()
+        AuthenticatedUser authenticatedUserModel =
+                AuthenticatedUser.builder()
                 .user(UID)
                 .credentials(base64(USERNAME, PASSWORD))
                 .hash(md5(USERNAME, PASSWORD))
@@ -369,8 +369,8 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
     }
 
     private void verifySuccessOffline() {
-        AuthenticatedUserModel authenticatedUserModel =
-                AuthenticatedUserModel.builder()
+        AuthenticatedUser authenticatedUserModel =
+                AuthenticatedUser.builder()
                         .user(UID)
                         .credentials(base64(USERNAME, PASSWORD))
                         .hash(md5(USERNAME, PASSWORD))

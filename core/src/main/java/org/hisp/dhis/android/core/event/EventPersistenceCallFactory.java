@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
-import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collection;
@@ -54,7 +54,7 @@ import dagger.Reusable;
 final class EventPersistenceCallFactory {
 
     private final SyncHandlerWithTransformer<Event> eventHandler;
-    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
@@ -62,7 +62,7 @@ final class EventPersistenceCallFactory {
     @Inject
     EventPersistenceCallFactory(
             @NonNull SyncHandlerWithTransformer<Event> eventHandler,
-            @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
+            @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
             @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
@@ -84,11 +84,11 @@ final class EventPersistenceCallFactory {
             Set<String> searchOrgUnitUids = getMissingOrganisationUnitUids(events);
 
             if (!searchOrgUnitUids.isEmpty()) {
-                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
+                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
                 Callable<List<OrganisationUnit>> organisationUnitCall =
                         organisationUnitDownloader.downloadSearchOrganisationUnits(
-                            searchOrgUnitUids, User.builder().uid(authenticatedUserModel.user()).build());
+                            searchOrgUnitUids, User.builder().uid(authenticatedUser.user()).build());
                 organisationUnitCall.call();
             }
 

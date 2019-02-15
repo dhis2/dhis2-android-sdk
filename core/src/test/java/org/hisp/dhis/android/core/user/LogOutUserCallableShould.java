@@ -52,13 +52,13 @@ import static org.mockito.Mockito.when;
 public class LogOutUserCallableShould {
 
     @Mock
-    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Mock
-    private AuthenticatedUserModel authenticatedUser;
+    private AuthenticatedUser authenticatedUser;
 
     @Captor
-    private ArgumentCaptor<AuthenticatedUserModel> loggedOutUser;
+    private ArgumentCaptor<AuthenticatedUser> loggedOutUser;
 
     private Callable<Unit> logOutUserCallable;
 

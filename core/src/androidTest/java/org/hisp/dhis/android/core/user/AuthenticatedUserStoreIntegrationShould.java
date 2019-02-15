@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,29 +28,38 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.user.AuthenticatedUserSamples;
+import org.junit.runner.RunWith;
 
-@Module
-public final class AuthenticatedUserEntityDIModule implements ObjectWithoutUidStoreProvider<AuthenticatedUser> {
+@RunWith(AndroidJUnit4.class)
+public class AuthenticatedUserStoreIntegrationShould
+        extends ObjectWithoutUidStoreAbstractIntegrationShould<AuthenticatedUser> {
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<AuthenticatedUser> store(DatabaseAdapter databaseAdapter) {
-        return AuthenticatedUserStore.create(databaseAdapter);
+    public AuthenticatedUserStoreIntegrationShould() {
+        super(AuthenticatedUserStore.create(DatabaseAdapterFactory.get(false)), AuthenticatedUserTableInfo.TABLE_INFO,
+                DatabaseAdapterFactory.get(false));
     }
 
-    @Provides
-    @Reusable
-    ReadOnlyObjectRepository<AuthenticatedUser> repository(ObjectWithoutUidStore<AuthenticatedUser> store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    @Override
+    protected AuthenticatedUser buildObject() {
+        return AuthenticatedUserSamples.getAuthenticatedUser();
+    }
+
+    @Override
+    protected AuthenticatedUser buildObjectToUpdate() {
+        return AuthenticatedUserSamples.getAuthenticatedUser().toBuilder()
+                .hash("new_hash")
+                .build();
+    }
+
+    @Override
+    protected AuthenticatedUser buildObjectWithId() {
+        return AuthenticatedUserSamples.getAuthenticatedUser().toBuilder()
+                .id(1L)
+                .build();
     }
 }

@@ -40,7 +40,7 @@ public class AuthenticatedUserShould {
 
     @Test
     public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(AuthenticatedUserModel.builder().build().getClass())
+        EqualsVerifier.forClass(AuthenticatedUser.builder().build().getClass())
                 .suppress(Warning.NULL_FIELDS)
                 .verify();
     }

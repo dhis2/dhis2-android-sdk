@@ -45,10 +45,10 @@ import static org.mockito.Mockito.when;
 public class IsUserLoggedInCallableShould {
 
     @Mock
-    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Mock
-    private AuthenticatedUserModel authenticatedUser;
+    private AuthenticatedUser authenticatedUser;
 
     private Callable<Boolean> isUserLoggedInCallable;
 

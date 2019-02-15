@@ -26,49 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.data.user;
 
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
 
-import java.io.IOException;
-import java.util.Locale;
+public class AuthenticatedUserSamples {
 
-import okhttp3.Request;
-import okhttp3.Response;
-
-final class BasicAuthenticator implements Authenticator {
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BASIC_CREDENTIALS = "Basic %s";
-
-    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
-
-    BasicAuthenticator(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
-        this.authenticatedUserStore = authenticatedUserStore;
-    }
-
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        String authorizationHeader = chain.request().header(AUTHORIZATION);
-        if (authorizationHeader != null) {
-            // authorization header has already been set
-            return chain.proceed(chain.request());
-        }
-
-        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
-        if (authenticatedUser == null || authenticatedUser.credentials() == null) {
-            // proceed request if we do not
-            // have any users authenticated
-            return chain.proceed(chain.request());
-        }
-
-        // retrieve first user and pass in his / her credentials
-        Request request = chain.request().newBuilder()
-                .addHeader(AUTHORIZATION, String.format(Locale.US,
-                        BASIC_CREDENTIALS, authenticatedUser.credentials()))
+    public static AuthenticatedUser getAuthenticatedUser() {
+        return AuthenticatedUser.builder()
+                .user("user")
+                .credentials("credentials")
+                .hash("hash")
                 .build();
-        return chain.proceed(request);
     }
 }

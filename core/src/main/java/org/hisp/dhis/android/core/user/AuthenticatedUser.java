@@ -29,67 +29,47 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.Model;
 
-@Deprecated
 @AutoValue
-public abstract class AuthenticatedUserModel extends BaseModel {
-
-    public static final String TABLE = "AuthenticatedUser";
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String USER = "user";
-        public static final String CREDENTIALS = "credentials";
-        public static final String HASH = "hash";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(), USER, CREDENTIALS, HASH);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return new String[]{USER};
-        }
-    }
+public abstract class AuthenticatedUser implements Model {
 
     @Nullable
-    @ColumnName(Columns.USER)
     public abstract String user();
 
     @Nullable
-    @ColumnName(Columns.CREDENTIALS)
     public abstract String credentials();
 
     @Nullable
-    @ColumnName(Columns.HASH)
     public abstract String hash();
 
-    @NonNull
     public static Builder builder() {
-        return new $$AutoValue_AuthenticatedUserModel.Builder();
+        return new AutoValue_AuthenticatedUser.Builder();
     }
 
-    @NonNull
-    public static AuthenticatedUserModel create(Cursor cursor) {
-        return AutoValue_AuthenticatedUserModel.createFromCursor(cursor);
+    public static AuthenticatedUser create(Cursor cursor) {
+        return $AutoValue_AuthenticatedUser.createFromCursor(cursor);
     }
+
+    public abstract Builder toBuilder();
+
 
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
         public abstract Builder user(@Nullable String user);
 
         public abstract Builder credentials(@Nullable String credentials);
 
         public abstract Builder hash(@Nullable String hash);
 
-        public abstract AuthenticatedUserModel build();
+        public abstract AuthenticatedUser build();
     }
 }

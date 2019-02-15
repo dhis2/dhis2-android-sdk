@@ -39,16 +39,16 @@ import javax.inject.Inject;
 final class IsUserLoggedInCallable implements Callable<Boolean> {
 
     @NonNull
-    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Inject
-    IsUserLoggedInCallable(@NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore) {
+    IsUserLoggedInCallable(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
     @Override
     public Boolean call() {
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
+        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
         return authenticatedUser != null && authenticatedUser.credentials() != null;
     }
 }

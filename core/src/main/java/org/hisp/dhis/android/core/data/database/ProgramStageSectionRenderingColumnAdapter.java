@@ -49,14 +49,26 @@ public class ProgramStageSectionRenderingColumnAdapter implements ColumnTypeAdap
         String desktopType = cursor.getString(desktopTypeColumnIndex);
         String mobileType = cursor.getString(mobileTypeColumnIndex);
 
-        return ProgramStageSectionRendering.create(
-                ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(desktopType)),
-                ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(mobileType)));
+        ProgramStageSectionDeviceRendering desktop = desktopType == null ? null
+                : ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(desktopType));
+
+
+        ProgramStageSectionDeviceRendering mobile = desktopType == null ? null
+                : ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(mobileType));
+
+        return ProgramStageSectionRendering.create(desktop, mobile);
     }
 
     @Override
     public void toContentValues(ContentValues values, String columnName, ProgramStageSectionRendering value) {
-        values.put(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, value.desktop().type().name());
-        values.put(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, value.mobile().type().name());
+        ProgramStageSectionDeviceRendering desktopType = value.desktop();
+        if (desktopType != null) {
+            values.put(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, desktopType.type().name());
+        }
+
+        ProgramStageSectionDeviceRendering mobileType = value.mobile();
+        if (mobileType != null) {
+            values.put(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, mobileType.type().name());
+        }
     }
 }

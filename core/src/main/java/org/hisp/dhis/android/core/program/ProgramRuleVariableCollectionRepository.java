@@ -25,39 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class ProgramSectionEntityDIModule {
+@Reusable
+public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
+        <ProgramRuleVariable, ProgramRuleVariableCollectionRepository> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramSection> store(DatabaseAdapter databaseAdapter) {
-        return ProgramSectionStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramSection> handler(ProgramSectionHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<ProgramSection>> childrenAppenders() {
-        return Collections.emptyList();
+    @Inject
+    ProgramRuleVariableCollectionRepository(final IdentifiableObjectStore<ProgramRuleVariable> store,
+                                            final Collection<ChildrenAppender<ProgramRuleVariable>> childrenAppenders,
+                                            List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

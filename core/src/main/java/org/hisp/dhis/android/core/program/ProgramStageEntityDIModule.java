@@ -34,12 +34,14 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -84,7 +86,15 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramStage>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<ProgramStage> objectStyleChildrenAppender =
+                new ObjectStyleChildrenAppender<>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        ProgramStageTableInfo.TABLE_INFO
+                );
+
+        return Arrays.asList(
+                objectStyleChildrenAppender
+        );
     }
 }

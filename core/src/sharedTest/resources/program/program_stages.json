@@ -20,6 +20,10 @@
       "blockEntryForm": true,
       "hideDueDate": false,
       "minDaysFromStart": 0,
+      "style": {
+        "color": "#444",
+        "icon": "program-stage-icon"
+      },
       "access": {
         "read": true,
         "updateWithSection": true,

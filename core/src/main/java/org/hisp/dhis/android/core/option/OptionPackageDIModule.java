@@ -38,6 +38,7 @@ import retrofit2.Retrofit;
 @Module(includes = {
         OptionEntityDIModule.class,
         OptionGroupEntityDIModule.class,
+        OptionGroupOptionEntityDIModule.class,
         OptionSetEntityDIModule.class
 })
 public final class OptionPackageDIModule {

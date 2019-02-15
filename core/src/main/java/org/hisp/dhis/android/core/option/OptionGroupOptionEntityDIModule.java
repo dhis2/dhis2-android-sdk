@@ -25,41 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> {
+@Module
+public final class OptionGroupOptionEntityDIModule {
 
-    private final LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler;
-
-    @Inject
-    OptionGroupHandler(IdentifiableObjectStore<OptionGroup> optionStore,
-                       LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler) {
-        super(optionStore);
-        this.optionGroupOptionLinkHandler = optionGroupOptionLinkHandler;
+    @Provides
+    @Reusable
+    public LinkModelStore<OptionGroupOptionLink> store(DatabaseAdapter databaseAdapter) {
+        return OptionGroupOptionLinkStore.create(databaseAdapter);
     }
 
-    @Override
-    protected void afterObjectHandled(OptionGroup optionGroup, HandleAction action) {
-        if (optionGroup.options() != null) {
-            List<OptionGroupOptionLink> optionGroupOptionLinks = new ArrayList<>();
-            for (Option option : optionGroup.options()) {
-                optionGroupOptionLinks.add(OptionGroupOptionLink.builder()
-                        .optionGroup(optionGroup.uid()).option(option.uid()).build());
-            }
-            optionGroupOptionLinkHandler.handleMany(optionGroup.uid(), optionGroupOptionLinks);
-        }
+    @Provides
+    @Reusable
+    public LinkSyncHandler<OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
+        return new LinkSyncHandlerImpl<>(store);
     }
 }

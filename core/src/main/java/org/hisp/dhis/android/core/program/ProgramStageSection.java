@@ -77,16 +77,6 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
-    @Nullable
-    @JsonIgnore()
-    @ColumnAdapter(ProgramStageSectionRenderingTypeColumnAdapter.class)
-    public abstract ProgramStageSectionRenderingType desktopRenderType();
-
-    @Nullable
-    @JsonIgnore()
-    @ColumnAdapter(ProgramStageSectionRenderingTypeColumnAdapter.class)
-    public abstract ProgramStageSectionRenderingType mobileRenderType();
-
     public static Builder builder() {
         return new $$AutoValue_ProgramStageSection.Builder();
     }
@@ -111,10 +101,6 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
         public abstract Builder renderType(ProgramStageSectionRendering renderType);
 
         public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder desktopRenderType(ProgramStageSectionRenderingType desktopRenderType);
-
-        public abstract Builder mobileRenderType(ProgramStageSectionRenderingType mobileRenderType);
 
         public abstract ProgramStageSection build();
     }

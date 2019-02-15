@@ -50,9 +50,7 @@ public class ProgramStageSectionSamples {
                                 ProgramStageSectionRenderingType.SEQUENTIAL),
                         ProgramStageSectionDeviceRendering.create(
                                 ProgramStageSectionRenderingType.LISTING)))
-                .programStage(ObjectWithUid.create("program_stage_uid"))
-        .desktopRenderType(ProgramStageSectionRenderingType.SEQUENTIAL)
-        .mobileRenderType(ProgramStageSectionRenderingType.LISTING);
+                .programStage(ObjectWithUid.create("program_stage_uid"));
         return builder.build();
     }
 }

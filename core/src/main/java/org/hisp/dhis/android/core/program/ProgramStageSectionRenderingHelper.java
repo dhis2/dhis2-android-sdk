@@ -25,39 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+final class ProgramStageSectionRenderingHelper {
 
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.common.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+    private ProgramStageSectionRenderingHelper() {}
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
-
-public final class ProgramStageSectionStore {
-
-    private ProgramStageSectionStore() {}
-
-    private static StatementBinder<ProgramStageSection> BINDER =
-            new IdentifiableStatementBinder<ProgramStageSection>() {
-        @Override
-        public void bindToStatement(@NonNull ProgramStageSection o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.programStage()));
-            sqLiteBind(sqLiteStatement, 9, ProgramStageSectionRenderingHelper.desktopRenderType(o.renderType()));
-            sqLiteBind(sqLiteStatement, 10, ProgramStageSectionRenderingHelper.mobileRenderType(o.renderType()));
-        }
-    };
-
-    public static IdentifiableObjectStore<ProgramStageSection> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageSectionTableInfo.TABLE_INFO,
-                BINDER, ProgramStageSection::create);
+    static ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering sectionRendering) {
+        return sectionRendering == null || sectionRendering.desktop() == null ? null
+                : sectionRendering.desktop().type();
     }
+
+    static ProgramStageSectionRenderingType mobileRenderType(ProgramStageSectionRendering sectionRendering) {
+        return sectionRendering == null || sectionRendering.mobile() == null ? null
+                : sectionRendering.mobile().type();
+    }
+
 }

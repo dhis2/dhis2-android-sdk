@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.common.UidsHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -110,9 +110,7 @@ public final class ProgramParentUidsHelper {
         Set<String> programStageUids = new HashSet<>();
 
         for (Program program : programs) {
-            for (ObjectWithUid programStage : program.programStages()) {
-                programStageUids.add(programStage.uid());
-            }
+            UidsHelper.addUids(programStageUids, program.programStages());
         }
 
         return programStageUids;

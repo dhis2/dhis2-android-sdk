@@ -25,45 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-public final class ProgramModuleWiper implements ModuleWiper {
+final class RelatedProgramChildrenAppender extends ChildrenAppender<Program> {
 
-    private final TableWiper tableWiper;
+    private final ProgramStoreInterface store;
 
     @Inject
-    ProgramModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    RelatedProgramChildrenAppender(ProgramStoreInterface store) {
+        this.store = store;
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableTableInfo.TABLE_INFO.name(),
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
-
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleTableInfo.TABLE_INFO.name(),
-                ProgramSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageTableInfo.TABLE_INFO.name());
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    protected Program appendChildren(Program program) {
+        Program.Builder builder = program.toBuilder();
+        Program relatedProgramWithUid = program.relatedProgram();
+        if (relatedProgramWithUid != null) {
+            builder.relatedProgram(store.selectByUid(program.relatedProgram().uid()));
+        }
+        return builder.build();
     }
 }

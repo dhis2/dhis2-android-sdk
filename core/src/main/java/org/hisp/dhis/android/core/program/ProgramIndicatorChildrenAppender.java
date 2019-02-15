@@ -25,44 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+final class ProgramIndicatorChildrenAppender extends ChildrenAppender<Program> {
 
-public final class ProgramRuleStore {
+    private final SingleParentChildStore<Program, ProgramIndicator> childStore;
 
-    private static StatementBinder<ProgramRule> BINDER = new IdentifiableStatementBinder<ProgramRule>() {
+    private ProgramIndicatorChildrenAppender(SingleParentChildStore<Program, ProgramIndicator> childStore) {
+        this.childStore = childStore;
+    }
 
-        @Override
-        public void bindToStatement(@NonNull ProgramRule o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.priority());
-            sqLiteBind(sqLiteStatement, 8, o.condition());
-            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.programStage()));
-        }
-    };
+    @Override
+    protected Program appendChildren(Program program) {
+        Program.Builder builder = program.toBuilder();
+        builder.programIndicators(childStore.getChildren(program));
+        return builder.build();
+    }
 
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramRuleTableInfo.TABLE_INFO, ProgramRuleFields.PROGRAM);
-
-    private ProgramRuleStore() {}
-
-    public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramRuleTableInfo.TABLE_INFO, BINDER,
-                ProgramRule::create);
+    static ChildrenAppender<Program> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramIndicatorChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        ProgramIndicatorStore.CHILD_PROJECTION,
+                        ProgramIndicator::create)
+        );
     }
 }

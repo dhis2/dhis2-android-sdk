@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -64,7 +63,7 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Program program;
 
     @Mock
-    private ObjectWithUid programStageWithUid;
+    private ProgramStage programStageWithUid;
 
     @Mock
     private TrackedEntityType trackedEntityType;

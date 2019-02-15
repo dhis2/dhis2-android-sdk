@@ -25,44 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.common.UidsHelper;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import javax.inject.Inject;
 
-public final class ProgramRuleStore {
+import dagger.Reusable;
 
-    private static StatementBinder<ProgramRule> BINDER = new IdentifiableStatementBinder<ProgramRule>() {
+@Reusable
+final class ProgramCategoryComboChildrenAppender extends ChildrenAppender<Program> {
 
-        @Override
-        public void bindToStatement(@NonNull ProgramRule o,
-                                    @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.priority());
-            sqLiteBind(sqLiteStatement, 8, o.condition());
-            sqLiteBind(sqLiteStatement, 9, UidsHelper.getUidOrNull(o.program()));
-            sqLiteBind(sqLiteStatement, 10, UidsHelper.getUidOrNull(o.programStage()));
-        }
-    };
+    private final IdentifiableObjectStore<CategoryCombo> store;
 
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramRuleTableInfo.TABLE_INFO, ProgramRuleFields.PROGRAM);
+    @Inject
+    ProgramCategoryComboChildrenAppender(IdentifiableObjectStore<CategoryCombo> store) {
+        this.store = store;
+    }
 
-    private ProgramRuleStore() {}
-
-    public static IdentifiableObjectStore<ProgramRule> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, ProgramRuleTableInfo.TABLE_INFO, BINDER,
-                ProgramRule::create);
+    @Override
+    protected Program appendChildren(Program program) {
+        Program.Builder builder = program.toBuilder();
+        builder.categoryCombo(store.selectByUid(program.categoryComboUid()));
+        return builder.build();
     }
 }

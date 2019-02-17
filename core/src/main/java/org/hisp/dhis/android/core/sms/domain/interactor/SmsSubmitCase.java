@@ -1,17 +1,17 @@
 package org.hisp.dhis.android.core.sms.domain.interactor;
 
-import android.util.Pair;
-
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
+import org.hisp.dhis.android.core.sms.domain.converter.Converter.DataToConvert;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
+import org.hisp.dhis.android.core.sms.domain.utils.Pair;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
 
@@ -24,6 +24,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class SmsSubmitCase {
+    private final static int SENDING_TIMEOUT = 120;
     private final LocalDbRepository localDbRepository;
     private final SmsRepository smsRepository;
     private final DeviceStateRepository deviceStateRepository;
@@ -46,10 +47,14 @@ public class SmsSubmitCase {
     public Observable<SmsRepository.SmsSendingState> submit(final EnrollmentModel enrollmentModel,
                                                             final Collection<TrackedEntityAttributeValueModel>
                                                                     attributes) {
-        return localDbRepository.getUserName().flatMapObservable(user -> submit(
-                new EnrollmentConverter(),
-                new EnrollmentConverter.EnrollmentData(enrollmentModel, attributes, user))
-        );
+        return Single.zip(
+                localDbRepository.getIdsLists(),
+                localDbRepository.getUserName(),
+                Pair::create
+        ).flatMapObservable(pair -> submit(
+                new EnrollmentConverter(pair.first),
+                new EnrollmentConverter.EnrollmentData(enrollmentModel, attributes, pair.second)
+        ));
     }
 
     public Completable checkConfirmationSms(EventModel event) {
@@ -57,18 +62,21 @@ public class SmsSubmitCase {
     }
 
     public Completable checkConfirmationSms(EnrollmentModel enrollment) {
-        return checkConfirmationSms(new EnrollmentConverter(), enrollment);
+        return localDbRepository.getIdsLists().flatMapCompletable(metadata ->
+                checkConfirmationSms(new EnrollmentConverter(metadata), enrollment)
+        );
     }
 
-    public <T extends Converter.DataToConvert> Observable<SmsRepository.SmsSendingState>
+    public <T extends DataToConvert> Observable<SmsRepository.SmsSendingState>
     submit(final Converter<T, ?> converter, final T dataItem) {
         return checkPreconditions()
-                .andThen(
-                        localDbRepository.getGatewayNumber()
-                ).flatMapObservable(gatewayNumber -> {
-                    String convertedValue = converter.format(dataItem);
-                    return smsRepository.sendSms(gatewayNumber, convertedValue, 120);
-                }).flatMap(smsSendingState -> {
+                .andThen(Single.zip(
+                        localDbRepository.getGatewayNumber(),
+                        converter.format(dataItem),
+                        Pair::create)
+                ).flatMapObservable(numAndContents ->
+                        smsRepository.sendSms(numAndContents.first, numAndContents.second, SENDING_TIMEOUT))
+                .flatMap(smsSendingState -> {
                     if (SmsRepository.State.ALL_SENT.equals(smsSendingState.getState())) {
                         return localDbRepository.updateSubmissionState(dataItem.getDataModel(), State.SENT_VIA_SMS)
                                 .andThen(Observable.just(smsSendingState));
@@ -79,12 +87,13 @@ public class SmsSubmitCase {
 
     public <T extends BaseDataModel> Completable checkConfirmationSms(final Converter<?, T> converter,
                                                                       final T dataModel) {
-        Collection<String> requiredStrings = converter.getConfirmationRequiredTexts(dataModel);
         return Single.zip(localDbRepository.getConfirmationSenderNumber(),
-                localDbRepository.getWaitingResultTimeout(), Pair::new)
-                .flatMapCompletable(config ->
-                        smsRepository.listenToConfirmationSms(
-                                config.second, config.first, requiredStrings))
+                converter.getConfirmationRequiredTexts(dataModel),
+                localDbRepository.getWaitingResultTimeout(),
+                ResultCheckData::create
+        ).flatMapCompletable(config ->
+                smsRepository.listenToConfirmationSms(
+                        config.waitingResultTimeout, config.confirmationSenderNumber, config.requiredStrings))
                 .andThen(localDbRepository.updateSubmissionState(dataModel, State.SYNCED_VIA_SMS));
     }
 
@@ -103,7 +112,25 @@ public class SmsSubmitCase {
             }
             return Completable.complete();
         });
+    }
 
+    private static class ResultCheckData {
+        String confirmationSenderNumber;
+        Collection<String> requiredStrings;
+        int waitingResultTimeout;
+
+        private ResultCheckData() {
+        }
+
+        static ResultCheckData create(String confirmationSenderNumber,
+                                      Collection<String> requiredStrings,
+                                      int waitingResultTimeout) {
+            ResultCheckData data = new ResultCheckData();
+            data.confirmationSenderNumber = confirmationSenderNumber;
+            data.requiredStrings = requiredStrings;
+            data.waitingResultTimeout = waitingResultTimeout;
+            return data;
+        }
     }
 
     public static class PreconditionFailed extends Throwable {

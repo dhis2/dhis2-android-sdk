@@ -3,6 +3,9 @@ package org.hisp.dhis.android.core.sms;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.smscompression.models.Metadata;
+
+import java.util.Date;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -16,7 +19,7 @@ public class TestRepositories {
 
         @Override
         public Single<String> getUserName() {
-            return Single.just("testCategoryOptionCombo");
+            return Single.fromCallable(() -> "testUser");
         }
 
         @Override
@@ -52,6 +55,15 @@ public class TestRepositories {
         @Override
         public Completable updateSubmissionState(BaseDataModel event, State sentViaSms) {
             return Completable.complete();
+        }
+
+        @Override
+        public Single<Metadata> getIdsLists() {
+            return Single.fromCallable(() -> {
+                Metadata metadata = new Metadata();
+                metadata.lastSyncDate = new Date();
+                return metadata;
+            });
         }
     }
 }

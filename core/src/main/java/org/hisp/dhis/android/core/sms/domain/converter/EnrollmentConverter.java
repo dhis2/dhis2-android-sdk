@@ -1,43 +1,62 @@
 package org.hisp.dhis.android.core.sms.domain.converter;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.util.Base64;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
-import org.hisp.dhis.smscompression.SMSSubmissionWriter;
 import org.hisp.dhis.smscompression.models.AttributeValue;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import io.reactivex.Single;
+
 import static org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter.EnrollmentData;
 
-public class EnrollmentConverter implements Converter<EnrollmentData, EnrollmentModel> {
-    @Override
-    public String format(@NonNull EnrollmentData enrollment) throws Exception {
-        EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
-        subm.setUserID(enrollment.user);
-        subm.setOrgUnit(enrollment.enrollmentModel.organisationUnit());
-        subm.setTrackerProgram(enrollment.enrollmentModel.program());
-        subm.setTrackedEntityType(type);
-        subm.setEnrollment(enrollment.enrollmentModel.uid());
-        subm.setTimestamp(enrollment.enrollmentModel.lastUpdated());
-        ArrayList<AttributeValue> values = new ArrayList<>();
-        for (TrackedEntityAttributeValueModel attr : enrollment.attributes) {
-            values.add(new AttributeValue(attr.trackedEntityAttribute(), attr.value()));
-        }
-        subm.setValues(values);
+public class EnrollmentConverter extends Converter<EnrollmentData, EnrollmentModel> {
 
-        SMSSubmissionWriter writer = new SMSSubmissionWriter(metadata);
-        byte[] compressSubm = writer.compress(subm);
-        return Base64.encodeToString(compressSubm, Base64.DEFAULT);
+    private static final String TAG = EnrollmentConverter.class.getSimpleName();
+    private Metadata metadata;
+
+    public EnrollmentConverter(Metadata metadata) {
+        this.metadata = metadata;
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public Single<String> format(@NonNull EnrollmentData enrollment) {
+        return getSmsSubmissionWriter(metadata).map(smsSubmissionWriter -> {
+            EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
+            subm.setUserID(enrollment.user);
+            subm.setOrgUnit(enrollment.enrollmentModel.organisationUnit());
+            subm.setTrackerProgram(enrollment.enrollmentModel.program());
+            subm.setTrackedEntityType(enrollment.enrollmentModel.trackedEntityInstance());
+            subm.setEnrollment(enrollment.enrollmentModel.uid());
+            subm.setTimestamp(enrollment.enrollmentModel.lastUpdated());
+            ArrayList<AttributeValue> values = new ArrayList<>();
+            for (TrackedEntityAttributeValueModel attr : enrollment.attributes) {
+                values.add(new AttributeValue(attr.trackedEntityAttribute(), attr.value()));
+            }
+            subm.setValues(values);
+            byte[] compressSubm = smsSubmissionWriter.compress(subm);
+            String encoded;
+            try {
+                encoded = Base64.encodeToString(compressSubm, Base64.DEFAULT);
+            } catch (Throwable t) {
+                encoded = java.util.Base64.getEncoder().encodeToString(compressSubm);
+            }
+            return encoded;
+        });
     }
 
     @Override
-    public Collection<String> getConfirmationRequiredTexts(EnrollmentModel enrollmentModel) {
+    public Single<? extends Collection<String>> getConfirmationRequiredTexts(EnrollmentModel enrollmentModel) {
+        // TODO
         return null;
     }
 

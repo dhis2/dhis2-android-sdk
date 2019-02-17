@@ -10,6 +10,7 @@ import org.hisp.dhis.android.core.event.EventModel;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.user.UserModule;
+import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.io.IOException;
 
@@ -110,5 +111,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
             return Completable.fromAction(() -> enrollmentStore.setState(uid, state));
         }
         return Completable.error(new IllegalArgumentException("Not supported data type"));
+    }
+
+    @Override
+    public Single<Metadata> getIdsLists() {
+        // TODO
+        return Single.just(new Metadata());
     }
 }

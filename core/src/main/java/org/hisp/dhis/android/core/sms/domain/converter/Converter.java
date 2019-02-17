@@ -3,23 +3,31 @@ package org.hisp.dhis.android.core.sms.domain.converter;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.smscompression.SMSSubmissionWriter;
+import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.util.Collection;
 
-public interface Converter<P extends Converter.DataToConvert, T extends BaseDataModel> {
+import io.reactivex.Single;
+
+public abstract class Converter<P extends Converter.DataToConvert, T extends BaseDataModel> {
+    public Single<SMSSubmissionWriter> getSmsSubmissionWriter(Metadata metadata) {
+        return Single.just(new SMSSubmissionWriter(metadata));
+    }
+
     /**
      * @param dataItem object to convert
      * @return text ready to be sent by sms
      */
-    String format(@NonNull P dataItem) throws Exception;
+    public abstract Single<String> format(@NonNull P dataItem);
 
     /**
      * @return a texts list, that when they exists in a response confirmation sms, it means that
      * submission was successfully received
      */
-    Collection<String> getConfirmationRequiredTexts(T dataObject);
+    public abstract Single<? extends Collection<String>> getConfirmationRequiredTexts(T dataObject);
 
-    interface DataToConvert {
+    public interface DataToConvert {
         BaseDataModel getDataModel();
     }
 }

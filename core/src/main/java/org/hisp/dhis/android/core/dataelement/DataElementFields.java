@@ -65,9 +65,7 @@ public final class DataElementFields {
                     fh.<Boolean>field(ZERO_IS_SIGNIFICANT),
                     fh.<String>field(AGGREGATION_TYPE),
                     fh.<String>field(FORM_NAME),
-                    fh.<String>field(NUMBER_TYPE),
                     fh.<String>field(DOMAIN_TYPE),
-                    fh.<String>field(DIMENSION),
                     fh.<String>field(DISPLAY_FORM_NAME),
                     fh.<ObjectWithUid>nestedField(OPTION_SET)
                             .with(ObjectWithUid.uid),

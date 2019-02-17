@@ -40,12 +40,34 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class ProgramModule {
 
     public final ProgramCollectionRepository programs;
+    public final ProgramIndicatorCollectionRepository programIndicators;
+    public final ProgramRuleCollectionRepository programRules;
+    public final ProgramRuleActionCollectionRepository programRuleActions;
+    public final ProgramRuleVariableCollectionRepository programRuleVariables;
+    public final ProgramSectionCollectionRepository programSections;
+    public final ProgramStageCollectionRepository programStages;
+    public final ProgramStageSectionsCollectionRepository programStageSections;
+
     public final ProgramIndicatorEngine programIndicatorEngine;
 
     @Inject
     ProgramModule(ProgramCollectionRepository programs,
+                  ProgramIndicatorCollectionRepository programIndicators,
+                  ProgramRuleCollectionRepository programRules,
+                  ProgramRuleActionCollectionRepository programRuleActions,
+                  ProgramRuleVariableCollectionRepository programRuleVariables,
+                  ProgramSectionCollectionRepository programSections,
+                  ProgramStageCollectionRepository programStages,
+                  ProgramStageSectionsCollectionRepository programStageSections,
                   ProgramIndicatorEngine programIndicatorEngine) {
         this.programs = programs;
+        this.programIndicators = programIndicators;
+        this.programRules = programRules;
+        this.programRuleActions = programRuleActions;
+        this.programRuleVariables = programRuleVariables;
+        this.programSections = programSections;
+        this.programStages = programStages;
+        this.programStageSections = programStageSections;
         this.programIndicatorEngine = programIndicatorEngine;
     }
 }

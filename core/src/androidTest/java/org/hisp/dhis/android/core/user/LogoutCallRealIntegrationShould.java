@@ -21,7 +21,7 @@ import static org.hisp.dhis.android.core.data.database.SqliteCheckerUtility.isTa
 public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
     private D2 d2;
 
-    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Before
     @Override
@@ -50,7 +50,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
         assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
 
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
+        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNull();
@@ -69,7 +69,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
 
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
+        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
         assertThat(authenticatedUser).isNotNull();
         assertThat(authenticatedUser.credentials()).isNull();

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModuleDownloader;
-import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.User;
 
 import java.util.Collection;
@@ -51,7 +51,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
 
     private final TrackedEntityInstanceHandler trackedEntityInstanceHandler;
     private final TrackedEntityInstanceUidHelper uidsHelper;
-    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
     private final OrganisationUnitModuleDownloader organisationUnitDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
@@ -60,7 +60,7 @@ final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
     TrackedEntityInstanceRelationshipPersistenceCallFactory(
             @NonNull TrackedEntityInstanceHandler trackedEntityInstanceHandler,
             @NonNull TrackedEntityInstanceUidHelper uidsHelper,
-            @NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore,
+            @NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore,
             @NonNull OrganisationUnitModuleDownloader organisationUnitDownloader,
             @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.trackedEntityInstanceHandler = trackedEntityInstanceHandler;
@@ -78,12 +78,12 @@ final class TrackedEntityInstanceRelationshipPersistenceCallFactory {
             Set<String> searchOrgUnitUids = uidsHelper.getMissingOrganisationUnitUids(trackedEntityInstances);
 
             if (!searchOrgUnitUids.isEmpty()) {
-                AuthenticatedUserModel authenticatedUserModel = authenticatedUserStore.selectFirst();
+                AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 
                 Callable<List<OrganisationUnit>> organisationUnitCall =
                         organisationUnitDownloader.downloadSearchOrganisationUnits(
                                 searchOrgUnitUids,
-                                User.builder().uid(authenticatedUserModel.user()).build());
+                                User.builder().uid(authenticatedUser.user()).build());
                 organisationUnitCall.call();
             }
 

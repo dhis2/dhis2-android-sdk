@@ -39,19 +39,18 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module
-public final class AuthenticatedUserEntityDIModule implements ObjectWithoutUidStoreProvider<AuthenticatedUserModel> {
+public final class AuthenticatedUserEntityDIModule implements ObjectWithoutUidStoreProvider<AuthenticatedUser> {
 
     @Override
     @Provides
     @Reusable
-    public ObjectWithoutUidStore<AuthenticatedUserModel> store(DatabaseAdapter databaseAdapter) {
+    public ObjectWithoutUidStore<AuthenticatedUser> store(DatabaseAdapter databaseAdapter) {
         return AuthenticatedUserStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    ReadOnlyObjectRepository<AuthenticatedUserModel> repository(
-            ObjectWithoutUidStore<AuthenticatedUserModel> store) {
+    ReadOnlyObjectRepository<AuthenticatedUser> repository(ObjectWithoutUidStore<AuthenticatedUser> store) {
         return new ReadOnlyFirstObjectRepositoryImpl<>(store);
     }
 }

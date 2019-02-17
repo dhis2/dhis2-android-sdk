@@ -28,53 +28,43 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkModel.Columns;
-import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
-import org.hisp.dhis.android.core.utils.Utils;
-import org.junit.Test;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.DataSetOrganisationUnitLinkSamples;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-
 @RunWith(AndroidJUnit4.class)
-public class DataSetOrganisationUnitLinkModelShould extends
-        LinkModelAbstractShould<DataSetOrganisationUnitLinkModel> {
+public class DataSetOrganisationUnitLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<DataSetOrganisationUnitLink> {
 
-    public DataSetOrganisationUnitLinkModelShould() {
-        super(new Columns().all(), 2);
+    public DataSetOrganisationUnitLinkStoreIntegrationShould() {
+        super(DataSetOrganisationUnitLinkStore.create(DatabaseAdapterFactory.get(false)),
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    protected DataSetOrganisationUnitLinkModel buildModel() {
-        return DataSetOrganisationUnitLinkModel.builder()
-                .dataSet("data_set_uid")
-                .organisationUnit("organisation_unit_uid")
+    protected String addMasterUid() {
+        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().organisationUnit();
+    }
+
+    @Override
+    protected DataSetOrganisationUnitLink buildObject() {
+        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink();
+    }
+
+    @Override
+    protected DataSetOrganisationUnitLink buildObjectWithOtherMasterUid() {
+        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().toBuilder()
+                .organisationUnit("new_organisation_unit")
                 .build();
     }
 
     @Override
-    protected DataSetOrganisationUnitLinkModel cursorToModel(Cursor cursor) {
-        return DataSetOrganisationUnitLinkModel.create(cursor);
-    }
-
-    @Override
-    protected Object[] getModelAsObjectArray() {
-        return Utils.appendInNewArray(ColumnsArrayUtils.getModelAsObjectArray(model),
-                model.dataSet(), model.organisationUnit());
-    }
-
-    @Test
-    public void have_data_set_organisation_unit_model_columns() {
-        List<String> columnsList = Arrays.asList(new Columns().all());
-
-        assertThat(columnsList.contains(Columns.DATA_SET)).isEqualTo(true);
-        assertThat(columnsList.contains(Columns.ORGANISATION_UNIT)).isEqualTo(true);
+    protected DataSetOrganisationUnitLink buildObjectWithId() {
+        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().toBuilder()
+                .id(1L)
+                .build();
     }
 }

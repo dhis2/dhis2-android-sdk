@@ -32,9 +32,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import org.hisp.dhis.android.core.common.BaseObjectShould;
 import org.hisp.dhis.android.core.common.ObjectShould;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.Payload;
 import org.hisp.dhis.android.core.program.Program;
+import org.hisp.dhis.android.core.program.ProgramStage;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class ProgramModelPayloadShould extends BaseObjectShould implements Objec
         assertThat(program1.programStages()).isNotNull();
         assertThat(program1.programStages()).isNotEmpty();
 
-        ObjectWithUid programStage1 = program1.programStages().get(0);
+        ProgramStage programStage1 = program1.programStages().get(0);
         assertThat(programStage1.uid()).isEqualTo("pSllsjpfLH2");
     }
 }

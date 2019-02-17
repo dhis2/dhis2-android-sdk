@@ -32,9 +32,12 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteIdentifiableCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
@@ -184,4 +187,25 @@ public final class RelationshipCollectionRepository
         }
         return null;
     }
+
+    public StringFilterConnector<RelationshipCollectionRepository> byUid() {
+        return cf.string(BaseIdentifiableObjectModel.Columns.UID);
+    }
+
+    public StringFilterConnector<RelationshipCollectionRepository> byName() {
+        return cf.string(BaseIdentifiableObjectModel.Columns.NAME);
+    }
+
+    public DateFilterConnector<RelationshipCollectionRepository> byCreated() {
+        return cf.date(BaseIdentifiableObjectModel.Columns.CREATED);
+    }
+
+    public DateFilterConnector<RelationshipCollectionRepository> byLastUpdated() {
+        return cf.date(BaseIdentifiableObjectModel.Columns.LAST_UPDATED);
+    }
+
+    public StringFilterConnector<RelationshipCollectionRepository> byRelationshipType() {
+        return cf.string(RelationshipTableInfo.Columns.RELATIONSHIP_TYPE);
+    }
+
 }

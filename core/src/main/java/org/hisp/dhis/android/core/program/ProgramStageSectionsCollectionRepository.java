@@ -25,26 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program;
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import java.util.Collection;
+import java.util.List;
 
-public class DataSetOrganisationUnitLinkModelBuilder
-        implements ModelBuilder<DataSet, DataSetOrganisationUnitLinkModel> {
+import javax.inject.Inject;
 
-    private final DataSetOrganisationUnitLinkModel.Builder builder;
+import dagger.Reusable;
 
-    public DataSetOrganisationUnitLinkModelBuilder(OrganisationUnit organisationUnit) {
-        this.builder = DataSetOrganisationUnitLinkModel.builder()
-                .organisationUnit(organisationUnit.uid());
-    }
+@Reusable
+public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl
+        <ProgramStageSection, ProgramStageSectionsCollectionRepository> {
 
-    @Override
-    public DataSetOrganisationUnitLinkModel buildModel(DataSet pojo) {
-        return builder
-                .dataSet(pojo.uid())
-                .build();
+    @Inject
+    ProgramStageSectionsCollectionRepository(final IdentifiableObjectStore<ProgramStageSection> store,
+                                             final Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders,
+                                             List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

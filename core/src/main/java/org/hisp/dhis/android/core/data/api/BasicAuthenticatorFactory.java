@@ -32,7 +32,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.hisp.dhis.android.core.user.AuthenticatedUserStore;
 
 public final class BasicAuthenticatorFactory {
@@ -46,7 +46,7 @@ public final class BasicAuthenticatorFactory {
             throw new IllegalArgumentException("databaseAdapter == null");
         }
 
-        ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore = AuthenticatedUserStore.create(
+        ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore = AuthenticatedUserStore.create(
                 databaseAdapter);
         return new BasicAuthenticator(authenticatedUserStore);
     }

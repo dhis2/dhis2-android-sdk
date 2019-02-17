@@ -62,27 +62,11 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends MockIn
     }
 
     @Test
-    public void filter_by_number_type() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
-                .byNumberType().eq("numTy")
-                .get();
-        assertThat(dataElements.size(), is(1));
-    }
-
-    @Test
     public void filter_by_domain_type() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byDomainType().eq("TRACKER")
                 .get();
         assertThat(dataElements.size(), is(4));
-    }
-
-    @Test
-    public void filter_by_dimension() {
-        List<DataElement> dataElements = d2.dataElementModule().dataElements
-                .byDimension().eq("dim")
-                .get();
-        assertThat(dataElements.size(), is(1));
     }
 
     @Test

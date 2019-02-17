@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.data.api;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +56,7 @@ import static org.mockito.Mockito.when;
 public class BasicAuthenticatorShould {
 
     @Mock
-    private ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     private MockWebServer mockWebServer;
     private OkHttpClient okHttpClient;
@@ -76,13 +76,13 @@ public class BasicAuthenticatorShould {
 
     @Test
     public void return_test_and_user_when_server_take_request() throws IOException, InterruptedException {
-        AuthenticatedUserModel authenticatedUserModel =
-                AuthenticatedUserModel.builder()
+        AuthenticatedUser authenticatedUser =
+                AuthenticatedUser.builder()
                         .user("test_user")
                         .credentials(base64("test_user", "test_password"))
                         .build();
 
-        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUserModel);
+        when(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser);
 
         okHttpClient.newCall(
                 new Request.Builder()

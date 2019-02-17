@@ -51,12 +51,10 @@ public final class DataElementStore {
             sqLiteBind(sqLiteStatement, 12, o.zeroIsSignificant());
             sqLiteBind(sqLiteStatement, 13, o.aggregationType());
             sqLiteBind(sqLiteStatement, 14, o.formName());
-            sqLiteBind(sqLiteStatement, 15, o.numberType());
-            sqLiteBind(sqLiteStatement, 16, o.domainType());
-            sqLiteBind(sqLiteStatement, 17, o.dimension());
-            sqLiteBind(sqLiteStatement, 18, o.displayFormName());
-            sqLiteBind(sqLiteStatement, 19, o.optionSetUid());
-            sqLiteBind(sqLiteStatement, 20, o.categoryComboUid());
+            sqLiteBind(sqLiteStatement, 15, o.domainType());
+            sqLiteBind(sqLiteStatement, 16, o.displayFormName());
+            sqLiteBind(sqLiteStatement, 17, o.optionSetUid());
+            sqLiteBind(sqLiteStatement, 18, o.categoryComboUid());
         }
     };
 

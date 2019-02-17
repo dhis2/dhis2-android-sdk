@@ -38,20 +38,20 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class AuthenticatedUserStore {
 
-    private static final StatementBinder<AuthenticatedUserModel> BINDER
+    private static final StatementBinder<AuthenticatedUser> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.user());
         sqLiteBind(sqLiteStatement, 2, o.credentials());
         sqLiteBind(sqLiteStatement, 3, o.hash());
     };
 
-    private static final WhereStatementBinder<AuthenticatedUserModel> WHERE_UPDATE_BINDER
+    private static final WhereStatementBinder<AuthenticatedUser> WHERE_UPDATE_BINDER
             = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 4, o.user());
 
     private AuthenticatedUserStore() {}
 
-    public static ObjectWithoutUidStore<AuthenticatedUserModel> create(DatabaseAdapter databaseAdapter) {
+    public static ObjectWithoutUidStore<AuthenticatedUser> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithoutUidStore(databaseAdapter, AuthenticatedUserTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, AuthenticatedUserModel::create);
+                BINDER, WHERE_UPDATE_BINDER, AuthenticatedUser::create);
     }
 }

@@ -52,7 +52,7 @@ public final class RelationshipTableInfo {
     };
 
     static class Columns extends BaseModel.Columns {
-        static final String RELATIONSHIP_TYPE = "relationshipType";
+        public static final String RELATIONSHIP_TYPE = "relationshipType";
 
         @Override
         public String[] all() {

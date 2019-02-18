@@ -28,34 +28,47 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class OptionGroupOptionLinkTableInfo {
 
-import dagger.Reusable;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
+        @Override
+        public String name() {
+            return "OptionGroupOptionLink";
+        }
 
-    private final TableWiper tableWiper;
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
 
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private OptionGroupOptionLinkTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
+    static class Columns extends BaseModel.Columns {
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+        static final String OPTION_GROUP = "optionGroup";
+        static final String OPTION = "option";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    OPTION_GROUP,
+                    OPTION
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(),
+                    OPTION_GROUP,
+                    OPTION
+            );
+        }
     }
 }

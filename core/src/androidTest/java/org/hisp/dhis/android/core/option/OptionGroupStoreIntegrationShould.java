@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,34 +28,37 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.option.OptionGroupSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup> {
 
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public OptionGroupStoreIntegrationShould() {
+        super(OptionGroupStore.create(DatabaseAdapterFactory.get(false)),
+                OptionGroupTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
+    protected OptionGroup buildObject() {
+        return OptionGroupSamples.getOptionGroup();
     }
 
     @Override
-    public void wipeData() {
-        // No metadata to wipe
+    protected OptionGroup buildObjectWithId() {
+        return OptionGroupSamples.getOptionGroup().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected OptionGroup buildObjectToUpdate() {
+        return OptionGroupSamples.getOptionGroup().toBuilder()
+                .name("new_name")
+                .build();
     }
 }

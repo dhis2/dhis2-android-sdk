@@ -26,53 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.option;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.support.annotation.NonNull;
+import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import com.google.auto.value.AutoValue;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+@AutoValue
+public abstract class OptionGroupOptionLink implements Model {
 
-    public static final int VERSION = 39;
+    @Nullable
+    public abstract String optionGroup();
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
+    @Nullable
+    public abstract String option();
+
+    public static OptionGroupOptionLink create(Cursor cursor) {
+        return AutoValue_OptionGroupOptionLink.createFromCursor(cursor);
     }
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public static Builder builder() {
+        return new $$AutoValue_OptionGroupOptionLink.Builder();
     }
 
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    public abstract Builder toBuilder();
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
 
-        db.enableWriteAheadLogging();
-    }
+        public abstract Builder optionGroup(String optionGroup);
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<>());
-        }
-        return versionMigrations;
+        public abstract Builder option(String option);
+
+        public abstract OptionGroupOptionLink build();
     }
 }

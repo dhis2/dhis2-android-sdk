@@ -28,34 +28,21 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Filter;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
-import javax.inject.Inject;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import dagger.Reusable;
+public interface OptionGroupService {
 
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
-    }
+    @GET("optionGroups")
+    Call<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
+                                            @Query("filter") @Where String dataSetUidsFilter,
+                                            @Query("filter") @Where Filter<OptionGroup, String> lastUpdated,
+                                            @Query("paging") boolean paging);
 }

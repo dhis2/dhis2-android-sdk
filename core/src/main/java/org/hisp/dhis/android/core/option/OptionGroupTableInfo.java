@@ -28,34 +28,36 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class OptionGroupTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private OptionGroupTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+        @Override
+        public String name() {
+            return "OptionGroup";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    OptionGroupFields.OPTION_SET
+            );
+        }
     }
 }

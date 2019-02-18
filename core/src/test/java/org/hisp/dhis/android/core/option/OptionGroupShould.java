@@ -26,53 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.core.option;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-    public static final int VERSION = 39;
+public class OptionGroupShould extends BaseObjectShould implements ObjectShould {
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    public OptionGroupShould() {
+        super("option/option_group.json");
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        OptionGroup optionGroup = objectMapper.readValue(jsonStream, OptionGroup.class);
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<>());
-        }
-        return versionMigrations;
+        assertThat(optionGroup.uid()).isEqualTo("j3JYGVCIEdz");
+        assertThat(optionGroup.name()).isEqualTo("Option group");
+        assertThat(optionGroup.displayName()).isEqualTo("Option group");
+        assertThat(optionGroup.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2019-02-15T13:55:55.665"));
+        assertThat(optionGroup.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2019-02-15T13:55:55.665"));
+        assertThat(optionGroup.optionSet().uid()).isEqualTo("VQ2lai3OfVG");
+        assertThat(optionGroup.options().get(0).uid()).isEqualTo("Y1ILwhy5VDY");
+        assertThat(optionGroup.options().get(1).uid()).isEqualTo("egT1YqFWsVk");
     }
 }

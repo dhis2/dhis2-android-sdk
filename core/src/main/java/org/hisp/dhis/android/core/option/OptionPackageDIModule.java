@@ -37,6 +37,8 @@ import retrofit2.Retrofit;
 
 @Module(includes = {
         OptionEntityDIModule.class,
+        OptionGroupEntityDIModule.class,
+        OptionGroupOptionEntityDIModule.class,
         OptionSetEntityDIModule.class
 })
 public final class OptionPackageDIModule {
@@ -49,7 +51,19 @@ public final class OptionPackageDIModule {
 
     @Provides
     @Reusable
-    OptionSetService service(Retrofit retrofit) {
+    OptionSetService optionSetService(Retrofit retrofit) {
         return retrofit.create(OptionSetService.class);
+    }
+
+    @Provides
+    @Reusable
+    UidsCallFactory<OptionGroup> optionGroupCallFactory(OptionGroupCallFactory impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    OptionGroupService optionGroupService(Retrofit retrofit) {
+        return retrofit.create(OptionGroupService.class);
     }
 }

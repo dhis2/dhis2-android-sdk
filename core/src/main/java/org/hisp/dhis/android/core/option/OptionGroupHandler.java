@@ -25,54 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option;
 
-package org.hisp.dhis.android.core.data.database;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.common.HandleAction;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
+import javax.inject.Inject;
 
-    public static final int VERSION = 39;
+import dagger.Reusable;
 
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
+@Reusable
+final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> {
 
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    private final LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler;
+
+    @Inject
+    OptionGroupHandler(IdentifiableObjectStore<OptionGroup> optionStore,
+                       LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler) {
+        super(optionStore);
+        this.optionGroupOptionLinkHandler = optionGroupOptionLinkHandler;
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
+    protected void afterObjectHandled(OptionGroup optionGroup, HandleAction action) {
+        if (optionGroup.options() != null) {
+            List<OptionGroupOptionLink> optionGroupOptionLinks = new ArrayList<>();
+            for (Option option : optionGroup.options()) {
+                optionGroupOptionLinks.add(OptionGroupOptionLink.builder()
+                        .optionGroup(optionGroup.uid()).option(option.uid()).build());
+            }
+            optionGroupOptionLinkHandler.handleMany(optionGroup.uid(), optionGroupOptionLinks);
         }
-
-        db.enableWriteAheadLogging();
-    }
-
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
-    @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<>());
-        }
-        return versionMigrations;
     }
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.BaseCallShould;
+import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -87,6 +88,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     private Callable<List<OptionSet>> optionSetCall;
 
     @Mock
+    private Callable<List<OptionGroup>> optionGroupCall;
+
+    @Mock
     private ListCallFactory<Program> programCallFactory;
 
     @Mock
@@ -103,6 +107,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
 
     @Mock
     private UidsCallFactory<OptionSet> optionSetCallFactory;
+
+    @Mock
+    private UidsCallFactory<OptionGroup> optionGroupCallFactory;
 
     // object to test
     private Callable<List<Program>> programDownloadCall;
@@ -135,12 +142,15 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 .thenReturn(relationshipTypeCall);
         when(optionSetCallFactory.create(any(Set.class)))
                 .thenReturn(optionSetCall);
+        when(optionGroupCallFactory.create(any(Set.class)))
+                .thenReturn(optionGroupCall);
 
         // Calls
         when(programEndpointCall.call()).thenReturn(Collections.singletonList(program));
         when(trackedEntityTypeCall.call()).thenReturn(Collections.singletonList(trackedEntityType));
         when(relationshipTypeCall.call()).thenReturn(Collections.emptyList());
         when(optionSetCall.call()).thenReturn(Collections.emptyList());
+        when(optionGroupCall.call()).thenReturn(Collections.emptyList());
         when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
         when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
 
@@ -151,7 +161,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 programRuleCallFactory,
                 trackedEntityCallFactory,
                 relationshipTypeCallFactory,
-                optionSetCallFactory).downloadMetadata();
+                optionSetCallFactory,
+                optionGroupCallFactory).downloadMetadata();
     }
 
     @After

@@ -28,34 +28,28 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import javax.inject.Inject;
+public final class OptionGroupFields {
 
-import dagger.Reusable;
+    public final static String OPTION_SET = "optionSet";
+    private final static String OPTIONS = "options";
 
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
+    private static final FieldsHelper<OptionGroup> fh = new FieldsHelper<>();
 
-    private final TableWiper tableWiper;
+    public static final Field<OptionGroup, String> uid = fh.uid();
 
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
+    static final Field<OptionGroup, String> lastUpdated = fh.lastUpdated();
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
+    public static final Fields<OptionGroup> allFields = Fields.<OptionGroup>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(
+                    fh.nestedFieldWithUid(OPTION_SET),
+                    fh.nestedFieldWithUid(OPTIONS)
+            ).build();
 
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    private OptionGroupFields() {
     }
 }

@@ -26,36 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.data.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
 
-import javax.inject.Inject;
+public class OptionGroupOptionLinkSamples {
 
-import dagger.Reusable;
-
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    public static OptionGroupOptionLink getOptionGroupOptionLink() {
+        return OptionGroupOptionLink.builder()
+                .optionGroup("option_group")
+                .option("option")
+                .build();
     }
 }

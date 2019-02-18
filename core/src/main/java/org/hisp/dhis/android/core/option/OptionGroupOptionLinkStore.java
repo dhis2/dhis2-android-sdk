@@ -28,34 +28,25 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-import dagger.Reusable;
+public final class OptionGroupOptionLinkStore {
 
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
+    private static final StatementBinder<OptionGroupOptionLink> BINDER
+            = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.optionGroup());
+        sqLiteBind(sqLiteStatement, 2, o.option());
+    };
 
-    private final TableWiper tableWiper;
+    private OptionGroupOptionLinkStore() {}
 
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    public static LinkModelStore<OptionGroupOptionLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, OptionGroupOptionLinkTableInfo.TABLE_INFO,
+                OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP, BINDER, OptionGroupOptionLink::create);
     }
 }

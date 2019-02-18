@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.modules.MetadataModuleDownloader;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -52,6 +53,7 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
     private final UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory;
     private final ListCallFactory<RelationshipType> relationshipTypeCallFactory;
     private final UidsCallFactory<OptionSet> optionSetCallFactory;
+    private final UidsCallFactory<OptionGroup> optionGroupCallFactory;
 
     @Inject
     ProgramModuleDownloader(ListCallFactory<Program> programCallFactory,
@@ -59,13 +61,15 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
                             UidsCallFactory<ProgramRule> programRuleCallFactory,
                             UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory,
                             ListCallFactory<RelationshipType> relationshipTypeCallFactory,
-                            UidsCallFactory<OptionSet> optionSetCallFactory) {
+                            UidsCallFactory<OptionSet> optionSetCallFactory,
+                            UidsCallFactory<OptionGroup> optionGroupCallFactory) {
         this.programCallFactory = programCallFactory;
         this.programStageCallFactory = programStageCallFactory;
         this.programRuleCallFactory = programRuleCallFactory;
         this.trackedEntityTypeCallFactory = trackedEntityTypeCallFactory;
         this.relationshipTypeCallFactory = relationshipTypeCallFactory;
         this.optionSetCallFactory = optionSetCallFactory;
+        this.optionGroupCallFactory = optionGroupCallFactory;
     }
 
     @Override
@@ -86,6 +90,7 @@ public class ProgramModuleDownloader implements MetadataModuleDownloader<List<Pr
 
             Set<String> optionSetUids = ProgramParentUidsHelper.getAssignedOptionSetUids(programs, programStages);
             optionSetCallFactory.create(optionSetUids).call();
+            optionGroupCallFactory.create(optionSetUids).call();
 
             return programs;
         };

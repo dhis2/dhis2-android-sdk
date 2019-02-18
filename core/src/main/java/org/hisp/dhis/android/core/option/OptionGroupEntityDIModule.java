@@ -28,34 +28,26 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class OptionModuleWiper implements ModuleWiper {
+@Module
+public final class OptionGroupEntityDIModule {
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    OptionModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    @Provides
+    @Reusable
+    IdentifiableObjectStore<OptionGroup> store(DatabaseAdapter databaseAdapter) {
+        return OptionGroupStore.create(databaseAdapter);
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO,
-                OptionGroupTableInfo.TABLE_INFO,
-                OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                OptionSetTableInfo.TABLE_INFO);
-    }
-
-    @Override
-    public void wipeData() {
-        // No metadata to wipe
+    @Provides
+    @Reusable
+    SyncHandler<OptionGroup> handler(OptionGroupHandler impl) {
+        return impl;
     }
 }

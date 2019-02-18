@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.BaseCallShould;
 import org.hisp.dhis.android.core.option.OptionGroup;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.After;
 import org.junit.Before;
@@ -111,6 +112,9 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
     @Mock
     private UidsCallFactory<OptionGroup> optionGroupCallFactory;
 
+    @Mock
+    private DHISVersionManager versionManager;
+
     // object to test
     private Callable<List<Program>> programDownloadCall;
 
@@ -154,6 +158,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
         when(programStageEndpointCall.call()).thenReturn(Collections.emptyList());
         when(programRuleEndpointCall.call()).thenReturn(Collections.emptyList());
 
+        when(versionManager.is2_29()).thenReturn(Boolean.FALSE);
+
         // Metadata call
         programDownloadCall = new ProgramModuleDownloader(
                 programCallFactory,
@@ -162,7 +168,8 @@ public class ProgramModuleDownloaderShould extends BaseCallShould {
                 trackedEntityCallFactory,
                 relationshipTypeCallFactory,
                 optionSetCallFactory,
-                optionGroupCallFactory).downloadMetadata();
+                optionGroupCallFactory,
+                versionManager).downloadMetadata();
     }
 
     @After

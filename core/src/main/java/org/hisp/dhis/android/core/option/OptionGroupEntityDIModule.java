@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
+import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -49,5 +51,11 @@ public final class OptionGroupEntityDIModule {
     @Reusable
     SyncHandler<OptionGroup> handler(OptionGroupHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    CollectionCleaner<OptionGroup> collectionCleaner(DatabaseAdapter databaseAdapter) {
+        return new CollectionCleanerImpl<>(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 }

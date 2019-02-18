@@ -25,39 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
 
-import java.util.Collection;
-import java.util.Collections;
+final class ProgramIndicatorLegendSetChildrenAppender extends ChildrenAppender<ProgramIndicator> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private final LinkModelChildStore<ProgramIndicator, LegendSet> linkModelChildStore;
 
-@Module
-public final class ProgramIndicatorEntityDIModule {
-
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramIndicator> store(DatabaseAdapter databaseAdapter) {
-        return ProgramIndicatorStore.create(databaseAdapter);
+    private ProgramIndicatorLegendSetChildrenAppender(
+            LinkModelChildStore<ProgramIndicator, LegendSet> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramIndicator> handler(ProgramIndicatorHandler impl) {
-        return impl;
+    @Override
+    protected ProgramIndicator appendChildren(ProgramIndicator programIndicator) {
+        ProgramIndicator.Builder builder = programIndicator.toBuilder();
+        builder.legendSets(linkModelChildStore.getChildren(programIndicator));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<ProgramIndicator>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter));
+    static ChildrenAppender<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramIndicatorLegendSetChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                        ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION,
+                        LegendSet::create
+                )
+        );
     }
 }

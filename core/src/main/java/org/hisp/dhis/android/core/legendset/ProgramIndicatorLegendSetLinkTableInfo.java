@@ -48,8 +48,8 @@ public final class ProgramIndicatorLegendSetLinkTableInfo {
         }
     };
 
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+    public static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            LegendSetTableInfo.TABLE_INFO,
             Columns.PROGRAM_INDICATOR,
             Columns.LEGEND_SET);
 

@@ -25,48 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
-import java.util.Collections;
+final class ProgramRuleActionChildrenAppender extends ChildrenAppender<ProgramRule> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private final SingleParentChildStore<ProgramRule, ProgramRuleAction> childStore;
 
-@Module
-public final class ProgramRuleEntityDIModule {
-
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<ProgramRule> store(DatabaseAdapter databaseAdapter) {
-        return ProgramRuleStore.create(databaseAdapter);
+    private ProgramRuleActionChildrenAppender(SingleParentChildStore<ProgramRule, ProgramRuleAction> childStore) {
+        this.childStore = childStore;
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<ProgramRule> handler(ProgramRuleHandler impl) {
-        return impl;
+    @Override
+    protected ProgramRule appendChildren(ProgramRule programRule) {
+        ProgramRule.Builder builder = programRule.toBuilder();
+        builder.programRuleActions(childStore.getChildren(programRule));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    public OrphanCleaner<ProgramRule, ProgramRuleAction> actionCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<ProgramRule>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(ProgramRuleActionChildrenAppender.create(databaseAdapter));
+    static ChildrenAppender<ProgramRule> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramRuleActionChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        ProgramRuleActionStore.CHILD_PROJECTION,
+                        ProgramRuleAction::create)
+        );
     }
 }

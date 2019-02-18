@@ -27,4 +27,26 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends MockI
                 .get();
         assertThat(stages.size(), is(1));
     }
+
+    @Test
+    public void include_object_style_as_children() {
+        ProgramStage stage = d2.programModule().programStages
+                .one().getWithAllChildren();
+        assertThat(stage.style().icon(), is("program-stage-icon"));
+        assertThat(stage.style().color(), is("#444"));
+    }
+
+    @Test
+    public void include_program_stage_data_elements_as_children() {
+        ProgramStage stage = d2.programModule().programStages
+                .one().getWithAllChildren();
+        assertThat(stage.programStageDataElements().size(), is(3));
+    }
+
+    @Test
+    public void include_program_stage_section_as_children() {
+        ProgramStage stage = d2.programModule().programStages
+                .one().getWithAllChildren();
+        assertThat(stage.programStageSections().size(), is(1));
+    }
 }

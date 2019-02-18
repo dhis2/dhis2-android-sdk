@@ -25,49 +25,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+final class ProgramStageSectionRenderingHelper {
 
-public class ProgramStageDataElementTableInfo {
+    private ProgramStageSectionRenderingHelper() {}
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "ProgramStageDataElement";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            ProgramStageDataElementTableInfo.TABLE_INFO,
-            ProgramStageDataElementFields.PROGRAM_STAGE);
-
-    static class Columns extends BaseIdentifiableObjectModel.Columns {
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    ProgramStageDataElementFields.DISPLAY_IN_REPORTS,
-                    ProgramStageDataElementFields.DATA_ELEMENT,
-                    ProgramStageDataElementFields.COMPULSORY,
-                    ProgramStageDataElementFields.ALLOW_PROVIDED_ELSEWHERE,
-                    ProgramStageDataElementFields.SORT_ORDER,
-                    ProgramStageDataElementFields.ALLOW_FUTURE_DATE,
-                    ProgramStageDataElementFields.PROGRAM_STAGE
-            );
-        }
+    static ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering sectionRendering) {
+        return sectionRendering == null || sectionRendering.desktop() == null ? null
+                : sectionRendering.desktop().type();
     }
 
-    private ProgramStageDataElementTableInfo() {}
+    static ProgramStageSectionRenderingType mobileRenderType(ProgramStageSectionRendering sectionRendering) {
+        return sectionRendering == null || sectionRendering.mobile() == null ? null
+                : sectionRendering.mobile().type();
+    }
+
 }

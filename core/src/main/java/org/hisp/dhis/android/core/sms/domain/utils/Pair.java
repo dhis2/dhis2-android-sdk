@@ -67,7 +67,7 @@ public class Pair<F, S> {
 
     @Override
     public String toString() {
-        return "Pair{" + String.valueOf(first) + " " + String.valueOf(second) + "}";
+        return "Pair{" + first + " " + second + "}";
     }
 
     /**

@@ -9,33 +9,79 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
+import org.hisp.dhis.smscompression.SMSSubmissionReader;
+import org.hisp.dhis.smscompression.models.AttributeValue;
+import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
+import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
 public class ConvertTest {
 
     @Test
-    public void backAndForth() {
+    public void backAndForth() throws Exception {
         EnrollmentModel enrollment = getTestEnrollment();
         ArrayList<TrackedEntityAttributeValueModel> values = getTestValues();
 
-        new QrCodeCase(new TestRepositories.TestLocalDbRepository())
+        TestMetadata metadata = new TestMetadata();
+        TestRepositories.TestLocalDbRepository testLocalDb =
+                new TestRepositories.TestLocalDbRepository(metadata);
+
+        AtomicReference<String> result = new AtomicReference<>();
+        new QrCodeCase(testLocalDb)
                 .generateTextCode(enrollment, values)
                 .test()
                 .assertNoErrors()
                 .assertValueCount(1)
                 .assertValue(value -> {
-
-                    return true;
+                    result.set(value);
+                    return !value.isEmpty();
                 });
+
+        assertNotNull(result.get());
+        byte[] smsBytes = Base64.getDecoder().decode(result.get());
+
+        SMSSubmissionReader reader = new SMSSubmissionReader();
+        SMSSubmissionHeader header = reader.readHeader(smsBytes);
+        EnrollmentSMSSubmission subm = (EnrollmentSMSSubmission) reader.readSubmission(header, metadata);
+        assertNotNull(subm);
+        assertEquals(subm.getUserID(), TestRepositories.TestLocalDbRepository.userId);
+        assertEquals(subm.getEnrollment(), enrollment.uid());
+        assertEquals(subm.getTrackedEntityType(), enrollment.trackedEntityInstance());
+        assertEquals(subm.getOrgUnit(), enrollment.organisationUnit());
+        assertEquals(subm.getTrackerProgram(), enrollment.program());
+        for (AttributeValue item : subm.getValues()) {
+            assertTrue(containsAttributeValue(values, item));
+        }
     }
 
-    private EnrollmentModel getTestEnrollment() {
+    private boolean containsAttributeValue(ArrayList<TrackedEntityAttributeValueModel> values,
+                                           AttributeValue item) {
+        for (TrackedEntityAttributeValueModel value : values) {
+            if (Objects.equals(value.trackedEntityAttribute(), item.getAttribute()) &&
+                    Objects.equals(value.value(), item.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static EnrollmentModel getTestEnrollment() {
         return new EnrollmentModel() {
             private Date created = new Date();
             private Date updated = new Date();
@@ -144,7 +190,7 @@ public class ConvertTest {
         };
     }
 
-    private ArrayList<TrackedEntityAttributeValueModel> getTestValues() {
+    private static ArrayList<TrackedEntityAttributeValueModel> getTestValues() {
         ArrayList<TrackedEntityAttributeValueModel> list = new ArrayList<>();
         list.add(getTestValue("w75KJ2mc4zz", "Anne"));
         list.add(getTestValue("zDhUuAYrxNC", "Anski"));
@@ -153,7 +199,7 @@ public class ConvertTest {
         return list;
     }
 
-    private TrackedEntityAttributeValueModel getTestValue(String attr, String value) {
+    private static TrackedEntityAttributeValueModel getTestValue(String attr, String value) {
         return new TrackedEntityAttributeValueModel() {
             private Date created = new Date();
             private Date updated = new Date();
@@ -199,5 +245,33 @@ public class ConvertTest {
                 return null;
             }
         };
+    }
+
+    public static class TestMetadata extends Metadata {
+        EnrollmentModel enrollment = getTestEnrollment();
+
+        public List<String> getUsers() {
+            return Collections.singletonList(TestRepositories.TestLocalDbRepository.userId);
+        }
+
+        public List<String> getTrackedEntityTypes() {
+            return Collections.singletonList(enrollment.trackedEntityInstance());
+        }
+
+        public List<String> getTrackedEntityAttributes() {
+            ArrayList<String> attrs = new ArrayList<>();
+            for (TrackedEntityAttributeValueModel item : getTestValues()) {
+                attrs.add(item.trackedEntityAttribute());
+            }
+            return attrs;
+        }
+
+        public List<String> getPrograms() {
+            return Collections.singletonList(enrollment.program());
+        }
+
+        public List<String> getOrganisationUnits() {
+            return Collections.singletonList(enrollment.organisationUnit());
+        }
     }
 }

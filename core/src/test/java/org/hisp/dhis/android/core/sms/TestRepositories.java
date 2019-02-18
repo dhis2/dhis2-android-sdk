@@ -13,13 +13,24 @@ import io.reactivex.Single;
 public class TestRepositories {
 
     public static class TestLocalDbRepository implements LocalDbRepository {
+        public static String userId = "AIK2aQOJIbj";
         private String gatewayNumber = null;
         private String confirmationSenderNumber = null;
         private Integer resultWaitingTimeout = 120;
+        public Metadata metadata;
+
+        public TestLocalDbRepository() {
+            this(new Metadata());
+        }
+
+        public TestLocalDbRepository(Metadata metadata) {
+            this.metadata = metadata;
+            metadata.lastSyncDate = new Date();
+        }
 
         @Override
         public Single<String> getUserName() {
-            return Single.fromCallable(() -> "testUser");
+            return Single.fromCallable(() -> userId);
         }
 
         @Override
@@ -59,11 +70,7 @@ public class TestRepositories {
 
         @Override
         public Single<Metadata> getIdsLists() {
-            return Single.fromCallable(() -> {
-                Metadata metadata = new Metadata();
-                metadata.lastSyncDate = new Date();
-                return metadata;
-            });
+            return Single.fromCallable(() -> metadata);
         }
     }
 }

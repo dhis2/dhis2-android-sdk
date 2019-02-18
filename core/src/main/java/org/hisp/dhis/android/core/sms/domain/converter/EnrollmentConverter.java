@@ -19,9 +19,7 @@ import io.reactivex.Single;
 import static org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter.EnrollmentData;
 
 public class EnrollmentConverter extends Converter<EnrollmentData, EnrollmentModel> {
-
-    private static final String TAG = EnrollmentConverter.class.getSimpleName();
-    private Metadata metadata;
+    final private Metadata metadata;
 
     public EnrollmentConverter(Metadata metadata) {
         this.metadata = metadata;
@@ -40,7 +38,7 @@ public class EnrollmentConverter extends Converter<EnrollmentData, EnrollmentMod
             subm.setTimestamp(enrollment.enrollmentModel.lastUpdated());
             ArrayList<AttributeValue> values = new ArrayList<>();
             for (TrackedEntityAttributeValueModel attr : enrollment.attributes) {
-                values.add(new AttributeValue(attr.trackedEntityAttribute(), attr.value()));
+                values.add(createAttributeValue(attr.trackedEntityAttribute(), attr.value()));
             }
             subm.setValues(values);
             byte[] compressSubm = smsSubmissionWriter.compress(subm);
@@ -48,10 +46,18 @@ public class EnrollmentConverter extends Converter<EnrollmentData, EnrollmentMod
             try {
                 encoded = Base64.encodeToString(compressSubm, Base64.DEFAULT);
             } catch (Throwable t) {
+                encoded = null;
+                // will try with standard java
+            }
+            if (encoded == null) {
                 encoded = java.util.Base64.getEncoder().encodeToString(compressSubm);
             }
             return encoded;
         });
+    }
+
+    private AttributeValue createAttributeValue(String attribute, String value) {
+        return new AttributeValue(attribute, value);
     }
 
     @Override

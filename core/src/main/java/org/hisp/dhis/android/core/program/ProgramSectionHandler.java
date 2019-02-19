@@ -42,13 +42,13 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
-    private final LinkModelHandler<TrackedEntityAttribute, ProgramSectionAttributeLinkModel>
+    private final LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkModelHandler<TrackedEntityAttribute, ProgramSectionAttributeLinkModel>
+                          LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
                                   programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(programSectionStore);

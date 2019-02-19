@@ -67,7 +67,8 @@ public final class ProgramSectionEntityDIModule {
                 );
 
         return Arrays.asList(
-                objectStyleChildrenAppender
+                objectStyleChildrenAppender,
+                ProgramSectionAttributeChildrenAppender.create(databaseAdapter)
         );
     }
 }

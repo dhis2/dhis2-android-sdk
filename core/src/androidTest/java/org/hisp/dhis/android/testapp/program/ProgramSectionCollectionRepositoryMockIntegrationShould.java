@@ -35,4 +35,12 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Moc
         assertThat(section.style().icon(), is("section-icon"));
         assertThat(section.style().color(), is("#555"));
     }
+
+    @Test
+    public void include_attributes_as_children() {
+        ProgramSection section = d2.programModule().programSections
+                .one().getWithAllChildren();
+        assertThat(section.attributes().size(), is(2));
+        assertThat(section.style().color(), is("#555"));
+    }
 }

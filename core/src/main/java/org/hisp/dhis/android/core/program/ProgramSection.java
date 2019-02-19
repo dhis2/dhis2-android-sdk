@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -63,8 +64,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject
 
     @Nullable
     @JsonProperty(ProgramSectionFields.ATTRIBUTES)
-    @ColumnAdapter(IgnoreTrackedEntityAttributeListColumnAdapter.class)
-    public abstract List<TrackedEntityAttribute> attributes();
+    @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
+    public abstract List<ProgramTrackedEntityAttribute> attributes();
 
     @Nullable
     @JsonProperty()
@@ -96,7 +97,7 @@ public abstract class ProgramSection extends BaseIdentifiableObject
         public abstract Builder program(ObjectWithUid program);
 
         @JsonProperty(ProgramSectionFields.ATTRIBUTES)
-        public abstract Builder attributes(List<TrackedEntityAttribute> attributes);
+        public abstract Builder attributes(List<ProgramTrackedEntityAttribute> attributes);
 
         public abstract Builder sortOrder(Integer sortOrder);
 

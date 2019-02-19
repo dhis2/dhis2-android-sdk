@@ -25,25 +25,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public class ProgramSectionAttributeLinkModelBuilder
-        implements ModelBuilder<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel> {
+final class ProgramSectionAttributeChildrenAppender extends ChildrenAppender<ProgramSection> {
 
-    private final ProgramSectionAttributeLinkModel.Builder builder;
+    private final LinkModelChildStore<ProgramSection, ProgramTrackedEntityAttribute> linkModelChildStore;
 
-    ProgramSectionAttributeLinkModelBuilder(ProgramSection programSection) {
-        this.builder = ProgramSectionAttributeLinkModel.builder()
-                .programSection(programSection.uid());
+    private ProgramSectionAttributeChildrenAppender(
+            LinkModelChildStore<ProgramSection, ProgramTrackedEntityAttribute> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
     @Override
-    public ProgramSectionAttributeLinkModel buildModel(ProgramTrackedEntityAttribute attribute) {
-        return builder
-                .attribute(attribute.uid())
-                .build();
+    protected ProgramSection appendChildren(ProgramSection programSection) {
+        ProgramSection.Builder builder = programSection.toBuilder();
+        builder.attributes(linkModelChildStore.getChildren(programSection));
+        return builder.build();
+    }
+
+    static ChildrenAppender<ProgramSection> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramSectionAttributeChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
+                        ProgramSectionAttributeLinkTableInfo.CHILD_PROJECTION,
+                        ProgramTrackedEntityAttribute::create
+                )
+        );
     }
 }

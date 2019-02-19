@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,21 +28,45 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 import retrofit2.Retrofit;
 
-@Module(includes = {
-        OrganisationUnitEntityDIModule.class,
-        OrganisationUnitLevelEntityDIModule.class,
-        OrganisationUnitGroupEntityDIModule.class
-})
-public final class OrganisationUnitPackageDIModule {
+@Module
+public final class OrganisationUnitLevelEntityDIModule implements IdentifiableEntityDIModule<OrganisationUnitLevel> {
+
+    @Override
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<OrganisationUnitLevel> store(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitLevelStore.create(databaseAdapter);
+    }
+
+    @Override
+    @Provides
+    @Reusable
+    public SyncHandler<OrganisationUnitLevel> handler(IdentifiableObjectStore<OrganisationUnitLevel> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
+    }
 
     @Provides
     @Reusable
-    OrganisationUnitService service(Retrofit retrofit) {
-        return retrofit.create(OrganisationUnitService.class);
+    OrganisationUnitLevelService organisationUnitLevelService(Retrofit retrofit) {
+        return retrofit.create(OrganisationUnitLevelService.class);
+    }
+
+    @Provides
+    @Reusable
+    ListCallFactory<OrganisationUnitLevel> organisationUnitLevelCallFactory(
+            OrganisationUnitLevelEndpointCallFactory impl) {
+        return impl;
     }
 }

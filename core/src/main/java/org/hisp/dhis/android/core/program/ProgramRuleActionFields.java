@@ -42,6 +42,8 @@ final class ProgramRuleActionFields {
     static final String PROGRAM_RULE = "programRule";
     static final String PROGRAM_STAGE = "programStage";
     static final String DATA_ELEMENT = "dataElement";
+    static final String OPTION = "option";
+    static final String OPTION_GROUP = "optionGroup";
 
     private static FieldsHelper<ProgramRuleAction> fh = new FieldsHelper<>();
 
@@ -57,7 +59,9 @@ final class ProgramRuleActionFields {
                     fh.<ProgramRuleActionType>field(PROGRAM_RULE_ACTION_TYPE),
                     fh.nestedFieldWithUid(PROGRAM_STAGE),
                     fh.nestedFieldWithUid(DATA_ELEMENT),
-                    fh.nestedFieldWithUid(PROGRAM_RULE)
+                    fh.nestedFieldWithUid(PROGRAM_RULE),
+                    fh.nestedFieldWithUid(OPTION),
+                    fh.nestedFieldWithUid(OPTION_GROUP)
                     ).build();
 
     private ProgramRuleActionFields() {

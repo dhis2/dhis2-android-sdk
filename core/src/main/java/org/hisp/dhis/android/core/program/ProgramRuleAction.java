@@ -39,7 +39,9 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DataElementWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramIndicatorWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramRuleWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramStageSectionWithUidColumnAdapter;
@@ -99,6 +101,16 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
     @ColumnAdapter(ProgramRuleWithUidColumnAdapter.class)
     public abstract ProgramRule programRule();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid option();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid optionGroup();
+
     public static ProgramRuleAction create(Cursor cursor) {
         return $AutoValue_ProgramRuleAction.createFromCursor(cursor);
     }
@@ -133,6 +145,10 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
         public abstract Builder dataElement(DataElement dataElement);
 
         public abstract Builder programRule(ProgramRule programRule);
+
+        public abstract Builder option(ObjectWithUid option);
+
+        public abstract Builder optionGroup(ObjectWithUid optionGroup);
 
         public abstract ProgramRuleAction build();
     }

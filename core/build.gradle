@@ -27,7 +27,6 @@
  */
 
 apply plugin: "com.android.library"
-apply plugin: "me.tatarka.retrolambda"
 apply from: rootProject.file("plugins/android-checkstyle.gradle")
 apply from: rootProject.file("plugins/android-findbugs.gradle")
 apply from: rootProject.file("plugins/android-dexcount.gradle")
@@ -76,9 +75,6 @@ android {
         debug {
             // a fix for the debugger not being able to find local scope variables
             testCoverageEnabled = false
-            jackOptions {
-                enabled false
-            }
         }
     }
 
@@ -102,12 +98,15 @@ android {
 
 
 dependencies {
+
     // sqlbrite-migrations library
     compile "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
+
     // Support libraries
     compile "com.android.support:support-annotations:${libraries.support}"
 
     // Google's auto-value. Annotations are used only during compilation time, as well as
+
     // annotation processor which hoops up into compilation process
     provided "com.google.auto.value:auto-value:${libraries.autovalue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
@@ -128,11 +127,11 @@ dependencies {
     compile "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
     // Apache libraries
-    compile group: 'org.apache.commons', name: 'commons-jexl', version: '2.1.1'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    compile 'org.apache.commons:commons-jexl:2.1.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
 
     // Joda time
-    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
+    compile 'joda-time:joda-time:2.9.9'
 
     // Extension which generates mappers for work with cursor and content values
     compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
@@ -155,7 +154,7 @@ dependencies {
     androidTestCompile("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
-    androidTestCompile ('com.facebook.stetho:stetho:1.5.0') {
+    androidTestCompile('com.facebook.stetho:stetho:1.5.0') {
         exclude module: 'jsr305'
     }
     androidTestCompile('com.facebook.stetho:stetho-okhttp3:1.5.0') {

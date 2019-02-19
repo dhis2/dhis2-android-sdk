@@ -254,6 +254,17 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
+    public void parse_one_text_dataelement() throws Exception {
+        when(programIndicator.expression()).thenReturn(de(programStageUid1, dataElementUid1));
+
+        when(value1.value()).thenReturn("text data-value");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"text data-value\"");
+    }
+
+    @Test
     public void parse_operation_two_dataelements() throws Exception {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2));
@@ -263,7 +274,20 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("3.5 + 2.0");
+        assertThat(result).isEqualTo("3.5 + 2");
+    }
+
+    @Test
+    public void parse_operation_two_mixed_dataelements() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2));
+
+        when(value1.value()).thenReturn("3.5");
+        when(value2.value()).thenReturn("text data-value");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("3.5 + \"text data-value\"");
     }
 
     @Test
@@ -278,7 +302,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("(2.5 + 2.0) / 1.5");
+        assertThat(result).isEqualTo("(2.5 + 2) / 1.5");
     }
 
     @Test
@@ -341,7 +365,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("(3.5 + 2.0) / 2");
+        assertThat(result).isEqualTo("(3.5 + 2) / 2");
     }
 
     @Test
@@ -381,9 +405,9 @@ public class ProgramIndicatorEngineShould {
         String resultWithEvent2 = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid2_1,
                 programIndicatorUid);
 
-        assertThat(resultWithoutEvent).isEqualTo("3.5 + 2.0");
-        assertThat(resultWithEvent1).isEqualTo("3.5 + 2.0");
-        assertThat(resultWithEvent2).isEqualTo("3.5 + 2.0");
+        assertThat(resultWithoutEvent).isEqualTo("3.5 + 2");
+        assertThat(resultWithEvent1).isEqualTo("3.5 + 2");
+        assertThat(resultWithEvent2).isEqualTo("3.5 + 2");
     }
 
     @Test
@@ -435,13 +459,13 @@ public class ProgramIndicatorEngineShould {
         String sumResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
-        assertThat(sumResult).isEqualTo("2.0 * 10");
+        assertThat(sumResult).isEqualTo("2 * 10");
 
         when(programIndicator.aggregationType()).thenReturn(AggregationType.LAST);
         String lastResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
-        assertThat(lastResult).isEqualTo("4.0 * 10");
+        assertThat(lastResult).isEqualTo("4 * 10");
     }
 
     // -------------------------------------------------------------------------

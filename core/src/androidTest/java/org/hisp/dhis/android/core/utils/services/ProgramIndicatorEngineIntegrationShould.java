@@ -174,6 +174,19 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    public void evaluate_single_text_dataelement() {
+        createEnrollment(null,null);
+        createEvent(event1, programStage1, new Date());
+        insertTrackedEntityDataValue(event1, dataElement1, "text data-value");
+
+        setProgramIndicatorExpressionAsAverage(de(programStage1,dataElement1));
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("text data-value");
+    }
+
+    @Test
     public void evaluate_addition_two_dataelement() {
         createEnrollment(null, null);
         createEvent(event1, programStage1, null);

@@ -137,20 +137,24 @@ public class ProgramIndicatorEngine {
             return null;
         }
 
-        Double value = getValue(enrollment, event, programIndicatorUid);
+        String value = getValue(enrollment, event, programIndicatorUid);
 
-        return TextUtils.fromDouble(value);
+        if (MathUtils.isNumeric(value)) {
+            return TextUtils.fromDouble(Double.valueOf(value));
+        } else {
+            return value;
+        }
     }
 
     // -------------------------------------------------------------------------
     // Supportive methods
     // -------------------------------------------------------------------------
 
-    private Double getValue(String enrollment, String event, String indicatorUid) {
+    private String getValue(String enrollment, String event, String indicatorUid) {
         String expression = parseIndicatorExpression(enrollment, event, indicatorUid);
-        Double value;
+        String value;
         try {
-            value = ExpressionUtils.evaluateToDouble(expression, null);
+            value = ExpressionUtils.evaluateToString(expression, null);
         } catch (JexlException e) {
             value = null;
         } catch (IllegalStateException e){
@@ -354,10 +358,8 @@ public class ProgramIndicatorEngine {
             }
         } else if(dataValue.value().endsWith(".")) {
             return (dataValue.value() + "0");
-        } else if(dataValue.value().contains(".")) {
-            return dataValue.value();
         } else {
-            return dataValue.value() + ".0";
+            return dataValue.value();
         }
     }
 

@@ -29,10 +29,12 @@ package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,12 +45,15 @@ import dagger.Reusable;
 final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> {
 
     private final LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler;
+    private final CollectionCleaner<OptionGroup> collectionCleaner;
 
     @Inject
     OptionGroupHandler(IdentifiableObjectStore<OptionGroup> optionStore,
-                       LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler) {
+                       LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler,
+                       CollectionCleaner<OptionGroup> collectionCleaner) {
         super(optionStore);
         this.optionGroupOptionLinkHandler = optionGroupOptionLinkHandler;
+        this.collectionCleaner = collectionCleaner;
     }
 
     @Override
@@ -61,5 +66,10 @@ final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> 
             }
             optionGroupOptionLinkHandler.handleMany(optionGroup.uid(), optionGroupOptionLinks);
         }
+    }
+
+    @Override
+    protected void afterCollectionHandled(Collection<OptionGroup> optionGroups) {
+        collectionCleaner.deleteNotPresent(optionGroups);
     }
 }

@@ -28,35 +28,33 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import dagger.Reusable;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+final class OrganisationUnitLevelStore {
 
-    private final TableWiper tableWiper;
+    private OrganisationUnitLevelStore() {}
 
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
+    private static StatementBinder<OrganisationUnitLevel> BINDER
+            = new IdentifiableStatementBinder<OrganisationUnitLevel>() {
+        @Override
+        public void bindToStatement(@NonNull OrganisationUnitLevel organisationUnitLevel,
+                                    @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(organisationUnitLevel, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, organisationUnitLevel.level());
+        }
+    };
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    public static IdentifiableObjectStore<OrganisationUnitLevel> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(
+                databaseAdapter, OrganisationUnitLevelTableInfo.TABLE_INFO, BINDER, OrganisationUnitLevel::create);
     }
 }

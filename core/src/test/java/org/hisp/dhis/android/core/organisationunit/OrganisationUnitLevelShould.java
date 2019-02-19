@@ -41,7 +41,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class OrganisationUnitLevelShould extends BaseObjectShould implements ObjectShould {
 
     public OrganisationUnitLevelShould() {
-        super("organisationunit/organisation_unit_group.json");
+        super("organisationunit/organisation_unit_level.json");
     }
 
     @Override

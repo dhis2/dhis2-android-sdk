@@ -42,9 +42,7 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 

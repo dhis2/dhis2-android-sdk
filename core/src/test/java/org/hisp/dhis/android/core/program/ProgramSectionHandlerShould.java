@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
-    private LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel> programSectionAttributeLinkHandler;
+    private LinkModelHandler<TrackedEntityAttribute, ProgramSectionAttributeLinkModel> programSectionAttributeLinkHandler;
 
     @Mock
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
@@ -64,7 +64,7 @@ public class ProgramSectionHandlerShould {
     @Mock
     private ProgramSection programSection;
 
-    private List<ObjectWithUid> attributes;
+    private List<TrackedEntityAttribute> attributes;
 
     private String SECTION_UID = "section_uid";
 
@@ -78,7 +78,7 @@ public class ProgramSectionHandlerShould {
         programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler,
                 styleHandler);
 
-        attributes = Lists.newArrayList(ObjectWithUid.create("attribute_uid"));
+        attributes = Lists.newArrayList(TrackedEntityAttribute.builder().uid("attribute_uid").build());
         when(programSection.attributes()).thenReturn(attributes);
         when(programSection.uid()).thenReturn(SECTION_UID);
     }

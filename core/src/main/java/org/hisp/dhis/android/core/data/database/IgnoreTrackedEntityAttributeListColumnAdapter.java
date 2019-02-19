@@ -26,25 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.database;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-public class ProgramSectionAttributeLinkModelBuilder
-        implements ModelBuilder<TrackedEntityAttribute, ProgramSectionAttributeLinkModel> {
+import java.util.List;
 
-    private final ProgramSectionAttributeLinkModel.Builder builder;
-
-    ProgramSectionAttributeLinkModelBuilder(ProgramSection programSection) {
-        this.builder = ProgramSectionAttributeLinkModel.builder()
-                .programSection(programSection.uid());
-    }
-
-    @Override
-    public ProgramSectionAttributeLinkModel buildModel(TrackedEntityAttribute attribute) {
-        return builder
-                .attribute(attribute.uid())
-                .build();
-    }
+public final class IgnoreTrackedEntityAttributeListColumnAdapter
+        extends IgnoreColumnAdapter<List<TrackedEntityAttribute>> {
 }

@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,7 +49,7 @@ public final class ProgramSectionAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel> handler(
+    public LinkModelHandler<TrackedEntityAttribute, ProgramSectionAttributeLinkModel> handler(
             LinkModelStore<ProgramSectionAttributeLinkModel> store) {
         return new LinkModelHandlerImpl<>(store);
     }

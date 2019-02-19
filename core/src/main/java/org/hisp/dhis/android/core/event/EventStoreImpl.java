@@ -120,6 +120,15 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         return eventListFromQuery(byEnrollmentAndProgramStageQuery);
     }
 
+    @Override
+    public Integer countEventsForEnrollment(String enrollmentUid) {
+        String countByEnrollment = "SELECT Event.* FROM Event " +
+                "WHERE Event.enrollment = '" + enrollmentUid + "'";
+
+        List<Event> events = eventListFromQuery(countByEnrollment);
+        return events.size();
+    }
+
     private List<Event> eventListFromQuery(String query) {
         List<Event> eventList = new ArrayList<>();
         Cursor cursor = databaseAdapter.query(query);

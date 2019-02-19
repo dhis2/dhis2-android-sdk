@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -214,6 +215,7 @@ public class ProgramIndicatorEngineShould {
         when(eventStore.selectByUid(eventUid2_2)).thenReturn(event3);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Arrays.asList(event2, event3));
+        when(eventStore.countEventsForEnrollment(enrollmentUid)).thenReturn(2);
 
         when(enrollment.uid()).thenReturn(enrollmentUid);
         when(enrollment.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
@@ -343,6 +345,17 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
+    public void parse_enrollment_status_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("enrollment_status"));
+
+        when(enrollment.status()).thenReturn(EnrollmentStatus.ACTIVE);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"ACTIVE\"");
+    }
+
+    @Test
     public void parse_event_date_variable() throws Exception {
         when(programIndicator.expression()).thenReturn(var("event_date"));
 
@@ -352,6 +365,27 @@ public class ProgramIndicatorEngineShould {
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
 
         assertThat(result).isEqualTo("\"2018-05-05\"");
+    }
+
+    @Test
+    public void parse_due_date_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("due_date"));
+
+        Date eventDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
+        when(event1.dueDate()).thenReturn(eventDate);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"2018-05-05\"");
+    }
+
+    @Test
+    public void parse_event_count_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("event_count"));
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("2");
     }
 
     @Test

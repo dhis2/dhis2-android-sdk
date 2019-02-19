@@ -86,13 +86,17 @@ public class ProgramIndicatorEngine {
     private static final String KEY_CONSTANT = "C";
     private static final String INCIDENT_DATE = "incident_date";
     private static final String ENROLLMENT_DATE = "enrollment_date";
+    private static final String ENROLLMENT_STATUS = "enrollment_status";
     private static final String EVENT_DATE = "event_date";
+    private static final String EVENT_COUNT = "event_count";
+    private static final String DUE_DATE = "due_date";
     private static final String CURRENT_DATE = "current_date";
     private static final String VAR_VALUE_COUNT = "value_count";
     private static final String VAR_ZERO_POS_VALUE_COUNT = "zero_pos_value_count";
     private static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE + "|" +
             KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT +
-            ")\\{(\\w+|" + INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + "|" + EVENT_DATE + ")" +
+            ")\\{(\\w+|" + INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + ENROLLMENT_STATUS + "|" +
+            EVENT_DATE + "|" + EVENT_COUNT + "|" + DUE_DATE + "|" + CURRENT_DATE + ")" +
             SEPARATOR_ID + "?(\\w*)\\}";
     private static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_REGEXP);
     private static final Pattern VALUECOUNT_PATTERN =
@@ -242,7 +246,7 @@ public class ProgramIndicatorEngine {
                     matcher.appendReplacement(buffer, String.valueOf(constant.value()));
                 }
             } else if (KEY_PROGRAM_VARIABLE.equals(key)) {
-                Date date = null;
+                String value = null;
 
                 if (enrollment != null) { //in case of single event without reg
                     if (cachedEnrollment == null) {
@@ -250,24 +254,33 @@ public class ProgramIndicatorEngine {
                     }
 
                     if (ENROLLMENT_DATE.equals(uid)) {
-                        date = cachedEnrollment.enrollmentDate();
+                        value = DateUtils.getMediumDateString(cachedEnrollment.enrollmentDate());
                     } else if (INCIDENT_DATE.equals(uid)) {
-                        date = cachedEnrollment.incidentDate();
+                        value = DateUtils.getMediumDateString(cachedEnrollment.incidentDate());
+                    } else if (ENROLLMENT_STATUS.equals(uid)) {
+                        value =  cachedEnrollment.status() == null ? null : cachedEnrollment.status().name();
+                    } else if (EVENT_COUNT.equals(uid)) {
+                        value = eventStore.countEventsForEnrollment(enrollment).toString();
                     }
                 }
 
-                if (EVENT_DATE.equals(uid) && event != null) {
-                    Event targetEvent = eventStore.selectByUid(event);
-                    date = targetEvent.eventDate();
+                if (event != null) {
+                    if (EVENT_DATE.equals(uid)) {
+                        Event targetEvent = eventStore.selectByUid(event);
+                        value = DateUtils.getMediumDateString(targetEvent.eventDate());
+                    } else if (DUE_DATE.equals(uid)) {
+                        Event targetEvent = eventStore.selectByUid(event);
+                        value = DateUtils.getMediumDateString(targetEvent.dueDate());
+                    }
                 }
 
                 if (CURRENT_DATE.equals(uid)) {
-                    date = currentDate;
+                    value = DateUtils.getMediumDateString(currentDate);
                 }
 
-                if (date != null) {
+                if (value != null) {
                     valueCount++;
-                    matcher.appendReplacement(buffer, TextUtils.quote(DateUtils.getMediumDateString(date)));
+                    matcher.appendReplacement(buffer, TextUtils.quote(value));
                 }
             }
         }

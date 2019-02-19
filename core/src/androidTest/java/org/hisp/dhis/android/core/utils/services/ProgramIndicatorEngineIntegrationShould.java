@@ -258,6 +258,20 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    public void evaluate_event_count_variable() {
+        createEnrollment(null, null);
+        createEvent(event1, programStage1, null);
+        createEvent(event2, programStage2, null);
+
+        setProgramIndicatorExpressionAsAverage(var("event_count"));
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(result).isEqualTo("2");
+    }
+
+    @Test
     public void evaluate_expression_with_d2_functions() {
         createEnrollment(null, null);
         createEvent(event1, programStage1, null);
@@ -340,6 +354,10 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
 
     private String att(String attributeUid) {
         return "A{" + attributeUid + "}";
+    }
+
+    private String var(String variable) {
+        return "V{" + variable + "}";
     }
 
     private Date today() {

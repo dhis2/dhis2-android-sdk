@@ -198,6 +198,10 @@
           "favorite": false,
           "program": {
             "id": "lxAQ7Zs9VYR"
+          },
+          "style": {
+            "color": "#555",
+            "icon": "section-icon"
           }
         }
       ]

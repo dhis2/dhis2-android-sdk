@@ -31,10 +31,12 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +59,15 @@ public final class ProgramSectionEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramSection>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<ProgramSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<ProgramSection> objectStyleChildrenAppender =
+                new ObjectStyleChildrenAppender<>(
+                        ObjectStyleStoreImpl.create(databaseAdapter),
+                        ProgramSectionTableInfo.TABLE_INFO
+                );
+
+        return Arrays.asList(
+                objectStyleChildrenAppender
+        );
     }
 }

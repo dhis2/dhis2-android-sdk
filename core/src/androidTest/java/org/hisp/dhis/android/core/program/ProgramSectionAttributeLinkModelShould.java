@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel.Columns;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ public class ProgramSectionAttributeLinkModelBuilderShould {
     private ProgramSection programSection;
 
     @Mock
-    private ObjectWithUid attribute;
+    private TrackedEntityAttribute attribute;
 
     private ProgramSectionAttributeLinkModel model;
 

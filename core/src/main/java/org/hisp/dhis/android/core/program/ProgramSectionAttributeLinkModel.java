@@ -59,11 +59,9 @@ public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
     }
 
     @Nullable
-    @ColumnName(Columns.PROGRAM_SECTION)
     public abstract String programSection();
 
     @Nullable
-    @ColumnName(Columns.ATTRIBUTE)
     public abstract String attribute();
 
     @AutoValue.Builder

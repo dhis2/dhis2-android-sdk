@@ -28,28 +28,48 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public final class ProgramSectionAttributeLinkTableInfo {
 
-public final class ProgramSectionAttributeLinkStore {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private static final StatementBinder<ProgramSectionAttributeLinkModel> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programSection());
-        sqLiteBind(sqLiteStatement, 2, o.attribute());
+        @Override
+        public String name() {
+            return "ProgramSectionAttributeLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
     };
 
-    private ProgramSectionAttributeLinkStore() {}
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            TrackedEntityAttributeTableInfo.TABLE_INFO,
+            Columns.PROGRAM_SECTION,
+            Columns.ATTRIBUTE);
 
-    public static LinkModelStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
-                ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
-                BINDER,
-                ProgramSectionAttributeLinkModel::create);
+    private ProgramSectionAttributeLinkTableInfo() {
+    }
+
+    static class Columns extends BaseModel.Columns {
+
+        static final String PROGRAM_SECTION = "programSection";
+        static final String ATTRIBUTE = "attribute";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

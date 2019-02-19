@@ -46,9 +46,9 @@ public final class ProgramSectionAttributeLinkStore {
     private ProgramSectionAttributeLinkStore() {}
 
     public static LinkModelStore<ProgramSectionAttributeLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramSectionAttributeLinkModel.TABLE,
-                new ProgramSectionAttributeLinkModel.Columns(),
-                ProgramSectionAttributeLinkModel.Columns.PROGRAM_SECTION,
+        return StoreFactory.linkModelStore(databaseAdapter,
+                ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
+                ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
                 BINDER,
                 ProgramSectionAttributeLinkModel::create);
     }

@@ -28,22 +28,47 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-public class ProgramSectionAttributeLinkModelBuilder
-        implements ModelBuilder<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel> {
+public final class ProgramSectionAttributeLinkTableInfo {
 
-    private final ProgramSectionAttributeLinkModel.Builder builder;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    ProgramSectionAttributeLinkModelBuilder(ProgramSection programSection) {
-        this.builder = ProgramSectionAttributeLinkModel.builder()
-                .programSection(programSection.uid());
+        @Override
+        public String name() {
+            return "ProgramSectionAttributeLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
+            Columns.PROGRAM_SECTION,
+            Columns.ATTRIBUTE);
+
+    private ProgramSectionAttributeLinkTableInfo() {
     }
 
-    @Override
-    public ProgramSectionAttributeLinkModel buildModel(ProgramTrackedEntityAttribute attribute) {
-        return builder
-                .attribute(attribute.uid())
-                .build();
+    static class Columns extends BaseModel.Columns {
+
+        static final String PROGRAM_SECTION = "programSection";
+        static final String ATTRIBUTE = "attribute";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

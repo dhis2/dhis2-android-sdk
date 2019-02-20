@@ -55,4 +55,11 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                 .get();
         assertThat(stageSections.size(), is(1));
     }
+
+    @Test
+    public void include_program_indicators_as_children() {
+        ProgramStageSection stageSections = d2.programModule().programStageSections
+                .one().getWithAllChildren();
+        assertThat(stageSections.programIndicators().size(), is(1));
+    }
 }

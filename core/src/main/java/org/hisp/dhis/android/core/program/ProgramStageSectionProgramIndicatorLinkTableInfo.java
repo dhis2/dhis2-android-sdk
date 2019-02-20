@@ -28,28 +28,47 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public final class ProgramStageSectionProgramIndicatorLinkTableInfo {
 
-public final class ProgramStageSectionProgramIndicatorLinkStore {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private static final StatementBinder<ProgramStageSectionProgramIndicatorLinkModel> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programStageSection());
-        sqLiteBind(sqLiteStatement, 2, o.programIndicator());
+        @Override
+        public String name() {
+            return "ProgramStageSectionProgramIndicatorLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
     };
 
-    private ProgramStageSectionProgramIndicatorLinkStore() {}
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            ProgramIndicatorTableInfo.TABLE_INFO,
+            Columns.PROGRAM_STAGE_SECTION,
+            Columns.PROGRAM_INDICATOR);
 
-    public static LinkModelStore<ProgramStageSectionProgramIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
-                ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION,
-                BINDER,
-                ProgramStageSectionProgramIndicatorLinkModel::create);
+    private ProgramStageSectionProgramIndicatorLinkTableInfo() {
+    }
+
+    static class Columns extends BaseModel.Columns {
+
+        public static final String PROGRAM_STAGE_SECTION = "programStageSection";
+        public static final String PROGRAM_INDICATOR = "programIndicator";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), PROGRAM_STAGE_SECTION, PROGRAM_INDICATOR);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

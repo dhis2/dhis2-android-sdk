@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +57,9 @@ public final class ProgramStageSectionEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Arrays.asList(
+                ProgramStageSectionProgramIndicatorChildrenAppender.create(databaseAdapter)
+        );
     }
 }

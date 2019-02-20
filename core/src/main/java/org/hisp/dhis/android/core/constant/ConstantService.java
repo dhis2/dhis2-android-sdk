@@ -28,48 +28,17 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Which;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-@Module()
-public final class ConstantPackageDIModule {
+public interface ConstantService {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Constant> constantStore(DatabaseAdapter databaseAdapter) {
-        return ConstantStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    SyncHandler<Constant> constantHandler(ConstantHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ListCallFactory<Constant> constantCallFactory(ConstantCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ConstantService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(ConstantService.class);
-    }
-
-    @Provides
-    @Reusable
-    CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
-    }
+    @GET("constants")
+    Call<Payload<Constant>> constants(@Query("fields") @Which Fields<Constant> fields,
+                                      @Query("paging") boolean paging);
 }

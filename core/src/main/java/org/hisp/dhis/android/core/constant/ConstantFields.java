@@ -28,48 +28,20 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+final class ConstantFields {
 
-@Module()
-public final class ConstantPackageDIModule {
+    static final String VALUE = "value";
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Constant> constantStore(DatabaseAdapter databaseAdapter) {
-        return ConstantStore.create(databaseAdapter);
-    }
+    private static final FieldsHelper<Constant> fh = new FieldsHelper<>();
 
-    @Provides
-    @Reusable
-    SyncHandler<Constant> constantHandler(ConstantHandler impl) {
-        return impl;
-    }
+    static final Fields<Constant> allFields = Fields.<Constant>builder()
+            .fields(fh.getIdentifiableFields())
+            .fields(fh.<Double>field(VALUE))
+            .build();
 
-    @Provides
-    @Reusable
-    ListCallFactory<Constant> constantCallFactory(ConstantCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ConstantService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(ConstantService.class);
-    }
-
-    @Provides
-    @Reusable
-    CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
+    private ConstantFields() {
     }
 }

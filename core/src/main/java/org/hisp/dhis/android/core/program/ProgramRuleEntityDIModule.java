@@ -66,7 +66,7 @@ public final class ProgramRuleEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramRule>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<ProgramRule>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singleton(ProgramRuleActionChildrenAppender.create(databaseAdapter));
     }
 }

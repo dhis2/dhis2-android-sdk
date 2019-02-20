@@ -25,32 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.program;
 
-import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo;
 
-public class IdentifiableHandlerImpl<P extends BaseIdentifiableObject, M extends BaseIdentifiableObjectModel>
-        extends GenericHandlerBaseImpl<P, M> {
+final class ProgramIndicatorLegendSetChildrenAppender extends ChildrenAppender<ProgramIndicator> {
 
-    private final IdentifiableObjectStore<M> store;
+    private final LinkModelChildStore<ProgramIndicator, LegendSet> linkModelChildStore;
 
-    public IdentifiableHandlerImpl(IdentifiableObjectStore<M> store) {
-        this.store = store;
+    private ProgramIndicatorLegendSetChildrenAppender(
+            LinkModelChildStore<ProgramIndicator, LegendSet> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
     @Override
-    protected HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
-        M m = modelBuilder.buildModel(p);
-        String modelUid = m.uid();
-        if ((isDeleted(p) || deleteIfCondition(p)) && modelUid != null) {
-            store.deleteIfExists(modelUid);
-            return HandleAction.Delete;
-        } else {
-            return store.updateOrInsert(m);
-        }
+    protected ProgramIndicator appendChildren(ProgramIndicator programIndicator) {
+        ProgramIndicator.Builder builder = programIndicator.toBuilder();
+        builder.legendSets(linkModelChildStore.getChildren(programIndicator));
+        return builder.build();
     }
 
-    protected boolean deleteIfCondition(P p) {
-        return false;
+    static ChildrenAppender<ProgramIndicator> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramIndicatorLegendSetChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+                        ProgramIndicatorLegendSetLinkTableInfo.CHILD_PROJECTION,
+                        LegendSet::create
+                )
+        );
     }
 }

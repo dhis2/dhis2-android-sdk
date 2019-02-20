@@ -25,19 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-public class ObjectWithoutUidHandlerImpl<P, M extends BaseModel> extends GenericHandlerBaseImpl<P, M> {
+package org.hisp.dhis.android.core.option;
 
-    private final ObjectWithoutUidStore<M> store;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-    public ObjectWithoutUidHandlerImpl(ObjectWithoutUidStore<M> store) {
-        this.store = store;
+import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
+
+@AutoValue
+public abstract class OptionGroupOptionLink implements Model {
+
+    @Nullable
+    public abstract String optionGroup();
+
+    @Nullable
+    public abstract String option();
+
+    public static OptionGroupOptionLink create(Cursor cursor) {
+        return AutoValue_OptionGroupOptionLink.createFromCursor(cursor);
     }
 
-    @Override
-    protected HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
-        M m = modelBuilder.buildModel(p);
-        return store.updateOrInsertWhere(m);
+    public static Builder builder() {
+        return new $$AutoValue_OptionGroupOptionLink.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder optionGroup(String optionGroup);
+
+        public abstract Builder option(String option);
+
+        public abstract OptionGroupOptionLink build();
     }
 }

@@ -43,32 +43,29 @@ public class ProgramStageSectionRenderingColumnAdapter implements ColumnTypeAdap
 
     @Override
     public ProgramStageSectionRendering fromCursor(Cursor cursor, String columnName) {
-        int desktopTypeColumnIndex = cursor.getColumnIndex(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE);
-        int mobileTypeColumnIndex = cursor.getColumnIndex(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
-
-        String desktopType = cursor.getString(desktopTypeColumnIndex);
-        String mobileType = cursor.getString(mobileTypeColumnIndex);
-
-        ProgramStageSectionDeviceRendering desktop = desktopType == null ? null
-                : ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(desktopType));
-
-
-        ProgramStageSectionDeviceRendering mobile = desktopType == null ? null
-                : ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(mobileType));
-
-        return ProgramStageSectionRendering.create(desktop, mobile);
+        return ProgramStageSectionRendering.create(
+                getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE),
+                getFromCursor(cursor, ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE)
+        );
     }
 
     @Override
     public void toContentValues(ContentValues values, String columnName, ProgramStageSectionRendering value) {
-        ProgramStageSectionDeviceRendering desktopType = value.desktop();
-        if (desktopType != null) {
-            values.put(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, desktopType.type().name());
-        }
+        addToValues(values, ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE, value.desktop());
+        addToValues(values, ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, value.mobile());
+    }
 
-        ProgramStageSectionDeviceRendering mobileType = value.mobile();
-        if (mobileType != null) {
-            values.put(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE, mobileType.type().name());
+    private ProgramStageSectionDeviceRendering getFromCursor(Cursor cursor, String column) {
+        int index = cursor.getColumnIndex(column);
+        String renderingType = cursor.getString(index);
+
+        return renderingType == null ? null
+                : ProgramStageSectionDeviceRendering.create(ProgramStageSectionRenderingType.valueOf(renderingType));
+    }
+
+    private void addToValues(ContentValues values, String column, ProgramStageSectionDeviceRendering deviceRendering) {
+        if (deviceRendering != null) {
+            values.put(column, deviceRendering.type().name());
         }
     }
 }

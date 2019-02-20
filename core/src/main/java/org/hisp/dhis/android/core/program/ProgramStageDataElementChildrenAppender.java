@@ -25,38 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program;
 
-package org.hisp.dhis.android.core.calls.processors;
-
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.List;
+final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<ProgramStage> {
 
-public class TransactionalNoResourceCallProcessor<P, M extends Model> implements CallProcessor<P> {
-    private final DatabaseAdapter databaseAdapter;
-    private final GenericHandler<P, M> handler;
-    private final ModelBuilder<P, M> modelBuilder;
+    private final SingleParentChildStore<ProgramStage, ProgramStageDataElement> childStore;
 
-    public TransactionalNoResourceCallProcessor(DatabaseAdapter databaseAdapter,
-                                                GenericHandler<P, M> handler,
-                                                ModelBuilder<P, M> modelBuilder) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-        this.modelBuilder = modelBuilder;
+    private ProgramStageDataElementChildrenAppender(
+            SingleParentChildStore<ProgramStage, ProgramStageDataElement> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
-    public final void process(final List<P> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList, modelBuilder);
-                return null;
-            });
-        }
+    protected ProgramStage appendChildren(ProgramStage programStage) {
+        ProgramStage.Builder builder = programStage.toBuilder();
+        builder.programStageDataElements(childStore.getChildren(programStage));
+        return builder.build();
+    }
+
+    static ChildrenAppender<ProgramStage> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageDataElementChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        ProgramStageDataElementTableInfo.CHILD_PROJECTION,
+                        ProgramStageDataElement::create)
+        );
     }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,35 +28,38 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitLevelSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitLevelStoreIntegrationShould
+        extends IdentifiableObjectStoreAbstractIntegrationShould<OrganisationUnitLevel> {
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public OrganisationUnitLevelStoreIntegrationShould() {
+        super(OrganisationUnitLevelStore.create(DatabaseAdapterFactory.get(false)),
+                OrganisationUnitLevelTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
+    protected OrganisationUnitLevel buildObject() {
+        return OrganisationUnitLevelSamples.getOrganisationUnitLevel();
     }
 
     @Override
-    public void wipeData() {
-        // No data to wipe
+    protected OrganisationUnitLevel buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
+                .build();
+    }
+
+    @Override
+    protected OrganisationUnitLevel buildObjectToUpdate() {
+        return buildObject().toBuilder()
+                .level(3)
+                .build();
     }
 }

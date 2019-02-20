@@ -134,6 +134,7 @@ public class Dhis2MockServer {
         enqueueMockResponse("category/category_combos.json");
         enqueueMockResponse("category/categories.json");
         enqueueMockResponse(orgUnitPath);
+        enqueueMockResponse("organisationunit/organisation_unit_levels.json");
         enqueueMockResponse("constant/constants.json");
     }
 

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -28,35 +28,36 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class OrganisationUnitLevelTableInfo {
 
-import dagger.Reusable;
-
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private OrganisationUnitLevelTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        @Override
+        public String name() {
+            return "OrganisationUnitLevel";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    static class Columns extends BaseIdentifiableObjectModel.Columns {
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    OrganisationUnitLevelFields.LEVEL
+            );
+        }
     }
 }

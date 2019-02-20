@@ -25,38 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Which;
 
-import javax.inject.Inject;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
 
-import dagger.Reusable;
+public interface OrganisationUnitLevelService {
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+    @GET("organisationUnitLevels")
+    Call<Payload<OrganisationUnitLevel>> getOrganisationUnitLevels(
+            @Query("fields") @Which Fields<OrganisationUnitLevel> fields,
+            @Query("paging") Boolean paging);
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
-    }
 }

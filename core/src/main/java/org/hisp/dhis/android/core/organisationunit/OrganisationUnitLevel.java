@@ -28,35 +28,44 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import javax.inject.Inject;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.auto.value.AutoValue;
 
-import dagger.Reusable;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.Model;
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+@AutoValue
+@JsonDeserialize(builder = AutoValue_OrganisationUnitLevel.Builder.class)
+public abstract class OrganisationUnitLevel extends BaseIdentifiableObject implements Model {
 
-    private final TableWiper tableWiper;
+    @Nullable
+    @JsonProperty()
+    public abstract Integer level();
 
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    @NonNull
+    public static OrganisationUnitLevel create(Cursor cursor) {
+        return AutoValue_OrganisationUnitLevel.createFromCursor(cursor);
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnitLevel.Builder();
     }
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    @AutoValue.Builder
+    @JsonPOJOBuilder(withPrefix = "")
+    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+        public abstract Builder id(Long id);
+
+        public abstract Builder level(Integer level);
+
+        public abstract OrganisationUnitLevel build();
     }
 }

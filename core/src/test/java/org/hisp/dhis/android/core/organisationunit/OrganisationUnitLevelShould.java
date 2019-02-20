@@ -28,35 +28,35 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import javax.inject.Inject;
+import java.io.IOException;
+import java.text.ParseException;
 
-import dagger.Reusable;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+public class OrganisationUnitLevelShould extends BaseObjectShould implements ObjectShould {
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public OrganisationUnitLevelShould() {
+        super("organisationunit/organisation_unit_level.json");
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+        OrganisationUnitLevel organisationUnitLevel
+                = objectMapper.readValue(jsonStream, OrganisationUnitLevel.class);
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        assertThat(organisationUnitLevel.uid()).isEqualTo("H1KlN4QIauv");
+        assertThat(organisationUnitLevel.name()).isEqualTo("National");
+        assertThat(organisationUnitLevel.displayName()).isEqualTo("National");
+        assertThat(organisationUnitLevel.created()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2011-12-24T12:24:22.935"));
+        assertThat(organisationUnitLevel.lastUpdated()).isEqualTo(
+                BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-09T12:58:05.003"));
+        assertThat(organisationUnitLevel.level()).isEqualTo(1);
     }
 }

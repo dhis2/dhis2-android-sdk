@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.constant.Constant;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
@@ -214,6 +215,7 @@ public class ProgramIndicatorEngineShould {
         when(eventStore.selectByUid(eventUid2_2)).thenReturn(event3);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Arrays.asList(event2, event3));
+        when(eventStore.countEventsForEnrollment(enrollmentUid)).thenReturn(2);
 
         when(enrollment.uid()).thenReturn(enrollmentUid);
         when(enrollment.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
@@ -254,6 +256,17 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
+    public void parse_one_text_dataelement() throws Exception {
+        when(programIndicator.expression()).thenReturn(de(programStageUid1, dataElementUid1));
+
+        when(value1.value()).thenReturn("text data-value");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"text data-value\"");
+    }
+
+    @Test
     public void parse_operation_two_dataelements() throws Exception {
         when(programIndicator.expression()).thenReturn(
                 de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2));
@@ -263,7 +276,20 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("3.5 + 2.0");
+        assertThat(result).isEqualTo("3.5 + 2");
+    }
+
+    @Test
+    public void parse_operation_two_mixed_dataelements() throws Exception {
+        when(programIndicator.expression()).thenReturn(
+                de(programStageUid1, dataElementUid1) + " + " + de(programStageUid1, dataElementUid2));
+
+        when(value1.value()).thenReturn("3.5");
+        when(value2.value()).thenReturn("text data-value");
+
+        String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("3.5 + \"text data-value\"");
     }
 
     @Test
@@ -278,7 +304,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("(2.5 + 2.0) / 1.5");
+        assertThat(result).isEqualTo("(2.5 + 2) / 1.5");
     }
 
     @Test
@@ -319,6 +345,17 @@ public class ProgramIndicatorEngineShould {
     }
 
     @Test
+    public void parse_enrollment_status_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("enrollment_status"));
+
+        when(enrollment.status()).thenReturn(EnrollmentStatus.ACTIVE);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"ACTIVE\"");
+    }
+
+    @Test
     public void parse_event_date_variable() throws Exception {
         when(programIndicator.expression()).thenReturn(var("event_date"));
 
@@ -328,6 +365,27 @@ public class ProgramIndicatorEngineShould {
         String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
 
         assertThat(result).isEqualTo("\"2018-05-05\"");
+    }
+
+    @Test
+    public void parse_due_date_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("due_date"));
+
+        Date eventDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000");
+        when(event1.dueDate()).thenReturn(eventDate);
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("\"2018-05-05\"");
+    }
+
+    @Test
+    public void parse_event_count_variable() throws Exception {
+        when(programIndicator.expression()).thenReturn(var("event_count"));
+
+        String result = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("2");
     }
 
     @Test
@@ -341,7 +399,7 @@ public class ProgramIndicatorEngineShould {
 
         String result = programIndicatorEngine.parseIndicatorExpression(null, eventUid1, programIndicatorUid);
 
-        assertThat(result).isEqualTo("(3.5 + 2.0) / 2");
+        assertThat(result).isEqualTo("(3.5 + 2) / 2");
     }
 
     @Test
@@ -381,9 +439,9 @@ public class ProgramIndicatorEngineShould {
         String resultWithEvent2 = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, eventUid2_1,
                 programIndicatorUid);
 
-        assertThat(resultWithoutEvent).isEqualTo("3.5 + 2.0");
-        assertThat(resultWithEvent1).isEqualTo("3.5 + 2.0");
-        assertThat(resultWithEvent2).isEqualTo("3.5 + 2.0");
+        assertThat(resultWithoutEvent).isEqualTo("3.5 + 2");
+        assertThat(resultWithEvent1).isEqualTo("3.5 + 2");
+        assertThat(resultWithEvent2).isEqualTo("3.5 + 2");
     }
 
     @Test
@@ -435,13 +493,13 @@ public class ProgramIndicatorEngineShould {
         String sumResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
-        assertThat(sumResult).isEqualTo("2.0 * 10");
+        assertThat(sumResult).isEqualTo("2 * 10");
 
         when(programIndicator.aggregationType()).thenReturn(AggregationType.LAST);
         String lastResult = programIndicatorEngine.parseIndicatorExpression(enrollmentUid, null,
                 programIndicatorUid);
 
-        assertThat(lastResult).isEqualTo("4.0 * 10");
+        assertThat(lastResult).isEqualTo("4 * 10");
     }
 
     // -------------------------------------------------------------------------

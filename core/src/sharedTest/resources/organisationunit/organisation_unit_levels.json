@@ -1,0 +1,36 @@
+{
+  "organisationUnitLevels": [
+    {
+      "lastUpdated": "2015-08-09T12:58:05.001",
+      "level": 3,
+      "created": "2011-12-24T12:24:22.935",
+      "name": "Chiefdom",
+      "id": "tTUf91fCytl",
+      "displayName": "Chiefdom"
+    },
+    {
+      "lastUpdated": "2015-08-09T12:58:04.997",
+      "level": 2,
+      "created": "2011-12-24T12:24:22.935",
+      "name": "District",
+      "id": "wjP19dkFeIk",
+      "displayName": "District"
+    },
+    {
+      "lastUpdated": "2015-08-09T12:58:05.005",
+      "level": 4,
+      "created": "2011-12-24T12:24:22.935",
+      "name": "Facility",
+      "id": "m9lBJogzE95",
+      "displayName": "Facility"
+    },
+    {
+      "lastUpdated": "2015-08-09T12:58:05.003",
+      "level": 1,
+      "created": "2011-12-24T12:24:22.935",
+      "name": "National",
+      "id": "H1KlN4QIauv",
+      "displayName": "National"
+    }
+  ]
+}

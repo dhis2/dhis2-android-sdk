@@ -75,6 +75,7 @@ public class TrackedEntityAttributeHandlerShould {
 
         when(trackedEntityAttribute.uid()).thenReturn("test_tracked_entity_attribute_uid");
         when(trackedEntityAttribute.style()).thenReturn(objectStyle);
+        when(trackedEntityAttribute.formName()).thenReturn("form_name");
     }
 
     @Test

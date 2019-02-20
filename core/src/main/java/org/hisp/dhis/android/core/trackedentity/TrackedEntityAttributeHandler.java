@@ -50,6 +50,11 @@ final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<Tr
     }
 
     @Override
+    protected TrackedEntityAttribute beforeObjectHandled(TrackedEntityAttribute o) {
+        return o.formName() == null ? o.toBuilder().formName(o.name()).build() : o;
+    }
+
+    @Override
     protected void afterObjectHandled(TrackedEntityAttribute trackedEntityAttribute, HandleAction action) {
         if (action != HandleAction.Delete) {
             styleHandler.handle(trackedEntityAttribute.style(),

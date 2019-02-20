@@ -68,7 +68,8 @@ public final class TrackedEntityAttributeTableInfo {
                     TrackedEntityAttributeFields.DISPLAY_ON_VISIT_SCHEDULE,
                     TrackedEntityAttributeFields.ORG_UNIT_SCOPE,
                     UNIQUE,
-                    TrackedEntityAttributeFields.INHERIT
+                    TrackedEntityAttributeFields.INHERIT,
+                    TrackedEntityAttributeFields.FORM_NAME
             );
         }
     }

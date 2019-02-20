@@ -64,6 +64,7 @@ public final class TrackedEntityAttributeStore {
             sqLiteBind(sqLiteStatement, 21, o.orgUnitScope());
             sqLiteBind(sqLiteStatement, 22, o.unique());
             sqLiteBind(sqLiteStatement, 23, o.inherit());
+            sqLiteBind(sqLiteStatement, 24, o.formName());
         }
     };
 

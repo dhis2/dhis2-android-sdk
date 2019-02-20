@@ -176,6 +176,27 @@
               ]
             }
           ]
+        },
+        {
+          "created": "2014-10-20T11:26:19.631",
+          "lastUpdated": "2014-10-20T11:26:19.631",
+          "name": "Health immunization score",
+          "id": "rXoaHGAXWy9",
+          "shortName": "Health immunization score",
+          "displayDescription": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+          "aggregationType": "AVERAGE",
+          "expression": "(#{A03MvHHogjR.bx6fsa0t90x} +  #{A03MvHHogjR.FqlgKAG8HOu} + #{A03MvHHogjR.rxBfISxXS2U}) * d2:condition('#{A03MvHHogjR.a3kGcGDCuk6} >= 2',1,2)",
+          "dimensionItem": "rXoaHGAXWy9",
+          "displayName": "Health immunization score",
+          "displayInForm": false,
+          "description": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+          "displayShortName": "Health immunization score",
+          "decimals": 2,
+          "filter": "#{edqlbukwRfQ.vANAXwtLwcT} < 11",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "legendSets": []
         }
       ],
       "programStages": [

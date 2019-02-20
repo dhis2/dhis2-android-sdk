@@ -32,6 +32,7 @@ import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -59,6 +60,7 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
         public static final String ORG_UNIT_SCOPE = "orgunitScope";
         public static final String UNIQUE = "uniqueProperty";
         public static final String INHERIT = "inherit";
+        public static final String FORM_NAME = "formName";
     }
 
     @NonNull
@@ -125,6 +127,10 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
     @ColumnName(Columns.INHERIT)
     public abstract Boolean inherit();
 
+    @Nullable
+    @JsonProperty()
+    public abstract String formName();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseNameableObjectModel.Builder<Builder> {
         public abstract Builder pattern(@Nullable String pattern);
@@ -152,6 +158,8 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
         public abstract Builder unique(@Nullable Boolean unique);
 
         public abstract Builder inherit(@Nullable Boolean inherit);
+
+        public abstract Builder formName(@Nullable String formName);
 
         public abstract TrackedEntityAttributeModel build();
     }

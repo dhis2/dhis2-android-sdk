@@ -51,9 +51,88 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends M
 
     @Test
     public void find_all() {
-        List<ProgramIndicator> indicators = d2.programModule().programIndicators
-                .get();
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .get();
+
+        assertThat(indicators.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_display_in_form() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .byDisplayInForm()
+                        .isTrue()
+                        .get();
+        
         assertThat(indicators.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_expression() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .byExpression()
+                        .eq("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
+                        .get();
+
+        assertThat(indicators.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_dimension_item() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .byDimensionItem()
+                        .eq("rXoaHGAXWy9")
+                        .get();
+
+        assertThat(indicators.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_filter() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .byFilter()
+                        .eq("#{edqlbukwRfQ.vANAXwtLwcT} < 11")
+                        .get();
+
+        assertThat(indicators.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_decimals() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .byDecimals()
+                        .eq(2)
+                        .get();
+
+        assertThat(indicators.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_aggregation_type() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .byAggregationType()
+                        .eq("AVERAGE")
+                        .get();
+
+        assertThat(indicators.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_program() {
+        List<ProgramIndicator> indicators =
+                d2.programModule().programIndicators
+                        .byProgramUid()
+                        .eq("lxAQ7Zs9VYR")
+                        .get();
+
+        assertThat(indicators.size(), is(2));
     }
 
     @Test

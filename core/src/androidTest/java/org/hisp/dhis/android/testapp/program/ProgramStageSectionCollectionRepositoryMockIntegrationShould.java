@@ -62,4 +62,12 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
                 .one().getWithAllChildren();
         assertThat(stageSections.programIndicators().size(), is(1));
     }
+
+    @Test
+    public void include_data_elements_as_children() {
+        ProgramStageSection stageSections = d2.programModule().programStageSections
+                .one().getWithAllChildren();
+        assertThat(stageSections.dataElements().size(), is(1));
+        assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));
+    }
 }

@@ -59,7 +59,8 @@ public final class ProgramStageSectionEntityDIModule {
     @Reusable
     Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return Arrays.asList(
-                ProgramStageSectionProgramIndicatorChildrenAppender.create(databaseAdapter)
+                ProgramStageSectionProgramIndicatorChildrenAppender.create(databaseAdapter),
+                ProgramStageSectionDataElementChildrenAppender.create(databaseAdapter)
         );
     }
 }

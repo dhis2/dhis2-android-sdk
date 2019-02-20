@@ -61,7 +61,8 @@ public final class ProgramModuleWiper implements ModuleWiper {
                 ProgramStageSectionTableInfo.TABLE_INFO,
 
                 ProgramStageTableInfo.TABLE_INFO,
-                ProgramSectionAttributeLinkTableInfo.TABLE_INFO
+                ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
+                ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO
         );
     }
 

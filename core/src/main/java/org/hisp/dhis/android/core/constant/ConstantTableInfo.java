@@ -52,12 +52,10 @@ public final class ConstantTableInfo {
     };
 
     static class Columns extends BaseIdentifiableObjectModel.Columns {
-        static final String VALUE = "value";
-
         @Override
         public String[] all() {
             return Utils.appendInNewArray(super.all(),
-                    VALUE
+                    ConstantFields.VALUE
             );
         }
     }

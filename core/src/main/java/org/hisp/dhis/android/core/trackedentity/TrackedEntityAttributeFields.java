@@ -52,6 +52,7 @@ public final class TrackedEntityAttributeFields {
     public static final String INHERIT = "inherit";
     private static final String STYLE = "style";
     private static final String ACCESS = "access";
+    public static final String FORM_NAME = "formName";
 
     private static final FieldsHelper<TrackedEntityAttribute> fh = new FieldsHelper<>();
 
@@ -72,8 +73,9 @@ public final class TrackedEntityAttributeFields {
                     fh.<Boolean>field(INHERIT),
                     fh.nestedFieldWithUid(OPTION_SET),
                     fh.<ObjectStyle>nestedField(STYLE).with(ObjectStyleFields.allFields),
-                    fh.<Access>nestedField(ACCESS).with(Access.read)
-            ).build();
+                    fh.<Access>nestedField(ACCESS).with(Access.read),
+                    fh.<String>field(FORM_NAME)
+                    ).build();
 
     private TrackedEntityAttributeFields() {
     }

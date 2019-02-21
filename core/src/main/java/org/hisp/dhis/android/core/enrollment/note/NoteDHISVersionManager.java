@@ -29,25 +29,27 @@
 package org.hisp.dhis.android.core.enrollment.note;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.text.ParseException;
 
-public class NoteToStoreTransformer implements Transformer<Note> {
+import javax.inject.Inject;
 
-    private final Note.Builder builder;
+import dagger.Reusable;
+
+@Reusable
+public class NoteDHISVersionManager {
+
     private final DHISVersionManager versionManager;
 
-    public NoteToStoreTransformer(Enrollment enrollment, DHISVersionManager versionManager) {
+    @Inject
+    public NoteDHISVersionManager(DHISVersionManager versionManager) {
         this.versionManager = versionManager;
-        this.builder = Note.builder()
-                .enrollment(enrollment.uid());
     }
 
-    @Override
-    public Note transform(Note note) {
+    public Note transform(Enrollment enrollment, Note note) {
+        Note.Builder builder = Note.builder().enrollment(enrollment.uid());
 
         try {
             if (this.versionManager.is2_29()) {

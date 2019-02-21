@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -160,9 +160,9 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                         .build();
         ProgramTrackedEntityAttributeStore.create(databaseAdapter()).insert(programTrackedEntityAttribute);
 
-        OrganisationUnitProgramLinkModel organisationUnitProgramLinkModel =
-                OrganisationUnitProgramLinkModel.builder().organisationUnit(organisationUnitUid).program(programUid).build();
-        OrganisationUnitProgramLinkStore.create(databaseAdapter()).insert(organisationUnitProgramLinkModel);
+        OrganisationUnitProgramLink organisationUnitProgramLink =
+                OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid).program(programUid).build();
+        OrganisationUnitProgramLinkStore.create(databaseAdapter()).insert(organisationUnitProgramLink);
 
 
         when(trackedEntityAttributeReservedValueQueryCallFactory.create(

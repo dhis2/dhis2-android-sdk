@@ -294,7 +294,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
     public void include_program_indicators_as_children() {
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
-        assertThat(program.programIndicators().size(), is(2));
+        assertThat(program.programIndicators().size(), is(3));
         assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
 

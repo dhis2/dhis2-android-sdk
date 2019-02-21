@@ -81,7 +81,8 @@ public final class ProgramTableInfo {
                     ProgramFields.COMPLETE_EVENTS_EXPIRY_DAYS,
                     ProgramFields.EXPIRY_PERIOD_TYPE,
                     ProgramFields.MIN_ATTRIBUTES_REQUIRED_TO_SEARCH,
-                    ProgramFields.MAX_TEI_COUNT_TO_RETURN
+                    ProgramFields.MAX_TEI_COUNT_TO_RETURN,
+                    ProgramFields.FEATURE_TYPE
             );
         }
     }

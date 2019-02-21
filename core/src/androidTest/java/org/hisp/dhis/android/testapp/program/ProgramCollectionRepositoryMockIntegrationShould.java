@@ -31,6 +31,7 @@ package org.hisp.dhis.android.testapp.program;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
@@ -150,6 +151,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
     public void filter_by_capture_coordinates() {
         List<Program> programs = d2.programModule().programs
                 .byCaptureCoordinates().isFalse()
+                .get();
+        assertThat(programs.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_feature_type() {
+        List<Program> programs = d2.programModule().programs
+                .byFeatureType().eq(FeatureType.NONE)
                 .get();
         assertThat(programs.size(), is(1));
     }

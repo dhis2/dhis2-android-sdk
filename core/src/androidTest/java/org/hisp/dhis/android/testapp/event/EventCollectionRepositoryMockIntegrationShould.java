@@ -244,6 +244,10 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
         assertThat(events.size(), is(1));
     }
 
-
-
+    @Test
+    public void include_tracked_entity_data_values_as_children() {
+        Event event = d2.eventModule().events
+                .uid("V1CerIi3sdL").getWithAllChildren();
+        assertThat(event.trackedEntityDataValues().size(), is(6));
+    }
 }

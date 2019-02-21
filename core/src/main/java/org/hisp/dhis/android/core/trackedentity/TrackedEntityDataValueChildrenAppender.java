@@ -25,39 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity;
 
-package org.hisp.dhis.android.core.event;
-
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
+import org.hisp.dhis.android.core.event.Event;
 
-import java.util.Collection;
-import java.util.Collections;
+public final class TrackedEntityDataValueChildrenAppender extends ChildrenAppender<Event> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
 
-@Module
-public final class EventEntityDIModule {
+    private final SingleParentChildStore<Event, TrackedEntityDataValue> childStore;
 
-    @Provides
-    @Reusable
-    public EventStore store(DatabaseAdapter databaseAdapter) {
-        return EventStoreImpl.create(databaseAdapter);
+    private TrackedEntityDataValueChildrenAppender(SingleParentChildStore<Event, TrackedEntityDataValue> childStore) {
+        this.childStore = childStore;
     }
 
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<Event> handler(EventHandler impl) {
-        return impl;
+    @Override
+    protected Event appendChildren(Event event) {
+        Event.Builder builder = event.toBuilder();
+        builder.trackedEntityDataValues(childStore.getChildren(event));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
+    public static ChildrenAppender<Event> create(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityDataValueChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        TrackedEntityDataValueStoreImpl.CHILD_PROJECTION,
+                        TrackedEntityDataValue::create)
+        );
     }
 }

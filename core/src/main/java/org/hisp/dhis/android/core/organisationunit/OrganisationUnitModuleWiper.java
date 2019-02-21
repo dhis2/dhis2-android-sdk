@@ -49,7 +49,7 @@ public final class OrganisationUnitModuleWiper implements ModuleWiper {
     public void wipeMetadata() {
         tableWiper.wipeTables(
                 OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkModel.TABLE,
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
                 OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
                 OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
                 OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);

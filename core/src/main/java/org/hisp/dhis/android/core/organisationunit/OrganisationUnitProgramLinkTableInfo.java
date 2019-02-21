@@ -50,7 +50,7 @@ public final class OrganisationUnitProgramLinkTableInfo {
     private OrganisationUnitProgramLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
         public static final String PROGRAM = "program";
         public static final String ORGANISATION_UNIT = "organisationUnit";

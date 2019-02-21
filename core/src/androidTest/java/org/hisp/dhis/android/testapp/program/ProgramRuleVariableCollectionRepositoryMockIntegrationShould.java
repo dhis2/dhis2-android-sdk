@@ -32,6 +32,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
 import org.hisp.dhis.android.core.program.ProgramRuleVariable;
+import org.hisp.dhis.android.core.program.ProgramRuleVariableSourceType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,12 +48,81 @@ public class ProgramRuleVariableCollectionRepositoryMockIntegrationShould extend
     @BeforeClass
     public static void setUpAll() throws Exception {
         downloadMetadata();
+        downloadTrackedEntityInstances();
     }
 
     @Test
     public void find_all() {
-        List<ProgramRuleVariable> ruleVariables = d2.programModule().programRuleVariables
-                .get();
+        List<ProgramRuleVariable> ruleVariables =
+                d2.programModule().programRuleVariables
+                        .get();
+
+        assertThat(ruleVariables.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_use_code_for_option_set() {
+        List<ProgramRuleVariable> ruleVariables =
+                d2.programModule().programRuleVariables
+                        .byUseCodeForOptionSet()
+                        .isFalse()
+                        .get();
+
+        assertThat(ruleVariables.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program() {
+        List<ProgramRuleVariable> ruleVariables =
+                d2.programModule().programRuleVariables
+                        .byProgramUid()
+                        .eq("lxAQ7Zs9VYR")
+                        .get();
+
+        assertThat(ruleVariables.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_program_stage() {
+        List<ProgramRuleVariable> ruleVariables =
+                d2.programModule().programRuleVariables
+                        .byProgramStageUid()
+                        .eq("dBwrot7S420")
+                        .get();
+
+        assertThat(ruleVariables.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_data_element() {
+        List<ProgramRuleVariable> ruleVariables =
+                d2.programModule().programRuleVariables
+                        .byDataElementUid()
+                        .eq("sWoqcoByYmD")
+                        .get();
+
+        assertThat(ruleVariables.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_tracked_entity_attribute() {
+        List<ProgramRuleVariable> ruleVariables =
+                d2.programModule().programRuleVariables
+                        .byTrackedEntityAttributeUid()
+                        .eq("cejWyOfXge6")
+                        .get();
+
+        assertThat(ruleVariables.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program_rule_variable_source_type() {
+        List<ProgramRuleVariable> ruleVariables =
+                d2.programModule().programRuleVariables
+                        .byProgramRuleVariableSourceType()
+                        .eq(ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM)
+                        .get();
+
         assertThat(ruleVariables.size(), is(2));
     }
 }

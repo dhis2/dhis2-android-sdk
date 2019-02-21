@@ -62,7 +62,8 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends MockIn
     public void filter_by_priority() {
         List<ProgramRule> rules =
                 d2.programModule().programRules
-                        .byPriority().eq(2)
+                        .byPriority()
+                        .eq(2)
                         .get();
 
         assertThat(rules.size(), is(2));

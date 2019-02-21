@@ -71,6 +71,13 @@
           "name": "womanSmoking",
           "id": "Z92dJO9gIje",
           "displayName": "womanSmoking",
+          "useCodeForOptionSet": false,
+          "trackedEntityAttribute": {
+            "id": "cejWyOfXge6"
+          },
+          "programStage": {
+            "id": "dBwrot7S420"
+          },
           "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
           "program": {
             "id": "lxAQ7Zs9VYR"

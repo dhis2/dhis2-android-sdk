@@ -20,7 +20,7 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
 
         // enables cloud features of gradle plugin
-        classpath "com.gradle:build-scan-plugin:1.9"
+        classpath "com.gradle:build-scan-plugin:2.0.2"
     }
 }
 
@@ -37,8 +37,8 @@ task clean(type: Delete) {
 }
 
 buildScan {
-    licenseAgreementUrl = "https://gradle.com/terms-of-service"
-    licenseAgree = "yes"
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
 }
 
 subprojects { project ->

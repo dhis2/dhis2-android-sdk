@@ -65,6 +65,7 @@ android {
     lintOptions {
         // casting 'InvalidPackage' error to warning
         warning "InvalidPackage"
+        warning "DuplicatePlatformClasses"
 
         // Fail early.
         abortOnError true
@@ -126,7 +127,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
     // Apache libraries
-    implementation 'org.apache.commons:commons-jexl3:3.0'
+    implementation 'org.apache.commons:commons-jexl3:3.1'
     implementation 'org.apache.commons:commons-lang3:3.7'
 
     // Joda time
@@ -146,6 +147,7 @@ dependencies {
     testImplementation "com.android.support.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
+    androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:${libraries.dexmaker}"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestImplementation "com.android.support.test:runner:${libraries.testrunner}"

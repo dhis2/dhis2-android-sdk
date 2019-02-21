@@ -2,8 +2,9 @@ apply plugin: "com.gradle.build-scan"
 
 buildscript {
     repositories {
-        jcenter()
         google()
+        mavenLocal()
+        jcenter()
         maven { url '// Required by build-scan and error-prone plugins.' }
         maven { url 'https://plugins.gradle.org/m2/' }
     }

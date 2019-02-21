@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.utils.services;
 
 
-import org.apache.commons.jexl2.JexlException;
+import org.apache.commons.jexl3.JexlException;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;

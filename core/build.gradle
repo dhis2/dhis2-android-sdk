@@ -29,7 +29,6 @@
 apply plugin: "com.android.library"
 apply from: rootProject.file("plugins/android-checkstyle.gradle")
 apply from: rootProject.file("plugins/android-findbugs.gradle")
-apply from: rootProject.file("plugins/android-dexcount.gradle")
 apply from: rootProject.file("plugins/android-pmd.gradle")
 
 def configuration = rootProject.ext.configuration
@@ -100,68 +99,68 @@ android {
 dependencies {
 
     // sqlbrite-migrations library
-    compile "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
+    implementation "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
 
     // Support libraries
-    compile "com.android.support:support-annotations:${libraries.support}"
+    implementation "com.android.support:support-annotations:${libraries.support}"
 
     // Google's auto-value. Annotations are used only during compilation time, as well as
 
     // annotation processor which hoops up into compilation process
-    provided "com.google.auto.value:auto-value:${libraries.autovalue}"
+    compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
 
     // Dagger
-    compile "com.google.dagger:dagger:${libraries.dagger}"
+    implementation "com.google.dagger:dagger:${libraries.dagger}"
     annotationProcessor "com.google.dagger:dagger-compiler:${libraries.dagger}"
 
     // Jackson
-    compile "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
     // Google's play services
-    compile "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
+    implementation "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
 
     // Square libraries
-    compile "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
-    compile "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
-    compile "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
+    implementation "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
+    implementation "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
+    implementation "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
     // Apache libraries
-    compile 'org.apache.commons:commons-jexl:2.1.1'
-    compile 'org.apache.commons:commons-lang3:3.4'
+    implementation 'org.apache.commons:commons-jexl3:3.0'
+    implementation 'org.apache.commons:commons-lang3:3.7'
 
     // Joda time
-    compile 'joda-time:joda-time:2.9.9'
+    implementation 'joda-time:joda-time:2.9.9'
 
     // Extension which generates mappers for work with cursor and content values
-    compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
+    implementation "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
 
     // Java test dependencies
-    testCompile "junit:junit:${libraries.junit}"
-    testCompile "org.mockito:mockito-core:${libraries.mockito}"
-    testCompile "org.assertj:assertj-core:${libraries.assertj}"
-    testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
-    testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    testCompile 'com.google.code.findbugs:annotations:3.0.0'
-    testCompile "com.android.support.test:runner:${libraries.testrunner}"
+    testImplementation "junit:junit:${libraries.junit}"
+    testImplementation "org.mockito:mockito-core:${libraries.mockito}"
+    testImplementation "org.assertj:assertj-core:${libraries.assertj}"
+    testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    testImplementation 'com.google.code.findbugs:annotations:3.0.0'
+    testImplementation "com.android.support.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
-    androidTestCompile "com.linkedin.dexmaker:dexmaker-mockito:${libraries.dexmaker}"
-    androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
-    androidTestCompile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
-    androidTestCompile("com.google.truth:truth:${libraries.truth}") {
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:${libraries.dexmaker}"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    androidTestImplementation "com.android.support.test:runner:${libraries.testrunner}"
+    androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
+    androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
-    androidTestCompile('com.facebook.stetho:stetho:1.5.0') {
+    androidTestImplementation('com.facebook.stetho:stetho:1.5.0') {
         exclude module: 'jsr305'
     }
-    androidTestCompile('com.facebook.stetho:stetho-okhttp3:1.5.0') {
+    androidTestImplementation('com.facebook.stetho:stetho-okhttp3:1.5.0') {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
-    compile 'com.google.code.findbugs:annotations:3.0.0'
+    implementation 'com.google.code.findbugs:annotations:3.0.0'
 }
 
 apply from: rootProject.file("plugins/gradle-mvn-push.gradle")

@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.utils.support;
 
 import android.util.Log;
 
-import org.apache.commons.jexl2.Expression;
-import org.apache.commons.jexl2.JexlContext;
-import org.apache.commons.jexl2.JexlEngine;
-import org.apache.commons.jexl2.JexlException;
-import org.apache.commons.jexl2.MapContext;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlContext;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlException;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.MapContext;
 import org.apache.commons.lang3.StringUtils;
 import org.hisp.dhis.android.core.utils.support.math.ExpressionFunctions;
 
@@ -47,8 +48,13 @@ import java.util.regex.Pattern;
  */
 public final class ExpressionUtils {
     private static final String CLASS_TAG = ExpressionUtils.class.getSimpleName();
-    private static final JexlEngine JEXL = new JexlEngine();
-    private static final JexlEngine JEXL_STRICT = new JexlEngine();
+    private static final Map<String, Object> functions = new HashMap<String, Object>() {{
+        put(ExpressionFunctions.NAMESPACE, ExpressionFunctions.class);
+    }};
+    private static final JexlEngine JEXL =
+            new JexlBuilder().cache(512).silent(false).namespaces(functions).create();
+    private static final JexlEngine JEXL_STRICT =
+            new JexlBuilder().cache(512).silent(false).strict(true).namespaces(functions).create();
 
     private static final Map<String, String> EL_SQL_MAP = new HashMap<>();
     private static final String IGNORED_KEYWORDS_REGEX =
@@ -61,19 +67,6 @@ public final class ExpressionUtils {
     }
 
     static {
-        Map<String, Object> functions = new HashMap<>();
-        functions.put(ExpressionFunctions.NAMESPACE, ExpressionFunctions.class);
-
-        JEXL.setFunctions(functions);
-        JEXL.setCache(512);
-        JEXL.setSilent(false);
-        JEXL.setLenient(true); // Lenient
-
-        JEXL_STRICT.setFunctions(functions);
-        JEXL_STRICT.setCache(512);
-        JEXL_STRICT.setSilent(false);
-        JEXL_STRICT.setStrict(true); // Strict
-
         EL_SQL_MAP.put("&&", "and");
         EL_SQL_MAP.put("\\|\\|", "or");
         EL_SQL_MAP.put("==", "=");
@@ -109,7 +102,7 @@ public final class ExpressionUtils {
 
         JexlEngine engine = strict ? JEXL_STRICT : JEXL;
 
-        Expression exp = engine.createExpression(formattedExpression);
+        JexlExpression exp = engine.createExpression(formattedExpression);
 
         JexlContext context = vars == null ? new MapContext() : new MapContext(vars);
 

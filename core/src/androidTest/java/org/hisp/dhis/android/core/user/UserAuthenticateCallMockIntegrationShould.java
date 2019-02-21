@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.resource.Resource;
-import org.hisp.dhis.android.core.resource.ResourceModel;
+import org.hisp.dhis.android.core.resource.ResourceTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,15 +70,15 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
     };
 
     private static final String[] AUTHENTICATED_USERS_PROJECTION = {
-            AuthenticatedUserModel.Columns.ID,
-            AuthenticatedUserModel.Columns.USER,
-            AuthenticatedUserModel.Columns.CREDENTIALS
+            AuthenticatedUserTableInfo.Columns.ID,
+            AuthenticatedUserTableInfo.Columns.USER,
+            AuthenticatedUserTableInfo.Columns.CREDENTIALS
     };
 
     private static String[] RESOURCE_PROJECTION = {
-            ResourceModel.Columns.ID,
-            ResourceModel.Columns.RESOURCE_TYPE,
-            ResourceModel.Columns.LAST_SYNCED
+            ResourceTableInfo.Columns.ID,
+            ResourceTableInfo.Columns.RESOURCE_TYPE,
+            ResourceTableInfo.Columns.LAST_SYNCED
     };
 
     private Dhis2MockServer dhis2MockServer;
@@ -108,10 +108,10 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
                 UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
         Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE,
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
-        Cursor authenticatedUsersCursor = database().query(AuthenticatedUserModel.TABLE,
+        Cursor authenticatedUsersCursor = database().query(AuthenticatedUserTableInfo.TABLE_INFO.name(),
                 AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);
 
-        Cursor resourceCursor = database().query(ResourceModel.TABLE, RESOURCE_PROJECTION,
+        Cursor resourceCursor = database().query(ResourceTableInfo.TABLE_INFO.name(), RESOURCE_PROJECTION,
                 null, null, null, null, null);
 
         assertThatCursor(userCursor)

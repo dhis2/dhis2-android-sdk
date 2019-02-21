@@ -1,0 +1,22 @@
+{
+  "optionGroups": [
+    {
+      "lastUpdated": "2019-02-15T13:55:55.665",
+      "created": "2019-02-15T13:55:55.665",
+      "name": "Option group",
+      "id": "j3JYGVCIEdz",
+      "displayName": "Option group",
+      "optionSet": {
+        "id": "VQ2lai3OfVG"
+      },
+      "options": [
+        {
+          "id": "Y1ILwhy5VDY"
+        },
+        {
+          "id": "egT1YqFWsVk"
+        }
+      ]
+    }
+  ]
+}

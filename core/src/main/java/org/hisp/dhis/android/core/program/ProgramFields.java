@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleFields;
 import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 final class ProgramFields {
@@ -70,6 +71,7 @@ final class ProgramFields {
     static final String MIN_ATTRIBUTES_REQUIRED_TO_SEARCH = "minAttributesRequiredToSearch";
     static final String MAX_TEI_COUNT_TO_RETURN = "maxTeiCountToReturn";
     private static final String PROGRAM_SECTIONS = "programSections";
+    static final String FEATURE_TYPE = "featureType";
 
     private static FieldsHelper<Program> fh = new FieldsHelper<>();
 
@@ -109,6 +111,7 @@ final class ProgramFields {
                     fh.<PeriodType>field(EXPIRY_PERIOD_TYPE),
                     fh.<Integer>field(MIN_ATTRIBUTES_REQUIRED_TO_SEARCH),
                     fh.<Integer>field(MAX_TEI_COUNT_TO_RETURN),
+                    fh.<FeatureType>field(FEATURE_TYPE),
                     fh.<ProgramSection>nestedField(PROGRAM_SECTIONS).with(ProgramSectionFields.allFields)
             ).build();
 

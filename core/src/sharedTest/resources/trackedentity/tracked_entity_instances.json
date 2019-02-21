@@ -8,7 +8,42 @@
       "trackedEntityInstance": "nWrB0TfWlvh",
       "deleted": false,
       "featureType": "NONE",
-      "relationships": [],
+      "relationships": [
+        {
+          "lastUpdated": "2019-02-07T08:06:28.369",
+          "created": "2019-02-07T08:06:28.369",
+          "relationshipName": "Lab Sample to Person",
+          "relationshipType": "V2kkHafqs8G",
+          "relationship": "AJOytZW7OaI",
+          "from": {
+            "trackedEntityInstance": {
+              "trackedEntityInstance": "nWrB0TfWlvh"
+            }
+          },
+          "to": {
+            "trackedEntityInstance": {
+              "trackedEntityInstance": "nWrB0TfWlvh"
+            }
+          }
+        },
+        {
+          "lastUpdated": "2018-02-07T08:06:28.369",
+          "created": "2018-02-07T08:06:28.369",
+          "relationshipName": "Prescription to Person",
+          "relationshipType": "o51cUNONthg",
+          "relationship": "AJOytZW7OaB",
+          "from": {
+            "trackedEntityInstance": {
+              "trackedEntityInstance": "nWrB0TfWlvh"
+            }
+          },
+          "to": {
+            "trackedEntityInstance": {
+              "trackedEntityInstance": "nWrB0TfWlvh"
+            }
+          }
+        }
+      ],
       "attributes": [
         {
           "lastUpdated": "2019-01-10T13:40:28.000",
@@ -48,6 +83,68 @@
               "lastUpdated": "2015-11-15T14:55:22.995",
               "completedBy": "system",
               "enrollment": "JILLTkO4LKQ",
+              "coordinate": {
+                "latitude": 0.0,
+                "longitude": 0.0
+              },
+              "dataValues": [],
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2018-01-10T13:40:28.592",
+      "trackedEntityType": "nEenWmSyUEp",
+      "createdAtClient": "2019-01-22T18:38:15.845",
+      "lastUpdatedAtClient": "2019-01-22T18:38:15.845",
+      "coordinates": "[9,9]",
+      "created": "2018-01-10T13:40:27.987",
+      "orgUnit": "DiszpKrYNg8",
+      "trackedEntityInstance": "nWrB0TfWlvD",
+      "deleted": false,
+      "featureType": "POINT",
+      "relationships": [],
+      "attributes": [
+        {
+          "lastUpdated": "2018-01-10T13:40:28.000",
+          "created": "2018-01-10T13:40:28.000",
+          "attribute": "lZGmxYbs97q",
+          "value": "4081507"
+        }
+      ],
+      "enrollments": [
+        {
+          "created": "2018-01-10T13:40:28.322",
+          "orgUnit": "DiszpKrYNg8",
+          "program": "lxAQ7Zs9VYR",
+          "enrollment": "JILLTkO4LKZ",
+          "trackedEntityInstance": "nWrB0TfWlvD",
+          "lastUpdated": "2018-01-10T13:40:28.718",
+          "enrollmentDate": "2018-01-10T00:00:00.000",
+          "followup": false,
+          "deleted": false,
+          "incidentDate": "2018-01-10T00:00:00.000",
+          "status": "ACTIVE",
+          "notes": [],
+          "events": [
+            {
+              "programStage": "dBwrot7S420",
+              "storedBy": "system",
+              "orgUnit": "DiszpKrYNg8",
+              "dueDate": "2016-05-01T00:00:00.000",
+              "program": "lxAQ7Zs9VYR",
+              "href": "https://play.dhis2.org/demo/api/events/hnaWBxMw5j3",
+              "event": "hnaWBxMw5j3",
+              "status": "COMPLETED",
+              "eventDate": "2016-05-01T00:00:00.000",
+              "orgUnitName": "Ngelehun CHC",
+              "created": "2016-09-08T21:40:22.000",
+              "completedDate": "2015-11-15T00:00:00.000",
+              "lastUpdated": "2016-11-15T14:55:22.995",
+              "completedBy": "system",
+              "enrollment": "JILLTkO4LKZ",
               "coordinate": {
                 "latitude": 0.0,
                 "longitude": 0.0

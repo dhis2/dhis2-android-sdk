@@ -48,7 +48,7 @@ public final class UserModule {
     private final Provider<LogOutUserCallable> logoutCallCallProvider;
     private final UserAuthenticateCallFactory loginCallFactory;
 
-    public final ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser;
+    public final ReadOnlyObjectRepository<AuthenticatedUser> authenticatedUser;
     public final UserRoleCollectionRepository userRoles;
     public final ReadOnlyObjectRepository<UserCredentials> userCredentials;
     public final ReadOnlyObjectRepository<User> user;
@@ -57,7 +57,7 @@ public final class UserModule {
     UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
                Provider<LogOutUserCallable> logoutCallCallProvider,
                UserAuthenticateCallFactory loginCallFactory,
-               ReadOnlyObjectRepository<AuthenticatedUserModel> authenticatedUser,
+               ReadOnlyObjectRepository<AuthenticatedUser> authenticatedUser,
                UserRoleCollectionRepository userRoles,
                ReadOnlyObjectRepository<UserCredentials> userCredentials,
                ReadOnlyObjectRepository<User> user) {

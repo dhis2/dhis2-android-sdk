@@ -42,4 +42,6 @@ public interface EventStore extends IdentifiableObjectWithStateStore<Event> {
     List<Event> querySingleEvents();
 
     List<Event> queryOrderedForEnrollmentAndProgramStage(String enrollmentUid, String programStageUid);
+
+    Integer countEventsForEnrollment(String enrollmentUid);
 }

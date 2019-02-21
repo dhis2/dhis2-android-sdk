@@ -28,6 +28,10 @@
       "expiryPeriodType": "BiMonthly",
       "minAttributesRequiredToSearch": 7,
       "maxTeiCountToReturn": 20,
+      "style": {
+        "color": "#333",
+        "icon": "program-icon"
+      },
       "access": {
         "data": {
           "write": true
@@ -67,6 +71,13 @@
           "name": "womanSmoking",
           "id": "Z92dJO9gIje",
           "displayName": "womanSmoking",
+          "useCodeForOptionSet": false,
+          "trackedEntityAttribute": {
+            "id": "cejWyOfXge6"
+          },
+          "programStage": {
+            "id": "dBwrot7S420"
+          },
           "programRuleVariableSourceType": "DATAELEMENT_NEWEST_EVENT_PROGRAM",
           "program": {
             "id": "lxAQ7Zs9VYR"
@@ -76,11 +87,150 @@
           }
         }
       ],
-      "programTrackedEntityAttributes": [],
-      "programIndicators": [],
+      "programTrackedEntityAttributes": [
+        {
+          "lastUpdated": "2016-10-11T10:41:40.401",
+          "id": "YhqgQ6Iy4c4",
+          "href": "https://play.dhis2.org/dev/api/programTrackedEntityAttributes/YhqgQ6Iy4c4",
+          "created": "2016-10-11T10:41:40.401",
+          "name": "Child Programme Gender",
+          "shortName": "Child Programme Gender",
+          "displayName": "Child Programme Gender",
+          "mandatory": false,
+          "displayShortName": "Child Programme Gender",
+          "externalAccess": false,
+          "valueType": "TEXT",
+          "allowFutureDate": false,
+          "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
+          "displayInList": false,
+          "sortOrder": 1,
+          "dimensionItemType": "PROGRAM_ATTRIBUTE",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "trackedEntityAttribute": {
+            "id": "cejWyOfXge6",
+            "lastUpdated": "2016-08-04T11:48:56.928",
+            "href": "https://play.dhis2.org/dev/api/trackedEntityAttributes/ruQQnf6rswq",
+            "created": "2014-01-09T19:12:46.551",
+            "name": "TB number",
+            "shortName": "TB number",
+            "programScope": false,
+            "displayInListNoProgram": false,
+            "displayName": "TB number",
+            "access": {
+              "read": true,
+              "updateWithSection": true,
+              "externalize": false,
+              "delete": true,
+              "write": true,
+              "manage": false
+            }
+          },
+          "translations": [],
+          "userGroupAccesses": [],
+          "attributeValues": []
+        }
+      ],
+      "programIndicators": [
+        {
+          "lastUpdated": "2015-09-21T23:47:57.820",
+          "id": "GSae40Fyppf",
+          "href": "https://play.dhis2.org/dev/api/programIndicators/GSae40Fyppf",
+          "created": "2015-09-21T23:35:50.945",
+          "name": "Age at visit",
+          "shortName": "Age",
+          "aggregationType": "AVERAGE",
+          "displayName": "Age at visit",
+          "displayInForm": true,
+          "publicAccess": "rw------",
+          "description": "Age at visit",
+          "displayShortName": "Age",
+          "externalAccess": false,
+          "displayDescription": "Age at visit",
+          "expression": "d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})",
+          "dimensionItem": "GSae40Fyppf",
+          "dimensionItemType": "PROGRAM_INDICATOR",
+          "access": {
+            "read": true,
+            "updateWithSection": true,
+            "externalize": false,
+            "delete": true,
+            "write": true,
+            "manage": true
+          },
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "legendSets": [
+            {
+              "code": "AGE15YINT",
+              "created": "2017-06-02T11:40:33.452",
+              "lastUpdated": "2017-06-02T11:41:01.999",
+              "name": "Age 15y interval",
+              "id": "TiOkbpGEud4",
+              "displayName": "Age 15y interval",
+              "symbolizer": "color",
+              "legends": [
+                {
+                  "id": "BzQkRWHS7lu",
+                  "name": "45 - 60"
+                },
+                {
+                  "id": "kEf6QhFVMab",
+                  "name": "15 - 30"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "created": "2014-10-20T11:26:19.631",
+          "lastUpdated": "2014-10-20T11:26:19.631",
+          "name": "Health immunization score",
+          "id": "rXoaHGAXWy9",
+          "shortName": "Health immunization score",
+          "displayDescription": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+          "aggregationType": "AVERAGE",
+          "expression": "(#{A03MvHHogjR.bx6fsa0t90x} +  #{A03MvHHogjR.FqlgKAG8HOu} + #{A03MvHHogjR.rxBfISxXS2U}) * d2:condition('#{A03MvHHogjR.a3kGcGDCuk6} >= 2',1,2)",
+          "dimensionItem": "rXoaHGAXWy9",
+          "displayName": "Health immunization score",
+          "displayInForm": false,
+          "description": "Sum of BCG doses, measles doses and yellow fever doses. If Apgar score over or equal to 2, multiply by 2.",
+          "displayShortName": "Health immunization score",
+          "decimals": 2,
+          "filter": "#{edqlbukwRfQ.vANAXwtLwcT} < 11",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "legendSets": []
+        }
+      ],
       "programStages": [
         {
           "id": "dBwrot7S420"
+        }
+      ],
+      "programSections": [
+        {
+          "code": "Code",
+          "lastUpdated": "2018-05-15T08:14:06.767",
+          "id": "Nc8OxbNuVH3",
+          "created": "2018-05-15T08:14:06.767",
+          "name": "My Program Section",
+          "displayName": "My Program Section",
+          "description": "Description",
+          "externalAccess": false,
+          "formName": "formName",
+          "sortOrder": 1,
+          "favorite": false,
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "style": {
+            "color": "#555",
+            "icon": "section-icon"
+          }
         }
       ]
     }

@@ -43,16 +43,16 @@ import javax.inject.Inject;
 class LogOutUserCallable implements Callable<Unit> {
 
     @NonNull
-    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
     @Inject
-    LogOutUserCallable(@NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore) {
+    LogOutUserCallable(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
     @Override
     public Unit call() throws Exception {
-        AuthenticatedUserModel existingUser = this.authenticatedUserStore.selectFirst();
+        AuthenticatedUser existingUser = this.authenticatedUserStore.selectFirst();
 
         if (existingUser == null) {
             throw D2Error.builder()
@@ -62,8 +62,8 @@ class LogOutUserCallable implements Callable<Unit> {
                     .build();
         }
 
-        AuthenticatedUserModel loggedOutUser =
-                AuthenticatedUserModel.builder()
+        AuthenticatedUser loggedOutUser =
+                AuthenticatedUser.builder()
                 .user(existingUser.user())
                 .hash(existingUser.hash())
                 .build();

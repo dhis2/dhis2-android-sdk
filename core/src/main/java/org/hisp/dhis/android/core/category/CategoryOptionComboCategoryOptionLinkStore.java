@@ -38,7 +38,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class CategoryOptionComboCategoryOptionLinkStore {
 
-    private static final StatementBinder<CategoryOptionComboCategoryOptionLinkModel> BINDER
+    private static final StatementBinder<CategoryOptionComboCategoryOptionLink> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.categoryOptionCombo());
         sqLiteBind(sqLiteStatement, 2, o.categoryOption());
@@ -46,11 +46,10 @@ final class CategoryOptionComboCategoryOptionLinkStore {
 
     private CategoryOptionComboCategoryOptionLinkStore() {}
 
-    public static LinkModelStore<CategoryOptionComboCategoryOptionLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryOptionComboCategoryOptionLinkModel.TABLE,
-                new CategoryOptionComboCategoryOptionLinkModel.Columns(),
-                CategoryOptionComboCategoryOptionLinkModel.Columns.CATEGORY_OPTION_COMBO, BINDER,
-                CategoryOptionComboCategoryOptionLinkModel::create
+    public static LinkModelStore<CategoryOptionComboCategoryOptionLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter, CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO, BINDER,
+                CategoryOptionComboCategoryOptionLink::create
         );
     }
 }

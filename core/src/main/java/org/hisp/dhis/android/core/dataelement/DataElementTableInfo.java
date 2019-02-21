@@ -60,9 +60,7 @@ public final class DataElementTableInfo {
                     DataElementFields.ZERO_IS_SIGNIFICANT,
                     DataElementFields.AGGREGATION_TYPE,
                     DataElementFields.FORM_NAME,
-                    DataElementFields.NUMBER_TYPE,
                     DataElementFields.DOMAIN_TYPE,
-                    DataElementFields.DIMENSION,
                     DataElementFields.DISPLAY_FORM_NAME,
                     DataElementFields.OPTION_SET,
                     DataElementFields.CATEGORY_COMBO

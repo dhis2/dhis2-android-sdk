@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.data.api;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.user.AuthenticatedUserModel;
+import org.hisp.dhis.android.core.user.AuthenticatedUser;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -43,9 +43,9 @@ final class BasicAuthenticator implements Authenticator {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BASIC_CREDENTIALS = "Basic %s";
 
-    private final ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore;
+    private final ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore;
 
-    BasicAuthenticator(@NonNull ObjectWithoutUidStore<AuthenticatedUserModel> authenticatedUserStore) {
+    BasicAuthenticator(@NonNull ObjectWithoutUidStore<AuthenticatedUser> authenticatedUserStore) {
         this.authenticatedUserStore = authenticatedUserStore;
     }
 
@@ -57,7 +57,7 @@ final class BasicAuthenticator implements Authenticator {
             return chain.proceed(chain.request());
         }
 
-        AuthenticatedUserModel authenticatedUser = authenticatedUserStore.selectFirst();
+        AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
         if (authenticatedUser == null || authenticatedUser.credentials() == null) {
             // proceed request if we do not
             // have any users authenticated

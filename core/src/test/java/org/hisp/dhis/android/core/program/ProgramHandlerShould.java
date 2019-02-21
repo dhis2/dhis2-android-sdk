@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
@@ -95,7 +94,7 @@ public class ProgramHandlerShould {
     private Access access;
 
     @Mock
-    private List<ObjectWithUid> programStages;
+    private List<ProgramStage> programStages;
 
     @Mock
     private Program relatedProgram;
@@ -124,6 +123,9 @@ public class ProgramHandlerShould {
     @Mock
     private List<ProgramSection> programSections;
 
+    @Mock
+    private ProgramDHISVersionManager versionManager;
+
     // object to test
     private ProgramHandler programHandler;
 
@@ -134,7 +136,7 @@ public class ProgramHandlerShould {
         programHandler = new ProgramHandler(
                 programStore, programRuleVariableHandler, programIndicatorHandler, programRuleHandler,
                 programTrackedEntityAttributeHandler, programSectionHandler, styleHandler, orphanCleaner,
-                collectionCleaner);
+                collectionCleaner, versionManager);
 
         when(program.uid()).thenReturn("test_program_uid");
         when(program.code()).thenReturn("test_program_code");
@@ -178,6 +180,8 @@ public class ProgramHandlerShould {
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
         when(dataAccess.write()).thenReturn(true);
+
+        when(versionManager.addCaptureCoordinatesOrFeatureType(program)).thenReturn(program);
     }
 
     @Test

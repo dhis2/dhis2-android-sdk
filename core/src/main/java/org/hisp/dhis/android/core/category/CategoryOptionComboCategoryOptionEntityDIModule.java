@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -41,9 +42,14 @@ public final class CategoryOptionComboCategoryOptionEntityDIModule {
 
     @Provides
     @Reusable
-    LinkModelHandler<CategoryOption, CategoryOptionComboCategoryOptionLinkModel>
-    categoryOptionComboCategoryOptionLinkHandler(DatabaseAdapter databaseAdapter) {
-        return new LinkModelHandlerImpl<>(CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter)
-        );
+    LinkModelStore<CategoryOptionComboCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
+        return CategoryOptionComboCategoryOptionLinkStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    LinkSyncHandler<CategoryOptionComboCategoryOptionLink>
+    categoryOptionComboCategoryOptionLinkHandler(LinkModelStore<CategoryOptionComboCategoryOptionLink> store) {
+        return new LinkSyncHandlerImpl<>(store);
     }
 }

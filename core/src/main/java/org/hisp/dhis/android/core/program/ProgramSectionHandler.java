@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import javax.inject.Inject;
 
@@ -42,13 +41,13 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
-    private final LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
+    private final LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkModelHandler<ObjectWithUid, ProgramSectionAttributeLinkModel>
+                          LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
                                   programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(programSectionStore);

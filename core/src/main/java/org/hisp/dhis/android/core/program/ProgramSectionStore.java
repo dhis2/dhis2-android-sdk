@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -41,8 +42,6 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramSectionStore {
-
-    private ProgramSectionStore() {}
 
     private static StatementBinder<ProgramSection> BINDER
             = new IdentifiableStatementBinder<ProgramSection>() {
@@ -56,6 +55,11 @@ public final class ProgramSectionStore {
             sqLiteBind(sqLiteStatement, 10, o.formName());
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            ProgramSectionTableInfo.TABLE_INFO, ProgramSectionFields.PROGRAM);
+
+    private ProgramSectionStore() {}
 
     public static IdentifiableObjectStore<ProgramSection> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramSectionTableInfo.TABLE_INFO, BINDER,

@@ -29,13 +29,12 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public class ProgramStageDataElementTableInfo {
-
-    private ProgramStageDataElementTableInfo() {}
 
     public static final TableInfo TABLE_INFO = new TableInfo() {
 
@@ -49,6 +48,10 @@ public class ProgramStageDataElementTableInfo {
             return new Columns();
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            ProgramStageDataElementTableInfo.TABLE_INFO,
+            ProgramStageDataElementFields.PROGRAM_STAGE);
 
     static class Columns extends BaseIdentifiableObjectModel.Columns {
 
@@ -66,4 +69,5 @@ public class ProgramStageDataElementTableInfo {
         }
     }
 
+    private ProgramStageDataElementTableInfo() {}
 }

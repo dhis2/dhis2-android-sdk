@@ -45,20 +45,21 @@ import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
-import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramRuleVariableListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramSectionListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.IgnoreProgramStageListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityTypeWithUidColumnAdapter;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -114,6 +115,10 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @JsonProperty()
     public abstract Boolean selectIncidentDatesInFuture();
 
+    /**
+     * @deprecated since 2.29, replaced by {@link #featureType()}
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     public abstract Boolean captureCoordinates();
@@ -178,8 +183,8 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
-    public abstract List<ObjectWithUid> programStages();
+    @ColumnAdapter(IgnoreProgramStageListColumnAdapter.class)
+    public abstract List<ProgramStage> programStages();
 
     @Nullable
     @JsonIgnore()
@@ -216,6 +221,11 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @JsonProperty()
     @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
     public abstract List<ProgramSection> programSections();
+
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    public abstract FeatureType featureType();
 
     public static Builder builder() {
         return new $$AutoValue_Program.Builder();
@@ -281,7 +291,7 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
 
         public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);
 
-        public abstract Builder programStages(List<ObjectWithUid> programStages);
+        public abstract Builder programStages(List<ProgramStage> programStages);
 
         public abstract Builder programRules(List<ProgramRule> programRules);
 
@@ -298,6 +308,8 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
         public abstract Builder maxTeiCountToReturn(Integer maxTeiCountToReturn);
 
         public abstract Builder programSections(List<ProgramSection> programSections);
+
+        public abstract Builder featureType(FeatureType featureType);
 
         public abstract Program build();
     }

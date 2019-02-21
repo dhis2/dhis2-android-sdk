@@ -48,8 +48,10 @@ public final class OptionModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                OptionTableInfo.TABLE_INFO.name(),
-                OptionSetTableInfo.TABLE_INFO.name());
+                OptionTableInfo.TABLE_INFO,
+                OptionGroupTableInfo.TABLE_INFO,
+                OptionGroupOptionLinkTableInfo.TABLE_INFO,
+                OptionSetTableInfo.TABLE_INFO);
     }
 
     @Override

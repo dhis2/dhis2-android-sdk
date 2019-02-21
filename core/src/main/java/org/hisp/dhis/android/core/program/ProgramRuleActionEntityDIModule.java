@@ -30,8 +30,12 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,5 +54,11 @@ public final class ProgramRuleActionEntityDIModule {
     @Reusable
     SyncHandler<ProgramRuleAction> handler(IdentifiableObjectStore<ProgramRuleAction> store) {
         return new IdentifiableSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    Collection<ChildrenAppender<ProgramRuleAction>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

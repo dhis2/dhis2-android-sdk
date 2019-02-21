@@ -39,11 +39,41 @@ public class ExpressionUtilsShould {
 
     @Test
     public void evaluate_one_value() throws Exception {
-        assertThat(evaluateToDouble("2.3")).isEqualTo(2.3);
+        assertThat(evaluateToString("2.3")).isEqualTo("2.3");
     }
 
     @Test
     public void evaluate_base_mathematical_operations() throws Exception {
+        assertThat(evaluateToString("2.3 + 4")).isEqualTo("6.3");
+        assertThat(evaluateToString("4.3 - 2")).isEqualTo("2.3");
+        assertThat(evaluateToString("4.3 * 2")).isEqualTo("8.6");
+        assertThat(evaluateToString("0.0 * 5")).isEqualTo("0.0");
+        assertThat(evaluateToString("7.5 / 2")).isEqualTo("3.75");
+    }
+
+    @Test
+    public void evaluate_operations_with_parenthesis() throws Exception {
+        assertThat(evaluateToString("(2.3 + 4) * 2")).isEqualTo("12.6");
+        assertThat(evaluateToString("6 / (2 - 0.5)")).isEqualTo("4.0");
+    }
+
+    @Test
+    public void evaluate_strings() {
+        assertThat(evaluateToString("\"text-value\"")).isEqualTo("text-value");
+        assertThat(evaluateToString("\"text-value\" + \"-\" + 1")).isEqualTo("text-value-1");
+    }
+
+    private String evaluateToString(String expression) {
+        return ExpressionUtils.evaluateToString(expression, null);
+    }
+
+    @Test
+    public void evaluate_one_value_to_double() throws Exception {
+        assertThat(evaluateToDouble("2.3")).isEqualTo(2.3);
+    }
+
+    @Test
+    public void evaluate_base_mathematical_operations_to_double() throws Exception {
         assertThat(evaluateToDouble("2.3 + 4")).isEqualTo(6.3);
         assertThat(evaluateToDouble("4.3 - 2")).isEqualTo(2.3);
         assertThat(evaluateToDouble("4.3 * 2")).isEqualTo(8.6);
@@ -52,11 +82,15 @@ public class ExpressionUtilsShould {
     }
 
     @Test
-    public void evaluate_operations_with_parenthesis() throws Exception {
+    public void evaluate_operations_with_parenthesis_to_double() throws Exception {
         assertThat(evaluateToDouble("(2.3 + 4) * 2")).isEqualTo(12.6);
         assertThat(evaluateToDouble("6 / (2 - 0.5)")).isEqualTo(4.0);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void evaluate_strings_to_double() {
+        assertThat(evaluateToDouble("\"text-value\"")).isEqualTo("text-value");
+    }
 
     private Double evaluateToDouble(String expression) {
         return ExpressionUtils.evaluateToDouble(expression, null);

@@ -29,10 +29,14 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,5 +62,11 @@ public final class ProgramRuleEntityDIModule {
     public OrphanCleaner<ProgramRule, ProgramRuleAction> actionCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(ProgramRuleActionTableInfo.TABLE_INFO.name(),
                 ProgramRuleActionFields.PROGRAM_RULE, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Collection<ChildrenAppender<ProgramRule>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singleton(ProgramRuleActionChildrenAppender.create(databaseAdapter));
     }
 }

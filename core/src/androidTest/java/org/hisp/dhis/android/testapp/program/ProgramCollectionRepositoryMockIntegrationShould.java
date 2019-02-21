@@ -1,8 +1,37 @@
+/*
+ * Copyright (c) 2004-2019, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.android.testapp.program;
 
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
@@ -127,6 +156,14 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
     }
 
     @Test
+    public void filter_by_feature_type() {
+        List<Program> programs = d2.programModule().programs
+                .byFeatureType().eq(FeatureType.NONE)
+                .get();
+        assertThat(programs.size(), is(1));
+    }
+
+    @Test
     public void filter_by_use_first_stage_during_registration() {
         List<Program> programs = d2.programModule().programs
                 .byUseFirstStageDuringRegistration().isTrue()
@@ -236,5 +273,82 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
                 .byMaxTeiCountToReturn().eq(20)
                 .get();
         assertThat(programs.size(), is(1));
+    }
+
+    @Test
+    public void include_object_style_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.style().icon(), is("program-icon"));
+        assertThat(program.style().color(), is("#333"));
+    }
+
+    @Test
+    public void include_program_stages_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programStages().size(), is(1));
+        assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
+    }
+
+    @Test
+    public void include_program_rule_variables_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programRuleVariables().size(), is(2));
+        assertThat(program.programRuleVariables().get(0).name(), is("hemoglobin"));
+    }
+
+    @Test
+    public void include_program_indicators_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programIndicators().size(), is(2));
+        assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
+    }
+
+    @Test
+    public void include_program_rules_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programRules().size(), is(3));
+        assertThat(program.programRules().get(0).name(), is("Show error for high hemoglobin value"));
+    }
+
+    @Test
+    public void include_program_tracked_entity_attributes_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programTrackedEntityAttributes().size(), is(1));
+        assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
+    }
+
+    @Test
+    public void include_program_sections_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.programSections().size(), is(1));
+        assertThat(program.programSections().get(0).name(), is("My Program Section"));
+    }
+
+    @Test
+    public void include_category_combo_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.categoryCombo().name(), is("Births"));
+    }
+
+    @Test
+    public void include_related_program_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.relatedProgram().name(), is("Antenatal care visit"));
+    }
+
+    @Test
+    public void include_tracked_entity_type_as_children() {
+        Program program = d2.programModule().programs
+                .one().getWithAllChildren();
+        assertThat(program.trackedEntityType().name(), is("Person"));
     }
 }

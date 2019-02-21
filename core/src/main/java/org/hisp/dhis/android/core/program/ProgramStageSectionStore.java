@@ -33,6 +33,7 @@ import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
@@ -42,8 +43,6 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class ProgramStageSectionStore {
 
-    private ProgramStageSectionStore() {}
-
     private static StatementBinder<ProgramStageSection> BINDER =
             new IdentifiableStatementBinder<ProgramStageSection>() {
         @Override
@@ -51,10 +50,15 @@ public final class ProgramStageSectionStore {
             super.bindToStatement(o, sqLiteStatement);
             sqLiteBind(sqLiteStatement, 7, o.sortOrder());
             sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.programStage()));
-            sqLiteBind(sqLiteStatement, 9, o.desktopRenderType());
-            sqLiteBind(sqLiteStatement, 10, o.mobileRenderType());
+            sqLiteBind(sqLiteStatement, 9, ProgramStageSectionRenderingHelper.desktopRenderType(o.renderType()));
+            sqLiteBind(sqLiteStatement, 10, ProgramStageSectionRenderingHelper.mobileRenderType(o.renderType()));
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            ProgramStageSectionTableInfo.TABLE_INFO, ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE);
+
+    private ProgramStageSectionStore() {}
 
     public static IdentifiableObjectStore<ProgramStageSection> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, ProgramStageSectionTableInfo.TABLE_INFO,

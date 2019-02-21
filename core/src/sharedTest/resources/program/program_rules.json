@@ -33,8 +33,12 @@
       "id": "xOe5qCzRS0Y",
       "condition": "!#{womanSmoking} ",
       "displayName": "Hide smoking cessation councelling",
+      "priority": 2,
       "program": {
         "id": "lxAQ7Zs9VYR"
+      },
+      "programStage": {
+        "id": "dBwrot7S420"
       },
       "programRuleActions": [
         {
@@ -58,6 +62,7 @@
       "id": "GC4gpdoSD4r",
       "condition": "#{hemoglobin} < 9",
       "displayName": "Hemoglobin warning",
+      "priority": 2,
       "program": {
         "id": "lxAQ7Zs9VYR"
       },

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.LinkModelAbstractShould;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkModel.Columns;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo.Columns;
 import org.hisp.dhis.android.core.utils.ColumnsArrayUtils;
 import org.hisp.dhis.android.core.utils.Utils;
 import org.junit.Test;

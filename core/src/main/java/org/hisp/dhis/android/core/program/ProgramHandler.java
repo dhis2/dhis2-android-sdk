@@ -53,6 +53,7 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
     private final ParentOrphanCleaner<Program> orphanCleaner;
     private final CollectionCleaner<Program> collectionCleaner;
+    private final ProgramDHISVersionManager programVersionManager;
 
     @Inject
     ProgramHandler(ProgramStoreInterface programStore,
@@ -63,7 +64,8 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
                    SyncHandler<ProgramSection> programSectionHandler,
                    SyncHandlerWithTransformer<ObjectStyle> styleHandler,
                    ParentOrphanCleaner<Program> orphanCleaner,
-                   CollectionCleaner<Program> collectionCleaner) {
+                   CollectionCleaner<Program> collectionCleaner,
+                   ProgramDHISVersionManager programVersionManager) {
         super(programStore);
         this.programRuleVariableHandler = programRuleVariableHandler;
         this.programIndicatorHandler = programIndicatorHandler;
@@ -73,6 +75,12 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
         this.styleHandler = styleHandler;
         this.orphanCleaner = orphanCleaner;
         this.collectionCleaner = collectionCleaner;
+        this.programVersionManager = programVersionManager;
+    }
+
+    @Override
+    protected Program beforeObjectHandled(Program program) {
+        return programVersionManager.addCaptureCoordinatesOrFeatureType(program);
     }
 
     @Override

@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 public class ProgramSectionAttributeLinkModelBuilder
-        implements ModelBuilder<ObjectWithUid, ProgramSectionAttributeLinkModel> {
+        implements ModelBuilder<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel> {
 
     private final ProgramSectionAttributeLinkModel.Builder builder;
 
@@ -42,7 +41,7 @@ public class ProgramSectionAttributeLinkModelBuilder
     }
 
     @Override
-    public ProgramSectionAttributeLinkModel buildModel(ObjectWithUid attribute) {
+    public ProgramSectionAttributeLinkModel buildModel(ProgramTrackedEntityAttribute attribute) {
         return builder
                 .attribute(attribute.uid())
                 .build();

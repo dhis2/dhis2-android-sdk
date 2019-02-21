@@ -29,7 +29,10 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
@@ -51,4 +54,34 @@ public final class ProgramIndicatorCollectionRepository
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new ProgramIndicatorCollectionRepository(store, childrenAppenders, updatedScope)));
     }
+
+
+    public BooleanFilterConnector<ProgramIndicatorCollectionRepository> byDisplayInForm() {
+        return cf.bool(ProgramIndicatorFields.DISPLAY_IN_FORM);
+    }
+
+    public StringFilterConnector<ProgramIndicatorCollectionRepository> byExpression() {
+        return cf.string(ProgramIndicatorFields.EXPRESSION);
+    }
+
+    public StringFilterConnector<ProgramIndicatorCollectionRepository> byDimensionItem() {
+        return cf.string(ProgramIndicatorFields.DIMENSION_ITEM);
+    }
+
+    public StringFilterConnector<ProgramIndicatorCollectionRepository> byFilter() {
+        return cf.string(ProgramIndicatorFields.FILTER);
+    }
+
+    public IntegerFilterConnector<ProgramIndicatorCollectionRepository> byDecimals() {
+        return cf.integer(ProgramIndicatorFields.DECIMALS);
+    }
+
+    public StringFilterConnector<ProgramIndicatorCollectionRepository> byAggregationType() {
+        return cf.string(ProgramIndicatorFields.AGGREGATION_TYPE);
+    }
+
+    public StringFilterConnector<ProgramIndicatorCollectionRepository> byProgramUid() {
+        return cf.string(ProgramIndicatorFields.PROGRAM);
+    }
+
 }

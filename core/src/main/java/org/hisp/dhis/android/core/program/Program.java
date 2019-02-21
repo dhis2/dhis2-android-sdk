@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.data.database.AccessColumnAdapter;
 import org.hisp.dhis.android.core.data.database.CategoryComboWithUidColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbPeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.DbProgramTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreProgramIndicatorListColumnAdapter;
@@ -58,6 +59,7 @@ import org.hisp.dhis.android.core.data.database.IgnoreProgramTrackedEntityAttrib
 import org.hisp.dhis.android.core.data.database.ProgramWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.RelationshipTypeWithUidColumnAdapter;
 import org.hisp.dhis.android.core.data.database.TrackedEntityTypeWithUidColumnAdapter;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -113,6 +115,10 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @JsonProperty()
     public abstract Boolean selectIncidentDatesInFuture();
 
+    /**
+     * @deprecated since 2.29, replaced by {@link #featureType()}
+     */
+    @Deprecated
     @Nullable
     @JsonProperty()
     public abstract Boolean captureCoordinates();
@@ -216,6 +222,11 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
     @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
     public abstract List<ProgramSection> programSections();
 
+    @Nullable
+    @JsonProperty()
+    @ColumnAdapter(DbFeatureTypeColumnAdapter.class)
+    public abstract FeatureType featureType();
+
     public static Builder builder() {
         return new $$AutoValue_Program.Builder();
     }
@@ -297,6 +308,8 @@ public abstract class Program extends BaseNameableObject implements Model, Objec
         public abstract Builder maxTeiCountToReturn(Integer maxTeiCountToReturn);
 
         public abstract Builder programSections(List<ProgramSection> programSections);
+
+        public abstract Builder featureType(FeatureType featureType);
 
         public abstract Program build();
     }

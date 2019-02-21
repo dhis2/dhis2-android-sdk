@@ -57,6 +57,8 @@ public final class ProgramRuleActionStore {
             sqLiteBind(sqLiteStatement, 14, UidsHelper.getUidOrNull(o.programStage()));
             sqLiteBind(sqLiteStatement, 15, UidsHelper.getUidOrNull(o.dataElement()));
             sqLiteBind(sqLiteStatement, 16, UidsHelper.getUidOrNull(o.programRule()));
+            sqLiteBind(sqLiteStatement, 17, UidsHelper.getUidOrNull(o.option()));
+            sqLiteBind(sqLiteStatement, 18, UidsHelper.getUidOrNull(o.optionGroup()));
         }
     };
 

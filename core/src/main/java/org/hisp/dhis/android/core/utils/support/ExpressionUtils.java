@@ -120,17 +120,33 @@ public final class ExpressionUtils {
      * @return the result of the evaluation.
      */
     public static Double evaluateToDouble(String expression, Map<String, Object> vars) {
+        String result = evaluateToString(expression, vars);
+
+        if (!isNumeric(result)) {
+            throw new IllegalStateException("Result must be numeric: " + result + ", " + result.getClass());
+        }
+
+        return Double.valueOf(result);
+    }
+
+    /**
+     * Evaluates the given expression. The given variables will be substituted
+     * in the expression. Converts the result of the evaluation to a Double.
+     * Throws an IllegalStateException if the result could not be converted to
+     * a Double
+     *
+     * @param expression the expression.
+     * @param vars       the variables, can be null.
+     * @return the result of the evaluation.
+     */
+    public static String evaluateToString(String expression, Map<String, Object> vars) {
         Object result = evaluate(expression, vars);
 
         if (result == null) {
             throw new IllegalStateException("Result must be not null");
         }
 
-        if (!isNumeric(String.valueOf(result))) {
-            throw new IllegalStateException("Result must be numeric: " + result + ", " + result.getClass());
-        }
-
-        return Double.valueOf(String.valueOf(result));
+        return String.valueOf(result);
     }
 
     /**

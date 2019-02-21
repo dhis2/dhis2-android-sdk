@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.enrollment.note;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -54,6 +55,9 @@ public final class NoteStore {
         sqLiteBind(sqLiteStatement, 9, o.storedBy());
         sqLiteBind(sqLiteStatement, 10, o.storedDate());
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            NoteTableInfo.TABLE_INFO, NoteTableInfo.Columns.ENROLLMENT);
 
     private NoteStore() {}
 

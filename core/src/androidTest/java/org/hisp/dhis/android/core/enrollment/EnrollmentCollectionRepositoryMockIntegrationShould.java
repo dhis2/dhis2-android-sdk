@@ -28,47 +28,50 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.enrollment.note.NoteChildrenAppender;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventModel;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.util.Collection;
-import java.util.Collections;
+import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
 
-@Module
-public final class EnrollmentEntityDIModule {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Provides
-    @Reusable
-    public EnrollmentStore store(DatabaseAdapter databaseAdapter) {
-        return EnrollmentStoreImpl.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class EnrollmentCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
+
+    @BeforeClass
+    public static void setUpAll() throws Exception {
+        downloadMetadata();
+        downloadTrackedEntityInstances();
     }
 
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<Enrollment> handler(EnrollmentHandler impl) {
-        return impl;
+    @Test
+    public void allow_access_to_all_enrollments_without_children() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments.get();
+        assertThat(enrollments.size(), is(2));
+
+        Enrollment enrollment = enrollments.get(0);
+        assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
+        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.events() == null, is(true));
     }
 
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(NoteChildrenAppender.create(databaseAdapter));
+    @Test
+    public void allow_access_to_one_enrollment_without_children() {
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("JILLTkO4LKQ").get();
+        assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
+        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.events() == null, is(true));
     }
 
-    @Provides
-    @Reusable
-    OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new DataOrphanCleanerImpl<>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
-                EventModel.Columns.STATE, databaseAdapter);
+    @Test
+    public void include_notes_as_children() {
+        Enrollment enrollment = d2.enrollmentModule().enrollments
+                .uid("JILLTkO4LKQ").getWithAllChildren();
+        assertThat(enrollment.notes().size(), is(2));
     }
 }

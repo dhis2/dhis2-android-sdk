@@ -65,7 +65,20 @@
           "deleted": false,
           "incidentDate": "2019-01-10T00:00:00.000",
           "status": "ACTIVE",
-          "notes": [],
+          "notes": [
+            {
+              "note": "noteUid",
+              "storedDate": "2018-03-19T15:20:55.058",
+              "storedBy": "android",
+              "value": "Note 1"
+            },
+            {
+              "note": "noteUid2",
+              "storedDate": "2018-03-19T15:20:55.058",
+              "storedBy": "android",
+              "value": "Note 2"
+            }
+          ],
           "events": [
             {
               "programStage": "dBwrot7S420",

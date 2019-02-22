@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,12 +41,21 @@ public abstract class TEIWebResponse extends WebResponse {
 
     private static final String RESPONSE = "response"; // is called response from api
 
-    @NonNull
+    @Nullable
     @JsonProperty(RESPONSE)
     public abstract TEIImportSummaries response();
 
     public static Builder builder() {
         return new AutoValue_TEIWebResponse.Builder();
+    }
+
+    public static TEIWebResponse empty() {
+        return builder()
+                .httpStatus("SUCCESS")
+                .httpStatusCode(200)
+                .message("Emtpy response")
+                .status("OK")
+                .build();
     }
 
     @AutoValue.Builder

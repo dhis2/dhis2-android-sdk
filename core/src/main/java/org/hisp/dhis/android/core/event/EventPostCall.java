@@ -74,7 +74,7 @@ public final class EventPostCall implements Callable<WebResponse> {
 
         // if there is nothing to send, return null
         if (eventsToPost.isEmpty()) {
-            return EventWebResponse.builder().build();
+            return EventWebResponse.empty();
         }
 
         EventPayload eventPayload = new EventPayload();
@@ -110,6 +110,9 @@ public final class EventPostCall implements Callable<WebResponse> {
     }
 
     private void handleWebResponse(EventWebResponse webResponse) {
+        if (webResponse == null || webResponse.response() == null) {
+            return;
+        }
         EventImportHandler eventImportHandler = new EventImportHandler(eventStore);
         eventImportHandler.handleEventImportSummaries(
                 webResponse.response().importSummaries()

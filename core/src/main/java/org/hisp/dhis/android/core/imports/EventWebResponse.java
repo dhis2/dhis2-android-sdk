@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -41,12 +41,21 @@ public abstract class EventWebResponse extends WebResponse {
 
     private static final String IMPORT_SUMMARIES = "response"; // is called response from api
 
-    @NonNull
+    @Nullable
     @JsonProperty(IMPORT_SUMMARIES)
     public abstract EventImportSummaries response();
 
     public static Builder builder() {
         return new AutoValue_EventWebResponse.Builder();
+    }
+
+    public static EventWebResponse empty() {
+        return builder()
+                .httpStatus("SUCCESS")
+                .httpStatusCode(200)
+                .message("Emtpy response")
+                .status("OK")
+                .build();
     }
 
     @AutoValue.Builder

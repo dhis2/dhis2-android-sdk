@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -38,6 +40,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStoreImpl;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStoreImpl;
+import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -48,6 +51,7 @@ import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -56,6 +60,7 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
+@RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStoreTestCase {
 
     private Dhis2MockServer dhis2MockServer;
@@ -156,6 +161,15 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
                 assertThat(enrollment.events().size()).isEqualTo(1);
             }
         }
+    }
+
+    @Test
+    public void return_success_if_no_tracked_entity_instances() throws Exception {
+        givenAMetadataInDatabase();
+
+        WebResponse response = d2.trackedEntityModule().trackedEntityInstances.upload().call();
+
+        assertThat(response.httpStatusCode()).isEqualTo(200);
     }
 
     private void givenAMetadataInDatabase() throws Exception {

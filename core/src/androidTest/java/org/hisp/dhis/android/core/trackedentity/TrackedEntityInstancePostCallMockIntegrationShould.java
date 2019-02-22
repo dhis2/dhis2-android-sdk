@@ -163,15 +163,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         }
     }
 
-    @Test
-    public void return_success_if_no_tracked_entity_instances() throws Exception {
-        givenAMetadataInDatabase();
-
-        WebResponse response = d2.trackedEntityModule().trackedEntityInstances.upload().call();
-
-        assertThat(response.httpStatusCode()).isEqualTo(200);
-    }
-
     private void givenAMetadataInDatabase() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();

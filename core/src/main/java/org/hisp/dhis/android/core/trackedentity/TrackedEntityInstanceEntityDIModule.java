@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentChildrenAppender;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 
@@ -75,7 +76,7 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singleton(EnrollmentChildrenAppender.create(databaseAdapter));
     }
 }

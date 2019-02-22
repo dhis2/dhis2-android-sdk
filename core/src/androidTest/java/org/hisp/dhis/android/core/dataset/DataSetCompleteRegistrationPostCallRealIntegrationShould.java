@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -38,15 +36,12 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
 public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -64,9 +59,6 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
 
         dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl.create(databaseAdapter());
     }
-
-    @Test
-    public void stub() {}
 
     // commented out since it is a flaky test that works against a real server.
     //@Test

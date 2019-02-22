@@ -33,7 +33,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
@@ -61,9 +60,5 @@ public class TrackedEntityTypeStoreIntegrationShould
         return TrackedEntityTypeSamples.get().toBuilder()
                 .description("new_description")
                 .build();
-    }
-
-    @Test
-    public void stub() throws Exception {
     }
 }

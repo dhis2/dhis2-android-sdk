@@ -56,7 +56,7 @@ public class EventModuleMockIntegrationShould extends MockIntegrationShould {
 
         Event event = events.get(0);
 
-        assertThat(event.uid(), is("V1CerIi3sdL"));
+        assertThat(event.uid(), is("single1"));
         assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
         assertThat(event.programStage(), is("dBwrot7S420"));
         assertThat(event.trackedEntityDataValues() == null, is(true));
@@ -65,8 +65,8 @@ public class EventModuleMockIntegrationShould extends MockIntegrationShould {
 
     @Test
     public void allow_access_to_one_event_without_children() {
-        Event event = d2.eventModule().events.uid("V1CerIi3sdL").get();
-        assertThat(event.uid(), is("V1CerIi3sdL"));
+        Event event = d2.eventModule().events.uid("single1").get();
+        assertThat(event.uid(), is("single1"));
         assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
         assertThat(event.programStage(), is("dBwrot7S420"));
         assertThat(event.trackedEntityDataValues() == null, is(true));

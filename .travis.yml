@@ -30,7 +30,7 @@ script:
 - travis_wait 70 "./build.sh"
 - travis_wait 70 "./build_build.sh"
 - travis_wait 70 "./build_test.sh"
-- travis_wait 70 "./build_androidTest.sh"
+- ./build_androidTest.sh
 
 before_script:
 - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a

@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentChildrenAppender;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -77,6 +77,9 @@ public final class TrackedEntityInstanceEntityDIModule {
     @Provides
     @Reusable
     Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(EnrollmentChildrenAppender.create(databaseAdapter));
+        return Arrays.asList(
+                EnrollmentChildrenAppender.create(databaseAdapter),
+                TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter)
+        );
     }
 }

@@ -25,36 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-public final class EnrollmentChildrenAppender extends ChildrenAppender<TrackedEntityInstance> {
+public final class TrackedEntityAttributeValueChildrenAppender extends ChildrenAppender<TrackedEntityInstance> {
 
 
-    private final SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore;
+    private final SingleParentChildStore<TrackedEntityInstance, TrackedEntityAttributeValue> childStore;
 
-    private EnrollmentChildrenAppender(SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore) {
+    private TrackedEntityAttributeValueChildrenAppender(
+            SingleParentChildStore<TrackedEntityInstance, TrackedEntityAttributeValue> childStore) {
         this.childStore = childStore;
     }
 
     @Override
     protected TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
         TrackedEntityInstance.Builder builder = tei.toBuilder();
-        builder.enrollments(childStore.getChildren(tei));
+        builder.trackedEntityAttributeValues(childStore.getChildren(tei));
         return builder.build();
     }
 
     public static ChildrenAppender<TrackedEntityInstance> create(DatabaseAdapter databaseAdapter) {
-        return new EnrollmentChildrenAppender(
+        return new TrackedEntityAttributeValueChildrenAppender(
                 StoreFactory.singleParentChildStore(
                         databaseAdapter,
-                        EnrollmentStoreImpl.CHILD_PROJECTION,
-                        Enrollment::create)
+                        TrackedEntityAttributeValueStoreImpl.CHILD_PROJECTION,
+                        TrackedEntityAttributeValue::create)
         );
     }
 }

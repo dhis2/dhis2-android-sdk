@@ -55,15 +55,15 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends MockInt
         assertThat(enrollments.size(), is(2));
 
         Enrollment enrollment = enrollments.get(0);
-        assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
+        assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
         assertThat(enrollment.events() == null, is(true));
     }
 
     @Test
     public void allow_access_to_one_enrollment_without_children() {
-        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("JILLTkO4LKQ").get();
-        assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("enroll1").get();
+        assertThat(enrollment.uid(), is("enroll1"));
         assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
         assertThat(enrollment.events() == null, is(true));
     }
@@ -71,7 +71,7 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends MockInt
     @Test
     public void include_notes_as_children() {
         Enrollment enrollment = d2.enrollmentModule().enrollments
-                .uid("JILLTkO4LKQ").getWithAllChildren();
+                .uid("enroll2").getWithAllChildren();
         assertThat(enrollment.notes().size(), is(2));
     }
 }

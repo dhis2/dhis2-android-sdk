@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.event.Event;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -85,7 +86,8 @@ final class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
                     notes.add(noteVersionManager.transform(enrollment, note));
                 }
             }
-            noteHandler.handleMany(noteUniquenessManager.buildUniqueCollection(notes, enrollment.uid()));
+            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(notes, enrollment.uid());
+            noteHandler.handleMany(notesToSync);
         }
 
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());

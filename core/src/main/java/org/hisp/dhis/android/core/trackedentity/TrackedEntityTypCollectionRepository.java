@@ -25,41 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreProvider<TrackedEntityType> {
+@Reusable
+public final class TrackedEntityTypCollectionRepository
+        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypCollectionRepository> {
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<TrackedEntityType> store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityTypeStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandler<TrackedEntityType> handler(TrackedEntityTypeHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders() {
-        return Collections.emptyList();
+    @Inject
+    TrackedEntityTypCollectionRepository(final IdentifiableObjectStore<TrackedEntityType> store,
+                                         final Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new TrackedEntityTypCollectionRepository(store, childrenAppenders, updatedScope)));
     }
 }

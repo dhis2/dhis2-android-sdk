@@ -28,38 +28,30 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.util.Collection;
-import java.util.Collections;
+import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
 
-@Module
-public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreProvider<TrackedEntityType> {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<TrackedEntityType> store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityTypeStore.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
+
+    @BeforeClass
+    public static void setUpAll() throws Exception {
+        downloadMetadata();
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<TrackedEntityType> handler(TrackedEntityTypeHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders() {
-        return Collections.emptyList();
+    @Test
+    public void allow_access_to_all_tracked_entity_types_without_children() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes
+                        .get();
+        assertThat(trackedEntityTypes.size(), is(1));
     }
 }

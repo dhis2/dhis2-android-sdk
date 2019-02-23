@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -70,7 +69,8 @@ public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreP
                 );
 
         return Arrays.asList(
-                objectStyleChildrenAppender
+                objectStyleChildrenAppender,
+                TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)
         );
     }
 }

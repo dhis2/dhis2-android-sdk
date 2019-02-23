@@ -27,20 +27,34 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
+public final class TrackedEntityTypeAttributeChildrenAppender extends ChildrenAppender<TrackedEntityType> {
 
-import dagger.Reusable;
 
-@Reusable
-final class TrackedEntityTypeAttributeHandler
-        extends OrderedLinkModelHandlerImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> {
+    private final SingleParentChildStore<TrackedEntityType, TrackedEntityTypeAttribute> childStore;
 
-    @Inject
-    TrackedEntityTypeAttributeHandler(LinkModelStore<TrackedEntityTypeAttribute> trackedEntityTypeAttributeStore) {
-        super(trackedEntityTypeAttributeStore);
+    private TrackedEntityTypeAttributeChildrenAppender(
+            SingleParentChildStore<TrackedEntityType, TrackedEntityTypeAttribute> childStore) {
+        this.childStore = childStore;
     }
 
+    @Override
+    protected TrackedEntityType appendChildren(TrackedEntityType trackedEntityType) {
+        TrackedEntityType.Builder builder = trackedEntityType.toBuilder();
+        builder.trackedEntityTypeAttributes(childStore.getChildren(trackedEntityType));
+        return builder.build();
+    }
+
+    public static ChildrenAppender<TrackedEntityType> create(DatabaseAdapter databaseAdapter) {
+        return new TrackedEntityTypeAttributeChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        TrackedEntityTypeAttributeStore.CHILD_PROJECTION,
+                        TrackedEntityTypeAttribute::create)
+        );
+    }
 }

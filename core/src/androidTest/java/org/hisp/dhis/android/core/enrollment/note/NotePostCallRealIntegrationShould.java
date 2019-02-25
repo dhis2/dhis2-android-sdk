@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment.note;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
@@ -43,12 +41,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-@RunWith(AndroidJUnit4.class)
 public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
@@ -64,11 +59,6 @@ public class NotePostCallRealIntegrationShould extends AbsStoreTestCase {
     public void setUp() throws IOException {
         super.setUp();
         trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl.create(databaseAdapter());
-    }
-
-    @Test
-    public void stub() throws Exception {
-
     }
 
     //@Test

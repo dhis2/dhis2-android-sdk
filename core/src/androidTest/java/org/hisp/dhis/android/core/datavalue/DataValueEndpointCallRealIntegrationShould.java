@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutorImpl;
@@ -38,8 +36,6 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,7 +45,6 @@ import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getDataSe
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getOrgUnitUids;
 import static org.hisp.dhis.android.core.data.datavalue.DataValueUtils.getPeriodIds;
 
-@RunWith(AndroidJUnit4.class)
 public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
@@ -87,9 +82,5 @@ public class DataValueEndpointCallRealIntegrationShould extends AbsStoreTestCase
             uncomment the @Test tag */
 
         dataValueCall.call();
-    }
-
-    @Test
-    public void stub() {
     }
 }

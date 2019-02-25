@@ -32,6 +32,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
+import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
@@ -62,6 +63,7 @@ public class MetadataCall implements Callable<Unit> {
     private final ProgramModuleDownloader programDownloader;
     private final OrganisationUnitModuleDownloader organisationUnitDownloadModule;
     private final DataSetModuleDownloader dataSetDownloader;
+    private final ConstantModuleDownloader constantModuleDownloader;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
@@ -73,6 +75,7 @@ public class MetadataCall implements Callable<Unit> {
                         @NonNull ProgramModuleDownloader programDownloader,
                         @NonNull OrganisationUnitModuleDownloader organisationUnitDownloadModule,
                         @NonNull DataSetModuleDownloader dataSetDownloader,
+                        @NonNull ConstantModuleDownloader constantModuleDownloader,
                         @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoDownloader = systemInfoDownloader;
@@ -82,6 +85,7 @@ public class MetadataCall implements Callable<Unit> {
         this.programDownloader = programDownloader;
         this.organisationUnitDownloadModule = organisationUnitDownloadModule;
         this.dataSetDownloader = dataSetDownloader;
+        this.constantModuleDownloader = constantModuleDownloader;
         this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
@@ -102,6 +106,8 @@ public class MetadataCall implements Callable<Unit> {
             categoryDownloader.downloadMetadata().call();
 
             organisationUnitDownloadModule.downloadMetadata(user, programs, dataSets).call();
+
+            constantModuleDownloader.downloadMetadata().call();
 
             foreignKeyCleaner.cleanForeignKeyErrors();
 

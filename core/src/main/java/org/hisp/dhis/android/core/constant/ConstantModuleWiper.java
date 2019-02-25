@@ -28,48 +28,30 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module()
-public final class ConstantPackageDIModule {
+@Reusable
+public final class ConstantModuleWiper implements ModuleWiper {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Constant> constantStore(DatabaseAdapter databaseAdapter) {
-        return ConstantStore.create(databaseAdapter);
+    private final TableWiper tableWiper;
+
+    @Inject
+    ConstantModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<Constant> constantHandler(ConstantHandler impl) {
-        return impl;
+    @Override
+    public void wipeMetadata() {
+        tableWiper.wipeTable(ConstantTableInfo.TABLE_INFO);
     }
 
-    @Provides
-    @Reusable
-    ListCallFactory<Constant> constantCallFactory(ConstantCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ConstantService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(ConstantService.class);
-    }
-
-    @Provides
-    @Reusable
-    CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
+    @Override
+    public void wipeData() {
+        // No data to wipe
     }
 }

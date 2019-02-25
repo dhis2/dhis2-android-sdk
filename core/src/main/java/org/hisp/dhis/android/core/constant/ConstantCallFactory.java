@@ -28,48 +28,51 @@
 
 package org.hisp.dhis.android.core.constant;
 
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactoryImpl;
+import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.PayloadNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
+import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallProcessor;
+import org.hisp.dhis.android.core.common.GenericCallData;
+import org.hisp.dhis.android.core.common.Payload;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module()
-public final class ConstantPackageDIModule {
+@Reusable
+final class ConstantCallFactory extends ListCallFactoryImpl<Constant> {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Constant> constantStore(DatabaseAdapter databaseAdapter) {
-        return ConstantStore.create(databaseAdapter);
+    private final ConstantService service;
+    private final SyncHandler<Constant> handler;
+
+    @Inject
+    ConstantCallFactory(GenericCallData data,
+                        APICallExecutor apiCallExecutor,
+                        ConstantService service,
+                        SyncHandler<Constant> handler) {
+        super(data, apiCallExecutor);
+        this.service = service;
+        this.handler = handler;
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<Constant> constantHandler(ConstantHandler impl) {
-        return impl;
+    @Override
+    protected CallFetcher<Constant> fetcher() {
+        return new PayloadNoResourceCallFetcher<Constant>(apiCallExecutor) {
+            @Override
+            protected retrofit2.Call<Payload<Constant>> getCall() {
+                return service.constants(ConstantFields.allFields, Boolean.FALSE);
+            }
+        };
     }
 
-    @Provides
-    @Reusable
-    ListCallFactory<Constant> constantCallFactory(ConstantCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ConstantService relationshipTypeService(Retrofit retrofit) {
-        return retrofit.create(ConstantService.class);
-    }
-
-    @Provides
-    @Reusable
-    CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
+    @Override
+    protected CallProcessor<Constant> processor() {
+        return new TransactionalNoResourceSyncCallProcessor<>(
+                data.databaseAdapter(),
+                handler
+        );
     }
 }

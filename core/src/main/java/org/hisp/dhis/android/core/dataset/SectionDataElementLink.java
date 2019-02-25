@@ -33,33 +33,10 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.Model;
 
-@Deprecated
 @AutoValue
-public abstract class SectionDataElementLinkModel extends BaseModel {
-
-    public static final String TABLE = "SectionDataElementLink";
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String SECTION = "section";
-        public static final String DATA_ELEMENT = "dataElement";
-        public static final String SORT_ORDER = "sortOrder";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    SECTION, DATA_ELEMENT, SORT_ORDER);
-        }
-    }
-
-    public static SectionDataElementLinkModel create(Cursor cursor) {
-        return AutoValue_SectionDataElementLinkModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_SectionDataElementLinkModel.Builder();
-    }
+public abstract class SectionDataElementLink implements Model {
 
     @Nullable
     public abstract String section();
@@ -70,14 +47,27 @@ public abstract class SectionDataElementLinkModel extends BaseModel {
     @Nullable
     public abstract Integer sortOrder();
 
+    public static Builder builder() {
+        return new AutoValue_SectionDataElementLink.Builder();
+    }
+
+    public static SectionDataElementLink create(Cursor cursor) {
+        return $AutoValue_SectionDataElementLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
         public abstract Builder section(String section);
-        
+
         public abstract Builder dataElement(String dataElement);
 
         public abstract Builder sortOrder(Integer sortOrder);
 
-        public abstract SectionDataElementLinkModel build();
+        public abstract SectionDataElementLink build();
     }
 }

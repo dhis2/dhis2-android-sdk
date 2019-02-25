@@ -26,26 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.data.dataset;
 
-import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
 
-public class SectionDataElementLinkModelBuilder
-        extends OrderedLinkModelBuilder<DataElement, SectionDataElementLinkModel> {
+public class SectionDataElementLinkSamples {
 
-    private final SectionDataElementLinkModel.Builder builder;
-
-    SectionDataElementLinkModelBuilder(Section section) {
-        this.builder = SectionDataElementLinkModel.builder()
-                .section(section.uid());
-    }
-
-    @Override
-    public SectionDataElementLinkModel buildModel(DataElement dataElement, Integer sortOrder) {
-        return builder
-                .dataElement(dataElement.uid())
-                .sortOrder(sortOrder)
+    public static SectionDataElementLink getSectionDataElementLink() {
+        return SectionDataElementLink.builder()
+                .section("section")
+                .dataElement("data_element")
+                .sortOrder(3)
                 .build();
     }
 }

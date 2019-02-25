@@ -28,13 +28,15 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
-import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -43,19 +45,17 @@ import dagger.Reusable;
 @Reusable
 final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
-    private final OrderedLinkModelHandler<DataElement, SectionDataElementLinkModel> sectionDataElementLinkHandler;
-
+    private final LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler;
     private final SyncHandler<DataElementOperand> greyedFieldsHandler;
     private final LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
 
     @Inject
     SectionHandler(IdentifiableObjectStore<Section> sectionStore,
-                   OrderedLinkModelHandler<DataElement, SectionDataElementLinkModel> sectionDataElementLinkHandler,
+                   LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler,
                    SyncHandler<DataElementOperand> greyedFieldsHandler,
                    LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler) {
 
         super(sectionStore);
-
         this.sectionDataElementLinkHandler = sectionDataElementLinkHandler;
         this.greyedFieldsHandler = greyedFieldsHandler;
         this.sectionGreyedFieldsLinkHandler = sectionGreyedFieldsLinkHandler;
@@ -66,9 +66,15 @@ final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
         greyedFieldsHandler.handleMany(section.greyedFields());
 
-        sectionDataElementLinkHandler.handleMany(section.uid(),
-                section.dataElements(),
-                new SectionDataElementLinkModelBuilder(section));
+        if (section.dataElements() != null) {
+            List<SectionDataElementLink> sectionDataElementLinks = new ArrayList<>();
+            for (int i = 0; i < section.dataElements().size(); i++) {
+                sectionDataElementLinks.add(SectionDataElementLink.builder()
+                        .section(section.uid()).dataElement(section.dataElements().get(i).uid()).sortOrder(i + 1)
+                        .build());
+            }
+            sectionDataElementLinkHandler.handleMany(section.uid(), sectionDataElementLinks);
+        }
 
         sectionGreyedFieldsLinkHandler.handleMany(section.uid(),
                 section.greyedFields(),

@@ -28,51 +28,43 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.junit.Before;
-import org.junit.Test;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.SectionDataElementLinkSamples;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
+@RunWith(AndroidJUnit4.class)
+public class SectionDataElementLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<SectionDataElementLink> {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class SectionDataElementLinkModelBuilderShould {
-
-    @Mock
-    private Section section;
-
-    @Mock
-    private DataElement dataElement;
-
-    private final Integer sortOrder = 1;
-
-    private SectionDataElementLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(section.uid()).thenReturn("section_uid");
-        when(dataElement.uid()).thenReturn("dataElement_uid");
-
-        model = buildModel();
+    public SectionDataElementLinkStoreIntegrationShould() {
+        super(SectionDataElementLinkStore.create(DatabaseAdapterFactory.get(false)),
+                SectionDataElementLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    private SectionDataElementLinkModel buildModel() {
-        return new SectionDataElementLinkModelBuilder(section).buildModel(dataElement, sortOrder);
+    @Override
+    protected String addMasterUid() {
+        return SectionDataElementLinkSamples.getSectionDataElementLink().section();
     }
 
-    @Test
-    public void copy_link_properties() {
-        assertThat(model.section()).isEqualTo(section.uid());
-        assertThat(model.dataElement()).isEqualTo(dataElement.uid());
-        assertThat(model.sortOrder()).isEqualTo(sortOrder);
+    @Override
+    protected SectionDataElementLink buildObject() {
+        return SectionDataElementLinkSamples.getSectionDataElementLink();
+    }
+
+    @Override
+    protected SectionDataElementLink buildObjectWithOtherMasterUid() {
+        return SectionDataElementLinkSamples.getSectionDataElementLink().toBuilder()
+                .section("new_section")
+                .build();
+    }
+
+    @Override
+    protected SectionDataElementLink buildObjectWithId() {
+        return SectionDataElementLinkSamples.getSectionDataElementLink().toBuilder()
+                .id(1L)
+                .build();
     }
 }

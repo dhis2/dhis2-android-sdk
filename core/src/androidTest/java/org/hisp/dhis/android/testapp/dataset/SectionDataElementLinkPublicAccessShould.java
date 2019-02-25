@@ -26,29 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.testapp.dataset;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
-@Module
-public final class SectionDataElementEntityDIModule {
+@RunWith(AndroidJUnit4.class)
+public class SectionDataElementLinkPublicAccessShould extends BasePublicAccessShould<SectionDataElementLink> {
 
-    @Provides
-    @Reusable
-    LinkModelStore<SectionDataElementLink> store(DatabaseAdapter databaseAdapter) {
-        return SectionDataElementLinkStore.create(databaseAdapter);
+    @Mock
+    private SectionDataElementLink object;
+
+    @Override
+    public SectionDataElementLink object() {
+        return object;
     }
 
-    @Provides
-    @Reusable
-    LinkSyncHandler<SectionDataElementLink> handler(DatabaseAdapter databaseAdapter) {
-        return new LinkSyncHandlerImpl<>(SectionDataElementLinkStore.create(databaseAdapter));
+    @Override
+    public void has_public_create_method() {
+        SectionDataElementLink.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        SectionDataElementLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

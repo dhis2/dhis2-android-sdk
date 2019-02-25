@@ -101,8 +101,6 @@ final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage
         programStageSectionHandler.handleMany(programStage.programStageSections(),
                 programStageSection -> programStageSection.toBuilder()
                         .programStage(ObjectWithUid.create(programStage.uid()))
-                        .desktopRenderType(desktopRenderType(programStageSection.renderType()))
-                        .mobileRenderType(mobileRenderType(programStageSection.renderType()))
                         .build());
 
         styleHandler.handle(programStage.style(),
@@ -112,14 +110,6 @@ final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage
             programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());
             programStageSectionCleaner.deleteOrphan(programStage, programStage.programStageSections());
         }
-    }
-
-    private ProgramStageSectionRenderingType desktopRenderType(ProgramStageSectionRendering renderType) {
-        return renderType == null || renderType.desktop() == null ? null : renderType.desktop().type();
-    }
-
-    private ProgramStageSectionRenderingType mobileRenderType(ProgramStageSectionRendering renderType) {
-        return renderType == null || renderType.mobile() == null ? null : renderType.mobile().type();
     }
 
     @Override

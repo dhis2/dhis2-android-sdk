@@ -25,49 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.Collection;
+package org.hisp.dhis.android.testapp.option;
 
-public abstract class GenericHandlerBaseImpl<P, M extends BaseModel> implements GenericHandler<P, M> {
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+
+@RunWith(AndroidJUnit4.class)
+public class OptionGroupOptionLinkPublicAccessShould extends BasePublicAccessShould<OptionGroupOptionLink> {
+
+    @Mock
+    private OptionGroupOptionLink object;
 
     @Override
-    public final void handle(P p, ModelBuilder<P, M> modelBuilder) {
-        if (p == null) {
-            return;
-        }
-        P pojo = beforeObjectHandled(p);
-        HandleAction action = deleteOrPersist(pojo, modelBuilder);
-        afterObjectHandled(pojo, action);
+    public OptionGroupOptionLink object() {
+        return object;
     }
 
     @Override
-    public final void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder) {
-        if (pCollection != null) {
-            for(P p : pCollection) {
-                handle(p, modelBuilder);
-            }
-            afterCollectionHandled(pCollection);
-        }
+    public void has_public_create_method() {
+        OptionGroupOptionLink.create(null);
     }
 
-    protected abstract HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder);
-
-    protected P beforeObjectHandled(P p) {
-        return p;
+    @Override
+    public void has_public_builder_method() {
+        OptionGroupOptionLink.builder();
     }
 
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterObjectHandled(P p, HandleAction action) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
-
-    @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-    protected void afterCollectionHandled(Collection<P> pCollection) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

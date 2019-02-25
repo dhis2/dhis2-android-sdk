@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
@@ -110,9 +109,6 @@ public class ProgramStageHandlerShould {
     @Mock
     private ProgramStage.Builder programStageBuilder;
 
-    @Mock
-    private ProgramStageSection.Builder programStageSectionBuilder;
-
     // object to test
     private ProgramStageHandler programStageHandler;
 
@@ -147,14 +143,6 @@ public class ProgramStageHandlerShould {
         when(programStageBuilder.featureType(any(FeatureType.class))).thenReturn(programStageBuilder);
         when(programStageBuilder.captureCoordinates(any(Boolean.class))).thenReturn(programStageBuilder);
         when(programStageBuilder.build()).thenReturn(programStage);
-
-        when(programStageSection.toBuilder()).thenReturn(programStageSectionBuilder);
-        when(programStageSectionBuilder.programStage(any(ObjectWithUid.class))).thenReturn(programStageSectionBuilder);
-        when(programStageSectionBuilder.desktopRenderType(any(ProgramStageSectionRenderingType.class)))
-                .thenReturn(programStageSectionBuilder);
-        when(programStageSectionBuilder.mobileRenderType(any(ProgramStageSectionRenderingType.class)))
-                .thenReturn(programStageSectionBuilder);
-        when(programStageSectionBuilder.build()).thenReturn(programStageSection);
     }
 
     @Test

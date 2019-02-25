@@ -25,13 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
 
-import java.util.Collection;
+package org.hisp.dhis.android.core.option;
 
-public interface GenericHandler<P, M extends Model> {
+import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
-    void handle(P p, ModelBuilder<P, M> modelBuilder);
+import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.common.UidsHelper;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-    void handleMany(Collection<P> pCollection, ModelBuilder<P, M> modelBuilder);
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+
+final class OptionGroupStore {
+
+    private OptionGroupStore() {}
+
+    private static StatementBinder<OptionGroup> BINDER = new IdentifiableStatementBinder<OptionGroup>() {
+        @Override
+        public void bindToStatement(@NonNull OptionGroup o, @NonNull SQLiteStatement sqLiteStatement) {
+            super.bindToStatement(o, sqLiteStatement);
+            sqLiteBind(sqLiteStatement, 7, UidsHelper.getUidOrNull(o.optionSet()));
+        }
+    };
+
+    public static IdentifiableObjectStore<OptionGroup> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithUidStore(databaseAdapter, OptionGroupTableInfo.TABLE_INFO, BINDER,
+                OptionGroup::create);
+    }
 }

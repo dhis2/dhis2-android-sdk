@@ -126,6 +126,7 @@ public class Dhis2MockServer {
         enqueueMockResponse("trackedentity/tracked_entity_types.json");
         enqueueMockResponse("relationship/relationship_types.json");
         enqueueMockResponse("option/option_sets.json");
+        enqueueMockResponse("option/option_groups.json");
         enqueueMockResponse("dataset/data_sets.json");
         enqueueMockResponse("dataelement/data_elements.json");
         enqueueMockResponse("indicators/indicators.json");
@@ -133,6 +134,7 @@ public class Dhis2MockServer {
         enqueueMockResponse("category/category_combos.json");
         enqueueMockResponse("category/categories.json");
         enqueueMockResponse(orgUnitPath);
+        enqueueMockResponse("organisationunit/organisation_unit_levels.json");
     }
 
     @NonNull

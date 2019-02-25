@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2004-2019, University of Oslo
- * All rights reserved.
+ * Copyright (c) 2017, University of Oslo
  *
+ * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,37 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.GenericHandler;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import java.util.List;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-public class TransactionalNoResourceCallProcessor<P, M extends Model> implements CallProcessor<P> {
-    private final DatabaseAdapter databaseAdapter;
-    private final GenericHandler<P, M> handler;
-    private final ModelBuilder<P, M> modelBuilder;
+@Module
+public final class OrganisationUnitLevelEntityDIModule implements IdentifiableEntityDIModule<OrganisationUnitLevel> {
 
-    public TransactionalNoResourceCallProcessor(DatabaseAdapter databaseAdapter,
-                                                GenericHandler<P, M> handler,
-                                                ModelBuilder<P, M> modelBuilder) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-        this.modelBuilder = modelBuilder;
+    @Override
+    @Provides
+    @Reusable
+    public IdentifiableObjectStore<OrganisationUnitLevel> store(DatabaseAdapter databaseAdapter) {
+        return OrganisationUnitLevelStore.create(databaseAdapter);
     }
 
     @Override
-    public final void process(final List<P> objectList) throws D2Error {
-        if (objectList != null && !objectList.isEmpty()) {
-            new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList, modelBuilder);
-                return null;
-            });
-        }
+    @Provides
+    @Reusable
+    public SyncHandler<OrganisationUnitLevel> handler(IdentifiableObjectStore<OrganisationUnitLevel> store) {
+        return new IdentifiableSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    OrganisationUnitLevelService organisationUnitLevelService(Retrofit retrofit) {
+        return retrofit.create(OrganisationUnitLevelService.class);
+    }
+
+    @Provides
+    @Reusable
+    ListCallFactory<OrganisationUnitLevel> organisationUnitLevelCallFactory(
+            OrganisationUnitLevelEndpointCallFactory impl) {
+        return impl;
     }
 }

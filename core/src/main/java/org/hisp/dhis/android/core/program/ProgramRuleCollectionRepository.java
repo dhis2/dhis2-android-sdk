@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
@@ -51,4 +53,22 @@ public final class ProgramRuleCollectionRepository
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new ProgramRuleCollectionRepository(store, childrenAppenders, updatedScope)));
     }
+
+
+    public IntegerFilterConnector<ProgramRuleCollectionRepository> byPriority() {
+        return cf.integer(ProgramRuleFields.PRIORITY);
+    }
+
+    public StringFilterConnector<ProgramRuleCollectionRepository> byCondition() {
+        return cf.string(ProgramRuleFields.CONDITION);
+    }
+
+    public StringFilterConnector<ProgramRuleCollectionRepository> byProgramUid() {
+        return cf.string(ProgramRuleFields.PROGRAM);
+    }
+
+    public StringFilterConnector<ProgramRuleCollectionRepository> byProgramStageUid() {
+        return cf.string(ProgramRuleFields.PROGRAM_STAGE);
+    }
+
 }

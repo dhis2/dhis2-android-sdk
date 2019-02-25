@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
@@ -59,11 +58,9 @@ public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
     }
 
     @Nullable
-    @ColumnName(Columns.PROGRAM_SECTION)
     public abstract String programSection();
 
     @Nullable
-    @ColumnName(Columns.ATTRIBUTE)
     public abstract String attribute();
 
     @AutoValue.Builder

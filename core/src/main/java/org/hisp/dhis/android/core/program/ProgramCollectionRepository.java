@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Collection;
@@ -158,5 +159,9 @@ public final class ProgramCollectionRepository
 
     public IntegerFilterConnector<ProgramCollectionRepository> byMaxTeiCountToReturn() {
         return cf.integer(ProgramFields.MAX_TEI_COUNT_TO_RETURN);
+    }
+
+    public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
+        return cf.enumC(ProgramFields.FEATURE_TYPE);
     }
 }

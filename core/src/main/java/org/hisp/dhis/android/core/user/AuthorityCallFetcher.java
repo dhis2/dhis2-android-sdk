@@ -35,15 +35,11 @@ import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
 
     private final APICallExecutor apiCallExecutor;
-    private static final List<String> QUERIED_AUTHORITIES = Arrays.asList(
-            "F_ENROLLMENT_CASCADE_DELETE",
-            "F_TEI_CASCADE_DELETE");
 
     AuthorityCallFetcher(@NonNull APICallExecutor apiCallExecutor) {
         this.apiCallExecutor = apiCallExecutor;
@@ -55,16 +51,9 @@ abstract class AuthorityCallFetcher implements CallFetcher<Authority> {
     public List<Authority> fetch() throws D2Error {
         List<String> authoritiesAsStringList = apiCallExecutor.executeObjectCall(getCall());
 
-        return getAuthoritiesFromStringList(authoritiesAsStringList);
-    }
-
-    private List<Authority> getAuthoritiesFromStringList(List<String> authoritiesAsStringList) {
         List<Authority> authorities = new ArrayList<>();
-
-        for (String authority : QUERIED_AUTHORITIES) {
-            if (authoritiesAsStringList.contains(authority)) {
-                authorities.add(Authority.builder().name(authority).build());
-            }
+        for (String authority : authoritiesAsStringList) {
+            authorities.add(Authority.builder().name(authority).build());
         }
 
         return authorities;

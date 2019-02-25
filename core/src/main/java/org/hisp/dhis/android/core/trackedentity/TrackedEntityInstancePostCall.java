@@ -116,7 +116,7 @@ public final class TrackedEntityInstancePostCall implements Callable<WebResponse
 
         // if size is 0, then no need to do network request
         if (trackedEntityInstancesToPost.isEmpty()) {
-            return TEIWebResponse.builder().build();
+            return TEIWebResponse.empty();
         }
 
         TrackedEntityInstancePayload trackedEntityInstancePayload = new TrackedEntityInstancePayload();

@@ -116,6 +116,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @ColumnAdapter(IgnoreAccessAdapter.class)
     public abstract Access access();
 
+    @Nullable
+    @JsonProperty()
+    public abstract String formName();
+
     public static Builder builder() {
         return new $$AutoValue_TrackedEntityAttribute.Builder();
     }
@@ -163,6 +167,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder style(ObjectStyle style);
 
         public abstract Builder access(Access access);
+
+        public abstract Builder formName(String formName);
 
         public abstract TrackedEntityAttribute build();
     }

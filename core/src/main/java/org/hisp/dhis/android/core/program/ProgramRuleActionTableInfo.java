@@ -64,7 +64,9 @@ public final class ProgramRuleActionTableInfo {
                     ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
                     ProgramRuleActionFields.PROGRAM_STAGE,
                     ProgramRuleActionFields.DATA_ELEMENT,
-                    ProgramRuleActionFields.PROGRAM_RULE
+                    ProgramRuleActionFields.PROGRAM_RULE,
+                    ProgramRuleActionFields.OPTION,
+                    ProgramRuleActionFields.OPTION_GROUP
             );
         }
     }

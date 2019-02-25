@@ -57,7 +57,7 @@ public final class ProgramIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramIndicator>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<ProgramIndicator>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singleton(ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter));
     }
 }

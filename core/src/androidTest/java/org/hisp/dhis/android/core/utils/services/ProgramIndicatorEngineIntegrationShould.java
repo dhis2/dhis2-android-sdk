@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2017, University of Oslo
- *
+ * Copyright (c) 2004-2019, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -174,6 +174,19 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
     }
 
     @Test
+    public void evaluate_single_text_dataelement() {
+        createEnrollment(null,null);
+        createEvent(event1, programStage1, new Date());
+        insertTrackedEntityDataValue(event1, dataElement1, "text data-value");
+
+        setProgramIndicatorExpressionAsAverage(de(programStage1,dataElement1));
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, event1, programIndicatorUid);
+
+        assertThat(result).isEqualTo("text data-value");
+    }
+
+    @Test
     public void evaluate_addition_two_dataelement() {
         createEnrollment(null, null);
         createEvent(event1, programStage1, null);
@@ -242,6 +255,20 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
 
         assertThat(resultWithoutEvent).isEqualTo("3.25");
         assertThat(resultWithEvent).isEqualTo("3.25");
+    }
+
+    @Test
+    public void evaluate_event_count_variable() {
+        createEnrollment(null, null);
+        createEvent(event1, programStage1, null);
+        createEvent(event2, programStage2, null);
+
+        setProgramIndicatorExpressionAsAverage(var("event_count"));
+
+        String result = programIndicatorEngine.getProgramIndicatorValue(enrollmentUid, null,
+                programIndicatorUid);
+
+        assertThat(result).isEqualTo("2");
     }
 
     @Test
@@ -327,6 +354,10 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
 
     private String att(String attributeUid) {
         return "A{" + attributeUid + "}";
+    }
+
+    private String var(String variable) {
+        return "V{" + variable + "}";
     }
 
     private Date today() {

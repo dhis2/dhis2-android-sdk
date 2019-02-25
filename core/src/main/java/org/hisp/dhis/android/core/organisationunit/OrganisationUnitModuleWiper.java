@@ -51,6 +51,7 @@ public final class OrganisationUnitModuleWiper implements ModuleWiper {
                 OrganisationUnitTableInfo.TABLE_INFO.name(),
                 OrganisationUnitProgramLinkModel.TABLE,
                 OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
+                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
                 OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
     }
 

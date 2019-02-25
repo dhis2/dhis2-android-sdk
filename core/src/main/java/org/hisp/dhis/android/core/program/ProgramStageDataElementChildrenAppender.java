@@ -25,19 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.program;
 
-public class ObjectWithoutUidHandlerImpl<P, M extends BaseModel> extends GenericHandlerBaseImpl<P, M> {
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-    private final ObjectWithoutUidStore<M> store;
+final class ProgramStageDataElementChildrenAppender extends ChildrenAppender<ProgramStage> {
 
-    public ObjectWithoutUidHandlerImpl(ObjectWithoutUidStore<M> store) {
-        this.store = store;
+    private final SingleParentChildStore<ProgramStage, ProgramStageDataElement> childStore;
+
+    private ProgramStageDataElementChildrenAppender(
+            SingleParentChildStore<ProgramStage, ProgramStageDataElement> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
-    protected HandleAction deleteOrPersist(P p, ModelBuilder<P, M> modelBuilder) {
-        M m = modelBuilder.buildModel(p);
-        return store.updateOrInsertWhere(m);
+    protected ProgramStage appendChildren(ProgramStage programStage) {
+        ProgramStage.Builder builder = programStage.toBuilder();
+        builder.programStageDataElements(childStore.getChildren(programStage));
+        return builder.build();
+    }
+
+    static ChildrenAppender<ProgramStage> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageDataElementChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        ProgramStageDataElementTableInfo.CHILD_PROJECTION,
+                        ProgramStageDataElement::create)
+        );
     }
 }

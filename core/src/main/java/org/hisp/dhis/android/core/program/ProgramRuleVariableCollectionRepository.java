@@ -29,7 +29,10 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
@@ -50,5 +53,32 @@ public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdent
                                             List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, updatedScope)));
+    }
+
+
+    public BooleanFilterConnector<ProgramRuleVariableCollectionRepository> byUseCodeForOptionSet() {
+        return cf.bool(ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET);
+    }
+
+    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byProgramUid() {
+        return cf.string(ProgramRuleVariableFields.PROGRAM);
+    }
+
+    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byProgramStageUid() {
+        return cf.string(ProgramRuleVariableFields.PROGRAM_STAGE);
+    }
+
+    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byDataElementUid() {
+        return cf.string(ProgramRuleVariableFields.DATA_ELEMENT);
+    }
+
+    public StringFilterConnector<ProgramRuleVariableCollectionRepository> byTrackedEntityAttributeUid() {
+        return cf.string(ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE);
+    }
+
+    public EnumFilterConnector<ProgramRuleVariableCollectionRepository,
+            ProgramRuleVariableSourceType> byProgramRuleVariableSourceType() {
+
+        return cf.enumC(ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE);
     }
 }

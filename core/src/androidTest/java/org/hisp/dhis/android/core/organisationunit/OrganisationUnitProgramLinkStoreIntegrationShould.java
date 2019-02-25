@@ -28,35 +28,43 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitProgramLinkSamples;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitProgramLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<OrganisationUnitProgramLink> {
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    public OrganisationUnitProgramLinkStoreIntegrationShould() {
+        super(OrganisationUnitProgramLinkStore.create(DatabaseAdapterFactory.get(false)),
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
+    protected String addMasterUid() {
+        return OrganisationUnitProgramLinkSamples.getOrganisationUnitProgramLink().organisationUnit();
     }
 
     @Override
-    public void wipeData() {
-        // No data to wipe
+    protected OrganisationUnitProgramLink buildObject() {
+        return OrganisationUnitProgramLinkSamples.getOrganisationUnitProgramLink();
+    }
+
+    @Override
+    protected OrganisationUnitProgramLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .organisationUnit("new_organisation_unit")
+                .build();
+    }
+
+    @Override
+    protected OrganisationUnitProgramLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
+                .build();
     }
 }

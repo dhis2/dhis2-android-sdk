@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
@@ -65,10 +65,10 @@ public class OrganisationUnitHandlerShould {
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
-    private ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
+    private LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
 
     @Mock
-    private LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
+    private LinkSyncHandler<OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
 
     @Mock
     private LinkSyncHandler<DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
@@ -159,8 +159,7 @@ public class OrganisationUnitHandlerShould {
     public void persist_program_organisation_unit_link_when_programs_uids() {
         organisationUnitHandler.setData(programUids, dataSetUids, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
-        verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(Program.class),
-                any(OrganisationUnitProgramLinkModelBuilder.class));
+        verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(OrganisationUnitProgramLink.class));
     }
 
     @Test

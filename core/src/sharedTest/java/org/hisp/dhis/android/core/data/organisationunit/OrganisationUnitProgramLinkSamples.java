@@ -26,37 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.data.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 
-import dagger.Reusable;
+public class OrganisationUnitProgramLinkSamples {
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
-
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
-    }
-
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
-
-    @Override
-    public void wipeData() {
-        // No data to wipe
+    public static OrganisationUnitProgramLink getOrganisationUnitProgramLink() {
+        return OrganisationUnitProgramLink.builder()
+                .organisationUnit("organisation_unit")
+                .program("program")
+                .build();
     }
 }

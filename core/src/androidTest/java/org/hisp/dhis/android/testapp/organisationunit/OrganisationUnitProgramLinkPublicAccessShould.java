@@ -26,37 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.testapp.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.test.runner.AndroidJUnit4;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
-import dagger.Reusable;
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitProgramLinkPublicAccessShould extends BasePublicAccessShould<OrganisationUnitProgramLink> {
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+    @Mock
+    private OrganisationUnitProgramLink object;
 
-    private final TableWiper tableWiper;
-
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    @Override
+    public OrganisationUnitProgramLink object() {
+        return object;
     }
 
     @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
+    public void has_public_create_method() {
+        OrganisationUnitProgramLink.create(null);
     }
 
     @Override
-    public void wipeData() {
-        // No data to wipe
+    public void has_public_builder_method() {
+        OrganisationUnitProgramLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

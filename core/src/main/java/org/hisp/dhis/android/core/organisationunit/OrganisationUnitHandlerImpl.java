@@ -63,7 +63,7 @@ import java.util.Set;
 class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
         implements OrganisationUnitHandler {
     private final LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
-    private final LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
+    private final LinkSyncHandler<OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
     private final LinkSyncHandler<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
     private final SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
     private final LinkModelHandler<ObjectWithUid,
@@ -85,7 +85,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     OrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
                                 @NonNull LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel>
                                     userOrganisationUnitLinkHandler,
-                                @NonNull LinkModelHandler<Program, OrganisationUnitProgramLinkModel>
+                                @NonNull LinkSyncHandler<OrganisationUnitProgramLink>
                                     organisationUnitProgramLinkHandler,
                                 @NonNull LinkSyncHandler<DataSetOrganisationUnitLink>
                                     dataSetOrganisationUnitLinkHandler,
@@ -135,17 +135,16 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
         List<Program> orgUnitPrograms = organisationUnit.programs();
         if (orgUnitPrograms != null && programUids != null) {
-            List<Program> programsToAdd = new ArrayList<>();
+            List<OrganisationUnitProgramLink> organisationUnitProgramLinks = new ArrayList<>();
             for (Program program : orgUnitPrograms) {
                 if (programUids.contains(program.uid())) {
-                    programsToAdd.add(program);
+                    organisationUnitProgramLinks.add(OrganisationUnitProgramLink.builder()
+                            .organisationUnit(organisationUnit.uid()).program(program.uid()).build());
                     orgUnitLinkedProgramUids.add(ObjectWithUid.create(program.uid()));
                 }
             }
 
-            OrganisationUnitProgramLinkModelBuilder modelBuilder
-                    = new OrganisationUnitProgramLinkModelBuilder(organisationUnit);
-            organisationUnitProgramLinkHandler.handleMany(organisationUnit.uid(), programsToAdd, modelBuilder);
+            organisationUnitProgramLinkHandler.handleMany(organisationUnit.uid(), organisationUnitProgramLinks);
         }
     }
 
@@ -223,7 +222,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                 OrganisationUnitStore.create(databaseAdapter),
                 new LinkModelHandlerImpl<>(
                         UserOrganisationUnitLinkStore.create(databaseAdapter)),
-                new LinkModelHandlerImpl<>(
+                new LinkSyncHandlerImpl<>(
                         OrganisationUnitProgramLinkStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(
                         DataSetOrganisationUnitLinkStore.create(databaseAdapter)),

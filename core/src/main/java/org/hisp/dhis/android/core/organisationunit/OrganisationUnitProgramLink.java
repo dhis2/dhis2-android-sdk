@@ -25,26 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.program.Program;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-public class OrganisationUnitProgramLinkModelBuilder
-        implements ModelBuilder<Program, OrganisationUnitProgramLinkModel> {
+import com.google.auto.value.AutoValue;
 
-    private final OrganisationUnitProgramLinkModel.Builder builder;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    public OrganisationUnitProgramLinkModelBuilder(OrganisationUnit organisationUnit) {
-        this.builder = OrganisationUnitProgramLinkModel.builder()
-                .organisationUnit(organisationUnit.uid());
+@AutoValue
+public abstract class OrganisationUnitProgramLink implements Model {
+
+    @Nullable
+    public abstract String program();
+
+    @Nullable
+    public abstract String organisationUnit();
+
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnitProgramLink.Builder();
     }
 
-    @Override
-    public OrganisationUnitProgramLinkModel buildModel(Program program) {
-        return builder
-                .program(program.uid())
-                .build();
+    public static OrganisationUnitProgramLink create(Cursor cursor) {
+        return $AutoValue_OrganisationUnitProgramLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder program(@Nullable String program);
+
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        public abstract OrganisationUnitProgramLink build();
     }
 }

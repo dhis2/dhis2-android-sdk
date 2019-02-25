@@ -28,35 +28,41 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import javax.inject.Inject;
+public final class OrganisationUnitProgramLinkTableInfo {
 
-import dagger.Reusable;
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-@Reusable
-public final class OrganisationUnitModuleWiper implements ModuleWiper {
+        @Override
+        public String name() {
+            return "OrganisationUnitProgramLink";
+        }
 
-    private final TableWiper tableWiper;
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
+    };
 
-    @Inject
-    OrganisationUnitModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+    private OrganisationUnitProgramLinkTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
-    }
+    public static class Columns extends BaseModel.Columns {
 
-    @Override
-    public void wipeData() {
-        // No data to wipe
+        public static final String PROGRAM = "program";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), PROGRAM, ORGANISATION_UNIT);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.testapp.organisationunit;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-@RunWith(AndroidJUnit4.class)
 public class OrganisationUnitProgramLinkPublicAccessShould extends BasePublicAccessShould<OrganisationUnitProgramLink> {
 
     @Mock

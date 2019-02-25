@@ -51,6 +51,6 @@ public class LinkModelStoreImpl<M extends Model>
 
     @Override
     public void deleteLinksForMasterUid(@NonNull String masterUid) throws RuntimeException {
-        deleteWhereClause(masterColumn + "='" + masterUid + "';");
+        deleteWhere(masterColumn + "='" + masterUid + "';");
     }
 }

@@ -1,23 +1,30 @@
 language: android
-sudo: true
-jdk:
-- oraclejdk8
-android:
-  components:
-  - tools
-  - platform-tools
-  - build-tools-28.0.3
-  - android-28
-  - android-22
-  - extra-google-google_play_services
-  - extra-google-m2repository
-  - extra-android-m2repository
-  - sys-img-armeabi-v7a-android-22
-  - extra-android-support
+
+jdk: openjdk8
+
 env:
   global:
   - secure: DFhca9ZcFpfnotvD+wjzZIJz0Fa/vv6fIfcaMOpRXNd/I1Xk5Rslb5q5Xzs/wrWkqaOVXvWPH0Nsm23vxuuuMlKdT1YuiAGZLcSeuwmtM21Q2xlVHLBWg5/T/3lVBIDdaW+XD1XM8TfbaZL8rtsjbbXQoZyiPZIGN2Nj9PmnDxs=
   - secure: RAMZy2zxizEnH7Tl0qeBGruJr66kpFvFXh5z/6KX+YhXW1phU9J2BccdttiD/sWU7Y4v2mEnrGWv4iO58L8Icqqe78dsHKUs8af1FTU+pk2T9wntwbCf/L9F8q5FaHsTfUTsM0kH4ROiwsPNGybKBeXracboV3QyBHJFR5f91bw=
+
+android:
+    components:
+    - tools
+    - platform-tools
+    - build-tools-28.0.3
+    - android-28
+    - android-19
+    - sys-img-armeabi-v7a-google_apis-19
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-19
+    - extra-android-support
+    licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
 
 branches:
   only:
@@ -25,18 +32,17 @@ branches:
   - develop
   - master-sms
 
+before_script:
+- echo no | android create avd --force -n test -t android-19 --abi armeabi-v7a
+- emulator -avd test -no-audio -no-window -memory 4096 &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
+
 script:
 - travis_wait 70 "./build.sh"
 
-before_script:
-- echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
-- emulator -avd test -no-audio -no-window &
-- android-wait-for-emulator
-- adb devices
-- adb shell input keyevent 82 &
-
 after_success:
-  - .buildscript/deploy.sh
+- .buildscript/deploy.sh
 
 notifications:
   slack:

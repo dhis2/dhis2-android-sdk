@@ -225,7 +225,50 @@
             "icon": "section-icon"
           }
         }
-      ]
+      ],
+      "programTrackedEntityAttributes": [
+        {
+          "created": "2018-11-01T02:24:03.576",
+          "lastUpdated": "2019-01-21T22:33:24.318",
+          "name": "Built in variables Unique ID",
+          "id": "ttU89GZdjVy",
+          "displayName": "Built in variables Unique ID",
+          "mandatory": false,
+          "displayShortName": "BIV Unique identifier",
+          "searchable": false,
+          "displayInList": false,
+          "sortOrder": 1,
+          "allowFutureDate": false,
+          "program": {
+            "id": "RxSWP3k4MYn"
+          },
+          "trackedEntityAttribute": {
+            "code": "MMD_PER_ID",
+            "lastUpdated": "2019-01-21T21:05:44.799",
+            "id": "lZGmxYbs97q",
+            "created": "2014-06-06T20:42:44.229",
+            "name": "Unique ID",
+            "shortName": "Unique identifier",
+            "programScope": false,
+            "displayInListNoProgram": false,
+            "displayName": "Unique ID",
+            "pattern": "RANDOM(####)",
+            "description": "Unique identiifer",
+            "displayShortName": "Unique identifier",
+            "sortOrderInListNoProgram": 0,
+            "generated": true,
+            "displayOnVisitSchedule": false,
+            "valueType": "TEXT",
+            "orgunitScope": false,
+            "displayDescription": "Unique identiifer",
+            "unique": true,
+            "inherit": false,
+            "access": {
+              "read": true
+            }
+          }
+        }
+        ]
     }
   ]
 }

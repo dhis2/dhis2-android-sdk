@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -170,7 +169,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                 new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit, ""));
     }
 
-    @Test
+    //@Test
     public void get_one_reserved_value() throws D2Error {
 
         assertThat(selectAll().size(), is(3));

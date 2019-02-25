@@ -25,31 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+final class ProgramStageSectionDataElementChildrenAppender extends ChildrenAppender<ProgramStageSection> {
 
-public final class ProgramStageSectionProgramIndicatorLinkStore {
+    private final LinkModelChildStore<ProgramStageSection, DataElement> linkModelChildStore;
 
-    private static final StatementBinder<ProgramStageSectionProgramIndicatorLinkModel> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.programStageSection());
-        sqLiteBind(sqLiteStatement, 2, o.programIndicator());
-    };
+    private ProgramStageSectionDataElementChildrenAppender(
+            LinkModelChildStore<ProgramStageSection, DataElement> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
+    }
 
-    private ProgramStageSectionProgramIndicatorLinkStore() {}
+    @Override
+    protected ProgramStageSection appendChildren(ProgramStageSection programStageSection) {
+        ProgramStageSection.Builder builder = programStageSection.toBuilder();
+        builder.dataElements(linkModelChildStore.getChildren(programStageSection));
+        return builder.build();
+    }
 
-    public static LinkModelStore<ProgramStageSectionProgramIndicatorLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
-                ProgramStageSectionProgramIndicatorLinkModel.Columns.PROGRAM_STAGE_SECTION,
-                BINDER,
-                ProgramStageSectionProgramIndicatorLinkModel::create);
+    static ChildrenAppender<ProgramStageSection> create(DatabaseAdapter databaseAdapter) {
+        return new ProgramStageSectionDataElementChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
+                        ProgramStageSectionDataElementLinkTableInfo.CHILD_PROJECTION,
+                        DataElement::create
+                )
+        );
     }
 }

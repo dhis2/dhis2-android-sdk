@@ -48,19 +48,21 @@ public final class ProgramModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                ProgramTableInfo.TABLE_INFO.name(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
-                ProgramRuleVariableTableInfo.TABLE_INFO.name(),
-                ProgramIndicatorTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionProgramIndicatorLinkModel.TABLE,
+                ProgramTableInfo.TABLE_INFO,
+                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
+                ProgramRuleVariableTableInfo.TABLE_INFO,
+                ProgramIndicatorTableInfo.TABLE_INFO,
+                ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
 
-                ProgramRuleActionTableInfo.TABLE_INFO.name(),
-                ProgramRuleTableInfo.TABLE_INFO.name(),
-                ProgramSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageDataElementTableInfo.TABLE_INFO.name(),
-                ProgramStageSectionTableInfo.TABLE_INFO.name(),
-                ProgramStageTableInfo.TABLE_INFO.name(),
-                ProgramSectionAttributeLinkTableInfo.TABLE_INFO.name()
+                ProgramRuleActionTableInfo.TABLE_INFO,
+                ProgramRuleTableInfo.TABLE_INFO,
+                ProgramSectionTableInfo.TABLE_INFO,
+                ProgramStageDataElementTableInfo.TABLE_INFO,
+                ProgramStageSectionTableInfo.TABLE_INFO,
+
+                ProgramStageTableInfo.TABLE_INFO,
+                ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
+                ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO
         );
     }
 

@@ -47,8 +47,8 @@ public final class ProgramStageSectionDataElementLinkStore {
     private ProgramStageSectionDataElementLinkStore() {}
 
     public static LinkModelStore<ProgramStageSectionDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, ProgramStageSectionDataElementLinkModel.TABLE,
-                new ProgramStageSectionDataElementLinkModel.Columns(),
+        return StoreFactory.linkModelStore(databaseAdapter,
+                ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
                 ProgramStageSectionDataElementLinkModel.Columns.PROGRAM_STAGE_SECTION,
                 BINDER,
                 ProgramStageSectionDataElementLinkModel::create);

@@ -55,7 +55,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends M
                 d2.programModule().programIndicators
                         .get();
 
-        assertThat(indicators.size(), is(2));
+        assertThat(indicators.size(), is(3));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends M
                         .eq("lxAQ7Zs9VYR")
                         .get();
 
-        assertThat(indicators.size(), is(2));
+        assertThat(indicators.size(), is(3));
     }
 
     @Test

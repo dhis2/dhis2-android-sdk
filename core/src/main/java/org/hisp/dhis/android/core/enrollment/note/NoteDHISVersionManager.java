@@ -26,45 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.enrollment.note;
 
-import android.support.test.runner.AndroidJUnit4;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.text.ParseException;
 
-import java.util.List;
+import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import dagger.Reusable;
 
-@RunWith(AndroidJUnit4.class)
-public class EnrollmentModuleMockIntegrationShould extends MockIntegrationShould {
+@Reusable
+public class NoteDHISVersionManager {
 
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-        downloadTrackedEntityInstances();
+    private final DHISVersionManager versionManager;
+
+    @Inject
+    public NoteDHISVersionManager(DHISVersionManager versionManager) {
+        this.versionManager = versionManager;
     }
 
-    @Test
-    public void allow_access_to_all_enrollments_without_children() {
-        List<Enrollment> enrollments = d2.enrollmentModule().enrollments.get();
-        assertThat(enrollments.size(), is(2));
+    public Note transform(Enrollment enrollment, Note note) {
+        Note.Builder builder = Note.builder().enrollment(enrollment.uid());
 
-        Enrollment enrollment = enrollments.get(0);
-        assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
-        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
-        assertThat(enrollment.events() == null, is(true));
-    }
+        try {
+            if (this.versionManager.is2_29()) {
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
+                        .uid(null);
+            } else {
+                builder
+                        .storedDate(BaseIdentifiableObject.dateToDateStr(
+                        BaseIdentifiableObject.parseDate(note.storedDate())))
+                        .uid(note.uid());
+            }
+        } catch (ParseException ignored) {
+            builder
+                    .storedDate(null)
+                    .uid(null);
+        }
 
-    @Test
-    public void allow_access_to_one_enrollment_without_children() {
-        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("JILLTkO4LKQ").get();
-        assertThat(enrollment.uid(), is("JILLTkO4LKQ"));
-        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
-        assertThat(enrollment.events() == null, is(true));
+        return builder
+                .value(note.value())
+                .storedBy(note.storedBy())
+                .build();
     }
 }

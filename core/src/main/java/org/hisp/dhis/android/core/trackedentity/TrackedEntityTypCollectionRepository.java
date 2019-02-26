@@ -27,20 +27,28 @@
  */
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+
+import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
-final class TrackedEntityTypeAttributeHandler
-        extends OrderedLinkModelHandlerImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> {
+public final class TrackedEntityTypCollectionRepository
+        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypCollectionRepository> {
 
     @Inject
-    TrackedEntityTypeAttributeHandler(LinkModelStore<TrackedEntityTypeAttribute> trackedEntityTypeAttributeStore) {
-        super(trackedEntityTypeAttributeStore);
+    TrackedEntityTypCollectionRepository(final IdentifiableObjectStore<TrackedEntityType> store,
+                                         final Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders,
+                                         List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new TrackedEntityTypCollectionRepository(store, childrenAppenders, updatedScope)));
     }
-
 }

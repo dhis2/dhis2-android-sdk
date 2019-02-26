@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.enrollment.note.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventModel;
 
@@ -60,8 +61,8 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Enrollment>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singleton(NoteChildrenAppender.create(databaseAdapter));
     }
 
     @Provides

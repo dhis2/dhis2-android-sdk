@@ -26,50 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment.note;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.Transformer;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.text.ParseException;
+import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class NoteToStoreTransformer implements Transformer<Note> {
+import java.util.List;
 
-    private final Note.Builder builder;
-    private final DHISVersionManager versionManager;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    public NoteToStoreTransformer(Enrollment enrollment, DHISVersionManager versionManager) {
-        this.versionManager = versionManager;
-        this.builder = Note.builder()
-                .enrollment(enrollment.uid());
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
+
+    @BeforeClass
+    public static void setUpAll() throws Exception {
+        downloadMetadata();
     }
 
-    @Override
-    public Note transform(Note note) {
+    @Test
+    public void allow_access_to_all_tracked_entity_types_without_children() {
+        List<TrackedEntityType> trackedEntityTypes = d2.trackedEntityModule().trackedEntityTypes
+                        .get();
+        assertThat(trackedEntityTypes.size(), is(1));
+    }
 
-        try {
-            if (this.versionManager.is2_29()) {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseSpaceDate(note.storedDate())))
-                        .uid(null);
-            } else {
-                builder
-                        .storedDate(BaseIdentifiableObject.dateToDateStr(
-                        BaseIdentifiableObject.parseDate(note.storedDate())))
-                        .uid(note.uid());
-            }
-        } catch (ParseException ignored) {
-            builder
-                    .storedDate(null)
-                    .uid(null);
-        }
+    @Test
+    public void include_object_style_as_children() {
+        TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
+                .one().getWithAllChildren();
+        assertThat(trackedEntityType.style().icon(), is("my-tracked-entity-attribute-icon-name"));
+        assertThat(trackedEntityType.style().color(), is("#000"));
+    }
 
-        return builder
-                .value(note.value())
-                .storedBy(note.storedBy())
-                .build();
+    @Test
+    public void include_attributes_as_children() {
+        TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
+                .one().getWithAllChildren();
+        assertThat(trackedEntityType.trackedEntityTypeAttributes().size(), is(1));
     }
 }

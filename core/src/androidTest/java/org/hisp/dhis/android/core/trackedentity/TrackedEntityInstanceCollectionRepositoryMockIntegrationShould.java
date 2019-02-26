@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.trackedentity;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -41,34 +41,48 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EventModuleMockIntegrationShould extends MockIntegrationShould {
+public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
 
     @BeforeClass
     public static void setUpAll() throws Exception {
         downloadMetadata();
-        downloadEvents();
+        downloadTrackedEntityInstances();
     }
 
     @Test
-    public void allow_access_to_all_events_without_children() {
-        List<Event> events = d2.eventModule().events.get();
-        assertThat(events.size(), is(1));
+    public void allow_access_to_all_teis_without_children() {
+        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances.get();
+        assertThat(trackedEntityInstances.size(), is(2));
 
-        Event event = events.get(0);
-
-        assertThat(event.uid(), is("single1"));
-        assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(event.programStage(), is("dBwrot7S420"));
-        assertThat(event.trackedEntityDataValues() == null, is(true));
+        TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
+        assertThat(trackedEntityInstance.uid(), is("nWrB0TfWlvh"));
+        assertThat(trackedEntityInstance.organisationUnit(), is("DiszpKrYNg8"));
+        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null, is(true));
 
     }
 
     @Test
-    public void allow_access_to_one_event_without_children() {
-        Event event = d2.eventModule().events.uid("single1").get();
-        assertThat(event.uid(), is("single1"));
-        assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(event.programStage(), is("dBwrot7S420"));
-        assertThat(event.trackedEntityDataValues() == null, is(true));
+    public void allow_access_to_one_tei_without_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances.uid("nWrB0TfWlvh").get();
+        assertThat(tei.uid(), is("nWrB0TfWlvh"));
+        assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));
+        assertThat(tei.trackedEntityAttributeValues() == null, is(true));
+    }
+
+    @Test
+    public void include_enrollments_as_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
+                .uid("nWrB0TfWlvh").getWithAllChildren();
+        assertThat(tei.enrollments().size(), is(1));
+        assertThat(tei.enrollments().get(0).uid(), is("enroll1"));
+    }
+
+    @Test
+    public void include_tracked_entity_attribute_values_as_children() {
+        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
+                .uid("nWrB0TfWlvh").getWithAllChildren();
+        assertThat(tei.trackedEntityAttributeValues().size(), is(1));
+        assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("lZGmxYbs97q"));
+        assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("4081507"));
     }
 }

@@ -11,7 +11,20 @@
       "style": {
         "color": "#000",
         "icon": "my-tracked-entity-attribute-icon-name"
-      }
+      },
+      "trackedEntityTypeAttributes": [
+        {
+          "displayInList": true,
+          "searchable": true,
+          "mandatory": false,
+          "trackedEntityType": {
+            "id": "nEenWmSyUEp"
+          },
+          "trackedEntityAttribute": {
+            "id": "cejWyOfXge6"
+          }
+        }
+      ]
     }
   ]
 }

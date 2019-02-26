@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.enrollment;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -41,34 +41,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EventModuleMockIntegrationShould extends MockIntegrationShould {
+public class EnrollmentCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
 
     @BeforeClass
     public static void setUpAll() throws Exception {
         downloadMetadata();
-        downloadEvents();
+        downloadTrackedEntityInstances();
     }
 
     @Test
-    public void allow_access_to_all_events_without_children() {
-        List<Event> events = d2.eventModule().events.get();
-        assertThat(events.size(), is(1));
+    public void allow_access_to_all_enrollments_without_children() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments.get();
+        assertThat(enrollments.size(), is(2));
 
-        Event event = events.get(0);
-
-        assertThat(event.uid(), is("single1"));
-        assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(event.programStage(), is("dBwrot7S420"));
-        assertThat(event.trackedEntityDataValues() == null, is(true));
-
+        Enrollment enrollment = enrollments.get(0);
+        assertThat(enrollment.uid(), is("enroll1"));
+        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.events() == null, is(true));
     }
 
     @Test
-    public void allow_access_to_one_event_without_children() {
-        Event event = d2.eventModule().events.uid("single1").get();
-        assertThat(event.uid(), is("single1"));
-        assertThat(event.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(event.programStage(), is("dBwrot7S420"));
-        assertThat(event.trackedEntityDataValues() == null, is(true));
+    public void allow_access_to_one_enrollment_without_children() {
+        Enrollment enrollment = d2.enrollmentModule().enrollments.uid("enroll1").get();
+        assertThat(enrollment.uid(), is("enroll1"));
+        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+        assertThat(enrollment.events() == null, is(true));
+    }
+
+    @Test
+    public void include_notes_as_children() {
+        Enrollment enrollment = d2.enrollmentModule().enrollments
+                .uid("enroll2").getWithAllChildren();
+        assertThat(enrollment.notes().size(), is(2));
     }
 }

@@ -25,54 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment;
 
-package org.hisp.dhis.android.core.enrollment.note;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.State;
+public final class EnrollmentChildrenAppender extends ChildrenAppender<TrackedEntityInstance> {
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-import javax.inject.Inject;
+    private final SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore;
 
-import dagger.Reusable;
-
-@Reusable
-public class NoteUniquenessManager {
-
-    private final ObjectWithoutUidStore<Note> noteStore;
-
-    @Inject
-    NoteUniquenessManager(ObjectWithoutUidStore<Note> noteStore) {
-        this.noteStore = noteStore;
+    private EnrollmentChildrenAppender(SingleParentChildStore<TrackedEntityInstance, Enrollment> childStore) {
+        this.childStore = childStore;
     }
 
-    public Set<Note> buildUniqueCollection(Collection<Note> notes, String enrollmentUid) {
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
-                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
-        List<Note> toPostNotes = noteStore.selectWhere(whereClause);
-        noteStore.delete();
+    @Override
+    protected TrackedEntityInstance appendChildren(TrackedEntityInstance tei) {
+        TrackedEntityInstance.Builder builder = tei.toBuilder();
+        builder.enrollments(childStore.getChildren(tei));
+        return builder.build();
+    }
 
-        Set<Note> uniqueNotes = new HashSet<>();
-        for (Note note : notes) {
-            uniqueNotes.add(note.toBuilder()
-                    .id(null)
-                    .state(State.SYNCED)
-                    .build());
-        }
-
-        for (Note toPostNote : toPostNotes) {
-            uniqueNotes.add(toPostNote.toBuilder()
-                    .id(null)
-                    .build());
-        }
-
-        return uniqueNotes;
+    public static ChildrenAppender<TrackedEntityInstance> create(DatabaseAdapter databaseAdapter) {
+        return new EnrollmentChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        EnrollmentStoreImpl.CHILD_PROJECTION,
+                        Enrollment::create)
+        );
     }
 }

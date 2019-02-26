@@ -25,47 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.enrollment.note;
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-import android.support.test.runner.AndroidJUnit4;
+public final class NoteChildrenAppender extends ChildrenAppender<Enrollment> {
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.List;
+    private final SingleParentChildStore<Enrollment, Note> childStore;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
-@RunWith(AndroidJUnit4.class)
-public class TrackedEntityModuleMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-        downloadTrackedEntityInstances();
+    private NoteChildrenAppender(SingleParentChildStore<Enrollment, Note> childStore) {
+        this.childStore = childStore;
     }
 
-    @Test
-    public void allow_access_to_all_teis_without_children() {
-        List<TrackedEntityInstance> trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances.get();
-        assertThat(trackedEntityInstances.size(), is(2));
-
-        TrackedEntityInstance trackedEntityInstance = trackedEntityInstances.get(0);
-        assertThat(trackedEntityInstance.uid(), is("nWrB0TfWlvh"));
-        assertThat(trackedEntityInstance.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(trackedEntityInstance.trackedEntityAttributeValues() == null, is(true));
-
+    @Override
+    protected Enrollment appendChildren(Enrollment enrollment) {
+        Enrollment.Builder builder = enrollment.toBuilder();
+        builder.notes(childStore.getChildren(enrollment));
+        return builder.build();
     }
 
-    @Test
-    public void allow_access_to_one_tei_without_children() {
-        TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances.uid("nWrB0TfWlvh").get();
-        assertThat(tei.uid(), is("nWrB0TfWlvh"));
-        assertThat(tei.organisationUnit(), is("DiszpKrYNg8"));
-        assertThat(tei.trackedEntityAttributeValues() == null, is(true));
+    public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
+        return new NoteChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        NoteStore.CHILD_PROJECTION,
+                        Note::create)
+        );
     }
 }

@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.Before;
@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -57,7 +58,7 @@ public class SectionHandlerShould {
     private IdentifiableObjectStore<Section> sectionStore;
 
     @Mock
-    private OrderedLinkModelHandler<DataElement, SectionDataElementLinkModel> sectionDataElementLinkHandler;
+    private LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler;
 
     @Mock
     private SyncHandler<DataElementOperand> greyedFieldsHandler;
@@ -109,7 +110,7 @@ public class SectionHandlerShould {
     public void handlingSection_shouldHandleLinkedDataElements() {
       
         sectionHandler.handle(section);
-        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
+        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), anyListOf(SectionDataElementLink.class));
         verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), eq(greyedFields), any(SectionGreyedFieldsLinkModelBuilder.class));
     }
 }

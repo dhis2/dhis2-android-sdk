@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.common;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
+import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.constant.ConstantModuleDownloader;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetModuleDownloader;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -70,6 +72,9 @@ public class MetadataCallShould extends BaseCallShould {
     private DataSet dataSet;
 
     @Mock
+    private Constant constant;
+
+    @Mock
     private Callable<Unit> systemInfoDownloadCall;
 
     @Mock
@@ -86,6 +91,9 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private Callable<List<DataSet>> dataSetDownloadCall;
+
+    @Mock
+    private Callable<List<Constant>> constantCall;
 
     @Mock
     private Callable<Unit> organisationUnitDownloadCall;
@@ -112,6 +120,9 @@ public class MetadataCallShould extends BaseCallShould {
     private DataSetModuleDownloader dataSetDownloader;
 
     @Mock
+    private ConstantModuleDownloader constantDownloader;
+
+    @Mock
     private ForeignKeyCleaner foreignKeyCleaner;
 
     // object to test
@@ -131,6 +142,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(organisationUnitDownloader.downloadMetadata(same(user), anySetOf(Program.class),
                 anySetOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
         when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
+        when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
 
         // Calls
         when(systemInfoDownloadCall.call()).thenReturn(new Unit());
@@ -139,6 +151,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(categoryDownloadCall.call()).thenReturn(new Unit());
         when(programDownloadCall.call()).thenReturn(Lists.newArrayList(program));
         when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
+        when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
 
         // Metadata call
         metadataCall = new MetadataCall(
@@ -150,6 +163,7 @@ public class MetadataCallShould extends BaseCallShould {
                 programDownloader,
                 organisationUnitDownloader,
                 dataSetDownloader,
+                constantDownloader,
                 foreignKeyCleaner);
     }
 
@@ -202,6 +216,12 @@ public class MetadataCallShould extends BaseCallShould {
     @Test(expected = D2Error.class)
     public void fail_when_dataset_parent_call_fail() throws Exception {
         when(dataSetDownloadCall.call()).thenThrow(d2Error);
+        metadataCall.call();
+    }
+
+    @Test(expected = D2Error.class)
+    public void fail_when_constant_call_fail() throws Exception {
+        when(constantCall.call()).thenThrow(d2Error);
         metadataCall.call();
     }
 

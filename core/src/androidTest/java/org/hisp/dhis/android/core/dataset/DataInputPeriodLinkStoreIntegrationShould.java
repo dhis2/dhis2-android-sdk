@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
@@ -67,9 +66,5 @@ public class DataInputPeriodLinkStoreIntegrationShould
         return DataInputPeriodSamples.getDataInputPeriod().toBuilder()
                 .id(1L)
                 .build();
-    }
-
-    @Test
-    public void stub() {
     }
 }

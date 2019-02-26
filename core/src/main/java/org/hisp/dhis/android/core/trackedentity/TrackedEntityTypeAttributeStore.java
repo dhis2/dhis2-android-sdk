@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -47,6 +48,9 @@ final class TrackedEntityTypeAttributeStore {
         sqLiteBind(sqLiteStatement, 5, o.searchable());
         sqLiteBind(sqLiteStatement, 6, o.sortOrder());
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            TrackedEntityTypeAttributeTableInfo.TABLE_INFO, TrackedEntityTypeAttributeFields.TRACKED_ENTITY_TYPE);
 
     private TrackedEntityTypeAttributeStore() {}
 

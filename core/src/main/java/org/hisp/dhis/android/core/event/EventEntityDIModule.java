@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -56,7 +57,7 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Event>> childrenAppenders() {
-        return Collections.emptyList();
+    Collection<ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singleton(TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
     }
 }

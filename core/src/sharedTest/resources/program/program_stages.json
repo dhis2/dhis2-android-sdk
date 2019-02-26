@@ -153,7 +153,20 @@
           "sortOrder": 0,
           "programStage": {
             "id": "dBwrot7S420"
-          }
+          },
+          "programIndicators": [
+            {
+              "id": "pindicator777",
+              "program": {
+                "id": "lxAQ7Zs9VYR"
+              }
+            }
+          ],
+          "dataElements": [
+            {
+              "id": "g9eOBujte1U"
+            }
+          ]
         }
       ]
     }

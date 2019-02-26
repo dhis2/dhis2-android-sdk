@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.wipe;
 
 import org.hisp.dhis.android.core.category.CategoryModuleWiper;
 import org.hisp.dhis.android.core.common.CommonModuleWiper;
+import org.hisp.dhis.android.core.constant.ConstantModuleWiper;
 import org.hisp.dhis.android.core.dataelement.DataElementModuleWiper;
 import org.hisp.dhis.android.core.dataset.DataSetModuleWiper;
 import org.hisp.dhis.android.core.datavalue.DataValueModuleWiper;
@@ -64,6 +65,7 @@ final class D2ModuleWipers {
     D2ModuleWipers(
             CategoryModuleWiper category,
             CommonModuleWiper common,
+            ConstantModuleWiper constant,
             DataElementModuleWiper dataElement,
             DataSetModuleWiper dataSet,
             DataValueModuleWiper dataValue,
@@ -89,6 +91,7 @@ final class D2ModuleWipers {
         this.wipers = Arrays.asList(
                 category,
                 common,
+                constant,
                 dataElement,
                 dataSet,
                 dataValue,

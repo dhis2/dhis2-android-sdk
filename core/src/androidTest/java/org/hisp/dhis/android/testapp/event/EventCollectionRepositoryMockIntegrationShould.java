@@ -61,14 +61,14 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
                 d2.eventModule().events
                         .get();
 
-        assertThat(events.size(), is(3));
+        assertThat(events.size(), is(4));
     }
 
     @Test
     public void filter_by_uid() {
         List<Event> events =
                 d2.eventModule().events
-                        .byUid().eq("V1CerIi3sdL")
+                        .byUid().eq("single1")
                         .get();
 
         assertThat(events.size(), is(1));
@@ -78,7 +78,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
     public void filter_by_enrollment() {
         List<Event> events =
                 d2.eventModule().events
-                        .byEnrollmentUid().eq("JILLTkO4LKQ")
+                        .byEnrollmentUid().eq("enroll1")
                         .get();
 
         assertThat(events.size(), is(1));
@@ -161,7 +161,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
                         .byProgramUid().eq("lxAQ7Zs9VYR")
                         .get();
 
-        assertThat(events.size(), is(3));
+        assertThat(events.size(), is(4));
     }
 
     @Test
@@ -171,7 +171,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
                         .byProgramStageUid().eq("dBwrot7S420")
                         .get();
 
-        assertThat(events.size(), is(3));
+        assertThat(events.size(), is(4));
     }
 
     @Test
@@ -181,7 +181,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
                         .byOrganisationUnitUid().eq("DiszpKrYNg8")
                         .get();
 
-        assertThat(events.size(), is(3));
+        assertThat(events.size(), is(4));
     }
 
     @Test
@@ -221,7 +221,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
                         .byState().eq(State.SYNCED)
                         .get();
 
-        assertThat(events.size(), is(3));
+        assertThat(events.size(), is(4));
     }
 
     @Test
@@ -244,6 +244,10 @@ public class EventCollectionRepositoryMockIntegrationShould extends MockIntegrat
         assertThat(events.size(), is(1));
     }
 
-
-
+    @Test
+    public void include_tracked_entity_data_values_as_children() {
+        Event event = d2.eventModule().events
+                .uid("single1").getWithAllChildren();
+        assertThat(event.trackedEntityDataValues().size(), is(6));
+    }
 }

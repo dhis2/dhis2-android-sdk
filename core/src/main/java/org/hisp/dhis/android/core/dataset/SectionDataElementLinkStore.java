@@ -37,7 +37,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class SectionDataElementLinkStore {
 
-    private static final StatementBinder<SectionDataElementLinkModel> BINDER
+    private static final StatementBinder<SectionDataElementLink> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.section());
         sqLiteBind(sqLiteStatement, 2, o.dataElement());
@@ -46,12 +46,11 @@ final class SectionDataElementLinkStore {
 
     private SectionDataElementLinkStore() {}
 
-    public static LinkModelStore<SectionDataElementLinkModel> create(DatabaseAdapter databaseAdapter) {
+    public static LinkModelStore<SectionDataElementLink> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
-                SectionDataElementLinkModel.TABLE,
-                new SectionDataElementLinkModel.Columns(),
-                SectionDataElementLinkModel.Columns.SECTION,
+                SectionDataElementLinkTableInfo.TABLE_INFO,
+                SectionDataElementLinkTableInfo.Columns.SECTION,
                 BINDER,
-                SectionDataElementLinkModel::create);
+                SectionDataElementLink::create);
     }
 }

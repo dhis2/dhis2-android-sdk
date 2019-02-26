@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.Before;
@@ -64,17 +63,13 @@ public class SectionHandlerShould {
     private SyncHandler<DataElementOperand> greyedFieldsHandler;
 
     @Mock
-    private LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
+    private LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Mock
     private Section section;
 
     // object to test
     private SectionHandler sectionHandler;
-
-    private List<DataElement> dataElements;
-
-    private List<DataElementOperand> greyedFields;
 
     @Before
     public void setUp() throws Exception {
@@ -86,17 +81,16 @@ public class SectionHandlerShould {
 
         when(section.uid()).thenReturn("section_uid");
 
-        dataElements = new ArrayList<>();
+        List<DataElement> dataElements = new ArrayList<>();
         dataElements.add(DataElement.builder().uid("dataElement_uid").build());
         when(section.dataElements()).thenReturn(dataElements);
 
-        greyedFields = new ArrayList<>();
+        List<DataElementOperand> greyedFields = new ArrayList<>();
         when(section.greyedFields()).thenReturn(greyedFields);
     }
 
     @Test
     public void passingNullArguments_shouldNotPerformAnyAction() {
-
        sectionHandler.handle(null);
 
         verify(sectionStore, never()).delete(anyString());
@@ -108,9 +102,8 @@ public class SectionHandlerShould {
 
     @Test
     public void handlingSection_shouldHandleLinkedDataElements() {
-      
         sectionHandler.handle(section);
         verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), anyListOf(SectionDataElementLink.class));
-        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), eq(greyedFields), any(SectionGreyedFieldsLinkModelBuilder.class));
+        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), anyListOf(SectionGreyedFieldsLink.class));
     }
 }

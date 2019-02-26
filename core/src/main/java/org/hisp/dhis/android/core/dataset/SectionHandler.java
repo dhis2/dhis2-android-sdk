@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import java.util.ArrayList;
@@ -47,13 +46,13 @@ final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     private final LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler;
     private final SyncHandler<DataElementOperand> greyedFieldsHandler;
-    private final LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
+    private final LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Inject
     SectionHandler(IdentifiableObjectStore<Section> sectionStore,
                    LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler,
                    SyncHandler<DataElementOperand> greyedFieldsHandler,
-                   LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler) {
+                   LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler) {
 
         super(sectionStore);
         this.sectionDataElementLinkHandler = sectionDataElementLinkHandler;
@@ -63,9 +62,6 @@ final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     @Override
     protected void afterObjectHandled(Section section, HandleAction action) {
-
-        greyedFieldsHandler.handleMany(section.greyedFields());
-
         if (section.dataElements() != null) {
             List<SectionDataElementLink> sectionDataElementLinks = new ArrayList<>();
             for (int i = 0; i < section.dataElements().size(); i++) {
@@ -76,8 +72,15 @@ final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
             sectionDataElementLinkHandler.handleMany(section.uid(), sectionDataElementLinks);
         }
 
-        sectionGreyedFieldsLinkHandler.handleMany(section.uid(),
-                section.greyedFields(),
-                new SectionGreyedFieldsLinkModelBuilder(section));
+        if (section.greyedFields() != null) {
+            greyedFieldsHandler.handleMany(section.greyedFields());
+
+            List<SectionGreyedFieldsLink> sectionGreyedFieldsLinks = new ArrayList<>();
+            for (DataElementOperand dataElementOperand : section.greyedFields()) {
+                sectionGreyedFieldsLinks.add(SectionGreyedFieldsLink.builder()
+                        .section(section.uid()).dataElementOperand(dataElementOperand.uid()).build());
+            }
+            sectionGreyedFieldsLinkHandler.handleMany(section.uid(), sectionGreyedFieldsLinks);
+        }
     }
 }

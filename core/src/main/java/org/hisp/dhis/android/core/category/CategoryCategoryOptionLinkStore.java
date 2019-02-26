@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
@@ -38,7 +37,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class CategoryCategoryOptionLinkStore {
 
-    private static final StatementBinder<CategoryCategoryOptionLinkModel> BINDER
+    private static final StatementBinder<CategoryCategoryOptionLink> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.category());
         sqLiteBind(sqLiteStatement, 2, o.option());
@@ -47,8 +46,11 @@ final class CategoryCategoryOptionLinkStore {
 
     private CategoryCategoryOptionLinkStore() {}
 
-    public static LinkModelStore<CategoryCategoryOptionLinkModel> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter, CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-                CategoryCategoryOptionLinkModel.Columns.CATEGORY, BINDER, CategoryCategoryOptionLinkModel::create);
+    public static LinkModelStore<CategoryCategoryOptionLink> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.linkModelStore(databaseAdapter,
+                CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+                CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+                BINDER,
+                CategoryCategoryOptionLink::create);
     }
 }

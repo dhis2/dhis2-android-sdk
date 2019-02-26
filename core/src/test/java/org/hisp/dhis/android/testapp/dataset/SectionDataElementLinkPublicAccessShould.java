@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
 import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-@RunWith(AndroidJUnit4.class)
 public class SectionDataElementLinkPublicAccessShould extends BasePublicAccessShould<SectionDataElementLink> {
 
     @Mock

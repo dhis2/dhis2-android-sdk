@@ -320,7 +320,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
         assertThat(program.programTrackedEntityAttributes().size(), is(1));
-        assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Built in variables Unique ID"));
+        assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
     }
 
     @Test

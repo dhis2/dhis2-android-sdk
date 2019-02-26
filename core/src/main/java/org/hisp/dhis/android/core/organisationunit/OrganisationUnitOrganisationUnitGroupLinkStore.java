@@ -37,21 +37,19 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class OrganisationUnitOrganisationUnitGroupLinkStore {
 
-    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLinkModel> BINDER
-            = (organisationUnitOrganisationUnitGroupLinkModel, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, organisationUnitOrganisationUnitGroupLinkModel.organisationUnit());
-        sqLiteBind(sqLiteStatement, 2, organisationUnitOrganisationUnitGroupLinkModel.organisationUnitGroup());
+    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLink> BINDER
+            = (OrganisationUnitOrganisationUnitGroupLink, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, OrganisationUnitOrganisationUnitGroupLink.organisationUnit());
+        sqLiteBind(sqLiteStatement, 2, OrganisationUnitOrganisationUnitGroupLink.organisationUnitGroup());
     };
 
     private OrganisationUnitOrganisationUnitGroupLinkStore() {}
 
-    public static LinkModelStore<OrganisationUnitOrganisationUnitGroupLinkModel> create(
-            DatabaseAdapter databaseAdapter) {
+    public static LinkModelStore<OrganisationUnitOrganisationUnitGroupLink> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.linkModelStore(databaseAdapter,
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE,
-                new OrganisationUnitOrganisationUnitGroupLinkModel.Columns(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.Columns.ORGANISATION_UNIT,
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
                 BINDER,
-                OrganisationUnitOrganisationUnitGroupLinkModel::create);
+                OrganisationUnitOrganisationUnitGroupLink::create);
     }
 }

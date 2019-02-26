@@ -33,8 +33,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
-import org.junit.BeforeClass;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -46,7 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class CategoryComboCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
+public class CategoryComboCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     private final String BEFORE_DATE = "2007-12-24T12:24:25.203";
     private final String IN_BETWEEN_DATE = "2016-04-16T18:04:34.745";
@@ -54,11 +53,6 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Mock
 
     private final String BIRTH_UID =  "m2jTvAj5kkm";
     private final String DEFAULT_UID =  "p0KPaWEg3cf";
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
 
     @Test
     public void find_objects_with_equal_name() {

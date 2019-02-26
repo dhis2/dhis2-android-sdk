@@ -86,7 +86,7 @@ public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends 
         List<ProgramRuleAction> programRuleActions =
                 d2.programModule().programRuleActions
                         .byTrackedEntityAttributeUid()
-                        .eq("lZGmxYbs97q")
+                        .eq("cejWyOfXge6")
                         .get();
 
         assertThat(programRuleActions.size(), is(1));

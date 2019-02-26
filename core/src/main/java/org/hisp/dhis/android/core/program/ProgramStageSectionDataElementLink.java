@@ -25,31 +25,49 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.database.Cursor;
+import android.support.annotation.NonNull;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import com.google.auto.value.AutoValue;
 
-@Module
-public final class ProgramStageSectionDataElementEntityDIModule {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    @Provides
-    @Reusable
-    public LinkModelStore<ProgramStageSectionDataElementLink> store(DatabaseAdapter databaseAdapter) {
-        return ProgramStageSectionDataElementLinkStore.create(databaseAdapter);
+@AutoValue
+public abstract class ProgramStageSectionDataElementLink implements Model {
+
+    @NonNull
+    public abstract String programStageSection();
+
+    @NonNull
+    public abstract String dataElement();
+
+    @NonNull
+    public abstract Integer sortOrder();
+
+    public static Builder builder() {
+        return new AutoValue_ProgramStageSectionDataElementLink.Builder();
     }
 
-    @Provides
-    @Reusable
-    public LinkSyncHandler<ProgramStageSectionDataElementLink> handler(
-            LinkModelStore<ProgramStageSectionDataElementLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    public static ProgramStageSectionDataElementLink create(Cursor cursor) {
+        return $AutoValue_ProgramStageSectionDataElementLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder programStageSection(@NonNull String programStageSection);
+
+        public abstract Builder dataElement(@NonNull String dataElement);
+
+        public abstract Builder sortOrder(@NonNull Integer sortOrder);
+
+        public abstract ProgramStageSectionDataElementLink build();
     }
 }

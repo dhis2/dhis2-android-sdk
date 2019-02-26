@@ -53,14 +53,13 @@ public final class ProgramModuleWiper implements ModuleWiper {
                 ProgramRuleVariableTableInfo.TABLE_INFO,
                 ProgramIndicatorTableInfo.TABLE_INFO,
                 ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
-
                 ProgramRuleActionTableInfo.TABLE_INFO,
                 ProgramRuleTableInfo.TABLE_INFO,
                 ProgramSectionTableInfo.TABLE_INFO,
                 ProgramStageDataElementTableInfo.TABLE_INFO,
                 ProgramStageSectionTableInfo.TABLE_INFO,
-
                 ProgramStageTableInfo.TABLE_INFO,
+                ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
                 ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
                 ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO
         );

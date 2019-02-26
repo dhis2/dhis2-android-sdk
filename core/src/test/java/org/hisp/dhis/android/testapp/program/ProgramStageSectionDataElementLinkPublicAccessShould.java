@@ -26,30 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.testapp.program;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class ProgramStageSectionDataElementLinkPublicAccessShould
+        extends BasePublicAccessShould<ProgramStageSectionDataElementLink> {
 
-@Module
-public final class ProgramStageSectionDataElementEntityDIModule {
+    @Mock
+    private ProgramStageSectionDataElementLink object;
 
-    @Provides
-    @Reusable
-    public LinkModelStore<ProgramStageSectionDataElementLink> store(DatabaseAdapter databaseAdapter) {
-        return ProgramStageSectionDataElementLinkStore.create(databaseAdapter);
+    @Override
+    public ProgramStageSectionDataElementLink object() {
+        return object;
     }
 
-    @Provides
-    @Reusable
-    public LinkSyncHandler<ProgramStageSectionDataElementLink> handler(
-            LinkModelStore<ProgramStageSectionDataElementLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    @Override
+    public void has_public_create_method() {
+        ProgramStageSectionDataElementLink.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        ProgramStageSectionDataElementLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

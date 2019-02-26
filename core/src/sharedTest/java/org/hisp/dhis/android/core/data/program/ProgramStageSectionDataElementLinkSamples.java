@@ -26,30 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.program;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class ProgramStageSectionDataElementLinkSamples {
 
-@Module
-public final class ProgramStageSectionDataElementEntityDIModule {
-
-    @Provides
-    @Reusable
-    public LinkModelStore<ProgramStageSectionDataElementLink> store(DatabaseAdapter databaseAdapter) {
-        return ProgramStageSectionDataElementLinkStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public LinkSyncHandler<ProgramStageSectionDataElementLink> handler(
-            LinkModelStore<ProgramStageSectionDataElementLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    public static ProgramStageSectionDataElementLink getProgramStageSectionDataElementLink() {
+        return ProgramStageSectionDataElementLink.builder()
+                .programStageSection("program_stage_section")
+                .dataElement("data_element")
+                .sortOrder(5)
+                .build();
     }
 }

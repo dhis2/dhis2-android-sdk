@@ -37,10 +37,9 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class OrganisationUnitOrganisationUnitGroupLinkStore {
 
-    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLink> BINDER
-            = (OrganisationUnitOrganisationUnitGroupLink, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, OrganisationUnitOrganisationUnitGroupLink.organisationUnit());
-        sqLiteBind(sqLiteStatement, 2, OrganisationUnitOrganisationUnitGroupLink.organisationUnitGroup());
+    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLink> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.organisationUnit());
+        sqLiteBind(sqLiteStatement, 2, o.organisationUnitGroup());
     };
 
     private OrganisationUnitOrganisationUnitGroupLinkStore() {}

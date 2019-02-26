@@ -70,7 +70,8 @@ final class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
                 if (categoryOptions.get(i).access().data().read()) {
                     categoryOptionsWithAccess.add(categoryOptions.get(i));
                     categoryCategoryOptionLinks.add(CategoryCategoryOptionLink.builder()
-                            .category(category.uid()).option(categoryOptions.get(i).uid()).sortOrder(i + 1).build());
+                            .category(category.uid()).categoryOption(categoryOptions.get(i).uid()).sortOrder(i + 1)
+                            .build());
                 }
             }
 

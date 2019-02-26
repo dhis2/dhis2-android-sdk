@@ -43,7 +43,7 @@ public abstract class CategoryCategoryOptionLink implements Model {
     public abstract String category();
 
     @Nullable
-    public abstract String option();
+    public abstract String categoryOption();
 
     @Nullable
     public abstract Integer sortOrder();
@@ -65,7 +65,7 @@ public abstract class CategoryCategoryOptionLink implements Model {
 
         public abstract Builder category(@Nullable String category);
 
-        public abstract Builder option(@Nullable String option);
+        public abstract Builder categoryOption(@Nullable String categoryOption);
 
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
 

@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.period.Period;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -65,7 +65,7 @@ final class AggregatedDataCall implements Callable<Unit> {
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
     private final IdentifiableObjectStore<DataSet> dataSetStore;
     private final ObjectWithoutUidStore<Period> periodStore;
-    private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
+    private final UserOrganisationUnitLinkStore organisationUnitStore;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
@@ -76,7 +76,7 @@ final class AggregatedDataCall implements Callable<Unit> {
                                dataSetCompleteRegistrationCallFactory,
                        @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
                        @NonNull ObjectWithoutUidStore<Period> periodStore,
-                       @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore,
+                       @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
                        @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoRepository = systemInfoRepository;

@@ -25,41 +25,50 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.wipe.ModuleWiper;
-import org.hisp.dhis.android.core.wipe.TableWiper;
+import android.support.annotation.VisibleForTesting;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import dagger.Reusable;
+public final class DataSetDataElementLinkTableInfo {
 
-@Reusable
-public final class DataSetModuleWiper implements ModuleWiper {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private final TableWiper tableWiper;
+        @Override
+        public String name() {
+            return "DataSetDataElementLink";
+        }
 
-    @Inject
-    DataSetModuleWiper(TableWiper tableWiper) {
-        this.tableWiper = tableWiper;
+        @Override
+        public BaseModel.Columns columns() {
+            return new Columns();
+        }
+    };
+
+    private DataSetDataElementLinkTableInfo() {
     }
 
-    @Override
-    public void wipeMetadata() {
-        tableWiper.wipeTables(
-                DataInputPeriodTableInfo.TABLE_INFO,
-                DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
-                DataSetDataElementLinkTableInfo.TABLE_INFO,
-                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-                DataSetTableInfo.TABLE_INFO,
-                SectionDataElementLinkTableInfo.TABLE_INFO,
-                SectionTableInfo.TABLE_INFO,
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO
-        );
-    }
+    @VisibleForTesting
+    public static class Columns extends BaseModel.Columns {
 
-    @Override
-    public void wipeData() {
-        tableWiper.wipeTable(DataSetCompleteRegistrationTableInfo.TABLE_INFO);
+        public static final String DATA_SET = "dataSet";
+        public static final String DATA_ELEMENT = "dataElement";
+        public static final String CATEGORY_COMBO = "categoryCombo";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    DATA_SET, DATA_ELEMENT, CATEGORY_COMBO
+            );
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return Utils.appendInNewArray(super.all(), DATA_SET, DATA_ELEMENT);
+        }
     }
 }

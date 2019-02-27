@@ -57,7 +57,10 @@ public class NoteUniquenessManager {
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
         List<Note> toPostNotes = noteStore.selectWhere(whereClause);
-        noteStore.delete();
+
+        String deleteWhereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
+        noteStore.deleteWhere(deleteWhereClause);
 
         Set<Note> uniqueNotes = new HashSet<>();
         for (Note note : notes) {

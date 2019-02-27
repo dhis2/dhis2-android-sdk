@@ -120,7 +120,7 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
 
     @Override
     public boolean deleteById(@NonNull M m) {
-        return deleteWhereClause(BaseModel.Columns.ID + "='" + m.id() + "';");
+        return deleteWhere(BaseModel.Columns.ID + "='" + m.id() + "';");
     }
 
     private M getFirstFromCursor(@NonNull Cursor cursor) {
@@ -176,7 +176,8 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    protected boolean deleteWhereClause(String clause) {
+    @Override
+    public boolean deleteWhere(String clause) {
         return databaseAdapter.database().delete(builder.tableName, clause, null) > 0;
     }
 

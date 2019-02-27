@@ -45,24 +45,33 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 @RunWith(AndroidJUnit4.class)
-public abstract class MockIntegrationShould {
+public abstract class SyncedDatabaseMockIntegrationShould {
 
     private static SQLiteDatabase sqLiteDatabase;
-    private static String dbName = null;
-    protected static DatabaseAdapter databaseAdapter;
-
     private static Dhis2MockServer dhis2MockServer;
+
+    protected static DatabaseAdapter databaseAdapter;
     protected static D2 d2;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        DbOpenHelper dbOpenHelper = new DbOpenHelper(
-                InstrumentationRegistry.getTargetContext().getApplicationContext(), dbName);
-        sqLiteDatabase = dbOpenHelper.getWritableDatabase();
-        databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
-        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
-        d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
-        Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
+        if (d2 == null) {
+            DbOpenHelper dbOpenHelper = new DbOpenHelper(
+                    InstrumentationRegistry.getTargetContext().getApplicationContext(), "synced.db");
+            sqLiteDatabase = dbOpenHelper.getWritableDatabase();
+            databaseAdapter = new SqLiteDatabaseAdapter(dbOpenHelper);
+            dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+            d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter);
+            Stetho.initializeWithDefaults(InstrumentationRegistry.getTargetContext().getApplicationContext());
+
+            d2.wipeModule().wipeEverything();
+
+            login();
+            downloadMetadata();
+            downloadTrackedEntityInstances();
+            downloadEvents();
+            downloadAggregatedData();
+        }
     }
 
     @AfterClass
@@ -71,28 +80,28 @@ public abstract class MockIntegrationShould {
         sqLiteDatabase.close();
     }
 
-    protected static void login() throws Exception {
+    private static void login() throws Exception {
         dhis2MockServer.enqueueLoginResponses();
         d2.userModule().logIn("android", "Android123").call();
     }
 
-    protected static void downloadMetadata() throws Exception {
+    private static void downloadMetadata() throws Exception {
         dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
     }
 
-    protected static void downloadAggregatedData() throws Exception {
-        dhis2MockServer.enqueueAggregatedDataResponses();
-        d2.aggregatedModule().data().download().call();
+    private static void downloadTrackedEntityInstances() throws Exception {
+        dhis2MockServer.enqueueTrackedEntityInstanceResponses();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).call();
     }
 
-    protected static void downloadEvents() throws Exception {
+    private static void downloadEvents() throws Exception {
         dhis2MockServer.enqueueEventResponses();
         d2.eventModule().downloadSingleEvents(2, false).call();
     }
 
-    protected static void downloadTrackedEntityInstances() throws Exception {
-        dhis2MockServer.enqueueTrackedEntityInstanceResponses();
-        d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).call();
+    private static void downloadAggregatedData() throws Exception {
+        dhis2MockServer.enqueueAggregatedDataResponses();
+        d2.aggregatedModule().data().download().call();
     }
 }

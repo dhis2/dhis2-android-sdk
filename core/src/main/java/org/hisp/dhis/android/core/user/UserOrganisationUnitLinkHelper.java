@@ -39,6 +39,9 @@ import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.f
 
 public final class UserOrganisationUnitLinkHelper {
 
+    private UserOrganisationUnitLinkHelper(){
+    }
+
     public static boolean isRoot(@NonNull OrganisationUnit.Scope scope,
                            @NonNull User user,
                            @NonNull OrganisationUnit organisationUnit) {
@@ -53,6 +56,9 @@ public final class UserOrganisationUnitLinkHelper {
 
             case SCOPE_DATA_CAPTURE:
                 selectedScopeOrganisationUnits = user.organisationUnits();
+                break;
+
+            default:
                 break;
         }
 

@@ -28,29 +28,43 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.SectionGreyedFieldsLinkSamples;
+import org.junit.runner.RunWith;
 
-final class SectionGreyedFieldsLinkStore {
+@RunWith(AndroidJUnit4.class)
+public class SectionGreyedFieldsLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<SectionGreyedFieldsLink> {
 
-    private static final StatementBinder<SectionGreyedFieldsLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.section());
-        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-    };
+    public SectionGreyedFieldsLinkStoreIntegrationShould() {
+        super(SectionGreyedFieldsLinkStore.create(DatabaseAdapterFactory.get(false)),
+                SectionGreyedFieldsLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
 
-    private SectionGreyedFieldsLinkStore() {}
+    @Override
+    protected String addMasterUid() {
+        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink().section();
+    }
 
-    public static LinkModelStore<SectionGreyedFieldsLink> create(DatabaseAdapter databaseAdapter) {
+    @Override
+    protected SectionGreyedFieldsLink buildObject() {
+        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink();
+    }
 
-        return StoreFactory.linkModelStore(databaseAdapter,
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
-                SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
-                BINDER,
-                SectionGreyedFieldsLink::create);
+    @Override
+    protected SectionGreyedFieldsLink buildObjectWithOtherMasterUid() {
+        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink().toBuilder()
+                .section("new_section")
+                .build();
+    }
+
+    @Override
+    protected SectionGreyedFieldsLink buildObjectWithId() {
+        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink().toBuilder()
+                .id(1L)
+                .build();
     }
 }

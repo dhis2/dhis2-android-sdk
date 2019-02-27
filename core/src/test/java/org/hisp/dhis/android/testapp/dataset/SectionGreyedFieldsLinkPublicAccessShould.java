@@ -26,26 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.testapp.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-public class SectionGreyedFieldsLinkModelBuilder
-        implements ModelBuilder<DataElementOperand, SectionGreyedFieldsLinkModel> {
+public class SectionGreyedFieldsLinkPublicAccessShould extends BasePublicAccessShould<SectionGreyedFieldsLink> {
 
-    private final SectionGreyedFieldsLinkModel.Builder builder;
+    @Mock
+    private SectionGreyedFieldsLink object;
 
-    SectionGreyedFieldsLinkModelBuilder(Section section) {
-        this.builder = SectionGreyedFieldsLinkModel.builder()
-                .section(section.uid());
+    @Override
+    public SectionGreyedFieldsLink object() {
+        return object;
     }
 
     @Override
-    public SectionGreyedFieldsLinkModel buildModel(DataElementOperand dataElementOperand) {
-        return builder
-                .dataElementOperand(dataElementOperand.uid())
-                .build();
+    public void has_public_create_method() {
+        SectionGreyedFieldsLink.create(null);
     }
 
+    @Override
+    public void has_public_builder_method() {
+        SectionGreyedFieldsLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
+    }
 }

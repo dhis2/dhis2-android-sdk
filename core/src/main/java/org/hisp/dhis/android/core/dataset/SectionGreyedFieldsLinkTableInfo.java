@@ -59,7 +59,7 @@ public final class SectionGreyedFieldsLinkTableInfo {
 
     static class Columns extends BaseModel.Columns {
 
-        private static final String SECTION = "section";
+        static final String SECTION = "section";
         static final String DATA_ELEMENT_OPERAND = "dataElementOperand";
 
         @Override

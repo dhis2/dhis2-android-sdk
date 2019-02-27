@@ -26,31 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.data.dataset;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public class SectionGreyedFieldsLinkSamples {
 
-final class SectionGreyedFieldsLinkStore {
-
-    private static final StatementBinder<SectionGreyedFieldsLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.section());
-        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-    };
-
-    private SectionGreyedFieldsLinkStore() {}
-
-    public static LinkModelStore<SectionGreyedFieldsLink> create(DatabaseAdapter databaseAdapter) {
-
-        return StoreFactory.linkModelStore(databaseAdapter,
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
-                SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
-                BINDER,
-                SectionGreyedFieldsLink::create);
+    public static SectionGreyedFieldsLink getSectionGreyedFieldsLink() {
+        return SectionGreyedFieldsLink.builder()
+                .section("section")
+                .dataElementOperand("data_element_operand")
+                .build();
     }
 }

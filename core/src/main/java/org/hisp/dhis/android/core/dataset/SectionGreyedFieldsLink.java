@@ -28,29 +28,42 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import com.google.auto.value.AutoValue;
 
-final class SectionGreyedFieldsLinkStore {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    private static final StatementBinder<SectionGreyedFieldsLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.section());
-        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-    };
+@AutoValue
+public abstract class SectionGreyedFieldsLink implements Model {
 
-    private SectionGreyedFieldsLinkStore() {}
+    @Nullable
+    public abstract String section();
 
-    public static LinkModelStore<SectionGreyedFieldsLink> create(DatabaseAdapter databaseAdapter) {
+    @Nullable
+    public abstract String dataElementOperand();
 
-        return StoreFactory.linkModelStore(databaseAdapter,
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
-                SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
-                BINDER,
-                SectionGreyedFieldsLink::create);
+    public static Builder builder() {
+        return new AutoValue_SectionGreyedFieldsLink.Builder();
+    }
+
+    public static SectionGreyedFieldsLink create(Cursor cursor) {
+        return $AutoValue_SectionGreyedFieldsLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder section(String section);
+
+        public abstract Builder dataElementOperand(String dataElementOperand);
+
+        public abstract SectionGreyedFieldsLink build();
     }
 }

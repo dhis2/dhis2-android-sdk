@@ -28,27 +28,41 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public final class OrganisationUnitOrganisationUnitGroupLinkTableInfo {
 
-final class OrganisationUnitOrganisationUnitGroupLinkStore {
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLink> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnitGroup());
+        @Override
+        public String name() {
+            return "OrganisationUnitOrganisationUnitGroupLink";
+        }
+
+        @Override
+        public Columns columns() {
+            return new Columns();
+        }
     };
 
-    private OrganisationUnitOrganisationUnitGroupLinkStore() {}
+    private OrganisationUnitOrganisationUnitGroupLinkTableInfo() {
+    }
 
-    public static LinkModelStore<OrganisationUnitOrganisationUnitGroupLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-                BINDER,
-                OrganisationUnitOrganisationUnitGroupLink::create);
+    static class Columns extends BaseModel.Columns {
+
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String ORGANISATION_UNIT_GROUP = "organisationUnitGroup";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(), ORGANISATION_UNIT, ORGANISATION_UNIT_GROUP);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return all();
+        }
     }
 }

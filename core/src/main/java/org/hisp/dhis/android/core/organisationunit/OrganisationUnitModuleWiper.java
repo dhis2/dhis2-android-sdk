@@ -48,11 +48,11 @@ public final class OrganisationUnitModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                OrganisationUnitTableInfo.TABLE_INFO.name(),
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
-                OrganisationUnitGroupTableInfo.TABLE_INFO.name(),
-                OrganisationUnitLevelTableInfo.TABLE_INFO.name(),
-                OrganisationUnitOrganisationUnitGroupLinkModel.TABLE);
+                OrganisationUnitTableInfo.TABLE_INFO,
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
+                OrganisationUnitGroupTableInfo.TABLE_INFO,
+                OrganisationUnitLevelTableInfo.TABLE_INFO,
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO);
     }
 
     @Override

@@ -28,24 +28,44 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import android.support.test.runner.AndroidJUnit4;
 
-public class OrganisationUnitOrganisationUnitGroupLinkModelBuilder
-        implements ModelBuilder<ObjectWithUid, OrganisationUnitOrganisationUnitGroupLinkModel> {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitOrganisationUnitGroupLinkSamples;
+import org.junit.runner.RunWith;
 
-    private final OrganisationUnitOrganisationUnitGroupLinkModel.Builder builder;
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<OrganisationUnitOrganisationUnitGroupLink> {
 
-    OrganisationUnitOrganisationUnitGroupLinkModelBuilder(OrganisationUnit organisationUnit) {
-        this.builder = OrganisationUnitOrganisationUnitGroupLinkModel.builder()
-                .organisationUnit(organisationUnit.uid());
+    public OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould() {
+        super(OrganisationUnitOrganisationUnitGroupLinkStore.create(DatabaseAdapterFactory.get(false)),
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public OrganisationUnitOrganisationUnitGroupLinkModel buildModel(ObjectWithUid organisationUnitGroup) {
+    protected String addMasterUid() {
+        return OrganisationUnitOrganisationUnitGroupLinkSamples.getOrganisationUnitOrganisationUnitGroupLink()
+                .organisationUnit();
+    }
 
-        return builder
-                .organisationUnitGroup(organisationUnitGroup.uid())
+    @Override
+    protected OrganisationUnitOrganisationUnitGroupLink buildObject() {
+        return OrganisationUnitOrganisationUnitGroupLinkSamples.getOrganisationUnitOrganisationUnitGroupLink();
+    }
+
+    @Override
+    protected OrganisationUnitOrganisationUnitGroupLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .organisationUnit("new_organisation_unit")
+                .build();
+    }
+
+    @Override
+    protected OrganisationUnitOrganisationUnitGroupLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
                 .build();
     }
 }

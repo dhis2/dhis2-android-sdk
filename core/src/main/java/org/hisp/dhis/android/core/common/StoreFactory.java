@@ -74,15 +74,6 @@ public final class StoreFactory {
                 statementBuilder, binder, whereBinder, modelFactory);
     }
 
-    @Deprecated
-    public static <I extends Model> LinkModelStore<I> linkModelStore(
-            DatabaseAdapter databaseAdapter, String tableName, BaseModel.Columns columns,
-            String masterColumn, StatementBinder<I> binder, CursorModelFactory<I> modelFactory) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(tableName, columns.all(), columns.whereUpdate());
-        return new LinkModelStoreImpl<>(databaseAdapter, databaseAdapter.compileStatement(statementBuilder.insert()),
-                statementBuilder, masterColumn, binder, modelFactory);
-    }
-
     public static <I extends Model> LinkModelStore<I> linkModelStore(
             DatabaseAdapter databaseAdapter, TableInfo tableInfo, String masterColumn, StatementBinder<I> binder,
             CursorModelFactory<I> modelFactory) {

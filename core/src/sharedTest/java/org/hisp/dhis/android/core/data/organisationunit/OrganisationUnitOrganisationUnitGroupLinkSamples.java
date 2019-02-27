@@ -26,29 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.data.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
 
-final class OrganisationUnitOrganisationUnitGroupLinkStore {
+public class OrganisationUnitOrganisationUnitGroupLinkSamples {
 
-    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLink> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnitGroup());
-    };
-
-    private OrganisationUnitOrganisationUnitGroupLinkStore() {}
-
-    public static LinkModelStore<OrganisationUnitOrganisationUnitGroupLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-                BINDER,
-                OrganisationUnitOrganisationUnitGroupLink::create);
+    public static OrganisationUnitOrganisationUnitGroupLink getOrganisationUnitOrganisationUnitGroupLink() {
+        return OrganisationUnitOrganisationUnitGroupLink.builder()
+                .organisationUnit("organisation_unit")
+                .organisationUnitGroup("organisation_unit_group")
+                .build();
     }
 }

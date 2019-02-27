@@ -28,48 +28,42 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import java.io.IOException;
+import com.google.auto.value.AutoValue;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-@RunWith(JUnit4.class)
-public class OrganisationUnitOrganisationUnitGroupLinkModelBuilderShould {
+@AutoValue
+public abstract class OrganisationUnitOrganisationUnitGroupLink implements Model {
 
-    @Mock
-    private OrganisationUnit organisationUnit;
+    @Nullable
+    public abstract String organisationUnit();
 
-    @Mock
-    private ObjectWithUid organisationUnitGroup;
+    @Nullable
+    public abstract String organisationUnitGroup();
 
-    private OrganisationUnitOrganisationUnitGroupLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(organisationUnit.uid()).thenReturn("organisation_unit_uid");
-        when(organisationUnitGroup.uid()).thenReturn("organisation_unit_group_uid");
-
-        model = buildModel();
+    public static Builder builder() {
+        return new AutoValue_OrganisationUnitOrganisationUnitGroupLink.Builder();
     }
 
-    private OrganisationUnitOrganisationUnitGroupLinkModel buildModel() {
-        return new OrganisationUnitOrganisationUnitGroupLinkModelBuilder(organisationUnit).buildModel(organisationUnitGroup);
+    public static OrganisationUnitOrganisationUnitGroupLink create(Cursor cursor) {
+        return $AutoValue_OrganisationUnitOrganisationUnitGroupLink.createFromCursor(cursor);
     }
 
-    @Test
-    public void copy_link_properties() {
-        assertThat(model.organisationUnit()).isEqualTo(organisationUnit.uid());
-        assertThat(model.organisationUnitGroup()).isEqualTo(organisationUnitGroup.uid());
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder organisationUnit(String organisationUnit);
+
+        public abstract Builder organisationUnitGroup(String organisationUnitGroup);
+
+        public abstract OrganisationUnitOrganisationUnitGroupLink build();
     }
 }

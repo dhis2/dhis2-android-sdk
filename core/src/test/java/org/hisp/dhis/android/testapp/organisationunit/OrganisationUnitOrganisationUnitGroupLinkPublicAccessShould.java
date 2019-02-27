@@ -26,29 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.testapp.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public class OrganisationUnitOrganisationUnitGroupLinkPublicAccessShould
+        extends BasePublicAccessShould<OrganisationUnitOrganisationUnitGroupLink> {
 
-final class OrganisationUnitOrganisationUnitGroupLinkStore {
+    @Mock
+    private OrganisationUnitOrganisationUnitGroupLink object;
 
-    private static final StatementBinder<OrganisationUnitOrganisationUnitGroupLink> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnitGroup());
-    };
+    @Override
+    public OrganisationUnitOrganisationUnitGroupLink object() {
+        return object;
+    }
 
-    private OrganisationUnitOrganisationUnitGroupLinkStore() {}
+    @Override
+    public void has_public_create_method() {
+        OrganisationUnitOrganisationUnitGroupLink.create(null);
+    }
 
-    public static LinkModelStore<OrganisationUnitOrganisationUnitGroupLink> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.linkModelStore(databaseAdapter,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-                BINDER,
-                OrganisationUnitOrganisationUnitGroupLink::create);
+    @Override
+    public void has_public_builder_method() {
+        OrganisationUnitOrganisationUnitGroupLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

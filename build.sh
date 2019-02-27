@@ -9,4 +9,3 @@ PROJECT_DIR=$DIR/
 "$PROJECT_DIR"/gradlew --no-daemon clean
 "$PROJECT_DIR"/gradlew --no-daemon build -Dscan
 "$PROJECT_DIR"/gradlew --no-daemon test
-"$PROJECT_DIR"/gradlew --no-daemon connectedAndroidTest

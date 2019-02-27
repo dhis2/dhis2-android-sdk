@@ -38,6 +38,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
+@Deprecated
 @AutoValue
 public abstract class UserOrganisationUnitLinkModel extends BaseModel {
     public static final String TABLE = "UserOrganisationUnit";

@@ -81,7 +81,7 @@ public final class TrackedEntityAttributeReservedValueStore
     @Override
     public void deleteExpired(@NonNull Date serverDate) throws RuntimeException {
         String serverDateStr = "date('" + BaseIdentifiableObject.DATE_FORMAT.format(serverDate) + "')";
-        super.deleteWhereClause(Columns.EXPIRY_DATE + " < " + serverDateStr + " OR " +
+        super.deleteWhere(Columns.EXPIRY_DATE + " < " + serverDateStr + " OR " +
                 "( " + Columns.TEMPORAL_VALIDITY_DATE + " < " + serverDateStr + " AND " +
                 Columns.TEMPORAL_VALIDITY_DATE + " IS NOT NULL );");
     }

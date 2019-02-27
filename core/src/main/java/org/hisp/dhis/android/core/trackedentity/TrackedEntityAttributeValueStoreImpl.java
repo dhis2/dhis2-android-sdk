@@ -107,7 +107,7 @@ public final class TrackedEntityAttributeValueStoreImpl
                         trackedEntityAttributeUids)
                 .build();
 
-        deleteWhereClause(deleteWhereQuery);
+        deleteWhere(deleteWhereQuery);
     }
 
     private List<TrackedEntityAttributeValue> trackedEntityAttributeValueListFromQuery(String query) {

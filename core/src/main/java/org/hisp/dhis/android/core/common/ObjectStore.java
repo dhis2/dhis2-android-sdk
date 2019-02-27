@@ -48,5 +48,7 @@ public interface ObjectStore<M> extends DeletableStore {
 
     boolean deleteById(@NonNull M m);
 
+    boolean deleteWhere(String whereClause);
+
     int count();
 }

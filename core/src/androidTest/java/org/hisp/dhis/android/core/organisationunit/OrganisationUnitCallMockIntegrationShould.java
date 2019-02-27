@@ -50,9 +50,9 @@ import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceTableInfo;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
 import org.junit.Before;
@@ -147,13 +147,13 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     public void persist_organisation_unit_user_links() throws Exception {
         organisationUnitCall.call();
 
-        UserOrganisationUnitLinkStoreInterface userOrganisationUnitStore = UserOrganisationUnitLinkStore.create(databaseAdapter());
-        List<UserOrganisationUnitLinkModel> linkList = userOrganisationUnitStore.selectAll();
+        UserOrganisationUnitLinkStore userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter());
+        List<UserOrganisationUnitLink> userOrganisationUnitLinks = userOrganisationUnitStore.selectAll();
 
         Set<String> linkOrganisationUnits = new HashSet<>(2);
-        for (UserOrganisationUnitLinkModel linkModel: linkList) {
-            assertThat(linkModel.user()).isEqualTo("user_uid");
-            linkOrganisationUnits.add(linkModel.organisationUnit());
+        for (UserOrganisationUnitLink userOrganisationUnitLink: userOrganisationUnitLinks) {
+            assertThat(userOrganisationUnitLink.user()).isEqualTo("user_uid");
+            linkOrganisationUnits.add(userOrganisationUnitLink.organisationUnit());
         }
 
         assertThat(linkOrganisationUnits.contains(expectedAfroArabicClinic.uid())).isTrue();

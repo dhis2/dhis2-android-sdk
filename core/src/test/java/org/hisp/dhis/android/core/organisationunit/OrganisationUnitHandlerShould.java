@@ -33,13 +33,12 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +59,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitHandlerShould {
+
     @Mock
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
@@ -73,7 +73,7 @@ public class OrganisationUnitHandlerShould {
     private LinkSyncHandler<DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
 
     @Mock
-    private LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
+    private LinkSyncHandler<UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
 
     @Mock
     private SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
@@ -92,8 +92,6 @@ public class OrganisationUnitHandlerShould {
 
     private OrganisationUnit organisationUnitWithoutGroups;
 
-    private OrganisationUnit organisationUnitWithGroups;
-
     @Mock
     private OrganisationUnitGroup organisationUnitGroup;
 
@@ -111,12 +109,9 @@ public class OrganisationUnitHandlerShould {
 
     private List<OrganisationUnit> organisationUnits;
 
-    private OrganisationUnit.Scope scope;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        scope = OrganisationUnit.Scope.SCOPE_DATA_CAPTURE;
         String programUid = "test_program_uid";
         programUids = Sets.newHashSet(Lists.newArrayList(programUid));
         String dataSetUid = "test_data_set_uid";
@@ -140,7 +135,7 @@ public class OrganisationUnitHandlerShould {
         organisationUnitWithoutGroups = builder
                 .build();
 
-        organisationUnitWithGroups = builder
+        OrganisationUnit organisationUnitWithGroups = builder
                 .organisationUnitGroups(organisationUnitGroups)
                 .build();
 

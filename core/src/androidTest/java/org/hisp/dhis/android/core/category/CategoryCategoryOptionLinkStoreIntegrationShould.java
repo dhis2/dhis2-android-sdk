@@ -28,27 +28,43 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.data.category.CategoryCategoryOptionLinkSamples;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.junit.runner.RunWith;
 
-@Module
-public final class CategoryCategoryOptionEntityDIModule {
+@RunWith(AndroidJUnit4.class)
+public class CategoryCategoryOptionLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<CategoryCategoryOptionLink> {
 
-    @Provides
-    @Reusable
-    LinkModelStore<CategoryCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryOptionLinkStore.create(databaseAdapter);
+    public CategoryCategoryOptionLinkStoreIntegrationShould() {
+        super(CategoryCategoryOptionLinkStore.create(DatabaseAdapterFactory.get(false)),
+                CategoryCategoryOptionLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    @Provides
-    @Reusable
-    LinkSyncHandler<CategoryCategoryOptionLink> handler(LinkModelStore<CategoryCategoryOptionLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    @Override
+    protected String addMasterUid() {
+        return CategoryCategoryOptionLinkSamples.getCategoryCategoryOptionLink().category();
+    }
+
+    @Override
+    protected CategoryCategoryOptionLink buildObject() {
+        return CategoryCategoryOptionLinkSamples.getCategoryCategoryOptionLink();
+    }
+
+    @Override
+    protected CategoryCategoryOptionLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .category("new_category")
+                .build();
+    }
+
+    @Override
+    protected CategoryCategoryOptionLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
+                .build();
     }
 }

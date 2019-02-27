@@ -26,29 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.testapp.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class CategoryCategoryOptionLinkPublicAccessShould extends BasePublicAccessShould<CategoryCategoryOptionLink> {
 
-@Module
-public final class CategoryCategoryOptionEntityDIModule {
+    @Mock
+    private CategoryCategoryOptionLink object;
 
-    @Provides
-    @Reusable
-    LinkModelStore<CategoryCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryOptionLinkStore.create(databaseAdapter);
+    @Override
+    public CategoryCategoryOptionLink object() {
+        return object;
     }
 
-    @Provides
-    @Reusable
-    LinkSyncHandler<CategoryCategoryOptionLink> handler(LinkModelStore<CategoryCategoryOptionLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    @Override
+    public void has_public_create_method() {
+        CategoryCategoryOptionLink.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        CategoryCategoryOptionLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

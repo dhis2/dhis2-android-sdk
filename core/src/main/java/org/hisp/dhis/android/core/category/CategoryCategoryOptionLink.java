@@ -28,27 +28,47 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import com.google.auto.value.AutoValue;
 
-@Module
-public final class CategoryCategoryOptionEntityDIModule {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    @Provides
-    @Reusable
-    LinkModelStore<CategoryCategoryOptionLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryOptionLinkStore.create(databaseAdapter);
+@AutoValue
+public abstract class CategoryCategoryOptionLink implements Model {
+
+    @Nullable
+    public abstract String category();
+
+    @Nullable
+    public abstract String categoryOption();
+
+    @Nullable
+    public abstract Integer sortOrder();
+
+    public static Builder builder() {
+        return new AutoValue_CategoryCategoryOptionLink.Builder();
     }
 
-    @Provides
-    @Reusable
-    LinkSyncHandler<CategoryCategoryOptionLink> handler(LinkModelStore<CategoryCategoryOptionLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    public static CategoryCategoryOptionLink create(Cursor cursor) {
+        return $AutoValue_CategoryCategoryOptionLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder category(@Nullable String category);
+
+        public abstract Builder categoryOption(@Nullable String categoryOption);
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
+
+        public abstract CategoryCategoryOptionLink build();
     }
 }

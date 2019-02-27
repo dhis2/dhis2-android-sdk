@@ -26,25 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.data.category;
 
-import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
 
-public class CategoryCategoryOptionLinkModelBuilder
-        extends OrderedLinkModelBuilder<CategoryOption, CategoryCategoryOptionLinkModel> {
+public class CategoryCategoryOptionLinkSamples {
 
-    private final CategoryCategoryOptionLinkModel.Builder builder;
-
-    CategoryCategoryOptionLinkModelBuilder(Category category) {
-        this.builder = CategoryCategoryOptionLinkModel.builder()
-                .category(category.uid());
-    }
-
-    @Override
-    public CategoryCategoryOptionLinkModel buildModel(CategoryOption categoryOption, Integer sortOrder) {
-        return builder
-                .option(categoryOption.uid())
-                .sortOrder(sortOrder)
+    public static CategoryCategoryOptionLink getCategoryCategoryOptionLink() {
+        return CategoryCategoryOptionLink.builder()
+                .category("category")
+                .categoryOption("category_option")
+                .sortOrder(3)
                 .build();
     }
 }

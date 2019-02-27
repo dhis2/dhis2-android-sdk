@@ -25,25 +25,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-public class ProgramStageSectionProgramIndicatorLinkModelBuilder
-        implements ModelBuilder<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel> {
+import com.google.auto.value.AutoValue;
 
-    private final ProgramStageSectionProgramIndicatorLinkModel.Builder builder;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    ProgramStageSectionProgramIndicatorLinkModelBuilder(ProgramStageSection programStageSection) {
-        this.builder = ProgramStageSectionProgramIndicatorLinkModel.builder()
-                .programStageSection(programStageSection.uid());
+@AutoValue
+public abstract class ProgramStageSectionProgramIndicatorLink implements Model {
+
+    @Nullable
+    public abstract String programStageSection();
+
+    @Nullable
+    public abstract String programIndicator();
+
+    public static Builder builder() {
+        return new AutoValue_ProgramStageSectionProgramIndicatorLink.Builder();
     }
 
-    @Override
-    public ProgramStageSectionProgramIndicatorLinkModel buildModel(ProgramIndicator programIndicator) {
-        return builder
-                .programIndicator(programIndicator.uid())
-                .build();
+    public static ProgramStageSectionProgramIndicatorLink create(Cursor cursor) {
+        return $AutoValue_ProgramStageSectionProgramIndicatorLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder programStageSection(@Nullable String programStageSection);
+
+        public abstract Builder programIndicator(@Nullable String programIndicator);
+
+        public abstract ProgramStageSectionProgramIndicatorLink build();
     }
 }

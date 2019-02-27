@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -42,14 +42,14 @@ public final class ProgramStageSectionProgramIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelStore<ProgramStageSectionProgramIndicatorLinkModel> store(DatabaseAdapter databaseAdapter) {
+    public LinkModelStore<ProgramStageSectionProgramIndicatorLink> store(DatabaseAdapter databaseAdapter) {
         return ProgramStageSectionProgramIndicatorLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel> handler(
-            LinkModelStore<ProgramStageSectionProgramIndicatorLinkModel> store) {
-        return new LinkModelHandlerImpl<>(store);
+    public LinkSyncHandler<ProgramStageSectionProgramIndicatorLink> handler(
+            LinkModelStore<ProgramStageSectionProgramIndicatorLink> store) {
+        return new LinkSyncHandlerImpl<>(store);
     }
 }

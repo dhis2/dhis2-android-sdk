@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -80,8 +79,7 @@ public class DataSetHandlerShould {
     private SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler;
 
     @Mock
-    private LinkModelHandler<DataElementOperand,
-            DataSetCompulsoryDataElementOperandLinkModel> dataSetCompulsoryDataElementOperandLinkHandler;
+    private LinkSyncHandler<DataSetCompulsoryDataElementOperandLink> dataSetCompulsoryDataElementOperandLinkHandler;
 
     @Mock
     private LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler;
@@ -221,8 +219,8 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()), eq(compulsoryDataElementOperands),
-                any(DataSetCompulsoryDataElementOperandLinkModelBuilder.class));
+        verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()),
+                anyListOf(DataSetCompulsoryDataElementOperandLink.class));
     }
 
     @Test

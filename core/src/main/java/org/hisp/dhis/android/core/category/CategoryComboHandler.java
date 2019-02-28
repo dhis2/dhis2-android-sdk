@@ -48,7 +48,7 @@ import dagger.Reusable;
 final class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
 
     private final SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
-    private final LinkSyncHandler<CategoryCategoryComboLink>categoryCategoryComboLinkHandler;
+    private final LinkSyncHandler<CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
     private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
 
     @Inject

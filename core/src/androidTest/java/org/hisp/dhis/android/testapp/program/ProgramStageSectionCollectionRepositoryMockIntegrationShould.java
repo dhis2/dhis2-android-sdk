@@ -47,7 +47,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     public void find_all() {
         List<ProgramStageSection> stageSections = d2.programModule().programStageSections
                 .get();
-        assertThat(stageSections.size(), is(1));
+        assertThat(stageSections.size(), is(2));
     }
 
     @Test

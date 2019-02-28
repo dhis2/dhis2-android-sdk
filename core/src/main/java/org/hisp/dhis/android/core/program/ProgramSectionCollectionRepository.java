@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
@@ -50,5 +52,22 @@ public final class ProgramSectionCollectionRepository
                                        List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new ProgramSectionCollectionRepository(store, childrenAppenders, updatedScope)));
+    }
+
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byDescription() {
+        return cf.string(ProgramSectionFields.DESCRIPTION);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byProgramUid() {
+        return cf.string(ProgramSectionFields.PROGRAM);
+    }
+
+    public IntegerFilterConnector<ProgramSectionCollectionRepository> bySortOrder() {
+        return cf.integer(ProgramSectionFields.SORT_ORDER);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byFormName() {
+        return cf.string(ProgramSectionFields.FORM_NAME);
     }
 }

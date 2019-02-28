@@ -70,9 +70,10 @@ final class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCom
 
         if (combo.categories() != null) {
             List<CategoryCategoryComboLink> categoryCategoryComboLinks = new ArrayList<>();
-            for (Category category : combo.categories()) {
-                categoryCategoryComboLinks.add(CategoryCategoryComboLink.builder()
-                        .categoryCombo(combo.uid()).category(category.uid()).build());
+            for (int i = 0; i < combo.categories().size(); i++) {
+                    categoryCategoryComboLinks.add(CategoryCategoryComboLink.builder()
+                        .categoryCombo(combo.uid()).category(combo.categories().get(i).uid()).sortOrder(i + 1)
+                            .build());
             }
             categoryCategoryComboLinkHandler.handleMany(combo.uid(), categoryCategoryComboLinks);
         }

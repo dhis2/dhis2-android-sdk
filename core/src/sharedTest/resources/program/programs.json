@@ -231,6 +231,26 @@
             "color": "#555",
             "icon": "section-icon"
           }
+        },
+        {
+          "code": "Exp",
+          "lastUpdated": "2017-05-15T08:14:06.767",
+          "id": "Nc8OxbNuVHC",
+          "created": "2017-05-15T08:14:06.767",
+          "name": "My Program Section 2",
+          "displayName": "My Program Section 2",
+          "description": "Description 2",
+          "externalAccess": true,
+          "formName": "formName 2",
+          "sortOrder": 2,
+          "favorite": true,
+          "program": {
+            "id": "lxAQ7Zs9VYR"
+          },
+          "style": {
+            "color": "#556",
+            "icon": "section-icon-2"
+          }
         }
       ]
     }

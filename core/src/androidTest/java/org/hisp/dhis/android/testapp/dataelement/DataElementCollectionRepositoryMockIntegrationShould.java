@@ -48,7 +48,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends Synced
     public void find_all() {
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .get();
-        assertThat(dataElements.size(), is(4));
+        assertThat(dataElements.size(), is(5));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends Synced
         List<DataElement> dataElements = d2.dataElementModule().dataElements
                 .byDomainType().eq("TRACKER")
                 .get();
-        assertThat(dataElements.size(), is(4));
+        assertThat(dataElements.size(), is(5));
     }
 
     @Test

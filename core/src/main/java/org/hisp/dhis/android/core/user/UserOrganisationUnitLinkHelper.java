@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.support.annotation.NonNull;
+
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
@@ -36,35 +37,18 @@ import java.util.Set;
 
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
 
-public class UserOrganisationUnitLinkModelBuilder
-        implements ModelBuilder<OrganisationUnit, UserOrganisationUnitLinkModel> {
+public final class UserOrganisationUnitLinkHelper {
 
-    private final UserOrganisationUnitLinkModel.Builder builder;
-    private final User user;
-    private final OrganisationUnit.Scope organisationUnitScope;
-
-    public UserOrganisationUnitLinkModelBuilder(OrganisationUnit.Scope scope, User user) {
-        this.user = user;
-        this.organisationUnitScope = scope;
-        this.builder = UserOrganisationUnitLinkModel.builder()
-                .organisationUnitScope(scope.name())
-                .user(user.uid());
+    private UserOrganisationUnitLinkHelper(){
     }
 
-    @Override
-    public UserOrganisationUnitLinkModel buildModel(OrganisationUnit organisationUnit) {
-        return builder
-                .organisationUnit(organisationUnit.uid())
-                .root(isRoot(organisationUnit))
-                .build();
-    }
-
-    @SuppressWarnings("PMD")
-    private boolean isRoot(OrganisationUnit organisationUnit) {
+    public static boolean isRoot(@NonNull OrganisationUnit.Scope scope,
+                           @NonNull User user,
+                           @NonNull OrganisationUnit organisationUnit) {
 
         List<OrganisationUnit> selectedScopeOrganisationUnits = null;
 
-        switch (this.organisationUnitScope) {
+        switch (scope) {
 
             case SCOPE_TEI_SEARCH:
                 selectedScopeOrganisationUnits = user.teiSearchOrganisationUnits();
@@ -72,6 +56,9 @@ public class UserOrganisationUnitLinkModelBuilder
 
             case SCOPE_DATA_CAPTURE:
                 selectedScopeOrganisationUnits = user.organisationUnits();
+                break;
+
+            default:
                 break;
         }
 

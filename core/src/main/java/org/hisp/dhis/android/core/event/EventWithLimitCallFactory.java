@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.program.ProgramStoreInterface;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
@@ -62,7 +62,7 @@ final class EventWithLimitCallFactory {
 
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final ResourceHandler resourceHandler;
-    private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ProgramStoreInterface programStore;
 
     private final D2CallExecutor d2CallExecutor;
@@ -74,7 +74,7 @@ final class EventWithLimitCallFactory {
     EventWithLimitCallFactory(
             @NonNull ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             @NonNull ResourceHandler resourceHandler,
-            @NonNull UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
+            @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             @NonNull ProgramStoreInterface programStore,
             @NonNull D2CallExecutor d2CallExecutor,
             @NonNull EventEndpointCallFactory endpointCallFactory,
@@ -190,14 +190,14 @@ final class EventWithLimitCallFactory {
     }
 
     private Set<String> getOrgUnitUids() {
-        List<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
+        List<UserOrganisationUnitLink> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
 
         Set<String> organisationUnitUids = new HashSet<>();
 
-        for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
-            if (linkModel.organisationUnitScope().equals(
+        for (UserOrganisationUnitLink link: userOrganisationUnitLinks) {
+            if (link.organisationUnitScope().equals(
                     OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
-                organisationUnitUids.add(linkModel.organisationUnit());
+                organisationUnitUids.add(link.organisationUnit());
             }
         }
 

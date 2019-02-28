@@ -40,7 +40,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
 
 @RunWith(AndroidJUnit4.class)
-public class UserOrganisationUnitLinkModelsShould {
+public class UserOrganisationUnitLinkModelShould {
     private static final long ID = 2L;
     private static final String USER = "test_user_uid";
     private static final String ORGANISATION_UNIT = "test_organisation_unit_uid";

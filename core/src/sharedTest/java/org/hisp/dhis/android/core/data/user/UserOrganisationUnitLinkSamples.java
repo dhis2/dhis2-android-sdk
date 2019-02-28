@@ -26,14 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.data.user;
 
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
+public class UserOrganisationUnitLinkSamples {
 
-import java.util.List;
-
-public interface UserOrganisationUnitLinkStoreInterface extends LinkModelStore<UserOrganisationUnitLinkModel> {
-
-    List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
+    public static UserOrganisationUnitLink getUserOrganisationUnitLink() {
+        return UserOrganisationUnitLink.builder()
+                .user("user")
+                .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())
+                .organisationUnit("organisation_unit")
+                .root(true)
+                .build();
+    }
 }

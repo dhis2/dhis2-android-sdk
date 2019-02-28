@@ -28,11 +28,43 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import android.support.test.runner.AndroidJUnit4;
 
-import java.util.List;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples;
+import org.junit.runner.RunWith;
 
-public interface UserOrganisationUnitLinkStore extends LinkModelStore<UserOrganisationUnitLink> {
+@RunWith(AndroidJUnit4.class)
+public class UserOrganisationUnitLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<UserOrganisationUnitLink> {
 
-    List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
+    public UserOrganisationUnitLinkStoreIntegrationShould() {
+        super(UserOrganisationUnitLinkStoreImpl.create(DatabaseAdapterFactory.get(false)),
+                UserOrganisationUnitLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+    }
+
+    @Override
+    protected String addMasterUid() {
+        return UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink().user();
+    }
+
+    @Override
+    protected UserOrganisationUnitLink buildObject() {
+        return UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink();
+    }
+
+    @Override
+    protected UserOrganisationUnitLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .user("new_user")
+                .build();
+    }
+
+    @Override
+    protected UserOrganisationUnitLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
+                .build();
+    }
 }

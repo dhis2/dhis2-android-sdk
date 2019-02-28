@@ -28,11 +28,52 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import java.util.List;
+import com.google.auto.value.AutoValue;
 
-public interface UserOrganisationUnitLinkStore extends LinkModelStore<UserOrganisationUnitLink> {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
+@AutoValue
+public abstract class UserOrganisationUnitLink implements Model {
+
+    @Nullable
+    public abstract String user();
+
+    @Nullable
+    public abstract String organisationUnit();
+
+    @Nullable
+    public abstract String organisationUnitScope();
+
+    @Nullable
+    public abstract Boolean root();
+
+    public static Builder builder() {
+        return new AutoValue_UserOrganisationUnitLink.Builder();
+    }
+
+    public static UserOrganisationUnitLink create(Cursor cursor) {
+        return $AutoValue_UserOrganisationUnitLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder user(@Nullable String user);
+
+        public abstract Builder organisationUnit(@Nullable String organisationUnit);
+
+        public abstract Builder organisationUnitScope(@Nullable String organisationUnitScope);
+
+        public abstract Builder root(@Nullable Boolean root);
+
+        public abstract UserOrganisationUnitLink build();
+    }
 }

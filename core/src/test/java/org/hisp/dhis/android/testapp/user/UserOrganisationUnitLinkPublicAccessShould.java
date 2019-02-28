@@ -26,13 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.testapp.user;
 
-import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import java.util.List;
+public class UserOrganisationUnitLinkPublicAccessShould extends BasePublicAccessShould<UserOrganisationUnitLink> {
 
-public interface UserOrganisationUnitLinkStore extends LinkModelStore<UserOrganisationUnitLink> {
+    @Mock
+    private UserOrganisationUnitLink object;
 
-    List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
+    @Override
+    public UserOrganisationUnitLink object() {
+        return object;
+    }
+
+    @Override
+    public void has_public_create_method() {
+        UserOrganisationUnitLink.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        UserOrganisationUnitLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
+    }
 }

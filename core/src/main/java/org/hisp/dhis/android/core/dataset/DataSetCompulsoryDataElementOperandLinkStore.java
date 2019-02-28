@@ -37,7 +37,7 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class DataSetCompulsoryDataElementOperandLinkStore {
 
-    private static final StatementBinder<DataSetCompulsoryDataElementOperandLinkModel> BINDER
+    private static final StatementBinder<DataSetCompulsoryDataElementOperandLink> BINDER
             = (o, sqLiteStatement) -> {
         sqLiteBind(sqLiteStatement, 1, o.dataSet());
         sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
@@ -46,12 +46,12 @@ final class DataSetCompulsoryDataElementOperandLinkStore {
     private DataSetCompulsoryDataElementOperandLinkStore() {
     }
 
-    public static LinkModelStore<DataSetCompulsoryDataElementOperandLinkModel> create(DatabaseAdapter databaseAdapter) {
+    public static LinkModelStore<DataSetCompulsoryDataElementOperandLink> create(DatabaseAdapter databaseAdapter) {
 
         return StoreFactory.linkModelStore(databaseAdapter,
                 DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
-                DataSetCompulsoryDataElementOperandLinkModel.Columns.DATA_SET,
+                DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
                 BINDER,
-                DataSetCompulsoryDataElementOperandLinkModel::create);
+                DataSetCompulsoryDataElementOperandLink::create);
     }
 }

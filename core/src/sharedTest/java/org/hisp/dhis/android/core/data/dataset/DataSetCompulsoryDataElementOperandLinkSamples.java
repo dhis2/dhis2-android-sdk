@@ -26,32 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.data.dataset;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public class DataSetCompulsoryDataElementOperandLinkSamples {
 
-final class DataSetCompulsoryDataElementOperandLinkStore {
-
-    private static final StatementBinder<DataSetCompulsoryDataElementOperandLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-    };
-
-    private DataSetCompulsoryDataElementOperandLinkStore() {
-    }
-
-    public static LinkModelStore<DataSetCompulsoryDataElementOperandLink> create(DatabaseAdapter databaseAdapter) {
-
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
-                DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
-                BINDER,
-                DataSetCompulsoryDataElementOperandLink::create);
+    public static DataSetCompulsoryDataElementOperandLink getDataSetCompulsoryDataElementOperandLink() {
+        return DataSetCompulsoryDataElementOperandLink.builder()
+                .dataSet("data_set")
+                .dataElementOperand("data_element_operand")
+                .build();
     }
 }

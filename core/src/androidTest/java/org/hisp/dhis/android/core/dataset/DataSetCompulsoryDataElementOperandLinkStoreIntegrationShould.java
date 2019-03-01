@@ -28,49 +28,43 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.junit.Before;
-import org.junit.Test;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.dataset.DataSetCompulsoryDataElementOperandLinkSamples;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.io.IOException;
+@RunWith(AndroidJUnit4.class)
+public class DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<DataSetCompulsoryDataElementOperandLink> {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class DataSetCompulsoryDataElementOperandLinkModelBuilderShould {
-
-    @Mock
-    private DataSet dataSet;
-
-    @Mock
-    private DataElementOperand compulsoryDataElementOperand;
-
-    private DataSetCompulsoryDataElementOperandLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(dataSet.uid()).thenReturn("dataSet_uid");
-        when(compulsoryDataElementOperand.uid()).thenReturn("dataElementOperand_uid");
-
-        model = buildModel();
+    public DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould() {
+        super(DataSetCompulsoryDataElementOperandLinkStore.create(DatabaseAdapterFactory.get(false)),
+                DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    private DataSetCompulsoryDataElementOperandLinkModel buildModel() {
-        return new DataSetCompulsoryDataElementOperandLinkModelBuilder(dataSet)
-                .buildModel(compulsoryDataElementOperand);
+    @Override
+    protected String addMasterUid() {
+        return buildObject().dataSet();
     }
 
-    @Test
-    public void copy_link_properties() {
-        assertThat(model.dataSet()).isEqualTo(dataSet.uid());
-        assertThat(model.dataElementOperand()).isEqualTo(compulsoryDataElementOperand.uid());
+    @Override
+    protected DataSetCompulsoryDataElementOperandLink buildObject() {
+        return DataSetCompulsoryDataElementOperandLinkSamples.getDataSetCompulsoryDataElementOperandLink();
+    }
+
+    @Override
+    protected DataSetCompulsoryDataElementOperandLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .dataSet("new_data_set_uid")
+                .build();
+    }
+
+    @Override
+    protected DataSetCompulsoryDataElementOperandLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
+                .build();
     }
 }

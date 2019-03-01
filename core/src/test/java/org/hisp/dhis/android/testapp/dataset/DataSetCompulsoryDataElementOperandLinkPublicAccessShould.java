@@ -26,32 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.testapp.dataset;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public class DataSetCompulsoryDataElementOperandLinkPublicAccessShould
+        extends BasePublicAccessShould<DataSetCompulsoryDataElementOperandLink> {
 
-final class DataSetCompulsoryDataElementOperandLinkStore {
+    @Mock
+    private DataSetCompulsoryDataElementOperandLink object;
 
-    private static final StatementBinder<DataSetCompulsoryDataElementOperandLink> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.dataSet());
-        sqLiteBind(sqLiteStatement, 2, o.dataElementOperand());
-    };
-
-    private DataSetCompulsoryDataElementOperandLinkStore() {
+    @Override
+    public DataSetCompulsoryDataElementOperandLink object() {
+        return object;
     }
 
-    public static LinkModelStore<DataSetCompulsoryDataElementOperandLink> create(DatabaseAdapter databaseAdapter) {
+    @Override
+    public void has_public_create_method() {
+        DataSetCompulsoryDataElementOperandLink.create(null);
+    }
 
-        return StoreFactory.linkModelStore(databaseAdapter,
-                DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
-                DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
-                BINDER,
-                DataSetCompulsoryDataElementOperandLink::create);
+    @Override
+    public void has_public_builder_method() {
+        DataSetCompulsoryDataElementOperandLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

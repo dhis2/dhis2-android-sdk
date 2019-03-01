@@ -28,24 +28,42 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-public class DataSetCompulsoryDataElementOperandLinkModelBuilder
-        implements ModelBuilder<DataElementOperand, DataSetCompulsoryDataElementOperandLinkModel> {
+import com.google.auto.value.AutoValue;
 
-    private final DataSetCompulsoryDataElementOperandLinkModel.Builder builder;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    DataSetCompulsoryDataElementOperandLinkModelBuilder(DataSet dataSet) {
-        this.builder = DataSetCompulsoryDataElementOperandLinkModel.builder()
-                .dataSet(dataSet.uid());
+@AutoValue
+public abstract class DataSetCompulsoryDataElementOperandLink implements Model {
+
+    @Nullable
+    public abstract String dataSet();
+
+    @Nullable
+    public abstract String dataElementOperand();
+
+    public static Builder builder() {
+        return new AutoValue_DataSetCompulsoryDataElementOperandLink.Builder();
     }
 
-    @Override
-    public DataSetCompulsoryDataElementOperandLinkModel buildModel(DataElementOperand dataElementOperand) {
-        return builder
-                .dataElementOperand(dataElementOperand.uid())
-                .build();
+    public static DataSetCompulsoryDataElementOperandLink create(Cursor cursor) {
+        return $AutoValue_DataSetCompulsoryDataElementOperandLink.createFromCursor(cursor);
     }
 
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder dataSet(String dataSet);
+
+        public abstract Builder dataElementOperand(String dataElementOperand);
+
+        public abstract DataSetCompulsoryDataElementOperandLink build();
+    }
 }

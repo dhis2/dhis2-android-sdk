@@ -49,7 +49,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Syn
                 d2.programModule().programSections
                         .get();
 
-        assertThat(programSections.size(), is(1));
+        assertThat(programSections.size(), is(2));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Syn
                         .eq("lxAQ7Zs9VYR")
                         .get();
 
-        assertThat(programSections.size(), is(1));
+        assertThat(programSections.size(), is(2));
     }
 
     @Test
@@ -106,6 +106,5 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Syn
 
         assertThat(programSections.size(), is(1));
     }
-
 
 }

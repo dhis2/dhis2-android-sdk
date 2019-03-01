@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.Before;
@@ -57,7 +59,7 @@ public class SectionHandlerShould {
     private IdentifiableObjectStore<Section> sectionStore;
 
     @Mock
-    private LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler;
+    private OrderedLinkSyncHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
 
     @Mock
     private SyncHandler<DataElementOperand> greyedFieldsHandler;
@@ -70,6 +72,7 @@ public class SectionHandlerShould {
 
     // object to test
     private SectionHandler sectionHandler;
+    private List<DataElement> dataElements;
 
     @Before
     public void setUp() throws Exception {
@@ -81,7 +84,7 @@ public class SectionHandlerShould {
 
         when(section.uid()).thenReturn("section_uid");
 
-        List<DataElement> dataElements = new ArrayList<>();
+        dataElements = new ArrayList<>();
         dataElements.add(DataElement.builder().uid("dataElement_uid").build());
         when(section.dataElements()).thenReturn(dataElements);
 
@@ -103,7 +106,8 @@ public class SectionHandlerShould {
     @Test
     public void handlingSection_shouldHandleLinkedDataElements() {
         sectionHandler.handle(section);
-        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), anyListOf(SectionDataElementLink.class));
+        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements),
+                any(OrderedLinkTransformer.class));
         verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), anyListOf(SectionGreyedFieldsLink.class));
     }
 }

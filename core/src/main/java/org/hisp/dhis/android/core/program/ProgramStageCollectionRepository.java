@@ -29,9 +29,16 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Collection;
 import java.util.List;
@@ -51,4 +58,101 @@ public final class ProgramStageCollectionRepository
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new ProgramStageCollectionRepository(store, childrenAppenders, updatedScope)));
     }
+
+
+    public StringFilterConnector<ProgramStageCollectionRepository> byDescription() {
+        return cf.string(ProgramStageFields.DESCRIPTION);
+    }
+
+    public StringFilterConnector<ProgramStageCollectionRepository> byDisplayDescription() {
+        return cf.string(ProgramStageFields.DISPLAY_DESCRIPTION);
+    }
+
+    public StringFilterConnector<ProgramStageCollectionRepository> byExectuionDateLabel() {
+        return cf.string(ProgramStageFields.EXECUTION_DATE_LABEL);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byAllowGenerateNextVisit() {
+        return cf.bool(ProgramStageFields.ALLOW_GENERATE_NEXT_VISIT);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byValidCompleteOnly() {
+        return cf.bool(ProgramStageFields.VALID_COMPLETE_ONLY);
+    }
+
+    public StringFilterConnector<ProgramStageCollectionRepository> byReportDateToUse() {
+        return cf.string(ProgramStageFields.REPORT_DATE_TO_USE);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byOpenAfterEnrollment() {
+        return cf.bool(ProgramStageFields.OPEN_AFTER_ENROLLMENT);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byRepeatable() {
+        return cf.bool(ProgramStageFields.REPEATABLE);
+    }
+
+    /**
+     * @deprecated since 2.29, replaced by {@link #byFeatureType()}
+     */
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byCaptureCoordinates() {
+        return cf.bool(ProgramStageFields.CAPTURE_COORDINATES);
+    }
+
+    public EnumFilterConnector<ProgramStageCollectionRepository, FeatureType> byFeatureType() {
+        return cf.enumC(ProgramStageFields.FEATURE_TYPE);
+    }
+
+    public EnumFilterConnector<ProgramStageCollectionRepository, FormType> byFormType() {
+        return cf.enumC(ProgramStageFields.FORM_TYPE);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byDisplayGenerateEventBox() {
+        return cf.bool(ProgramStageFields.DISPLAY_GENERATE_EVENT_BOX);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byGeneratedByEnrollmentDate() {
+        return cf.bool(ProgramStageFields.GENERATED_BY_ENROLMENT_DATE);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byAutoGenerateEvent() {
+        return cf.bool(ProgramStageFields.AUTO_GENERATE_EVENT);
+    }
+
+    public IntegerFilterConnector<ProgramStageCollectionRepository> bySortOrder() {
+        return cf.integer(ProgramStageFields.SORT_ORDER);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byHideDueDate() {
+        return cf.bool(ProgramStageFields.HIDE_DUE_DATE);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byBlockEntryForm() {
+        return cf.bool(ProgramStageFields.BLOCK_ENTRY_FORM);
+    }
+
+    public IntegerFilterConnector<ProgramStageCollectionRepository> byMinDaysFromStart() {
+        return cf.integer(ProgramStageFields.MIN_DAYS_FROM_START);
+    }
+
+    public IntegerFilterConnector<ProgramStageCollectionRepository> byStandardInterval() {
+        return cf.integer(ProgramStageFields.STANDARD_INTERVAL);
+    }
+
+    public EnumFilterConnector<ProgramStageCollectionRepository, PeriodType> byPeriodType() {
+        return cf.enumC(ProgramStageFields.PERIOD_TYPE);
+    }
+
+    public StringFilterConnector<ProgramStageCollectionRepository> byProgramUid() {
+        return cf.string(ProgramStageFields.PROGRAM);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byAccessDataWrite() {
+        return cf.bool(ProgramStageTableInfo.Columns.ACCESS_DATA_WRITE);
+    }
+
+    public BooleanFilterConnector<ProgramStageCollectionRepository> byRemindCompleted() {
+        return cf.bool(ProgramStageFields.REMIND_COMPLETED);
+    }
+    
 }

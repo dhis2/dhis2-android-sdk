@@ -281,7 +281,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     public void include_program_stages_as_children() {
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
-        assertThat(program.programStages().size(), is(1));
+        assertThat(program.programStages().size(), is(2));
         assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
     }
 
@@ -297,7 +297,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     public void include_program_indicators_as_children() {
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
-        assertThat(program.programIndicators().size(), is(3));
+        assertThat(program.programIndicators().size(), is(4));
         assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
 

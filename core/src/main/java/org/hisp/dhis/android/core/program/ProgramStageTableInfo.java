@@ -52,7 +52,7 @@ public final class ProgramStageTableInfo {
     };
 
     static class Columns extends BaseIdentifiableObjectModel.Columns {
-        static final String ACCESS_DATA_WRITE = "accessDataWrite";
+        public static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
         @Override
         public String[] all() {

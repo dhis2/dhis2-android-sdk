@@ -30,7 +30,10 @@ package org.hisp.dhis.android.testapp.program;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.period.FeatureType;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,30 +48,295 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends Synce
 
     @Test
     public void find_all() {
-        List<ProgramStage> stages = d2.programModule().programStages
-                .get();
-        assertThat(stages.size(), is(1));
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .get();
+
+        assertThat(programStages.size(), is(2));
     }
 
     @Test
     public void include_object_style_as_children() {
-        ProgramStage stage = d2.programModule().programStages
-                .one().getWithAllChildren();
-        assertThat(stage.style().icon(), is("program-stage-icon"));
-        assertThat(stage.style().color(), is("#444"));
+        ProgramStage programStage =
+                d2.programModule().programStages
+                        .one()
+                        .getWithAllChildren();
+
+        assertThat(programStage.style().icon(), is("program-stage-icon"));
+        assertThat(programStage.style().color(), is("#444"));
     }
 
     @Test
     public void include_program_stage_data_elements_as_children() {
-        ProgramStage stage = d2.programModule().programStages
-                .one().getWithAllChildren();
-        assertThat(stage.programStageDataElements().size(), is(3));
+        ProgramStage programStage =
+                d2.programModule().programStages
+                        .one()
+                        .getWithAllChildren();
+
+        assertThat(programStage.programStageDataElements().size(), is(3));
     }
 
     @Test
     public void include_program_stage_section_as_children() {
-        ProgramStage stage = d2.programModule().programStages
-                .one().getWithAllChildren();
-        assertThat(stage.programStageSections().size(), is(1));
+        ProgramStage programStage =
+                d2.programModule().programStages
+                        .one()
+                        .getWithAllChildren();
+
+        assertThat(programStage.programStageSections().size(), is(1));
     }
+
+    @Test
+    public void filter_by_description() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byDescription()
+                        .eq("Description")
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_display_description() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byDisplayDescription()
+                        .eq("Display Description")
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_execution_date_label() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byExectuionDateLabel()
+                        .eq("Visit date")
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_allow_generate_next_visit() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byAllowGenerateNextVisit()
+                        .isFalse()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_valid_complete_only() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byValidCompleteOnly()
+                        .isTrue()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_report_date_to_use() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byReportDateToUse()
+                        .eq("report_date_to_use")
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_open_after_enrollment() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byOpenAfterEnrollment()
+                        .isFalse()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_repeatable() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byRepeatable()
+                        .isFalse()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_capture_coordinates() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byCaptureCoordinates()
+                        .isTrue()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_feature_type() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byFeatureType()
+                        .eq(FeatureType.POINT)
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_form_type() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byFormType()
+                        .eq(FormType.DEFAULT)
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_display_generate_event_box() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byDisplayGenerateEventBox()
+                        .isFalse()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_generated_by_enrollment_data() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byGeneratedByEnrollmentDate()
+                        .isFalse()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_autogenerate_event() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byAutoGenerateEvent()
+                        .isTrue()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_sort_order() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .bySortOrder()
+                        .eq(1)
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_hide_due_date() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byHideDueDate()
+                        .isFalse()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_block_entry_form() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byBlockEntryForm()
+                        .isTrue()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_min_days_from_start() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byMinDaysFromStart()
+                        .eq(0)
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_standard_interval() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byStandardInterval()
+                        .eq(0)
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_period_type() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byPeriodType()
+                        .eq(PeriodType.Monthly)
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byProgramUid()
+                        .eq("lxAQ7Zs9VYR")
+                        .get();
+
+        assertThat(programStages.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_access_data_write() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byAccessDataWrite()
+                        .isTrue()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_remind_completed() {
+        List<ProgramStage> programStages =
+                d2.programModule().programStages
+                        .byRemindCompleted()
+                        .isTrue()
+                        .get();
+
+        assertThat(programStages.size(), is(1));
+    }
+
 }

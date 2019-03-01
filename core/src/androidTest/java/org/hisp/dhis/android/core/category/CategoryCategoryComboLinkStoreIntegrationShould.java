@@ -28,27 +28,43 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import org.hisp.dhis.android.core.data.category.CategoryCategoryComboLinkSamples;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.junit.runner.RunWith;
 
-@Module
-public final class CategoryCategoryComboEntityDIModule {
+@RunWith(AndroidJUnit4.class)
+public class CategoryCategoryComboLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<CategoryCategoryComboLink> {
 
-    @Provides
-    @Reusable
-    LinkModelStore<CategoryCategoryComboLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryComboLinkStore.create(databaseAdapter);
+    public CategoryCategoryComboLinkStoreIntegrationShould() {
+        super(CategoryCategoryComboLinkStore.create(DatabaseAdapterFactory.get(false)),
+                CategoryCategoryComboLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
-    @Provides
-    @Reusable
-    LinkSyncHandler<CategoryCategoryComboLink> handler(LinkModelStore<CategoryCategoryComboLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    @Override
+    protected String addMasterUid() {
+        return CategoryCategoryComboLinkSamples.getCategoryCategoryComboLink().categoryCombo();
+    }
+
+    @Override
+    protected CategoryCategoryComboLink buildObject() {
+        return CategoryCategoryComboLinkSamples.getCategoryCategoryComboLink();
+    }
+
+    @Override
+    protected CategoryCategoryComboLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .categoryCombo("new_category_combo")
+                .build();
+    }
+
+    @Override
+    protected CategoryCategoryComboLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
+                .build();
     }
 }

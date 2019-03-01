@@ -28,27 +28,47 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import com.google.auto.value.AutoValue;
 
-@Module
-public final class CategoryCategoryComboEntityDIModule {
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.common.Model;
 
-    @Provides
-    @Reusable
-    LinkModelStore<CategoryCategoryComboLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryComboLinkStore.create(databaseAdapter);
+@AutoValue
+public abstract class CategoryCategoryComboLink implements Model {
+
+    @Nullable
+    public abstract String category();
+
+    @Nullable
+    public abstract String categoryCombo();
+
+    @Nullable
+    public abstract Integer sortOrder();
+
+    public static Builder builder() {
+        return new AutoValue_CategoryCategoryComboLink.Builder();
     }
 
-    @Provides
-    @Reusable
-    LinkSyncHandler<CategoryCategoryComboLink> handler(LinkModelStore<CategoryCategoryComboLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    public static CategoryCategoryComboLink create(Cursor cursor) {
+        return $AutoValue_CategoryCategoryComboLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
+        public abstract Builder category(@Nullable String category);
+
+        public abstract Builder categoryCombo(@Nullable String combo);
+
+        public abstract Builder sortOrder(@Nullable Integer sortOrder);
+
+        public abstract CategoryCategoryComboLink build();
     }
 }

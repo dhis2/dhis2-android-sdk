@@ -26,25 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.testapp.category;
 
-import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-public class CategoryCategoryComboLinkModelBuilder
-        extends OrderedLinkModelBuilder<Category, CategoryCategoryComboLinkModel> {
+public class CategoryCategoryComboLinkPublicAccessShould extends BasePublicAccessShould<CategoryCategoryComboLink> {
 
-    private final CategoryCategoryComboLinkModel.Builder builder;
+    @Mock
+    private CategoryCategoryComboLink object;
 
-    CategoryCategoryComboLinkModelBuilder(CategoryCombo combo) {
-        this.builder = CategoryCategoryComboLinkModel.builder()
-                .categoryCombo(combo.uid());
+    @Override
+    public CategoryCategoryComboLink object() {
+        return object;
     }
 
     @Override
-    public CategoryCategoryComboLinkModel buildModel(Category category, Integer sortOrder) {
-        return builder
-                .category(category.uid())
-                .sortOrder(sortOrder)
-                .build();
+    public void has_public_create_method() {
+        CategoryCategoryComboLink.create(null);
+    }
+
+    @Override
+    public void has_public_builder_method() {
+        CategoryCategoryComboLink.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

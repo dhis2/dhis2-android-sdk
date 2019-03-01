@@ -26,29 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.data.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+public class CategoryCategoryComboLinkSamples {
 
-@Module
-public final class CategoryCategoryComboEntityDIModule {
-
-    @Provides
-    @Reusable
-    LinkModelStore<CategoryCategoryComboLink> store(DatabaseAdapter databaseAdapter) {
-        return CategoryCategoryComboLinkStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    LinkSyncHandler<CategoryCategoryComboLink> handler(LinkModelStore<CategoryCategoryComboLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    public static CategoryCategoryComboLink getCategoryCategoryComboLink() {
+        return CategoryCategoryComboLink.builder()
+                .categoryCombo("category_combo")
+                .category("category")
+                .sortOrder(3)
+                .build();
     }
 }

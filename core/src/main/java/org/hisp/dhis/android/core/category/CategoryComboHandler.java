@@ -28,15 +28,17 @@
 
 package org.hisp.dhis.android.core.category;
 
-
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -46,14 +48,14 @@ import dagger.Reusable;
 final class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCombo> {
 
     private final SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
-    private final OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler;
+    private final LinkSyncHandler<CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
     private final OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
 
     @Inject
     CategoryComboHandler(
             @NonNull IdentifiableObjectStore<CategoryCombo> store,
             @NonNull SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler,
-            @NonNull OrderedLinkModelHandler<Category, CategoryCategoryComboLinkModel> categoryCategoryComboLinkHandler,
+            @NonNull LinkSyncHandler<CategoryCategoryComboLink> categoryCategoryComboLinkHandler,
             OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner) {
         super(store);
         this.optionComboHandler = optionComboHandler;
@@ -66,8 +68,15 @@ final class CategoryComboHandler extends IdentifiableSyncHandlerImpl<CategoryCom
         optionComboHandler.handleMany(combo.categoryOptionCombos(),
                 optionCombo -> optionCombo.toBuilder().categoryCombo(combo).build());
 
-        categoryCategoryComboLinkHandler.handleMany(combo.uid(), combo.categories(),
-                new CategoryCategoryComboLinkModelBuilder(combo));
+        if (combo.categories() != null) {
+            List<CategoryCategoryComboLink> categoryCategoryComboLinks = new ArrayList<>();
+            for (int i = 0; i < combo.categories().size(); i++) {
+                    categoryCategoryComboLinks.add(CategoryCategoryComboLink.builder()
+                        .categoryCombo(combo.uid()).category(combo.categories().get(i).uid()).sortOrder(i + 1)
+                            .build());
+            }
+            categoryCategoryComboLinkHandler.handleMany(combo.uid(), categoryCategoryComboLinks);
+        }
 
         if (action == HandleAction.Update) {
             categoryOptionCleaner.deleteOrphan(combo, combo.categoryOptionCombos());

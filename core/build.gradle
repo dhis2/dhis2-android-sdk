@@ -126,11 +126,11 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
     // Apache libraries
-    implementation 'org.apache.commons:commons-jexl:2.1.1'
-    implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation "org.apache.commons:commons-jexl:2.1.1"
+    implementation "org.apache.commons:commons-lang3:3.7"
 
     // Joda time
-    implementation 'joda-time:joda-time:2.9.9'
+    implementation "joda-time:joda-time:2.9.9"
 
     // Extension which generates mappers for work with cursor and content values
     implementation "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
@@ -153,10 +153,10 @@ dependencies {
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
-    androidTestImplementation('com.facebook.stetho:stetho:1.5.0') {
+    androidTestImplementation("com.facebook.stetho:stetho:${libraries.stetho}") {
         exclude module: 'jsr305'
     }
-    androidTestImplementation('com.facebook.stetho:stetho-okhttp3:1.5.0') {
+    androidTestImplementation("com.facebook.stetho:stetho-okhttp3:${libraries.stetho}") {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }

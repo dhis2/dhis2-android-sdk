@@ -25,51 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-import android.support.annotation.Nullable;
+package org.hisp.dhis.android.testapp.program;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+public class ProgramSectionAttributeLinkPublicAccessShould extends BasePublicAccessShould<ProgramSectionAttributeLink> {
 
-@Deprecated
-@AutoValue
-public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
-    public static final String TABLE = "ProgramSectionAttributeLink";
+    @Mock
+    private ProgramSectionAttributeLink object;
 
-    public static class Columns extends BaseModel.Columns {
-        public static final String PROGRAM_SECTION = "programSection";
-        public static final String ATTRIBUTE = "attribute";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
-        }
+    @Override
+    public ProgramSectionAttributeLink object() {
+        return object;
     }
 
-    public static ProgramSectionAttributeLinkModel create(Cursor cursor) {
-        return AutoValue_ProgramSectionAttributeLinkModel.createFromCursor(cursor);
+    @Override
+    public void has_public_create_method() {
+        ProgramSectionAttributeLink.create(null);
     }
 
-    public static Builder builder() {
-        return new $$AutoValue_ProgramSectionAttributeLinkModel.Builder();
+    @Override
+    public void has_public_builder_method() {
+        ProgramSectionAttributeLink.builder();
     }
 
-    @Nullable
-    public abstract String programSection();
-
-    @Nullable
-    public abstract String attribute();
-
-    @AutoValue.Builder
-    public static abstract class Builder extends BaseModel.Builder<Builder> {
-        public abstract Builder programSection(String programSection);
-
-        public abstract Builder attribute(String attribute);
-
-        public abstract ProgramSectionAttributeLinkModel build();
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

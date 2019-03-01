@@ -33,30 +33,10 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.common.Model;
 
-@Deprecated
 @AutoValue
-public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
-    public static final String TABLE = "ProgramSectionAttributeLink";
-
-    public static class Columns extends BaseModel.Columns {
-        public static final String PROGRAM_SECTION = "programSection";
-        public static final String ATTRIBUTE = "attribute";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(), PROGRAM_SECTION, ATTRIBUTE);
-        }
-    }
-
-    public static ProgramSectionAttributeLinkModel create(Cursor cursor) {
-        return AutoValue_ProgramSectionAttributeLinkModel.createFromCursor(cursor);
-    }
-
-    public static Builder builder() {
-        return new $$AutoValue_ProgramSectionAttributeLinkModel.Builder();
-    }
+public abstract class ProgramSectionAttributeLink implements Model {
 
     @Nullable
     public abstract String programSection();
@@ -64,12 +44,25 @@ public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
     @Nullable
     public abstract String attribute();
 
+    public static Builder builder() {
+        return new AutoValue_ProgramSectionAttributeLink.Builder();
+    }
+
+    public static ProgramSectionAttributeLink create(Cursor cursor) {
+        return $AutoValue_ProgramSectionAttributeLink.createFromCursor(cursor);
+    }
+
+    public abstract Builder toBuilder();
+
     @AutoValue.Builder
     public static abstract class Builder extends BaseModel.Builder<Builder> {
+
+        public abstract Builder id(Long id);
+
         public abstract Builder programSection(String programSection);
 
         public abstract Builder attribute(String attribute);
 
-        public abstract ProgramSectionAttributeLinkModel build();
+        public abstract ProgramSectionAttributeLink build();
     }
 }

@@ -28,22 +28,43 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import android.support.test.runner.AndroidJUnit4;
 
-public class ProgramSectionAttributeLinkModelBuilder
-        implements ModelBuilder<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel> {
+import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
+import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.program.ProgramSectionAttributeLinkSamples;
+import org.junit.runner.RunWith;
 
-    private final ProgramSectionAttributeLinkModel.Builder builder;
+@RunWith(AndroidJUnit4.class)
+public class ProgramSectionAttributeLinkStoreIntegrationShould
+        extends LinkModelStoreAbstractIntegrationShould<ProgramSectionAttributeLink> {
 
-    ProgramSectionAttributeLinkModelBuilder(ProgramSection programSection) {
-        this.builder = ProgramSectionAttributeLinkModel.builder()
-                .programSection(programSection.uid());
+    public ProgramSectionAttributeLinkStoreIntegrationShould() {
+        super(ProgramSectionAttributeLinkStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramSectionAttributeLinkTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
-    public ProgramSectionAttributeLinkModel buildModel(ProgramTrackedEntityAttribute attribute) {
-        return builder
-                .attribute(attribute.uid())
+    protected String addMasterUid() {
+        return ProgramSectionAttributeLinkSamples.getProgramSectionAttributeLink().programSection();
+    }
+
+    @Override
+    protected ProgramSectionAttributeLink buildObject() {
+        return ProgramSectionAttributeLinkSamples.getProgramSectionAttributeLink();
+    }
+
+    @Override
+    protected ProgramSectionAttributeLink buildObjectWithOtherMasterUid() {
+        return buildObject().toBuilder()
+                .programSection("new_program_section")
+                .build();
+    }
+
+    @Override
+    protected ProgramSectionAttributeLink buildObjectWithId() {
+        return buildObject().toBuilder()
+                .id(1L)
                 .build();
     }
 }

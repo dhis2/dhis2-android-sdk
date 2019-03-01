@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.program;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.junit.Before;
@@ -44,6 +44,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,15 +56,13 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
-    private LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel> programSectionAttributeLinkHandler;
+    private LinkSyncHandler<ProgramSectionAttributeLink> programSectionAttributeLinkHandler;
 
     @Mock
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
     private ProgramSection programSection;
-
-    private List<ProgramTrackedEntityAttribute> attributes;
 
     private String SECTION_UID = "section_uid";
 
@@ -77,7 +76,8 @@ public class ProgramSectionHandlerShould {
         programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler,
                 styleHandler);
 
-        attributes = Lists.newArrayList(ProgramTrackedEntityAttribute.builder().uid("attribute_uid").build());
+        List<ProgramTrackedEntityAttribute> attributes = Lists.newArrayList(
+                ProgramTrackedEntityAttribute.builder().uid("attribute_uid").build());
         when(programSection.attributes()).thenReturn(attributes);
         when(programSection.uid()).thenReturn(SECTION_UID);
     }
@@ -91,8 +91,8 @@ public class ProgramSectionHandlerShould {
     @Test
     public void save_program_section_attribute_links() throws Exception {
         programSectionHandler.handle(programSection);
-        verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID), same(attributes),
-                any(ProgramSectionAttributeLinkModelBuilder.class));
+        verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID),
+                anyListOf(ProgramSectionAttributeLink.class));
     }
 
     @Test

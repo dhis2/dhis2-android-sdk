@@ -26,49 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.data.program;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
 
-import java.io.IOException;
+public class ProgramSectionAttributeLinkSamples {
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class ProgramSectionAttributeLinkModelBuilderShould {
-
-    @Mock
-    private ProgramSection programSection;
-
-    @Mock
-    private ProgramTrackedEntityAttribute attribute;
-
-    private ProgramSectionAttributeLinkModel model;
-
-    @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
-
-        when(programSection.uid()).thenReturn("program_section_uid");
-        when(attribute.uid()).thenReturn("attribute_uid");
-
-        model = buildModel();
-    }
-
-    private ProgramSectionAttributeLinkModel buildModel() {
-        return new ProgramSectionAttributeLinkModelBuilder(programSection).buildModel(attribute);
-    }
-
-    @Test
-    public void copy_link_properties() {
-        assertThat(model.programSection()).isEqualTo(programSection.uid());
-        assertThat(model.attribute()).isEqualTo(attribute.uid());
+    public static ProgramSectionAttributeLink getProgramSectionAttributeLink() {
+        return ProgramSectionAttributeLink.builder()
+                .programSection("program_section")
+                .attribute("attribute")
+                .build();
     }
 }

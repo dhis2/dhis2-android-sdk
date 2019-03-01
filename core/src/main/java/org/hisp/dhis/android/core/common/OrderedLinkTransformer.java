@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-public abstract class OrderedLinkTransformer<S, M> {
-    public abstract M transform(S object, Integer sortOrder);
+public interface OrderedLinkTransformer<S, M> {
+    M transform(S object, Integer sortOrder);
 }

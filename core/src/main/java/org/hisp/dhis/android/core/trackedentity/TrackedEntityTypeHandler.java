@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 
 import javax.inject.Inject;
 
@@ -62,11 +61,7 @@ final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<Tracked
                 TrackedEntityTypeTableInfo.TABLE_INFO.name()));
 
         attributeHandler.handleMany(trackedEntityType.uid(), trackedEntityType.trackedEntityTypeAttributes(),
-                new OrderedLinkTransformer<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>() {
-                    @Override
-                    public TrackedEntityTypeAttribute transform(TrackedEntityTypeAttribute object, Integer sortOrder) {
-                        return object.toBuilder().sortOrder(sortOrder).build();
-                    }
-                });
+                (trackedEntityTypeAttribute, sortOrder) ->
+                        trackedEntityTypeAttribute.toBuilder().sortOrder(sortOrder).build());
     }
 }

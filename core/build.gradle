@@ -142,10 +142,11 @@ dependencies {
     testImplementation "org.assertj:assertj-core:${libraries.assertj}"
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    testImplementation "com.google.code.findbugs:annotations:3.0.0"
+    testImplementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
     testImplementation "com.android.support.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
+    androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     androidTestImplementation "com.android.support.test:runner:${libraries.testrunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
@@ -159,7 +160,7 @@ dependencies {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
-    implementation "com.google.code.findbugs:annotations:3.0.0"
+    implementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
 }
 
 apply from: rootProject.file("plugins/gradle-mvn-push.gradle")

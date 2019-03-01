@@ -73,7 +73,7 @@ ext {
             // test dependencies
             junit           : "4.12",
             assertj         : "3.11.1",
-            mockito         : "2.21.0",
+            mockito         : "2.24.5",
             dexmaker        : "2.21.0",
             truth           : "0.31",
             testrunner      : "0.5",

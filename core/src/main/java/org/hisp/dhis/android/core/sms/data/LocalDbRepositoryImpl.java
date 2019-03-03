@@ -2,6 +2,7 @@ package org.hisp.dhis.android.core.sms.data;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
@@ -23,6 +24,7 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     private final UserModule userModule;
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
+    private final static String METADATA_FILE = "metadata_ids";
     private final static String CONFIG_FILE = "smsconfig";
     private final static String KEY_GATEWAY = "gateway";
     private final static String KEY_CONFIRMATION_SENDER = "confirmationsender";
@@ -115,11 +117,17 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Single<Metadata> getMetadataIds() {
-        return null;
+        return Single.fromCallable(() ->
+                ObjectMapperFactory.objectMapper().readValue(
+                        context.openFileInput(METADATA_FILE), Metadata.class
+                ));
     }
 
     @Override
-    public Completable setMetadataIds(Metadata metadata) {
-        return null;
+    public Completable setMetadataIds(final Metadata metadata) {
+        return Completable.fromAction(() ->
+                ObjectMapperFactory.objectMapper().writeValue(
+                        context.openFileOutput(METADATA_FILE, Context.MODE_PRIVATE), metadata
+                ));
     }
 }

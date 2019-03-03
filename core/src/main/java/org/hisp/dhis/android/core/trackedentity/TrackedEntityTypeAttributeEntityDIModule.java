@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,7 +49,7 @@ public final class TrackedEntityTypeAttributeEntityDIModule {
     @Provides
     @Reusable
     public OrderedLinkModelHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> handler(
-            TrackedEntityTypeAttributeHandler impl) {
-        return impl;
+            LinkModelStore<TrackedEntityTypeAttribute> store) {
+        return new OrderedLinkModelHandlerImpl<>(store);
     }
 }

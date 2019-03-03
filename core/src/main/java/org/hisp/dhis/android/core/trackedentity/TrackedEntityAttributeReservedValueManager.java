@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
@@ -184,10 +184,10 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         String oUUid = OrganisationUnitTableInfo.TABLE_INFO.name() + dot + BaseIdentifiableObjectModel.Columns.UID;
         String programUid = ProgramTableInfo.TABLE_INFO.name() + dot + BaseIdentifiableObjectModel.Columns.UID;
-        String oUPLOrganisationUnit = OrganisationUnitProgramLinkModel.TABLE + dot
-                + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
-        String oUPLProgram = OrganisationUnitProgramLinkModel.TABLE + dot
-                + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
+        String oUPLOrganisationUnit = OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name() + dot
+                + OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT;
+        String oUPLProgram = OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name() + dot
+                + OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM;
         String pTEAProgram = ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
                 + ProgramTrackedEntityAttributeFields.PROGRAM;
         String pTEATrackedEntityAttribute =  ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + dot
@@ -199,7 +199,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         String queryStatement = "SELECT " + OrganisationUnitTableInfo.TABLE_INFO.name() + ".* FROM (" +
                 OrganisationUnitTableInfo.TABLE_INFO.name() +
-                join + OrganisationUnitProgramLinkModel.TABLE + on + oUUid + eq + oUPLOrganisationUnit +
+                join + OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name() + on + oUUid + eq + oUPLOrganisationUnit +
                 join + ProgramTableInfo.TABLE_INFO.name() + on + oUPLProgram + eq + programUid +
                 join + ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + programUid + eq + pTEAProgram +
                 join +  TrackedEntityAttributeTableInfo.TABLE_INFO.name() + on + tEAUid +
@@ -240,15 +240,15 @@ public final class TrackedEntityAttributeReservedValueManager {
     private static String generateAllTrackedEntityAttributeReservedValuesSelectStatement(String organisationUnitUid) {
         String tEAUidColumn = "t." + BaseIdentifiableObjectModel.Columns.UID;
         String tEAGeneratedColumn = "t." + TrackedEntityAttributeFields.GENERATED;
-        String oUPLProgramColumn = "o." + OrganisationUnitProgramLinkModel.Columns.PROGRAM;
-        String oUPLOrganisationUnitColumn = "o." + OrganisationUnitProgramLinkModel.Columns.ORGANISATION_UNIT;
+        String oUPLProgramColumn = "o." + OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM;
+        String oUPLOrganisationUnitColumn = "o." + OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT;
         String pTEATEAColumn = "p." + ProgramTrackedEntityAttributeFields.TRACKED_ENTITY_ATTRIBUTE;
         String pTEAProgramColumn = "p." + ProgramTrackedEntityAttributeFields.PROGRAM;
 
         String selectStatement = "SELECT DISTINCT " + tEAUidColumn + " " +
                 "FROM " +
                 TrackedEntityAttributeTableInfo.TABLE_INFO.name() + " t, " +
-                OrganisationUnitProgramLinkModel.TABLE + " o, " +
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name() + " o, " +
                 ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name() + " p " +
 
                 "WHERE " + tEAGeneratedColumn + " = 1";

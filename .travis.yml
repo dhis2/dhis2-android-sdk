@@ -1,5 +1,5 @@
 language: android
-sudo: false
+sudo: true
 jdk:
 - oraclejdk8
 android:
@@ -9,7 +9,6 @@ android:
   - build-tools-28.0.3
   - android-28
   - android-22
-  - extra-android-m2repository
   - extra-google-google_play_services
   - extra-google-m2repository
   - extra-android-m2repository
@@ -33,7 +32,6 @@ before_script:
 - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
 - emulator -avd test -no-audio -no-window &
 - android-wait-for-emulator
-- sleep 180
 - adb devices
 - adb shell input keyevent 82 &
 

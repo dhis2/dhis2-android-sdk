@@ -30,9 +30,8 @@ package org.hisp.dhis.android.testapp.program;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,12 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all() {
@@ -55,7 +49,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends M
                 d2.programModule().programIndicators
                         .get();
 
-        assertThat(indicators.size(), is(2));
+        assertThat(indicators.size(), is(4));
     }
 
     @Test
@@ -132,7 +126,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends M
                         .eq("lxAQ7Zs9VYR")
                         .get();
 
-        assertThat(indicators.size(), is(2));
+        assertThat(indicators.size(), is(4));
     }
 
     @Test

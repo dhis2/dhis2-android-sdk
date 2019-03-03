@@ -38,19 +38,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class NoteUniquenessManager {
+import javax.inject.Inject;
 
-    private NoteUniquenessManager() {
+import dagger.Reusable;
+
+@Reusable
+public class NoteUniquenessManager {
+
+    private final ObjectWithoutUidStore<Note> noteStore;
+
+    @Inject
+    NoteUniquenessManager(ObjectWithoutUidStore<Note> noteStore) {
+        this.noteStore = noteStore;
     }
 
-    public static Set<Note> buildUniqueCollection(Collection<Note> notes,
-                                                  String enrollmentUid,
-                                                  ObjectWithoutUidStore<Note> noteStore) {
+    public Set<Note> buildUniqueCollection(Collection<Note> notes, String enrollmentUid) {
         String whereClause = new WhereClauseBuilder()
                 .appendKeyStringValue(BaseDataModel.Columns.STATE, State.TO_POST)
                 .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
         List<Note> toPostNotes = noteStore.selectWhere(whereClause);
-        noteStore.delete();
+
+        String deleteWhereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build();
+        noteStore.deleteWhere(deleteWhereClause);
 
         Set<Note> uniqueNotes = new HashSet<>();
         for (Note note : notes) {

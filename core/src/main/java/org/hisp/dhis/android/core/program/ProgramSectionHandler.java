@@ -28,12 +28,15 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -41,14 +44,12 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
-    private final LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
-            programSectionAttributeLinkHandler;
+    private final LinkSyncHandler<ProgramSectionAttributeLink> programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
-                                  programSectionAttributeLinkHandler,
+                          LinkSyncHandler<ProgramSectionAttributeLink> programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(programSectionStore);
         this.programSectionAttributeLinkHandler = programSectionAttributeLinkHandler;
@@ -57,8 +58,18 @@ final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSec
 
     @Override
     protected void afterObjectHandled(ProgramSection programSection, HandleAction action) {
-        programSectionAttributeLinkHandler.handleMany(programSection.uid(),
-                programSection.attributes(), new ProgramSectionAttributeLinkModelBuilder(programSection));
+
+        if (programSection.attributes() != null) {
+            List<ProgramSectionAttributeLink> programSectionAttributeLinks = new ArrayList<>();
+            ProgramSectionAttributeLink.Builder builder = ProgramSectionAttributeLink.builder()
+                    .programSection(programSection.uid());
+            for (ProgramTrackedEntityAttribute attribute : programSection.attributes()) {
+                programSectionAttributeLinks.add(builder.attribute(attribute.uid()).build());
+            }
+
+            programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSectionAttributeLinks);
+        }
+
         styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
                 ProgramSectionTableInfo.TABLE_INFO.name()));
     }

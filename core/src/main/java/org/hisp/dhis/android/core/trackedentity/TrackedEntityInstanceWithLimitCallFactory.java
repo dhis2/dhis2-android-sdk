@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
@@ -63,7 +63,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final APICallExecutor apiCallExecutor;
     private final D2CallExecutor d2CallExecutor;
     private final ResourceHandler resourceHandler;
-    private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private final ForeignKeyCleaner foreignKeyCleaner;
     private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
     private final DHISVersionManager versionManager;
@@ -78,7 +78,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             APICallExecutor apiCallExecutor,
             D2CallExecutor d2CallExecutor,
             ResourceHandler resourceHandler,
-            UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore,
+            UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             ForeignKeyCleaner foreignKeyCleaner,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
             TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory downloadAndPersistCallFactory,
@@ -176,14 +176,14 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     }
 
     private Set<String> getOrgUnitUids() {
-        List<UserOrganisationUnitLinkModel> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
+        List<UserOrganisationUnitLink> userOrganisationUnitLinks = userOrganisationUnitLinkStore.selectAll();
 
         Set<String> organisationUnitUids = new HashSet<>();
 
-        for (UserOrganisationUnitLinkModel linkModel: userOrganisationUnitLinks) {
-            if (linkModel.organisationUnitScope().equals(
+        for (UserOrganisationUnitLink userOrganisationUnitLink : userOrganisationUnitLinks) {
+            if (userOrganisationUnitLink.organisationUnitScope().equals(
                     OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())) {
-                organisationUnitUids.add(linkModel.organisationUnit());
+                organisationUnitUids.add(userOrganisationUnitLink.organisationUnit());
             }
         }
 

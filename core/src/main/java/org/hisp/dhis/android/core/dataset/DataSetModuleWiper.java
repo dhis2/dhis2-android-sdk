@@ -47,14 +47,14 @@ public final class DataSetModuleWiper implements ModuleWiper {
     @Override
     public void wipeMetadata() {
         tableWiper.wipeTables(
-                DataInputPeriodTableInfo.TABLE_INFO.name(),
-                DataSetCompulsoryDataElementOperandLinkModel.TABLE,
-                DataSetDataElementLinkModel.TABLE,
-                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-                DataSetTableInfo.TABLE_INFO.name(),
-                SectionDataElementLinkTableInfo.TABLE_INFO.name(),
-                SectionTableInfo.TABLE_INFO.name(),
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO.name()
+                DataInputPeriodTableInfo.TABLE_INFO,
+                DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
+                DataSetDataElementLinkTableInfo.TABLE_INFO,
+                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
+                DataSetTableInfo.TABLE_INFO,
+                SectionDataElementLinkTableInfo.TABLE_INFO,
+                SectionTableInfo.TABLE_INFO,
+                SectionGreyedFieldsLinkTableInfo.TABLE_INFO
         );
     }
 

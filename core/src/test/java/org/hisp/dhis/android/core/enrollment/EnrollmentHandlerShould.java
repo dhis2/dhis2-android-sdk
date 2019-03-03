@@ -32,12 +32,12 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.NoteDHISVersionManager;
+import org.hisp.dhis.android.core.enrollment.note.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +68,7 @@ public class EnrollmentHandlerShould {
     private SyncHandler<Note> noteHandler;
 
     @Mock
-    private ObjectWithoutUidStore<Note> noteStore;
+    private NoteUniquenessManager noteUniquenessManager;
 
     @Mock
     private Enrollment enrollment;
@@ -80,7 +80,7 @@ public class EnrollmentHandlerShould {
     private Note note;
 
     @Mock
-    private DHISVersionManager versionManager;
+    private NoteDHISVersionManager noteVersionManager;
 
     @Mock
     private OrphanCleaner<Enrollment, Event> eventCleaner;
@@ -96,8 +96,8 @@ public class EnrollmentHandlerShould {
         when(enrollment.notes()).thenReturn(Collections.singletonList(note));
         when(note.storedDate()).thenReturn(FillPropertiesTestUtils.LAST_UPDATED_STR);
 
-        enrollmentHandler = new EnrollmentHandler(versionManager, enrollmentStore, eventHandler,
-                eventCleaner, noteHandler, noteStore);
+        enrollmentHandler = new EnrollmentHandler(noteVersionManager, enrollmentStore, eventHandler,
+                eventCleaner, noteHandler, noteUniquenessManager);
     }
 
     @Test

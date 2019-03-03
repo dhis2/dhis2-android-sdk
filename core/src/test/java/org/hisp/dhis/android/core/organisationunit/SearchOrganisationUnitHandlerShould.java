@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.organisationunit;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ public class SearchOrganisationUnitHandlerShould {
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
-    private UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkHandler;
+    private UserOrganisationUnitLinkStore userOrganisationUnitLinkHandler;
 
     private OrganisationUnit organisationUnit;
 
@@ -70,8 +70,7 @@ public class SearchOrganisationUnitHandlerShould {
     @Test
     public void persist_organisation_unit_user_link() {
         String userUid = "userUid";
-        UserOrganisationUnitLinkModel linkModel = UserOrganisationUnitLinkModel
-                .builder()
+        UserOrganisationUnitLink userOrganisationUnitLink = UserOrganisationUnitLink.builder()
                 .organisationUnit(organisationUnitUid)
                 .user(userUid).root(false)
                 .organisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH.toString())
@@ -79,6 +78,6 @@ public class SearchOrganisationUnitHandlerShould {
 
         handler.setUser(User.builder().uid(userUid).build());
         handler.handleMany(Lists.newArrayList(organisationUnit), new OrganisationUnitDisplayPathTransformer());
-        verify(userOrganisationUnitLinkHandler).insert(linkModel);
+        verify(userOrganisationUnitLinkHandler).insert(userOrganisationUnitLink);
     }
 }

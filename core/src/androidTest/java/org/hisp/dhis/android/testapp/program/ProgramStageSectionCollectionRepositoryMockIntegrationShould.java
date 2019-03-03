@@ -30,9 +30,8 @@ package org.hisp.dhis.android.testapp.program;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,17 +41,27 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all() {
         List<ProgramStageSection> stageSections = d2.programModule().programStageSections
                 .get();
-        assertThat(stageSections.size(), is(1));
+        assertThat(stageSections.size(), is(2));
+    }
+
+    @Test
+    public void include_program_indicators_as_children() {
+        ProgramStageSection stageSections = d2.programModule().programStageSections
+                .one().getWithAllChildren();
+        assertThat(stageSections.programIndicators().size(), is(1));
+    }
+
+    @Test
+    public void include_data_elements_as_children() {
+        ProgramStageSection stageSections = d2.programModule().programStageSections
+                .one().getWithAllChildren();
+        assertThat(stageSections.dataElements().size(), is(1));
+        assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));
     }
 }

@@ -46,10 +46,10 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
 
-    private LinkModelStore<CategoryCategoryOptionLinkModel> store;
+    private LinkModelStore<CategoryCategoryOptionLink> store;
     private Category newCategory;
     private CategoryOption newCategoryOption;
-    private CategoryCategoryOptionLinkModel newCategoryCategoryOptionLinkModel;
+    private CategoryCategoryOptionLink newCategoryCategoryOptionLink;
     private long lastInsertedID;
 
     @Override
@@ -100,14 +100,14 @@ public class CategoryCategoryOptionLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void givenACategoryOptionLinkModel() {
-        newCategoryCategoryOptionLinkModel = CategoryCategoryOptionLinkModel.builder()
-                .option("TNYQzTHdoxL")
+        newCategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
+                .categoryOption("TNYQzTHdoxL")
                 .category("KfdsGBcoiCa")
                 .build();
     }
 
     private void whenInsertNewCategoryOptionLink() {
-        lastInsertedID = store.insert(newCategoryCategoryOptionLinkModel);
+        lastInsertedID = store.insert(newCategoryCategoryOptionLink);
     }
 
     private void whenInsertNewCategory() {

@@ -30,9 +30,8 @@ package org.hisp.dhis.android.testapp.dataset;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,15 +43,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
+public class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     private SimpleDateFormat simpleDateFormat =  new SimpleDateFormat( "yyyy-MM-dd");
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-        downloadAggregatedData();
-    }
 
     @Test
     public void find_all() {

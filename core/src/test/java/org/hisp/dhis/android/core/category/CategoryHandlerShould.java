@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.category;
 
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -57,8 +56,7 @@ public class CategoryHandlerShould {
     private IdentifiableObjectStore<Category> categoryStore;
 
     @Mock
-    private OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
-            categoryCategoryOptionLinkHandler;
+    private LinkSyncHandler<CategoryCategoryOptionLink> categoryCategoryOptionLinkHandler;
 
     @Mock
     private SyncHandler<CategoryOption> categoryOptionHandler;
@@ -94,8 +92,7 @@ public class CategoryHandlerShould {
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.read()).thenReturn(true);
 
-        categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler,
-                categoryCategoryOptionLinkHandler);
+        categoryHandler = new CategoryHandler(categoryStore, categoryOptionHandler, categoryCategoryOptionLinkHandler);
     }
 
     @Test
@@ -121,25 +118,23 @@ public class CategoryHandlerShould {
     @Test
     public void handle_category_option_links() {
         categoryHandler.handle(category);
-        verify(categoryCategoryOptionLinkHandler).handleMany(same(categoryUid), eq(categoryOptions),
-                any(CategoryCategoryOptionLinkModelBuilder.class));
+        verify(categoryCategoryOptionLinkHandler).handleMany(same(categoryUid),
+                anyListOf(CategoryCategoryOptionLink.class));
     }
 
     @Test
     public void not_handle_category_option_links_for_null_category_options() {
         when(category.categoryOptions()).thenReturn(null);
         categoryHandler.handle(category);
-        verify(categoryCategoryOptionLinkHandler, never()).handleMany(anyString(), anyListOf(CategoryOption.class),
-                any(CategoryCategoryOptionLinkModelBuilder.class));
+        verify(categoryCategoryOptionLinkHandler, never()).handleMany(anyString(),
+                anyListOf(CategoryCategoryOptionLink.class));
     }
 
     @Test
     public void not_handle_category_option_when_data_access_data_read_is_false() {
         when(dataAccess.read()).thenReturn(false);
         categoryHandler.handle(category);
-        verify(categoryCategoryOptionLinkHandler).handleMany(
-                same(categoryUid),
-                eq(Collections.emptyList()),
-                any(CategoryCategoryOptionLinkModelBuilder.class));
+        verify(categoryCategoryOptionLinkHandler).handleMany(same(categoryUid),
+                anyListOf(CategoryCategoryOptionLink.class));
     }
 }

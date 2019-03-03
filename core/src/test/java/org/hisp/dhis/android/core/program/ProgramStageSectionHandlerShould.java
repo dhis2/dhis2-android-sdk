@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.program;
 
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,12 +58,10 @@ public class ProgramStageSectionHandlerShould {
     private SyncHandler<ProgramIndicator> programIndicatorHandler;
 
     @Mock
-    private LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
-            programStageSectionProgramIndicatorLinkHandler;
+    private LinkSyncHandler<ProgramStageSectionProgramIndicatorLink> programStageSectionProgramIndicatorLinkHandler;
 
     @Mock
-    private OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel>
-            programStageSectionDataElementLinkHandler;
+    private LinkSyncHandler<ProgramStageSectionDataElementLink> programStageSectionDataElementLinkHandler;
 
     @Mock
     private ProgramStageSection programStageSection;
@@ -73,6 +70,8 @@ public class ProgramStageSectionHandlerShould {
     private DataElement dataElement;
 
     @Mock
+    private ProgramIndicator programIndicator;
+
     private List<ProgramIndicator> programIndicators;
 
     // object to test
@@ -89,8 +88,12 @@ public class ProgramStageSectionHandlerShould {
         when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
         List<DataElement> dataElements = new ArrayList<>(1);
         dataElements.add(dataElement);
+        programIndicators = new ArrayList<>(1);
+        programIndicators.add(programIndicator);
         when(programStageSection.dataElements()).thenReturn(dataElements);
         when(programStageSection.programIndicators()).thenReturn(programIndicators);
+        when(dataElement.uid()).thenReturn("data_element_uid");
+        when(programIndicator.uid()).thenReturn("program_indicator_uid");
     }
 
     @Test
@@ -102,14 +105,14 @@ public class ProgramStageSectionHandlerShould {
     @Test
     public void handle_program_stage_section_data_element_links() {
         programStageSectionHandler.handle(programStageSection);
-        verify(programStageSectionDataElementLinkHandler).handleMany(any(String.class), anyListOf(DataElement.class),
-                any(ProgramStageSectionDataElementLinkModelBuilder.class));
+        verify(programStageSectionDataElementLinkHandler).handleMany(any(String.class),
+                anyListOf(ProgramStageSectionDataElementLink.class));
     }
 
     @Test
     public void handle_program_stage_section_program_indicator_links() {
         programStageSectionHandler.handle(programStageSection);
-        verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(String.class), anyListOf(ProgramIndicator.class),
-                any(ProgramStageSectionProgramIndicatorLinkModelBuilder.class));
+        verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(String.class),
+                anyListOf(ProgramStageSectionProgramIndicatorLink.class));
     }
 }

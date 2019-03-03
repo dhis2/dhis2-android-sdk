@@ -1,0 +1,52 @@
+{
+  "constants": [
+    {
+      "created": "2014-03-02T03:07:54.855",
+      "lastUpdated": "2014-03-02T03:13:40.906",
+      "name": "Commodity ordering overhead",
+      "href": "https://play.dhis2.org/2.30/api/constants/Gfd3ppDfq8E",
+      "id": "Gfd3ppDfq8E",
+      "displayName": "Commodity ordering overhead",
+      "externalAccess": false,
+      "value": 5,
+      "favorite": false,
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "favorites": [],
+      "userGroupAccesses": [],
+      "attributeValues": [],
+      "translations": [],
+      "userAccesses": []
+    },
+    {
+      "created": "2013-03-11T16:39:33.083",
+      "lastUpdated": "2013-03-11T16:39:33.083",
+      "name": "Pi",
+      "href": "https://play.dhis2.org/2.30/api/constants/bCqvfPR02Im",
+      "id": "bCqvfPR02Im",
+      "displayName": "Pi",
+      "externalAccess": false,
+      "value": 3.14,
+      "favorite": false,
+      "access": {
+        "read": true,
+        "update": true,
+        "externalize": false,
+        "delete": true,
+        "write": true,
+        "manage": true
+      },
+      "favorites": [],
+      "userGroupAccesses": [],
+      "attributeValues": [],
+      "translations": [],
+      "userAccesses": []
+    }
+  ]
+}

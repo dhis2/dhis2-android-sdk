@@ -30,12 +30,11 @@ package org.hisp.dhis.android.testapp.program;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,12 +44,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all() {
@@ -287,7 +281,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
     public void include_program_stages_as_children() {
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
-        assertThat(program.programStages().size(), is(1));
+        assertThat(program.programStages().size(), is(2));
         assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
     }
 
@@ -303,7 +297,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
     public void include_program_indicators_as_children() {
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
-        assertThat(program.programIndicators().size(), is(2));
+        assertThat(program.programIndicators().size(), is(4));
         assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
 
@@ -327,7 +321,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends MockIntegr
     public void include_program_sections_as_children() {
         Program program = d2.programModule().programs
                 .one().getWithAllChildren();
-        assertThat(program.programSections().size(), is(1));
+        assertThat(program.programSections().size(), is(2));
         assertThat(program.programSections().get(0).name(), is("My Program Section"));
     }
 

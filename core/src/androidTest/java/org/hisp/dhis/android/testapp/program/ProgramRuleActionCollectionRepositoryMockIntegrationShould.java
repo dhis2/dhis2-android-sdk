@@ -30,9 +30,9 @@ package org.hisp.dhis.android.testapp.program;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.program.ProgramRuleAction;
-import org.junit.BeforeClass;
+import org.hisp.dhis.android.core.program.ProgramRuleActionType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,17 +42,136 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class ProgramRuleActionCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all() {
-        List<ProgramRuleAction> ruleActions = d2.programModule().programRuleActions
-                .get();
-        assertThat(ruleActions.size(), is(3));
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .get();
+
+        assertThat(programRuleActions.size(), is(3));
     }
+
+    @Test
+    public void filter_by_data() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byData()
+                        .eq("data")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_content() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byContent()
+                        .eq("The hemoglobin value cannot be above 99")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_tracked_entity_attribute() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byTrackedEntityAttributeUid()
+                        .eq("cejWyOfXge6")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program_indicator() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byProgramIndicatorUid()
+                        .eq("GSae40Fyppf")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program_stage_section() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byProgramStageSectionUid()
+                        .eq("bbjzL5gp0NZ")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program_rule_action_type() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byProgramRuleActionType()
+                        .eq(ProgramRuleActionType.SHOWWARNING)
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program_stage() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byProgramStageUid()
+                        .eq("dBwrot7S420")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_data_element() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byDataElementUid()
+                        .eq("Ok9OQpitjQr")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program_rule() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byProgramRuleUid()
+                        .eq("GC4gpdoSD4r")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_option() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byOptionUid()
+                        .eq("egT1YqFWsVk")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_option_group() {
+        List<ProgramRuleAction> programRuleActions =
+                d2.programModule().programRuleActions
+                        .byOptionGroupUid()
+                        .eq("j3JYGVCIEdz")
+                        .get();
+
+        assertThat(programRuleActions.size(), is(1));
+    }
+
 }

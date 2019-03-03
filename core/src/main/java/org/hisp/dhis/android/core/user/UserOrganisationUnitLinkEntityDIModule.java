@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.user;
 
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -39,7 +41,13 @@ public final class UserOrganisationUnitLinkEntityDIModule {
 
     @Provides
     @Reusable
-    UserOrganisationUnitLinkStoreInterface store(DatabaseAdapter databaseAdapter) {
-        return UserOrganisationUnitLinkStore.create(databaseAdapter);
+    UserOrganisationUnitLinkStore store(DatabaseAdapter databaseAdapter) {
+        return UserOrganisationUnitLinkStoreImpl.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    LinkSyncHandler<UserOrganisationUnitLink> handler(UserOrganisationUnitLinkStore store) {
+        return new LinkSyncHandlerImpl<>(store);
     }
 }

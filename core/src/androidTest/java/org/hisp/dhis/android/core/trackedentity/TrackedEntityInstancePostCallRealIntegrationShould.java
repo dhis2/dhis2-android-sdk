@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.D2;
@@ -62,8 +60,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionReposit
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
@@ -74,7 +70,6 @@ import retrofit2.Response;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
 public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
@@ -141,11 +136,6 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends AbsStore
         trackedEntityInstance1Uid = codeGenerator.generate();
     }
 
-
-    @Test
-    public void stub() throws Exception {
-
-    }
     /*
     * If you want run this test you need config the correct uids in the server side.
     * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner

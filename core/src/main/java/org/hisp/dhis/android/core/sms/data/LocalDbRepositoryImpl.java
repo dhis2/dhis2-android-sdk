@@ -114,8 +114,12 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Single<Metadata> getIdsLists() {
-        // TODO
-        return Single.just(new Metadata());
+    public Single<Metadata> getMetadataIds() {
+        return null;
+    }
+
+    @Override
+    public Completable setMetadataIds(Metadata metadata) {
+        return null;
     }
 }

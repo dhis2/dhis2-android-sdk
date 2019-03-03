@@ -25,5 +25,7 @@ public interface LocalDbRepository {
 
     Completable updateSubmissionState(BaseDataModel event, State sentViaSms);
 
-    Single<Metadata> getIdsLists();
+    Single<Metadata> getMetadataIds();
+
+    Completable setMetadataIds(Metadata metadata);
 }

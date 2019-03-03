@@ -30,7 +30,7 @@ public class QrCodeCase {
     public Single<String> generateTextCode(final EnrollmentModel enrollmentModel,
                                            final Collection<TrackedEntityAttributeValueModel> attributes) {
         return Single.zip(
-                localDbRepository.getIdsLists(),
+                localDbRepository.getMetadataIds(),
                 localDbRepository.getUserName(),
                 Pair::create
         ).flatMap(pair ->

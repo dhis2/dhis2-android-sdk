@@ -48,7 +48,7 @@ public class SmsSubmitCase {
                                                             final Collection<TrackedEntityAttributeValueModel>
                                                                     attributes) {
         return Single.zip(
-                localDbRepository.getIdsLists(),
+                localDbRepository.getMetadataIds(),
                 localDbRepository.getUserName(),
                 Pair::create
         ).flatMapObservable(pair -> submit(
@@ -62,7 +62,7 @@ public class SmsSubmitCase {
     }
 
     public Completable checkConfirmationSms(EnrollmentModel enrollment) {
-        return localDbRepository.getIdsLists().flatMapCompletable(metadata ->
+        return localDbRepository.getMetadataIds().flatMapCompletable(metadata ->
                 checkConfirmationSms(new EnrollmentConverter(metadata), enrollment)
         );
     }

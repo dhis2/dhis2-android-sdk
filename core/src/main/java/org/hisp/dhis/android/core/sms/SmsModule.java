@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.sms.domain.interactor.SmsSubmitCase;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 
 import javax.inject.Inject;
 
@@ -16,17 +17,19 @@ public class SmsModule {
     private final DeviceStateRepository deviceStateRepository;
     private final LocalDbRepository localDbRepository;
     private final SmsRepository smsRepository;
+    private final WebApiRepository webApiRepository;
 
     @Inject
     public SmsModule(DeviceStateRepository deviceStateRepository, LocalDbRepository localDbRepository,
-                     SmsRepository smsRepository) {
+                     SmsRepository smsRepository, WebApiRepository webApiRepository) {
         this.deviceStateRepository = deviceStateRepository;
         this.localDbRepository = localDbRepository;
         this.smsRepository = smsRepository;
+        this.webApiRepository = webApiRepository;
     }
 
     public InitCase initCase() {
-        return new InitCase(localDbRepository);
+        return new InitCase(webApiRepository, localDbRepository);
     }
 
     public QrCodeCase qrCodeCase() {

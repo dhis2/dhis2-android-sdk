@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,7 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
@@ -60,7 +60,7 @@ public class CategoryComboHandlerShould {
     private SyncHandlerWithTransformer<CategoryOptionCombo> optionComboHandler;
 
     @Mock
-    private LinkSyncHandler<CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
+    private OrderedLinkSyncHandler<Category, CategoryCategoryComboLink> categoryCategoryComboLinkHandler;
 
     @Mock
     private OrphanCleaner<CategoryCombo, CategoryOptionCombo> categoryOptionCleaner;
@@ -78,11 +78,13 @@ public class CategoryComboHandlerShould {
 
     private SyncHandler<CategoryCombo> categoryComboHandler;
 
+    private List<Category> categories;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        List<Category> categories = new ArrayList<>();
+        categories = new ArrayList<>();
         categories.add(category);
         when(combo.uid()).thenReturn(comboUid);
         when(combo.categoryOptionCombos()).thenReturn(optionCombos);
@@ -101,7 +103,8 @@ public class CategoryComboHandlerShould {
     @Test
     public void handle_category_category_combo_links() {
         categoryComboHandler.handle(combo);
-        verify(categoryCategoryComboLinkHandler).handleMany(same(comboUid), anyListOf(CategoryCategoryComboLink.class));
+        verify(categoryCategoryComboLinkHandler).handleMany(same(comboUid), eq(categories),
+                any(OrderedLinkTransformer.class));
     }
 
     @Test

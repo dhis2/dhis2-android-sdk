@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-public abstract class OrderedLinkModelBuilder<P, M> {
-    public abstract M buildModel(P pojo, Integer sortOrder);
+public interface OrderedLinkTransformer<S, M> {
+    M transform(S object, Integer sortOrder);
 }

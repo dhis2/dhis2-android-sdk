@@ -29,20 +29,20 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.List;
 
-public class OrderedLinkModelHandlerImpl<S, M extends Model> implements OrderedLinkModelHandler<S, M> {
+public class OrderedLinkSyncHandlerImpl<S, M extends Model> implements OrderedLinkSyncHandler<S, M> {
 
     private final LinkModelStore<M> store;
 
-    public OrderedLinkModelHandlerImpl(LinkModelStore<M> store) {
+    public OrderedLinkSyncHandlerImpl(LinkModelStore<M> store) {
         this.store = store;
     }
 
     @Override
-    public void handleMany(String masterUid, List<S> slaves, OrderedLinkModelBuilder<S, M> modelBuilder) {
+    public void handleMany(String masterUid, List<S> slaves, OrderedLinkTransformer<S, M> transformer) {
         store.deleteLinksForMasterUid(masterUid);
         if (slaves != null) {
             for (int i = 0; i < slaves.size(); i++) {
-                store.insert(modelBuilder.buildModel(slaves.get(i), i + 1));
+                store.insert(transformer.transform(slaves.get(i), i + 1));
             }
         }
     }

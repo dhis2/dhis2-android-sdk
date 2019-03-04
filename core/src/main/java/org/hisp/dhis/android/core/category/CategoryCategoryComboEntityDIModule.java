@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.category;
 
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,7 +48,8 @@ public final class CategoryCategoryComboEntityDIModule {
 
     @Provides
     @Reusable
-    LinkSyncHandler<CategoryCategoryComboLink> handler(LinkModelStore<CategoryCategoryComboLink> store) {
-        return new LinkSyncHandlerImpl<>(store);
+    OrderedLinkSyncHandler<Category, CategoryCategoryComboLink> handler(
+            LinkModelStore<CategoryCategoryComboLink> store) {
+        return new OrderedLinkSyncHandlerImpl<>(store);
     }
 }

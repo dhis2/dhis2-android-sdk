@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.common;
 
 import java.util.List;
 
-public interface OrderedLinkModelHandler<S, M extends Model> {
-    void handleMany(String masterUid, List<S> slaveCollection, OrderedLinkModelBuilder<S, M> modelBuilder);
+public interface OrderedLinkSyncHandler<S, M extends Model> {
+    void handleMany(String masterUid, List<S> slaveCollection, OrderedLinkTransformer<S, M> transformer);
 }

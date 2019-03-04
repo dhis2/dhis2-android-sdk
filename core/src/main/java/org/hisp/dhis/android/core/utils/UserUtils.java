@@ -58,7 +58,7 @@ public final class UserUtils {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.reset();
             md.update(credentials.getBytes("ISO-8859-1"));
-            return Hex.bytesToStringLowercase(md.digest());
+            return Hex.bytesToStringUppercase(md.digest()).toLowerCase();
         } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
             // noop. Every implementation of Java is required to support MD5
             throw new AssertionError(noSuchAlgorithmException);

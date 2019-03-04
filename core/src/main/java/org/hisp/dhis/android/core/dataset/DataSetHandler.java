@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -97,7 +97,7 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
     protected void afterObjectHandled(final DataSet dataSet, HandleAction action) {
 
         styleHandler.handle(dataSet.style(),
-                new ObjectStyleModelBuilder(dataSet.uid(), DataSetModel.TABLE));
+                new ObjectStyleTransformer(dataSet.uid(), DataSetModel.TABLE));
 
         sectionHandler.handleMany(dataSet.sections());
 

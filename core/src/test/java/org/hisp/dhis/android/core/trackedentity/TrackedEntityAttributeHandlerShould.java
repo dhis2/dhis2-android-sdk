@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.trackedentity;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +87,6 @@ public class TrackedEntityAttributeHandlerShould {
     @Test
     public void call_object_style_handler() throws Exception {
         trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
-        verify(styleHandler).handle(any(ObjectStyle.class), any(ModelBuilder.class));
+        verify(styleHandler).handle(any(ObjectStyle.class), any(Transformer.class));
     }
 }

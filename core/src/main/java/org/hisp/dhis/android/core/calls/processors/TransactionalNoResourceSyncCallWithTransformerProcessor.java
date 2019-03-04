@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.calls.processors;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
@@ -39,12 +39,12 @@ import java.util.List;
 public class TransactionalNoResourceSyncCallWithTransformerProcessor<O> implements CallProcessor<O> {
     private final DatabaseAdapter databaseAdapter;
     private final SyncHandlerWithTransformer<O> handler;
-    private final ModelBuilder<O, O> transformer;
+    private final Transformer<O, O> transformer;
 
 
     public TransactionalNoResourceSyncCallWithTransformerProcessor(DatabaseAdapter databaseAdapter,
                                                                    SyncHandlerWithTransformer<O> handler,
-                                                                   ModelBuilder<O, O> transformer) {
+                                                                   Transformer<O, O> transformer) {
         this.databaseAdapter = databaseAdapter;
         this.handler = handler;
         this.transformer = transformer;

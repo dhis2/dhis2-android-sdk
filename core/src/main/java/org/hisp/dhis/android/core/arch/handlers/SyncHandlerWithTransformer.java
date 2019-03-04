@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.handlers;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Collection;
 
 public interface SyncHandlerWithTransformer<O> extends SyncHandler<O> {
 
-    void handle(O o, ModelBuilder<O, O> modelBuilder);
+    void handle(O o, Transformer<O, O> transformer);
 
-    void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder);
+    void handleMany(Collection<O> oCollection, Transformer<O, O> transformer);
 }

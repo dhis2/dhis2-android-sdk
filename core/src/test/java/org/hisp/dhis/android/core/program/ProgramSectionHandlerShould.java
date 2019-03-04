@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,7 +85,7 @@ public class ProgramSectionHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         programSectionHandler.handle(programSection);
-        verify(styleHandler).handle(same(programSection.style()), any(ObjectStyleModelBuilder.class));
+        verify(styleHandler).handle(same(programSection.style()), any(ObjectStyleTransformer.class));
     }
 
     @Test

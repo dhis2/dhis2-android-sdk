@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Collection;
 
@@ -53,11 +53,11 @@ public class LinkSyncHandlerImpl<O extends Model> implements LinkSyncHandler<O>,
     }
 
     @Override
-    public void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder) {
+    public void handleMany(String masterUid, Collection<O> slaves, Transformer<O, O> transformer) {
         store.deleteLinksForMasterUid(masterUid);
         if (slaves != null) {
             for (O slave : slaves) {
-                O oTransformed = modelBuilder.buildModel(slave);
+                O oTransformed = transformer.transform(slave);
                 store.insert(oTransformed);
             }
         }

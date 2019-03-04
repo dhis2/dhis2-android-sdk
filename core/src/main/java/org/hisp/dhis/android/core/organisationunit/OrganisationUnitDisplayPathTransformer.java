@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.Transformer;
 
-class OrganisationUnitDisplayPathTransformer implements ModelBuilder<OrganisationUnit, OrganisationUnit> {
+class OrganisationUnitDisplayPathTransformer implements Transformer<OrganisationUnit, OrganisationUnit> {
 
     @Override
-    public OrganisationUnit buildModel(OrganisationUnit organisationUnit) {
+    public OrganisationUnit transform(OrganisationUnit organisationUnit) {
         String path = new OrganisationUnitDisplayPathGenerator().generateDisplayPath(organisationUnit);
         OrganisationUnit.Builder builder = organisationUnit.toBuilder();
         builder.displayNamePath(path);

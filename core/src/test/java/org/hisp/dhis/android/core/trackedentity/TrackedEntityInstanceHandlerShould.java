@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
@@ -131,7 +131,7 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any(TrackedEntityInstance.class));
         verify(trackedEntityAttributeValueHandler, never()).handleMany(
-                anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
+                anyCollectionOf(TrackedEntityAttributeValue.class), any(Transformer.class));
         verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
         verify(enrollmentCleaner, never()).deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
     }
@@ -147,7 +147,7 @@ public class TrackedEntityInstanceHandlerShould {
 
         verify(trackedEntityInstanceStore, never()).updateOrInsert(any(TrackedEntityInstance.class));
         verify(trackedEntityAttributeValueHandler, never()).handleMany(
-                anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
+                anyCollectionOf(TrackedEntityAttributeValue.class), any(Transformer.class));
 
         // verify that enrollment handler is never called
         verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
@@ -169,10 +169,10 @@ public class TrackedEntityInstanceHandlerShould {
         verify(trackedEntityInstanceStore, never()).deleteIfExists(anyString());
 
         verify(trackedEntityAttributeValueHandler, times(1)).handleMany(
-                anyCollectionOf(TrackedEntityAttributeValue.class), any(ModelBuilder.class));
+                anyCollectionOf(TrackedEntityAttributeValue.class), any(Transformer.class));
 
         // verify that enrollment handler is called once
-        verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class), any(ModelBuilder.class));
+        verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class), any(Transformer.class));
 
         verify(enrollmentCleaner, times(1))
                 .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));

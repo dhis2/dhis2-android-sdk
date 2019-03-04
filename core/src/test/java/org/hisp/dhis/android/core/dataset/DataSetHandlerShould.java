@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
@@ -238,7 +238,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleModelBuilder.class));
+        verify(styleHandler).handle(eq(dataSet.style()), any(ObjectStyleTransformer.class));
     }
 
     @Test

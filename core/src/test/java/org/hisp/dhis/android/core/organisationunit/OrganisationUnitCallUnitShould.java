@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.common.GenericCallData;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -203,7 +203,7 @@ public class OrganisationUnitCallUnitShould {
 
         organisationUnitCall.call();
 
-        verify(organisationUnitHandler).handleMany(anyListOf(OrganisationUnit.class), any(ModelBuilder.class));
+        verify(organisationUnitHandler).handleMany(anyListOf(OrganisationUnit.class), any(Transformer.class));
     }
 
     @Test

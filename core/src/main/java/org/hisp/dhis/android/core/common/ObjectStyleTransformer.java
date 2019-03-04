@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
-public class ObjectStyleModelBuilder implements ModelBuilder<ObjectStyle, ObjectStyle> {
+public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
 
     private final ObjectStyle.Builder builder;
 
-    public ObjectStyleModelBuilder(String uid, String objectTable) {
+    public ObjectStyleTransformer(String uid, String objectTable) {
         builder = ObjectStyle.builder()
                 .uid(uid)
                 .objectTable(objectTable);
     }
 
     @Override
-    public ObjectStyle buildModel(ObjectStyle objectStyle) {
+    public ObjectStyle transform(ObjectStyle objectStyle) {
         return builder
                 .color(objectStyle.color())
                 .icon(objectStyle.icon()).build();

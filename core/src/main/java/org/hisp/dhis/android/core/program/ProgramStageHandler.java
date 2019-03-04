@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.period.FeatureType;
@@ -104,7 +104,7 @@ final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage
                         .build());
 
         styleHandler.handle(programStage.style(),
-                new ObjectStyleModelBuilder(programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name()));
+                new ObjectStyleTransformer(programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name()));
 
         if (action == HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());

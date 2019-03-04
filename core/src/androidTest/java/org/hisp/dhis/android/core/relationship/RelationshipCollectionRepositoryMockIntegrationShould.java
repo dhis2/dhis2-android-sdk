@@ -103,6 +103,11 @@ public class RelationshipCollectionRepositoryMockIntegrationShould extends Synce
         assertThat(relationships.size(), is(1));
     }
 
-
-
+    @Test
+    public void get_by_item() {
+        RelationshipItem item = RelationshipItem.builder().trackedEntityInstance(
+                RelationshipItemTrackedEntityInstance.builder().trackedEntityInstance("nWrB0TfWlvh").build()).build();
+        List<Relationship> relationships = d2.relationshipModule().relationships.getByItem(item);
+        assertThat(relationships.size(), is(4));
+    }
 }

@@ -97,8 +97,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
 
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
-        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
-        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance_2);
+        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
+        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance_2);
         database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
 
         trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
@@ -134,7 +134,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
                 deferredTrackedEntityInstance, ORGANIZATION_UNIT, TRACKED_ENTITY);
         ContentValues trackedEntityAttribute = CreateTrackedEntityAttributeUtils.create(3L,
                 deferredTrackedEntityAttribute, null);
-        database().insert(TrackedEntityInstanceModel.TABLE, null, trackedEntityInstance);
+        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
         database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);
         database().setTransactionSuccessful();
         database().endTransaction();
@@ -242,8 +242,8 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_attribute_value_in_data_base_when_delete_tracked_entity_instance() {
         insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value();
 
-        database().delete(TrackedEntityInstanceModel.TABLE,
-                TrackedEntityInstanceModel.Columns.UID + "=?",
+        database().delete(TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
+                TrackedEntityInstanceTableInfo.Columns.UID + "=?",
                 new String[]{TRACKED_ENTITY_INSTANCE});
 
         Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),

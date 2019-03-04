@@ -146,7 +146,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
         database().insert(DataElementModel.TABLE, null, dataElement1);
         database().insert(DataElementModel.TABLE, null, dataElement2);
-        database().insert(TrackedEntityInstanceModel.TABLE, null,
+        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
                 trackedEntityInstance);
         database().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
         database().insert(EventModel.TABLE, null, event1);

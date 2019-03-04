@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
-import org.hisp.dhis.android.core.calls.processors.TransactionalNoResourceSyncCallWithTransformerProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
 import java.util.List;
@@ -49,14 +48,14 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
         TrackedEntityAttributeReservedValueQuery> {
 
     private final TrackedEntityAttributeReservedValueService service;
-    private final SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler;
+    private final SyncHandler<TrackedEntityAttributeReservedValue> handler;
 
     @Inject
     TrackedEntityAttributeReservedValueEndpointCallFactory(
             GenericCallData data,
             APICallExecutor apiCallExecutor,
             TrackedEntityAttributeReservedValueService service,
-            SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler) {
+            SyncHandler<TrackedEntityAttributeReservedValue> handler) {
         super(data, apiCallExecutor);
         this.service = service;
         this.handler = handler;
@@ -86,11 +85,11 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
     @Override
     protected CallProcessor<TrackedEntityAttributeReservedValue> processor(
             final TrackedEntityAttributeReservedValueQuery query) {
-        return new TransactionalNoResourceSyncCallWithTransformerProcessor<>(
+        return new TrackedEntityAttributeReservedValueCallProcessor(
                 data.databaseAdapter(),
                 handler,
-                new TrackedEntityAttributeReservedValueModelBuilder(
-                        query.organisationUnit(), query.trackedEntityAttributePattern())
+                query.organisationUnit(),
+                query.trackedEntityAttributePattern()
         );
     }
 }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -111,8 +111,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         manager = d2.trackedEntityModule().reservedValueManager;
 
-        SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler =
-                new ObjectWithoutUidSyncHandlerImpl<>(store);
+        SyncHandler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidSyncHandlerImpl<>(store);
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
 
@@ -122,7 +121,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                         .ownerUid(ownerUid)
                         .key("key")
                         .created(CREATED)
-                        .expiryDate(FUTURE_DATE);
+                        .expiryDate(FUTURE_DATE)
+                        .organisationUnit(organisationUnitUid);
 
         TrackedEntityAttributeReservedValue reservedValue1 = reservedValueBuilder.value("value1").build();
         TrackedEntityAttributeReservedValue reservedValue2 = reservedValueBuilder.value("value2").build();
@@ -165,11 +165,10 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                 .thenReturn(trackedEntityAttributeReservedValueCall);
 
 
-        handler.handleMany(trackedEntityAttributeReservedValues,
-                new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit, ""));
+        handler.handleMany(trackedEntityAttributeReservedValues);
     }
 
-    //@Test
+//    @Test
     public void get_one_reserved_value() throws D2Error {
 
         assertThat(selectAll().size(), is(3));

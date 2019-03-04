@@ -59,30 +59,30 @@ public class CreateDataElementUtils {
 
     public static ContentValues create(long id, @NonNull String uid, @Nullable String optionSetId) {
         ContentValues dataElement = new ContentValues();
-        dataElement.put(DataElementModel.Columns.ID, id);
-        dataElement.put(DataElementModel.Columns.UID, uid);
-        dataElement.put(DataElementModel.Columns.CODE, CODE);
-        dataElement.put(DataElementModel.Columns.NAME, NAME);
-        dataElement.put(DataElementModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        dataElement.put(DataElementModel.Columns.CREATED, DATE);
-        dataElement.put(DataElementModel.Columns.LAST_UPDATED, DATE);
-        dataElement.put(DataElementModel.Columns.SHORT_NAME, SHORT_NAME);
-        dataElement.put(DataElementModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        dataElement.put(DataElementModel.Columns.DESCRIPTION, DESCRIPTION);
-        dataElement.put(DataElementModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        dataElement.put(DataElementModel.Columns.VALUE_TYPE, VALUE_TYPE.name());
-        dataElement.put(DataElementModel.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(DataElementModel.Columns.AGGREGATION_TYPE, AGGREGATION_OPERATOR);
-        dataElement.put(DataElementModel.Columns.FORM_NAME, FORM_NAME);
-        dataElement.put(DataElementModel.Columns.NUMBER_TYPE, NUMBER_TYPE);
-        dataElement.put(DataElementModel.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(DataElementModel.Columns.DIMENSION, DIMENSION);
-        dataElement.put(DataElementModel.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.put(DataElementModel.Columns.CATEGORY_COMBO, CategoryComboModel.DEFAULT_UID);
+        dataElement.put(DataElementTableInfo.Columns.ID, id);
+        dataElement.put(DataElementTableInfo.Columns.UID, uid);
+        dataElement.put(DataElementTableInfo.Columns.CODE, CODE);
+        dataElement.put(DataElementTableInfo.Columns.NAME, NAME);
+        dataElement.put(DataElementTableInfo.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        dataElement.put(DataElementTableInfo.Columns.CREATED, DATE);
+        dataElement.put(DataElementTableInfo.Columns.LAST_UPDATED, DATE);
+        dataElement.put(DataElementTableInfo.Columns.SHORT_NAME, SHORT_NAME);
+        dataElement.put(DataElementTableInfo.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        dataElement.put(DataElementTableInfo.Columns.DESCRIPTION, DESCRIPTION);
+        dataElement.put(DataElementTableInfo.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        dataElement.put(DataElementFields.VALUE_TYPE, VALUE_TYPE.name());
+        dataElement.put(DataElementFields.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
+        dataElement.put(DataElementFields.AGGREGATION_TYPE, AGGREGATION_OPERATOR);
+        dataElement.put(DataElementFields.FORM_NAME, FORM_NAME);
+        dataElement.put(DataElementFields.NUMBER_TYPE, NUMBER_TYPE);
+        dataElement.put(DataElementFields.DOMAIN_TYPE, DOMAIN_TYPE);
+        dataElement.put(DataElementFields.DIMENSION, DIMENSION);
+        dataElement.put(DataElementFields.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
+        dataElement.put(DataElementFields.CATEGORY_COMBO, CategoryComboModel.DEFAULT_UID);
         if (optionSetId == null) {
-            dataElement.putNull(DataElementModel.Columns.OPTION_SET);
+            dataElement.putNull(DataElementFields.OPTION_SET);
         } else {
-            dataElement.put(DataElementModel.Columns.OPTION_SET, optionSetId);
+            dataElement.put(DataElementFields.OPTION_SET, optionSetId);
         }
 
         return dataElement;

@@ -34,10 +34,11 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
@@ -144,8 +145,8 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(ProgramModel.TABLE, null, program);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
-        database().insert(DataElementModel.TABLE, null, dataElement1);
-        database().insert(DataElementModel.TABLE, null, dataElement2);
+        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);
+        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2);
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
                 trackedEntityInstance);
         database().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
@@ -216,7 +217,8 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_data_value_when_delete_data_element_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(DataElementModel.TABLE, DataElementModel.Columns.UID + "=?",
+        database().delete(DataElementTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID + "=?",
                 new String[]{DATA_ELEMENT_1});
 
         Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),

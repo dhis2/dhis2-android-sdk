@@ -55,7 +55,6 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
-    //TrackedEntityAttributeValueModel:
     private static final String VALUE = "test_value";
     private static final String TRACKED_ENTITY_ATTRIBUTE = "test_trackedEntityAttributeUid";
     private static final String TRACKED_ENTITY_ATTRIBUTE_2 = "test_trackedEntityAttributeUid_2";
@@ -65,11 +64,11 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     private static final String TRACKED_ENTITY = "test_trackedEntity";
 
     private static final String[] PROJECTION = {
-            TrackedEntityAttributeValueModel.Columns.VALUE,
-            TrackedEntityAttributeValueModel.Columns.CREATED,
-            TrackedEntityAttributeValueModel.Columns.LAST_UPDATED,
-            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-            TrackedEntityAttributeValueModel.Columns.TRACKED_ENTITY_INSTANCE
+            TrackedEntityAttributeValueFields.VALUE,
+            TrackedEntityAttributeValueFields.CREATED,
+            TrackedEntityAttributeValueFields.LAST_UPDATED,
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE
     };
 
     private TrackedEntityAttributeValueStore store;
@@ -112,7 +111,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     public void insert_tracked_entity_attribute_value_in_data_base_when_insert() {
         long rowId = store.insert(trackedEntityAttributeValue);
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -140,7 +139,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         database().setTransactionSuccessful();
         database().endTransaction();
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
 
         assertThat(rowId).isEqualTo(1L);
@@ -154,7 +153,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
     public void insert_nullable_tracked_entity_attribute_value_in_data_base_when_insert_nullable_tracked_entity_attribute_value() {
         long rowId = store.insert(trackedEntityAttributeValue.toBuilder().value(null).build());
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 PROJECTION,
                 null, null, null, null, null);
 
@@ -170,7 +169,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
         store.insert(trackedEntityAttributeValue.toBuilder().value("0").build());
         store.updateOrInsertWhere(trackedEntityAttributeValue.toBuilder().value("4").build());
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE, PROJECTION, null,
+        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), PROJECTION, null,
                 null, null,
                 null, null);
 
@@ -234,7 +233,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
                 BaseIdentifiableObjectModel.Columns.UID + "=?",
                 new String[]{TRACKED_ENTITY_ATTRIBUTE});
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }
@@ -247,7 +246,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
                 TrackedEntityInstanceModel.Columns.UID + "=?",
                 new String[]{TRACKED_ENTITY_INSTANCE});
 
-        Cursor cursor = database().query(TrackedEntityAttributeValueModel.TABLE,
+        Cursor cursor = database().query(TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
         assertThatCursor(cursor).isExhausted();
     }

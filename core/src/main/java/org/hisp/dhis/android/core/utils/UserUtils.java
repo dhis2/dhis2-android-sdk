@@ -34,6 +34,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import okio.ByteString;
 
 public final class UserUtils {
@@ -52,6 +53,7 @@ public final class UserUtils {
         }
     }
 
+    @SuppressFBWarnings("DM_CONVERT_CASE")
     public static String md5(String username, String password) {
         try {
             String credentials = usernameAndPassword(username, password);

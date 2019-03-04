@@ -430,24 +430,24 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         String[] projection = {
                 UID,
-                ProgramRuleActionModel.Columns.CODE,
-                ProgramRuleActionModel.Columns.NAME,
-                ProgramRuleActionModel.Columns.DISPLAY_NAME,
-                ProgramRuleActionModel.Columns.CREATED,
-                ProgramRuleActionModel.Columns.LAST_UPDATED,
-                ProgramRuleActionModel.Columns.DATA,
-                ProgramRuleActionModel.Columns.CONTENT,
-                ProgramRuleActionModel.Columns.LOCATION,
-                ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleActionModel.Columns.PROGRAM_INDICATOR,
-                ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION,
-                ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE,
-                ProgramRuleActionModel.Columns.PROGRAM_STAGE,
-                ProgramRuleActionModel.Columns.DATA_ELEMENT,
-                ProgramRuleActionModel.Columns.PROGRAM_RULE
+                ProgramRuleActionTableInfo.Columns.CODE,
+                ProgramRuleActionTableInfo.Columns.NAME,
+                ProgramRuleActionTableInfo.Columns.DISPLAY_NAME,
+                ProgramRuleActionTableInfo.Columns.CREATED,
+                ProgramRuleActionTableInfo.Columns.LAST_UPDATED,
+                ProgramRuleActionFields.DATA,
+                ProgramRuleActionFields.CONTENT,
+                ProgramRuleActionFields.LOCATION,
+                ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleActionFields.PROGRAM_INDICATOR,
+                ProgramRuleActionFields.PROGRAM_STAGE_SECTION,
+                ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
+                ProgramRuleActionFields.PROGRAM_STAGE,
+                ProgramRuleActionFields.DATA_ELEMENT,
+                ProgramRuleActionFields.PROGRAM_RULE
         };
 
-        Cursor programRuleActionCursor = database().query(ProgramRuleActionModel.TABLE, projection,
+        Cursor programRuleActionCursor = database().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), projection,
                 UID + "=?", new String[]{"v434s5YPDcP"}, null, null, null);
 
         assertThatCursor(programRuleActionCursor).hasRow(

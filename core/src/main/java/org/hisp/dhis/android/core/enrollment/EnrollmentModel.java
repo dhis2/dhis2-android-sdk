@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
 
 import java.util.Date;
 
+@Deprecated
 @AutoValue
 public abstract class EnrollmentModel extends BaseDataModel {
 

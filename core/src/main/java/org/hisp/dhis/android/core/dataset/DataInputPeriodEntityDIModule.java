@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 

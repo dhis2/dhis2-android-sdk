@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -122,18 +123,18 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         userCall.call();
 
         String[] projection = {
-                UserCredentialsModel.Columns.UID,
-                UserCredentialsModel.Columns.CODE,
-                UserCredentialsModel.Columns.NAME,
-                UserCredentialsModel.Columns.DISPLAY_NAME,
-                UserCredentialsModel.Columns.CREATED,
-                UserCredentialsModel.Columns.LAST_UPDATED,
-                UserCredentialsModel.Columns.USERNAME,
-                UserCredentialsModel.Columns.USER,
+                BaseIdentifiableObjectModel.Columns.UID,
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                UserCredentialsFields.USERNAME,
+                UserCredentialsTableInfo.Columns.USER,
         };
 
 
-        Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE, projection,
+        Cursor userCredentialsCursor = database().query(UserCredentialsTableInfo.TABLE_INFO.name(), projection,
                 null, null, null, null, null);
 
         assertThatCursor(userCredentialsCursor).hasRow(

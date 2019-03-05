@@ -40,13 +40,13 @@ public class CreateCategoryComboUtils {
 
     public static ContentValues create(long id, String uid) {
         ContentValues categoryCombo = new ContentValues();
-        categoryCombo.put(CategoryComboModel.Columns.ID, id);
-        categoryCombo.put(CategoryComboModel.Columns.UID, uid);
-        categoryCombo.put(CategoryComboModel.Columns.CODE, TEST_CODE);
-        categoryCombo.put(CategoryComboModel.Columns.NAME, TEST_NAME);
-        categoryCombo.put(CategoryComboModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
-        categoryCombo.put(CategoryComboModel.Columns.CREATED, TEST_CREATED);
-        categoryCombo.put(CategoryComboModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
+        categoryCombo.put(CategoryComboTableInfo.Columns.ID, id);
+        categoryCombo.put(CategoryComboTableInfo.Columns.UID, uid);
+        categoryCombo.put(CategoryComboTableInfo.Columns.CODE, TEST_CODE);
+        categoryCombo.put(CategoryComboTableInfo.Columns.NAME, TEST_NAME);
+        categoryCombo.put(CategoryComboTableInfo.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
+        categoryCombo.put(CategoryComboTableInfo.Columns.CREATED, TEST_CREATED);
+        categoryCombo.put(CategoryComboTableInfo.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
         return categoryCombo;
     }
 }

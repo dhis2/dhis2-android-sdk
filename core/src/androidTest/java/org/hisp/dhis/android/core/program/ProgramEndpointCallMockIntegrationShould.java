@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
@@ -119,10 +119,10 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
-        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
         ContentValues categoryCombo2 = CreateCategoryComboUtils.create(2L, "x31y45jvIQL");
-        database().insert(CategoryComboModel.TABLE, null, categoryCombo2);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo2);
 
         // inserting tracked entity
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");

@@ -47,6 +47,10 @@ public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<
         return newWithScope("=", value);
     }
 
+    public R neq(String value) {
+        return newWithScope("!=", value);
+    }
+
     public R like(String value) {
         return newWithScope("LIKE", value);
     }

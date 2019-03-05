@@ -33,6 +33,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
+@Deprecated
 @AutoValue
 public abstract class UserRoleModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "UserRole";

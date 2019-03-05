@@ -47,8 +47,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
-import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
@@ -142,7 +142,7 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
                 relationshipType);
-        database().insert(ProgramModel.TABLE, null, program);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
         database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);

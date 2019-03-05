@@ -66,38 +66,39 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
+    private static String ACCESS_DATA_WRITE = "accessDataWrite";
     private static String[] PROGRAM_PROJECTION = {
             UID,
-            ProgramModel.Columns.CODE,
-            ProgramModel.Columns.NAME,
-            ProgramModel.Columns.DISPLAY_NAME,
-            ProgramModel.Columns.CREATED,
-            ProgramModel.Columns.LAST_UPDATED,
-            ProgramModel.Columns.SHORT_NAME,
-            ProgramModel.Columns.DISPLAY_SHORT_NAME,
-            ProgramModel.Columns.DESCRIPTION,
-            ProgramModel.Columns.DISPLAY_DESCRIPTION,
-            ProgramModel.Columns.VERSION,
-            ProgramModel.Columns.ONLY_ENROLL_ONCE,
-            ProgramModel.Columns.ENROLLMENT_DATE_LABEL,
-            ProgramModel.Columns.DISPLAY_INCIDENT_DATE,
-            ProgramModel.Columns.INCIDENT_DATE_LABEL,
-            ProgramModel.Columns.REGISTRATION,
-            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            ProgramModel.Columns.DATA_ENTRY_METHOD,
-            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS,
-            ProgramModel.Columns.RELATIONSHIP_FROM_A,
-            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
-            ProgramModel.Columns.CAPTURE_COORDINATES,
-            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
-            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST,
-            ProgramModel.Columns.PROGRAM_TYPE,
-            ProgramModel.Columns.RELATIONSHIP_TYPE,
-            ProgramModel.Columns.RELATIONSHIP_TEXT,
-            ProgramModel.Columns.RELATED_PROGRAM,
-            ProgramModel.Columns.TRACKED_ENTITY_TYPE,
-            ProgramModel.Columns.CATEGORY_COMBO,
-            ProgramModel.Columns.ACCESS_DATA_WRITE
+            BaseIdentifiableObjectModel.Columns.CODE,
+            BaseIdentifiableObjectModel.Columns.NAME,
+            BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+            BaseIdentifiableObjectModel.Columns.CREATED,
+            BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+            BaseNameableObjectModel.Columns.SHORT_NAME,
+            BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
+            BaseNameableObjectModel.Columns.DESCRIPTION,
+            BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
+            ProgramFields.VERSION,
+            ProgramFields.ONLY_ENROLL_ONCE,
+            ProgramFields.ENROLLMENT_DATE_LABEL,
+            ProgramFields.DISPLAY_INCIDENT_DATE,
+            ProgramFields.INCIDENT_DATE_LABEL,
+            ProgramFields.REGISTRATION,
+            ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+            ProgramFields.DATA_ENTRY_METHOD,
+            ProgramFields.IGNORE_OVERDUE_EVENTS,
+            ProgramFields.RELATIONSHIP_FROM_A,
+            ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
+            ProgramFields.CAPTURE_COORDINATES,
+            ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
+            ProgramFields.DISPLAY_FRONT_PAGE_LIST,
+            ProgramFields.PROGRAM_TYPE,
+            ProgramFields.RELATIONSHIP_TYPE,
+            ProgramFields.RELATIONSHIP_TEXT,
+            ProgramFields.RELATED_PROGRAM,
+            ProgramFields.TRACKED_ENTITY_TYPE,
+            ProgramFields.CATEGORY_COMBO,
+            ACCESS_DATA_WRITE
     };
 
     private Dhis2MockServer dhis2MockServer;
@@ -136,7 +137,8 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         // Fake call to api
         programEndpointCall.call();
 
-        Cursor programCursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null);
+        Cursor programCursor = database().query(ProgramTableInfo.TABLE_INFO.name(), PROGRAM_PROJECTION,
+                null, null, null, null, null);
 
         assertThatCursor(programCursor).hasRow(
                 "IpHINAT79UW",

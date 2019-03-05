@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
-import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,11 +81,11 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null, null);
         ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null, null);
 
-        database().insert(ProgramModel.TABLE, null, program1);
-        database().insert(ProgramModel.TABLE, null, program2);
-        database().insert(ProgramModel.TABLE, null, program3);
-        database().insert(ProgramModel.TABLE, null, program4);
-        database().insert(ProgramModel.TABLE, null, program5);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
     }
 
     @Test

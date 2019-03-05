@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceTableInfo;
 import org.hisp.dhis.android.core.user.User;
@@ -127,8 +127,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
     private void insertProgramWithUid(String uid) {
         ContentValues program = new ContentValues();
-        program.put(ProgramModel.Columns.UID, uid);
-        database().insert(ProgramModel.TABLE, null, program);
+        program.put(BaseIdentifiableObjectModel.Columns.UID, uid);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
     }
 
     @Test

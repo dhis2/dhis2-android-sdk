@@ -96,7 +96,7 @@ public class TrackedEntityAttributeValueStoreShould extends AbsStoreTestCase {
                 .create(1L, TRACKED_ENTITY_ATTRIBUTE, null);
 
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
+        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance);
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null, trackedEntityInstance_2);
         database().insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute);

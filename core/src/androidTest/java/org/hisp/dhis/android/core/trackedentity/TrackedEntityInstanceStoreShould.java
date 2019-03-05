@@ -96,7 +96,7 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
         OrganisationUnit organisationUnit = OrganisationUnitSamples.getOrganisationUnit(ORGANISATION_UNIT);
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, TRACKED_ENTITY);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
+        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
         trackedEntityInstance = TrackedEntityInstance.builder()
                 .uid(UID)
                 .created(date)
@@ -128,8 +128,8 @@ public class TrackedEntityInstanceStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_instance_in_data_base_when_delete_tracked_entity_foreign_key() {
         trackedEntityInstanceStore.insert(trackedEntityInstance);
 
-        database().delete(TrackedEntityTypeModel.TABLE,
-                TrackedEntityTypeModel.Columns.UID + "=?",
+        database().delete(TrackedEntityTypeTableInfo.TABLE_INFO.name(),
+                TrackedEntityTypeTableInfo.Columns.UID + "=?",
                 new String[]{ TRACKED_ENTITY} );
 
         Cursor cursor = database().query(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), PROJECTION, null, null,

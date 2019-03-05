@@ -35,6 +35,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
+@Deprecated
 @AutoValue
 public abstract class TrackedEntityTypeModel extends BaseNameableObjectModel {
 

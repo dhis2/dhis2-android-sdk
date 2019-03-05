@@ -51,7 +51,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -127,7 +127,7 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         // inserting tracked entity
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
+        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
 
         programEndpointCall = getD2DIComponent(d2).programCallFactory().create();
     }

@@ -35,9 +35,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -45,7 +42,7 @@ import dagger.Reusable;
 @Reusable
 final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<ProgramStageSection> {
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
-    private final LinkSyncHandler<ProgramStageSectionProgramIndicatorLink>
+    private final LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
             programStageSectionProgramIndicatorLinkHandler;
     private final OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
             programStageSectionDataElementLinkHandler;
@@ -53,7 +50,7 @@ final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<Progr
     @Inject
     ProgramStageSectionHandler(IdentifiableObjectStore<ProgramStageSection> programStageSectionStore,
                                SyncHandler<ProgramIndicator> programIndicatorHandler,
-                               LinkSyncHandler<ProgramStageSectionProgramIndicatorLink>
+                               LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
                                        programStageSectionProgramIndicatorLinkHandler,
                                OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
                                        programStageSectionDataElementLinkHandler) {
@@ -74,18 +71,13 @@ final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<Progr
                         .sortOrder(sortOrder)
                         .build());
 
-        List<ProgramIndicator> programIndicators = programStageSection.programIndicators();
-        if (programIndicators != null) {
-            programIndicatorHandler.handleMany(programIndicators);
+        programIndicatorHandler.handleMany(programStageSection.programIndicators());
 
-            List<ProgramStageSectionProgramIndicatorLink> programStageSectionProgramIndicatorLinks = new ArrayList<>();
-            for (ProgramIndicator programIndicator : programIndicators) {
-                programStageSectionProgramIndicatorLinks.add(ProgramStageSectionProgramIndicatorLink.builder()
-                .programStageSection(programStageSection.uid()).programIndicator(programIndicator.uid()).build());
-            }
-
-            programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSection.uid(),
-                    programStageSectionProgramIndicatorLinks);
-        }
+        programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSection.uid(),
+                programStageSection.programIndicators(),
+                programIndicator -> ProgramStageSectionProgramIndicatorLink.builder()
+                        .programStageSection(programStageSection.uid())
+                        .programIndicator(programIndicator.uid())
+                        .build());
     }
 }

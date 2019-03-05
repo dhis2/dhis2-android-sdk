@@ -180,20 +180,20 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                ProgramRuleVariableModel.Columns.CODE,
-                ProgramRuleVariableModel.Columns.NAME,
-                ProgramRuleVariableModel.Columns.DISPLAY_NAME,
-                ProgramRuleVariableModel.Columns.CREATED,
-                ProgramRuleVariableModel.Columns.LAST_UPDATED,
-                ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET,
-                ProgramRuleVariableModel.Columns.PROGRAM,
-                ProgramRuleVariableModel.Columns.PROGRAM_STAGE,
-                ProgramRuleVariableModel.Columns.DATA_ELEMENT,
-                ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
+                ProgramRuleVariableFields.PROGRAM,
+                ProgramRuleVariableFields.PROGRAM_STAGE,
+                ProgramRuleVariableFields.DATA_ELEMENT,
+                ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         };
 
-        Cursor programRuleVariableCursor = database().query(ProgramRuleVariableModel.TABLE, projection,
+        Cursor programRuleVariableCursor = database().query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,
                 UID + "=?", new String[]{"g2GooOydipB"}, null, null, null);
 
         assertThatCursor(programRuleVariableCursor).hasRow(

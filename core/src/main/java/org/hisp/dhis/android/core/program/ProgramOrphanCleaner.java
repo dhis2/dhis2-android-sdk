@@ -69,8 +69,8 @@ final class ProgramOrphanCleaner implements ParentOrphanCleaner<Program> {
 
     public static ProgramOrphanCleaner create(DatabaseAdapter databaseAdapter) {
         return new ProgramOrphanCleaner(
-                new OrphanCleanerImpl<>(ProgramRuleVariableModel.TABLE,
-                        ProgramRuleVariableModel.Columns.PROGRAM, databaseAdapter),
+                new OrphanCleanerImpl<>(ProgramRuleVariableTableInfo.TABLE_INFO.name(),
+                        ProgramRuleVariableFields.PROGRAM, databaseAdapter),
                 new OrphanCleanerImpl<>(ProgramIndicatorTableInfo.TABLE_INFO.name(),
                         ProgramIndicatorFields.PROGRAM, databaseAdapter),
                 new OrphanCleanerImpl<>(ProgramRuleTableInfo.TABLE_INFO.name(),

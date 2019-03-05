@@ -38,8 +38,10 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
+import org.hisp.dhis.android.core.indicator.Indicator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,8 +53,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyCollectionOf;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -79,10 +81,11 @@ public class DataSetHandlerShould {
     private SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler;
 
     @Mock
-    private LinkSyncHandler<DataSetCompulsoryDataElementOperandLink> dataSetCompulsoryDataElementOperandLinkHandler;
+    private LinkSyncHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink>
+            dataSetCompulsoryDataElementOperandLinkHandler;
 
     @Mock
-    private LinkSyncHandlerWithTransformer<DataInputPeriod> dataInputPeriodHandler;
+    private LinkSyncHandler<DataInputPeriod, DataInputPeriod> dataInputPeriodHandler;
 
     @Mock
     private DataSet dataSet;
@@ -112,10 +115,10 @@ public class DataSetHandlerShould {
     private DataInputPeriod dataInputPeriod;
 
     @Mock
-    private LinkSyncHandler<DataSetElement> dataSetElementLinkHandler;
+    private LinkSyncHandler<DataSetElement, DataSetElement> dataSetElementLinkHandler;
 
     @Mock
-    private LinkSyncHandler<DataSetIndicatorLink> dataSetIndicatorLinkHandler;
+    private LinkSyncHandler<Indicator, DataSetIndicatorLink> dataSetIndicatorLinkHandler;
 
     @Mock
     private CollectionCleaner<DataSet> collectionCleaner;
@@ -221,7 +224,7 @@ public class DataSetHandlerShould {
         dataSetHandler.handle(dataSet);
 
         verify(dataSetCompulsoryDataElementOperandLinkHandler).handleMany(eq(dataSet.uid()),
-                anyListOf(DataSetCompulsoryDataElementOperandLink.class));
+                anyListOf(DataElementOperand.class), any(Transformer.class));
     }
 
     @Test
@@ -247,7 +250,8 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetElementLinkHandler).handleMany(anyString(), anyCollectionOf(DataSetElement.class));
+        verify(dataSetElementLinkHandler).handleMany(anyString(), anyCollectionOf(DataSetElement.class),
+                any(Transformer.class));
     }
 
     @Test
@@ -255,6 +259,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyCollectionOf(DataSetIndicatorLink.class));
+        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyCollectionOf(Indicator.class),
+                any(Transformer.class));
     }
 }

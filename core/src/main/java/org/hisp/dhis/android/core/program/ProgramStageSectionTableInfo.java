@@ -51,7 +51,7 @@ public final class ProgramStageSectionTableInfo {
     };
 
     public static class Columns extends BaseIdentifiableObjectModel.Columns {
-        static final String PROGRAM_STAGE = "programStage";
+        public static final String PROGRAM_STAGE = "programStage";
         public static final String DESKTOP_RENDER_TYPE = "desktopRenderType";
         public static final String MOBILE_RENDER_TYPE = "mobileRenderType";
 

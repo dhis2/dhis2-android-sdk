@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.event.EventModel.Columns;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +114,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         String byEnrollmentAndProgramStageQuery = "SELECT Event.* FROM Event " +
                 "WHERE Event.enrollment = '" + enrollmentUid + "' " +
                 "AND Event.programStage = '" + programStageUid + "' " +
-                "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
+                "ORDER BY Event." + EventFields.EVENT_DATE + ", Event." + EventFields.LAST_UPDATED;
 
         return eventListFromQuery(byEnrollmentAndProgramStageQuery);
     }

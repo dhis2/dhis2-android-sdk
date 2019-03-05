@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
@@ -150,8 +150,8 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
                 trackedEntityInstance);
         database().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
-        database().insert(EventModel.TABLE, null, event1);
-        database().insert(EventModel.TABLE, null, event2);
+        database().insert(EventTableInfo.TABLE_INFO.name(), null, event1);
+        database().insert(EventTableInfo.TABLE_INFO.name(), null, event2);
 
         trackedEntityDataValue = TrackedEntityDataValue.builder()
                 .event(EVENT_1)
@@ -204,7 +204,8 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_data_value_when_delete_event_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(EventModel.TABLE, EventModel.Columns.UID + "=?", new String[]{EVENT_1});
+        database().delete(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.UID + "=?",
+                new String[]{EVENT_1});
 
         Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);

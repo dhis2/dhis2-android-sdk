@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.data.database.DbEventStatusColumnAdapter;
 
 import java.util.Date;
 
+@Deprecated
 @AutoValue
 public abstract class EventModel extends BaseDataModel {
 

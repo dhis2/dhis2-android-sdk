@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import java.util.ArrayList;
@@ -44,13 +46,13 @@ import dagger.Reusable;
 @Reusable
 final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
-    private final LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler;
+    private final OrderedLinkSyncHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
     private final SyncHandler<DataElementOperand> greyedFieldsHandler;
     private final LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Inject
     SectionHandler(IdentifiableObjectStore<Section> sectionStore,
-                   LinkSyncHandler<SectionDataElementLink> sectionDataElementLinkHandler,
+                   OrderedLinkSyncHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler,
                    SyncHandler<DataElementOperand> greyedFieldsHandler,
                    LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler) {
 
@@ -62,15 +64,12 @@ final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     @Override
     protected void afterObjectHandled(Section section, HandleAction action) {
-        if (section.dataElements() != null) {
-            List<SectionDataElementLink> sectionDataElementLinks = new ArrayList<>();
-            for (int i = 0; i < section.dataElements().size(); i++) {
-                sectionDataElementLinks.add(SectionDataElementLink.builder()
-                        .section(section.uid()).dataElement(section.dataElements().get(i).uid()).sortOrder(i + 1)
+        sectionDataElementLinkHandler.handleMany(section.uid(), section.dataElements(),
+                (dataElement, sortOrder) -> SectionDataElementLink.builder()
+                        .section(section.uid())
+                        .dataElement(dataElement.uid())
+                        .sortOrder(sortOrder)
                         .build());
-            }
-            sectionDataElementLinkHandler.handleMany(section.uid(), sectionDataElementLinks);
-        }
 
         if (section.greyedFields() != null) {
             greyedFieldsHandler.handleMany(section.greyedFields());

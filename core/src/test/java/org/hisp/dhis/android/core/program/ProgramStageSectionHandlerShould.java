@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +63,8 @@ public class ProgramStageSectionHandlerShould {
     private LinkSyncHandler<ProgramStageSectionProgramIndicatorLink> programStageSectionProgramIndicatorLinkHandler;
 
     @Mock
-    private LinkSyncHandler<ProgramStageSectionDataElementLink> programStageSectionDataElementLinkHandler;
+    private OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
+            programStageSectionDataElementLinkHandler;
 
     @Mock
     private ProgramStageSection programStageSection;
@@ -106,7 +109,7 @@ public class ProgramStageSectionHandlerShould {
     public void handle_program_stage_section_data_element_links() {
         programStageSectionHandler.handle(programStageSection);
         verify(programStageSectionDataElementLinkHandler).handleMany(any(String.class),
-                anyListOf(ProgramStageSectionDataElementLink.class));
+                anyListOf(DataElement.class), any(OrderedLinkTransformer.class));
     }
 
     @Test

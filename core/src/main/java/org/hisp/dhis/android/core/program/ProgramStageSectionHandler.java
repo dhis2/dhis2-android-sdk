@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 import java.util.ArrayList;
@@ -46,14 +47,15 @@ final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<Progr
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
     private final LinkSyncHandler<ProgramStageSectionProgramIndicatorLink>
             programStageSectionProgramIndicatorLinkHandler;
-    private final LinkSyncHandler<ProgramStageSectionDataElementLink> programStageSectionDataElementLinkHandler;
+    private final OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
+            programStageSectionDataElementLinkHandler;
 
     @Inject
     ProgramStageSectionHandler(IdentifiableObjectStore<ProgramStageSection> programStageSectionStore,
                                SyncHandler<ProgramIndicator> programIndicatorHandler,
                                LinkSyncHandler<ProgramStageSectionProgramIndicatorLink>
                                        programStageSectionProgramIndicatorLinkHandler,
-                               LinkSyncHandler<ProgramStageSectionDataElementLink>
+                               OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
                                        programStageSectionDataElementLinkHandler) {
         super(programStageSectionStore);
         this.programIndicatorHandler = programIndicatorHandler;
@@ -63,18 +65,14 @@ final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<Progr
 
     @Override
     protected void afterObjectHandled(ProgramStageSection programStageSection, HandleAction action) {
-        List<DataElement> dataElements = programStageSection.dataElements();
-        if (dataElements != null) {
-            List<ProgramStageSectionDataElementLink> programStageSectionDataElementLinks = new ArrayList<>();
-            for (int i = 0; i < dataElements.size(); i++) {
-                programStageSectionDataElementLinks.add(ProgramStageSectionDataElementLink.builder()
-                .programStageSection(programStageSection.uid()).dataElement(dataElements.get(i).uid()).sortOrder(i + 1)
+        programStageSectionDataElementLinkHandler.handleMany(
+                programStageSection.uid(),
+                programStageSection.dataElements(),
+                (dataElement, sortOrder) -> ProgramStageSectionDataElementLink.builder()
+                        .programStageSection(programStageSection.uid())
+                        .dataElement(dataElement.uid())
+                        .sortOrder(sortOrder)
                         .build());
-            }
-
-            programStageSectionDataElementLinkHandler.handleMany(programStageSection.uid(),
-                    programStageSectionDataElementLinks);
-        }
 
         List<ProgramIndicator> programIndicators = programStageSection.programIndicators();
         if (programIndicators != null) {

@@ -6,7 +6,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.data.DeviceStateRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.LocalDbRepositoryImpl;
-import org.hisp.dhis.android.core.sms.data.WebApiRepositoryImpl;
+import org.hisp.dhis.android.core.sms.data.webapirepository.WebApiRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.smsrepository.SmsRepositoryImpl;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;

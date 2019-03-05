@@ -67,8 +67,8 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
     @Reusable
     public OrphanCleaner<ProgramStage, ProgramStageDataElement> dataElementOrphanCleaner(
             DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(ProgramStageDataElementModel.TABLE,
-                ProgramStageDataElementModel.Columns.PROGRAM_STAGE, databaseAdapter);
+        return new OrphanCleanerImpl<>(ProgramStageDataElementTableInfo.TABLE_INFO.name(),
+                ProgramStageDataElementFields.PROGRAM_STAGE, databaseAdapter);
     }
 
     @Provides

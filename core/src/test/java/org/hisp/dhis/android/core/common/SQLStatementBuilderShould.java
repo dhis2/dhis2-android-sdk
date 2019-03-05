@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
-import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.legendset.LegendModel;
 import org.hisp.dhis.android.core.legendset.LegendSetModel;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
@@ -153,7 +153,7 @@ public class SQLStatementBuilderShould {
                         DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + " TEXT NOT NULL," +
                                 DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
                                 " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + ") " +
-                                " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
+                                " REFERENCES " + DataSetTableInfo.TABLE_INFO.name() + " (" + BaseIdentifiableObjectModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                                 " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + ") " +
                                 " REFERENCES " + OrganisationUnitTableInfo.TABLE_INFO.name() + " (" +

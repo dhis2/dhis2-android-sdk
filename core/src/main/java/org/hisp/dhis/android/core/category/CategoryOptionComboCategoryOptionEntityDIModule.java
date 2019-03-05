@@ -48,7 +48,7 @@ public final class CategoryOptionComboCategoryOptionEntityDIModule {
 
     @Provides
     @Reusable
-    LinkSyncHandler<CategoryOptionComboCategoryOptionLink>
+    LinkSyncHandler<CategoryOption, CategoryOptionComboCategoryOptionLink>
     categoryOptionComboCategoryOptionLinkHandler(LinkModelStore<CategoryOptionComboCategoryOptionLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }

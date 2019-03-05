@@ -333,7 +333,15 @@
           "id": "bbjzL5gp0NC",
           "displayName": "First revsiion",
           "externalAccess": false,
-          "sortOrder": 0,
+          "sortOrder": 1,
+          "renderType": {
+            "DESKTOP": {
+              "type": "LISTING"
+            },
+            "MOBILE": {
+              "type": "LISTING"
+            }
+          },
           "programStage": {
             "id": "dBwrot7S421"
           },

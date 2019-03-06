@@ -48,6 +48,10 @@ public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>
         return newWithScope("=", value);
     }
 
+    public R neq(Date value) {
+        return newWithScope("!=", value);
+    }
+
     public R before(Date value) {
         return newWithScope("<", value);
     }

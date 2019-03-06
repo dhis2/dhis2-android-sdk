@@ -47,6 +47,10 @@ public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>
         return newWithScope("=", value.name());
     }
 
+    public R neq(E value) {
+        return newWithScope("!=", value.name());
+    }
+
     String wrapValue(String value) {
         return "'" + value + "'";
     }

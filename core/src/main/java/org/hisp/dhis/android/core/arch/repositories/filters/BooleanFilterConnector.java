@@ -43,6 +43,18 @@ public final class BooleanFilterConnector<R extends ReadOnlyCollectionRepository
         super(repositoryFactory, scope, key);
     }
 
+    public R eq(boolean value) {
+        if (value) {
+            return isTrue();
+        } else {
+            return isFalse();
+        }
+    }
+
+    public R neq(boolean value) {
+        return eq(!value);
+    }
+
     public R isTrue() {
         return newWithScope("=", 1);
     }

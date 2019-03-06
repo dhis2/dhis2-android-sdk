@@ -48,7 +48,8 @@ public final class ProgramSectionAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkSyncHandler<ProgramSectionAttributeLink> handler(LinkModelStore<ProgramSectionAttributeLink> store) {
+    public LinkSyncHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLink> handler(
+            LinkModelStore<ProgramSectionAttributeLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }
 }

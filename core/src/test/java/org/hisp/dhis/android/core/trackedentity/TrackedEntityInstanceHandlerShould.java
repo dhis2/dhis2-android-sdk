@@ -153,7 +153,7 @@ public class TrackedEntityInstanceHandlerShould {
         verify(enrollmentHandler, never()).handleMany(anyCollectionOf(Enrollment.class));
 
         verify(enrollmentCleaner, times(1))
-                .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
+                .deleteOrphan(any(TrackedEntityInstance.class), anyCollectionOf(Enrollment.class));
     }
 
     @Test
@@ -175,7 +175,7 @@ public class TrackedEntityInstanceHandlerShould {
         verify(enrollmentHandler, times(1)).handleMany(anyCollectionOf(Enrollment.class), any(ModelBuilder.class));
 
         verify(enrollmentCleaner, times(1))
-                .deleteOrphan(any(TrackedEntityInstance.class), any(ArrayList.class));
+                .deleteOrphan(any(TrackedEntityInstance.class), anyCollectionOf(Enrollment.class));
     }
 
     @Test

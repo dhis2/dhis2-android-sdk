@@ -54,7 +54,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.mockito.Matchers.anySetOf;
+import static org.mockito.ArgumentMatchers.anyCollectionOf;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -139,8 +139,8 @@ public class MetadataCallShould extends BaseCallShould {
         when(userDownloader.downloadMetadata()).thenReturn(userCall);
         when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloader.downloadMetadata(same(user), anySetOf(Program.class),
-                anySetOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
+        when(organisationUnitDownloader.downloadMetadata(same(user), anyCollectionOf(Program.class),
+                anyCollectionOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
         when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
         when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
 
@@ -151,6 +151,7 @@ public class MetadataCallShould extends BaseCallShould {
         when(categoryDownloadCall.call()).thenReturn(new Unit());
         when(programDownloadCall.call()).thenReturn(Lists.newArrayList(program));
         when(dataSetDownloadCall.call()).thenReturn(Lists.newArrayList(dataSet));
+        when(organisationUnitDownloadCall.call()).thenReturn(new Unit());
         when(constantCall.call()).thenReturn(Lists.newArrayList(constant));
 
         // Metadata call

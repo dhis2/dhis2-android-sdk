@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -195,8 +196,8 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.setData(programUids, dataSetUids, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
-        verify(programCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));
-        verify(dataSetCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));
-        verify(organisationUnitGroupCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));
+        verify(programCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
+        verify(dataSetCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
+        verify(organisationUnitGroupCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
     }
 }

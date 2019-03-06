@@ -30,35 +30,37 @@ apply plugin: "checkstyle"
 
 afterEvaluate {
     android.libraryVariants.each { variant ->
-        def checkstyleTask = tasks.create("checkstyle${variant.name.capitalize()}", Checkstyle)
 
-        checkstyleTask.group = "verification"
-        checkstyleTask.description = "Run Checkstyle for the ${variant.name}"
+        tasks.register("checkstyle${variant.name.capitalize()}", Checkstyle) { checkstyleTask ->
 
-        // Fail early.
-        checkstyleTask.ignoreFailures = false
+            checkstyleTask.group = "verification"
+            checkstyleTask.description = "Run Checkstyle for the ${variant.name}"
 
-        // Do not output results into console.
-        checkstyleTask.showViolations = false
+            // Fail early.
+            checkstyleTask.ignoreFailures = false
 
-        checkstyleTask.configFile = rootProject.file(
-                "plugins/checkstyle-style.xml"
-        )
+            // Do not output results into console.
+            checkstyleTask.showViolations = false
 
-        checkstyleTask.include(
-                "**/*.java"
-        )
+            checkstyleTask.configFile = rootProject.file(
+                    "plugins/checkstyle-style.xml"
+            )
 
-        checkstyleTask.exclude(
-                "**/R.java", "**/BuildConfig.java"
-        )
+            checkstyleTask.include(
+                    "**/*.java"
+            )
 
-        def compileTask = variant.javaCompile
-        checkstyleTask.source = compileTask.source
-        checkstyleTask.classpath = compileTask.classpath.plus(project.files(android.bootClasspath))
-        checkstyleTask.dependsOn(compileTask)
+            checkstyleTask.exclude(
+                    "**/R.java", "**/BuildConfig.java"
+            )
 
-        def checkTask = tasks.getByName("check")
-        checkTask.dependsOn(checkstyleTask)
+            def compileTask = variant.javaCompile
+            checkstyleTask.source = compileTask.source
+            checkstyleTask.classpath = compileTask.classpath.plus(project.files(android.bootClasspath))
+            checkstyleTask.dependsOn(compileTask)
+
+            def checkTask = tasks.getByName("check")
+            checkTask.dependsOn(checkstyleTask)
+        }
     }
 }

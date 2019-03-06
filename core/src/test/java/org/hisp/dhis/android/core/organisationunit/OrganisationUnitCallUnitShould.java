@@ -56,8 +56,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -203,7 +203,7 @@ public class OrganisationUnitCallUnitShould {
 
         organisationUnitCall.call();
 
-        verify(organisationUnitHandler).handleMany(anyListOf(OrganisationUnit.class), any(Transformer.class));
+        verify(organisationUnitHandler).handleMany(anyCollectionOf(OrganisationUnit.class), any(Transformer.class));
     }
 
     @Test
@@ -212,6 +212,6 @@ public class OrganisationUnitCallUnitShould {
         organisationUnitCall.call();
         organisationUnitCall.call();
 
-        verify(organisationUnitHandler, times(2)).handleMany(anyListOf(OrganisationUnit.class), any(OrganisationUnitDisplayPathTransformer.class));
+        verify(organisationUnitHandler, times(2)).handleMany(anyCollectionOf(OrganisationUnit.class), any(OrganisationUnitDisplayPathTransformer.class));
     }
 }

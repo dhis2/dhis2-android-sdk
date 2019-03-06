@@ -179,9 +179,6 @@ public class ProgramIndicatorEngineShould {
                 .thenReturn(Collections.singletonList(value5));
 
         when(event1.uid()).thenReturn(eventUid1);
-        when(event1WithDataValues.uid()).thenReturn(eventUid1);
-        when(event1.programStage()).thenReturn(programStageUid1);
-        when(event1WithDataValues.programStage()).thenReturn(programStageUid1);
         when(eventStore.selectByUid(eventUid1)).thenReturn(event1);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid1))
                 .thenReturn(Collections.singletonList(event1));
@@ -192,9 +189,6 @@ public class ProgramIndicatorEngineShould {
         when(event1WithDataValues.trackedEntityDataValues()).thenReturn(Arrays.asList(value1, value2, value3));
 
         when(event2.uid()).thenReturn(eventUid2_1);
-        when(event2WithDataValues.uid()).thenReturn(eventUid2_1);
-        when(event2.programStage()).thenReturn(programStageUid2);
-        when(event2WithDataValues.programStage()).thenReturn(programStageUid2);
 
         when(event2.toBuilder()).thenReturn(eventBuilder2);
         when(eventBuilder2.trackedEntityDataValues(Collections.singletonList(value4))).thenReturn(eventBuilder2);
@@ -202,22 +196,16 @@ public class ProgramIndicatorEngineShould {
         when(event2WithDataValues.trackedEntityDataValues()).thenReturn(Collections.singletonList(value4));
 
         when(event3.uid()).thenReturn(eventUid2_2);
-        when(event3WithDataValues.uid()).thenReturn(eventUid2_2);
-        when(event3.programStage()).thenReturn(programStageUid2);
-        when(event3WithDataValues.programStage()).thenReturn(programStageUid2);
 
         when(event3.toBuilder()).thenReturn(eventBuilder3);
         when(eventBuilder3.trackedEntityDataValues(Collections.singletonList(value5))).thenReturn(eventBuilder3);
         when(eventBuilder3.build()).thenReturn(event3WithDataValues);
         when(event3WithDataValues.trackedEntityDataValues()).thenReturn(Collections.singletonList(value5));
 
-        when(eventStore.selectByUid(eventUid2_1)).thenReturn(event2);
-        when(eventStore.selectByUid(eventUid2_2)).thenReturn(event3);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Arrays.asList(event2, event3));
         when(eventStore.countEventsForEnrollment(enrollmentUid)).thenReturn(2);
 
-        when(enrollment.uid()).thenReturn(enrollmentUid);
         when(enrollment.trackedEntityInstance()).thenReturn(trackedEntityInstanceUid);
         when(enrollmentStore.selectByUid(enrollmentUid)).thenReturn(enrollment);
 
@@ -230,7 +218,6 @@ public class ProgramIndicatorEngineShould {
         when(trackedEntityAttributeValueStore.queryByTrackedEntityInstance(trackedEntityInstanceUid))
                 .thenReturn(Collections.singletonList(attributeValue));
 
-        when(constant.uid()).thenReturn(constantUid1);
         when(constantStore.selectByUid(constantUid1)).thenReturn(constant);
     }
 
@@ -452,7 +439,6 @@ public class ProgramIndicatorEngineShould {
         when(value1.value()).thenReturn("3.5");
 
         // Event2 does not exist
-        when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.emptyList());
 
@@ -471,7 +457,6 @@ public class ProgramIndicatorEngineShould {
                 de(programStageUid2, dataElementUid2) + " * 10");
 
         // Event2 does not exist
-        when(eventStore.selectByUid(eventUid2_1)).thenReturn(null);
         when(eventStore.queryOrderedForEnrollmentAndProgramStage(enrollmentUid, programStageUid2))
                 .thenReturn(Collections.emptyList());
 

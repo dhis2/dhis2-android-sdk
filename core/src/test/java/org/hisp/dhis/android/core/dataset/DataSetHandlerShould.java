@@ -52,6 +52,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyCollectionOf;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
@@ -142,6 +143,7 @@ public class DataSetHandlerShould {
                 dataSetIndicatorLinkHandler,
                 collectionCleaner);
 
+        when(dataSet.uid()).thenReturn("dataset_uid");
         when(dataSet.access()).thenReturn(access);
         when(access.data()).thenReturn(dataAccess);
         when(dataAccess.write()).thenReturn(true);
@@ -229,7 +231,7 @@ public class DataSetHandlerShould {
         dataSetHandler.handle(dataSet);
 
         verify(dataInputPeriodHandler).handleMany(anyString(),
-                anyListOf(DataInputPeriod.class),
+                anyCollectionOf(DataInputPeriod.class),
                 Matchers.any());
     }
 
@@ -246,7 +248,7 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetElementLinkHandler).handleMany(anyString(), anyListOf(DataSetElement.class));
+        verify(dataSetElementLinkHandler).handleMany(anyString(), anyCollectionOf(DataSetElement.class));
     }
 
     @Test
@@ -254,6 +256,6 @@ public class DataSetHandlerShould {
 
         dataSetHandler.handle(dataSet);
 
-        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyListOf(DataSetIndicatorLink.class));
+        verify(dataSetIndicatorLinkHandler).handleMany(anyString(), anyCollectionOf(DataSetIndicatorLink.class));
     }
 }

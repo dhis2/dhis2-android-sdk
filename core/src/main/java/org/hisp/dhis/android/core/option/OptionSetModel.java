@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.utils.Utils;
 
+@Deprecated
 @AutoValue
 public abstract class OptionSetModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "OptionSet";

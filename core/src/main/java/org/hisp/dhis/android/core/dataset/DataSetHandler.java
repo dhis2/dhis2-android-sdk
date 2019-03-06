@@ -97,7 +97,7 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
     protected void afterObjectHandled(final DataSet dataSet, HandleAction action) {
 
         styleHandler.handle(dataSet.style(),
-                new ObjectStyleTransformer(dataSet.uid(), DataSetModel.TABLE));
+                new ObjectStyleTransformer(dataSet.uid(), DataSetTableInfo.TABLE_INFO.name()));
 
         sectionHandler.handleMany(dataSet.sections());
 

@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.Model;
@@ -86,7 +86,7 @@ public abstract class DataElement extends BaseNameableObject
 
     String categoryComboUid() {
         ObjectWithUid combo = categoryCombo();
-        return combo == null ? CategoryComboModel.DEFAULT_UID : combo.uid();
+        return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }
 
     @Nullable

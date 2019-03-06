@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.program.ProgramRuleStore;
 import org.hisp.dhis.android.core.program.ProgramRuleTableInfo;
 import org.hisp.dhis.android.core.user.User;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.hisp.dhis.android.core.user.UserCredentialsModel;
 import org.hisp.dhis.android.core.user.UserCredentialsStoreImpl;
 import org.hisp.dhis.android.core.user.UserCredentialsTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
@@ -74,8 +73,8 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
     private final String[] USER_CREDENTIALS_PROJECTION = {
-            UserCredentialsModel.Columns.UID,
-            UserCredentialsModel.Columns.USER
+            UserCredentialsTableInfo.Columns.UID,
+            UserCredentialsTableInfo.Columns.USER
     };
     private final String[] PROGRAM_RULE_PROJECTION = {
             BaseIdentifiableObjectModel.Columns.UID
@@ -110,9 +109,9 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
         assertThatCursorHasRowCount(cursor, 1);
         cursor.moveToFirst();
 
-        int uidColumnIndex = cursor.getColumnIndex(UserCredentialsModel.Columns.UID);
+        int uidColumnIndex = cursor.getColumnIndex(UserCredentialsTableInfo.Columns.UID);
         Truth.assertThat(cursor.getString(uidColumnIndex)).isEqualTo("M0fCOxtkURr");
-        int userColumnIndex = cursor.getColumnIndex(UserCredentialsModel.Columns.USER);
+        int userColumnIndex = cursor.getColumnIndex(UserCredentialsTableInfo.Columns.USER);
         Truth.assertThat(cursor.getString(userColumnIndex)).isEqualTo("DXyJmlo9rge");
 
         assertThatCursor(cursor).isExhausted();
@@ -234,18 +233,18 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
     }
 
     private Cursor getUserCredentialsCursor() {
-        return database().query(UserCredentialsModel.TABLE, USER_CREDENTIALS_PROJECTION, null, null,
-                null, null, null);
+        return database().query(UserCredentialsTableInfo.TABLE_INFO.name(), USER_CREDENTIALS_PROJECTION,
+                null, null, null, null, null);
     }
 
     private Cursor getProgramRuleCursor() {
-        return database().query(ProgramRuleTableInfo.TABLE_INFO.name(), PROGRAM_RULE_PROJECTION, null, null,
-                null, null, null);
+        return database().query(ProgramRuleTableInfo.TABLE_INFO.name(), PROGRAM_RULE_PROJECTION,
+                null, null, null, null, null);
     }
 
     private Cursor getProgramRuleActionCursor() {
-        return database().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), PROGRAM_RULE_ACTION_PROJECTION, null, null,
-                null, null, null);
+        return database().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), PROGRAM_RULE_ACTION_PROJECTION,
+                null, null, null, null, null);
     }
 
     private void assertThatCursorHasRowCount(Cursor cursor, int rowCount) {

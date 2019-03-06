@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
+@Deprecated
 @AutoValue
 public abstract class OrganisationUnitModel extends BaseNameableObjectModel {
     public static final String TABLE = "OrganisationUnit";

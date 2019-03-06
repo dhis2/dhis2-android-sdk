@@ -43,8 +43,8 @@ import org.hisp.dhis.android.core.utils.Utils;
 /**
  * @deprecated replaced by {@link org.hisp.dhis.android.core.dataelement.DataElement}
  */
-@AutoValue
 @Deprecated
+@AutoValue
 public abstract class DataElementModel extends BaseNameableObjectModel {
 
     public static final String TABLE = "DataElement";
@@ -144,3 +144,4 @@ public abstract class DataElementModel extends BaseNameableObjectModel {
 
     }
 }
+

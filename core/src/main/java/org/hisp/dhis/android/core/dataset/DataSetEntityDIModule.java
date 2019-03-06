@@ -71,7 +71,7 @@ public final class DataSetEntityDIModule {
     @Provides
     @Reusable
     CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(DataSetModel.TABLE, databaseAdapter);
+        return new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 
     @Provides

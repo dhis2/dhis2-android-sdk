@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.common.AggregationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
+@Deprecated
 @AutoValue
 public abstract class ProgramIndicatorModel extends BaseNameableObjectModel {
     public static final String TABLE = "ProgramIndicator";

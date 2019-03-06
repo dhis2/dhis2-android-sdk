@@ -37,22 +37,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class OptionSetShould extends BaseObjectShould implements ObjectShould {
 
     public OptionSetShould() {
         super("option/option_set.json");
-    }
-
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(OptionSetModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
     }
 
     @Override

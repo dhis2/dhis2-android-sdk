@@ -37,12 +37,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
-import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,11 +82,11 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         ContentValues program4 = CreateProgramUtils.create(4L, "WSGAb5XwJ3Y", null, null, null);
         ContentValues program5 = CreateProgramUtils.create(5L, "IpHINAT79UW", null, null, null);
 
-        database().insert(ProgramModel.TABLE, null, program1);
-        database().insert(ProgramModel.TABLE, null, program2);
-        database().insert(ProgramModel.TABLE, null, program3);
-        database().insert(ProgramModel.TABLE, null, program4);
-        database().insert(ProgramModel.TABLE, null, program5);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program1);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program2);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program3);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program4);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program5);
     }
 
     @Test
@@ -122,18 +123,18 @@ public class UserCallMockIntegrationShould extends AbsStoreTestCase {
         userCall.call();
 
         String[] projection = {
-                UserCredentialsModel.Columns.UID,
-                UserCredentialsModel.Columns.CODE,
-                UserCredentialsModel.Columns.NAME,
-                UserCredentialsModel.Columns.DISPLAY_NAME,
-                UserCredentialsModel.Columns.CREATED,
-                UserCredentialsModel.Columns.LAST_UPDATED,
-                UserCredentialsModel.Columns.USERNAME,
-                UserCredentialsModel.Columns.USER,
+                BaseIdentifiableObjectModel.Columns.UID,
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                UserCredentialsFields.USERNAME,
+                UserCredentialsTableInfo.Columns.USER,
         };
 
 
-        Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE, projection,
+        Cursor userCredentialsCursor = database().query(UserCredentialsTableInfo.TABLE_INFO.name(), projection,
                 null, null, null, null, null);
 
         assertThatCursor(userCredentialsCursor).hasRow(

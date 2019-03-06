@@ -30,6 +30,9 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
+
 public class CreateTrackedEntityUtils {
 
     public static final String TEST_CODE = "test_code";
@@ -44,17 +47,17 @@ public class CreateTrackedEntityUtils {
 
     public static ContentValues create(long id, String uid) {
         ContentValues trackedEntityType = new ContentValues();
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.ID, id);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.UID, uid);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.CODE, TEST_CODE);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.NAME, TEST_NAME);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.CREATED, TEST_CREATED);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.SHORT_NAME, TEST_SHORT_NAME);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.DISPLAY_SHORT_NAME, TEST_DISPLAY_SHORT_NAME);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.DESCRIPTION, TEST_DESCRIPTION);
-        trackedEntityType.put(TrackedEntityTypeModel.Columns.DISPLAY_DESCRIPTION, TEST_DISPLAY_DESCRIPTION);
+        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.ID, id);
+        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.UID, uid);
+        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.CODE, TEST_CODE);
+        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.NAME, TEST_NAME);
+        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
+        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.CREATED, TEST_CREATED);
+        trackedEntityType.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
+        trackedEntityType.put(BaseNameableObjectModel.Columns.SHORT_NAME, TEST_SHORT_NAME);
+        trackedEntityType.put(BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME, TEST_DISPLAY_SHORT_NAME);
+        trackedEntityType.put(BaseNameableObjectModel.Columns.DESCRIPTION, TEST_DESCRIPTION);
+        trackedEntityType.put(BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION, TEST_DISPLAY_DESCRIPTION);
         return trackedEntityType;
     }
 }

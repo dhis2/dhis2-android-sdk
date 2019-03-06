@@ -41,9 +41,9 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkStore;
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.user.User;
@@ -231,7 +231,7 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                 new LinkSyncHandlerImpl<>(OrganisationUnitProgramLinkStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(DataSetOrganisationUnitLinkStore.create(databaseAdapter)),
                 new CollectionCleanerImpl<>(ProgramTableInfo.TABLE_INFO.name(), databaseAdapter),
-                new CollectionCleanerImpl<>(DataSetModel.TABLE, databaseAdapter),
+                new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new CollectionCleanerImpl<>(OrganisationUnitGroupTableInfo.TABLE_INFO.name(), databaseAdapter),
                 new IdentifiableSyncHandlerImpl<>(OrganisationUnitGroupStore.create(databaseAdapter)),
                 new LinkSyncHandlerImpl<>(OrganisationUnitOrganisationUnitGroupLinkStore.create(databaseAdapter)));

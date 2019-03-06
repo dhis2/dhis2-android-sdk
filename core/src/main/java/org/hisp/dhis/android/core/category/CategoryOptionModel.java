@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
+@Deprecated
 @AutoValue
 public abstract class CategoryOptionModel extends BaseNameableObjectModel {
     public static final String TABLE = "CategoryOption";

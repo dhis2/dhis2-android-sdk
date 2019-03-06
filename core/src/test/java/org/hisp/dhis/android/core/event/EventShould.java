@@ -44,11 +44,6 @@ public class EventShould extends BaseObjectShould implements ObjectShould {
         super("event/event.json");
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void throw_illegal_state_exception_on_null_uid_field() {
-        EventModel.builder().uid(null).build();
-    }
-
     @Override
     @Test
     public void map_from_json_string() throws IOException, ParseException {

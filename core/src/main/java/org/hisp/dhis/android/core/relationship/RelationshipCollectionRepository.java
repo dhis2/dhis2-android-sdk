@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
@@ -138,7 +139,7 @@ public final class RelationshipCollectionRepository
         List<Relationship> relationships = new ArrayList<>();
 
         for (RelationshipItem iterationItem : relationshipItems) {
-            if (searchItem.equals(iterationItem)) {
+            if (itemComponentsEquals(searchItem, iterationItem)) {
                 Relationship relationshipFromDb =
                         UidsHelper.findByUid(allRelationshipsFromDb, iterationItem.relationship().uid());
 
@@ -176,6 +177,20 @@ public final class RelationshipCollectionRepository
         }
 
         return relationships;
+    }
+
+    private <O> boolean equalsConsideringNull(@Nullable O a, @Nullable O b) {
+        if (a == null) {
+            return b == null;
+        } else {
+            return a.equals(b);
+        }
+    }
+
+    private boolean itemComponentsEquals(RelationshipItem a, RelationshipItem b) {
+        return equalsConsideringNull(a.event(), b.event())
+                && equalsConsideringNull(a.enrollment(), b.enrollment())
+                && equalsConsideringNull(a.trackedEntityInstance(), b.trackedEntityInstance());
     }
 
     private RelationshipItem findRelatedTEI(Collection<RelationshipItem> items, String relationshipUid,

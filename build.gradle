@@ -87,6 +87,6 @@ ext {
             sqlbritemigrations  : "v1.0.1",
 
             // google
-            safetynet  : "15.0.1",
+            safetynet  : "16.0.0",
     ]
 }

@@ -34,6 +34,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import okio.ByteString;
 
 public final class UserUtils {
@@ -52,13 +53,14 @@ public final class UserUtils {
         }
     }
 
+    @SuppressFBWarnings("DM_CONVERT_CASE")
     public static String md5(String username, String password) {
         try {
             String credentials = usernameAndPassword(username, password);
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.reset();
             md.update(credentials.getBytes("ISO-8859-1"));
-            return Hex.bytesToStringLowercase(md.digest());
+            return Hex.bytesToStringUppercase(md.digest()).toLowerCase();
         } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
             // noop. Every implementation of Java is required to support MD5
             throw new AssertionError(noSuchAlgorithmException);

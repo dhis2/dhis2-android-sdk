@@ -32,10 +32,10 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -97,7 +97,7 @@ public class CategoryComboHandlerShould {
     @Test
     public void handle_option_combos() {
         categoryComboHandler.handle(combo);
-        verify(optionComboHandler).handleMany(eq(optionCombos), any(ModelBuilder.class));
+        verify(optionComboHandler).handleMany(eq(optionCombos), any(Transformer.class));
     }
 
     @Test

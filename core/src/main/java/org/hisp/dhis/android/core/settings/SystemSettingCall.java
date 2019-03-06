@@ -54,12 +54,12 @@ final class SystemSettingCall implements Callable<Unit> {
                       DatabaseAdapter databaseAdapter,
                       SyncHandler<SystemSetting> handler,
                       SystemSettingService service,
-                      SystemSettingsSplitter modelBuilder) {
+                      SystemSettingsSplitter settingsSplitter) {
         this.apiCallExecutor = apiCallExecutor;
         this.databaseAdapter = databaseAdapter;
         this.handler = handler;
         this.service = service;
-        this.settingsSplitter = modelBuilder;
+        this.settingsSplitter = settingsSplitter;
     }
 
     @Override

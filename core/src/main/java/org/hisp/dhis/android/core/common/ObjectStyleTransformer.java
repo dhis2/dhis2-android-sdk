@@ -26,45 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
+public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
 
-import java.util.Date;
+    private final ObjectStyle.Builder builder;
 
-public class TrackedEntityAttributeReservedValueModelBuilder
-        implements ModelBuilder<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValue> {
-
-    private final TrackedEntityAttributeReservedValue.Builder builder;
-
-    TrackedEntityAttributeReservedValueModelBuilder(OrganisationUnit organisationUnit, String pattern) {
-        this.builder = TrackedEntityAttributeReservedValue.builder()
-                .organisationUnit(organisationUnit == null ? null : organisationUnit.uid());
-        fillTemporalValidityDate(pattern);
+    public ObjectStyleTransformer(String uid, String objectTable) {
+        builder = ObjectStyle.builder()
+                .uid(uid)
+                .objectTable(objectTable);
     }
 
     @Override
-    public TrackedEntityAttributeReservedValue buildModel(TrackedEntityAttributeReservedValue reservedValue) {
+    public ObjectStyle transform(ObjectStyle objectStyle) {
         return builder
-                .ownerObject(reservedValue.ownerObject())
-                .ownerUid(reservedValue.ownerUid())
-                .key(reservedValue.key())
-                .value(reservedValue.value())
-                .created(reservedValue.created())
-                .expiryDate(reservedValue.expiryDate())
-                .build();
-    }
-
-    private void fillTemporalValidityDate(String pattern) {
-        Date temporalValidityDate;
-        try {
-            temporalValidityDate = new TrackedEntityAttributeReservedValueValidatorHelper()
-                    .getExpiryDateCode(pattern);
-        } catch (IllegalStateException e) {
-            temporalValidityDate = null;
-        }
-
-        this.builder.temporalValidityDate(temporalValidityDate);
+                .color(objectStyle.color())
+                .icon(objectStyle.icon()).build();
     }
 }

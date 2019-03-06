@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 
 import javax.inject.Inject;
 
@@ -52,6 +52,6 @@ final class DataElementHandler extends IdentifiableSyncHandlerImpl<DataElement> 
     @Override
     protected void afterObjectHandled(DataElement dateElement, HandleAction action) {
         styleHandler.handle(dateElement.style(),
-                new ObjectStyleModelBuilder(dateElement.uid(), DataElementTableInfo.TABLE_INFO.name()));
+                new ObjectStyleTransformer(dateElement.uid(), DataElementTableInfo.TABLE_INFO.name()));
     }
 }

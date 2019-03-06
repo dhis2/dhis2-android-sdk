@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Collection;
 
 public interface LinkSyncHandlerWithTransformer<O extends Model> extends LinkSyncHandler<O> {
 
-    void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder);
+    void handleMany(String masterUid, Collection<O> slaves, Transformer<O, O> transformer);
 }
 

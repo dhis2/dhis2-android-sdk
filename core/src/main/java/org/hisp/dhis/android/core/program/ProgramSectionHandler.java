@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSec
             programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSectionAttributeLinks);
         }
 
-        styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
+        styleHandler.handle(programSection.style(), new ObjectStyleTransformer(programSection.uid(),
                 ProgramSectionTableInfo.TABLE_INFO.name()));
     }
 }

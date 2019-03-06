@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.text.ParseException;
 
-public class NoteToPostTransformer implements Transformer<Note> {
+public class NoteToPostTransformer implements Transformer<Note, Note> {
 
     private final DHISVersionManager versionManager;
 

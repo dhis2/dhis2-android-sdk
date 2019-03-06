@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
@@ -211,7 +211,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_style_handler() {
         programHandler.handle(program);
-        verify(styleHandler).handle(same(program.style()), any(ObjectStyleModelBuilder.class));
+        verify(styleHandler).handle(same(program.style()), any(ObjectStyleTransformer.class));
     }
 
     @Test

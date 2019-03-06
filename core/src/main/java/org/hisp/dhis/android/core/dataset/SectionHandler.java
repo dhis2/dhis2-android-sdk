@@ -36,9 +36,6 @@ import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -48,13 +45,13 @@ final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
 
     private final OrderedLinkSyncHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
     private final SyncHandler<DataElementOperand> greyedFieldsHandler;
-    private final LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
+    private final LinkSyncHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Inject
     SectionHandler(IdentifiableObjectStore<Section> sectionStore,
                    OrderedLinkSyncHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler,
                    SyncHandler<DataElementOperand> greyedFieldsHandler,
-                   LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler) {
+                   LinkSyncHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler) {
 
         super(sectionStore);
         this.sectionDataElementLinkHandler = sectionDataElementLinkHandler;
@@ -71,15 +68,10 @@ final class SectionHandler extends IdentifiableSyncHandlerImpl<Section> {
                         .sortOrder(sortOrder)
                         .build());
 
-        if (section.greyedFields() != null) {
-            greyedFieldsHandler.handleMany(section.greyedFields());
+        greyedFieldsHandler.handleMany(section.greyedFields());
 
-            List<SectionGreyedFieldsLink> sectionGreyedFieldsLinks = new ArrayList<>();
-            for (DataElementOperand dataElementOperand : section.greyedFields()) {
-                sectionGreyedFieldsLinks.add(SectionGreyedFieldsLink.builder()
+        sectionGreyedFieldsLinkHandler.handleMany(section.uid(), section.greyedFields(),
+                dataElementOperand -> SectionGreyedFieldsLink.builder()
                         .section(section.uid()).dataElementOperand(dataElementOperand.uid()).build());
-            }
-            sectionGreyedFieldsLinkHandler.handleMany(section.uid(), sectionGreyedFieldsLinks);
-        }
     }
 }

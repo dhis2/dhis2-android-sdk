@@ -48,7 +48,7 @@ public final class OptionGroupOptionEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkSyncHandler<OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
+    public LinkSyncHandler<Option, OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }
 }

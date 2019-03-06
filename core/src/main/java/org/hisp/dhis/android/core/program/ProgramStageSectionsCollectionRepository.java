@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
@@ -50,5 +52,22 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
                                              List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, updatedScope)));
+    }
+
+
+    public IntegerFilterConnector<ProgramStageSectionsCollectionRepository> bySortOrder() {
+        return cf.integer(ProgramStageSectionFields.SORT_ORDER);
+    }
+
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byProgramStageUid() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE);
+    }
+
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byDesktopRenderType() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE);
+    }
+
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byMobileRenderType() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
     }
 }

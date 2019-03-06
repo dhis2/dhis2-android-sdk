@@ -35,9 +35,6 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -45,12 +42,13 @@ import dagger.Reusable;
 @Reusable
 final class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramIndicator> {
     private final SyncHandler<LegendSet> legendSetHandler;
-    private final LinkSyncHandler<ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+    private final LinkSyncHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Inject
     ProgramIndicatorHandler(IdentifiableObjectStore<ProgramIndicator> programIndicatorStore,
                             SyncHandler<LegendSet> legendSetHandler,
-                            LinkSyncHandler<ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler) {
+                            LinkSyncHandler<LegendSet, ProgramIndicatorLegendSetLink>
+                                    programIndicatorLegendSetLinkHandler) {
         super(programIndicatorStore);
         this.legendSetHandler = legendSetHandler;
         this.programIndicatorLegendSetLinkHandler = programIndicatorLegendSetLinkHandler;
@@ -60,13 +58,8 @@ final class ProgramIndicatorHandler extends IdentifiableSyncHandlerImpl<ProgramI
     protected void afterObjectHandled(ProgramIndicator programIndicator, HandleAction action) {
         legendSetHandler.handleMany(programIndicator.legendSets());
 
-        if (programIndicator.legendSets() != null) {
-            List<ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinks = new ArrayList<>();
-            for (LegendSet legendSet : programIndicator.legendSets()) {
-                programIndicatorLegendSetLinks.add(ProgramIndicatorLegendSetLink.builder()
+        programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicator.legendSets(),
+                legendSet -> ProgramIndicatorLegendSetLink.builder()
                         .programIndicator(programIndicator.uid()).legendSet(legendSet.uid()).build());
-            }
-            programIndicatorLegendSetLinkHandler.handleMany(programIndicator.uid(), programIndicatorLegendSetLinks);
-        }
     }
 }

@@ -288,4 +288,54 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
                 .get();
         assertThat(objects.size(), is(0));
     }
+
+    @Test
+    public void filter_boolean_with_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byAllowGenerateNextVisit().in(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(0));
+    }
+
+    @Test
+    public void filter_boolean_int_with_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byAllowGenerateNextVisit().in(Collections.singletonList(false))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_1));
+    }
+
+    @Test
+    public void filter_boolean_int_with_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byAllowGenerateNextVisit().in(Arrays.asList(false, true))
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_boolean_int_with_not_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byAllowGenerateNextVisit().notIn(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_boolean_int_with_not_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byAllowGenerateNextVisit().notIn(Collections.singletonList(false))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_2));
+    }
+
+    @Test
+    public void filter_boolean_int_with_not_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byAllowGenerateNextVisit().notIn(Arrays.asList(false, true))
+                .get();
+        assertThat(objects.size(), is(0));
+    }
 }

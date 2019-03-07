@@ -213,4 +213,29 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
                 .get();
         assertThat(objects.size(), is(2));
     }
+
+    @Test
+    public void filter_with_nin_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().nin(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_with_nin_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().nin(Collections.singletonList(NAME_1))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_2));
+    }
+
+    @Test
+    public void filter_with_nin_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().nin(Arrays.asList(NAME_1, NAME_2))
+                .get();
+        assertThat(objects.size(), is(0));
+    }
 }

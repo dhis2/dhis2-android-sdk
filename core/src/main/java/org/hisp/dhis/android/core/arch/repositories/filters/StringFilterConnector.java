@@ -62,6 +62,10 @@ public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<
         return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 
+    public R nin(Collection<String> values) {
+        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
+    }
+
     private String getCommaSeparatedValues(Collection<String> values) {
         List<String> wrappedValues = new ArrayList<>();
         for (String v: values) {

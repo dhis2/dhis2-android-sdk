@@ -43,14 +43,6 @@ public final class IntegerFilterConnector<R extends ReadOnlyCollectionRepository
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(int value) {
-        return newWithWrappedScope("=", value);
-    }
-
-    public R neq(int value) {
-        return newWithWrappedScope("!=", value);
-    }
-
     public R smallerThan(int value) {
         return newWithWrappedScope("<", value);
     }

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.CollectionReposit
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
-import java.util.Collection;
 import java.util.List;
 
 public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
@@ -44,24 +43,8 @@ public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(String value) {
-        return newWithWrappedScope("=", value);
-    }
-
-    public R neq(String value) {
-        return newWithWrappedScope("!=", value);
-    }
-
     public R like(String value) {
         return newWithWrappedScope("LIKE", value);
-    }
-
-    public R in(Collection<String> values) {
-        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
-    }
-
-    public R nin(Collection<String> values) {
-        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 
     String wrapValue(String value) {

@@ -69,7 +69,7 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
         return repositoryFactory.newWithScope(updatedWrappedScope(operator, value));
     }
 
-    String getCommaSeparatedValues(Collection<V> values) {
+    private String getCommaSeparatedValues(Collection<V> values) {
         List<String> wrappedValues = new ArrayList<>();
         for (V v: values) {
             wrappedValues.add(wrapValue(v));
@@ -77,8 +77,24 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
         return Utils.commaAndSpaceSeparatedCollectionValues(wrappedValues);
     }
 
-    R newWithUnwrappedScope(String operator, String value) {
+    private R newWithUnwrappedScope(String operator, String value) {
         return repositoryFactory.newWithScope(updatedUnwrappedScope(operator, value));
 
+    }
+
+    public R eq(V value) {
+        return newWithWrappedScope("=", value);
+    }
+
+    public R neq(V value) {
+        return newWithWrappedScope("!=", value);
+    }
+
+    public R in(Collection<V> values) {
+        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
+    }
+
+    public R nin(Collection<V> values) {
+        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 }

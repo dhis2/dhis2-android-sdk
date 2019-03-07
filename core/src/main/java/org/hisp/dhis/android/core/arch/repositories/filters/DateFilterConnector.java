@@ -44,14 +44,6 @@ public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(Date value) {
-        return newWithWrappedScope("=", value);
-    }
-
-    public R neq(Date value) {
-        return newWithWrappedScope("!=", value);
-    }
-
     public R before(Date value) {
         return newWithWrappedScope("<", value);
     }

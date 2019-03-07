@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import java.util.List;
 
 public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
-        extends BaseFilterConnector<R, String> {
+        extends BaseFilterConnector<R, E> {
 
     EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
                         List<RepositoryScopeItem> scope,
@@ -43,15 +43,7 @@ public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(E value) {
-        return newWithWrappedScope("=", value.name());
-    }
-
-    public R neq(E value) {
-        return newWithWrappedScope("!=", value.name());
-    }
-
-    String wrapValue(String value) {
-        return "'" + value + "'";
+    String wrapValue(E value) {
+        return "'" + value.name() + "'";
     }
 }

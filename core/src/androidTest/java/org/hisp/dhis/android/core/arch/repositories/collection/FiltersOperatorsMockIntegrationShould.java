@@ -240,6 +240,56 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
+    public void filter_string_with_varargs_with_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().in()
+                .get();
+        assertThat(objects.size(), is(0));
+    }
+
+    @Test
+    public void filter_string_with_varargs_with_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().in(NAME_1)
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_1));
+    }
+
+    @Test
+    public void filter_string_with_varargs_with_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().in(NAME_1, NAME_2)
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_string_with_varargs_with_not_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().notIn()
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_string_with_varargs_with_not_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().notIn(NAME_1)
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_2));
+    }
+
+    @Test
+    public void filter_string_with_varargs_with_not_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().notIn(NAME_1, NAME_2)
+                .get();
+        assertThat(objects.size(), is(0));
+    }
+
+    @Test
     public void filter_int_with_in_with_no_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
                 .byMinDaysFromStart().in(Collections.emptyList())

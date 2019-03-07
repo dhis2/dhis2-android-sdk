@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -94,7 +95,17 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
         return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 
+    @SafeVarargs
+    public final R in(V... values) {
+        return in(Arrays.asList(values));
+    }
+
     public R notIn(Collection<V> values) {
         return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
+    }
+
+    @SafeVarargs
+    public final R notIn(V... values) {
+        return notIn(Arrays.asList(values));
     }
 }

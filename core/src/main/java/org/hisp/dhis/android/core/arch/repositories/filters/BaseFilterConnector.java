@@ -94,7 +94,7 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
         return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 
-    public R nin(Collection<V> values) {
+    public R notIn(Collection<V> values) {
         return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 }

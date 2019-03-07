@@ -215,26 +215,26 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_string_with_nin_with_no_elements() {
+    public void filter_string_with_not_in_with_no_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
-                .byName().nin(Collections.emptyList())
+                .byName().notIn(Collections.emptyList())
                 .get();
         assertThat(objects.size(), is(2));
     }
 
     @Test
-    public void filter_string_with_nin_with_one_element() {
+    public void filter_string_with_not_in_with_one_element() {
         List<ProgramStage> objects = d2.programModule().programStages
-                .byName().nin(Collections.singletonList(NAME_1))
+                .byName().notIn(Collections.singletonList(NAME_1))
                 .get();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
-    public void filter_string_with_nin_with_two_elements() {
+    public void filter_string_with_not_in_with_two_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
-                .byName().nin(Arrays.asList(NAME_1, NAME_2))
+                .byName().notIn(Arrays.asList(NAME_1, NAME_2))
                 .get();
         assertThat(objects.size(), is(0));
     }
@@ -265,26 +265,26 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_int_with_nin_with_no_elements() {
+    public void filter_int_with_not_in_with_no_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
-                .byMinDaysFromStart().nin(Collections.emptyList())
+                .byMinDaysFromStart().notIn(Collections.emptyList())
                 .get();
         assertThat(objects.size(), is(2));
     }
 
     @Test
-    public void filter_int_with_nin_with_one_element() {
+    public void filter_int_with_not_in_with_one_element() {
         List<ProgramStage> objects = d2.programModule().programStages
-                .byMinDaysFromStart().nin(Collections.singletonList(0))
+                .byMinDaysFromStart().notIn(Collections.singletonList(0))
                 .get();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
     }
 
     @Test
-    public void filter_int_with_nin_with_two_elements() {
+    public void filter_int_with_not_in_with_two_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
-                .byMinDaysFromStart().nin(Arrays.asList(0, 1))
+                .byMinDaysFromStart().notIn(Arrays.asList(0, 1))
                 .get();
         assertThat(objects.size(), is(0));
     }

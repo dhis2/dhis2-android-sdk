@@ -338,4 +338,54 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
                 .get();
         assertThat(objects.size(), is(0));
     }
+
+    @Test
+    public void filter_enum_with_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byPeriodType().in(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(0));
+    }
+
+    @Test
+    public void filter_enum_int_with_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byPeriodType().in(Collections.singletonList(PeriodType.Monthly))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_1));
+    }
+
+    @Test
+    public void filter_enum_int_with_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byPeriodType().in(Arrays.asList(PeriodType.Monthly, PeriodType.Weekly))
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_enum_int_with_not_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byPeriodType().notIn(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_enum_int_with_not_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byPeriodType().notIn(Collections.singletonList(PeriodType.Monthly))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_2));
+    }
+
+    @Test
+    public void filter_enum_int_with_not_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byPeriodType().notIn(Arrays.asList(PeriodType.Monthly, PeriodType.Weekly))
+                .get();
+        assertThat(objects.size(), is(0));
+    }
 }

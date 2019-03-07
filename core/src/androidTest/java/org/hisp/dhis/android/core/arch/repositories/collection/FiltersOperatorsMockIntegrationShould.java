@@ -190,7 +190,7 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_with_in_with_no_elements() {
+    public void filter_string_with_in_with_no_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
                 .byName().in(Collections.emptyList())
                 .get();
@@ -198,7 +198,7 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_with_in_with_one_element() {
+    public void filter_string_with_in_with_one_element() {
         List<ProgramStage> objects = d2.programModule().programStages
                 .byName().in(Collections.singletonList(NAME_1))
                 .get();
@@ -207,7 +207,7 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_with_in_with_two_elements() {
+    public void filter_string_with_in_with_two_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
                 .byName().in(Arrays.asList(NAME_1, NAME_2))
                 .get();
@@ -215,7 +215,7 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_with_nin_with_no_elements() {
+    public void filter_string_with_nin_with_no_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
                 .byName().nin(Collections.emptyList())
                 .get();
@@ -223,7 +223,7 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_with_nin_with_one_element() {
+    public void filter_string_with_nin_with_one_element() {
         List<ProgramStage> objects = d2.programModule().programStages
                 .byName().nin(Collections.singletonList(NAME_1))
                 .get();
@@ -232,9 +232,59 @@ public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockInt
     }
 
     @Test
-    public void filter_with_nin_with_two_elements() {
+    public void filter_string_with_nin_with_two_elements() {
         List<ProgramStage> objects = d2.programModule().programStages
                 .byName().nin(Arrays.asList(NAME_1, NAME_2))
+                .get();
+        assertThat(objects.size(), is(0));
+    }
+
+    @Test
+    public void filter_int_with_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byMinDaysFromStart().in(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(0));
+    }
+
+    @Test
+    public void filter_int_with_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byMinDaysFromStart().in(Collections.singletonList(0))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_1));
+    }
+
+    @Test
+    public void filter_int_with_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byMinDaysFromStart().in(Arrays.asList(0, 1))
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_int_with_nin_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byMinDaysFromStart().nin(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(2));
+    }
+
+    @Test
+    public void filter_int_with_nin_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byMinDaysFromStart().nin(Collections.singletonList(0))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_2));
+    }
+
+    @Test
+    public void filter_int_with_nin_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byMinDaysFromStart().nin(Arrays.asList(0, 1))
                 .get();
         assertThat(objects.size(), is(0));
     }

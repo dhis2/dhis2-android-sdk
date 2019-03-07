@@ -31,9 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -64,14 +62,6 @@ public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<
 
     public R nin(Collection<String> values) {
         return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
-    }
-
-    private String getCommaSeparatedValues(Collection<String> values) {
-        List<String> wrappedValues = new ArrayList<>();
-        for (String v: values) {
-            wrappedValues.add(wrapValue(v));
-        }
-        return Utils.commaAndSpaceSeparatedCollectionValues(wrappedValues);
     }
 
     String wrapValue(String value) {

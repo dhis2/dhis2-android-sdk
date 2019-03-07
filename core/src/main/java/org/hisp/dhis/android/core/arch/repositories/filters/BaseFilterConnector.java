@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V> {
@@ -52,17 +53,32 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
 
     abstract String wrapValue(V value);
 
-    private List<RepositoryScopeItem> updatedScope(String operator, V value, Transformer<V, String> function) {
+    private List<RepositoryScopeItem> updatedWrappedScope(String operator, V value) {
         List<RepositoryScopeItem> copiedScope = new ArrayList<>(scope);
-        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(function.transform(value)).build());
+        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(wrapValue(value)).build());
+        return copiedScope;
+    }
+
+    private List<RepositoryScopeItem> updatedUnwrappedScope(String operator, String valueStr) {
+        List<RepositoryScopeItem> copiedScope = new ArrayList<>(scope);
+        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(valueStr).build());
         return copiedScope;
     }
 
     R newWithWrappedScope(String operator, V value) {
-        return repositoryFactory.newWithScope(updatedScope(operator, value, this::wrapValue));
+        return repositoryFactory.newWithScope(updatedWrappedScope(operator, value));
     }
 
-    R newWithUnwrappedScope(String operator, V value) {
-        return repositoryFactory.newWithScope(updatedScope(operator, value, (V v) -> value.toString()));
+    String getCommaSeparatedValues(Collection<V> values) {
+        List<String> wrappedValues = new ArrayList<>();
+        for (V v: values) {
+            wrappedValues.add(wrapValue(v));
+        }
+        return Utils.commaAndSpaceSeparatedCollectionValues(wrappedValues);
+    }
+
+    R newWithUnwrappedScope(String operator, String value) {
+        return repositoryFactory.newWithScope(updatedUnwrappedScope(operator, value));
+
     }
 }

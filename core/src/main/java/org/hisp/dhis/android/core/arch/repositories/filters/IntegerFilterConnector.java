@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.CollectionReposit
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 
+import java.util.Collection;
 import java.util.List;
 
 public final class IntegerFilterConnector<R extends ReadOnlyCollectionRepository<?>>
@@ -57,6 +58,14 @@ public final class IntegerFilterConnector<R extends ReadOnlyCollectionRepository
 
     public R biggerThan(int value) {
         return newWithWrappedScope(">", value);
+    }
+
+    public R in(Collection<Integer> values) {
+        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
+    }
+
+    public R nin(Collection<Integer> values) {
+        return newWithUnwrappedScope("NOT IN", "(" + getCommaSeparatedValues(values) + ")");
     }
 
     String wrapValue(Integer value) {

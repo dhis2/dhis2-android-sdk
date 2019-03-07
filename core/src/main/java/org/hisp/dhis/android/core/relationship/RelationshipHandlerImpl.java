@@ -65,8 +65,10 @@ final class RelationshipHandlerImpl implements RelationshipHandler {
 
     @Override
     public void handleMany(Collection<Relationship> relationships) {
-        for (Relationship r: relationships) {
-            handle(r);
+        if (relationships != null) {
+            for (Relationship r: relationships) {
+                handle(r);
+            }
         }
     }
 

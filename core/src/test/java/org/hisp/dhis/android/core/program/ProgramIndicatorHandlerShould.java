@@ -57,7 +57,7 @@ public class ProgramIndicatorHandlerShould {
     private IdentifiableObjectStore<ProgramIndicator> programIndicatorStore;
 
     @Mock
-    private LinkSyncHandler<ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
+    private LinkSyncHandler<LegendSet, ProgramIndicatorLegendSetLink> programIndicatorLegendSetLinkHandler;
 
     @Mock
     private SyncHandler<LegendSet> legendSetHandler;

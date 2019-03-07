@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.Before;
@@ -65,7 +66,7 @@ public class SectionHandlerShould {
     private SyncHandler<DataElementOperand> greyedFieldsHandler;
 
     @Mock
-    private LinkSyncHandler<SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
+    private LinkSyncHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Mock
     private Section section;
@@ -108,6 +109,7 @@ public class SectionHandlerShould {
         sectionHandler.handle(section);
         verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements),
                 any(OrderedLinkTransformer.class));
-        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), anyListOf(SectionGreyedFieldsLink.class));
+        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), anyListOf(DataElementOperand.class),
+                any(Transformer.class));
     }
 }

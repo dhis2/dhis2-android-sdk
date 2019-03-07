@@ -48,7 +48,7 @@ public final class ProgramStageSectionProgramIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkSyncHandler<ProgramStageSectionProgramIndicatorLink> handler(
+    public LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink> handler(
             LinkModelStore<ProgramStageSectionProgramIndicatorLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }

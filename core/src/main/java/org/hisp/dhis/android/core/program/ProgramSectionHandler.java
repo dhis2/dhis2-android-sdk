@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
@@ -35,21 +36,20 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
 
 @Reusable
 final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
-    private final LinkSyncHandler<ProgramSectionAttributeLink> programSectionAttributeLinkHandler;
+    private final LinkSyncHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLink>
+            programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkSyncHandler<ProgramSectionAttributeLink> programSectionAttributeLinkHandler,
+                          LinkSyncHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLink>
+                                  programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(programSectionStore);
         this.programSectionAttributeLinkHandler = programSectionAttributeLinkHandler;
@@ -59,16 +59,9 @@ final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSec
     @Override
     protected void afterObjectHandled(ProgramSection programSection, HandleAction action) {
 
-        if (programSection.attributes() != null) {
-            List<ProgramSectionAttributeLink> programSectionAttributeLinks = new ArrayList<>();
-            ProgramSectionAttributeLink.Builder builder = ProgramSectionAttributeLink.builder()
-                    .programSection(programSection.uid());
-            for (ProgramTrackedEntityAttribute attribute : programSection.attributes()) {
-                programSectionAttributeLinks.add(builder.attribute(attribute.uid()).build());
-            }
-
-            programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSectionAttributeLinks);
-        }
+        programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSection.attributes(),
+                programTrackedEntityAttribute -> ProgramSectionAttributeLink.builder()
+                        .programSection(programSection.uid()).attribute(programTrackedEntityAttribute.uid()).build());
 
         styleHandler.handle(programSection.style(), new ObjectStyleTransformer(programSection.uid(),
                 ProgramSectionTableInfo.TABLE_INFO.name()));

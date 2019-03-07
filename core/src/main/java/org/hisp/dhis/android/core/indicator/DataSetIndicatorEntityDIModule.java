@@ -48,7 +48,7 @@ public final class DataSetIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    LinkSyncHandler<DataSetIndicatorLink> handler(LinkModelStore<DataSetIndicatorLink> store) {
+    LinkSyncHandler<Indicator, DataSetIndicatorLink> handler(LinkModelStore<DataSetIndicatorLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }
 }

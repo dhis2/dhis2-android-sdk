@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.assertj.core.util.Lists;
@@ -34,6 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +58,8 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
-    private LinkSyncHandler<ProgramSectionAttributeLink> programSectionAttributeLinkHandler;
+    private LinkSyncHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLink>
+            programSectionAttributeLinkHandler;
 
     @Mock
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
@@ -92,7 +95,7 @@ public class ProgramSectionHandlerShould {
     public void save_program_section_attribute_links() throws Exception {
         programSectionHandler.handle(programSection);
         verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID),
-                anyListOf(ProgramSectionAttributeLink.class));
+                anyListOf(ProgramTrackedEntityAttribute.class), any(Transformer.class));
     }
 
     @Test

@@ -60,11 +60,12 @@ import java.util.Set;
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyFields"})
 class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
         implements OrganisationUnitHandler {
-    private final LinkSyncHandler<UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
-    private final LinkSyncHandler<OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
-    private final LinkSyncHandler<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
+    private final LinkSyncHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
+    private final LinkSyncHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
+    private final LinkSyncHandler<DataSet, DataSetOrganisationUnitLink> dataSetOrganisationUnitLinkHandler;
     private final SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
-    private final LinkSyncHandler<OrganisationUnitOrganisationUnitGroupLink> organisationUnitGroupLinkHandler;
+    private final LinkSyncHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
+            organisationUnitGroupLinkHandler;
     private final CollectionCleaner<ObjectWithUid> programCollectionCleaner;
     private final CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner;
     private final CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
@@ -80,16 +81,18 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     private Set<OrganisationUnit> userOrganisationUnitsToAdd;
 
     OrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                                @NonNull LinkSyncHandler<UserOrganisationUnitLink> userOrganisationUnitLinkHandler,
-                                @NonNull LinkSyncHandler<OrganisationUnitProgramLink>
+                                @NonNull LinkSyncHandler<OrganisationUnit, UserOrganisationUnitLink>
+                                        userOrganisationUnitLinkHandler,
+                                @NonNull LinkSyncHandler<Program, OrganisationUnitProgramLink>
                                     organisationUnitProgramLinkHandler,
-                                @NonNull LinkSyncHandler<DataSetOrganisationUnitLink>
+                                @NonNull LinkSyncHandler<DataSet, DataSetOrganisationUnitLink>
                                     dataSetOrganisationUnitLinkHandler,
                                 @NonNull CollectionCleaner<ObjectWithUid> programCollectionCleaner,
                                 @NonNull CollectionCleaner<ObjectWithUid> dataSetCollectionCleaner,
                                 @NonNull CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner,
                                 @Nullable SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler,
-                                @NonNull LinkSyncHandler<OrganisationUnitOrganisationUnitGroupLink>
+                                @NonNull LinkSyncHandler<OrganisationUnitGroup,
+                                        OrganisationUnitOrganisationUnitGroupLink>
                                         organisationUnitGroupLinkHandler) {
 
         super(organisationUnitStore);
@@ -130,16 +133,17 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     private void addOrganisationUnitProgramLink(@NonNull OrganisationUnit organisationUnit) {
         List<Program> orgUnitPrograms = organisationUnit.programs();
         if (orgUnitPrograms != null && programUids != null) {
-            List<OrganisationUnitProgramLink> organisationUnitProgramLinks = new ArrayList<>();
+            List<Program> programsToAdd = new ArrayList<>();
             for (Program program : orgUnitPrograms) {
                 if (programUids.contains(program.uid())) {
-                    organisationUnitProgramLinks.add(OrganisationUnitProgramLink.builder()
-                            .organisationUnit(organisationUnit.uid()).program(program.uid()).build());
+                    programsToAdd.add(program);
                     orgUnitLinkedProgramUids.add(ObjectWithUid.create(program.uid()));
                 }
             }
 
-            organisationUnitProgramLinkHandler.handleMany(organisationUnit.uid(), organisationUnitProgramLinks);
+            organisationUnitProgramLinkHandler.handleMany(organisationUnit.uid(), programsToAdd,
+                    program -> OrganisationUnitProgramLink.builder()
+                            .organisationUnit(organisationUnit.uid()).program(program.uid()).build());
         }
     }
 
@@ -154,12 +158,9 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
                 }
             }
 
-            List<DataSetOrganisationUnitLink> dataSetOrganisationUnitLinks = new ArrayList<>();
-            for (DataSet dataSet : dataSetsToAdd) {
-                dataSetOrganisationUnitLinks.add(DataSetOrganisationUnitLink.builder()
-                .dataSet(dataSet.uid()).organisationUnit(organisationUnit.uid()).build());
-            }
-            dataSetOrganisationUnitLinkHandler.handleMany(organisationUnit.uid(), dataSetOrganisationUnitLinks);
+            dataSetOrganisationUnitLinkHandler.handleMany(organisationUnit.uid(), dataSetsToAdd,
+                    dataSet -> DataSetOrganisationUnitLink.builder()
+                            .dataSet(dataSet.uid()).organisationUnit(organisationUnit.uid()).build());
         }
     }
 
@@ -172,17 +173,19 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
         }
 
         Set<ObjectWithUid> linkedOrganisationUnitGroupUids = new HashSet<>();
-        List<OrganisationUnitOrganisationUnitGroupLink> organisationUnitOrganisationUnitGroupLinks = new ArrayList<>();
+        List<OrganisationUnitGroup> organisationUnitGroupsToAdd = new ArrayList<>();
 
         for (OrganisationUnitGroup organisationUnitGroup : linkedOrganisationUnitGroups) {
+            organisationUnitGroupsToAdd.add(organisationUnitGroup);
             linkedOrganisationUnitGroupUids.add(ObjectWithUid.create(organisationUnitGroup.uid()));
-
-            organisationUnitOrganisationUnitGroupLinks.add(OrganisationUnitOrganisationUnitGroupLink.builder()
-            .organisationUnit(organisationUnit.uid()).organisationUnitGroup(organisationUnitGroup.uid()).build());
         }
 
         organisationUnitGroupUids.addAll(linkedOrganisationUnitGroupUids);
-        organisationUnitGroupLinkHandler.handleMany(organisationUnit.uid(), organisationUnitOrganisationUnitGroupLinks);
+
+        organisationUnitGroupLinkHandler.handleMany(organisationUnit.uid(), organisationUnitGroupsToAdd,
+                organisationUnitGroup -> OrganisationUnitOrganisationUnitGroupLink.builder()
+                        .organisationUnit(organisationUnit.uid()).organisationUnitGroup(organisationUnitGroup.uid())
+                        .build());
     }
 
     private void addUserOrganisationUnitLink(@NonNull OrganisationUnit organisationUnit) {
@@ -194,21 +197,16 @@ class OrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Organisati
     }
 
     private void handleUserOrganisationUnitLinks() {
-        if (userOrganisationUnitsToAdd != null) {
-            List<UserOrganisationUnitLink> userOrganisationUnitLinks = new ArrayList<>();
-            OrganisationUnit.Scope scope = OrganisationUnit.Scope.SCOPE_DATA_CAPTURE;
-            UserOrganisationUnitLink.Builder builder = UserOrganisationUnitLink.builder()
-                    .organisationUnitScope(scope.name()).user(user.uid());
+        OrganisationUnit.Scope scope = OrganisationUnit.Scope.SCOPE_DATA_CAPTURE;
+        UserOrganisationUnitLink.Builder builder = UserOrganisationUnitLink.builder()
+                .organisationUnitScope(scope.name()).user(user.uid());
 
-            for (OrganisationUnit organisationUnit : userOrganisationUnitsToAdd) {
-                userOrganisationUnitLinks.add(builder
+        userOrganisationUnitLinkHandler.handleMany(user.uid(), userOrganisationUnitsToAdd,
+                organisationUnit -> builder
                         .organisationUnit(organisationUnit.uid())
                         .root(UserOrganisationUnitLinkHelper.isRoot(scope, user, organisationUnit))
-                        .build());
-            }
-
-            userOrganisationUnitLinkHandler.handleMany(user.uid(), userOrganisationUnitLinks);
-        }
+                        .build()
+        );
 
         userOrganisationUnitUids = new HashSet<>();
         userOrganisationUnitsToAdd = new HashSet<>();

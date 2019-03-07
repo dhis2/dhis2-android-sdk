@@ -39,6 +39,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +48,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EqualityFiltersMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class FiltersOperatorsMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     private final String NAME_1 = "Antenatal care visit - Program rules demo";
     private final String NAME_2 = "Child care visit - demo";
@@ -185,5 +187,30 @@ public class EqualityFiltersMockIntegrationShould extends SyncedDatabaseMockInte
                 .get();
         assertThat(objects.size(), is(1));
         assertThat(objects.get(0).name(), is(NAME_2));
+    }
+
+    @Test
+    public void filter_with_in_with_no_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().in(Collections.emptyList())
+                .get();
+        assertThat(objects.size(), is(0));
+    }
+
+    @Test
+    public void filter_with_in_with_one_element() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().in(Collections.singletonList(NAME_1))
+                .get();
+        assertThat(objects.size(), is(1));
+        assertThat(objects.get(0).name(), is(NAME_1));
+    }
+
+    @Test
+    public void filter_with_in_with_two_elements() {
+        List<ProgramStage> objects = d2.programModule().programStages
+                .byName().in(Arrays.asList(NAME_1, NAME_2))
+                .get();
+        assertThat(objects.size(), is(2));
     }
 }

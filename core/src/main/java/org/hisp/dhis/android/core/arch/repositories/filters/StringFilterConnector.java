@@ -31,7 +31,10 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
@@ -44,15 +47,27 @@ public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<
     }
 
     public R eq(String value) {
-        return newWithScope("=", value);
+        return newWithWrappedScope("=", value);
     }
 
     public R neq(String value) {
-        return newWithScope("!=", value);
+        return newWithWrappedScope("!=", value);
     }
 
     public R like(String value) {
-        return newWithScope("LIKE", value);
+        return newWithWrappedScope("LIKE", value);
+    }
+
+    public R in(Collection<String> values) {
+        return newWithUnwrappedScope("IN", "(" + getCommaSeparatedValues(values) + ")");
+    }
+
+    private String getCommaSeparatedValues(Collection<String> values) {
+        List<String> wrappedValues = new ArrayList<>();
+        for (String v: values) {
+            wrappedValues.add(wrapValue(v));
+        }
+        return Utils.commaAndSpaceSeparatedCollectionValues(wrappedValues);
     }
 
     String wrapValue(String value) {

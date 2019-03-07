@@ -44,11 +44,11 @@ public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>
     }
 
     public R eq(E value) {
-        return newWithScope("=", value.name());
+        return newWithWrappedScope("=", value.name());
     }
 
     public R neq(E value) {
-        return newWithScope("!=", value.name());
+        return newWithWrappedScope("!=", value.name());
     }
 
     String wrapValue(String value) {

@@ -44,19 +44,19 @@ public final class IntegerFilterConnector<R extends ReadOnlyCollectionRepository
     }
 
     public R eq(int value) {
-        return newWithScope("=", value);
+        return newWithWrappedScope("=", value);
     }
 
     public R neq(int value) {
-        return newWithScope("!=", value);
+        return newWithWrappedScope("!=", value);
     }
 
     public R smallerThan(int value) {
-        return newWithScope("<", value);
+        return newWithWrappedScope("<", value);
     }
 
     public R biggerThan(int value) {
-        return newWithScope(">", value);
+        return newWithWrappedScope(">", value);
     }
 
     String wrapValue(Integer value) {

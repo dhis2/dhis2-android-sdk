@@ -45,19 +45,19 @@ public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>
     }
 
     public R eq(Date value) {
-        return newWithScope("=", value);
+        return newWithWrappedScope("=", value);
     }
 
     public R neq(Date value) {
-        return newWithScope("!=", value);
+        return newWithWrappedScope("!=", value);
     }
 
     public R before(Date value) {
-        return newWithScope("<", value);
+        return newWithWrappedScope("<", value);
     }
 
     public R after(Date value) {
-        return newWithScope(">", value);
+        return newWithWrappedScope(">", value);
     }
 
     protected String wrapValue(Date value) {

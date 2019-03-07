@@ -56,11 +56,11 @@ public final class BooleanFilterConnector<R extends ReadOnlyCollectionRepository
     }
 
     public R isTrue() {
-        return newWithScope("=", 1);
+        return newWithWrappedScope("=", 1);
     }
 
     public R isFalse() {
-        return newWithScope("=", 0);
+        return newWithWrappedScope("=", 0);
     }
 
     String wrapValue(Integer value) {

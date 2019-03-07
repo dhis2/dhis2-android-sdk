@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,13 +52,17 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
 
     abstract String wrapValue(V value);
 
-    private List<RepositoryScopeItem> updatedScope(String operator, V value) {
+    private List<RepositoryScopeItem> updatedScope(String operator, V value, Transformer<V, String> function) {
         List<RepositoryScopeItem> copiedScope = new ArrayList<>(scope);
-        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(wrapValue(value)).build());
+        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(function.transform(value)).build());
         return copiedScope;
     }
 
-    R newWithScope(String operator, V value) {
-        return repositoryFactory.newWithScope(updatedScope(operator, value));
+    R newWithWrappedScope(String operator, V value) {
+        return repositoryFactory.newWithScope(updatedScope(operator, value, this::wrapValue));
+    }
+
+    R newWithUnwrappedScope(String operator, V value) {
+        return repositoryFactory.newWithScope(updatedScope(operator, value, (V v) -> value.toString()));
     }
 }

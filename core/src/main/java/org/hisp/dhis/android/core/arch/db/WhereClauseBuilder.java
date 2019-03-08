@@ -33,6 +33,8 @@ import java.util.List;
 
 public class WhereClauseBuilder {
 
+    private static final String GREATER_OR_EQ_STR = " >= '";
+    private static final String LESS_THAN_OR_EQ_STR = " <= '";
     private static final String EQ_STR = " = '";
     private static final String LIKE_STR = " LIKE '";
     private static final String END_STR = "'";
@@ -53,6 +55,14 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
         return appendKeyValue(column, value, AND, EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendKeyGreaterOrEqStringValue(String column, Object value) {
+        return appendKeyValue(column, value, AND, GREATER_OR_EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendKeyLessThanOrEqStringValue(String column, Object value) {
+        return appendKeyValue(column, value, AND, LESS_THAN_OR_EQ_STR, END_STR);
     }
 
     public WhereClauseBuilder appendOrKeyStringValue(String column, Object value) {

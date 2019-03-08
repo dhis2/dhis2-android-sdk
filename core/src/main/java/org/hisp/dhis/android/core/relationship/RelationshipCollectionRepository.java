@@ -78,8 +78,8 @@ public final class RelationshipCollectionRepository
                                      final RelationshipItemStore relationshipItemStore,
                                      final RelationshipItemElementStoreSelector storeSelector) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new RelationshipCollectionRepository(store, childrenAppenders, childrenSelection,
-                        updatedScope, relationshipHandler, relationshipItemStore, storeSelector)));
+                childrenSelection, (cs, s) -> new RelationshipCollectionRepository(store, childrenAppenders, cs, s,
+                        relationshipHandler, relationshipItemStore, storeSelector)));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;

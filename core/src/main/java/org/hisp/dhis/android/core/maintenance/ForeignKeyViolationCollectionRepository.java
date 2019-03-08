@@ -52,7 +52,6 @@ public final class ForeignKeyViolationCollectionRepository
                                             final ChildrenSelection childrenSelection,
                                             final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, cs, s)));
     }
 }

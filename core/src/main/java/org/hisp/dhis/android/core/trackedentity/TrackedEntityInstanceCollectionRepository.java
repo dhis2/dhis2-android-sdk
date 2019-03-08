@@ -65,8 +65,8 @@ public final class TrackedEntityInstanceCollectionRepository
             final List<RepositoryScopeItem> scope,
             final TrackedEntityInstancePostCall postCall) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope, postCall)));
+                childrenSelection, (cs, s) -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders,
+                        cs, s, postCall)));
         this.postCall = postCall;
     }
 

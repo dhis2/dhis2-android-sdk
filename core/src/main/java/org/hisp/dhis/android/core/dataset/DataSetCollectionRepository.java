@@ -56,8 +56,7 @@ public final class DataSetCollectionRepository
                                 final ChildrenSelection childrenSelection,
                                 final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataSetCollectionRepository(store, childrenAppenders, childrenSelection,
-                        updatedScope)));
+                childrenSelection, (cs, s) -> new DataSetCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
     public EnumFilterConnector<DataSetCollectionRepository, PeriodType> byPeriodType() {

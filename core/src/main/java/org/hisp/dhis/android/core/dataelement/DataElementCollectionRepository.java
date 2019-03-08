@@ -55,8 +55,7 @@ public final class DataElementCollectionRepository
                                     final ChildrenSelection childrenSelection,
                                     final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataElementCollectionRepository(store, childrenAppenders, childrenSelection,
-                        updatedScope)));
+                childrenSelection, (cs, s) -> new DataElementCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
     public EnumFilterConnector<DataElementCollectionRepository, ValueType> byValueType() {

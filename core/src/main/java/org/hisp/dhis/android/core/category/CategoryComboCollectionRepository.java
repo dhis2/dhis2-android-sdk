@@ -52,8 +52,7 @@ public final class CategoryComboCollectionRepository
                                       final ChildrenSelection childrenSelection,
                                       final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new CategoryComboCollectionRepository(store, childrenAppenders, childrenSelection,
-                        updatedScope)));
+                childrenSelection, (cs, s) -> new CategoryComboCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
     public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {

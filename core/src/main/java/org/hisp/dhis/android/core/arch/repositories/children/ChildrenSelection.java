@@ -33,21 +33,21 @@ import java.util.Set;
 
 public final class ChildrenSelection {
 
-    private final Set<String> children;
-    private final boolean selectAll;
+    public final Set<String> children;
+    public final boolean areAllChildrenSelected;
 
-    public ChildrenSelection(Set<String> children, boolean selectAll) {
-        this.children = children;
-        this.selectAll = selectAll;
+    public ChildrenSelection(Set<String> children, boolean areAllChildrenSelected) {
+        this.children = Collections.unmodifiableSet(children);
+        this.areAllChildrenSelected = areAllChildrenSelected;
     }
 
     public ChildrenSelection withChild(String child) {
         Set<String> newSet = new HashSet<>(children);
         newSet.add(child);
-        return new ChildrenSelection(newSet, selectAll);
+        return new ChildrenSelection(newSet, areAllChildrenSelected);
     }
 
-    public ChildrenSelection selectAll() {
+    public ChildrenSelection selectAllChildren() {
         return new ChildrenSelection(children, true);
     }
 

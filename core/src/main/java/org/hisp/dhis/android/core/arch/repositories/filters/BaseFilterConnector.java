@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -41,13 +42,16 @@ import java.util.List;
 abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V> {
 
     private final CollectionRepositoryFactory<R> repositoryFactory;
+    private final ChildrenSelection childrenSelection;
     private final List<RepositoryScopeItem> scope;
     private final String key;
 
     BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                        ChildrenSelection childrenSelection,
                         List<RepositoryScopeItem> scope,
                         String key) {
         this.repositoryFactory = repositoryFactory;
+        this.childrenSelection = childrenSelection;
         this.scope = scope;
         this.key = key;
     }
@@ -67,7 +71,7 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
     }
 
     R newWithWrappedScope(String operator, V value) {
-        return repositoryFactory.newWithScope(updatedWrappedScope(operator, value));
+        return repositoryFactory.updated(childrenSelection, updatedWrappedScope(operator, value));
     }
 
     private String getCommaSeparatedValues(Collection<V> values) {
@@ -79,7 +83,7 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
     }
 
     private R newWithUnwrappedScope(String operator, String value) {
-        return repositoryFactory.newWithScope(updatedUnwrappedScope(operator, value));
+        return repositoryFactory.updated(childrenSelection, updatedUnwrappedScope(operator, value));
 
     }
 

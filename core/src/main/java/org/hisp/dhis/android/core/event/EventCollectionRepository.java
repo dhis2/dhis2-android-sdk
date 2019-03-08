@@ -62,8 +62,7 @@ public final class EventCollectionRepository
                               final List<RepositoryScopeItem> scope,
                               final EventPostCall postCall) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new EventCollectionRepository(store, childrenAppenders, childrenSelection,
-                        updatedScope, postCall)));
+                childrenSelection, (cs, s) -> new EventCollectionRepository(store, childrenAppenders, cs, s, postCall)));
         this.postCall = postCall;
     }
 

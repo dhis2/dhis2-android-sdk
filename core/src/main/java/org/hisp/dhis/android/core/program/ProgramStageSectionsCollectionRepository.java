@@ -53,8 +53,7 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
                                              final ChildrenSelection childrenSelection,
                                              final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
 

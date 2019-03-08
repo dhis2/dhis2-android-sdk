@@ -66,8 +66,8 @@ public final class DataSetCompleteRegistrationCollectionRepository
             final SyncHandler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope, handler, postCall)));
+                childrenSelection, (cs, s) -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
+                        cs, s, handler, postCall)));
         this.handler = handler;
         this.postCall = postCall;
     }

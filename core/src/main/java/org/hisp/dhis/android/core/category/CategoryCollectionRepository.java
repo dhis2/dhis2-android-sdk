@@ -52,8 +52,7 @@ public final class CategoryCollectionRepository
                                  final ChildrenSelection childrenSelection,
                                  final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new CategoryCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new CategoryCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
     public StringFilterConnector<CategoryCollectionRepository> byDataDimensionType() {

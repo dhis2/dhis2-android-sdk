@@ -45,7 +45,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class TrackedEntityModule {
 
-    public final TrackedEntityTypCollectionRepository trackedEntityTypes;
+    public final TrackedEntityTypeCollectionRepository trackedEntityTypes;
     public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
 
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
@@ -56,7 +56,7 @@ public final class TrackedEntityModule {
 
     @Inject
     TrackedEntityModule(
-            TrackedEntityTypCollectionRepository trackedEntityTypes,
+            TrackedEntityTypeCollectionRepository trackedEntityTypes,
             TrackedEntityInstanceCollectionRepository trackedEntityInstances,
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,

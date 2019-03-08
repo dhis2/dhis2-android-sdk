@@ -56,8 +56,7 @@ public final class ProgramCollectionRepository
                                 final ChildrenSelection childrenSelection,
                                 final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new ProgramCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
     public IntegerFilterConnector<ProgramCollectionRepository> byVersion() {

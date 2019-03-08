@@ -42,16 +42,15 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-public final class TrackedEntityTypCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypCollectionRepository> {
+public final class TrackedEntityTypeCollectionRepository
+        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypeCollectionRepository> {
 
     @Inject
-    TrackedEntityTypCollectionRepository(final IdentifiableObjectStore<TrackedEntityType> store,
-                                         final Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders,
-                                         final ChildrenSelection childrenSelection,
-                                         final List<RepositoryScopeItem> scope) {
+    TrackedEntityTypeCollectionRepository(final IdentifiableObjectStore<TrackedEntityType> store,
+                                          final Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders,
+                                          final ChildrenSelection childrenSelection,
+                                          final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new TrackedEntityTypCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new TrackedEntityTypeCollectionRepository(store, childrenAppenders, cs, s)));
     }
 }

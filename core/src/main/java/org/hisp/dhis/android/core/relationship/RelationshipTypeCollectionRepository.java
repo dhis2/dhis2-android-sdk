@@ -51,7 +51,6 @@ public final class RelationshipTypeCollectionRepository
                                          final ChildrenSelection childrenSelection,
                                          final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new RelationshipTypeCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new RelationshipTypeCollectionRepository(store, childrenAppenders, cs, s)));
     }
 }

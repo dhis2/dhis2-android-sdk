@@ -54,8 +54,7 @@ public final class ProgramIndicatorCollectionRepository
                                          final ChildrenSelection childrenSelection,
                                          final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramIndicatorCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new ProgramIndicatorCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
 

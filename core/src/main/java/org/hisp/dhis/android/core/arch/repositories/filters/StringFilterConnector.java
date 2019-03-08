@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
@@ -38,9 +39,10 @@ public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<
         extends BaseFilterConnector<R, String> {
 
     StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                          ChildrenSelection childrenSelection,
                           List<RepositoryScopeItem> scope,
                           String key) {
-        super(repositoryFactory, scope, key);
+        super(repositoryFactory, childrenSelection, scope, key);
     }
 
     public R like(String value) {

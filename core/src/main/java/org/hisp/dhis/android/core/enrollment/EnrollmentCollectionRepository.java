@@ -51,7 +51,6 @@ public final class EnrollmentCollectionRepository
             final ChildrenSelection childrenSelection,
             final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new EnrollmentCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new EnrollmentCollectionRepository(store, childrenAppenders, cs, s)));
     }
 }

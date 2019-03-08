@@ -53,8 +53,7 @@ public final class ProgramRuleActionCollectionRepository
                                           final ChildrenSelection childrenSelection,
                                           final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramRuleActionCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new ProgramRuleActionCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
     public StringFilterConnector<ProgramRuleActionCollectionRepository> byData() {

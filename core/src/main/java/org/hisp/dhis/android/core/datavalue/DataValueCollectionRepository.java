@@ -69,8 +69,8 @@ public final class DataValueCollectionRepository
                                   final SyncHandler<DataValue> dataValueHandler,
                                   final DataValuePostCall postCall) {
         super(dataValueStore, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, childrenSelection,
-                        updatedScope, dataValueHandler, postCall)));
+                childrenSelection, (cs, s) -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, cs, s,
+                        dataValueHandler, postCall)));
         this.dataValueHandler = dataValueHandler;
         this.dataValueStore = dataValueStore;
         this.postCall = postCall;

@@ -63,8 +63,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
         this.cf = cf;
     }
 
-    @Override
-    public List<M> get() {
+    List<M> getInternal() {
         if (scope.isEmpty()) {
             return store.selectAll();
         } else {
@@ -80,6 +79,19 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     @Override
     public List<M> getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObjectCollection(get(), childrenAppenders);
+        return ChildrenAppenderExecutor.appendInObjectCollection(getInternal(), childrenAppenders);
+    }
+
+    @Override
+    public List<M> get() {
+        if (childrenSelection.areAllChildrenSelected) {
+            return getWithAllChildren();
+        } else {
+            return getInternal();
+        }
+    }
+
+    public R withAllChildren() {
+        return cf.repositoryFactory.updated(childrenSelection.selectAllChildren(), scope);
     }
 }

@@ -54,8 +54,7 @@ public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdent
                                             final ChildrenSelection childrenSelection,
                                             final List<RepositoryScopeItem> scope) {
         super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders,
-                        childrenSelection, updatedScope)));
+                childrenSelection, (cs, s) -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, cs, s)));
     }
 
 

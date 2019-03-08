@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
@@ -48,9 +49,11 @@ public final class CategoryComboCollectionRepository
     @Inject
     CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
                                       final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
-                                      List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope)));
+                                      final ChildrenSelection childrenSelection,
+                                      final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new CategoryComboCollectionRepository(store, childrenAppenders, childrenSelection,
+                        updatedScope)));
     }
 
     public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {

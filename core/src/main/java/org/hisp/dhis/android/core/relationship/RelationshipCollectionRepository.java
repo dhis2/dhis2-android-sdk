@@ -31,6 +31,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteIdentifiableCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
@@ -71,13 +72,14 @@ public final class RelationshipCollectionRepository
     @Inject
     RelationshipCollectionRepository(final IdentifiableObjectStore<Relationship> store,
                                      final Collection<ChildrenAppender<Relationship>> childrenAppenders,
-                                     List<RepositoryScopeItem> scope,
+                                     final ChildrenSelection childrenSelection,
+                                     final List<RepositoryScopeItem> scope,
                                      final RelationshipHandler relationshipHandler,
                                      final RelationshipItemStore relationshipItemStore,
                                      final RelationshipItemElementStoreSelector storeSelector) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new RelationshipCollectionRepository(store, childrenAppenders, updatedScope,
-                        relationshipHandler, relationshipItemStore, storeSelector)));
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new RelationshipCollectionRepository(store, childrenAppenders, childrenSelection,
+                        updatedScope, relationshipHandler, relationshipItemStore, storeSelector)));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
         this.relationshipItemStore = relationshipItemStore;
@@ -116,7 +118,7 @@ public final class RelationshipCollectionRepository
 
     @Override
     public ReadWriteObjectRepository<Relationship> uid(String uid) {
-        return new RelationshipObjectRepository(store, uid, childrenAppenders, storeSelector);
+        return new RelationshipObjectRepository(store, uid, childrenAppenders, childrenSelection, storeSelector);
     }
 
     private boolean isUpdatableState(State state) {

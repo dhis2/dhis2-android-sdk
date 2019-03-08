@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
@@ -54,9 +55,11 @@ public final class ProgramStageCollectionRepository
     @Inject
     ProgramStageCollectionRepository(final IdentifiableObjectStore<ProgramStage> store,
                                      final Collection<ChildrenAppender<ProgramStage>> childrenAppenders,
-                                     List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramStageCollectionRepository(store, childrenAppenders, updatedScope)));
+                                     final ChildrenSelection childrenSelection,
+                                     final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramStageCollectionRepository(store, childrenAppenders,
+                        childrenSelection, updatedScope)));
     }
 
 

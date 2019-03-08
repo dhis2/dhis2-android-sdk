@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
@@ -48,9 +49,11 @@ public final class CategoryCollectionRepository
     @Inject
     CategoryCollectionRepository(final IdentifiableObjectStore<Category> store,
                                  final Collection<ChildrenAppender<Category>> childrenAppenders,
-                                 List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new CategoryCollectionRepository(store, childrenAppenders, updatedScope)));
+                                 final ChildrenSelection childrenSelection,
+                                 final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new CategoryCollectionRepository(store, childrenAppenders,
+                        childrenSelection, updatedScope)));
     }
 
     public StringFilterConnector<CategoryCollectionRepository> byDataDimensionType() {

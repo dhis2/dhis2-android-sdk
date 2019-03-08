@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
@@ -48,14 +49,15 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWit
 
     public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                    Collection<ChildrenAppender<M>> childrenAppenders,
+                                                   ChildrenSelection childrenSelection,
                                                    List<RepositoryScopeItem> scope,
                                                    FilterConnectorFactory<R> cf) {
-        super(store, childrenAppenders, scope, cf);
+        super(store, childrenAppenders, childrenSelection, scope, cf);
         this.store = store;
     }
 
     @Override
     public ReadOnlyObjectRepository<M> uid(String uid) {
-        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
+        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders, childrenSelection);
     }
 }

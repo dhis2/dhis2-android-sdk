@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -42,8 +43,9 @@ public class ReadOnlyIdentifiableObjectRepositoryImpl<M extends ObjectWithUidInt
 
     public ReadOnlyIdentifiableObjectRepositoryImpl(IdentifiableObjectStore<M> store,
                                                     String uid,
-                                                    Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(childrenAppenders);
+                                                    Collection<ChildrenAppender<M>> childrenAppenders,
+                                                    ChildrenSelection childrenSelection) {
+        super(childrenAppenders, childrenSelection);
         this.store = store;
         this.uid = uid;
     }

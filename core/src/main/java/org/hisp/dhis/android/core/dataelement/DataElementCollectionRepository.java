@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
@@ -51,9 +52,11 @@ public final class DataElementCollectionRepository
     @Inject
     DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,
                                     final Collection<ChildrenAppender<DataElement>> childrenAppenders,
-                                    List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataElementCollectionRepository(store, childrenAppenders, updatedScope)));
+                                    final ChildrenSelection childrenSelection,
+                                    final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new DataElementCollectionRepository(store, childrenAppenders, childrenSelection,
+                        updatedScope)));
     }
 
     public EnumFilterConnector<DataElementCollectionRepository, ValueType> byValueType() {

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -49,8 +50,9 @@ final class RelationshipObjectRepository extends ReadOnlyIdentifiableObjectRepos
     RelationshipObjectRepository(IdentifiableObjectStore<Relationship> relationshipStore,
                                  String uid,
                                  Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                 ChildrenSelection childrenSelection,
                                  RelationshipItemElementStoreSelector storeSelector) {
-        super(relationshipStore, uid, childrenAppenders);
+        super(relationshipStore, uid, childrenAppenders, childrenSelection);
         this.relationshipStore = relationshipStore;
         this.storeSelector = storeSelector;
     }

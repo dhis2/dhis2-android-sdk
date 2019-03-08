@@ -25,39 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.arch.repositories.children;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.Collection;
-import java.util.List;
+public final class ChildrenSelection {
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
+    private final Set<String> children;
+    private final boolean selectAll;
 
-    private final ObjectStore<M> store;
-    private final List<RepositoryScopeItem> scope;
-
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                    ChildrenSelection childrenSelection,
-                                    List<RepositoryScopeItem> scope) {
-        super(childrenAppenders, childrenSelection);
-        this.store = store;
-        this.scope = scope;
+    public ChildrenSelection(Set<String> children, boolean selectAll) {
+        this.children = children;
+        this.selectAll = selectAll;
     }
 
-    public M get() {
-        if (scope.isEmpty()) {
-            return store.selectFirst();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
-        }
+    public ChildrenSelection withChild(String child) {
+        Set<String> newSet = new HashSet<>(children);
+        newSet.add(child);
+        return new ChildrenSelection(newSet, selectAll);
+    }
+
+    public ChildrenSelection selectAll() {
+        return new ChildrenSelection(children, true);
+    }
+
+    public static ChildrenSelection empty() {
+        return new ChildrenSelection(Collections.emptySet(), false);
     }
 }

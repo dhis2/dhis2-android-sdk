@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
@@ -60,11 +61,12 @@ public final class TrackedEntityInstanceCollectionRepository
     TrackedEntityInstanceCollectionRepository(
             final TrackedEntityInstanceStore store,
             final Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
+            final ChildrenSelection childrenSelection,
             final List<RepositoryScopeItem> scope,
             final TrackedEntityInstancePostCall postCall) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders,
-                        updatedScope, postCall)));
+                        childrenSelection, updatedScope, postCall)));
         this.postCall = postCall;
     }
 

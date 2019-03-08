@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
@@ -50,9 +51,11 @@ public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdent
     @Inject
     ProgramRuleVariableCollectionRepository(final IdentifiableObjectStore<ProgramRuleVariable> store,
                                             final Collection<ChildrenAppender<ProgramRuleVariable>> childrenAppenders,
-                                            List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, updatedScope)));
+                                            final ChildrenSelection childrenSelection,
+                                            final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders,
+                        childrenSelection, updatedScope)));
     }
 
 

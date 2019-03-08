@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
@@ -46,15 +47,18 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     private final ObjectStore<M> store;
     protected final Collection<ChildrenAppender<M>> childrenAppenders;
+    protected final ChildrenSelection childrenSelection;
     protected final List<RepositoryScopeItem> scope;
     protected final FilterConnectorFactory<R> cf;
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
                                             Collection<ChildrenAppender<M>> childrenAppenders,
+                                            ChildrenSelection childrenSelection,
                                             List<RepositoryScopeItem> scope,
                                             FilterConnectorFactory<R> cf) {
         this.store = store;
         this.childrenAppenders = childrenAppenders;
+        this.childrenSelection = childrenSelection;
         this.scope = scope;
         this.cf = cf;
     }
@@ -71,7 +75,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     @Override
     public ReadOnlyObjectRepository<M> one() {
-        return new ReadOnlyOneObjectRepositoryImpl<>(store, childrenAppenders, scope);
+        return new ReadOnlyOneObjectRepositoryImpl<>(store, childrenAppenders, childrenSelection, scope);
     }
 
     @Override

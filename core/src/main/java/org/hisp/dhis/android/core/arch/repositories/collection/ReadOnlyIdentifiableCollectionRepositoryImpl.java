@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
@@ -47,9 +48,10 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
                                                         final Collection<ChildrenAppender<M>> childrenAppenders,
-                                                        List<RepositoryScopeItem> scope,
-                                                        FilterConnectorFactory<R> cf) {
-        super(store, childrenAppenders, scope, cf);
+                                                        final ChildrenSelection childrenSelection,
+                                                        final List<RepositoryScopeItem> scope,
+                                                        final FilterConnectorFactory<R> cf) {
+        super(store, childrenAppenders, childrenSelection, scope, cf);
     }
 
     @Override

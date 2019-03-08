@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
@@ -57,10 +58,12 @@ public final class EventCollectionRepository
     @Inject
     EventCollectionRepository(final EventStore store,
                               final Collection<ChildrenAppender<Event>> childrenAppenders,
+                              final ChildrenSelection childrenSelection,
                               final List<RepositoryScopeItem> scope,
                               final EventPostCall postCall) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new EventCollectionRepository(store, childrenAppenders, updatedScope, postCall)));
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new EventCollectionRepository(store, childrenAppenders, childrenSelection,
+                        updatedScope, postCall)));
         this.postCall = postCall;
     }
 

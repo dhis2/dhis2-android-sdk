@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Collection;
@@ -37,9 +38,12 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model>
         implements ReadOnlyObjectRepository<M> {
 
     private final Collection<ChildrenAppender<M>> childrenAppenders;
+    private final ChildrenSelection childrenSelection;
 
-    ReadOnlyObjectRepositoryImpl(Collection<ChildrenAppender<M>> childrenAppenders) {
+    ReadOnlyObjectRepositoryImpl(Collection<ChildrenAppender<M>> childrenAppenders,
+                                 ChildrenSelection childrenSelection) {
         this.childrenAppenders = childrenAppenders;
+        this.childrenSelection = childrenSelection;
     }
 
     @Override

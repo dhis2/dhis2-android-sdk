@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
@@ -63,12 +64,13 @@ public final class DataValueCollectionRepository
     @Inject
     DataValueCollectionRepository(final DataValueStore dataValueStore,
                                   final Collection<ChildrenAppender<DataValue>> childrenAppenders,
+                                  final ChildrenSelection childrenSelection,
                                   final List<RepositoryScopeItem> scope,
                                   final SyncHandler<DataValue> dataValueHandler,
                                   final DataValuePostCall postCall) {
-        super(dataValueStore, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, updatedScope,
-                        dataValueHandler, postCall)));
+        super(dataValueStore, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, childrenSelection,
+                        updatedScope, dataValueHandler, postCall)));
         this.dataValueHandler = dataValueHandler;
         this.dataValueStore = dataValueStore;
         this.postCall = postCall;

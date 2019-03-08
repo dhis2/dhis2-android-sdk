@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
@@ -60,12 +61,13 @@ public final class DataSetCompleteRegistrationCollectionRepository
     DataSetCompleteRegistrationCollectionRepository(
             final DataSetCompleteRegistrationStore store,
             final Collection<ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
+            final ChildrenSelection childrenSelection,
             final List<RepositoryScopeItem> scope,
             final SyncHandler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
                 updatedScope -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
-                        updatedScope, handler, postCall)));
+                        childrenSelection, updatedScope, handler, postCall)));
         this.handler = handler;
         this.postCall = postCall;
     }

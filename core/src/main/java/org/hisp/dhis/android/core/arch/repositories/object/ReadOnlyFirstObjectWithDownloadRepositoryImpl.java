@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
@@ -44,13 +45,14 @@ public final class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model
 
     private ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
                                                           Collection<ChildrenAppender<M>> childrenAppenders,
+                                                          ChildrenSelection childrenSelection,
                                                           Callable<Unit> downloadCall) {
-        super(store, childrenAppenders);
+        super(store, childrenAppenders, childrenSelection);
         this.downloadCall = downloadCall;
     }
 
     public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store, Callable<Unit> downloadCall) {
-        this(store, Collections.emptyList(), downloadCall);
+        this(store, Collections.emptyList(), ChildrenSelection.empty(), downloadCall);
     }
 
     @Override

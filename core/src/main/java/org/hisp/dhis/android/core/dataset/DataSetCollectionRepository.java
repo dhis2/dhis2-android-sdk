@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
@@ -52,9 +53,11 @@ public final class DataSetCollectionRepository
     @Inject
     DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,
                                 final Collection<ChildrenAppender<DataSet>> childrenAppenders,
-                                List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataSetCollectionRepository(store, childrenAppenders, updatedScope)));
+                                final ChildrenSelection childrenSelection,
+                                final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new DataSetCollectionRepository(store, childrenAppenders, childrenSelection,
+                        updatedScope)));
     }
 
     public EnumFilterConnector<DataSetCollectionRepository, PeriodType> byPeriodType() {

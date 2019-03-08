@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
@@ -49,9 +50,11 @@ public final class ProgramSectionCollectionRepository
     @Inject
     ProgramSectionCollectionRepository(final IdentifiableObjectStore<ProgramSection> store,
                                        final Collection<ChildrenAppender<ProgramSection>> childrenAppenders,
-                                       List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramSectionCollectionRepository(store, childrenAppenders, updatedScope)));
+                                       final ChildrenSelection childrenSelection,
+                                       final List<RepositoryScopeItem> scope) {
+        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
+                updatedScope -> new ProgramSectionCollectionRepository(store, childrenAppenders,
+                        childrenSelection, updatedScope)));
     }
 
 

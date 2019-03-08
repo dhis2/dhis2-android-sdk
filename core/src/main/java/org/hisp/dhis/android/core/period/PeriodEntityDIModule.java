@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -40,7 +39,7 @@ public final class PeriodEntityDIModule {
 
     @Provides
     @Reusable
-    ObjectWithoutUidStore<Period> store(DatabaseAdapter databaseAdapter) {
-        return PeriodStore.create(databaseAdapter);
+    PeriodStore store(DatabaseAdapter databaseAdapter) {
+        return PeriodStoreImpl.create(databaseAdapter);
     }
 }

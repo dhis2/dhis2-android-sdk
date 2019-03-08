@@ -43,16 +43,8 @@ public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(String value) {
-        return newWithScope("=", value);
-    }
-
-    public R neq(String value) {
-        return newWithScope("!=", value);
-    }
-
     public R like(String value) {
-        return newWithScope("LIKE", value);
+        return newWithWrappedScope("LIKE", value);
     }
 
     String wrapValue(String value) {

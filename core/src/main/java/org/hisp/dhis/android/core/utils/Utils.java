@@ -90,6 +90,10 @@ public final class Utils {
         return withBrackets.substring(1, withBrackets.length() - 1);
     }
 
+    public static String commaAndSpaceSeparatedCollectionValues(Collection<String> values) {
+        return commaAndSpaceSeparatedArrayValues(values.toArray(new String[values.size()]));
+    }
+
     public static String[] withSingleQuotationMarksArray(Collection<String> objects) {
         String[] withSingleQuotationMarksArray = new String[objects.size()];
         int i = 0;
@@ -100,7 +104,7 @@ public final class Utils {
     }
 
     private static String commaSeparatedArrayValues(String... values) {
-        return commaAndSpaceSeparatedArrayValues(values).replace(" ", "");
+        return commaAndSpaceSeparatedArrayValues(values).replace(", ", ",");
     }
 
     public static String commaSeparatedCollectionValues(Collection<String> values) {

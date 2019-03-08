@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
 import java.util.List;
 
 public final class BooleanFilterConnector<R extends ReadOnlyCollectionRepository<?>>
-        extends BaseFilterConnector<R, Integer> {
+        extends BaseFilterConnector<R, Boolean> {
 
     BooleanFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
                            List<RepositoryScopeItem> scope,
@@ -43,27 +43,20 @@ public final class BooleanFilterConnector<R extends ReadOnlyCollectionRepository
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(boolean value) {
-        if (value) {
-            return isTrue();
-        } else {
-            return isFalse();
-        }
-    }
-
-    public R neq(boolean value) {
-        return eq(!value);
-    }
-
     public R isTrue() {
-        return newWithScope("=", 1);
+        return eq(true);
     }
 
     public R isFalse() {
-        return newWithScope("=", 0);
+        return eq(false);
     }
 
-    String wrapValue(Integer value) {
-        return value.toString();
+    @Override
+    String wrapValue(Boolean value) {
+        if (value) {
+            return "1";
+        } else {
+            return "0";
+        }
     }
 }

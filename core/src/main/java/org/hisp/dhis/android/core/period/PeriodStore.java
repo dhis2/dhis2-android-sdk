@@ -28,30 +28,13 @@
 
 package org.hisp.dhis.android.core.period;
 
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+import java.util.Date;
 
-public final class PeriodStore {
+import io.reactivex.annotations.NonNull;
 
-    private static final StatementBinder<Period> BINDER = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.periodId());
-        sqLiteBind(sqLiteStatement, 2, o.periodType());
-        sqLiteBind(sqLiteStatement, 3, o.startDate());
-        sqLiteBind(sqLiteStatement, 4, o.endDate());
-    };
+public interface PeriodStore extends ObjectWithoutUidStore<Period> {
 
-    private static final WhereStatementBinder<Period> WHERE_UPDATE_BINDER
-            = (o, sqLiteStatement) -> sqLiteBind(sqLiteStatement, 5, o.periodId());
-
-    private PeriodStore() {}
-
-    public static ObjectWithoutUidStore<Period> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithoutUidStore(databaseAdapter, PeriodTableInfo.TABLE_INFO,
-                BINDER, WHERE_UPDATE_BINDER, Period::create);
-    }
+    Period selectPeriodByTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date);
 }

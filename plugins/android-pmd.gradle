@@ -1,38 +1,39 @@
 apply plugin: "pmd"
 
 pmd {
-    toolVersion = "5.5.2"
+    toolVersion = "5.8.1"
 }
 
 afterEvaluate {
     android.libraryVariants.each { variant ->
-        tasks.register("pmd${variant.name.capitalize()}", Pmd) { pmdTask ->
-            pmdTask.group = "verification"
-            pmdTask.description = "Run Pmd for the ${variant.name}"
 
-            // Fail early.
-            pmdTask.ignoreFailures = false
+        def compileTask = variant.javaCompileProvider.get()
 
-            // Only html reports.
-            pmdTask.reports {
+        def pmdTask = tasks.register("pmd${variant.name.capitalize()}", Pmd) {
+
+            group = "verification"
+            description = "Run Pmd for the ${variant.name}"
+
+            ignoreFailures = false
+
+            reports {
                 html.enabled = true
                 xml.enabled = false
             }
 
-            // see: https://pmd.github.io/pmd-5.5.2/pmd-java/rules/index.html
-            pmdTask.ruleSetFiles = rootProject.files(
+            ruleSetFiles = rootProject.files(
                     "plugins/pmd-rules.xml"
             )
 
-            // setting list of rule sets explicitly to empty list
-            pmdTask.ruleSets = []
+            ruleSets = []
 
-            def compileTask = variant.javaCompile
-            pmdTask.source = compileTask.source
-            pmdTask.dependsOn(compileTask)
+            source = 'src/main/java'
+        }
 
-            def checkTask = tasks.getByName("check")
-            checkTask.dependsOn(pmdTask)
+        pmdTask.get().dependsOn(compileTask)
+
+        if (tasks.named("check")) {
+            check.dependsOn(pmdTask)
         }
     }
 }

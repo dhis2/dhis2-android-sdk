@@ -35,5 +35,4 @@ import java.util.List;
 public interface ReadOnlyCollectionRepository<M extends Model> {
     List<M> get();
     ReadOnlyObjectRepository<M> one();
-    List<M> getWithAllChildren();
 }

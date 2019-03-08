@@ -65,7 +65,7 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
 
     @Test
     public void allow_access_to_all_data_sets_with_children() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets.getWithAllChildren();
+        List<DataSet> dataSets = d2.dataSetModule().dataSets.withAllChildren().get();
         assertThat(dataSets.size(), is(1));
         for (DataSet dataSet : dataSets) {
             assertThat(dataSet.sections() == null, is(false));

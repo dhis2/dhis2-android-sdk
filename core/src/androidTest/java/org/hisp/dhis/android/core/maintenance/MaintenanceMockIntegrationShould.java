@@ -82,7 +82,7 @@ public class MaintenanceMockIntegrationShould extends SyncedDatabaseMockIntegrat
 
     @Test
     public void allow_access_to_foreign_key_violations_with_children() {
-        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.getWithAllChildren();
+        List<ForeignKeyViolation> violations = d2.maintenanceModule().foreignKeyViolations.withAllChildren().get();
         assertThat(violations.size(), is(2));
     }
 

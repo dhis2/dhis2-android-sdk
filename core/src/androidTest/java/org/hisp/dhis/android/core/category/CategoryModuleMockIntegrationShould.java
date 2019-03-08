@@ -56,7 +56,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_combos_with_category_option_combos() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.getWithAllChildren();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().get();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categoryOptionCombos() == null, is(false));
@@ -65,7 +65,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_combos_with_categories() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.getWithAllChildren();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().get();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categories() == null, is(false));
@@ -142,7 +142,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_categories_with_category_options() {
-        List<Category> categories = d2.categoryModule().categories.getWithAllChildren();
+        List<Category> categories = d2.categoryModule().categories.withAllChildren().get();
         assertThat(categories.size(), is(4));
         for (Category category : categories) {
             assertThat(category.categoryOptions() == null, is(false));
@@ -181,7 +181,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_category_option_combos_with_category_options() {
-        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.getWithAllChildren();
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.withAllChildren().get();
         assertThat(categoryOptionCombos.size(), is(3));
         for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
             assertThat(categoryOptionCombo.categoryOptions() == null, is(false));

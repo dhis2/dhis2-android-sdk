@@ -10,7 +10,7 @@ buildscript {
 
     dependencies {
         // android gradle plugin
-        classpath "com.android.tools.build:gradle:3.3.1"
+        classpath "com.android.tools.build:gradle:3.3.2"
 
         // method count plugin
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
@@ -19,7 +19,7 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
 
         // enables cloud features of gradle plugin
-        classpath "com.gradle:build-scan-plugin:2.0.2"
+        classpath "com.gradle:build-scan-plugin:2.2.1"
     }
 }
 
@@ -68,7 +68,7 @@ ext {
             dagger          : "2.14.1",
 
             // code checks
-            findbugs        : "3.0.0",
+            findbugs        : "3.0.1",
 
             // test dependencies
             junit           : "4.12",

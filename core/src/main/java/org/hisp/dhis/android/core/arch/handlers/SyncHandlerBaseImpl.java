@@ -73,7 +73,7 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     @Override
     public final void handleMany(Collection<O> oCollection) {
         if (oCollection != null) {
-            for(O o : oCollection) {
+            for (O o : oCollection) {
                 handle(o);
             }
             afterCollectionHandled(oCollection);
@@ -84,7 +84,7 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer) {
         if (oCollection != null) {
             List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
-            for(O o : oCollection) {
+            for (O o : oCollection) {
                 handle(o, transformer, oTransformedCollection);
             }
             afterCollectionHandled(oTransformedCollection);

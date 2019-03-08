@@ -94,7 +94,7 @@ public final class Utils {
         String[] withSingleQuotationMarksArray = new String[objects.size()];
         int i = 0;
         for (String o: objects) {
-            withSingleQuotationMarksArray [i++] = "'" + o + "'";
+            withSingleQuotationMarksArray[i++] = "'" + o + "'";
         }
         return withSingleQuotationMarksArray;
     }

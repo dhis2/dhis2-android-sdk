@@ -38,7 +38,7 @@ final class ConfigurationManagerImpl implements ConfigurationManager {
     @NonNull
     private final ConfigurationStore configurationStore;
 
-    public ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
+    ConfigurationManagerImpl(@NonNull ConfigurationStore configurationStore) {
         this.configurationStore = configurationStore;
     }
 

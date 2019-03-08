@@ -132,7 +132,7 @@ public final class ExpressionFunctions {
      * @return number of days between dates.
      */
     public static Integer daysBetween(String start, String end) throws ParseException {
-        if(isEmpty(start) || isEmpty(end)) {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
@@ -141,7 +141,7 @@ public final class ExpressionFunctions {
     }
 
     public static Integer weeksBetween(String start, String end) throws ParseException {
-        if(isEmpty(start) || isEmpty(end)) {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
@@ -150,7 +150,7 @@ public final class ExpressionFunctions {
     }
 
     public static Integer monthsBetween(String start, String end)  throws ParseException {
-        if(isEmpty(start) || isEmpty(end)) {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
@@ -159,7 +159,7 @@ public final class ExpressionFunctions {
     }
 
     public static Integer yearsBetween(String start, String end) {
-        if(isEmpty(start) || isEmpty(end)) {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
@@ -184,7 +184,7 @@ public final class ExpressionFunctions {
 
     public static String concatenate(Object... values) {
         String returnString = "";
-        for(Object value : values) {
+        for (Object value : values) {
             returnString = returnString.concat(String.valueOf(value));
         }
         return returnString;

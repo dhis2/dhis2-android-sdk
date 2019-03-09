@@ -2,8 +2,8 @@ package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter.DataToConvert;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
@@ -12,8 +12,8 @@ import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.utils.Pair;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,16 +36,16 @@ public class SmsSubmitCase {
         this.deviceStateRepository = deviceStateRepository;
     }
 
-    public Observable<SmsRepository.SmsSendingState> submit(final EventModel event,
-                                                            final List<TrackedEntityDataValueModel>
+    public Observable<SmsRepository.SmsSendingState> submit(final Event event,
+                                                            final List<TrackedEntityDataValue>
                                                                     values) {
         return submit(
                 new EventConverter(),
                 new EventConverter.EventData(event, values));
     }
 
-    public Observable<SmsRepository.SmsSendingState> submit(final EnrollmentModel enrollmentModel,
-                                                            final Collection<TrackedEntityAttributeValueModel>
+    public Observable<SmsRepository.SmsSendingState> submit(final Enrollment enrollmentModel,
+                                                            final Collection<TrackedEntityAttributeValue>
                                                                     attributes) {
         return Single.zip(
                 localDbRepository.getMetadataIds(),
@@ -57,11 +57,11 @@ public class SmsSubmitCase {
         ));
     }
 
-    public Completable checkConfirmationSms(EventModel event) {
+    public Completable checkConfirmationSms(Event event) {
         return checkConfirmationSms(new EventConverter(), event);
     }
 
-    public Completable checkConfirmationSms(EnrollmentModel enrollment) {
+    public Completable checkConfirmationSms(Enrollment enrollment) {
         return localDbRepository.getMetadataIds().flatMapCompletable(metadata ->
                 checkConfirmationSms(new EnrollmentConverter(metadata), enrollment)
         );

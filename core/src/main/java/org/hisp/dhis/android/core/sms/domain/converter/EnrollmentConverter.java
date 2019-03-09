@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.Base64;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.smscompression.models.AttributeValue;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
 import org.hisp.dhis.smscompression.models.Metadata;
@@ -18,7 +18,7 @@ import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter.EnrollmentData;
 
-public class EnrollmentConverter extends Converter<EnrollmentData, EnrollmentModel> {
+public class EnrollmentConverter extends Converter<EnrollmentData, Enrollment> {
     final private Metadata metadata;
 
     public EnrollmentConverter(Metadata metadata) {
@@ -37,7 +37,7 @@ public class EnrollmentConverter extends Converter<EnrollmentData, EnrollmentMod
             subm.setEnrollment(enrollment.enrollmentModel.uid());
             subm.setTimestamp(enrollment.enrollmentModel.lastUpdated());
             ArrayList<AttributeValue> values = new ArrayList<>();
-            for (TrackedEntityAttributeValueModel attr : enrollment.attributes) {
+            for (TrackedEntityAttributeValue attr : enrollment.attributes) {
                 values.add(createAttributeValue(attr.trackedEntityAttribute(), attr.value()));
             }
             subm.setValues(values);
@@ -61,18 +61,18 @@ public class EnrollmentConverter extends Converter<EnrollmentData, EnrollmentMod
     }
 
     @Override
-    public Single<? extends Collection<String>> getConfirmationRequiredTexts(EnrollmentModel enrollmentModel) {
+    public Single<? extends Collection<String>> getConfirmationRequiredTexts(Enrollment enrollmentModel) {
         // TODO
         return null;
     }
 
     public static class EnrollmentData implements Converter.DataToConvert {
-        private final EnrollmentModel enrollmentModel;
-        private final Collection<TrackedEntityAttributeValueModel> attributes;
+        private final Enrollment enrollmentModel;
+        private final Collection<TrackedEntityAttributeValue> attributes;
         private final String user;
 
-        public EnrollmentData(EnrollmentModel enrollmentModel,
-                              Collection<TrackedEntityAttributeValueModel> attributes,
+        public EnrollmentData(Enrollment enrollmentModel,
+                              Collection<TrackedEntityAttributeValue> attributes,
                               String user) {
             this.enrollmentModel = enrollmentModel;
             this.attributes = attributes;

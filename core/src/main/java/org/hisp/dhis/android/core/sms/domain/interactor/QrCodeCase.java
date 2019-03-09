@@ -1,15 +1,15 @@
 package org.hisp.dhis.android.core.sms.domain.interactor;
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter.EnrollmentData;
 import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EventConverter.EventData;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.utils.Pair;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,12 +23,12 @@ public class QrCodeCase {
         this.localDbRepository = localDbRepository;
     }
 
-    public Single<String> generateTextCode(final EventModel event, final List<TrackedEntityDataValueModel> values) {
+    public Single<String> generateTextCode(final Event event, final List<TrackedEntityDataValue> values) {
         return new EventConverter().format(new EventData(event, values));
     }
 
-    public Single<String> generateTextCode(final EnrollmentModel enrollmentModel,
-                                           final Collection<TrackedEntityAttributeValueModel> attributes) {
+    public Single<String> generateTextCode(final Enrollment enrollmentModel,
+                                           final Collection<TrackedEntityAttributeValue> attributes) {
         return Single.zip(
                 localDbRepository.getMetadataIds(),
                 localDbRepository.getUserName(),

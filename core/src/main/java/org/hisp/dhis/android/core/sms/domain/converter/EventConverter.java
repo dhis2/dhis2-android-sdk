@@ -3,15 +3,15 @@ package org.hisp.dhis.android.core.sms.domain.converter;
 import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
-import org.hisp.dhis.android.core.event.EventModel;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueModel;
+import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Collection;
 import java.util.List;
 
 import io.reactivex.Single;
 
-public class EventConverter extends Converter<EventConverter.EventData, EventModel> {
+public class EventConverter extends Converter<EventConverter.EventData, Event> {
     @Override
     public Single<String> format(@NonNull EventData event) {
         // TODO
@@ -19,16 +19,16 @@ public class EventConverter extends Converter<EventConverter.EventData, EventMod
     }
 
     @Override
-    public Single<? extends Collection<String>> getConfirmationRequiredTexts(EventModel dataObject) {
+    public Single<? extends Collection<String>> getConfirmationRequiredTexts(Event dataObject) {
         // TODO
         return null;
     }
 
     public static class EventData implements Converter.DataToConvert {
-        private final EventModel event;
-        private final List<TrackedEntityDataValueModel> values;
+        private final Event event;
+        private final List<TrackedEntityDataValue> values;
 
-        public EventData(EventModel event, List<TrackedEntityDataValueModel> values) {
+        public EventData(Event event, List<TrackedEntityDataValue> values) {
             this.event = event;
             this.values = values;
         }

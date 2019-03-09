@@ -38,11 +38,11 @@ public final class LinkModelHandlerImpl<S, M extends BaseModel> implements LinkM
     }
 
     @Override
-    public void handleMany(String masterUid, Collection<S> slaves, ModelBuilder<S, M> modelBuilder) {
+    public void handleMany(String masterUid, Collection<S> slaves, Transformer<S, M> transformer) {
         store.deleteLinksForMasterUid(masterUid);
         if (slaves != null) {
             for (S slave : slaves) {
-                store.insert(modelBuilder.buildModel(slave));
+                store.insert(transformer.transform(slave));
             }
         }
     }

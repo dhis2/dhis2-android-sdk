@@ -26,37 +26,60 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.calls.processors;
+package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
+import java.util.Date;
 import java.util.List;
 
-public class TransactionalNoResourceSyncCallWithTransformerProcessor<O> implements CallProcessor<O> {
+class TrackedEntityAttributeReservedValueCallProcessor implements CallProcessor<TrackedEntityAttributeReservedValue> {
+
     private final DatabaseAdapter databaseAdapter;
-    private final SyncHandlerWithTransformer<O> handler;
-    private final ModelBuilder<O, O> transformer;
+    private final SyncHandler<TrackedEntityAttributeReservedValue> handler;
+    private final String organisationUnitUid;
+    private final Date temporalValidityDate;
 
-
-    public TransactionalNoResourceSyncCallWithTransformerProcessor(DatabaseAdapter databaseAdapter,
-                                                                   SyncHandlerWithTransformer<O> handler,
-                                                                   ModelBuilder<O, O> transformer) {
-        this.databaseAdapter = databaseAdapter;
-        this.handler = handler;
-        this.transformer = transformer;
+    TrackedEntityAttributeReservedValueCallProcessor(DatabaseAdapter databaseAdapter,
+                                                     SyncHandler<TrackedEntityAttributeReservedValue> handler,
+                                                     OrganisationUnit organisationUnit,
+                                                     String pattern) {
+            this.databaseAdapter = databaseAdapter;
+            this.handler = handler;
+            this.organisationUnitUid = organisationUnit == null ? null : organisationUnit.uid();
+            this.temporalValidityDate = fillTemporalValidityDate(pattern);
     }
 
     @Override
-    public final void process(final List<O> objectList) throws D2Error {
+    public void process(List<TrackedEntityAttributeReservedValue> objectList) throws D2Error {
         if (objectList != null && !objectList.isEmpty()) {
             new D2CallExecutor(databaseAdapter).executeD2CallTransactionally(() -> {
-                handler.handleMany(objectList, transformer);
+
+                for (TrackedEntityAttributeReservedValue trackedEntityAttributeReservedValue : objectList) {
+                    handler.handle(trackedEntityAttributeReservedValue.toBuilder()
+                            .organisationUnit(organisationUnitUid)
+                            .temporalValidityDate(temporalValidityDate)
+                            .build());
+                }
+
                 return null;
             });
         }
+    }
+
+    private Date fillTemporalValidityDate(String pattern) {
+        Date temporalValidityDate;
+        try {
+            temporalValidityDate = new TrackedEntityAttributeReservedValueValidatorHelper().getExpiryDateCode(pattern);
+        } catch (IllegalStateException e) {
+            temporalValidityDate = null;
+        }
+
+        return temporalValidityDate;
     }
 }

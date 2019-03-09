@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.Collection;
 
-public class LinkSyncHandlerImpl<O extends Model> implements LinkSyncHandler<O>,
-        LinkSyncHandlerWithTransformer<O> {
+public class LinkSyncHandlerImpl<S, O extends Model> implements LinkSyncHandler<S, O> {
 
     private final LinkModelStore<O> store;
 
@@ -43,21 +42,11 @@ public class LinkSyncHandlerImpl<O extends Model> implements LinkSyncHandler<O>,
     }
 
     @Override
-    public void handleMany(String masterUid, Collection<O> slaves) {
+    public void handleMany(String masterUid, Collection<S> slaves, Transformer<S, O> transformer) {
         store.deleteLinksForMasterUid(masterUid);
         if (slaves != null) {
-            for (O slave : slaves) {
-                store.insert(slave);
-            }
-        }
-    }
-
-    @Override
-    public void handleMany(String masterUid, Collection<O> slaves, ModelBuilder<O, O> modelBuilder) {
-        store.deleteLinksForMasterUid(masterUid);
-        if (slaves != null) {
-            for (O slave : slaves) {
-                O oTransformed = modelBuilder.buildModel(slave);
+            for (S slave : slaves) {
+                O oTransformed = transformer.transform(slave);
                 store.insert(oTransformed);
             }
         }

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 
 import javax.inject.Inject;
 
@@ -58,7 +58,7 @@ final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<Tr
     protected void afterObjectHandled(TrackedEntityAttribute trackedEntityAttribute, HandleAction action) {
         if (action != HandleAction.Delete) {
             styleHandler.handle(trackedEntityAttribute.style(),
-                    new ObjectStyleModelBuilder(trackedEntityAttribute.uid(),
+                    new ObjectStyleTransformer(trackedEntityAttribute.uid(),
                             TrackedEntityAttributeTableInfo.TABLE_INFO.name()));
         }
     }

@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
@@ -33,9 +34,7 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,12 +43,12 @@ import dagger.Reusable;
 @Reusable
 final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> {
 
-    private final LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler;
+    private final LinkSyncHandler<Option, OptionGroupOptionLink> optionGroupOptionLinkHandler;
     private final CollectionCleaner<OptionGroup> collectionCleaner;
 
     @Inject
     OptionGroupHandler(IdentifiableObjectStore<OptionGroup> optionStore,
-                       LinkSyncHandler<OptionGroupOptionLink> optionGroupOptionLinkHandler,
+                       LinkSyncHandler<Option, OptionGroupOptionLink> optionGroupOptionLinkHandler,
                        CollectionCleaner<OptionGroup> collectionCleaner) {
         super(optionStore);
         this.optionGroupOptionLinkHandler = optionGroupOptionLinkHandler;
@@ -58,14 +57,8 @@ final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> 
 
     @Override
     protected void afterObjectHandled(OptionGroup optionGroup, HandleAction action) {
-        if (optionGroup.options() != null) {
-            List<OptionGroupOptionLink> optionGroupOptionLinks = new ArrayList<>();
-            for (Option option : optionGroup.options()) {
-                optionGroupOptionLinks.add(OptionGroupOptionLink.builder()
-                        .optionGroup(optionGroup.uid()).option(option.uid()).build());
-            }
-            optionGroupOptionLinkHandler.handleMany(optionGroup.uid(), optionGroupOptionLinks);
-        }
+        optionGroupOptionLinkHandler.handleMany(optionGroup.uid(), optionGroup.options(),
+                option -> OptionGroupOptionLink.builder().optionGroup(optionGroup.uid()).option(option.uid()).build());
     }
 
     @Override

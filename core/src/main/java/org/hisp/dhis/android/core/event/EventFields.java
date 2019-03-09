@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueFields;
 public final class EventFields {
 
     static final String UID = "event";
-    static final String ENROLLMENT = "enrollment";
+    public static final String ENROLLMENT = "enrollment";
     static final String CREATED = "created";
     static final String LAST_UPDATED = "lastUpdated";
     static final String STATUS = "status";

@@ -56,7 +56,7 @@ public final class LegendTableInfo {
     };
 
     static class Columns extends BaseIdentifiableObjectModel.Columns {
-        private final static String LEGEND_SET = "legendSet";
+        final static String LEGEND_SET = "legendSet";
 
         @Override
         public String[] all() {

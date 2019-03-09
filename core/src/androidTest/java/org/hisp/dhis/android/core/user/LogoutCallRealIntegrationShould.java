@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventCallFactory;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.junit.Before;
 
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class LogoutCallRealIntegrationShould extends AbsStoreTestCase {
         d2.userModule().logOut().call();
 
         assertThat(isDatabaseEmpty(databaseAdapter())).isFalse();
-        assertThat(isTableEmpty(databaseAdapter(), EventModel.TABLE)).isFalse();
+        assertThat(isTableEmpty(databaseAdapter(), EventTableInfo.TABLE_INFO.name())).isFalse();
 
         AuthenticatedUser authenticatedUser = authenticatedUserStore.selectFirst();
 

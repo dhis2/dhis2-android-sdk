@@ -56,6 +56,7 @@ public final class LegendSetEntityDIModule {
     @Provides
     @Reusable
     OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(LegendModel.TABLE, LegendModel.Columns.LEGEND_SET, databaseAdapter);
+        return new OrphanCleanerImpl<>(LegendTableInfo.TABLE_INFO.name(), LegendTableInfo.Columns.LEGEND_SET,
+                databaseAdapter);
     }
 }

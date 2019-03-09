@@ -30,12 +30,14 @@ package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.DataOrphanCleanerImpl;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventFields;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -68,7 +70,7 @@ public final class EnrollmentEntityDIModule {
     @Provides
     @Reusable
     OrphanCleaner<Enrollment, Event> eventOrphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new DataOrphanCleanerImpl<>(EventModel.TABLE, EventModel.Columns.ENROLLMENT,
-                EventModel.Columns.STATE, databaseAdapter);
+        return new DataOrphanCleanerImpl<>(EventTableInfo.TABLE_INFO.name(), EventFields.ENROLLMENT,
+                BaseDataModel.Columns.STATE, databaseAdapter);
     }
 }

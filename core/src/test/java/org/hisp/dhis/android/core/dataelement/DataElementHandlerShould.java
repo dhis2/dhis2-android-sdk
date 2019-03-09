@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class DataElementHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         dataElementHandler.handle(dataElement);
-        verify(styleHandler).handle(eq(dataElement.style()), any(ObjectStyleModelBuilder.class));
+        verify(styleHandler).handle(eq(dataElement.style()), any(ObjectStyleTransformer.class));
     }
 
     @Test

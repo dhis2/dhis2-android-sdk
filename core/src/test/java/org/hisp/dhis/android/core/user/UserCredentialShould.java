@@ -36,22 +36,12 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class UserCredentialShould extends BaseObjectShould implements ObjectShould {
 
     public UserCredentialShould() {
         super("user/user_credentials.json");
-    }
-
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(UserCredentialsModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
     }
 
     @Override

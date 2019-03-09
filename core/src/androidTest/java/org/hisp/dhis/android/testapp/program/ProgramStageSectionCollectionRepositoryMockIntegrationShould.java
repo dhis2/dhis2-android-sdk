@@ -45,23 +45,76 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
 
     @Test
     public void find_all() {
-        List<ProgramStageSection> stageSections = d2.programModule().programStageSections
-                .get();
+        List<ProgramStageSection> stageSections =
+                d2.programModule().programStageSections
+                        .get();
+
         assertThat(stageSections.size(), is(2));
     }
 
     @Test
     public void include_program_indicators_as_children() {
-        ProgramStageSection stageSections = d2.programModule().programStageSections
-                .one().getWithAllChildren();
+        ProgramStageSection stageSections =
+                d2.programModule().programStageSections
+                        .one()
+                        .getWithAllChildren();
+
         assertThat(stageSections.programIndicators().size(), is(1));
     }
 
     @Test
     public void include_data_elements_as_children() {
-        ProgramStageSection stageSections = d2.programModule().programStageSections
-                .one().getWithAllChildren();
+        ProgramStageSection stageSections =
+                d2.programModule().programStageSections
+                        .one()
+                        .getWithAllChildren();
+
         assertThat(stageSections.dataElements().size(), is(1));
         assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));
     }
+
+    @Test
+    public void filter_by_sort_order() {
+        List<ProgramStageSection> stageSections =
+                d2.programModule().programStageSections
+                        .bySortOrder()
+                        .eq(1)
+                        .get();
+
+        assertThat(stageSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program_stage() {
+        List<ProgramStageSection> stageSections =
+                d2.programModule().programStageSections
+                        .byProgramStageUid()
+                        .eq("dBwrot7S421")
+                        .get();
+
+        assertThat(stageSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_desktop_render_type() {
+        List<ProgramStageSection> stageSections =
+                d2.programModule().programStageSections
+                        .byDesktopRenderType()
+                        .eq("LISTING")
+                        .get();
+
+        assertThat(stageSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_mobile_render_type() {
+        List<ProgramStageSection> stageSections =
+                d2.programModule().programStageSections
+                        .byMobileRenderType()
+                        .eq("LISTING")
+                        .get();
+
+        assertThat(stageSections.size(), is(1));
+    }
+
 }

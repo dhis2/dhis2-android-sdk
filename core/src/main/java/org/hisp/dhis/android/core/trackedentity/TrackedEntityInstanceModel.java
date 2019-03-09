@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.Utils;
 
+@Deprecated
 @AutoValue
 public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataModel  {
     public static final String TABLE = "TrackedEntityInstance";

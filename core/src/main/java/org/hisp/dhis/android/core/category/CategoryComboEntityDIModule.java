@@ -62,8 +62,8 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
     @Provides
     @Reusable
     OrphanCleaner<CategoryCombo, CategoryOptionCombo> orphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(CategoryOptionComboModel.TABLE,
-                CategoryOptionComboModel.Columns.CATEGORY_COMBO, databaseAdapter);
+        return new OrphanCleanerImpl<>(CategoryOptionComboTableInfo.TABLE_INFO.name(),
+                CategoryOptionComboFields.CATEGORY_COMBO, databaseAdapter);
     }
 
     @Provides

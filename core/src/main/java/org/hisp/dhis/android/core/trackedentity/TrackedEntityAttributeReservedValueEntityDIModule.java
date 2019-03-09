@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,7 +48,7 @@ public final class TrackedEntityAttributeReservedValueEntityDIModule {
 
     @Provides
     @Reusable
-    public SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler(
+    public SyncHandler<TrackedEntityAttributeReservedValue> handler(
             TrackedEntityAttributeReservedValueStoreInterface store) {
         return new ObjectWithoutUidSyncHandlerImpl<>(store);
     }

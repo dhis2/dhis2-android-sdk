@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModel;
 
 import static org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE;
 
@@ -50,10 +49,10 @@ final class UserOrganisationUnitChildrenAppender extends ChildrenAppender<User> 
         User.Builder builder = user.toBuilder();
 
         String dataCaptureWhere = new WhereClauseBuilder().appendKeyStringValue(
-                ORGANISATION_UNIT_SCOPE, OrganisationUnitModel.Scope.SCOPE_DATA_CAPTURE).build();
+                ORGANISATION_UNIT_SCOPE, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).build();
 
         String searchWhere = new WhereClauseBuilder().appendKeyStringValue(
-                ORGANISATION_UNIT_SCOPE, OrganisationUnitModel.Scope.SCOPE_TEI_SEARCH).build();
+                ORGANISATION_UNIT_SCOPE, OrganisationUnit.Scope.SCOPE_TEI_SEARCH).build();
 
         builder.organisationUnits(linkModelChildStore.getChildrenWhere(user, dataCaptureWhere));
         builder.teiSearchOrganisationUnits(linkModelChildStore.getChildrenWhere(user, searchWhere));

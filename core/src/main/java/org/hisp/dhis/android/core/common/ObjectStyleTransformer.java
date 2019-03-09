@@ -26,22 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+public class ObjectStyleTransformer implements Transformer<ObjectStyle, ObjectStyle> {
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+    private final ObjectStyle.Builder builder;
 
-@RunWith(JUnit4.class)
-public class UserOrganisationUnitLinkModelsShould {
+    public ObjectStyleTransformer(String uid, String objectTable) {
+        builder = ObjectStyle.builder()
+                .uid(uid)
+                .objectTable(objectTable);
+    }
 
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(UserOrganisationUnitLinkModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    @Override
+    public ObjectStyle transform(ObjectStyle objectStyle) {
+        return builder
+                .color(objectStyle.color())
+                .icon(objectStyle.icon()).build();
     }
 }

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 
 import javax.inject.Inject;
 
@@ -52,6 +52,6 @@ final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
     @Override
     protected void afterObjectHandled(Option option, HandleAction action) {
         styleHandler.handle(option.style(),
-                new ObjectStyleModelBuilder(option.uid(), OptionTableInfo.TABLE_INFO.name()));
+                new ObjectStyleTransformer(option.uid(), OptionTableInfo.TABLE_INFO.name()));
     }
 }

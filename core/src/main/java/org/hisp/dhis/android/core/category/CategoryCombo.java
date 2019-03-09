@@ -48,6 +48,8 @@ import java.util.List;
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
 public abstract class CategoryCombo extends BaseIdentifiableObject implements Model {
 
+    public static final String DEFAULT_UID = "p0KPaWEg3cf";
+
     @Nullable
     @JsonProperty()
     public abstract Boolean isDefault();

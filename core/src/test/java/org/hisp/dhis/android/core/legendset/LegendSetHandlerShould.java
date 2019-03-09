@@ -31,8 +31,8 @@ import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -91,7 +91,7 @@ public class LegendSetHandlerShould {
     @Test
     public void call_style_handler() {
         legendSetHandler.handle(legendSet);
-        verify(legendHandler).handleMany(eq(legendSet.legends()), any(ModelBuilder.class));
+        verify(legendHandler).handleMany(eq(legendSet.legends()), any(Transformer.class));
     }
 
     @Test

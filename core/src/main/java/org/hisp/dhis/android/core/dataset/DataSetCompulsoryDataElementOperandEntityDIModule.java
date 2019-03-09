@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 
 import dagger.Module;
 import dagger.Provides;
@@ -48,7 +49,7 @@ public final class DataSetCompulsoryDataElementOperandEntityDIModule {
 
     @Provides
     @Reusable
-    LinkSyncHandler<DataSetCompulsoryDataElementOperandLink> handler(
+    LinkSyncHandler<DataElementOperand, DataSetCompulsoryDataElementOperandLink> handler(
             LinkModelStore<DataSetCompulsoryDataElementOperandLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }

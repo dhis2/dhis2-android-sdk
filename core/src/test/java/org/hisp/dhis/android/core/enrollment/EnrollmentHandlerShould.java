@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.enrollment;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.enrollment.note.Note;
 import org.hisp.dhis.android.core.enrollment.note.NoteDHISVersionManager;
@@ -127,7 +127,7 @@ public class EnrollmentHandlerShould {
 
         // event handler should not be invoked
         verify(eventHandler, never()).handle(any(Event.class));
-        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
+        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollectionOf(Event.class));
         verify(noteHandler, never()).handleMany(anyCollectionOf(Note.class));
     }
 
@@ -144,8 +144,8 @@ public class EnrollmentHandlerShould {
         verify(enrollmentStore, never()).deleteIfExists(anyString());
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handleMany(any(ArrayList.class), any(ModelBuilder.class));
-        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
+        verify(eventHandler, times(1)).handleMany(anyCollectionOf(Event.class), any(Transformer.class));
+        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollectionOf(Event.class));
         verify(noteHandler, times(1)).handleMany(anyCollectionOf(Note.class));
     }
 }

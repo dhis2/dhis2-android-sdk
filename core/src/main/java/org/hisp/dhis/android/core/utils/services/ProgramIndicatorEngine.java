@@ -137,7 +137,7 @@ public class ProgramIndicatorEngine {
      * @return Indicator value
      */
     public String getProgramIndicatorValue(String enrollment, String event, String programIndicatorUid) {
-        if(enrollment == null && event == null) {
+        if (enrollment == null && event == null) {
             return null;
         }
 
@@ -307,7 +307,7 @@ public class ProgramIndicatorEngine {
         Map<String, TrackedEntityAttributeValue> attributeToAttributeValues = new HashMap<>();
         List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
                 trackedEntityAttributeValueStore.queryByTrackedEntityInstance(tei);
-        if(trackedEntityAttributeValues != null) {
+        if (trackedEntityAttributeValues != null) {
             for (TrackedEntityAttributeValue value : trackedEntityAttributeValues) {
                 attributeToAttributeValues.put(value.trackedEntityAttribute(), value);
             }
@@ -362,14 +362,14 @@ public class ProgramIndicatorEngine {
     }
 
     private String formatDataValue(TrackedEntityDataValue dataValue) {
-        if(dataElementStore.selectByUid(dataValue.dataElement())
+        if (dataElementStore.selectByUid(dataValue.dataElement())
                 .valueType() == ValueType.BOOLEAN) {
-            if(dataValue.value().equals("true")) {
+            if (dataValue.value().equals("true")) {
                 return "1";
             } else {
                 return "0";
             }
-        } else if(dataValue.value().endsWith(".")) {
+        } else if (dataValue.value().endsWith(".")) {
             return (dataValue.value() + "0");
         } else {
             return dataValue.value();

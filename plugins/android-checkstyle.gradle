@@ -28,39 +28,34 @@
 
 apply plugin: "checkstyle"
 
+checkstyle {
+    toolVersion = "8.18"
+    config = resources.text.fromFile("${rootDir}/plugins/checkstyle-style.xml")
+    ignoreFailures = false
+    showViolations false
+}
+
 afterEvaluate {
     android.libraryVariants.each { variant ->
 
-        tasks.register("checkstyle${variant.name.capitalize()}", Checkstyle) { checkstyleTask ->
+        def compileTask = variant.javaCompileProvider.get()
 
-            checkstyleTask.group = "verification"
-            checkstyleTask.description = "Run Checkstyle for the ${variant.name}"
+        def checkstyleTask = tasks.register("checkstyle${variant.name.capitalize()}", Checkstyle) {
 
-            // Fail early.
-            checkstyleTask.ignoreFailures = false
+            group = "verification"
+            description = "Run Checkstyle for the ${variant.name}"
 
-            // Do not output results into console.
-            checkstyleTask.showViolations = false
+            include("**/*.java")
+            exclude("**/R.java", "**/BuildConfig.java")
 
-            checkstyleTask.configFile = rootProject.file(
-                    "plugins/checkstyle-style.xml"
-            )
+            source = 'src/main/java'
+            classpath = compileTask.classpath.plus(project.files(android.bootClasspath))
+        }
 
-            checkstyleTask.include(
-                    "**/*.java"
-            )
+        checkstyleTask.get().dependsOn(compileTask)
 
-            checkstyleTask.exclude(
-                    "**/R.java", "**/BuildConfig.java"
-            )
-
-            def compileTask = variant.javaCompile
-            checkstyleTask.source = compileTask.source
-            checkstyleTask.classpath = compileTask.classpath.plus(project.files(android.bootClasspath))
-            checkstyleTask.dependsOn(compileTask)
-
-            def checkTask = tasks.getByName("check")
-            checkTask.dependsOn(checkstyleTask)
+        if (tasks.named("check")) {
+            check.dependsOn(checkstyleTask)
         }
     }
 }

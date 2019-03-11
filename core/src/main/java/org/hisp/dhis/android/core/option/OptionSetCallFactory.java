@@ -54,7 +54,7 @@ final class OptionSetCallFactory extends UidsCallFactoryImpl<OptionSet> {
     private final SyncHandler<OptionSet> handler;
 
     @Inject
-    public OptionSetCallFactory(GenericCallData data,
+    OptionSetCallFactory(GenericCallData data,
                                 APICallExecutor apiCallExecutor,
                                 OptionSetService service,
                                 SyncHandler<OptionSet> handler) {

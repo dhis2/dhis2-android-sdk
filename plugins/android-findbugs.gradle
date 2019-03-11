@@ -1,38 +1,41 @@
 apply plugin: "findbugs"
 
+findbugs {
+    toolVersion = "3.0.1"
+}
+
 afterEvaluate {
     android.libraryVariants.each { variant ->
-        tasks.register("findBugs${variant.name.capitalize()}", FindBugs) { findBugsTask ->
-            findBugsTask.group = "verification"
-            findBugsTask.description = "Run FindBugs for the ${variant.name}"
 
-            // Fail early.
-            findBugsTask.ignoreFailures = false
+        def compileTask = variant.javaCompileProvider.get()
 
-            // Aggressive inspection.
-            findBugsTask.effort = "max"
+        def findBugsTask = tasks.register("findBugs${variant.name.capitalize()}", FindBugs) {
 
-            // Fail build on high priority warnings.
-            findBugsTask.reportLevel = "low"
+            group = "verification"
+            description = "Run FindBugs for the ${variant.name}"
 
-            // Only html reports.
-            findBugsTask.reports {
+            ignoreFailures = false
+            effort = "max"
+            reportLevel = "low"
+
+            reports {
                 html.enabled = true
                 xml.enabled = false
             }
 
-            findBugsTask.excludeFilter = rootProject.file(
+            excludeFilter = rootProject.file(
                     "plugins/findbugs-filter.xml"
             )
 
-            def compileTask = variant.javaCompile
-            findBugsTask.source = compileTask.source
-            findBugsTask.classes = fileTree(compileTask.destinationDir)
-            findBugsTask.classpath = compileTask.classpath.plus(project.files(android.bootClasspath))
-            findBugsTask.dependsOn(compileTask)
+            source = compileTask.source
+            classes = fileTree(compileTask.destinationDir)
+            classpath = compileTask.classpath.plus(project.files(android.bootClasspath))
+        }
 
-            def checkTask = tasks.getByName("check")
-            checkTask.dependsOn(findBugsTask)
+        findBugsTask.get().dependsOn(compileTask)
+
+        if (tasks.named("check")) {
+            check.dependsOn(findBugsTask)
         }
     }
 }

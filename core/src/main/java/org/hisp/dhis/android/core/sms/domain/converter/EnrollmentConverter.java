@@ -33,7 +33,9 @@ public class EnrollmentConverter extends Converter<EnrollmentData, Enrollment> {
             subm.setUserID(enrollment.user);
             subm.setOrgUnit(enrollment.enrollmentModel.organisationUnit());
             subm.setTrackerProgram(enrollment.enrollmentModel.program());
+            //TODO no type in model
             subm.setTrackedEntityType(enrollment.enrollmentModel.trackedEntityInstance());
+            subm.setTrackedEntityInstance(enrollment.enrollmentModel.trackedEntityInstance());
             subm.setEnrollment(enrollment.enrollmentModel.uid());
             subm.setTimestamp(enrollment.enrollmentModel.lastUpdated());
             ArrayList<AttributeValue> values = new ArrayList<>();

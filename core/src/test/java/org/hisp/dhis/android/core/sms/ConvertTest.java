@@ -1,19 +1,13 @@
+
 package org.hisp.dhis.android.core.sms;
 
-import android.content.ContentValues;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.smscompression.SMSSubmissionReader;
 import org.hisp.dhis.smscompression.models.AttributeValue;
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission;
 import org.hisp.dhis.smscompression.models.Metadata;
-import org.hisp.dhis.smscompression.models.SMSSubmissionHeader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -35,8 +29,8 @@ public class ConvertTest {
 
     @Test
     public void backAndForth() throws Exception {
-        EnrollmentModel enrollment = getTestEnrollment();
-        ArrayList<TrackedEntityAttributeValueModel> values = getTestValues();
+        Enrollment enrollment = getTestEnrollment();
+        ArrayList<TrackedEntityAttributeValue> values = getTestValues();
 
         TestMetadata metadata = new TestMetadata();
         TestRepositories.TestLocalDbRepository testLocalDb =
@@ -57,8 +51,7 @@ public class ConvertTest {
         byte[] smsBytes = Base64.getDecoder().decode(result.get());
 
         SMSSubmissionReader reader = new SMSSubmissionReader();
-        SMSSubmissionHeader header = reader.readHeader(smsBytes);
-        EnrollmentSMSSubmission subm = (EnrollmentSMSSubmission) reader.readSubmission(header, metadata);
+        EnrollmentSMSSubmission subm = (EnrollmentSMSSubmission) reader.readSubmission(smsBytes, metadata);
         assertNotNull(subm);
         assertEquals(subm.getUserID(), TestRepositories.TestLocalDbRepository.userId);
         assertEquals(subm.getEnrollment(), enrollment.uid());
@@ -70,9 +63,9 @@ public class ConvertTest {
         }
     }
 
-    private boolean containsAttributeValue(ArrayList<TrackedEntityAttributeValueModel> values,
+    private boolean containsAttributeValue(ArrayList<TrackedEntityAttributeValue> values,
                                            AttributeValue item) {
-        for (TrackedEntityAttributeValueModel value : values) {
+        for (TrackedEntityAttributeValue value : values) {
             if (Objects.equals(value.trackedEntityAttribute(), item.getAttribute()) &&
                     Objects.equals(value.value(), item.getValue())) {
                 return true;
@@ -81,117 +74,20 @@ public class ConvertTest {
         return false;
     }
 
-    private static EnrollmentModel getTestEnrollment() {
-        return new EnrollmentModel() {
-            private Date created = new Date();
-            private Date updated = new Date();
-            private Date enrollmentDate = new Date();
-
-            @NonNull
-            @Override
-            public String uid() {
-                return "jQK0XnMVFIK";
-            }
-
-            @Nullable
-            @Override
-            public Date created() {
-                return created;
-            }
-
-            @Nullable
-            @Override
-            public Date lastUpdated() {
-                return updated;
-            }
-
-            @Nullable
-            @Override
-            public String createdAtClient() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String lastUpdatedAtClient() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String organisationUnit() {
-                return "DiszpKrYNg8";
-            }
-
-            @Nullable
-            @Override
-            public String program() {
-                return "IpHINAT79UW";
-            }
-
-            @Nullable
-            @Override
-            public Date enrollmentDate() {
-                return enrollmentDate;
-            }
-
-            @Nullable
-            @Override
-            public Date incidentDate() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public Boolean followUp() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public EnrollmentStatus enrollmentStatus() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String trackedEntityInstance() {
-                return "MmzaWDDruXW";
-            }
-
-            @Nullable
-            @Override
-            public String latitude() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String longitude() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public State state() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public Long id() {
-                return 341L;
-            }
-
-            @Override
-            public ContentValues toContentValues() {
-                return null;
-            }
-        };
+    private static Enrollment getTestEnrollment() {
+        return Enrollment.builder()
+                .uid("jQK0XnMVFIK")
+                .created(new Date())
+                .lastUpdated(new Date())
+                .organisationUnit("DiszpKrYNg8")
+                .program("IpHINAT79UW")
+                .enrollmentDate(new Date())
+                .trackedEntityInstance("MmzaWDDruXW")
+                .id(341L).build();
     }
 
-    private static ArrayList<TrackedEntityAttributeValueModel> getTestValues() {
-        ArrayList<TrackedEntityAttributeValueModel> list = new ArrayList<>();
+    private static ArrayList<TrackedEntityAttributeValue> getTestValues() {
+        ArrayList<TrackedEntityAttributeValue> list = new ArrayList<>();
         list.add(getTestValue("w75KJ2mc4zz", "Anne"));
         list.add(getTestValue("zDhUuAYrxNC", "Anski"));
         list.add(getTestValue("cejWyOfXge6", "Female"));
@@ -199,56 +95,18 @@ public class ConvertTest {
         return list;
     }
 
-    private static TrackedEntityAttributeValueModel getTestValue(String attr, String value) {
-        return new TrackedEntityAttributeValueModel() {
-            private Date created = new Date();
-            private Date updated = new Date();
-
-            @Nullable
-            @Override
-            public String value() {
-                return value;
-            }
-
-            @Nullable
-            @Override
-            public Date created() {
-                return created;
-            }
-
-            @Nullable
-            @Override
-            public Date lastUpdated() {
-                return updated;
-            }
-
-            @Nullable
-            @Override
-            public String trackedEntityAttribute() {
-                return attr;
-            }
-
-            @Nullable
-            @Override
-            public String trackedEntityInstance() {
-                return "MmzaWDDruXW";
-            }
-
-            @Nullable
-            @Override
-            public Long id() {
-                return null;
-            }
-
-            @Override
-            public ContentValues toContentValues() {
-                return null;
-            }
-        };
+    private static TrackedEntityAttributeValue getTestValue(String attr, String value) {
+        return TrackedEntityAttributeValue.builder()
+                .value(value)
+                .created(new Date())
+                .lastUpdated(new Date())
+                .trackedEntityAttribute(attr)
+                .trackedEntityInstance("MmzaWDDruXW")
+                .build();
     }
 
     public static class TestMetadata extends Metadata {
-        EnrollmentModel enrollment = getTestEnrollment();
+        Enrollment enrollment = getTestEnrollment();
 
         public List<String> getUsers() {
             return Collections.singletonList(TestRepositories.TestLocalDbRepository.userId);
@@ -260,7 +118,7 @@ public class ConvertTest {
 
         public List<String> getTrackedEntityAttributes() {
             ArrayList<String> attrs = new ArrayList<>();
-            for (TrackedEntityAttributeValueModel item : getTestValues()) {
+            for (TrackedEntityAttributeValue item : getTestValues()) {
                 attrs.add(item.trackedEntityAttribute());
             }
             return attrs;

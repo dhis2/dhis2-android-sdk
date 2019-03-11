@@ -2,6 +2,8 @@
 
 <!--DHIS2-SECTION-ID:sync-->
 
+In order to by able to be fully functional when offline, the SDK reproduces a reduced and simplified copy of DHIS2 server database.
+
 ## Metadata
 
 <!--DHIS2-SECTION-ID:sync_metadata-->
@@ -16,7 +18,7 @@ Two main strategies to download tracker data: bulk or by uid.
 
 #### Bulk download
 
-Download a maximum of N trackedEntityInstances. 
+Download a maximum of N trackedEntityInstances.
 
 - Paging is used to split the payload (page size 50). 
 - If a page throws an error, it continues to the next.

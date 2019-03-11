@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
@@ -58,6 +59,7 @@ final class D2Modules {
     final MaintenanceModule maintenance;
     final ProgramModule program;
     final SystemInfoModule systemInfo;
+    final PeriodModule periodModule;
     final RelationshipModule relationship;
     final TrackedEntityModule trackedEntity;
     final UserModule user;
@@ -73,6 +75,7 @@ final class D2Modules {
               MaintenanceModule maintenance,
               ProgramModule program,
               SystemInfoModule systemInfo,
+              PeriodModule periodModule,
               RelationshipModule relationship,
               TrackedEntityModule trackedEntity,
               UserModule user,
@@ -86,6 +89,7 @@ final class D2Modules {
         this.maintenance = maintenance;
         this.program = program;
         this.systemInfo = systemInfo;
+        this.periodModule = periodModule;
         this.relationship = relationship;
         this.trackedEntity = trackedEntity;
         this.user = user;

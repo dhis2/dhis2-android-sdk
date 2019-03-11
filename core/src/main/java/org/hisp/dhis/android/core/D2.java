@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
@@ -123,6 +124,10 @@ public final class D2 {
 
     public SystemInfoModule systemInfoModule() {
         return this.modules.systemInfo;
+    }
+
+    public PeriodModule periodModule() {
+        return this.modules.periodModule;
     }
 
     public RelationshipModule relationshipModule() {

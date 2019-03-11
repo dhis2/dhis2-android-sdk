@@ -28,24 +28,25 @@
 
 package org.hisp.dhis.android.core.period;
 
-import javax.inject.Inject;
+import android.support.test.runner.AndroidJUnit4;
 
-import dagger.Reusable;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@Reusable
-public final class PeriodHandler {
-    private final PeriodStore store;
-    private final ParentPeriodGenerator generator;
+import java.text.ParseException;
 
-    @Inject
-    PeriodHandler(PeriodStore store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
-    }
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
-            store.updateOrInsertWhere(period);
-        }
+@RunWith(AndroidJUnit4.class)
+public class PeriodMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void get_period_passing_period_type_and_a_date() throws ParseException {
+        Period period = d2.periodModule().periodHelper.getPeriod(PeriodType.BiWeekly,
+                BaseIdentifiableObject.DATE_FORMAT.parse("2018-12-24T12:24:25.319"));
+        assertThat(period.periodId(), is("2018BiW26"));
     }
 }

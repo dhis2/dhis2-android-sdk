@@ -29,10 +29,15 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class DHISVersionManager {
 
     private DHISVersion version;
 
+    @Inject
     DHISVersionManager(ObjectWithoutUidStore<SystemInfo> systemInfoStore) {
         SystemInfo systemInfoModel = systemInfoStore.selectFirst();
 

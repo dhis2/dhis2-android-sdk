@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -41,12 +39,6 @@ import retrofit2.Retrofit;
 
 @Module(includes = {SystemInfoEntityDIModule.class})
 public final class SystemInfoPackageDIModule {
-
-    @Provides
-    @Singleton
-    DHISVersionManager dhisVersionManager(ObjectWithoutUidStore<SystemInfo> store) {
-        return new DHISVersionManager(store);
-    }
 
     @Provides
     @Reusable

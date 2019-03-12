@@ -30,19 +30,27 @@ package org.hisp.dhis.android.core.period;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.period.PeriodSamples;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.Date;
+
+import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
 public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<Period> {
 
+    private PeriodStore periodStore;
+
     public PeriodStoreIntegrationShould() {
-        super(PeriodStore.create(DatabaseAdapterFactory.get(false)), PeriodTableInfo.TABLE_INFO,
+        super(PeriodStoreImpl.create(DatabaseAdapterFactory.get(false)), PeriodTableInfo.TABLE_INFO,
                 DatabaseAdapterFactory.get(false));
+        this.periodStore = PeriodStoreImpl.create(DatabaseAdapterFactory.get(false));
     }
 
     @Override
@@ -62,5 +70,15 @@ public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractI
         return PeriodSamples.getPeriod().toBuilder()
                 .id(1L)
                 .build();
+    }
+
+    @Test
+    public void select_correct_period_passing_period_type_and_a_date() throws ParseException {
+        new PeriodHandler(periodStore, ParentPeriodGeneratorImpl.create()).generateAndPersist();
+
+        Period period = periodStore.selectPeriodByTypeAndDate(PeriodType.WeeklySaturday,
+                BaseIdentifiableObject.DATE_FORMAT.parse("2018-12-24T12:24:25.319"));
+
+        assertThat(period.periodId()).isEqualTo("2018SatW52");
     }
 }

@@ -71,7 +71,7 @@ public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterfac
         try {
             delete(uid);
         } catch(RuntimeException e) {
-            if(!e.getMessage().equals("No rows affected")) {
+            if (!e.getMessage().equals("No rows affected")) {
                 throw e;
             }
         }

@@ -49,7 +49,7 @@ public final class TableWiper {
         databaseAdapter.delete(tableInfo.name());
     }
 
-    public void wipeTables(TableInfo ...tableInfos) {
+    public void wipeTables(TableInfo... tableInfos) {
         for (TableInfo tableInfo: tableInfos) {
             wipeTable(tableInfo);
         }

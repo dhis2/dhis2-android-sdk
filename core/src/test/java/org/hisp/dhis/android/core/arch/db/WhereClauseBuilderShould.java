@@ -54,6 +54,34 @@ public class WhereClauseBuilderShould {
     }
 
     @Test
+    public void build_where_statement_for_one_key_value_pair_with_greater_or_eq_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyGreaterOrEqStringValue("COL", "VAL")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL >= 'VAL'");
+    }
+
+    @Test
+    public void build_where_statement_for_one_key_value_pair_with_less_than_or_eq_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyLessThanOrEqStringValue("COL", "VAL")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL <= 'VAL'");
+    }
+
+    @Test
+    public void build_where_statement_for_one_key_value_pair_with_greater_or_eq_and_less_than_or_eq_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyGreaterOrEqStringValue("COL1", "VAL1")
+                .appendKeyLessThanOrEqStringValue("COL2", "VAL2")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 >= 'VAL1' AND COL2 <= 'VAL2'");
+    }
+
+    @Test
     public void build_where_statement_for_one_key_value_pair_with_like_string_value() {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         String whereStatement = builder

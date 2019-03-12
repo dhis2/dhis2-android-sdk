@@ -26,26 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.data.database;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-import dagger.Reusable;
+import java.util.List;
 
-@Reusable
-public final class PeriodHandler {
-    private final PeriodStore store;
-    private final ParentPeriodGenerator generator;
-
-    @Inject
-    PeriodHandler(PeriodStore store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
-    }
-
-    public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
-            store.updateOrInsertWhere(period);
-        }
-    }
+public final class IgnoreTrackedEntityAttributeListColumnAdapter
+        extends IgnoreColumnAdapter<List<TrackedEntityAttribute>> {
 }

@@ -18,7 +18,7 @@ class SendingStateReceiver extends BroadcastReceiver {
     private boolean error;
     private int errorCode;
 
-    public SendingStateReceiver(long timeStarted, int timeoutSeconds, String sendSmsAction) {
+    SendingStateReceiver(long timeStarted, int timeoutSeconds, String sendSmsAction) {
         this.timeStarted = timeStarted;
         this.timeoutSeconds = timeoutSeconds;
         this.sendSmsAction = sendSmsAction;

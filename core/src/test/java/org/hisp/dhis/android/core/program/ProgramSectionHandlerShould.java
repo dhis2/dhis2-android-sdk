@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +59,7 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
-    private LinkSyncHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLink>
+    private LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
 
     @Mock
@@ -79,8 +80,8 @@ public class ProgramSectionHandlerShould {
         programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler,
                 styleHandler);
 
-        List<ProgramTrackedEntityAttribute> attributes = Lists.newArrayList(
-                ProgramTrackedEntityAttribute.builder().uid("attribute_uid").build());
+        List<TrackedEntityAttribute> attributes = Lists.newArrayList(
+                TrackedEntityAttribute.builder().uid("attribute_uid").build());
         when(programSection.attributes()).thenReturn(attributes);
         when(programSection.uid()).thenReturn(SECTION_UID);
     }
@@ -95,7 +96,7 @@ public class ProgramSectionHandlerShould {
     public void save_program_section_attribute_links() throws Exception {
         programSectionHandler.handle(programSection);
         verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID),
-                anyListOf(ProgramTrackedEntityAttribute.class), any(Transformer.class));
+                anyListOf(TrackedEntityAttribute.class), any(Transformer.class));
     }
 
     @Test

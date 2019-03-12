@@ -28,24 +28,24 @@
 
 package org.hisp.dhis.android.core.period;
 
+import java.util.Date;
+
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-import dagger.Reusable;
+import io.reactivex.annotations.NonNull;
 
-@Reusable
-public final class PeriodHandler {
-    private final PeriodStore store;
-    private final ParentPeriodGenerator generator;
+@Singleton
+public class PeriodHelper {
+
+    private final PeriodStore periodStore;
 
     @Inject
-    PeriodHandler(PeriodStore store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
+    PeriodHelper(PeriodStore periodStore) {
+        this.periodStore = periodStore;
     }
 
-    public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
-            store.updateOrInsertWhere(period);
-        }
+    public Period getPeriod(@NonNull PeriodType periodType, @NonNull Date date) {
+        return periodStore.selectPeriodByTypeAndDate(periodType, date);
     }
 }

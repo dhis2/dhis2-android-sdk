@@ -25,27 +25,21 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.period;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class PeriodHandler {
-    private final PeriodStore store;
-    private final ParentPeriodGenerator generator;
+public final class PeriodModule {
+
+    public final PeriodHelper periodHelper;
 
     @Inject
-    PeriodHandler(PeriodStore store, ParentPeriodGenerator generator) {
-        this.store = store;
-        this.generator = generator;
-    }
-
-    public void generateAndPersist() {
-        for (Period period : generator.generatePeriods()) {
-            store.updateOrInsertWhere(period);
-        }
+    PeriodModule(PeriodHelper periodHelper) {
+        this.periodHelper = periodHelper;
     }
 }

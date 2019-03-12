@@ -53,7 +53,8 @@ public final class UserUtils {
         }
     }
 
-    @SuppressFBWarnings("DM_CONVERT_CASE")
+    @SuppressFBWarnings({"DM_CONVERT_CASE"})
+    @SuppressWarnings({"PMD.UseLocaleWithCaseConversions"})
     public static String md5(String username, String password) {
         try {
             String credentials = usernameAndPassword(username, password);

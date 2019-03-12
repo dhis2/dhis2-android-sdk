@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -66,7 +66,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends SyncedDa
 
     @Test
     public void get_objects_with_equal_name_using_one() {
-        ReadOnlyObjectRepository<CategoryCombo> objectRepository = d2.categoryModule().categoryCombos
+        ReadOnlyOneObjectRepositoryFinalImpl<CategoryCombo> objectRepository = d2.categoryModule().categoryCombos
                 .byName().eq("Births")
                 .one();
         CategoryCombo combo = objectRepository.get();

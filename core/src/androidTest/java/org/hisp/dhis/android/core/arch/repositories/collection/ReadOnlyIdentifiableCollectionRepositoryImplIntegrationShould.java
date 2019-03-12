@@ -32,7 +32,6 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -74,7 +73,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
 
     @Test
     public void get_relationship_1_from_object_repository_without_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository
+        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
         RelationshipType typeFromRepository = type1Repository.get();
         assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
@@ -82,7 +81,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
 
     @Test
     public void get_relationship_2_from_object_repository_without_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository
+        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
         RelationshipType typeFromRepository = type1Repository.get();
         assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);

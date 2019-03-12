@@ -38,7 +38,7 @@ import io.reactivex.annotations.NonNull;
 @Singleton
 public class PeriodHelper {
 
-    private PeriodStore periodStore;
+    private final PeriodStore periodStore;
 
     @Inject
     PeriodHelper(PeriodStore periodStore) {

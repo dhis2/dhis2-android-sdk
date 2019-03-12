@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RepositoryScopeHelper {
+public final class RepositoryScopeHelper {
 
     private RepositoryScopeHelper() {
     }

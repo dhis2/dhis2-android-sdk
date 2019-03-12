@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
@@ -47,24 +46,21 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     private final ObjectStore<M> store;
     protected final Collection<ChildrenAppender<M>> childrenAppenders;
-    protected final ChildrenSelection childrenSelection;
-    protected final List<RepositoryScopeItem> scope;
+    protected final RepositoryScope scope;
     protected final FilterConnectorFactory<R> cf;
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
                                             Collection<ChildrenAppender<M>> childrenAppenders,
-                                            ChildrenSelection childrenSelection,
-                                            List<RepositoryScopeItem> scope,
+                                            RepositoryScope scope,
                                             FilterConnectorFactory<R> cf) {
         this.store = store;
         this.childrenAppenders = childrenAppenders;
-        this.childrenSelection = childrenSelection;
         this.scope = scope;
         this.cf = cf;
     }
 
     private List<M> getWithoutChildren() {
-        if (scope.isEmpty()) {
+        if (scope.filters().isEmpty()) {
             return store.selectAll();
         } else {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
@@ -73,8 +69,8 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
-    public ReadOnlyObjectRepository<M> one() {
-        return new ReadOnlyOneObjectRepositoryImpl<>(store, childrenAppenders, childrenSelection, scope);
+    public ReadOnlyOneObjectRepositoryFinalImpl<M> one() {
+        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, scope);
     }
 
     private List<M> getWithAllChildren() {
@@ -83,7 +79,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     @Override
     public List<M> get() {
-        if (childrenSelection.areAllChildrenSelected) {
+        if (scope.children().areAllChildrenSelected) {
             return getWithAllChildren();
         } else {
             return getWithoutChildren();
@@ -91,6 +87,6 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     public R withAllChildren() {
-        return cf.repositoryFactory.updated(childrenSelection.selectAllChildren(), scope);
+        return cf.repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }
 }

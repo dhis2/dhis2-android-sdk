@@ -26,23 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public abstract class RepositoryScopeHelper {
-
-    private RepositoryScopeHelper() {
-    }
-
-    public static RepositoryScope withFilterItem(RepositoryScope scope, RepositoryScopeFilterItem item) {
-        List<RepositoryScopeFilterItem> copiedItems = new ArrayList<>(scope.filters());
-        copiedItems.add(item);
-        return scope.toBuilder().filters(copiedItems).build();
-    }
-
-    public static RepositoryScope withAllChildren(RepositoryScope scope) {
-        return scope.toBuilder().children(scope.children().selectAllChildren()).build();
-    }
+public interface ObjectRepositoryFactory<R extends ReadOnlyObjectRepository<?>> {
+    R updated(RepositoryScope updatedScope);
 }

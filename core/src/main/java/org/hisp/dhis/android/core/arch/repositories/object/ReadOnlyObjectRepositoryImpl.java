@@ -29,30 +29,48 @@ package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Collection;
 
-public abstract class ReadOnlyObjectRepositoryImpl<M extends Model>
+public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         implements ReadOnlyObjectRepository<M> {
 
     private final Collection<ChildrenAppender<M>> childrenAppenders;
-    private final ChildrenSelection childrenSelection;
+    final RepositoryScope scope;
+    private final ObjectRepositoryFactory<R> repositoryFactory;
 
     ReadOnlyObjectRepositoryImpl(Collection<ChildrenAppender<M>> childrenAppenders,
-                                 ChildrenSelection childrenSelection) {
+                                 RepositoryScope scope,
+                                 ObjectRepositoryFactory<R> repositoryFactory) {
         this.childrenAppenders = childrenAppenders;
-        this.childrenSelection = childrenSelection;
+        this.scope = scope;
+        this.repositoryFactory = repositoryFactory;
     }
 
+    private M getWithAllChildren() {
+        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders);
+    }
+
+    abstract M getWithoutChildren();
+
     @Override
-    public M getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObject(get(), childrenAppenders);
+    public final M get() {
+        if (scope.children().areAllChildrenSelected) {
+            return getWithAllChildren();
+        } else {
+            return getWithoutChildren();
+        }
     }
 
     @Override
     public boolean exists() {
-        return get() != null;
+        return getWithoutChildren() != null;
+    }
+
+    public R withAllChildren() {
+        return repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }
 }

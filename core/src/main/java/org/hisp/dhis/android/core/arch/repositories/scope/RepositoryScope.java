@@ -28,30 +28,42 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+
+import java.util.List;
+
 @AutoValue
-public abstract class RepositoryScopeItem {
+public abstract class RepositoryScope {
 
-    public abstract String key();
+    @NonNull
+    public abstract List<RepositoryScopeFilterItem> filters();
 
-    public abstract String operator();
+    @NonNull
+    public abstract ChildrenSelection children();
 
-    public abstract String value();
+    @Nullable
+    public abstract Integer limit();
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new AutoValue_RepositoryScopeItem.Builder();
+        return new AutoValue_RepositoryScope.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder key(String key);
+        public abstract Builder filters(List<RepositoryScopeFilterItem> filters);
 
-        public abstract Builder operator(String operator);
+        public abstract Builder children(ChildrenSelection children);
 
-        public abstract Builder value(String value);
+        public abstract Builder limit(Integer limit);
 
-        public abstract RepositoryScopeItem build();
+        public abstract RepositoryScope build();
     }
 }

@@ -132,7 +132,7 @@ public class ProgramIndicatorCollectionRepositoryMockIntegrationShould extends S
     @Test
     public void include_legend_sets_as_children() {
         ProgramIndicator programIndicators = d2.programModule().programIndicators
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(programIndicators.legendSets().size(), is(1));
         assertThat(programIndicators.legendSets().get(0).name(), is("Age 15y interval"));
     }

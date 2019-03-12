@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class RepositoryScopeItem {
+public abstract class RepositoryScopeFilterItem {
 
     public abstract String key();
 
@@ -40,7 +40,7 @@ public abstract class RepositoryScopeItem {
     public abstract String value();
 
     public static Builder builder() {
-        return new AutoValue_RepositoryScopeItem.Builder();
+        return new AutoValue_RepositoryScopeFilterItem.Builder();
     }
 
     @AutoValue.Builder
@@ -52,6 +52,6 @@ public abstract class RepositoryScopeItem {
 
         public abstract Builder value(String value);
 
-        public abstract RepositoryScopeItem build();
+        public abstract RepositoryScopeFilterItem build();
     }
 }

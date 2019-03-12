@@ -25,24 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo;
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
-public abstract class RepositoryScopeHelper {
+import javax.inject.Inject;
 
-    private RepositoryScopeHelper() {
-    }
+import dagger.Reusable;
 
-    public static RepositoryScope withFilterItem(RepositoryScope scope, RepositoryScopeFilterItem item) {
-        List<RepositoryScopeFilterItem> copiedItems = new ArrayList<>(scope.filters());
-        copiedItems.add(item);
-        return scope.toBuilder().filters(copiedItems).build();
-    }
+@Reusable
+public final class SystemInfoObjectRepository
+        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
 
-    public static RepositoryScope withAllChildren(RepositoryScope scope) {
-        return scope.toBuilder().children(scope.children().selectAllChildren()).build();
+    @Inject
+    SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
+                               Collection<ChildrenAppender<SystemInfo>> childrenAppenders,
+                               RepositoryScope scope,
+                               SystemInfoCall downloadCall) {
+        super(store, childrenAppenders, scope, downloadCall,
+                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, downloadCall));
     }
 }

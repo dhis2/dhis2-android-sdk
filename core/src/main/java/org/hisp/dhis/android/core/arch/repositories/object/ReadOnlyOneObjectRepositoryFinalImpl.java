@@ -27,39 +27,20 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Collection;
-import java.util.List;
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyObjectRepositoryImpl<M, R> {
+public class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
+        extends ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>> {
 
-    private final ObjectStore<M> store;
-    private final List<RepositoryScopeItem> scope;
-
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                           Collection<ChildrenAppender<M>> childrenAppenders,
-                                           ChildrenSelection childrenSelection,
-                                           List<RepositoryScopeItem> scope,
-                                           ObjectRepositoryFactory<R> repositoryFactory) {
-        super(childrenAppenders, childrenSelection, repositoryFactory);
-        this.store = store;
-        this.scope = scope;
-    }
-
-    public M getWithoutChildren() {
-        if (scope.isEmpty()) {
-            return store.selectFirst();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
-        }
+    public ReadOnlyOneObjectRepositoryFinalImpl(ObjectStore<M> store,
+                                                Collection<ChildrenAppender<M>> childrenAppenders,
+                                                RepositoryScope scope) {
+        super(store, childrenAppenders, scope,
+                s -> new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, s));
     }
 }

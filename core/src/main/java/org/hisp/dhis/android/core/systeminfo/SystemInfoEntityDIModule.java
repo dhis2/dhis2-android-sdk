@@ -31,8 +31,14 @@ package org.hisp.dhis.android.core.systeminfo;
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSet;
+
+import java.util.Collection;
+import java.util.Collections;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,5 +59,17 @@ public final class SystemInfoEntityDIModule implements ObjectWithoutUidEntityDIM
     @Reusable
     public SyncHandler<SystemInfo> handler(ObjectWithoutUidStore<SystemInfo> store) {
         return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository(SystemInfoObjectRepository impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    Collection<ChildrenAppender<SystemInfo>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

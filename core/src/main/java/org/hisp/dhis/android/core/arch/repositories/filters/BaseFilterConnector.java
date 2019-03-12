@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
@@ -42,36 +43,26 @@ import java.util.List;
 abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V> {
 
     private final CollectionRepositoryFactory<R> repositoryFactory;
-    private final ChildrenSelection childrenSelection;
-    private final List<RepositoryScopeItem> scope;
+    private final RepositoryScope scope;
     private final String key;
 
     BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        ChildrenSelection childrenSelection,
-                        List<RepositoryScopeItem> scope,
+                        RepositoryScope scope,
                         String key) {
         this.repositoryFactory = repositoryFactory;
-        this.childrenSelection = childrenSelection;
         this.scope = scope;
         this.key = key;
     }
 
     abstract String wrapValue(V value);
 
-    private List<RepositoryScopeItem> updatedWrappedScope(String operator, V value) {
-        List<RepositoryScopeItem> copiedScope = new ArrayList<>(scope);
-        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(wrapValue(value)).build());
-        return copiedScope;
-    }
-
-    private List<RepositoryScopeItem> updatedUnwrappedScope(String operator, String valueStr) {
-        List<RepositoryScopeItem> copiedScope = new ArrayList<>(scope);
-        copiedScope.add(RepositoryScopeItem.builder().key(key).operator(operator).value(valueStr).build());
-        return copiedScope;
+    private RepositoryScope updatedUnwrappedScope(String operator, String valueStr) {
+        return RepositoryScopeHelper.withFilterItem(scope,
+                RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build());
     }
 
     R newWithWrappedScope(String operator, V value) {
-        return repositoryFactory.updated(childrenSelection, updatedWrappedScope(operator, value));
+        return repositoryFactory.updated(updatedUnwrappedScope(operator, wrapValue(value)));
     }
 
     private String getCommaSeparatedValues(Collection<V> values) {
@@ -83,7 +74,7 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
     }
 
     private R newWithUnwrappedScope(String operator, String value) {
-        return repositoryFactory.updated(childrenSelection, updatedUnwrappedScope(operator, value));
+        return repositoryFactory.updated(updatedUnwrappedScope(operator, value));
 
     }
 

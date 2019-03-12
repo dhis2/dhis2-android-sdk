@@ -28,21 +28,19 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -61,12 +59,10 @@ public final class TrackedEntityInstanceCollectionRepository
     TrackedEntityInstanceCollectionRepository(
             final TrackedEntityInstanceStore store,
             final Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
-            final ChildrenSelection childrenSelection,
-            final List<RepositoryScopeItem> scope,
+            final RepositoryScope scope,
             final TrackedEntityInstancePostCall postCall) {
-        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                childrenSelection, (cs, s) -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders,
-                        cs, s, postCall)));
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, postCall)));
         this.postCall = postCall;
     }
 

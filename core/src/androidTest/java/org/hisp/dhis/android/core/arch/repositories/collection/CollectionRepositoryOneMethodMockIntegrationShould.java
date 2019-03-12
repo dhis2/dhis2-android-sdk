@@ -78,7 +78,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends SyncedDa
     @Test
     public void get_with_all_children_returns_object_children() {
         CategoryCombo combo = d2.categoryModule().categoryCombos
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(combo.uid(), is(BIRTH_UID));
         assertThat(combo.categories().size(), is(2));
         assertThat(combo.categoryOptionCombos().size(), is(1));

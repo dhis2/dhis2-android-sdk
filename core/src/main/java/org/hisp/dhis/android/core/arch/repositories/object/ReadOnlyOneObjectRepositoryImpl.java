@@ -29,31 +29,28 @@ package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Collection;
-import java.util.List;
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
+public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
+        extends ReadOnlyObjectRepositoryImpl<M, R> {
 
     private final ObjectStore<M> store;
-    private final List<RepositoryScopeItem> scope;
 
     public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                    ChildrenSelection childrenSelection,
-                                    List<RepositoryScopeItem> scope) {
-        super(childrenAppenders, childrenSelection);
+                                           Collection<ChildrenAppender<M>> childrenAppenders,
+                                           RepositoryScope scope,
+                                           ObjectRepositoryFactory<R> repositoryFactory) {
+        super(childrenAppenders, scope, repositoryFactory);
         this.store = store;
-        this.scope = scope;
     }
 
-    public M get() {
-        if (scope.isEmpty()) {
+    public M getWithoutChildren() {
+        if (scope.filters().isEmpty()) {
             return store.selectFirst();
         } else {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());

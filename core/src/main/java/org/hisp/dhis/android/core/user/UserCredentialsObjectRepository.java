@@ -28,9 +28,8 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 import java.util.Collection;
 
@@ -39,14 +38,14 @@ import javax.inject.Inject;
 import dagger.Reusable;
 
 @Reusable
-final class UserObjectRepository
-        extends ReadOnlyFirstObjectRepositoryImpl<User, UserObjectRepository> {
+public final class UserCredentialsObjectRepository
+        extends ReadOnlyOneObjectRepositoryImpl<UserCredentials, UserCredentialsObjectRepository> {
 
     @Inject
-    UserObjectRepository(IdentifiableObjectStore<User> store,
-                         Collection<ChildrenAppender<User>> childrenAppenders,
-                         ChildrenSelection childrenSelection) {
-        super(store, childrenAppenders, childrenSelection,
-                cs -> new UserObjectRepository(store, childrenAppenders, cs));
+    UserCredentialsObjectRepository(UserCredentialsStore store,
+                                    Collection<ChildrenAppender<UserCredentials>> childrenAppenders,
+                                    RepositoryScope scope) {
+        super(store, childrenAppenders, scope,
+                s -> new UserCredentialsObjectRepository(store, childrenAppenders, s));
     }
 }

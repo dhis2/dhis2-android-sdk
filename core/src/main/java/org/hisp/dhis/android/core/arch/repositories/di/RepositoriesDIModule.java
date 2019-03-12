@@ -29,10 +29,9 @@
 package org.hisp.dhis.android.core.arch.repositories.di;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 import java.util.Collections;
-import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
@@ -43,13 +42,11 @@ public final class RepositoriesDIModule {
 
     @Provides
     @Reusable
-    List<RepositoryScopeItem> emptyScope() {
-        return Collections.unmodifiableList(Collections.emptyList());
-    }
-
-    @Provides
-    @Reusable
-    ChildrenSelection childrenSelection() {
-        return ChildrenSelection.empty();
+    RepositoryScope emptyScope() {
+        return RepositoryScope.builder()
+                .children(ChildrenSelection.empty())
+                .filters(Collections.emptyList())
+                .limit(null)
+                .build();
     }
 }

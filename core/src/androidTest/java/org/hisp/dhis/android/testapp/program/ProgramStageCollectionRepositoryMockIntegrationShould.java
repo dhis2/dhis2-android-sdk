@@ -60,7 +60,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends Synce
         ProgramStage programStage =
                 d2.programModule().programStages
                         .one()
-                        .getWithAllChildren();
+                        .withAllChildren().get();
 
         assertThat(programStage.style().icon(), is("program-stage-icon"));
         assertThat(programStage.style().color(), is("#444"));
@@ -71,7 +71,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends Synce
         ProgramStage programStage =
                 d2.programModule().programStages
                         .one()
-                        .getWithAllChildren();
+                        .withAllChildren().get();
 
         assertThat(programStage.programStageDataElements().size(), is(3));
     }
@@ -81,7 +81,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends Synce
         ProgramStage programStage =
                 d2.programModule().programStages
                         .one()
-                        .getWithAllChildren();
+                        .withAllChildren().get();
 
         assertThat(programStage.programStageSections().size(), is(1));
     }

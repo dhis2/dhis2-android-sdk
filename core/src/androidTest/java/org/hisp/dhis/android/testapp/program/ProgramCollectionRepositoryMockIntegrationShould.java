@@ -272,7 +272,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_object_style_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }
@@ -280,7 +280,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_program_stages_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.programStages().size(), is(2));
         assertThat(program.programStages().get(0).name(), is("Antenatal care visit - Program rules demo"));
     }
@@ -288,7 +288,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_program_rule_variables_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.programRuleVariables().size(), is(2));
         assertThat(program.programRuleVariables().get(0).name(), is("hemoglobin"));
     }
@@ -296,7 +296,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_program_indicators_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.programIndicators().size(), is(4));
         assertThat(program.programIndicators().get(0).name(), is("Age at visit"));
     }
@@ -304,7 +304,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_program_rules_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.programRules().size(), is(3));
         assertThat(program.programRules().get(0).name(), is("Show error for high hemoglobin value"));
     }
@@ -312,7 +312,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_program_tracked_entity_attributes_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.programTrackedEntityAttributes().size(), is(1));
         assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
     }
@@ -320,7 +320,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_program_sections_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.programSections().size(), is(2));
         assertThat(program.programSections().get(0).name(), is("My Program Section"));
     }
@@ -328,21 +328,21 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_category_combo_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.categoryCombo().name(), is("Births"));
     }
 
     @Test
     public void include_related_program_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.relatedProgram().name(), is("Antenatal care visit"));
     }
 
     @Test
     public void include_tracked_entity_type_as_children() {
         Program program = d2.programModule().programs
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(program.trackedEntityType().name(), is("Person"));
     }
 }

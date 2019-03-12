@@ -30,18 +30,16 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -61,13 +59,12 @@ public final class DataSetCompleteRegistrationCollectionRepository
     DataSetCompleteRegistrationCollectionRepository(
             final DataSetCompleteRegistrationStore store,
             final Collection<ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
-            final ChildrenSelection childrenSelection,
-            final List<RepositoryScopeItem> scope,
+            final RepositoryScope scope,
             final SyncHandler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
-        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                childrenSelection, (cs, s) -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
-                        cs, s, handler, postCall)));
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
+                        s, handler, postCall)));
         this.handler = handler;
         this.postCall = postCall;
     }

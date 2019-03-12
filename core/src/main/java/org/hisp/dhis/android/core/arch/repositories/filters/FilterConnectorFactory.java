@@ -28,44 +28,38 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-
-import java.util.List;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
-    private final List<RepositoryScopeItem> scope;
-    private final ChildrenSelection childrenSelection;
+    private final RepositoryScope scope;
     public final CollectionRepositoryFactory<R> repositoryFactory;
 
-    public FilterConnectorFactory(List<RepositoryScopeItem> scope,
-                                  ChildrenSelection childrenSelection,
+    public FilterConnectorFactory(RepositoryScope scope,
                                   CollectionRepositoryFactory<R> repositoryFactory) {
         this.scope = scope;
-        this.childrenSelection = childrenSelection;
         this.repositoryFactory = repositoryFactory;
     }
 
     public StringFilterConnector<R> string(String key) {
-        return new StringFilterConnector<>(repositoryFactory, childrenSelection, scope, key);
+        return new StringFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public DateFilterConnector<R> date(String key) {
-        return new DateFilterConnector<>(repositoryFactory, childrenSelection, scope, key);
+        return new DateFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public BooleanFilterConnector<R> bool(String key) {
-        return new BooleanFilterConnector<>(repositoryFactory, childrenSelection, scope, key);
+        return new BooleanFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public IntegerFilterConnector<R> integer(String key) {
-        return new IntegerFilterConnector<>(repositoryFactory, childrenSelection, scope, key);
+        return new IntegerFilterConnector<>(repositoryFactory, scope, key);
     }
 
     public <E extends Enum<E>> EnumFilterConnector<R, E> enumC(String key) {
-        return new EnumFilterConnector<>(repositoryFactory, childrenSelection, scope, key);
+        return new EnumFilterConnector<>(repositoryFactory, scope, key);
     }
 }

@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -55,7 +52,7 @@ public final class AuthenticatedUserEntityDIModule implements ObjectWithoutUidSt
 
     @Provides
     @Reusable
-    ReadOnlyObjectRepository<AuthenticatedUser> repository(ObjectWithoutUidStore<AuthenticatedUser> store) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store);
+    Collection<ChildrenAppender<AuthenticatedUser>> childrenAppenders() {
+        return Collections.emptyList();
     }
 }

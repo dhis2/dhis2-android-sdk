@@ -28,21 +28,17 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-
-import java.util.List;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public final class BooleanFilterConnector<R extends ReadOnlyCollectionRepository<?>>
         extends BaseFilterConnector<R, Boolean> {
 
     BooleanFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                           ChildrenSelection childrenSelection,
-                           List<RepositoryScopeItem> scope,
+                           RepositoryScope scope,
                            String key) {
-        super(repositoryFactory, childrenSelection, scope, key);
+        super(repositoryFactory, scope, key);
     }
 
     public R isTrue() {

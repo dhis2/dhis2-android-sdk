@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.relationship;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.common.StoreWithState;
@@ -40,26 +40,29 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Collection;
 
-final class RelationshipObjectRepository extends ReadOnlyIdentifiableObjectRepositoryImpl<Relationship>
+final class RelationshipObjectRepository
+        extends ReadOnlyOneObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
         implements ReadWriteObjectRepository<Relationship> {
 
     private final IdentifiableObjectStore<Relationship> relationshipStore;
     private final RelationshipItemElementStoreSelector storeSelector;
+    private final String uid;
 
-
-    RelationshipObjectRepository(IdentifiableObjectStore<Relationship> relationshipStore,
-                                 String uid,
-                                 Collection<ChildrenAppender<Relationship>> childrenAppenders,
-                                 ChildrenSelection childrenSelection,
-                                 RelationshipItemElementStoreSelector storeSelector) {
-        super(relationshipStore, uid, childrenAppenders, childrenSelection);
-        this.relationshipStore = relationshipStore;
+    RelationshipObjectRepository(final IdentifiableObjectStore<Relationship> store,
+                                 final String uid,
+                                 final Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                 final RepositoryScope scope,
+                                 final RelationshipItemElementStoreSelector storeSelector) {
+        super(store, childrenAppenders, scope,
+                s -> new RelationshipObjectRepository(store, uid, childrenAppenders, s, storeSelector));
+        this.relationshipStore = store;
         this.storeSelector = storeSelector;
+        this.uid = uid;
     }
 
     @Override
     public void delete() throws D2Error {
-        Relationship relationship = getWithAllChildren();
+        Relationship relationship = get();
         if (relationship == null) {
             throw D2Error
                     .builder()

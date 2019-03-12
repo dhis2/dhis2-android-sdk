@@ -28,20 +28,18 @@
 package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -58,11 +56,10 @@ public final class EventCollectionRepository
     @Inject
     EventCollectionRepository(final EventStore store,
                               final Collection<ChildrenAppender<Event>> childrenAppenders,
-                              final ChildrenSelection childrenSelection,
-                              final List<RepositoryScopeItem> scope,
+                              final RepositoryScope scope,
                               final EventPostCall postCall) {
-        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                childrenSelection, (cs, s) -> new EventCollectionRepository(store, childrenAppenders, cs, s, postCall)));
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new EventCollectionRepository(store, childrenAppenders, s, postCall)));
         this.postCall = postCall;
     }
 

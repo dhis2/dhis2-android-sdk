@@ -28,14 +28,12 @@
 package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -49,9 +47,8 @@ public final class UserRoleCollectionRepository
     UserRoleCollectionRepository(
             final IdentifiableObjectStore<UserRole> store,
             final Collection<ChildrenAppender<UserRole>> childrenAppenders,
-            final ChildrenSelection childrenSelection,
-            final List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, childrenSelection, scope, new FilterConnectorFactory<>(scope,
-                childrenSelection, (cs, s) -> new UserRoleCollectionRepository(store, childrenAppenders, cs, s)));
+            final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new UserRoleCollectionRepository(store, childrenAppenders, s)));
     }
 }

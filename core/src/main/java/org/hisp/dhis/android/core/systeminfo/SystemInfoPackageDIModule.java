@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;

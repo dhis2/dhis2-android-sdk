@@ -25,32 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.concurrent.Callable;
 
-public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
+import javax.inject.Inject;
 
-    private final ObjectStore<M> store;
+import dagger.Reusable;
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store,
-                                             Collection<ChildrenAppender<M>> childrenAppenders,
-                                             ChildrenSelection childrenSelection) {
-        super(childrenAppenders, childrenSelection);
-        this.store = store;
-    }
+@Reusable
+final class SystemInfoObjectRepository
+        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
-        this(store, Collections.emptyList(), ChildrenSelection.empty());
-    }
-
-    public M get() {
-        return this.store.selectFirst();
+    @Inject
+    SystemInfoObjectRepository(ObjectStore<SystemInfo> store,
+                               Collection<ChildrenAppender<SystemInfo>> childrenAppenders,
+                               ChildrenSelection childrenSelection,
+                               Callable<Unit> downloadCall) {
+        super(store, childrenAppenders, childrenSelection, downloadCall,
+                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, downloadCall));
     }
 }

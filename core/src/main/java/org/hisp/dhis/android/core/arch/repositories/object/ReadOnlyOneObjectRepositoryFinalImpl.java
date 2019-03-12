@@ -27,30 +27,39 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.object;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Collection;
+import java.util.List;
 
-public class ReadOnlyIdentifiableObjectRepositoryImpl<M extends ObjectWithUidInterface & Model>
-        extends ReadOnlyObjectRepositoryImpl<M> {
+public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
+        extends ReadOnlyObjectRepositoryImpl<M, R> {
 
-    protected final IdentifiableObjectStore<M> store;
-    protected final String uid;
+    private final ObjectStore<M> store;
+    private final List<RepositoryScopeItem> scope;
 
-    public ReadOnlyIdentifiableObjectRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                    String uid,
-                                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                                    ChildrenSelection childrenSelection) {
-        super(childrenAppenders, childrenSelection);
+    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
+                                           Collection<ChildrenAppender<M>> childrenAppenders,
+                                           ChildrenSelection childrenSelection,
+                                           List<RepositoryScopeItem> scope,
+                                           ObjectRepositoryFactory<R> repositoryFactory) {
+        super(childrenAppenders, childrenSelection, repositoryFactory);
         this.store = store;
-        this.uid = uid;
+        this.scope = scope;
     }
 
-    public M get() {
-        return store.selectByUid(uid);
+    public M getWithoutChildren() {
+        if (scope.isEmpty()) {
+            return store.selectFirst();
+        } else {
+            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
+            return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
+        }
     }
 }

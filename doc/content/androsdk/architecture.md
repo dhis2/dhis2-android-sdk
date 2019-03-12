@@ -33,9 +33,9 @@ Feature packages contain at least:
 - `*TableInfo`: defines the table structure. It is used by the `*Store`.
 - `*Handler`: receives a list of Model objects and uses the `*Store` to persist them in the database.
 - `*Fields`: API fields.
-- `*Service`: Retrofit service defining the API calls. Methods in this file usually receive a list of fields, which is defined in `*Fields`. And they ususally return a List or a Payload of Model objects.
+- `*Service`: Retrofit service defining the API calls. Methods in this file usually receive a list of fields, which is defined in `*Fields`. And they usually return a List or a Payload of Model objects.
 - `*Call`/ `*CallFactory`: defines the call. It usually links the service and the handler.
 
 ## Local database
 
-SQLBrite library is used for migrations. The database has a version number defined in `DbOpenHelper`. In case the device has an outdated database, it will execute the pending migrations up to the current version number. Migrations are defined in `resources/assets`
+SQLBrite library is used for migrations. The database has a version number defined in `DbOpenHelper`. In case the device has an outdated database, it will execute the pending migrations up to the current version number. Migrations are defined in `assets/migrations`

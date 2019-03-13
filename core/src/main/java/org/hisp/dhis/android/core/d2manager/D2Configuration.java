@@ -28,9 +28,14 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
 
 import com.google.auto.value.AutoValue;
+
+import java.util.List;
+
+import io.reactivex.annotations.Nullable;
+import okhttp3.Interceptor;
 
 @AutoValue
 public abstract class D2Configuration {
@@ -38,13 +43,21 @@ public abstract class D2Configuration {
     @Nullable
     public abstract String databaseName();
 
-    public abstract Builder toBuilder();
+    public abstract String appName();
 
-    public static D2Configuration create(String databaseName) {
-        return builder()
-                .databaseName(databaseName)
-                .build();
-    }
+    public abstract String appVersion();
+
+    public abstract Integer readTimeoutInSeconds();
+
+    public abstract Integer connectTimeoutInSeconds();
+
+    public abstract Integer writeTimeoutInSeconds();
+
+    public abstract List<Interceptor> networkInterceptors();
+
+    public abstract Context context();
+
+    public abstract Builder toBuilder();
 
     public static Builder builder() {
         return new AutoValue_D2Configuration.Builder();
@@ -54,6 +67,20 @@ public abstract class D2Configuration {
     public abstract static class Builder {
 
         public abstract Builder databaseName(String databaseName);
+
+        public abstract Builder appName(String appName);
+
+        public abstract Builder appVersion(String appVersion);
+
+        public abstract Builder context(Context context);
+
+        public abstract Builder readTimeoutInSeconds(Integer readTimeoutInSeconds);
+
+        public abstract Builder connectTimeoutInSeconds(Integer connectTimeoutInSeconds);
+
+        public abstract Builder writeTimeoutInSeconds(Integer writeTimeoutInSeconds);
+
+        public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
 
         public abstract D2Configuration build();
     }

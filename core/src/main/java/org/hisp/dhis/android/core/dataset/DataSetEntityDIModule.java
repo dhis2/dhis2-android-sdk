@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -76,20 +76,25 @@ public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    Map<String, ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataSet> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataSetTableInfo.TABLE_INFO
                 );
 
-        return Arrays.asList(
-                objectStyleChildrenAppender,
-                SectionChildrenAppender.create(databaseAdapter),
-                DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-                DataInputPeriodChildrenAppender.create(databaseAdapter),
-                DataSetElementChildrenAppender.create(databaseAdapter),
-                DataSetIndicatorChildrenAppender.create(databaseAdapter)
-        );
+        Map<String, ChildrenAppender<DataSet>> childrenAppenders = new HashMap<>();
+        childrenAppenders.put(DataSetFields.STYLE, objectStyleChildrenAppender);
+        childrenAppenders.put(DataSetFields.SECTIONS, SectionChildrenAppender.create(databaseAdapter));
+        childrenAppenders.put(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS,
+                DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter));
+        childrenAppenders.put(DataSetFields.DATA_INPUT_PERIODS,
+                DataInputPeriodChildrenAppender.create(databaseAdapter));
+        childrenAppenders.put(DataSetFields.DATA_SET_ELEMENTS,
+                DataSetElementChildrenAppender.create(databaseAdapter));
+        childrenAppenders.put(DataSetFields.INDICATORS,
+                DataSetIndicatorChildrenAppender.create(databaseAdapter));
+
+        return childrenAppenders;
     }
 }

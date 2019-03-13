@@ -39,7 +39,7 @@ final class ProgramSectionFields {
     static final String PROGRAM = "program";
     static final String ATTRIBUTES = "programTrackedEntityAttribute";
     static final String SORT_ORDER = "sortOrder";
-    private static final String STYLE = "style";
+    static final String STYLE = "style";
     static final String FORM_NAME = "formName";
 
     private static FieldsHelper<ProgramSection> fh = new FieldsHelper<>();

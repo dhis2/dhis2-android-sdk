@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,7 +50,7 @@ public final class ForeignKeyViolationEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders() {
-        return Collections.emptyList();
+    Map<String, ChildrenAppender<ForeignKeyViolation>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

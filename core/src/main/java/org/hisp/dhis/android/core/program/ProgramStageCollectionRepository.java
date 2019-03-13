@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -52,7 +52,7 @@ public final class ProgramStageCollectionRepository
 
     @Inject
     ProgramStageCollectionRepository(final IdentifiableObjectStore<ProgramStage> store,
-                                     final Collection<ChildrenAppender<ProgramStage>> childrenAppenders,
+                                     final Map<String, ChildrenAppender<ProgramStage>> childrenAppenders,
                                      final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new ProgramStageCollectionRepository(store, childrenAppenders, s)));

@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -68,10 +68,12 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Arrays.asList(
-                CategoryCategoryComboChildrenAppender.create(databaseAdapter),
-                CategoryOptionComboChildrenAppender.create(databaseAdapter)
-        );
+    Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders = new HashMap<>();
+        childrenAppenders.put(CategoryComboFields.CATEGORIES,
+                CategoryCategoryComboChildrenAppender.create(databaseAdapter));
+        childrenAppenders.put(CategoryComboFields.CATEGORY_OPTION_COMBOS,
+                CategoryOptionComboChildrenAppender.create(databaseAdapter));
+        return childrenAppenders;
     }
 }

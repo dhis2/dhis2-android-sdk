@@ -39,6 +39,9 @@ final class RelationshipTypeFields {
     static final String FROM_CONSTRAINT = "fromConstraint";
     static final String TO_CONSTRAINT = "toConstraint";
 
+    // Used only for children appending, can't be used in query
+    static final String CONSTRAINTS = "constraints";
+
     private static final FieldsHelper<RelationshipType> fh = new FieldsHelper<>();
 
     static final Field<RelationshipType, String> lastUpdated = fh.lastUpdated();

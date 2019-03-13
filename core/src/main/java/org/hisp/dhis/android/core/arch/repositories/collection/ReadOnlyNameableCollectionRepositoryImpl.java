@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.NameableObject;
 
-import java.util.Collection;
+import java.util.Map;
 
 public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & NameableObject,
         R extends ReadOnlyCollectionRepository<M>>
@@ -45,7 +45,7 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
 
 
     public ReadOnlyNameableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
-                                                    final Collection<ChildrenAppender<M>> childrenAppenders,
+                                                    final Map<String, ChildrenAppender<M>> childrenAppenders,
                                                     final RepositoryScope scope,
                                                     final FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);

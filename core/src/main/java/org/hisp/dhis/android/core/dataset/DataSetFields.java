@@ -56,13 +56,13 @@ public final class DataSetFields {
     static final String DATA_ELEMENT_DECORATION = "dataElementDecoration";
     static final String RENDER_AS_TABS = "renderAsTabs";
     static final String RENDER_HORIZONTALLY = "renderHorizontally";
-    private static final String DATA_SET_ELEMENTS = "dataSetElements";
-    private static final String INDICATORS = "indicators";
-    private static final String SECTIONS = "sections";
-    private static final String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
-    private static final String DATA_INPUT_PERIODS = "dataInputPeriods";
+    static final String DATA_SET_ELEMENTS = "dataSetElements";
+    static final String INDICATORS = "indicators";
+    static final String SECTIONS = "sections";
+    static final String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
+    static final String DATA_INPUT_PERIODS = "dataInputPeriods";
     private static final String ACCESS = "access";
-    private static final String STYLE = "style";
+    static final String STYLE = "style";
 
     static final String ACCESS_DATA_WRITE = "accessDataWrite";
 

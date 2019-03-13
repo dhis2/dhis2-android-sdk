@@ -48,7 +48,7 @@ public final class ProgramIndicatorFields {
     static final String DECIMALS = "decimals";
     static final String AGGREGATION_TYPE = "aggregationType";
     static final String PROGRAM = "program";
-    private static final String LEGEND_SETS = "legendSets";
+    static final String LEGEND_SETS = "legendSets";
 
     private static final FieldsHelper<ProgramIndicator> fh = new FieldsHelper<>();
 

@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +57,8 @@ public final class UserCredentialsEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<UserCredentials>> childrenAppenders(UserRoleChildrenAppender userRoleChildrenAppender) {
-        return Collections.singletonList(userRoleChildrenAppender);
+    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders(
+            UserRoleChildrenAppender userRoleChildrenAppender) {
+        return Collections.singletonMap(UserCredentialsFields.USER_ROLES, userRoleChildrenAppender);
     }
 }

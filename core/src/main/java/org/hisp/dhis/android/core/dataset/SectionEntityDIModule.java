@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,10 +57,10 @@ public final class SectionEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Arrays.asList(
-                SectionGreyedFieldsChildrenAppender.create(databaseAdapter),
-                SectionDataElementChildrenAppender.create(databaseAdapter)
-        );
+    Map<String, ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        Map<String, ChildrenAppender<Section>> childrenAppenders = new HashMap<>();
+        childrenAppenders.put(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter));
+        childrenAppenders.put(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter));
+        return childrenAppenders;
     }
 }

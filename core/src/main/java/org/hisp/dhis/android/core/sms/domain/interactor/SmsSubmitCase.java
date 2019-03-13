@@ -44,7 +44,8 @@ public class SmsSubmitCase {
                 new EventConverter.EventData(event, values));
     }
 
-    public Observable<SmsRepository.SmsSendingState> submit(final Enrollment enrollmentModel,
+    public Observable<SmsRepository.SmsSendingState> submit(final Enrollment enrollment,
+                                                            final String trackedEntityType,
                                                             final Collection<TrackedEntityAttributeValue>
                                                                     attributes) {
         return Single.zip(
@@ -53,7 +54,7 @@ public class SmsSubmitCase {
                 Pair::create
         ).flatMapObservable(pair -> submit(
                 new EnrollmentConverter(pair.first),
-                new EnrollmentConverter.EnrollmentData(enrollmentModel, attributes, pair.second)
+                new EnrollmentConverter.EnrollmentData(enrollment, trackedEntityType, attributes, pair.second)
         ));
     }
 

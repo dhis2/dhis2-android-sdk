@@ -13,6 +13,7 @@ import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import io.reactivex.Single;
 
@@ -25,37 +26,39 @@ public class EnrollmentConverter extends Converter<EnrollmentData, Enrollment> {
         this.metadata = metadata;
     }
 
-    @SuppressLint("NewApi")
     @Override
-    public Single<String> format(@NonNull EnrollmentData enrollment) {
+    public Single<String> format(@NonNull EnrollmentData data) {
         return getSmsSubmissionWriter(metadata).map(smsSubmissionWriter -> {
             EnrollmentSMSSubmission subm = new EnrollmentSMSSubmission();
-            subm.setUserID(enrollment.user);
-            subm.setOrgUnit(enrollment.enrollmentModel.organisationUnit());
-            subm.setTrackerProgram(enrollment.enrollmentModel.program());
-            //TODO no type in model
-            subm.setTrackedEntityType(enrollment.enrollmentModel.trackedEntityInstance());
-            subm.setTrackedEntityInstance(enrollment.enrollmentModel.trackedEntityInstance());
-            subm.setEnrollment(enrollment.enrollmentModel.uid());
-            subm.setTimestamp(enrollment.enrollmentModel.lastUpdated());
+            subm.setUserID(data.user);
+            subm.setOrgUnit(data.enrollment.organisationUnit());
+            subm.setTrackerProgram(data.enrollment.program());
+            subm.setTrackedEntityType(data.trackedEntityType);
+            subm.setTrackedEntityInstance(data.enrollment.trackedEntityInstance());
+            subm.setEnrollment(data.enrollment.uid());
+            subm.setTimestamp(new Date());
             ArrayList<AttributeValue> values = new ArrayList<>();
-            for (TrackedEntityAttributeValue attr : enrollment.attributes) {
+            for (TrackedEntityAttributeValue attr : data.attributes) {
                 values.add(createAttributeValue(attr.trackedEntityAttribute(), attr.value()));
             }
             subm.setValues(values);
-            byte[] compressSubm = smsSubmissionWriter.compress(subm);
-            String encoded;
-            try {
-                encoded = Base64.encodeToString(compressSubm, Base64.DEFAULT);
-            } catch (Throwable t) {
-                encoded = null;
-                // will try with standard java
-            }
-            if (encoded == null) {
-                encoded = java.util.Base64.getEncoder().encodeToString(compressSubm);
-            }
-            return encoded;
+            return base64(smsSubmissionWriter.compress(subm));
         });
+    }
+
+    @SuppressLint("NewApi")
+    private String base64(byte[] bytes) {
+        String encoded;
+        try {
+            encoded = Base64.encodeToString(bytes, Base64.DEFAULT);
+        } catch (Throwable t) {
+            encoded = null;
+            // not android, so will try with pure java
+        }
+        if (encoded == null) {
+            encoded = java.util.Base64.getEncoder().encodeToString(bytes);
+        }
+        return encoded;
     }
 
     private AttributeValue createAttributeValue(String attribute, String value) {
@@ -69,21 +72,24 @@ public class EnrollmentConverter extends Converter<EnrollmentData, Enrollment> {
     }
 
     public static class EnrollmentData implements Converter.DataToConvert {
-        private final Enrollment enrollmentModel;
+        private final Enrollment enrollment;
         private final Collection<TrackedEntityAttributeValue> attributes;
         private final String user;
+        private final String trackedEntityType;
 
-        public EnrollmentData(Enrollment enrollmentModel,
+        public EnrollmentData(Enrollment enrollment,
+                              String trackedEntityType,
                               Collection<TrackedEntityAttributeValue> attributes,
                               String user) {
-            this.enrollmentModel = enrollmentModel;
+            this.enrollment = enrollment;
+            this.trackedEntityType = trackedEntityType;
             this.attributes = attributes;
             this.user = user;
         }
 
         @Override
         public BaseDataModel getDataModel() {
-            return enrollmentModel;
+            return enrollment;
         }
     }
 }

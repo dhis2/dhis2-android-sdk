@@ -27,7 +27,8 @@ public class QrCodeCase {
         return new EventConverter().format(new EventData(event, values));
     }
 
-    public Single<String> generateTextCode(final Enrollment enrollmentModel,
+    public Single<String> generateTextCode(final Enrollment enrollment,
+                                           final String trackedEntityType,
                                            final Collection<TrackedEntityAttributeValue> attributes) {
         return Single.zip(
                 localDbRepository.getMetadataIds(),
@@ -35,7 +36,7 @@ public class QrCodeCase {
                 Pair::create
         ).flatMap(pair ->
                 new EnrollmentConverter(pair.first).format(
-                        new EnrollmentData(enrollmentModel, attributes, pair.second)
+                        new EnrollmentData(enrollment, trackedEntityType, attributes, pair.second)
                 )
         );
     }

@@ -31,6 +31,7 @@ public class ConvertTest {
     public void backAndForth() throws Exception {
         Enrollment enrollment = getTestEnrollment();
         ArrayList<TrackedEntityAttributeValue> values = getTestValues();
+        String trackedEntityType = "nEenWmSyUEp";
 
         TestMetadata metadata = new TestMetadata();
         TestRepositories.TestLocalDbRepository testLocalDb =
@@ -38,7 +39,7 @@ public class ConvertTest {
 
         AtomicReference<String> result = new AtomicReference<>();
         new QrCodeCase(testLocalDb)
-                .generateTextCode(enrollment, values)
+                .generateTextCode(enrollment, trackedEntityType, values)
                 .test()
                 .assertNoErrors()
                 .assertValueCount(1)
@@ -55,7 +56,8 @@ public class ConvertTest {
         assertNotNull(subm);
         assertEquals(subm.getUserID(), TestRepositories.TestLocalDbRepository.userId);
         assertEquals(subm.getEnrollment(), enrollment.uid());
-        assertEquals(subm.getTrackedEntityType(), enrollment.trackedEntityInstance());
+        assertEquals(subm.getTrackedEntityInstance(), enrollment.trackedEntityInstance());
+        assertEquals(subm.getTrackedEntityType(), trackedEntityType);
         assertEquals(subm.getOrgUnit(), enrollment.organisationUnit());
         assertEquals(subm.getTrackerProgram(), enrollment.program());
         for (AttributeValue item : subm.getValues()) {

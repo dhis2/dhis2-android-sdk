@@ -56,7 +56,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_combos_with_category_option_combos() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.getWithAllChildren();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().get();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categoryOptionCombos() == null, is(false));
@@ -65,7 +65,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_combos_with_categories() {
-        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.getWithAllChildren();
+        List<CategoryCombo> combos = d2.categoryModule().categoryCombos.withAllChildren().get();
         assertThat(combos.size(), is(2));
         for (CategoryCombo combo : combos) {
             assertThat(combo.categories() == null, is(false));
@@ -84,7 +84,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_combo_by_uid_with_category_option_combos() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").withAllChildren().get();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
@@ -102,13 +102,13 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void dont_fail_when_asking_for_combos_with_children_when_not_in_database() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").getWithAllChildren();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("nonExistentId").withAllChildren().get();
         assertThat(combo == null, is(true));
     }
 
     @Test
     public void allow_access_to_combo_by_uid_with_sorted_categories() {
-        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").getWithAllChildren();
+        CategoryCombo combo = d2.categoryModule().categoryCombos.uid("m2jTvAj5kkm").withAllChildren().get();
         assertThat(combo.uid(), is("m2jTvAj5kkm"));
         assertThat(combo.code(), is("BIRTHS"));
         assertThat(combo.name(), is("Births"));
@@ -142,7 +142,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_categories_with_category_options() {
-        List<Category> categories = d2.categoryModule().categories.getWithAllChildren();
+        List<Category> categories = d2.categoryModule().categories.withAllChildren().get();
         assertThat(categories.size(), is(4));
         for (Category category : categories) {
             assertThat(category.categoryOptions() == null, is(false));
@@ -151,7 +151,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_category_by_uid_with_sorted_category_options() {
-        Category category = d2.categoryModule().categories.uid("KfdsGBcoiCa").getWithAllChildren();
+        Category category = d2.categoryModule().categories.uid("KfdsGBcoiCa").withAllChildren().get();
         assertThat(category.uid(), is("KfdsGBcoiCa"));
         assertThat(category.name(), is("Births attended by"));
         assertThat(category.dataDimensionType(), is("DISAGGREGATION"));
@@ -181,7 +181,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_category_option_combos_with_category_options() {
-        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.getWithAllChildren();
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.withAllChildren().get();
         assertThat(categoryOptionCombos.size(), is(3));
         for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
             assertThat(categoryOptionCombo.categoryOptions() == null, is(false));
@@ -197,7 +197,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
 
     @Test
     public void allow_access_to_category_option_combo_by_uid_with_category_options() {
-        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").getWithAllChildren();
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos.uid("Gmbgme7z9BF").withAllChildren().get();
         assertThat(categoryOptionCombo.uid(), is("Gmbgme7z9BF"));
         assertThat(categoryOptionCombo.name(), is("Trained TBA, At PHU"));
 

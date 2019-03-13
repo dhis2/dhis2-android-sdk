@@ -239,7 +239,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends SyncedDataba
     @Test
     public void include_tracked_entity_data_values_as_children() {
         Event event = d2.eventModule().events
-                .uid("single1").getWithAllChildren();
+                .uid("single1").withAllChildren().get();
         assertThat(event.trackedEntityDataValues().size(), is(6));
     }
 }

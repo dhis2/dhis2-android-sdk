@@ -26,22 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
+package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
-        extends BaseFilterConnector<R, E> {
-
-    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
-    }
-
-    String wrapValue(E value) {
-        return "'" + value.name() + "'";
-    }
+public interface ObjectRepositoryFactory<R extends ReadOnlyObjectRepository<?>> {
+    R updated(RepositoryScope updatedScope);
 }

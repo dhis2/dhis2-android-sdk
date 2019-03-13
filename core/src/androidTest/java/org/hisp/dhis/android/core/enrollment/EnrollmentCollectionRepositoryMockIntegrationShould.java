@@ -64,9 +64,9 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends SyncedD
     @Test
     public void include_notes_as_children() {
         Enrollment enrollment1 = d2.enrollmentModule().enrollments
-                .uid("enroll1").getWithAllChildren();
+                .uid("enroll1").withAllChildren().get();
         Enrollment enrollment2 = d2.enrollmentModule().enrollments
-                .uid("enroll2").getWithAllChildren();
+                .uid("enroll2").withAllChildren().get();
         assertThat(enrollment1.notes().size(), is(2));
         assertThat(enrollment2.notes().size(), is(2));
     }

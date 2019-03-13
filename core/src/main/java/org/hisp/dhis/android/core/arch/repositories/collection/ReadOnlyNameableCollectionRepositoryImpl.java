@@ -30,14 +30,13 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.NameableObject;
 
 import java.util.Collection;
-import java.util.List;
 
 public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & NameableObject,
         R extends ReadOnlyCollectionRepository<M>>
@@ -47,8 +46,8 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
 
     public ReadOnlyNameableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
                                                     final Collection<ChildrenAppender<M>> childrenAppenders,
-                                                    List<RepositoryScopeItem> scope,
-                                                    FilterConnectorFactory<R> cf) {
+                                                    final RepositoryScope scope,
+                                                    final FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
     }
 

@@ -26,32 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+package org.hisp.dhis.android.core.arch.repositories.di;
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-@AutoValue
-public abstract class RepositoryScopeItem {
+import java.util.Collections;
 
-    public abstract String key();
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-    public abstract String operator();
+@Module()
+public final class RepositoriesDIModule {
 
-    public abstract String value();
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeItem.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder key(String key);
-
-        public abstract Builder operator(String operator);
-
-        public abstract Builder value(String value);
-
-        public abstract RepositoryScopeItem build();
+    @Provides
+    @Reusable
+    RepositoryScope emptyScope() {
+        return RepositoryScope.builder()
+                .children(ChildrenSelection.empty())
+                .filters(Collections.emptyList())
+                .limit(null)
+                .build();
     }
 }

@@ -30,16 +30,14 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-
-import java.util.List;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
-    private final List<RepositoryScopeItem> scope;
-    private final CollectionRepositoryFactory<R> repositoryFactory;
+    private final RepositoryScope scope;
+    public final CollectionRepositoryFactory<R> repositoryFactory;
 
-    public FilterConnectorFactory(List<RepositoryScopeItem> scope,
+    public FilterConnectorFactory(RepositoryScope scope,
                                   CollectionRepositoryFactory<R> repositoryFactory) {
         this.scope = scope;
         this.repositoryFactory = repositoryFactory;

@@ -25,23 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user;
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
-
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
-        extends BaseFilterConnector<R, E> {
+import java.util.Collection;
 
-    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
-    }
+import javax.inject.Inject;
 
-    String wrapValue(E value) {
-        return "'" + value.name() + "'";
+import dagger.Reusable;
+
+@Reusable
+public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository> {
+
+    @Inject
+    UserObjectRepository(IdentifiableObjectStore<User> store,
+                         Collection<ChildrenAppender<User>> childrenAppenders,
+                         RepositoryScope scope) {
+        super(store, childrenAppenders, scope,
+                s -> new UserObjectRepository(store, childrenAppenders, s));
     }
 }

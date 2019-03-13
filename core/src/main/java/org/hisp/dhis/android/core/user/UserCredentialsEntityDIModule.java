@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import dagger.Module;
@@ -57,11 +57,7 @@ public final class UserCredentialsEntityDIModule {
 
     @Provides
     @Reusable
-    ReadOnlyObjectRepository<UserCredentials> repository(UserCredentialsStore store,
-                                                         UserRoleChildrenAppender userRoleChildrenAppender) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(
-                store,
-                Collections.singletonList(userRoleChildrenAppender)
-        );
+    Collection<ChildrenAppender<UserCredentials>> childrenAppenders(UserRoleChildrenAppender userRoleChildrenAppender) {
+        return Collections.singletonList(userRoleChildrenAppender);
     }
 }

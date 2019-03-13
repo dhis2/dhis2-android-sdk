@@ -25,22 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user;
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module()
-public final class RepositoryScopeDIModule {
+@Reusable
+public final class UserCredentialsObjectRepository
+        extends ReadOnlyOneObjectRepositoryImpl<UserCredentials, UserCredentialsObjectRepository> {
 
-    @Provides
-    @Reusable
-    List<RepositoryScopeItem> emptyScope() {
-        return Collections.unmodifiableList(Collections.emptyList());
+    @Inject
+    UserCredentialsObjectRepository(UserCredentialsStore store,
+                                    Collection<ChildrenAppender<UserCredentials>> childrenAppenders,
+                                    RepositoryScope scope) {
+        super(store, childrenAppenders, scope,
+                s -> new UserCredentialsObjectRepository(store, childrenAppenders, s));
     }
 }

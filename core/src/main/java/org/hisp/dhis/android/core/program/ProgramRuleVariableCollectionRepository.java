@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnect
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,9 +49,9 @@ public final class ProgramRuleVariableCollectionRepository extends ReadOnlyIdent
     @Inject
     ProgramRuleVariableCollectionRepository(final IdentifiableObjectStore<ProgramRuleVariable> store,
                                             final Collection<ChildrenAppender<ProgramRuleVariable>> childrenAppenders,
-                                            List<RepositoryScopeItem> scope) {
+                                            final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramRuleVariableCollectionRepository(store, childrenAppenders, s)));
     }
 
 

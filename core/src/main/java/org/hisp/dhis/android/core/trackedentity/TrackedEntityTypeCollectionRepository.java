@@ -25,59 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection;
+package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
-import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.Model;
 
 import java.util.Collection;
 
-public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & IdentifiableObject,
-        R extends ReadOnlyCollectionRepository<M>>
-        extends ReadOnlyWithUidCollectionRepositoryImpl<M, R>
-        implements ReadOnlyIdentifiableCollectionRepository<M, R> {
+import javax.inject.Inject;
 
-    public ReadOnlyIdentifiableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
-                                                        final Collection<ChildrenAppender<M>> childrenAppenders,
-                                                        final RepositoryScope scope,
-                                                        final FilterConnectorFactory<R> cf) {
-        super(store, childrenAppenders, scope, cf);
-    }
+import dagger.Reusable;
 
-    @Override
-    public StringFilterConnector<R> byUid() {
-        return cf.string(Columns.UID);
-    }
+@Reusable
+public final class TrackedEntityTypeCollectionRepository
+        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypeCollectionRepository> {
 
-    @Override
-    public StringFilterConnector<R> byCode() {
-        return cf.string(Columns.CODE);
-    }
-
-    @Override
-    public StringFilterConnector<R> byName() {
-        return cf.string(Columns.NAME);
-    }
-
-    @Override
-    public StringFilterConnector<R> byDisplayName() {
-        return cf.string(Columns.DISPLAY_NAME);
-    }
-
-    @Override
-    public DateFilterConnector<R> byCreated() {
-        return cf.date(Columns.CREATED);
-    }
-
-    @Override
-    public DateFilterConnector<R> byLastUpdated() {
-        return cf.date(Columns.LAST_UPDATED);
+    @Inject
+    TrackedEntityTypeCollectionRepository(final IdentifiableObjectStore<TrackedEntityType> store,
+                                          final Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders,
+                                          final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new TrackedEntityTypeCollectionRepository(store, childrenAppenders, s)));
     }
 }

@@ -26,22 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
-        extends BaseFilterConnector<R, E> {
+import com.google.auto.value.AutoValue;
 
-    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+
+import java.util.List;
+
+@AutoValue
+public abstract class RepositoryScope {
+
+    @NonNull
+    public abstract List<RepositoryScopeFilterItem> filters();
+
+    @NonNull
+    public abstract ChildrenSelection children();
+
+    @Nullable
+    public abstract Integer limit();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_RepositoryScope.Builder();
     }
 
-    String wrapValue(E value) {
-        return "'" + value.name() + "'";
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder filters(List<RepositoryScopeFilterItem> filters);
+
+        public abstract Builder children(ChildrenSelection children);
+
+        public abstract Builder limit(Integer limit);
+
+        public abstract RepositoryScope build();
     }
 }

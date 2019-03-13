@@ -35,12 +35,11 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUplo
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -60,12 +59,12 @@ public final class DataSetCompleteRegistrationCollectionRepository
     DataSetCompleteRegistrationCollectionRepository(
             final DataSetCompleteRegistrationStore store,
             final Collection<ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
-            final List<RepositoryScopeItem> scope,
+            final RepositoryScope scope,
             final SyncHandler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
-                        updatedScope, handler, postCall)));
+                s -> new DataSetCompleteRegistrationCollectionRepository(store, childrenAppenders,
+                        s, handler, postCall)));
         this.handler = handler;
         this.postCall = postCall;
     }

@@ -25,30 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import java.util.Collection;
-import java.util.List;
+import com.google.auto.value.AutoValue;
 
-import javax.inject.Inject;
+@AutoValue
+public abstract class RepositoryScopeFilterItem {
 
-import dagger.Reusable;
+    public abstract String key();
 
-@Reusable
-public final class TrackedEntityTypCollectionRepository
-        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypCollectionRepository> {
+    public abstract String operator();
 
-    @Inject
-    TrackedEntityTypCollectionRepository(final IdentifiableObjectStore<TrackedEntityType> store,
-                                         final Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders,
-                                         List<RepositoryScopeItem> scope) {
-        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new TrackedEntityTypCollectionRepository(store, childrenAppenders, updatedScope)));
+    public abstract String value();
+
+    public static Builder builder() {
+        return new AutoValue_RepositoryScopeFilterItem.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder key(String key);
+
+        public abstract Builder operator(String operator);
+
+        public abstract Builder value(String value);
+
+        public abstract RepositoryScopeFilterItem build();
     }
 }

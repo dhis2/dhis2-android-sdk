@@ -25,23 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.children;
 
-package org.hisp.dhis.android.core.arch.repositories.filters;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+public final class ChildrenSelection {
 
-public final class EnumFilterConnector<R extends ReadOnlyCollectionRepository<?>, E extends Enum<E>>
-        extends BaseFilterConnector<R, E> {
+    public final Set<String> children;
+    public final boolean areAllChildrenSelected;
 
-    EnumFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        RepositoryScope scope,
-                        String key) {
-        super(repositoryFactory, scope, key);
+    public ChildrenSelection(Set<String> children, boolean areAllChildrenSelected) {
+        this.children = Collections.unmodifiableSet(children);
+        this.areAllChildrenSelected = areAllChildrenSelected;
     }
 
-    String wrapValue(E value) {
-        return "'" + value.name() + "'";
+    public ChildrenSelection withChild(String child) {
+        Set<String> newSet = new HashSet<>(children);
+        newSet.add(child);
+        return new ChildrenSelection(newSet, areAllChildrenSelected);
+    }
+
+    public ChildrenSelection selectAllChildren() {
+        return new ChildrenSelection(children, true);
+    }
+
+    public static ChildrenSelection empty() {
+        return new ChildrenSelection(Collections.emptySet(), false);
     }
 }

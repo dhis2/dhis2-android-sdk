@@ -28,10 +28,6 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
@@ -39,13 +35,6 @@ import retrofit2.Retrofit;
 
 @Module(includes = {SystemInfoEntityDIModule.class})
 public final class SystemInfoPackageDIModule {
-
-    @Provides
-    @Reusable
-    ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository(
-            ObjectWithoutUidStore<SystemInfo> store, SystemInfoCall systemInfoCall) {
-        return new ReadOnlyFirstObjectWithDownloadRepositoryImpl<>(store, systemInfoCall);
-    }
 
     @Provides
     @Reusable

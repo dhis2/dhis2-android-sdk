@@ -57,7 +57,7 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Syn
         ProgramSection programSection =
                 d2.programModule().programSections
                         .one()
-                        .getWithAllChildren();
+                        .withAllChildren().get();
 
         assertThat(programSection.style().icon(), is("section-icon"));
         assertThat(programSection.style().color(), is("#555"));

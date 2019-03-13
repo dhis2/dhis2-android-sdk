@@ -67,7 +67,7 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Sync
     public void find_objects_with_children_with_equal_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().eq("Births");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.getWithAllChildren();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.withAllChildren().get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
         assertThat(combos.get(0).categories().isEmpty(), is(false));

@@ -34,14 +34,13 @@ import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,9 +53,9 @@ public final class ProgramStageCollectionRepository
     @Inject
     ProgramStageCollectionRepository(final IdentifiableObjectStore<ProgramStage> store,
                                      final Collection<ChildrenAppender<ProgramStage>> childrenAppenders,
-                                     List<RepositoryScopeItem> scope) {
+                                     final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramStageCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramStageCollectionRepository(store, childrenAppenders, s)));
     }
 
 

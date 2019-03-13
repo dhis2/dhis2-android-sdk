@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadWriteObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.State;
@@ -71,12 +71,12 @@ public final class RelationshipCollectionRepository
     @Inject
     RelationshipCollectionRepository(final IdentifiableObjectStore<Relationship> store,
                                      final Collection<ChildrenAppender<Relationship>> childrenAppenders,
-                                     List<RepositoryScopeItem> scope,
+                                     final RepositoryScope scope,
                                      final RelationshipHandler relationshipHandler,
                                      final RelationshipItemStore relationshipItemStore,
                                      final RelationshipItemElementStoreSelector storeSelector) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new RelationshipCollectionRepository(store, childrenAppenders, updatedScope,
+                s -> new RelationshipCollectionRepository(store, childrenAppenders, s,
                         relationshipHandler, relationshipItemStore, storeSelector)));
         this.store = store;
         this.relationshipHandler = relationshipHandler;
@@ -116,7 +116,7 @@ public final class RelationshipCollectionRepository
 
     @Override
     public ReadWriteObjectRepository<Relationship> uid(String uid) {
-        return new RelationshipObjectRepository(store, uid, childrenAppenders, storeSelector);
+        return new RelationshipObjectRepository(store, uid, childrenAppenders, scope, storeSelector);
     }
 
     private boolean isUpdatableState(State state) {

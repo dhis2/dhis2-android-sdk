@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnect
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -63,11 +62,11 @@ public final class DataValueCollectionRepository
     @Inject
     DataValueCollectionRepository(final DataValueStore dataValueStore,
                                   final Collection<ChildrenAppender<DataValue>> childrenAppenders,
-                                  final List<RepositoryScopeItem> scope,
+                                  final RepositoryScope scope,
                                   final SyncHandler<DataValue> dataValueHandler,
                                   final DataValuePostCall postCall) {
         super(dataValueStore, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, updatedScope,
+                s -> new DataValueCollectionRepository(dataValueStore, childrenAppenders, s,
                         dataValueHandler, postCall)));
         this.dataValueHandler = dataValueHandler;
         this.dataValueStore = dataValueStore;

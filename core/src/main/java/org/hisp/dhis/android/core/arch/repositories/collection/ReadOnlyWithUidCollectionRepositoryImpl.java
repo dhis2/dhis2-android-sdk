@@ -29,15 +29,16 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyIdentifiableObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.Collection;
-import java.util.List;
 
 public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface,
         R extends ReadOnlyCollectionRepository<M>>
@@ -48,14 +49,20 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWit
 
     public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
                                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                                   List<RepositoryScopeItem> scope,
+                                                   RepositoryScope scope,
                                                    FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
         this.store = store;
     }
 
     @Override
-    public ReadOnlyObjectRepository<M> uid(String uid) {
-        return new ReadOnlyIdentifiableObjectRepositoryImpl<>(store, uid, childrenAppenders);
+    public ReadOnlyOneObjectRepositoryFinalImpl<M> uid(String uid) {
+        RepositoryScopeFilterItem filterItem = RepositoryScopeFilterItem.builder()
+                .key(BaseIdentifiableObjectModel.Columns.UID)
+                .operator("=")
+                .value("'" + uid + "'")
+                .build();
+        RepositoryScope updatedScope = RepositoryScopeHelper.withFilterItem(scope, filterItem);
+        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, updatedScope);
     }
 }

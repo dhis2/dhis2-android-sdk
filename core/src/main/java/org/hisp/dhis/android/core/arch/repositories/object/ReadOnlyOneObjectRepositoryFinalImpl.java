@@ -28,26 +28,19 @@
 package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.Collection;
-import java.util.Collections;
 
-public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
+public class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
+        extends ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>> {
 
-    private final ObjectStore<M> store;
-
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(childrenAppenders);
-        this.store = store;
-    }
-
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
-        this(store, Collections.emptyList());
-    }
-
-    public M get() {
-        return this.store.selectFirst();
+    public ReadOnlyOneObjectRepositoryFinalImpl(ObjectStore<M> store,
+                                                Collection<ChildrenAppender<M>> childrenAppenders,
+                                                RepositoryScope scope) {
+        super(store, childrenAppenders, scope,
+                s -> new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, s));
     }
 }

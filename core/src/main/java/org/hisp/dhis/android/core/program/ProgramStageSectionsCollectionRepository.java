@@ -32,11 +32,10 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifia
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -49,9 +48,9 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
     @Inject
     ProgramStageSectionsCollectionRepository(final IdentifiableObjectStore<ProgramStageSection> store,
                                              final Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders,
-                                             List<RepositoryScopeItem> scope) {
+                                             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, s)));
     }
 
 

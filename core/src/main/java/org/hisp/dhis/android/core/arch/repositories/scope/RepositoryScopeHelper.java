@@ -25,30 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ReadOnlyIdentifiableObjectRepositoryImpl<M extends ObjectWithUidInterface & Model>
-        extends ReadOnlyObjectRepositoryImpl<M> {
+public final class RepositoryScopeHelper {
 
-    protected final IdentifiableObjectStore<M> store;
-    protected final String uid;
-
-    public ReadOnlyIdentifiableObjectRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                    String uid,
-                                                    Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(childrenAppenders);
-        this.store = store;
-        this.uid = uid;
+    private RepositoryScopeHelper() {
     }
 
-    public M get() {
-        return store.selectByUid(uid);
+    public static RepositoryScope withFilterItem(RepositoryScope scope, RepositoryScopeFilterItem item) {
+        List<RepositoryScopeFilterItem> copiedItems = new ArrayList<>(scope.filters());
+        copiedItems.add(item);
+        return scope.toBuilder().filters(copiedItems).build();
+    }
+
+    public static RepositoryScope withAllChildren(RepositoryScope scope) {
+        return scope.toBuilder().children(scope.children().selectAllChildren()).build();
     }
 }

@@ -30,11 +30,10 @@ package org.hisp.dhis.android.core.relationship;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,8 +46,8 @@ public final class RelationshipTypeCollectionRepository
     @Inject
     RelationshipTypeCollectionRepository(final IdentifiableObjectStore<RelationshipType> store,
                                          final Collection<ChildrenAppender<RelationshipType>> childrenAppenders,
-                                         List<RepositoryScopeItem> scope) {
+                                         final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new RelationshipTypeCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));
     }
 }

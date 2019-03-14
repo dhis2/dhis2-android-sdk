@@ -68,6 +68,7 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<CategoryCombo>>() {{
             put(CategoryComboFields.CATEGORIES, CategoryCategoryComboChildrenAppender.create(databaseAdapter));

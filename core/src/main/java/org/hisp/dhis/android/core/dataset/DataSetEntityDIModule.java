@@ -76,6 +76,7 @@ public final class DataSetEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataSet> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(

@@ -86,6 +86,7 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<ProgramStage> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(

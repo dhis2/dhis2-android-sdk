@@ -61,6 +61,7 @@ public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreP
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<TrackedEntityType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<TrackedEntityType> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(

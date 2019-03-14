@@ -61,6 +61,7 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Program>> childrenAppenders(
             DatabaseAdapter databaseAdapter,
             ProgramCategoryComboChildrenAppender categoryComboChildrenAppender,

@@ -60,6 +60,7 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<User>> childrenAppenders(
             DatabaseAdapter databaseAdapter,
             UserCredentialsChildrenAppender userCredentialsChildrenAppender) {

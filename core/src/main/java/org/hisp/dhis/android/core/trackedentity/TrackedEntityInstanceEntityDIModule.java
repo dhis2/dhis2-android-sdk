@@ -76,6 +76,7 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<TrackedEntityInstance>>() {{
             put(TrackedEntityInstanceFields.ENROLLMENTS, EnrollmentChildrenAppender.create(databaseAdapter));

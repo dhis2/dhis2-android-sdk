@@ -59,6 +59,7 @@ public final class ProgramSectionEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<ProgramSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<ProgramSection> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(

@@ -57,6 +57,7 @@ public final class ProgramStageSectionEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<ProgramStageSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<ProgramStageSection>>() {{
             put(ProgramStageSectionFields.PROGRAM_INDICATORS,

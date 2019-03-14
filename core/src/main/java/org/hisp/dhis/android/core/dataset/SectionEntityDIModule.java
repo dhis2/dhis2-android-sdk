@@ -57,6 +57,7 @@ public final class SectionEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<Section>>() {{
             put(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter));

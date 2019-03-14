@@ -34,13 +34,11 @@ import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-import io.reactivex.annotations.Nullable;
 import okhttp3.Interceptor;
 
 @AutoValue
 public abstract class D2Configuration {
 
-    @Nullable
     public abstract String databaseName();
 
     public abstract String appName();

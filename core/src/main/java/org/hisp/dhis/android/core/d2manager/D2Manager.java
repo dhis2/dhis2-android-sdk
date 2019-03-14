@@ -66,7 +66,7 @@ public final class D2Manager {
 
     private D2 d2;
     private final D2Configuration d2Configuration;
-    private final DatabaseAdapter databaseAdapter;
+    final DatabaseAdapter databaseAdapter;
 
     D2Manager(@Nullable D2Configuration d2Configuration) {
         this.d2Configuration = d2Configuration;

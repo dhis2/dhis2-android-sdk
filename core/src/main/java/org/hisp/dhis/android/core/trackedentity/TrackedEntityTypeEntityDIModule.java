@@ -68,10 +68,10 @@ public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreP
                         TrackedEntityTypeTableInfo.TABLE_INFO
                 );
 
-        Map<String, ChildrenAppender<TrackedEntityType>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(TrackedEntityTypeFields.STYLE, objectStyleChildrenAppender);
-        childrenAppenders.put(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES,
-                TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter));
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<TrackedEntityType>>() {{
+            put(TrackedEntityTypeFields.STYLE, objectStyleChildrenAppender);
+            put(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES,
+                    TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)); 
+        }};
     }
 }

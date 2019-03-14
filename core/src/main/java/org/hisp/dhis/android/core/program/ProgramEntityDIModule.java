@@ -73,22 +73,19 @@ public final class ProgramEntityDIModule {
                         ProgramTableInfo.TABLE_INFO
                 );
 
-        Map<String, ChildrenAppender<Program>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(ProgramFields.STYLE, objectStyleChildrenAppender);
-        childrenAppenders.put(ProgramFields.PROGRAM_STAGES, ProgramStageChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramFields.PROGRAM_RULE_VARIABLES,
-                ProgramRuleVariableChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramFields.PROGRAM_INDICATORS,
-                ProgramIndicatorChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramFields.PROGRAM_RULES, ProgramRuleChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
-                ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramFields.PROGRAM_SECTIONS, ProgramSectionChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramFields.CATEGORY_COMBO, categoryComboChildrenAppender);
-        childrenAppenders.put(ProgramFields.RELATED_PROGRAM, relatedProgramChildrenAppender);
-        childrenAppenders.put(ProgramFields.TRACKED_ENTITY_TYPE, trackedEntityTypeChildrenAppender);
-
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<Program>>() {{
+            put(ProgramFields.STYLE, objectStyleChildrenAppender);
+            put(ProgramFields.PROGRAM_STAGES, ProgramStageChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_RULE_VARIABLES, ProgramRuleVariableChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_INDICATORS, ProgramIndicatorChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_RULES, ProgramRuleChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
+                    ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_SECTIONS, ProgramSectionChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.CATEGORY_COMBO, categoryComboChildrenAppender);
+            put(ProgramFields.RELATED_PROGRAM, relatedProgramChildrenAppender);
+            put(ProgramFields.TRACKED_ENTITY_TYPE, trackedEntityTypeChildrenAppender);
+        }};
     }
 
     @Provides

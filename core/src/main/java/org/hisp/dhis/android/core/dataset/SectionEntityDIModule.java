@@ -58,9 +58,9 @@ public final class SectionEntityDIModule {
     @Provides
     @Reusable
     Map<String, ChildrenAppender<Section>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        Map<String, ChildrenAppender<Section>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter));
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<Section>>() {{
+            put(SectionFields.GREYED_FIELDS, SectionGreyedFieldsChildrenAppender.create(databaseAdapter));
+            put(SectionFields.DATA_ELEMENTS, SectionDataElementChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

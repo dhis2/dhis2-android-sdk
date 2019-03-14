@@ -69,11 +69,10 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
     @Provides
     @Reusable
     Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(CategoryComboFields.CATEGORIES,
-                CategoryCategoryComboChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(CategoryComboFields.CATEGORY_OPTION_COMBOS,
-                CategoryOptionComboChildrenAppender.create(databaseAdapter));
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<CategoryCombo>>() {{
+            put(CategoryComboFields.CATEGORIES, CategoryCategoryComboChildrenAppender.create(databaseAdapter));
+            put(CategoryComboFields.CATEGORY_OPTION_COMBOS,
+                    CategoryOptionComboChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

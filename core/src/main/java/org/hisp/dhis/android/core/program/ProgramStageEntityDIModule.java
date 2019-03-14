@@ -93,13 +93,11 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
                         ProgramStageTableInfo.TABLE_INFO
                 );
 
-        Map<String, ChildrenAppender<ProgramStage>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(ProgramStageFields.STYLE, objectStyleChildrenAppender);
-        childrenAppenders.put(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS,
-                ProgramStageDataElementChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramStageFields.PROGRAM_STAGE_SECTIONS,
-                ProgramStageSectionChildrenAppender.create(databaseAdapter));
-
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<ProgramStage>>() {{
+            put(ProgramStageFields.STYLE, objectStyleChildrenAppender);
+            put(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS,
+                    ProgramStageDataElementChildrenAppender.create(databaseAdapter));
+            put(ProgramStageFields.PROGRAM_STAGE_SECTIONS, ProgramStageSectionChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

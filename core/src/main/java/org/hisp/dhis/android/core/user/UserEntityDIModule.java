@@ -64,10 +64,9 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
             DatabaseAdapter databaseAdapter,
             UserCredentialsChildrenAppender userCredentialsChildrenAppender) {
 
-        Map<String, ChildrenAppender<User>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(UserFields.USER_CREDENTIALS, userCredentialsChildrenAppender);
-        childrenAppenders.put(UserFields.ORGANISATION_UNITS,
-                UserOrganisationUnitChildrenAppender.create(databaseAdapter));
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<User>>() {{
+            put(UserFields.USER_CREDENTIALS, userCredentialsChildrenAppender);
+            put(UserFields.ORGANISATION_UNITS, UserOrganisationUnitChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

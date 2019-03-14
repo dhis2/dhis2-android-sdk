@@ -58,11 +58,11 @@ public final class ProgramStageSectionEntityDIModule {
     @Provides
     @Reusable
     Map<String, ChildrenAppender<ProgramStageSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        Map<String, ChildrenAppender<ProgramStageSection>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(ProgramStageSectionFields.PROGRAM_INDICATORS,
-                ProgramStageSectionProgramIndicatorChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(ProgramStageSectionFields.DATA_ELEMENTS,
-                ProgramStageSectionDataElementChildrenAppender.create(databaseAdapter));
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<ProgramStageSection>>() {{
+            put(ProgramStageSectionFields.PROGRAM_INDICATORS,
+                    ProgramStageSectionProgramIndicatorChildrenAppender.create(databaseAdapter));
+            put(ProgramStageSectionFields.DATA_ELEMENTS,
+                    ProgramStageSectionDataElementChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

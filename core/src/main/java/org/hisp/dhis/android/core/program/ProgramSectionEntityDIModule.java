@@ -66,11 +66,9 @@ public final class ProgramSectionEntityDIModule {
                         ProgramSectionTableInfo.TABLE_INFO
                 );
 
-        Map<String, ChildrenAppender<ProgramSection>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(ProgramSectionFields.STYLE, objectStyleChildrenAppender);
-        childrenAppenders.put(ProgramSectionFields.ATTRIBUTES,
-                ProgramSectionAttributeChildrenAppender.create(databaseAdapter));
-
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<ProgramSection>>() {{
+            put(ProgramSectionFields.STYLE, objectStyleChildrenAppender);
+            put(ProgramSectionFields.ATTRIBUTES, ProgramSectionAttributeChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

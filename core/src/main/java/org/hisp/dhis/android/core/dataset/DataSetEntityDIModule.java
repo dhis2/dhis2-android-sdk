@@ -83,18 +83,14 @@ public final class DataSetEntityDIModule {
                         DataSetTableInfo.TABLE_INFO
                 );
 
-        Map<String, ChildrenAppender<DataSet>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(DataSetFields.STYLE, objectStyleChildrenAppender);
-        childrenAppenders.put(DataSetFields.SECTIONS, SectionChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS,
-                DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(DataSetFields.DATA_INPUT_PERIODS,
-                DataInputPeriodChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(DataSetFields.DATA_SET_ELEMENTS,
-                DataSetElementChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(DataSetFields.INDICATORS,
-                DataSetIndicatorChildrenAppender.create(databaseAdapter));
-
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<DataSet>>() {{
+            put(DataSetFields.STYLE, objectStyleChildrenAppender);
+            put(DataSetFields.SECTIONS, SectionChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS,
+                    DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.DATA_INPUT_PERIODS, DataInputPeriodChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.DATA_SET_ELEMENTS, DataSetElementChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.INDICATORS, DataSetIndicatorChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

@@ -77,11 +77,10 @@ public final class TrackedEntityInstanceEntityDIModule {
     @Provides
     @Reusable
     Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders = new HashMap<>();
-        childrenAppenders.put(TrackedEntityInstanceFields.ENROLLMENTS,
-                EnrollmentChildrenAppender.create(databaseAdapter));
-        childrenAppenders.put(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
-                TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter));
-        return childrenAppenders;
+        return new HashMap<String, ChildrenAppender<TrackedEntityInstance>>() {{
+            put(TrackedEntityInstanceFields.ENROLLMENTS, EnrollmentChildrenAppender.create(databaseAdapter));
+            put(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
+                    TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

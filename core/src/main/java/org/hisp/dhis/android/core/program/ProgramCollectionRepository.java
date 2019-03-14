@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -162,5 +163,9 @@ public final class ProgramCollectionRepository
 
     public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
         return cf.enumC(ProgramFields.FEATURE_TYPE);
+    }
+
+    public ProgramCollectionRepository withObjectStyle() {
+        return cf.repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, ProgramFields.STYLE));
     }
 }

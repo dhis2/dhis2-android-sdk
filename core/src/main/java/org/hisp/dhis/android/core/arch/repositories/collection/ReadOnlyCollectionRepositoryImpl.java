@@ -73,17 +73,10 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
         return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, scope);
     }
 
-    private List<M> getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(), childrenAppenders.values());
-    }
-
     @Override
     public List<M> get() {
-        if (scope.children().areAllChildrenSelected) {
-            return getWithAllChildren();
-        } else {
-            return getWithoutChildren();
-        }
+        return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
+                childrenAppenders, scope.children());
     }
 
     public R withAllChildren() {

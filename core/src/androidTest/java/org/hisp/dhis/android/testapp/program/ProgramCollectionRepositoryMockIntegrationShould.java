@@ -270,9 +270,18 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     }
 
     @Test
-    public void include_object_style_as_children() {
+    public void include_object_style_as_children_when_all_selected() {
         Program program = d2.programModule().programs
                 .one().withAllChildren().get();
+        assertThat(program.style().icon(), is("program-icon"));
+        assertThat(program.style().color(), is("#333"));
+    }
+
+    @Test
+    public void include_object_style_as_children_when_explicitly_selected() {
+        Program program = d2.programModule().programs
+                .withObjectStyle()
+                .one().get();
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
     }

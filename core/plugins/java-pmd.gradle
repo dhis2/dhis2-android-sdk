@@ -12,7 +12,7 @@ pmd {
     ignoreFailures = false
 
     // see: https://pmd.github.io/pmd-5.5.2/pmd-java/rules/index.html
-    ruleSetFiles = rootProject.files(
+    ruleSetFiles = project.files(
             "plugins/pmd-rules.xml"
     )
 

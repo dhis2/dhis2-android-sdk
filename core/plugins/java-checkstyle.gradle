@@ -12,7 +12,7 @@ checkstyle {
     // Do not output results into console.
     showViolations = false
 
-    configFile = rootProject.file(
+    configFile = project.file(
             "plugins/checkstyle-style.xml"
     )
 }

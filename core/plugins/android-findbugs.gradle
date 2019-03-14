@@ -23,7 +23,7 @@ afterEvaluate {
                 xml.enabled = false
             }
 
-            excludeFilter = rootProject.file(
+            excludeFilter = project.file(
                     "plugins/findbugs-filter.xml"
             )
 

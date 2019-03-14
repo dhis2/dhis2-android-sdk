@@ -21,7 +21,7 @@ afterEvaluate {
                 xml.enabled = false
             }
 
-            ruleSetFiles = rootProject.files(
+            ruleSetFiles = project.files(
                     "plugins/pmd-rules.xml"
             )
 

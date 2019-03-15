@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 
 public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
@@ -65,5 +66,9 @@ public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
     public SubQueryFilterConnector<R> subQuery(String key) {
         return new SubQueryFilterConnector<>(repositoryFactory, scope, key);
+    }
+
+    public R withChild(String child) {
+        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child));
     }
 }

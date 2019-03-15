@@ -174,4 +174,44 @@ public final class ProgramCollectionRepository
                 OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
                 uids);
     }
+
+    public ProgramCollectionRepository withObjectStyle() {
+        return cf.withChild(ProgramFields.STYLE);
+    }
+
+    public ProgramCollectionRepository withProgramStages() {
+        return cf.withChild(ProgramFields.PROGRAM_STAGES);
+    }
+
+    public ProgramCollectionRepository withProgramRuleVariables() {
+        return cf.withChild(ProgramFields.PROGRAM_RULE_VARIABLES);
+    }
+
+    public ProgramCollectionRepository withProgramIndicators() {
+        return cf.withChild(ProgramFields.PROGRAM_INDICATORS);
+    }
+
+    public ProgramCollectionRepository withProgramRules() {
+        return cf.withChild(ProgramFields.PROGRAM_RULES);
+    }
+
+    public ProgramCollectionRepository withProgramTrackedEntityAttributes() {
+        return cf.withChild(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
+    }
+
+    public ProgramCollectionRepository withProgramSections() {
+        return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
+    }
+
+    public ProgramCollectionRepository withCategoryCombo() {
+        return cf.withChild(ProgramFields.CATEGORY_COMBO);
+    }
+
+    public ProgramCollectionRepository withRelatedProgram() {
+        return cf.withChild(ProgramFields.RELATED_PROGRAM);
+    }
+
+    public ProgramCollectionRepository withTrackedEntityType() {
+        return cf.withChild(ProgramFields.TRACKED_ENTITY_TYPE);
+    }
 }

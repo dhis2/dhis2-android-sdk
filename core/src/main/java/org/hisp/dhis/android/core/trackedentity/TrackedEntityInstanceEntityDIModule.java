@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentChildrenAppender;
 import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -76,10 +76,12 @@ public final class TrackedEntityInstanceEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Arrays.asList(
-                EnrollmentChildrenAppender.create(databaseAdapter),
-                TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter)
-        );
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<TrackedEntityInstance>>() {{
+            put(TrackedEntityInstanceFields.ENROLLMENTS, EnrollmentChildrenAppender.create(databaseAdapter));
+            put(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES,
+                    TrackedEntityAttributeValueChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

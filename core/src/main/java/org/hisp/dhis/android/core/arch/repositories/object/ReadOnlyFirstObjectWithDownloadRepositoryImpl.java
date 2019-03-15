@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.Unit;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
@@ -43,7 +43,7 @@ public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R ex
     private final Callable<Unit> downloadCall;
 
     public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
-                                                         Collection<ChildrenAppender<M>> childrenAppenders,
+                                                         Map<String, ChildrenAppender<M>> childrenAppenders,
                                                          RepositoryScope scope,
                                                          Callable<Unit> downloadCall,
                                                          ObjectRepositoryFactory<R> repositoryFactory) {

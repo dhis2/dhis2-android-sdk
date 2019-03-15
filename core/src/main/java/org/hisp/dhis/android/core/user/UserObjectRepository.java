@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepo
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -43,7 +43,7 @@ public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<
 
     @Inject
     UserObjectRepository(IdentifiableObjectStore<User> store,
-                         Collection<ChildrenAppender<User>> childrenAppenders,
+                         Map<String, ChildrenAppender<User>> childrenAppenders,
                          RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new UserObjectRepository(store, childrenAppenders, s));

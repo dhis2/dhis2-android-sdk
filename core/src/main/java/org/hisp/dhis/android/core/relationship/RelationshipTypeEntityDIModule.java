@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,10 +57,10 @@ public final class RelationshipTypeEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<RelationshipType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    Map<String, ChildrenAppender<RelationshipType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<RelationshipType> childrenAppender = new RelationshipConstraintChildrenAppender(
                 RelationshipConstraintStore.create(databaseAdapter)
         );
-        return Collections.singletonList(childrenAppender);
+        return Collections.singletonMap(RelationshipTypeFields.CONSTRAINTS, childrenAppender);
     }
 }

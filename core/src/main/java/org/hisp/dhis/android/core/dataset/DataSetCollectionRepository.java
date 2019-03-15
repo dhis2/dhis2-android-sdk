@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,7 +50,7 @@ public final class DataSetCollectionRepository
 
     @Inject
     DataSetCollectionRepository(final IdentifiableObjectStore<DataSet> store,
-                                final Collection<ChildrenAppender<DataSet>> childrenAppenders,
+                                final Map<String, ChildrenAppender<DataSet>> childrenAppenders,
                                 final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new DataSetCollectionRepository(store, childrenAppenders, s)));

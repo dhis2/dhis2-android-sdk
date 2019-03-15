@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,7 +46,7 @@ public final class CategoryComboCollectionRepository
 
     @Inject
     CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
-                                      final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
+                                      final Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders,
                                       final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new CategoryComboCollectionRepository(store, childrenAppenders, s)));

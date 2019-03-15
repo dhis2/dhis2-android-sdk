@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,9 +59,8 @@ public final class CategoryEntityDIModule implements IdentifiableStoreProvider<C
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Category>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonList(
-                CategoryCategoryOptionChildrenAppender.create(databaseAdapter)
-        );
+    Map<String, ChildrenAppender<Category>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(CategoryFields.CATEGORY_OPTIONS,
+                CategoryCategoryOptionChildrenAppender.create(databaseAdapter));
     }
 }

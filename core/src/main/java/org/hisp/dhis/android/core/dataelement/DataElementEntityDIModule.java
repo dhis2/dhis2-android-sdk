@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,13 +59,13 @@ public final class DataElementEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    Map<String, ChildrenAppender<DataElement>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataElement> childrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataElementTableInfo.TABLE_INFO
                 );
 
-        return Collections.singletonList(childrenAppender);
+        return Collections.singletonMap(DataElementFields.STYLE, childrenAppender);
     }
 }

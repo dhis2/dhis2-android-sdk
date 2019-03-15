@@ -26,41 +26,60 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.d2manager;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import android.content.Context;
 
-import java.util.Collections;
-import java.util.Map;
+import com.google.auto.value.AutoValue;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import java.util.List;
 
-@Module
-public final class DataSetCompleteRegistrationEntityDIModule
-        implements ObjectWithoutUidStoreProvider<DataSetCompleteRegistration> {
+import okhttp3.Interceptor;
 
-    @Override
-    @Provides
-    @Reusable
-    public DataSetCompleteRegistrationStore store(DatabaseAdapter databaseAdapter) {
-        return DataSetCompleteRegistrationStoreImpl.create(databaseAdapter);
+@AutoValue
+public abstract class D2Configuration {
+
+    public abstract String databaseName();
+
+    public abstract String appName();
+
+    public abstract String appVersion();
+
+    public abstract Integer readTimeoutInSeconds();
+
+    public abstract Integer connectTimeoutInSeconds();
+
+    public abstract Integer writeTimeoutInSeconds();
+
+    public abstract List<Interceptor> networkInterceptors();
+
+    public abstract Context context();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_D2Configuration.Builder();
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<DataSetCompleteRegistration> handler(DataSetCompleteRegistrationStore store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
-    }
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders() {
-        return Collections.emptyMap();
+        public abstract Builder databaseName(String databaseName);
+
+        public abstract Builder appName(String appName);
+
+        public abstract Builder appVersion(String appVersion);
+
+        public abstract Builder context(Context context);
+
+        public abstract Builder readTimeoutInSeconds(Integer readTimeoutInSeconds);
+
+        public abstract Builder connectTimeoutInSeconds(Integer connectTimeoutInSeconds);
+
+        public abstract Builder writeTimeoutInSeconds(Integer writeTimeoutInSeconds);
+
+        public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
+
+        public abstract D2Configuration build();
     }
 }

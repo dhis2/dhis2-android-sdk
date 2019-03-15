@@ -51,7 +51,7 @@ public final class EnrollmentFields {
     private static final String COORDINATE = "coordinate";
     private static final String DELETED = "deleted";
     private static final String EVENTS = "events";
-    private static final String NOTES = "notes";
+    static final String NOTES = "notes";
 
     private static FieldsHelper<Enrollment> fh = new FieldsHelper<>();
 

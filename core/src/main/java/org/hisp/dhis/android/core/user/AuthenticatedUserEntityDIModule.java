@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -52,7 +52,7 @@ public final class AuthenticatedUserEntityDIModule implements ObjectWithoutUidSt
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<AuthenticatedUser>> childrenAppenders() {
-        return Collections.emptyList();
+    Map<String, ChildrenAppender<AuthenticatedUser>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

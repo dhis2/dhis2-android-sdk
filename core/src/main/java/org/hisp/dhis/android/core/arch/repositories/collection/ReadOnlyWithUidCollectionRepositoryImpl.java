@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import java.util.Collection;
+import java.util.Map;
 
 public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWithUidInterface,
         R extends ReadOnlyCollectionRepository<M>>
@@ -48,7 +48,7 @@ public class ReadOnlyWithUidCollectionRepositoryImpl<M extends Model & ObjectWit
     protected final IdentifiableObjectStore<M> store;
 
     public ReadOnlyWithUidCollectionRepositoryImpl(IdentifiableObjectStore<M> store,
-                                                   Collection<ChildrenAppender<M>> childrenAppenders,
+                                                   Map<String, ChildrenAppender<M>> childrenAppenders,
                                                    RepositoryScope scope,
                                                    FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);

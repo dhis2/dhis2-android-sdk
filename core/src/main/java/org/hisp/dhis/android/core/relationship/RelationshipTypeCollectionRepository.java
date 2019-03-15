@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -45,7 +45,7 @@ public final class RelationshipTypeCollectionRepository
 
     @Inject
     RelationshipTypeCollectionRepository(final IdentifiableObjectStore<RelationshipType> store,
-                                         final Collection<ChildrenAppender<RelationshipType>> childrenAppenders,
+                                         final Map<String, ChildrenAppender<RelationshipType>> childrenAppenders,
                                          final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new RelationshipTypeCollectionRepository(store, childrenAppenders, s)));

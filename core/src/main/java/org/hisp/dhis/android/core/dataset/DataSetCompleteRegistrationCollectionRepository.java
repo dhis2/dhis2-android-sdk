@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -58,7 +58,7 @@ public final class DataSetCompleteRegistrationCollectionRepository
     @Inject
     DataSetCompleteRegistrationCollectionRepository(
             final DataSetCompleteRegistrationStore store,
-            final Collection<ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
+            final Map<String, ChildrenAppender<DataSetCompleteRegistration>> childrenAppenders,
             final RepositoryScope scope,
             final SyncHandler<DataSetCompleteRegistration> handler,
             final DataSetCompleteRegistrationPostCall postCall) {

@@ -37,7 +37,7 @@ final class ProgramRuleFields {
     static final String CONDITION = "condition";
     static final String PROGRAM = "program";
     static final String PROGRAM_STAGE = "programStage";
-    private static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
+    static final String PROGRAM_RULE_ACTIONS = "programRuleActions";
 
     private static FieldsHelper<ProgramRule> fh = new FieldsHelper<>();
     static final Fields<ProgramRule> allFields = Fields.<ProgramRule>builder()

@@ -32,13 +32,13 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 public class ReadOnlyOneObjectRepositoryFinalImpl<M extends Model>
         extends ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>> {
 
     public ReadOnlyOneObjectRepositoryFinalImpl(ObjectStore<M> store,
-                                                Collection<ChildrenAppender<M>> childrenAppenders,
+                                                Map<String, ChildrenAppender<M>> childrenAppenders,
                                                 RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, s));

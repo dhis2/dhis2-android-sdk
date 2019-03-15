@@ -26,11 +26,60 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.d2manager;
 
+import android.content.Context;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import com.google.auto.value.AutoValue;
 
-public interface UserCredentialsStore extends IdentifiableObjectStore<UserCredentials> {
-    UserCredentials getForUser(String userId);
+import java.util.List;
+
+import okhttp3.Interceptor;
+
+@AutoValue
+public abstract class D2Configuration {
+
+    public abstract String databaseName();
+
+    public abstract String appName();
+
+    public abstract String appVersion();
+
+    public abstract Integer readTimeoutInSeconds();
+
+    public abstract Integer connectTimeoutInSeconds();
+
+    public abstract Integer writeTimeoutInSeconds();
+
+    public abstract List<Interceptor> networkInterceptors();
+
+    public abstract Context context();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_D2Configuration.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder databaseName(String databaseName);
+
+        public abstract Builder appName(String appName);
+
+        public abstract Builder appVersion(String appVersion);
+
+        public abstract Builder context(Context context);
+
+        public abstract Builder readTimeoutInSeconds(Integer readTimeoutInSeconds);
+
+        public abstract Builder connectTimeoutInSeconds(Integer connectTimeoutInSeconds);
+
+        public abstract Builder writeTimeoutInSeconds(Integer writeTimeoutInSeconds);
+
+        public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
+
+        public abstract D2Configuration build();
+    }
 }

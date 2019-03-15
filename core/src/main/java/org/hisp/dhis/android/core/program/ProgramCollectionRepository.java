@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -166,6 +165,42 @@ public final class ProgramCollectionRepository
     }
 
     public ProgramCollectionRepository withObjectStyle() {
-        return cf.repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, ProgramFields.STYLE));
+        return cf.withChild(ProgramFields.STYLE);
+    }
+
+    public ProgramCollectionRepository withProgramStages() {
+        return cf.withChild(ProgramFields.PROGRAM_STAGES);
+    }
+
+    public ProgramCollectionRepository withProgramRuleVariables() {
+        return cf.withChild(ProgramFields.PROGRAM_RULE_VARIABLES);
+    }
+
+    public ProgramCollectionRepository withProgramIndicators() {
+        return cf.withChild(ProgramFields.PROGRAM_INDICATORS);
+    }
+
+    public ProgramCollectionRepository withProgramRules() {
+        return cf.withChild(ProgramFields.PROGRAM_RULES);
+    }
+
+    public ProgramCollectionRepository withProgramTrackedEntityAttributes() {
+        return cf.withChild(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
+    }
+
+    public ProgramCollectionRepository withProgramSections() {
+        return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
+    }
+
+    public ProgramCollectionRepository withCategoryCombo() {
+        return cf.withChild(ProgramFields.CATEGORY_COMBO);
+    }
+
+    public ProgramCollectionRepository withRelatedProgram() {
+        return cf.withChild(ProgramFields.RELATED_PROGRAM);
+    }
+
+    public ProgramCollectionRepository withTrackedEntityType() {
+        return cf.withChild(ProgramFields.TRACKED_ENTITY_TYPE);
     }
 }

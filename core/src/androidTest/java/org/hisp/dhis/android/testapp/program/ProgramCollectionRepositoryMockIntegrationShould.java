@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.program.ProgramType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -265,6 +266,15 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     public void filter_by_max_tei_count_to_return() {
         List<Program> programs = d2.programModule().programs
                 .byMaxTeiCountToReturn().eq(20)
+                .get();
+        assertThat(programs.size(), is(1));
+    }
+
+
+    @Test
+    public void filter_by_orgunit_list() {
+        List<Program> programs = d2.programModule().programs
+                .byOrganisationUnitList(Collections.singletonList("DiszpKrYNg8"))
                 .get();
         assertThat(programs.size(), is(1));
     }

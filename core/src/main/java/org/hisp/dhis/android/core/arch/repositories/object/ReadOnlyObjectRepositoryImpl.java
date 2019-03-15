@@ -50,19 +50,11 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
         this.repositoryFactory = repositoryFactory;
     }
 
-    private M getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders.values());
-    }
-
     abstract M getWithoutChildren();
 
     @Override
     public final M get() {
-        if (scope.children().areAllChildrenSelected) {
-            return getWithAllChildren();
-        } else {
-            return getWithoutChildren();
-        }
+        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
     }
 
     @Override

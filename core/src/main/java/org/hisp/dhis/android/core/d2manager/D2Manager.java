@@ -167,10 +167,11 @@ public final class D2Manager {
 
                 client.connectionSpecs(specs);
 
+            } catch (RuntimeException e) {
+                throw e;
             } catch (Exception e) {
-                Log.e(D2Manager.class.getSimpleName(), "", e);
+                Log.e(D2Manager.class.getSimpleName(), e.getMessage(), e);
             }
-
         }
 
         return client.build();

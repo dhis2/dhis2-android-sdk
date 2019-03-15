@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -63,8 +63,8 @@ public final class UserRoleEntityDIModule implements IdentifiableEntityDIModule<
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<UserRole>> childrenAppenders() {
-        return Collections.emptyList();
+    Map<String, ChildrenAppender<UserRole>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 
     @Provides

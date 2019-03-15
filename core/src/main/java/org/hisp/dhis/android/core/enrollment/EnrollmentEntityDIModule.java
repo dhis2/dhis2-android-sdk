@@ -39,8 +39,8 @@ import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventFields;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -63,8 +63,8 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(NoteChildrenAppender.create(databaseAdapter));
+    Map<String, ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));
     }
 
     @Provides

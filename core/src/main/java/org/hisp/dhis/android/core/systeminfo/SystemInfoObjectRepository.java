@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWi
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -44,7 +44,7 @@ public final class SystemInfoObjectRepository
 
     @Inject
     SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
-                               Collection<ChildrenAppender<SystemInfo>> childrenAppenders,
+                               Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
                                RepositoryScope scope,
                                SystemInfoCall downloadCall) {
         super(store, childrenAppenders, scope, downloadCall,

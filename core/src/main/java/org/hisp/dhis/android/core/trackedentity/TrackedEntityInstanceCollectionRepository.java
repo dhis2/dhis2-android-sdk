@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -58,7 +58,7 @@ public final class TrackedEntityInstanceCollectionRepository
     @Inject
     TrackedEntityInstanceCollectionRepository(
             final TrackedEntityInstanceStore store,
-            final Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
+            final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
             final RepositoryScope scope,
             final TrackedEntityInstancePostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,

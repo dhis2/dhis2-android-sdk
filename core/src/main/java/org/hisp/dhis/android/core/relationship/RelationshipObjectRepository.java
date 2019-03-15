@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-import java.util.Collection;
+import java.util.Map;
 
 final class RelationshipObjectRepository
         extends ReadOnlyOneObjectRepositoryImpl<Relationship, RelationshipObjectRepository>
@@ -50,7 +50,7 @@ final class RelationshipObjectRepository
 
     RelationshipObjectRepository(final IdentifiableObjectStore<Relationship> store,
                                  final String uid,
-                                 final Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                 final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                  final RepositoryScope scope,
                                  final RelationshipItemElementStoreSelector storeSelector) {
         super(store, childrenAppenders, scope,

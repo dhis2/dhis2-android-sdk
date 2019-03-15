@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCo
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -45,7 +45,7 @@ public final class EnrollmentCollectionRepository
     @Inject
     EnrollmentCollectionRepository(
             final EnrollmentStore store,
-            final Collection<ChildrenAppender<Enrollment>> childrenAppenders,
+            final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new EnrollmentCollectionRepository(store, childrenAppenders, s)));

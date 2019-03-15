@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,7 +50,7 @@ public final class ProgramCollectionRepository
 
     @Inject
     ProgramCollectionRepository(final ProgramStoreInterface store,
-                                final Collection<ChildrenAppender<Program>> childrenAppenders,
+                                final Map<String, ChildrenAppender<Program>> childrenAppenders,
                                 final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new ProgramCollectionRepository(store, childrenAppenders, s)));

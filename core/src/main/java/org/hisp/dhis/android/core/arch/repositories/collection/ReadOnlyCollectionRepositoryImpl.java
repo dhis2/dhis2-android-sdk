@@ -38,19 +38,19 @@ import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBu
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
         implements ReadOnlyCollectionRepository<M> {
 
     private final ObjectStore<M> store;
-    protected final Collection<ChildrenAppender<M>> childrenAppenders;
+    protected final Map<String, ChildrenAppender<M>> childrenAppenders;
     protected final RepositoryScope scope;
     protected final FilterConnectorFactory<R> cf;
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
-                                            Collection<ChildrenAppender<M>> childrenAppenders,
+                                            Map<String, ChildrenAppender<M>> childrenAppenders,
                                             RepositoryScope scope,
                                             FilterConnectorFactory<R> cf) {
         this.store = store;
@@ -74,7 +74,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     private List<M> getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(), childrenAppenders);
+        return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(), childrenAppenders.values());
     }
 
     @Override

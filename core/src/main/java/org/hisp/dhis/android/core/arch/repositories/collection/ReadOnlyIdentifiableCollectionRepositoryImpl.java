@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 
-import java.util.Collection;
+import java.util.Map;
 
 public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & IdentifiableObject,
         R extends ReadOnlyCollectionRepository<M>>
@@ -45,7 +45,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
         implements ReadOnlyIdentifiableCollectionRepository<M, R> {
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
-                                                        final Collection<ChildrenAppender<M>> childrenAppenders,
+                                                        final Map<String, ChildrenAppender<M>> childrenAppenders,
                                                         final RepositoryScope scope,
                                                         final FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);

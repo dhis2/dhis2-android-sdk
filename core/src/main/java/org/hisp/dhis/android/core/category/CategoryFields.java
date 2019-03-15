@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 
 final class CategoryFields {
 
-    private static final String CATEGORY_OPTIONS = "categoryOptions";
+    static final String CATEGORY_OPTIONS = "categoryOptions";
     static final String DATA_DIMENSION_TYPE = "dataDimensionType";
 
     private static final FieldsHelper<Category> fh = new FieldsHelper<>();

@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -61,7 +61,7 @@ public final class DataValueCollectionRepository
 
     @Inject
     DataValueCollectionRepository(final DataValueStore dataValueStore,
-                                  final Collection<ChildrenAppender<DataValue>> childrenAppenders,
+                                  final Map<String, ChildrenAppender<DataValue>> childrenAppenders,
                                   final RepositoryScope scope,
                                   final SyncHandler<DataValue> dataValueHandler,
                                   final DataValuePostCall postCall) {

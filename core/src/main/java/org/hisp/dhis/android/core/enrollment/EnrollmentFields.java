@@ -49,7 +49,7 @@ public final class EnrollmentFields {
     static final String STATUS = "status";
     public static final String TRACKED_ENTITY_INSTANCE = "trackedEntityInstance";
     private static final String COORDINATE = "coordinate";
-    private static final String DELETED = "deleted";
+    static final String DELETED = "deleted";
     private static final String EVENTS = "events";
     static final String NOTES = "notes";
 

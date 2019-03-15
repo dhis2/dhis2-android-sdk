@@ -83,6 +83,10 @@ public final class D2Manager {
     }
 
     public void configureD2(@NonNull Configuration configuration) {
+        if (d2 != null) {
+            throw new IllegalStateException("D2 is already configured");
+        }
+
         ConfigurationManagerFactory.create(databaseAdapter).configure(configuration.serverUrl());
 
         d2 = new D2.Builder()
@@ -95,7 +99,7 @@ public final class D2Manager {
 
     public D2 getD2() throws IllegalStateException {
         if (d2 == null) {
-            throw new IllegalStateException("Not configured D2");
+            throw new IllegalStateException("D2 is not configured");
         }
 
         return d2;

@@ -88,9 +88,9 @@ public class D2ManagerRealIntegrationShould {
     }
 
     @Test
-    public void create_a_d2_instance_which_read_data_on_db() throws Exception {
+    public void create_a_d2_instance_which_reads_data_from_db() throws Exception {
         configureD2();
-        persistCredentialsOnDb();
+        persistCredentialsInDb();
 
         UserCredentials userCredentials = d2Manager.getD2().userModule().userCredentials.get();
         assertThat(userCredentials.user().uid().equals("user")).isTrue();
@@ -101,7 +101,7 @@ public class D2ManagerRealIntegrationShould {
      * It works against the demo server.
      */
     //@Test
-    public void create_a_d2_instance_which_download_and_persist_data_from_server() throws Exception {
+    public void create_a_d2_instance_which_downloads_and_persists_data_from_server() throws Exception {
         configureD2();
 
         d2Manager.getD2().userModule().logIn("android", "Android123").call();
@@ -117,7 +117,7 @@ public class D2ManagerRealIntegrationShould {
         d2Manager.configureD2(config);
     }
 
-    private void persistCredentialsOnDb() {
+    private void persistCredentialsInDb() {
         d2Manager.getD2().databaseAdapter().database().setForeignKeyConstraintsEnabled(Boolean.FALSE);
 
         UserCredentialsStoreImpl.create(d2Manager.getD2().databaseAdapter()).insert(UserCredentials.builder()

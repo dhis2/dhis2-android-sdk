@@ -25,25 +25,25 @@ public class WebApiRepositoryImpl implements WebApiRepository {
                 metadataCall(config)
         ).map(response -> {
             Metadata metadata = new Metadata();
-            metadata.lastSyncDate = response.system.date;
-            metadata.categoryOptionCombos = mapIds(response.categoryOptionCombos);
-            metadata.dataElements = mapIds(response.dataElements);
-            metadata.organisationUnits = mapIds(response.organisationUnits);
-            metadata.users = mapIds(response.users);
-            metadata.trackedEntityTypes = mapIds(response.trackedEntityTypes);
-            metadata.trackedEntityAttributes = mapIds(response.trackedEntityAttributes);
-            metadata.programs = mapIds(response.programs);
+            metadata.lastSyncDate = response.system().date();
+            metadata.categoryOptionCombos = mapIds(response.categoryOptionCombos());
+            metadata.dataElements = mapIds(response.dataElements());
+            metadata.organisationUnits = mapIds(response.organisationUnits());
+            metadata.users = mapIds(response.users());
+            metadata.trackedEntityTypes = mapIds(response.trackedEntityTypes());
+            metadata.trackedEntityAttributes = mapIds(response.trackedEntityAttributes());
+            metadata.programs = mapIds(response.programs());
             return metadata;
         });
     }
 
-    private List<Metadata.ID> mapIds(List<MetadataResponseModel.Id> ids) {
+    private List<Metadata.ID> mapIds(List<MetadataResponseModel.MetadataId> ids) {
         if (ids == null) {
             return null;
         }
         ArrayList<Metadata.ID> newList = new ArrayList<>();
-        for (MetadataResponseModel.Id item : ids) {
-            newList.add(makeID(item.id));
+        for (MetadataResponseModel.MetadataId item : ids) {
+            newList.add(makeID(item.id()));
         }
         return newList;
     }

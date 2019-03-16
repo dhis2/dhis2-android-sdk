@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class DeviceStateRepositoryImpl implements DeviceStateRepository {
@@ -28,6 +29,7 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
 
     @Override
     public Single<Boolean> isNetworkConnected() {
+        //permission should be checked earlier
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager == null) {
             return Single.just(false);
@@ -58,7 +60,7 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
                 }
             });
             telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_SERVICE_STATE);
-        }).timeout(3, TimeUnit.SECONDS, Schedulers.newThread(), Single.fromCallable(() -> {
+        }).subscribeOn(AndroidSchedulers.mainThread()).timeout(3, TimeUnit.SECONDS, Schedulers.newThread(), Single.fromCallable(() -> {
             // If information did not come quickly, remove listener and try other method
             return telephonyManager.getNetworkType() != TelephonyManager.NETWORK_TYPE_UNKNOWN;
         })).doFinally(() -> {

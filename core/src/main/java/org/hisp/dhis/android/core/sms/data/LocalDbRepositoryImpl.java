@@ -5,9 +5,9 @@ import android.content.Context;
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.EnrollmentModel;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.user.UserModule;
@@ -105,11 +105,11 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     @Override
     public Completable updateSubmissionState(BaseDataModel item, State state) {
-        if (item instanceof EventModel) {
-            String uid = ((EventModel) item).uid();
+        if (item instanceof Event) {
+            String uid = ((Event) item).uid();
             return Completable.fromAction(() -> eventStore.setState(uid, state));
-        } else if (item instanceof EnrollmentModel) {
-            String uid = ((EnrollmentModel) item).uid();
+        } else if (item instanceof Enrollment) {
+            String uid = ((Enrollment) item).uid();
             return Completable.fromAction(() -> enrollmentStore.setState(uid, state));
         }
         return Completable.error(new IllegalArgumentException("Not supported data type"));

@@ -36,6 +36,10 @@ public class SmsSubmitCase {
         this.deviceStateRepository = deviceStateRepository;
     }
 
+    public void acceptSMSCount(boolean accept) {
+        smsRepository.acceptSMSCount(accept);
+    }
+
     public Observable<SmsRepository.SmsSendingState> submit(final Event event,
                                                             final List<TrackedEntityDataValue>
                                                                     values) {

@@ -60,7 +60,8 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
                 }
             });
             telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_SERVICE_STATE);
-        }).subscribeOn(AndroidSchedulers.mainThread()).timeout(3, TimeUnit.SECONDS, Schedulers.newThread(), Single.fromCallable(() -> {
+        }).subscribeOn(AndroidSchedulers.mainThread()
+        ).timeout(3, TimeUnit.SECONDS, Schedulers.newThread(), Single.fromCallable(() -> {
             // If information did not come quickly, remove listener and try other method
             return telephonyManager.getNetworkType() != TelephonyManager.NETWORK_TYPE_UNKNOWN;
         })).doFinally(() -> {

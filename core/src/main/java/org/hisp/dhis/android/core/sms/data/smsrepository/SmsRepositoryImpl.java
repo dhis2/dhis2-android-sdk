@@ -129,7 +129,7 @@ public class SmsRepositoryImpl implements SmsRepository {
                 return false;
             }
         }
-        return smsCountAccepted;
+        return smsCountAccepted != null && smsCountAccepted;
     }
 
     /**

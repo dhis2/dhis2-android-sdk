@@ -56,6 +56,7 @@ public final class DataSetFields {
     static final String DATA_ELEMENT_DECORATION = "dataElementDecoration";
     static final String RENDER_AS_TABS = "renderAsTabs";
     static final String RENDER_HORIZONTALLY = "renderHorizontally";
+    static final String WORKFLOW = "workflow";
     static final String DATA_SET_ELEMENTS = "dataSetElements";
     static final String INDICATORS = "indicators";
     static final String SECTIONS = "sections";
@@ -88,6 +89,7 @@ public final class DataSetFields {
                     fh.<Boolean>field(DATA_ELEMENT_DECORATION),
                     fh.<Boolean>field(RENDER_AS_TABS),
                     fh.<Boolean>field(RENDER_HORIZONTALLY),
+                    fh.nestedFieldWithUid(WORKFLOW),
                     fh.<DataSetElement>nestedField(DATA_SET_ELEMENTS).with(DataSetElementFields.allFields),
                     fh.nestedFieldWithUid(INDICATORS),
                     fh.<Section>nestedField(SECTIONS).with(SectionFields.allFields),

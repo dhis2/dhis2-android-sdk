@@ -42,6 +42,12 @@ public final class RepositoryScopeHelper {
         return scope.toBuilder().filters(copiedItems).build();
     }
 
+    public static RepositoryScope withComplexFilterItem(RepositoryScope scope, RepositoryScopeComplexFilterItem item) {
+        List<RepositoryScopeComplexFilterItem> copiedItems = new ArrayList<>(scope.complexFilters());
+        copiedItems.add(item);
+        return scope.toBuilder().complexFilters(copiedItems).build();
+    }
+
     public static RepositoryScope withAllChildren(RepositoryScope scope) {
         return scope.toBuilder().children(scope.children().selectAllChildren()).build();
     }

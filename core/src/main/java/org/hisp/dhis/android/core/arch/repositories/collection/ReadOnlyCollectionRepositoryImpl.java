@@ -60,7 +60,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     private List<M> getWithoutChildren() {
-        if (scope.filters().isEmpty()) {
+        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
             return store.selectAll();
         } else {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());

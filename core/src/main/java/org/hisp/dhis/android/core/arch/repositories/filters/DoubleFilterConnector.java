@@ -31,44 +31,25 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 
-public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+public final class DoubleFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+        extends BaseFilterConnector<R, Double> {
 
-    private final RepositoryScope scope;
-    public final CollectionRepositoryFactory<R> repositoryFactory;
-
-    public FilterConnectorFactory(RepositoryScope scope,
-                                  CollectionRepositoryFactory<R> repositoryFactory) {
-        this.scope = scope;
-        this.repositoryFactory = repositoryFactory;
+    DoubleFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                          RepositoryScope scope,
+                          String key) {
+        super(repositoryFactory, scope, key);
     }
 
-    public StringFilterConnector<R> string(String key) {
-        return new StringFilterConnector<>(repositoryFactory, scope, key);
+    public R smallerThan(double value) {
+        return newWithWrappedScope("<", value);
     }
 
-    public DateFilterConnector<R> date(String key) {
-        return new DateFilterConnector<>(repositoryFactory, scope, key);
+    public R biggerThan(double value) {
+        return newWithWrappedScope(">", value);
     }
 
-    public BooleanFilterConnector<R> bool(String key) {
-        return new BooleanFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public IntegerFilterConnector<R> integer(String key) {
-        return new IntegerFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public DoubleFilterConnector<R> doubleC(String key) {
-        return new DoubleFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public <E extends Enum<E>> EnumFilterConnector<R, E> enumC(String key) {
-        return new EnumFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public R withChild(String child) {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child));
+    String wrapValue(Double value) {
+        return value.toString();
     }
 }

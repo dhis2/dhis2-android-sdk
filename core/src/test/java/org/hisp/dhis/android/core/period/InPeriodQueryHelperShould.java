@@ -60,9 +60,9 @@ public class InPeriodQueryHelperShould {
         String inPeriodQuery = InPeriodQueryHelper.buildInPeriodsQuery("COL1", datePeriods);
 
         assertThat(inPeriodQuery).isEqualTo(
-                "(COL1 >= 'Mon Dec 24 12:24:25 CET 2001' AND COL1 <= 'Tue Dec 24 12:24:25 CET 2002') OR " +
-                        "(COL1 >= 'Wed Dec 24 12:24:25 CET 2003' AND COL1 <= 'Fri Dec 24 12:24:25 CET 2004') OR " +
-                        "(COL1 >= 'Sat Dec 24 12:24:25 CET 2005' AND COL1 <= 'Sun Dec 24 12:24:25 CET 2006')"
+                "(COL1 >= '2001-12-24T12:24:25.203' AND COL1 <= '2002-12-24T12:24:25.203') OR " +
+                        "(COL1 >= '2003-12-24T12:24:25.203' AND COL1 <= '2004-12-24T12:24:25.203') OR " +
+                        "(COL1 >= '2005-12-24T12:24:25.203' AND COL1 <= '2006-12-24T12:24:25.203')"
         );
     }
 }

@@ -49,7 +49,7 @@ public class EventsWrapper {
                 new TypeReference<List<Event>>() {};
         List<Event> events;
         try {
-            if(jsonNode.has("events")) {
+            if(jsonNode != null && jsonNode.has("events")) {
                 events = DhisController.getInstance().getObjectMapper().
                         readValue(jsonNode.get("events").traverse(), typeRef);
             } else {

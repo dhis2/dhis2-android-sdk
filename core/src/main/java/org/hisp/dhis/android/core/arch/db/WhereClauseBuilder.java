@@ -52,7 +52,7 @@ public class WhereClauseBuilder {
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
     private final StringBuilder whereClause = new StringBuilder();
-    private boolean addOperator = false;
+    private boolean addOperator;
 
     public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
         return appendKeyValue(column, value, AND, EQ_STR, END_STR);

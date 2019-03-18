@@ -41,14 +41,7 @@ public final class InPeriodQueryHelper {
     public static String buildInPeriodsQuery(String key, List<DatePeriod> datePeriods) {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         for (int i = 0; i < datePeriods.size(); i++) {
-            String whereClause = new WhereClauseBuilder()
-                    .appendKeyGreaterOrEqStringValue(key,
-                            BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).startDate()))
-                    .appendKeyLessThanOrEqStringValue(key,
-                            BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).endDate()))
-                    .build();
-
-            builder.appendComplexQuery(whereClause);
+            builder.appendComplexQuery(buildWhereClause(key, datePeriods, i));
 
             if (i != datePeriods.size() - 1) {
                 builder
@@ -57,5 +50,14 @@ public final class InPeriodQueryHelper {
         }
 
         return builder.build();
+    }
+
+    private static String buildWhereClause(String key, List<DatePeriod> datePeriods, int i) {
+        return new WhereClauseBuilder()
+                .appendKeyGreaterOrEqStringValue(key,
+                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).startDate()))
+                .appendKeyLessThanOrEqStringValue(key,
+                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).endDate()))
+                .build();
     }
 }

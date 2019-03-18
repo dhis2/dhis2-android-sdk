@@ -28,51 +28,32 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 
-public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
+import java.util.List;
 
-    private final RepositoryScope scope;
-    public final CollectionRepositoryFactory<R> repositoryFactory;
+public final class SubQueryFilterConnector<R extends ReadOnlyCollectionRepository<?>>
+        extends BaseFilterConnector<R, String> {
 
-    public FilterConnectorFactory(RepositoryScope scope,
-                                  CollectionRepositoryFactory<R> repositoryFactory) {
-        this.scope = scope;
-        this.repositoryFactory = repositoryFactory;
+    SubQueryFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
+                            RepositoryScope scope,
+                            String key) {
+        super(repositoryFactory, scope, key);
     }
 
-    public StringFilterConnector<R> string(String key) {
-        return new StringFilterConnector<>(repositoryFactory, scope, key);
+    String wrapValue(String value) {
+        return value;
     }
 
-    public DateFilterConnector<R> date(String key) {
-        return new DateFilterConnector<>(repositoryFactory, scope, key);
-    }
+    public R inLinkTable(String linkTable, String linkParent, String linkChild, List<String> children) {
+        String subQuery = String.format("SELECT DISTINCT %s FROM %s WHERE %s",
+                linkParent,
+                linkTable,
+                new WhereClauseBuilder().appendInKeyStringValues(linkChild, children).build());
 
-    public BooleanFilterConnector<R> bool(String key) {
-        return new BooleanFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public IntegerFilterConnector<R> integer(String key) {
-        return new IntegerFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public DoubleFilterConnector<R> doubleC(String key) {
-        return new DoubleFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public <E extends Enum<E>> EnumFilterConnector<R, E> enumC(String key) {
-        return new EnumFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public SubQueryFilterConnector<R> subQuery(String key) {
-        return new SubQueryFilterConnector<>(repositoryFactory, scope, key);
-    }
-
-    public R withChild(String child) {
-        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child));
+        return newWithWrappedScope("IN", "(" + subQuery + ")");
     }
 }

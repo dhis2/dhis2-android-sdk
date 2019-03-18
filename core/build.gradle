@@ -145,10 +145,10 @@ android {
 dependencies {
 
     // sqlbrite-migrations library
-    implementation "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
+    api "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
 
     // Support libraries
-    implementation "androidx.annotation:annotation:${libraries.support}"
+    api "androidx.annotation:annotation:${libraries.support}"
 
     // Google's auto-value. Annotations are used only during compilation time, as well as
 
@@ -157,33 +157,35 @@ dependencies {
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
 
     // Dagger
-    implementation "com.google.dagger:dagger:${libraries.dagger}"
+    api "com.google.dagger:dagger:${libraries.dagger}"
     annotationProcessor "com.google.dagger:dagger-compiler:${libraries.dagger}"
 
     // Jackson
-    implementation "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
+    api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
     // Google's play services
-    implementation "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
+    api "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
 
     // Square libraries
-    implementation "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
-    implementation "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
-    implementation "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
+    api "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
+    api "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
+    api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
     // Apache libraries
-    implementation "org.apache.commons:commons-lang3:3.7"
-    implementation("org.apache.commons:commons-jexl:2.1.1") {
+    api "org.apache.commons:commons-lang3:3.7"
+    api("org.apache.commons:commons-jexl:2.1.1") {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     testImplementation "commons-logging:commons-logging:1.2"
 
     // Joda time
-    implementation "joda-time:joda-time:2.9.9"
+    api "joda-time:joda-time:2.9.9"
 
     // Extension which generates mappers for work with cursor and content values
-    implementation "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
+    api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
+
+    api "com.google.code.findbugs:annotations:${libraries.findbugs}"
 
     // Java test dependencies
     testImplementation "junit:junit:${libraries.junit}"
@@ -209,7 +211,6 @@ dependencies {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
-    implementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
 }
 
 apply from: project.file("plugins/gradle-mvn-push.gradle")

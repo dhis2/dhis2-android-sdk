@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.ValueType;

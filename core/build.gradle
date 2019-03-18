@@ -42,7 +42,7 @@ ext {
 
     libraries = [
             // android
-            support         : "25.1.1",
+            support         : '1.0.0-beta01',
 
             // java
             jackson         : "2.8.5",
@@ -62,7 +62,7 @@ ext {
             mockito         : "2.24.5",
             dexmaker        : "2.21.0",
             truth           : "0.31",
-            testrunner      : "0.5",
+            testrunner      : '1.1.0-alpha4',
             equalsverifier  : "2.1.8",
             stetho          : "1.5.0",
 
@@ -89,7 +89,7 @@ android {
         targetSdkVersion configuration.targetSdkVersion
         versionCode configuration.versionCode
         versionName configuration.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -148,7 +148,7 @@ dependencies {
     implementation "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
 
     // Support libraries
-    implementation "com.android.support:support-annotations:${libraries.support}"
+    implementation "androidx.annotation:annotation:${libraries.support}"
 
     // Google's auto-value. Annotations are used only during compilation time, as well as
 
@@ -192,12 +192,12 @@ dependencies {
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     testImplementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
-    testImplementation "com.android.support.test:runner:${libraries.testrunner}"
+    testImplementation "androidx.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    androidTestImplementation "com.android.support.test:runner:${libraries.testrunner}"
+    androidTestImplementation "androidx.test:runner:${libraries.testrunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.

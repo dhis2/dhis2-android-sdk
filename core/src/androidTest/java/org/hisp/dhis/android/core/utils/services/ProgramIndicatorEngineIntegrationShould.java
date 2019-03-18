@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.utils.services;
 
 import android.content.ContentValues;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.category.CategoryCombo;

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.data.file;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import java.io.BufferedReader;
 import java.io.File;

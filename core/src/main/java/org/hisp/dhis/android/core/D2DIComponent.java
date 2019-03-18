@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;

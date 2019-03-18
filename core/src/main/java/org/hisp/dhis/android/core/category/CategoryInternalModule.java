@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.category;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
 

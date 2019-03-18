@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

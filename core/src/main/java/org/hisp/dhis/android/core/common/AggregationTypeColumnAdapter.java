@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.database.EnumColumnAdapter;
 

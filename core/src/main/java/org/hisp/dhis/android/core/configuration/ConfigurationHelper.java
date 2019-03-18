@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 import java.util.Locale;

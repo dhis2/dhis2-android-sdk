@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.category;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;

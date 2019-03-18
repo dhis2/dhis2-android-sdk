@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.category.CategoryCombo;

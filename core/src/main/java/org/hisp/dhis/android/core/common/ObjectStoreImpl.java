@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -38,6 +37,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -149,7 +150,8 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         return processCount(databaseAdapter.query(builder.count()));
     }
 
-    protected int countWhere(@NonNull String whereClause) {
+    @Override
+    public int countWhere(@NonNull String whereClause) {
         return processCount(databaseAdapter.query(builder.countWhere(whereClause)));
     }
 

@@ -67,7 +67,7 @@ public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>
         for (Period period : periods) {
             datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
         }
-        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
+        return inDatePeriods(datePeriods);
     }
 
     protected String wrapValue(Date value) {

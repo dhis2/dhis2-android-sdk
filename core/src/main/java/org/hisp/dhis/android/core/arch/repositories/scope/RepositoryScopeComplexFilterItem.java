@@ -25,36 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import java.util.Map;
+import com.google.auto.value.AutoValue;
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyObjectRepositoryImpl<M, R> {
+@AutoValue
+public abstract class RepositoryScopeComplexFilterItem {
 
-    private final ObjectStore<M> store;
+    public abstract String whereQuery();
 
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                           Map<String, ChildrenAppender<M>> childrenAppenders,
-                                           RepositoryScope scope,
-                                           ObjectRepositoryFactory<R> repositoryFactory) {
-        super(childrenAppenders, scope, repositoryFactory);
-        this.store = store;
+    public static Builder builder() {
+        return new AutoValue_RepositoryScopeComplexFilterItem.Builder();
     }
 
-    public M getWithoutChildren() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.selectFirst();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
-        }
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder whereQuery(String whereQuery);
+
+        public abstract RepositoryScopeComplexFilterItem build();
     }
 }

@@ -25,36 +25,44 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+package org.hisp.dhis.android.core.period;
 
-import java.util.Map;
+import android.support.annotation.NonNull;
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyObjectRepositoryImpl<M, R> {
+import com.google.auto.value.AutoValue;
 
-    private final ObjectStore<M> store;
+import java.util.Date;
 
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                           Map<String, ChildrenAppender<M>> childrenAppenders,
-                                           RepositoryScope scope,
-                                           ObjectRepositoryFactory<R> repositoryFactory) {
-        super(childrenAppenders, scope, repositoryFactory);
-        this.store = store;
+@AutoValue
+public abstract class DatePeriod {
+
+    @NonNull
+    public abstract Date startDate();
+
+    @NonNull
+    public abstract Date endDate();
+
+    public abstract Builder toBuilder();
+
+    public static DatePeriod create(Date startDate, Date endDate) {
+        return builder()
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
     }
 
-    public M getWithoutChildren() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.selectFirst();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
-        }
+    public static Builder builder() {
+        return new AutoValue_DatePeriod.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder startDate(Date startDate);
+
+        public abstract Builder endDate(Date endDate);
+
+        public abstract DatePeriod build();
     }
 }

@@ -25,36 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+
+package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 
-import java.util.Map;
+import java.util.List;
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyObjectRepositoryImpl<M, R> {
+public final class InPeriodQueryHelper {
 
-    private final ObjectStore<M> store;
-
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                           Map<String, ChildrenAppender<M>> childrenAppenders,
-                                           RepositoryScope scope,
-                                           ObjectRepositoryFactory<R> repositoryFactory) {
-        super(childrenAppenders, scope, repositoryFactory);
-        this.store = store;
+    private InPeriodQueryHelper(){
     }
 
-    public M getWithoutChildren() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.selectFirst();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
+    public static String buildInPeriodsQuery(String key, List<DatePeriod> datePeriods) {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        for (int i = 0; i < datePeriods.size(); i++) {
+            builder.appendComplexQuery(buildWhereClause(key, datePeriods, i));
+
+            if (i != datePeriods.size() - 1) {
+                builder
+                        .appendOperator(" OR ");
+            }
         }
+
+        return builder.build();
+    }
+
+    private static String buildWhereClause(String key, List<DatePeriod> datePeriods, int i) {
+        return new WhereClauseBuilder()
+                .appendKeyGreaterOrEqStringValue(key,
+                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).startDate()))
+                .appendKeyLessThanOrEqStringValue(key,
+                        BaseIdentifiableObject.DATE_FORMAT.format(datePeriods.get(i).endDate()))
+                .build();
     }
 }

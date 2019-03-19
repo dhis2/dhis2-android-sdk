@@ -1,13 +1,13 @@
 package org.hisp.dhis.android.core.sms.data.webapirepository;
 
-import android.support.annotation.Nullable;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_MetadataResponseModel.Builder.class)

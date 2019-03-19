@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 import android.os.StrictMode;
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.BuildConfig;
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
@@ -53,6 +51,7 @@ import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.settings.SystemSettingModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
@@ -61,6 +60,8 @@ import org.hisp.dhis.android.core.wipe.WipeModule;
 
 import java.util.concurrent.Callable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -124,6 +125,10 @@ public final class D2 {
 
     public SystemInfoModule systemInfoModule() {
         return this.modules.systemInfo;
+    }
+
+    public SystemSettingModule systemSettingModule() {
+        return this.modules.systemSetting;
     }
 
     public PeriodModule periodModule() {

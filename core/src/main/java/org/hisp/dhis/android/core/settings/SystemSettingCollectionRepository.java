@@ -28,39 +28,47 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreProvider<SystemSetting> {
+@Reusable
+public final class SystemSettingCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<SystemSetting, SystemSettingCollectionRepository> {
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<SystemSetting> store(DatabaseAdapter databaseAdapter) {
-        return SystemSettingStore.create(databaseAdapter);
+    @Inject
+    SystemSettingCollectionRepository(final ObjectWithoutUidStore<SystemSetting> store,
+                                      final Map<String, ChildrenAppender<SystemSetting>> childrenAppenders,
+                                      final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new SystemSettingCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<SystemSetting> handler(ObjectWithoutUidStore<SystemSetting> store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    public EnumFilterConnector<SystemSettingCollectionRepository, SystemSetting.SystemSettingKey> byKey() {
+        return cf.enumC(SystemSettingTableInfo.Columns.KEY);
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<SystemSetting>> childrenAppenders() {
-        return Collections.emptyMap();
+    public StringFilterConnector<SystemSettingCollectionRepository> byValue() {
+        return cf.string(SystemSettingTableInfo.Columns.VALUE);
+    }
+
+    public ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> flag() {
+        return byKey().eq(SystemSetting.SystemSettingKey.FLAG).one();
+
+    }
+
+    public ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> style() {
+        return byKey().eq(SystemSetting.SystemSettingKey.STYLE).one();
     }
 }

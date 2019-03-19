@@ -47,8 +47,14 @@ class SystemSettingsSplitter {
     }
 
     List<SystemSetting> splitSettings(SystemSettings settings) {
-        SystemSetting flag = SystemSetting.builder().key("flag").value(settings.keyFlag()).build();
-        SystemSetting style = SystemSetting.builder().key("style").value(settings.keyStyle()).build();
+        SystemSetting flag = SystemSetting.builder()
+                .key(SystemSetting.SystemSettingKey.FLAG)
+                .value(settings.keyFlag())
+                .build();
+        SystemSetting style = SystemSetting.builder()
+                .key(SystemSetting.SystemSettingKey.STYLE)
+                .value(settings.keyStyle())
+                .build();
 
         List<SystemSetting> settingList = new ArrayList<>(2);
         settingList.add(flag);

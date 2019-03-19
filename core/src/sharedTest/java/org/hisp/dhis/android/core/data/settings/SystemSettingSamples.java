@@ -34,7 +34,7 @@ public class SystemSettingSamples {
 
     public static SystemSetting getSystemSetting() {
         return SystemSetting.builder()
-                .key("key")
+                .key(SystemSetting.SystemSettingKey.FLAG)
                 .value("value")
                 .build();
     }

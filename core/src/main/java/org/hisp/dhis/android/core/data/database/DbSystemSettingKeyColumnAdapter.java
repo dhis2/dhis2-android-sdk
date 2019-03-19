@@ -26,37 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.data.database;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.hisp.dhis.android.core.settings.SystemSetting;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
-@RunWith(JUnit4.class)
-public class SystemSettingSplitterShould {
-
-    private SystemSettings settingsPojo = SystemSettings.builder().keyFlag("aFlag").keyStyle("aStyle").build();
-    private SystemSettingsSplitter systemSettingsSplitter = new SystemSettingsSplitter();
-
-    @Test
-    public void build_flag_setting() throws IOException, ParseException {
-        List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
-        SystemSetting flag = settingList.get(0);
-        assertThat(flag.key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG);
-        assertThat(flag.value()).isEqualTo("aFlag");
-    }
-
-    @Test
-    public void build_style_setting() throws IOException, ParseException {
-        List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
-        SystemSetting style = settingList.get(1);
-        assertThat(style.key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
-        assertThat(style.value()).isEqualTo("aStyle");
+public class DbSystemSettingKeyColumnAdapter extends EnumColumnAdapter<SystemSetting.SystemSettingKey> {
+    @Override
+    protected Class<SystemSetting.SystemSettingKey> getEnumClass() {
+        return SystemSetting.SystemSettingKey.class;
     }
 }

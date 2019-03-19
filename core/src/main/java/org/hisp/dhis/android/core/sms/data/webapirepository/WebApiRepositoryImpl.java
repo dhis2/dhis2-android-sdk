@@ -70,7 +70,11 @@ public class WebApiRepositoryImpl implements WebApiRepository {
                 call.enqueue(new Callback<T>() {
                     @Override
                     public void onResponse(Call<T> call, Response<T> response) {
-                        emitter.onSuccess(response.body());
+                        if (response.isSuccessful() && response.body() != null) {
+                            emitter.onSuccess(response.body());
+                        } else {
+                            emitter.onError(new HttpException(response.code()));
+                        }
                     }
 
                     @Override

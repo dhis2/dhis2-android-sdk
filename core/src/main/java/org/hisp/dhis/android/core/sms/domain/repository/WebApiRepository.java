@@ -20,4 +20,17 @@ public interface WebApiRepository {
         public boolean trackedEntityAttributes;
         public boolean programs;
     }
+
+    class HttpException extends RuntimeException {
+        private final int code;
+
+        public HttpException(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String toString() {
+            return "HTTP response: " + " " + code;
+        }
+    }
 }

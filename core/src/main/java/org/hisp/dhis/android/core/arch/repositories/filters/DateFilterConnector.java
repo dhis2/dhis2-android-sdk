@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.repositories.filters;
 
-import android.support.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -41,6 +39,8 @@ import org.hisp.dhis.android.core.period.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
 

@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import androidx.core.content.ContextCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
@@ -75,20 +74,20 @@ public class DeviceStateRepositoryImpl implements DeviceStateRepository {
     @Override
     public Single<Boolean> hasCheckNetworkPermission() {
         return Single.just(PackageManager.PERMISSION_GRANTED ==
-                ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE));
+                context.checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE));
     }
 
     @Override
     public Single<Boolean> hasSendSMSPermission() {
         return Single.just(PackageManager.PERMISSION_GRANTED ==
-                ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS));
+                context.checkCallingOrSelfPermission(Manifest.permission.SEND_SMS));
     }
 
     @Override
     public Single<Boolean> hasReceiveSMSPermission() {
         return Single.just(PackageManager.PERMISSION_GRANTED ==
-                ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) &&
+                context.checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) &&
                 PackageManager.PERMISSION_GRANTED ==
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_SMS));
+                        context.checkCallingOrSelfPermission(Manifest.permission.READ_SMS));
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.common.BaseModel;

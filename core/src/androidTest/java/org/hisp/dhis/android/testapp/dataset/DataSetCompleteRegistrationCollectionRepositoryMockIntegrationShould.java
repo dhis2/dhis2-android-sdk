@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;

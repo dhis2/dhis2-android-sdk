@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns;

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import javax.inject.Inject;
 

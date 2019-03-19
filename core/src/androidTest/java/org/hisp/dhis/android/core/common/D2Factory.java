@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 

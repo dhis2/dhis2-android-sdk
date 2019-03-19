@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

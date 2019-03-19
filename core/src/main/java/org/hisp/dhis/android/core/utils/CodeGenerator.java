@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.utils;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface CodeGenerator {
 

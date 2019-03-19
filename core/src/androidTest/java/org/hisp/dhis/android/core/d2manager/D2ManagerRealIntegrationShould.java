@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.d2manager;
 
-import android.support.test.InstrumentationRegistry;
-
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.common.collect.Lists;
 
@@ -45,6 +43,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Random;
 
+import androidx.test.InstrumentationRegistry;
 import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.api;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;

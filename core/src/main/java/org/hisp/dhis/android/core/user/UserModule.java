@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.Unit;
 

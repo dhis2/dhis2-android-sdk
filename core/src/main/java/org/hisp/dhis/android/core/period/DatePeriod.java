@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.period;
 
-import android.support.annotation.NonNull;
-
 import com.google.auto.value.AutoValue;
 
 import java.util.Date;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class DatePeriod {

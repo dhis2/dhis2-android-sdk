@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;

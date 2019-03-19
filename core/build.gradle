@@ -27,12 +27,58 @@
  */
 
 apply plugin: "com.android.library"
-apply from: rootProject.file("plugins/android-checkstyle.gradle")
-apply from: rootProject.file("plugins/android-findbugs.gradle")
-apply from: rootProject.file("plugins/android-pmd.gradle")
+apply from: project.file("plugins/android-checkstyle.gradle")
+apply from: project.file("plugins/android-findbugs.gradle")
+apply from: project.file("plugins/android-pmd.gradle")
 
-def configuration = rootProject.ext.configuration
-def libraries = rootProject.ext.libraries
+ext {
+    configuration = [
+            buildToolsVersion: "28.0.3",
+            minSdkVersion    : 19,
+            targetSdkVersion : 28,
+            versionCode      : 124,
+            versionName      : "0.14.5-SNAPSHOT"
+    ]
+
+    libraries = [
+            // android
+            support         : '1.0.0-beta01',
+
+            // java
+            jackson         : "2.8.5",
+            autovalue       : "1.3",
+            autovaluecursor : "1.0.1",
+            retrofit        : "2.1.0",
+            okhttp          : "3.5.0",
+            duktape         : "1.1.0",
+            dagger          : "2.14.1",
+
+            // code checks
+            findbugs        : "3.0.0",
+
+            // test dependencies
+            junit           : "4.12",
+            assertj         : "3.11.1",
+            mockito         : "2.24.5",
+            dexmaker        : "2.21.0",
+            truth           : "0.31",
+            testrunner      : '1.1.0-alpha4',
+            equalsverifier  : "2.1.8",
+            stetho          : "1.5.0",
+
+            // plugins
+            errorpronecore  : "2.0.15",
+
+            //database
+            sqlbritemigrations  : "v1.0.1",
+
+            // google
+            safetynet  : "16.0.0",
+    ]
+}
+
+def configuration = project.ext.configuration
+def libraries = project.ext.libraries
 
 android {
     compileSdkVersion configuration.targetSdkVersion
@@ -43,7 +89,7 @@ android {
         targetSdkVersion configuration.targetSdkVersion
         versionCode configuration.versionCode
         versionName configuration.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -99,10 +145,10 @@ android {
 dependencies {
 
     // sqlbrite-migrations library
-    implementation "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
+    api "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
 
     // Support libraries
-    implementation "com.android.support:support-annotations:${libraries.support}"
+    api "androidx.annotation:annotation:${libraries.support}"
 
     // Google's auto-value. Annotations are used only during compilation time, as well as
 
@@ -111,33 +157,35 @@ dependencies {
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
 
     // Dagger
-    implementation "com.google.dagger:dagger:${libraries.dagger}"
+    api "com.google.dagger:dagger:${libraries.dagger}"
     annotationProcessor "com.google.dagger:dagger-compiler:${libraries.dagger}"
 
     // Jackson
-    implementation "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
+    api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
     // Google's play services
-    implementation "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
+    api "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
 
     // Square libraries
-    implementation "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
-    implementation "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
-    implementation "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
+    api "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
+    api "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
+    api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
     // Apache libraries
-    implementation "org.apache.commons:commons-lang3:3.7"
-    implementation("org.apache.commons:commons-jexl:2.1.1") {
+    api "org.apache.commons:commons-lang3:3.7"
+    api("org.apache.commons:commons-jexl:2.1.1") {
         exclude group: 'commons-logging', module: 'commons-logging'
     }
     testImplementation "commons-logging:commons-logging:1.2"
 
     // Joda time
-    implementation "joda-time:joda-time:2.9.9"
+    api "joda-time:joda-time:2.9.9"
 
     // Extension which generates mappers for work with cursor and content values
-    implementation "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
+    api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
+
+    api "com.google.code.findbugs:annotations:${libraries.findbugs}"
 
     // Java test dependencies
     testImplementation "junit:junit:${libraries.junit}"
@@ -146,12 +194,12 @@ dependencies {
     testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
     testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
     testImplementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
-    testImplementation "com.android.support.test:runner:${libraries.testrunner}"
+    testImplementation "androidx.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    androidTestImplementation "com.android.support.test:runner:${libraries.testrunner}"
+    androidTestImplementation "androidx.test:runner:${libraries.testrunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
@@ -163,7 +211,6 @@ dependencies {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
-    implementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
 }
 
-apply from: rootProject.file("plugins/gradle-mvn-push.gradle")
+apply from: project.file("plugins/gradle-mvn-push.gradle")

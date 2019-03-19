@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.data.database;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 

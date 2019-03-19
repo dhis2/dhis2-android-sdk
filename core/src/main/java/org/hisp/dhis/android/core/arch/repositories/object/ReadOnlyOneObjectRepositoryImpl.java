@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBu
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         extends ReadOnlyObjectRepositoryImpl<M, R> {
@@ -42,7 +42,7 @@ public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnly
     private final ObjectStore<M> store;
 
     public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                           Collection<ChildrenAppender<M>> childrenAppenders,
+                                           Map<String, ChildrenAppender<M>> childrenAppenders,
                                            RepositoryScope scope,
                                            ObjectRepositoryFactory<R> repositoryFactory) {
         super(childrenAppenders, scope, repositoryFactory);
@@ -50,7 +50,7 @@ public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnly
     }
 
     public M getWithoutChildren() {
-        if (scope.filters().isEmpty()) {
+        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
             return store.selectFirst();
         } else {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,7 +46,7 @@ public final class ForeignKeyViolationCollectionRepository
 
     @Inject
     ForeignKeyViolationCollectionRepository(final ObjectStore<ForeignKeyViolation> store,
-                                            final Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
+                                            final Map<String, ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
                                             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, s)));

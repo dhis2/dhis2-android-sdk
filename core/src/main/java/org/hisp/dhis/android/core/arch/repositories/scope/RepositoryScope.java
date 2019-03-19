@@ -44,6 +44,9 @@ public abstract class RepositoryScope {
     public abstract List<RepositoryScopeFilterItem> filters();
 
     @NonNull
+    public abstract List<RepositoryScopeComplexFilterItem> complexFilters();
+
+    @NonNull
     public abstract ChildrenSelection children();
 
     @Nullable
@@ -59,6 +62,8 @@ public abstract class RepositoryScope {
     public abstract static class Builder {
 
         public abstract Builder filters(List<RepositoryScopeFilterItem> filters);
+
+        public abstract Builder complexFilters(List<RepositoryScopeComplexFilterItem> complexFilters);
 
         public abstract Builder children(ChildrenSelection children);
 

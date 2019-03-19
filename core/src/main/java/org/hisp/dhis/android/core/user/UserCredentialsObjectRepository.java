@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -43,7 +43,7 @@ public final class UserCredentialsObjectRepository
 
     @Inject
     UserCredentialsObjectRepository(UserCredentialsStore store,
-                                    Collection<ChildrenAppender<UserCredentials>> childrenAppenders,
+                                    Map<String, ChildrenAppender<UserCredentials>> childrenAppenders,
                                     RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new UserCredentialsObjectRepository(store, childrenAppenders, s));

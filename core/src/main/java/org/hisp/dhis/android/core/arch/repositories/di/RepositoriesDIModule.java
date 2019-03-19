@@ -46,6 +46,7 @@ public final class RepositoriesDIModule {
         return RepositoryScope.builder()
                 .children(ChildrenSelection.empty())
                 .filters(Collections.emptyList())
+                .complexFilters(Collections.emptyList())
                 .limit(null)
                 .build();
     }

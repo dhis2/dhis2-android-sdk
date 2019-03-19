@@ -35,10 +35,13 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,7 +53,7 @@ public final class ProgramCollectionRepository
 
     @Inject
     ProgramCollectionRepository(final ProgramStoreInterface store,
-                                final Collection<ChildrenAppender<Program>> childrenAppenders,
+                                final Map<String, ChildrenAppender<Program>> childrenAppenders,
                                 final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new ProgramCollectionRepository(store, childrenAppenders, s)));
@@ -162,5 +165,53 @@ public final class ProgramCollectionRepository
 
     public EnumFilterConnector<ProgramCollectionRepository, FeatureType> byFeatureType() {
         return cf.enumC(ProgramFields.FEATURE_TYPE);
+    }
+
+    public ProgramCollectionRepository byOrganisationUnitList(List<String> uids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
+                OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
+                OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
+                uids);
+    }
+
+    public ProgramCollectionRepository withObjectStyle() {
+        return cf.withChild(ProgramFields.STYLE);
+    }
+
+    public ProgramCollectionRepository withProgramStages() {
+        return cf.withChild(ProgramFields.PROGRAM_STAGES);
+    }
+
+    public ProgramCollectionRepository withProgramRuleVariables() {
+        return cf.withChild(ProgramFields.PROGRAM_RULE_VARIABLES);
+    }
+
+    public ProgramCollectionRepository withProgramIndicators() {
+        return cf.withChild(ProgramFields.PROGRAM_INDICATORS);
+    }
+
+    public ProgramCollectionRepository withProgramRules() {
+        return cf.withChild(ProgramFields.PROGRAM_RULES);
+    }
+
+    public ProgramCollectionRepository withProgramTrackedEntityAttributes() {
+        return cf.withChild(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES);
+    }
+
+    public ProgramCollectionRepository withProgramSections() {
+        return cf.withChild(ProgramFields.PROGRAM_SECTIONS);
+    }
+
+    public ProgramCollectionRepository withCategoryCombo() {
+        return cf.withChild(ProgramFields.CATEGORY_COMBO);
+    }
+
+    public ProgramCollectionRepository withRelatedProgram() {
+        return cf.withChild(ProgramFields.RELATED_PROGRAM);
+    }
+
+    public ProgramCollectionRepository withTrackedEntityType() {
+        return cf.withChild(ProgramFields.TRACKED_ENTITY_TYPE);
     }
 }

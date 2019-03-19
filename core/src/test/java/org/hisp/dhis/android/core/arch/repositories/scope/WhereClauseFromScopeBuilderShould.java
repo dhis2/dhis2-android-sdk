@@ -91,6 +91,9 @@ public class WhereClauseFromScopeBuilderShould {
     }
 
     private RepositoryScope scopeForItems(List<RepositoryScopeFilterItem> items) {
-        return RepositoryScope.builder().filters(items).children(ChildrenSelection.empty()).build();
+        return RepositoryScope.builder().filters(items)
+                .complexFilters(Collections.emptyList())
+                .children(ChildrenSelection.empty())
+                .build();
     }
 }

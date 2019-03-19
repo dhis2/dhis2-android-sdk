@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -45,7 +45,7 @@ public final class TrackedEntityTypeCollectionRepository
 
     @Inject
     TrackedEntityTypeCollectionRepository(final IdentifiableObjectStore<TrackedEntityType> store,
-                                          final Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders,
+                                          final Map<String, ChildrenAppender<TrackedEntityType>> childrenAppenders,
                                           final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new TrackedEntityTypeCollectionRepository(store, childrenAppenders, s)));

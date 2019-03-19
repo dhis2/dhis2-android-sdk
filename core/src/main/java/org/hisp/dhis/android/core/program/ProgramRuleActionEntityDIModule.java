@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,7 +58,7 @@ public final class ProgramRuleActionEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramRuleAction>> childrenAppenders() {
-        return Collections.emptyList();
+    Map<String, ChildrenAppender<ProgramRuleAction>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

@@ -30,10 +30,13 @@ package org.hisp.dhis.android.core.enrollment;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -69,5 +72,122 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends SyncedD
                 .uid("enroll2").withAllChildren().get();
         assertThat(enrollment1.notes().size(), is(2));
         assertThat(enrollment2.notes().size(), is(2));
+    }
+
+    @Test
+    public void filter_by_uid() {
+        Enrollment enrollment = d2.enrollmentModule().enrollments
+                .byUid().eq("enroll1")
+                .one().get();
+        assertThat(enrollment.uid(), is("enroll1"));
+        assertThat(enrollment.program(), is("lxAQ7Zs9VYR"));
+    }
+
+    @Test
+    public void filter_by_created() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T13:40:28.322");
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byCreated().eq(created)
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_last_updated() throws ParseException {
+        Date lastUpdated = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T13:40:28.718");
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byLastUpdated().eq(lastUpdated)
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_created_as_client() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byCreatedAtClient().eq("2019-01-08T13:40:28.718")
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_last_updated_as_client() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byLastUpdatedAtClient().eq("2018-01-11T13:40:28.718")
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_organisation_unit() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byOrganisationUnit().eq("DiszpKrYNg8")
+                .get();
+        assertThat(enrollments.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_program() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byProgram().eq("lxAQ7Zs9VYR")
+                .get();
+        assertThat(enrollments.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_enrollment_date() throws ParseException {
+        Date created = BaseIdentifiableObject.DATE_FORMAT.parse("2018-01-10T00:00:00.000");
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byEnrollmentDate().eq(created)
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_incident_date() throws ParseException {
+        Date lastUpdated = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T00:00:00.000");
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byIncidentDate().eq(lastUpdated)
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_follow_up() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byFollowUp().isTrue()
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_status() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byStatus().eq(EnrollmentStatus.ACTIVE)
+                .get();
+        assertThat(enrollments.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_tracked_entity_instance() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byTrackedEntityInstance().eq("nWrB0TfWlvD")
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_coordinate_latitude() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byCoordinateLatitude().eq(2.6)
+                .get();
+        assertThat(enrollments.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_coordinate_longitude() {
+        List<Enrollment> enrollments = d2.enrollmentModule().enrollments
+                .byCoordinateLongitude().eq(4.1)
+                .get();
+        assertThat(enrollments.size(), is(1));
     }
 }

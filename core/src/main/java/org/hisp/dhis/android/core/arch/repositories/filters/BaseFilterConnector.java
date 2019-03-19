@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeComplexFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.utils.Utils;
@@ -44,7 +45,7 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
 
     private final CollectionRepositoryFactory<R> repositoryFactory;
     private final RepositoryScope scope;
-    private final String key;
+    final String key;
 
     BaseFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
                         RepositoryScope scope,
@@ -63,6 +64,15 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
 
     R newWithWrappedScope(String operator, V value) {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, wrapValue(value)));
+    }
+
+    private RepositoryScope updatedUnwrappedScope(String whereClause) {
+        return RepositoryScopeHelper.withComplexFilterItem(scope,
+                RepositoryScopeComplexFilterItem.builder().whereQuery(whereClause).build());
+    }
+
+    R newWithWrappedScope(String whereClause) {
+        return repositoryFactory.updated(updatedUnwrappedScope(whereClause));
     }
 
     private String getCommaSeparatedValues(Collection<V> values) {

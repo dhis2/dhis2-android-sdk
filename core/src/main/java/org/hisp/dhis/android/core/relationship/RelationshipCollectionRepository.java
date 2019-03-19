@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -70,7 +71,7 @@ public final class RelationshipCollectionRepository
 
     @Inject
     RelationshipCollectionRepository(final IdentifiableObjectStore<Relationship> store,
-                                     final Collection<ChildrenAppender<Relationship>> childrenAppenders,
+                                     final Map<String, ChildrenAppender<Relationship>> childrenAppenders,
                                      final RepositoryScope scope,
                                      final RelationshipHandler relationshipHandler,
                                      final RelationshipItemStore relationshipItemStore,

@@ -40,8 +40,8 @@ public final class SectionFields {
     final static String DATA_SET = "dataSet";
     final static String SHOW_ROW_TOTALS = "showRowTotals";
     final static String SHOW_COLUMN_TOTALS = "showColumnTotals";
-    private final static String DATA_ELEMENTS = "dataElements";
-    private final static String GREYED_FIELDS = "greyedFields";
+    final static String DATA_ELEMENTS = "dataElements";
+     final static String GREYED_FIELDS = "greyedFields";
 
     private static final FieldsHelper<Section> fh = new FieldsHelper<>();
 

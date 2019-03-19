@@ -33,16 +33,16 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.Model;
 
-import java.util.Collection;
+import java.util.Map;
 
 public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         implements ReadOnlyObjectRepository<M> {
 
-    private final Collection<ChildrenAppender<M>> childrenAppenders;
+    private final Map<String, ChildrenAppender<M>> childrenAppenders;
     final RepositoryScope scope;
     private final ObjectRepositoryFactory<R> repositoryFactory;
 
-    ReadOnlyObjectRepositoryImpl(Collection<ChildrenAppender<M>> childrenAppenders,
+    ReadOnlyObjectRepositoryImpl(Map<String, ChildrenAppender<M>> childrenAppenders,
                                  RepositoryScope scope,
                                  ObjectRepositoryFactory<R> repositoryFactory) {
         this.childrenAppenders = childrenAppenders;
@@ -50,19 +50,11 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
         this.repositoryFactory = repositoryFactory;
     }
 
-    private M getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders);
-    }
-
     abstract M getWithoutChildren();
 
     @Override
     public final M get() {
-        if (scope.children().areAllChildrenSelected) {
-            return getWithAllChildren();
-        } else {
-            return getWithoutChildren();
-        }
+        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
     }
 
     @Override

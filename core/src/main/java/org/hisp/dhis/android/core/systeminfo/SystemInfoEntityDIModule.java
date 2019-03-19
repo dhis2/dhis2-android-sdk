@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -68,7 +68,7 @@ public final class SystemInfoEntityDIModule implements ObjectWithoutUidEntityDIM
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<SystemInfo>> childrenAppenders() {
-        return Collections.emptyList();
+    Map<String, ChildrenAppender<SystemInfo>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

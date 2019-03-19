@@ -155,7 +155,7 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         return processCount(databaseAdapter.query(builder.countWhere(whereClause)));
     }
 
-    private int processCount(Cursor cursor) {
+    protected int processCount(Cursor cursor) {
         try {
             cursor.moveToFirst();
             return cursor.getInt(0);

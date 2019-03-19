@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -53,6 +55,8 @@ public final class EventCollectionRepository
 
     private final EventPostCall postCall;
 
+    private final EventStore store;
+
     @Inject
     EventCollectionRepository(final EventStore store,
                               final Map<String, ChildrenAppender<Event>> childrenAppenders,
@@ -60,6 +64,7 @@ public final class EventCollectionRepository
                               final EventPostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new EventCollectionRepository(store, childrenAppenders, s, postCall)));
+        this.store = store;
         this.postCall = postCall;
     }
 
@@ -141,5 +146,13 @@ public final class EventCollectionRepository
         return cf.string(EventTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
     }
 
+    public int countTrackedEntityInstances() {
+        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
+            return store.countTeisWhereEvents(null);
+        } else {
+            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
+            return store.countTeisWhereEvents(whereClauseBuilder.getWhereClause(scope));
+        }
+    }
 
 }

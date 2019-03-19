@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;

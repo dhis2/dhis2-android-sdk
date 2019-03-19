@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.concurrent.Callable;
@@ -48,19 +47,19 @@ public final class UserModule {
     private final Provider<LogOutUserCallable> logoutCallCallProvider;
     private final UserAuthenticateCallFactory loginCallFactory;
 
-    public final ReadOnlyObjectRepository<AuthenticatedUser> authenticatedUser;
+    public final AuthenticatedUserObjectRepository authenticatedUser;
     public final UserRoleCollectionRepository userRoles;
-    public final ReadOnlyObjectRepository<UserCredentials> userCredentials;
-    public final ReadOnlyObjectRepository<User> user;
+    public final UserCredentialsObjectRepository userCredentials;
+    public final UserObjectRepository user;
 
     @Inject
     UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
                Provider<LogOutUserCallable> logoutCallCallProvider,
                UserAuthenticateCallFactory loginCallFactory,
-               ReadOnlyObjectRepository<AuthenticatedUser> authenticatedUser,
+               AuthenticatedUserObjectRepository authenticatedUser,
                UserRoleCollectionRepository userRoles,
-               ReadOnlyObjectRepository<UserCredentials> userCredentials,
-               ReadOnlyObjectRepository<User> user) {
+               UserCredentialsObjectRepository userCredentials,
+               UserObjectRepository user) {
         this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
         this.logoutCallCallProvider = logoutCallCallProvider;
         this.loginCallFactory = loginCallFactory;

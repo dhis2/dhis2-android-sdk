@@ -31,11 +31,10 @@ package org.hisp.dhis.android.core.maintenance;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,9 +46,9 @@ public final class ForeignKeyViolationCollectionRepository
 
     @Inject
     ForeignKeyViolationCollectionRepository(final ObjectStore<ForeignKeyViolation> store,
-                                            final Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
-                                            final List<RepositoryScopeItem> scope) {
+                                            final Map<String, ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
+                                            final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, s)));
     }
 }

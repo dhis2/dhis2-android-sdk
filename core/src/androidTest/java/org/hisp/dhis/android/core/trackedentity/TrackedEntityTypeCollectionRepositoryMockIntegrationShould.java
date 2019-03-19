@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void include_object_style_as_children() {
         TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(trackedEntityType.style().icon(), is("my-tracked-entity-attribute-icon-name"));
         assertThat(trackedEntityType.style().color(), is("#000"));
     }
@@ -60,7 +60,7 @@ public class TrackedEntityTypeCollectionRepositoryMockIntegrationShould extends 
     @Test
     public void include_attributes_as_children() {
         TrackedEntityType trackedEntityType = d2.trackedEntityModule().trackedEntityTypes
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(trackedEntityType.trackedEntityTypeAttributes().size(), is(1));
     }
 }

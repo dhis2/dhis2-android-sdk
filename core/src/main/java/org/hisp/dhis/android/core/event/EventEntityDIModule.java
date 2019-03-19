@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueChildrenAppender;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +57,8 @@ public final class EventEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
+    Map<String, ChildrenAppender<Event>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(EventFields.TRACKED_ENTITY_DATA_VALUES,
+                TrackedEntityDataValueChildrenAppender.create(databaseAdapter));
     }
 }

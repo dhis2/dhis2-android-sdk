@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.dataset.Section;
@@ -93,7 +93,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void return_greyed_fields_as_children() {
         Section section = d2.dataSetModule().sections
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(section.greyedFields().size(), is(1));
         assertThat(section.greyedFields().get(0).uid(), is("ca8lfO062zg.Prlt0C1RF0s"));
     }
@@ -101,7 +101,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void return_data_element_as_children() {
         Section section = d2.dataSetModule().sections
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(section.dataElements().size(), is(1));
         assertThat(section.dataElements().get(0).uid(), is("g9eOBujte1U"));
         assertThat(section.dataElements().get(0).code(), is("DE_2005735"));

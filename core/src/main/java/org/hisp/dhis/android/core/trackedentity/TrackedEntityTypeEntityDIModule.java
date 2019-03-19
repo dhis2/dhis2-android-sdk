@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -61,16 +61,18 @@ public final class TrackedEntityTypeEntityDIModule implements IdentifiableStoreP
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<TrackedEntityType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<TrackedEntityType>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<TrackedEntityType> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         TrackedEntityTypeTableInfo.TABLE_INFO
                 );
 
-        return Arrays.asList(
-                objectStyleChildrenAppender,
-                TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)
-        );
+        return new HashMap<String, ChildrenAppender<TrackedEntityType>>() {{
+            put(TrackedEntityTypeFields.STYLE, objectStyleChildrenAppender);
+            put(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES,
+                    TrackedEntityTypeAttributeChildrenAppender.create(databaseAdapter)); 
+        }};
     }
 }

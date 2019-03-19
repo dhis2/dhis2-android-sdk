@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -61,29 +61,32 @@ public final class ProgramEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Program>> childrenAppenders(
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<Program>> childrenAppenders(
             DatabaseAdapter databaseAdapter,
             ProgramCategoryComboChildrenAppender categoryComboChildrenAppender,
             RelatedProgramChildrenAppender relatedProgramChildrenAppender,
             ProgramTrackedEntityTypeChildrenAppender trackedEntityTypeChildrenAppender) {
+
         ChildrenAppender<Program> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         ProgramTableInfo.TABLE_INFO
                 );
 
-        return Arrays.asList(
-                objectStyleChildrenAppender,
-                ProgramStageChildrenAppender.create(databaseAdapter),
-                ProgramRuleVariableChildrenAppender.create(databaseAdapter),
-                ProgramIndicatorChildrenAppender.create(databaseAdapter),
-                ProgramRuleChildrenAppender.create(databaseAdapter),
-                ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter),
-                ProgramSectionChildrenAppender.create(databaseAdapter),
-                categoryComboChildrenAppender,
-                relatedProgramChildrenAppender,
-                trackedEntityTypeChildrenAppender
-        );
+        return new HashMap<String, ChildrenAppender<Program>>() {{
+            put(ProgramFields.STYLE, objectStyleChildrenAppender);
+            put(ProgramFields.PROGRAM_STAGES, ProgramStageChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_RULE_VARIABLES, ProgramRuleVariableChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_INDICATORS, ProgramIndicatorChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_RULES, ProgramRuleChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_TRACKED_ENTITY_ATTRIBUTES,
+                    ProgramTrackedEntityAttributeChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.PROGRAM_SECTIONS, ProgramSectionChildrenAppender.create(databaseAdapter));
+            put(ProgramFields.CATEGORY_COMBO, categoryComboChildrenAppender);
+            put(ProgramFields.RELATED_PROGRAM, relatedProgramChildrenAppender);
+            put(ProgramFields.TRACKED_ENTITY_TYPE, trackedEntityTypeChildrenAppender);
+        }};
     }
 
     @Provides

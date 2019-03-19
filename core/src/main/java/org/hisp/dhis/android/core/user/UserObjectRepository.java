@@ -25,29 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
+package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Map;
 
-public class ReadOnlyFirstObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
+import javax.inject.Inject;
 
-    private final ObjectStore<M> store;
+import dagger.Reusable;
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store, Collection<ChildrenAppender<M>> childrenAppenders) {
-        super(childrenAppenders);
-        this.store = store;
-    }
+@Reusable
+public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository> {
 
-    public ReadOnlyFirstObjectRepositoryImpl(ObjectStore<M> store) {
-        this(store, Collections.emptyList());
-    }
-
-    public M get() {
-        return this.store.selectFirst();
+    @Inject
+    UserObjectRepository(IdentifiableObjectStore<User> store,
+                         Map<String, ChildrenAppender<User>> childrenAppenders,
+                         RepositoryScope scope) {
+        super(store, childrenAppenders, scope,
+                s -> new UserObjectRepository(store, childrenAppenders, s));
     }
 }

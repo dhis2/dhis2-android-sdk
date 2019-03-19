@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.program;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.program.ProgramRule;
@@ -99,7 +99,7 @@ public class ProgramRuleCollectionRepositoryMockIntegrationShould extends Synced
     @Test
     public void include_program_rule_actions_as_children() {
         ProgramRule programRule = d2.programModule().programRules
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(programRule.programRuleActions().size(), is(1));
         assertThat(programRule.programRuleActions().get(0).content(), is("The hemoglobin value cannot be above 99"));
     }

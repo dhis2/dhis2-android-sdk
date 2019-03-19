@@ -34,14 +34,13 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -59,12 +58,11 @@ public final class TrackedEntityInstanceCollectionRepository
     @Inject
     TrackedEntityInstanceCollectionRepository(
             final TrackedEntityInstanceStore store,
-            final Collection<ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
-            final List<RepositoryScopeItem> scope,
+            final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
+            final RepositoryScope scope,
             final TrackedEntityInstancePostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders,
-                        updatedScope, postCall)));
+                s -> new TrackedEntityInstanceCollectionRepository(store, childrenAppenders, s, postCall)));
         this.postCall = postCall;
     }
 

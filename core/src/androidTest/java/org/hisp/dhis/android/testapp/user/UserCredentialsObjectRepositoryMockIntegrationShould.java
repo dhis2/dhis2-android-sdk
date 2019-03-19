@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.user;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.user.UserCredentials;
@@ -50,7 +50,7 @@ public class UserCredentialsObjectRepositoryMockIntegrationShould extends Synced
 
     @Test
     public void return_user_roles_as_children() {
-        UserCredentials userCredentials = d2.userModule().userCredentials.getWithAllChildren();
+        UserCredentials userCredentials = d2.userModule().userCredentials.withAllChildren().get();
         assertThat(userCredentials.userRoles().size(), is(1));
         assertThat(userCredentials.userRoles().get(0).name(), is("Superuser"));
     }

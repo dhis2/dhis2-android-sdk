@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,7 @@ import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSampl
 public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
 
     private Map<String, RelationshipType> typeMap;
-    private ReadOnlyCollectionRepository<RelationshipType> relationshipTypeCollectionRepository;
+    private RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
 
     @Override
     @Before
@@ -87,7 +88,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreT
 
     @Test
     public void get_all_relationship_types_with_children_when_calling_get_set_with_children() {
-        List<RelationshipType> types = relationshipTypeCollectionRepository.getWithAllChildren();
+        List<RelationshipType> types = relationshipTypeCollectionRepository.withAllChildren().get();
         assertThat(types.size()).isEqualTo(2);
 
         for (RelationshipType targetType: types) {

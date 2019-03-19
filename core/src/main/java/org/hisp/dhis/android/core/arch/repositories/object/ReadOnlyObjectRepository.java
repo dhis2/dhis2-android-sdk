@@ -31,6 +31,5 @@ import org.hisp.dhis.android.core.common.Model;
 
 public interface ReadOnlyObjectRepository<M extends Model> {
     M get();
-    M getWithAllChildren();
     boolean exists();
 }

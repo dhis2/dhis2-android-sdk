@@ -28,13 +28,19 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import com.google.common.collect.Lists;
+
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.period.DatePeriod;
+import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,7 +72,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends SyncedDa
 
     @Test
     public void get_objects_with_equal_name_using_one() {
-        ReadOnlyObjectRepository<CategoryCombo> objectRepository = d2.categoryModule().categoryCombos
+        ReadOnlyOneObjectRepositoryFinalImpl<CategoryCombo> objectRepository = d2.categoryModule().categoryCombos
                 .byName().eq("Births")
                 .one();
         CategoryCombo combo = objectRepository.get();
@@ -77,7 +83,7 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends SyncedDa
     public void find_objects_with_children_with_equal_name() {
         CategoryComboCollectionRepository repositoryWithUpdatedScope = d2.categoryModule().categoryCombos
                 .byName().eq("Births");
-        List<CategoryCombo> combos = repositoryWithUpdatedScope.getWithAllChildren();
+        List<CategoryCombo> combos = repositoryWithUpdatedScope.withAllChildren().get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is(BIRTH_UID));
         assertThat(combos.get(0).categories().isEmpty(), is(false));
@@ -227,5 +233,41 @@ public class IdentifiableCollectionFiltersMockIntegrationShould extends SyncedDa
                 .byName().like("%t%");
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(2));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_between_date_periods() throws ParseException {
+        Date before = BaseIdentifiableObject.DATE_FORMAT.parse(BEFORE_DATE);
+        Date inBetween = BaseIdentifiableObject.DATE_FORMAT.parse(IN_BETWEEN_DATE);
+        Date after = BaseIdentifiableObject.DATE_FORMAT.parse(AFTER_DATE);
+
+        List<DatePeriod> beforeDatePeriods = Lists.newArrayList(DatePeriod.create(before, inBetween));
+        List<Category> beforeCategories = d2.categoryModule().categories
+                .byLastUpdated().inDatePeriods(beforeDatePeriods).get();
+        assertThat(beforeCategories.size(), is(2));
+
+        List<DatePeriod> afterDatePeriods = Lists.newArrayList(DatePeriod.create(inBetween, after));
+        List<Category> afterCategories = d2.categoryModule().categories
+                .byLastUpdated().inDatePeriods(afterDatePeriods).get();
+        assertThat(afterCategories.size(), is(2));
+
+        List<DatePeriod> datePeriods = Lists.newArrayList(DatePeriod.create(before, inBetween),
+                DatePeriod.create(inBetween, after));
+        List<Category> categories = d2.categoryModule().categories
+                .byLastUpdated().inDatePeriods(datePeriods).get();
+        assertThat(categories.size(), is(4));
+    }
+
+    @Test
+    public void find_objects_with_last_updated_between_periods() throws ParseException {
+        Period period = Period.builder().periodId("201710")
+                .startDate(BaseIdentifiableObject.DATE_FORMAT.parse("2017-10-01T00:00:00.000"))
+                .endDate(BaseIdentifiableObject.DATE_FORMAT.parse("2017-10-31T23:59:59.999"))
+                .periodType(PeriodType.Monthly)
+                .build();
+
+        List<Category> beforeCategories = d2.categoryModule().categories
+                .byLastUpdated().inPeriods(Lists.newArrayList(period)).get();
+        assertThat(beforeCategories.size(), is(1));
     }
 }

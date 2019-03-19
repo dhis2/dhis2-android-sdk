@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,16 +59,17 @@ public final class ProgramSectionEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<ProgramSection>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<ProgramSection> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         ProgramSectionTableInfo.TABLE_INFO
                 );
 
-        return Arrays.asList(
-                objectStyleChildrenAppender,
-                ProgramSectionAttributeChildrenAppender.create(databaseAdapter)
-        );
+        return new HashMap<String, ChildrenAppender<ProgramSection>>() {{
+            put(ProgramSectionFields.STYLE, objectStyleChildrenAppender);
+            put(ProgramSectionFields.ATTRIBUTES, ProgramSectionAttributeChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

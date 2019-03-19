@@ -32,11 +32,10 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifia
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -48,10 +47,10 @@ public final class ProgramRuleCollectionRepository
 
     @Inject
     ProgramRuleCollectionRepository(final IdentifiableObjectStore<ProgramRule> store,
-                                    final Collection<ChildrenAppender<ProgramRule>> childrenAppenders,
-                                    List<RepositoryScopeItem> scope) {
+                                    final Map<String, ChildrenAppender<ProgramRule>> childrenAppenders,
+                                    final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramRuleCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramRuleCollectionRepository(store, childrenAppenders, s)));
     }
 
 

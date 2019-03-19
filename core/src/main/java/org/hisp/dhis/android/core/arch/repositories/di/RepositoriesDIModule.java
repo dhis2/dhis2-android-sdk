@@ -26,21 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+package org.hisp.dhis.android.core.arch.repositories.di;
+
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 import java.util.Collections;
-import java.util.List;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
 @Module()
-public final class RepositoryScopeDIModule {
+public final class RepositoriesDIModule {
 
     @Provides
     @Reusable
-    List<RepositoryScopeItem> emptyScope() {
-        return Collections.unmodifiableList(Collections.emptyList());
+    RepositoryScope emptyScope() {
+        return RepositoryScope.builder()
+                .children(ChildrenSelection.empty())
+                .filters(Collections.emptyList())
+                .complexFilters(Collections.emptyList())
+                .limit(null)
+                .build();
     }
 }

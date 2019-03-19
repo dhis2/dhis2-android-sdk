@@ -25,33 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo;
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 
-import com.google.auto.value.AutoValue;
+import java.util.Map;
 
-@AutoValue
-public abstract class RepositoryScopeItem {
+import javax.inject.Inject;
 
-    public abstract String key();
+import dagger.Reusable;
 
-    public abstract String operator();
+@Reusable
+public final class SystemInfoObjectRepository
+        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
 
-    public abstract String value();
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeItem.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder key(String key);
-
-        public abstract Builder operator(String operator);
-
-        public abstract Builder value(String value);
-
-        public abstract RepositoryScopeItem build();
+    @Inject
+    SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
+                               Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
+                               RepositoryScope scope,
+                               SystemInfoCall downloadCall) {
+        super(store, childrenAppenders, scope, downloadCall,
+                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, downloadCall));
     }
 }

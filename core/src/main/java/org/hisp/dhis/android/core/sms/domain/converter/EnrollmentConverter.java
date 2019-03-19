@@ -1,8 +1,9 @@
 package org.hisp.dhis.android.core.sms.domain.converter;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
 import android.util.Base64;
+
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.enrollment.Enrollment;

@@ -32,9 +32,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,10 +56,8 @@ public final class RelationshipEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<Relationship>> childrenAppenders(
+    Map<String, ChildrenAppender<Relationship>> childrenAppenders(
             RelationshipItemChildrenAppender itemChildrenAppender) {
-        List<ChildrenAppender<Relationship>> appenders = new ArrayList<>(1);
-        appenders.add(itemChildrenAppender);
-        return appenders;
+        return Collections.singletonMap(RelationshipFields.ITEMS, itemChildrenAppender);
     }
 }

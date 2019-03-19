@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.user;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,14 +57,17 @@ public final class UserEntityDIModule implements IdentifiableStoreProvider<User>
         return userHandler;
     }
 
+
     @Provides
     @Reusable
-    ReadOnlyObjectRepository<User> repository(IdentifiableObjectStore<User> store,
-                                              UserCredentialsChildrenAppender userCredentialsChildrenAppender,
-                                              DatabaseAdapter databaseAdapter) {
-        return new ReadOnlyFirstObjectRepositoryImpl<>(store, Arrays.asList(
-                userCredentialsChildrenAppender,
-                UserOrganisationUnitChildrenAppender.create(databaseAdapter))
-        );
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<User>> childrenAppenders(
+            DatabaseAdapter databaseAdapter,
+            UserCredentialsChildrenAppender userCredentialsChildrenAppender) {
+
+        return new HashMap<String, ChildrenAppender<User>>() {{
+            put(UserFields.USER_CREDENTIALS, userCredentialsChildrenAppender);
+            put(UserFields.ORGANISATION_UNITS, UserOrganisationUnitChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

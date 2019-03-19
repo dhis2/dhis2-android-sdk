@@ -30,7 +30,7 @@ apply plugin: "checkstyle"
 
 checkstyle {
     toolVersion = "8.18"
-    config = resources.text.fromFile("${rootDir}/plugins/checkstyle-style.xml")
+    config = resources.text.fromFile("${projectDir}/plugins/checkstyle-style.xml")
     ignoreFailures = false
     showViolations false
 }
@@ -38,7 +38,14 @@ checkstyle {
 afterEvaluate {
     android.libraryVariants.each { variant ->
 
-        def compileTask = variant.javaCompileProvider.get()
+        def compileTask
+
+        if (variant.hasProperty('javaCompileProvider')) {
+            // Android 3.3.0+
+            compileTask = variant.javaCompileProvider.get()
+        } else {
+            compileTask = variant.javaCompile
+        }
 
         def checkstyleTask = tasks.register("checkstyle${variant.name.capitalize()}", Checkstyle) {
 

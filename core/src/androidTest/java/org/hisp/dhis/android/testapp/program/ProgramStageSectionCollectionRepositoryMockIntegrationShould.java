@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.program;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.program.ProgramStageSection;
@@ -57,7 +57,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
         ProgramStageSection stageSections =
                 d2.programModule().programStageSections
                         .one()
-                        .getWithAllChildren();
+                        .withAllChildren().get();
 
         assertThat(stageSections.programIndicators().size(), is(1));
     }
@@ -67,7 +67,7 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
         ProgramStageSection stageSections =
                 d2.programModule().programStageSections
                         .one()
-                        .getWithAllChildren();
+                        .withAllChildren().get();
 
         assertThat(stageSections.dataElements().size(), is(1));
         assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));

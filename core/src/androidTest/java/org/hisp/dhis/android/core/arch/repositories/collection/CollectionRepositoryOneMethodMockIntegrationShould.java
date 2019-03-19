@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
@@ -78,7 +78,7 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends SyncedDa
     @Test
     public void get_with_all_children_returns_object_children() {
         CategoryCombo combo = d2.categoryModule().categoryCombos
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(combo.uid(), is(BIRTH_UID));
         assertThat(combo.categories().size(), is(2));
         assertThat(combo.categoryOptionCombos().size(), is(1));

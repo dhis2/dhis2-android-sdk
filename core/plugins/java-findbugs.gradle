@@ -15,7 +15,7 @@ findbugs {
     // Fail build on high priority warnings.
     reportLevel = "low"
 
-    excludeFilter = rootProject.file(
+    excludeFilter = project.file(
             "plugins/findbugs-filter.xml"
     )
 }

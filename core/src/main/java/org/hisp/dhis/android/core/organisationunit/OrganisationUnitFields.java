@@ -39,10 +39,10 @@ public final class OrganisationUnitFields {
     static final String OPENING_DATE = "openingDate";
     static final String CLOSED_DATE = "closedDate";
     static final String LEVEL = "level";
-    private static final String PROGRAMS = "programs";
-    private static final String DATA_SETS = "dataSets";
-    private static final String ANCESTORS = "ancestors";
-    private static final String ORGANISATION_UNIT_GROUPS = "organisationUnitGroups";
+    static final String PROGRAMS = "programs";
+    static final String DATA_SETS = "dataSets";
+    static final String ANCESTORS = "ancestors";
+    static final String ORGANISATION_UNIT_GROUPS = "organisationUnitGroups";
 
     private static final FieldsHelper<OrganisationUnit> fh = new FieldsHelper<>();
 

@@ -29,8 +29,12 @@
 package org.hisp.dhis.android.core.organisationunit;
 
 import org.hisp.dhis.android.core.arch.di.IdentifiableStoreProvider;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,5 +60,16 @@ public final class OrganisationUnitEntityDIModule implements IdentifiableStorePr
     @Reusable
     public SearchOrganisationUnitHandler searchHandler(SearchOrganisationUnitHandlerImpl impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<OrganisationUnit>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<OrganisationUnit>>() {{
+            put(OrganisationUnitFields.PROGRAMS, OrganisationUnitProgramChildrenAppender.create(databaseAdapter));
+            put(OrganisationUnitFields.DATA_SETS, OrganisationUnitDataSetChildrenAppender.create(databaseAdapter));
+            put(OrganisationUnitFields.ORGANISATION_UNIT_GROUPS,
+                    OrganisationUnitOrganisationUnitGroupProgramChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

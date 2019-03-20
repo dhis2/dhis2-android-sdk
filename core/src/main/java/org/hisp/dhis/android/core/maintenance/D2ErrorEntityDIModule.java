@@ -28,23 +28,29 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
 
-@Module(includes = {
-        D2ErrorEntityDIModule.class,
-        ForeignKeyViolationEntityDIModule.class
-})
-public final class MaintenancePackageDIModule {
+@Module
+public final class D2ErrorEntityDIModule {
 
     @Provides
     @Reusable
-    ForeignKeyCleaner cleaner(DatabaseAdapter databaseAdapter,
-                              ObjectStore<ForeignKeyViolation> foreignKeyViolationStore) {
-        return new ForeignKeyCleanerImpl(databaseAdapter, foreignKeyViolationStore);
+    public ObjectStore<D2Error> store(DatabaseAdapter databaseAdapter) {
+        return D2ErrorStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<D2Error>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

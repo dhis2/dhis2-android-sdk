@@ -25,35 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.maintenance;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import javax.inject.Inject;
+import java.util.Collections;
+import java.util.Map;
 
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class MaintenanceModule {
+@Module
+public final class D2ErrorEntityDIModule {
 
-    private final DatabaseAdapter databaseAdapter;
-    public final ForeignKeyViolationCollectionRepository foreignKeyViolations;
-    public final D2ErrorCollectionRepository d2Errors;
-
-    @Inject
-    MaintenanceModule(DatabaseAdapter databaseAdapter,
-                      ForeignKeyViolationCollectionRepository foreignKeyViolations,
-                      D2ErrorCollectionRepository d2Errors) {
-        this.databaseAdapter = databaseAdapter;
-        this.foreignKeyViolations = foreignKeyViolations;
-        this.d2Errors = d2Errors;
+    @Provides
+    @Reusable
+    public ObjectStore<D2Error> store(DatabaseAdapter databaseAdapter) {
+        return D2ErrorStore.create(databaseAdapter);
     }
 
-    public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,
-                                                              int programRulesPerProgramThreshold) {
-        return PerformanceHintsService.create(databaseAdapter, organisationUnitThreshold,
-                programRulesPerProgramThreshold);
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<D2Error>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

@@ -237,6 +237,20 @@ public class EventCollectionRepositoryMockIntegrationShould extends SyncedDataba
     }
 
     @Test
+    public void count_tracked_entity_instances_unrestricted() {
+        int count = d2.eventModule().events.countTrackedEntityInstances();
+
+        assertThat(count, is(2));
+    }
+
+    @Test
+    public void count_tracked_entity_instances_restricted() {
+        int count = d2.eventModule().events.byUid().eq("event1").countTrackedEntityInstances();
+
+        assertThat(count, is(1));
+    }
+
+    @Test
     public void include_tracked_entity_data_values_as_children() {
         Event event = d2.eventModule().events
                 .uid("single1").withAllChildren().get();

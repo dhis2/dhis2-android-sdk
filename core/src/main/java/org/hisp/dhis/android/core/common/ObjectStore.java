@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.annotation.NonNull;
-
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public interface ObjectStore<M> extends DeletableStore {
 
@@ -51,4 +51,6 @@ public interface ObjectStore<M> extends DeletableStore {
     boolean deleteWhere(String whereClause);
 
     int count();
+
+    int countWhere(String whereClause);
 }

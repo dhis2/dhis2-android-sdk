@@ -28,48 +28,35 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.program.ProgramTableInfo;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.program.Program;
 
-public final class OrganisationUnitProgramLinkTableInfo {
+final class OrganisationUnitProgramChildrenAppender extends ChildrenAppender<OrganisationUnit> {
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    private final LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore;
 
-        @Override
-        public String name() {
-            return "OrganisationUnitProgramLink";
-        }
-
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            ProgramTableInfo.TABLE_INFO,
-            Columns.ORGANISATION_UNIT,
-            Columns.PROGRAM);
-
-    private OrganisationUnitProgramLinkTableInfo() {
+    private OrganisationUnitProgramChildrenAppender(LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    public static class Columns extends BaseModel.Columns {
+    @Override
+    protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
+        OrganisationUnit.Builder builder = organisationUnit.toBuilder();
+        builder.programs(linkModelChildStore.getChildren(organisationUnit));
+        return builder.build();
+    }
 
-        public static final String PROGRAM = "program";
-        public static final String ORGANISATION_UNIT = "organisationUnit";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(), PROGRAM, ORGANISATION_UNIT);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
+    static ChildrenAppender<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
+        return new OrganisationUnitProgramChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
+                        OrganisationUnitProgramLinkTableInfo.CHILD_PROJECTION,
+                        Program::create
+                )
+        );
     }
 }

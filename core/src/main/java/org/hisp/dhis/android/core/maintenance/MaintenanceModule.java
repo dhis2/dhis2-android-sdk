@@ -40,12 +40,15 @@ public final class MaintenanceModule {
 
     private final DatabaseAdapter databaseAdapter;
     public final ForeignKeyViolationCollectionRepository foreignKeyViolations;
+    public final D2ErrorCollectionRepository d2Errors;
 
     @Inject
     MaintenanceModule(DatabaseAdapter databaseAdapter,
-                      ForeignKeyViolationCollectionRepository foreignKeyViolations) {
-        this.foreignKeyViolations = foreignKeyViolations;
+                      ForeignKeyViolationCollectionRepository foreignKeyViolations,
+                      D2ErrorCollectionRepository d2Errors) {
         this.databaseAdapter = databaseAdapter;
+        this.foreignKeyViolations = foreignKeyViolations;
+        this.d2Errors = d2Errors;
     }
 
     public PerformanceHintsService getPerformanceHintsService(int organisationUnitThreshold,

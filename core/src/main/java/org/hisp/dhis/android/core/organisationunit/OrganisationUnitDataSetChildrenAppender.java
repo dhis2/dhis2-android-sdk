@@ -26,58 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.dataset.DataSet;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
 
-import androidx.annotation.VisibleForTesting;
+final class OrganisationUnitDataSetChildrenAppender extends ChildrenAppender<OrganisationUnit> {
 
-public final class DataSetOrganisationUnitLinkTableInfo {
+    private final LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore;
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "DataSetOrganisationUnitLink";
-        }
-
-        @Override
-        public BaseModel.Columns columns() {
-            return new Columns();
-        }
-    };
-
-    public static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            DataSetTableInfo.TABLE_INFO,
-            Columns.ORGANISATION_UNIT,
-            Columns.DATA_SET);
-
-    private DataSetOrganisationUnitLinkTableInfo() {
+    private OrganisationUnitDataSetChildrenAppender(LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    @VisibleForTesting
-    public static class Columns extends BaseModel.Columns {
+    @Override
+    protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
+        OrganisationUnit.Builder builder = organisationUnit.toBuilder();
+        builder.dataSets(linkModelChildStore.getChildren(organisationUnit));
+        return builder.build();
+    }
 
-        public static final String DATA_SET = "dataSet";
-        public static final String ORGANISATION_UNIT = "organisationUnit";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    DATA_SET,
-                    ORGANISATION_UNIT
-            );
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return Utils.appendInNewArray(super.all(),
-                    DATA_SET,
-                    ORGANISATION_UNIT
-            );
-        }
+    static ChildrenAppender<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
+        return new OrganisationUnitDataSetChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
+                        DataSetOrganisationUnitLinkTableInfo.CHILD_PROJECTION,
+                        DataSet::create
+                )
+        );
     }
 }

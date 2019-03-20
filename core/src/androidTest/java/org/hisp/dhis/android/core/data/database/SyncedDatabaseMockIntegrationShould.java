@@ -29,20 +29,27 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.facebook.stetho.Stetho;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public abstract class SyncedDatabaseMockIntegrationShould {
@@ -71,6 +78,7 @@ public abstract class SyncedDatabaseMockIntegrationShould {
             downloadTrackedEntityInstances();
             downloadEvents();
             downloadAggregatedData();
+            storeSomeD2Errors();
         }
     }
 
@@ -103,5 +111,20 @@ public abstract class SyncedDatabaseMockIntegrationShould {
     private static void downloadAggregatedData() throws Exception {
         dhis2MockServer.enqueueAggregatedDataResponses();
         d2.aggregatedModule().data().download().call();
+    }
+
+    private static void storeSomeD2Errors() {
+        ObjectStore<D2Error> d2ErrorStore = D2ErrorStore.create(databaseAdapter);
+        d2ErrorStore.insert(D2ErrorSamples.get());
+        d2ErrorStore.insert(D2Error.builder()
+                .resourceType("DataElement")
+                .uid("uid")
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.DIFFERENT_SERVER_OFFLINE)
+                .url("http://dhis2.org/api/programs/uid")
+                .errorDescription("Different server offline")
+                .httpErrorCode(402)
+                .build()
+        );
     }
 }

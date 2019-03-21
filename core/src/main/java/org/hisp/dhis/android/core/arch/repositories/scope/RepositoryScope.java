@@ -52,6 +52,10 @@ public abstract class RepositoryScope {
     @Nullable
     public abstract Integer limit();
 
+    public boolean hasFilters() {
+        return !filters().isEmpty() || !complexFilters().isEmpty();
+    }
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {

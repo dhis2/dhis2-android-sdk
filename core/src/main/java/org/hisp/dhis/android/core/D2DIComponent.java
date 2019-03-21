@@ -63,6 +63,7 @@ import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -129,6 +130,8 @@ public interface D2DIComponent {
     SyncHandler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    @VisibleForTesting
+    TrackedEntityDataValueStore trackedEntityDataValueStore();
 
     @Component.Builder
     interface Builder {

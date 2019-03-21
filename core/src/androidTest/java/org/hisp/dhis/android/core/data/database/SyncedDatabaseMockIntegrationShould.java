@@ -32,7 +32,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.facebook.stetho.Stetho;
 
+import org.hisp.dhis.android.core.AppContextDIModule;
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.D2DIComponent;
+import org.hisp.dhis.android.core.DaggerD2DIComponent;
+import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -126,5 +130,13 @@ public abstract class SyncedDatabaseMockIntegrationShould {
                 .httpErrorCode(402)
                 .build()
         );
+    }
+
+    protected D2DIComponent getD2DIComponent() {
+        return DaggerD2DIComponent.builder()
+                .databaseDIModule(new DatabaseDIModule(databaseAdapter))
+                .apiClientDIModule(new APIClientDIModule(d2.retrofit()))
+                .appContextDIModule(new AppContextDIModule(InstrumentationRegistry.getTargetContext().getApplicationContext()))
+                .build();
     }
 }

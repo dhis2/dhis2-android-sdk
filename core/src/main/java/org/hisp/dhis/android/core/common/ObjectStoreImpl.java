@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.common;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -48,6 +49,8 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     protected final SQLStatementBuilder builder;
     final StatementBinder<M> binder;
     final CursorModelFactory<M> modelFactory;
+
+    private static final String PAGING_KEY = BaseModel.Columns.ID;
 
     public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLStatementBuilder builder, StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
@@ -103,6 +106,37 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     public List<M> selectWhere(String whereClause) {
         List<M> list = new ArrayList<>();
         Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
+        addObjectsToCollection(cursor, list);
+        return list;
+    }
+
+    @Override
+    public List<M> selectInitialPaging(String filterWhereClause, int pageSize) {
+        return selectAfterPaging(filterWhereClause, Long.MIN_VALUE, pageSize);
+    }
+
+    @Override
+    public List<M> selectAfterPaging(String filterWhereClause, long last, int pageSize) {
+        WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
+        whereClauseBuilder.appendComplexQuery(filterWhereClause);
+        whereClauseBuilder.appendKeyOperatorValue(PAGING_KEY, ">", Long.toString(last));
+        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClauseBuilder.build(), PAGING_KEY,
+                pageSize, true));
+
+        List<M> list = new ArrayList<>();
+        addObjectsToCollection(cursor, list);
+        return list;
+    }
+
+    @Override
+    public List<M> selectBeforePaging(String filterWhereClause, long last, int pageSize) {
+        WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
+        whereClauseBuilder.appendComplexQuery(filterWhereClause);
+        whereClauseBuilder.appendKeyOperatorValue(PAGING_KEY, "<", Long.toString(last));
+        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClauseBuilder.build(), PAGING_KEY,
+                pageSize, false));
+
+        List<M> list = new ArrayList<>();
         addObjectsToCollection(cursor, list);
         return list;
     }

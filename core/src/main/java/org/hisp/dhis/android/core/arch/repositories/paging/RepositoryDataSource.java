@@ -25,38 +25,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.paging;
 
-package org.hisp.dhis.android.core.common;
-
-import java.util.List;
+import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.common.ObjectStore;
 
 import androidx.annotation.NonNull;
+import androidx.paging.ItemKeyedDataSource;
 
-public interface ObjectStore<M> extends DeletableStore {
+public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSource<Long, M> {
 
-    long insert(@NonNull M m) throws RuntimeException;
+    private final ObjectStore<M> store;
+    private final String whereClause;
 
-    List<M> selectAll();
+    public RepositoryDataSource(ObjectStore<M> store, String whereClause) {
+        this.store = store;
+        this.whereClause = whereClause;
+    }
 
-    List<M> selectWhere(String whereClause);
+    @Override
+    public void loadInitial(@NonNull LoadInitialParams<Long> params, @NonNull LoadInitialCallback<M> callback) {
+        callback.onResult(store.selectInitialPaging(whereClause, params.requestedLoadSize));
+    }
 
-    List<M> selectInitialPaging(String filterWhereClause, int pageSize);
+    @Override
+    public void loadAfter(@NonNull LoadParams<Long> params, @NonNull LoadCallback<M> callback) {
+        callback.onResult(store.selectAfterPaging(whereClause, params.key, params.requestedLoadSize));
+    }
 
-    List<M> selectAfterPaging(String filterWhereClause, long last, int pageSize);
+    @Override
+    public void loadBefore(@NonNull LoadParams<Long> params, @NonNull LoadCallback<M> callback) {
+        callback.onResult(store.selectBeforePaging(whereClause, params.key, params.requestedLoadSize));
+    }
 
-    List<M> selectBeforePaging(String filterWhereClause, long last, int pageSize);
-
-    M selectOneWhere(String whereClause);
-
-    M selectFirst();
-
-    List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;
-
-    boolean deleteById(@NonNull M m);
-
-    boolean deleteWhere(String whereClause);
-
-    int count();
-
-    int countWhere(String whereClause);
+    @NonNull
+    @Override
+    public Long getKey(@NonNull M item) {
+        return item.id();
+    }
 }

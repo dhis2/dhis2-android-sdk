@@ -94,6 +94,41 @@ public class OrganisationUnitCollectionRepositoryMockIntegrationShould extends S
     }
 
     @Test
+    public void filter_by_organisation_unit_scope() {
+        List<OrganisationUnit> captureOrganisationUnits = d2.organisationUnitModule().organisationUnits
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .get();
+        assertThat(captureOrganisationUnits.size(), is(1));
+
+        List<OrganisationUnit> searchOrganisationUnits = d2.organisationUnitModule().organisationUnits
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+                .get();
+        assertThat(searchOrganisationUnits.size(), is(0));
+    }
+
+    @Test
+    public void filter_by_root_organisation_unit() {
+        List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
+                .byRootOrganisationUnit(Boolean.TRUE)
+                .get();
+        assertThat(rootOrganisationUnits.size(), is(1));
+
+        List<OrganisationUnit> notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits
+                .byRootOrganisationUnit(Boolean.FALSE)
+                .get();
+        assertThat(notRootOrganisationUnits.size(), is(0));
+    }
+
+    @Test
+    public void filter_by_root_capture_organisation_unit() {
+        List<OrganisationUnit> rootOrganisationUnits = d2.organisationUnitModule().organisationUnits
+                .byRootOrganisationUnit(Boolean.TRUE)
+                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                .get();
+        assertThat(rootOrganisationUnits.size(), is(1));
+    }
+
+    @Test
     public void include_programs_as_children() {
         OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits
                 .withPrograms().one().get();

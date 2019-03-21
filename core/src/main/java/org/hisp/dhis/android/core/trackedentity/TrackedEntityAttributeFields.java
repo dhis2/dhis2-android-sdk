@@ -48,7 +48,7 @@ public final class TrackedEntityAttributeFields {
     public static final String GENERATED = "generated";
     public static final String DISPLAY_ON_VISIT_SCHEDULE = "displayOnVisitSchedule";
     public static final String ORG_UNIT_SCOPE = "orgunitScope";
-    private static final String UNIQUE = "unique";
+    public static final String UNIQUE = "unique";
     public static final String INHERIT = "inherit";
     private static final String STYLE = "style";
     private static final String ACCESS = "access";

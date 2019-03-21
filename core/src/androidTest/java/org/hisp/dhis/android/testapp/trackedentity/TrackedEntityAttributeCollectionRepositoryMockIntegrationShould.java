@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.testapp.trackedentity;
 
+import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Test;
@@ -50,6 +51,135 @@ public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould ext
                         .get();
 
         assertThat(trackedEntityAttributes.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_pattern() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byPattern().eq("RANDOM(XXX######)")
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_sort_order_in_list_no_programs() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .bySortOrderInListNoProgram().eq(0)
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_option_set() {
+        List<TrackedEntityAttribute> dataElements =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byOptionSetUid().eq("VQ2lai3OfVG")
+                        .get();
+        assertThat(dataElements.size(), is(1));
+    }
+
+    @Test
+    public void by_value_type() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byValueType().eq(ValueType.NUMBER)
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_expression() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byExpression().eq("expression")
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_program_scope() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byProgramScope().isTrue()
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_display_in_list_no_program() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byDisplayInListNoProgram().isTrue()
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_generated() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byGenerated().isTrue()
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_display_on_visit_schedule() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byDisplayOnVisitSchedule().isTrue()
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_orgunit_scope() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byOrgUnitScope().isTrue()
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_unique() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byUnique().isTrue()
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_inherit() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byInherit().isTrue()
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
+    }
+
+    @Test
+    public void by_form_name() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .byFormName().eq("formname")
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(1));
     }
 
 }

@@ -39,7 +39,8 @@ final class OrganisationUnitDataSetChildrenAppender extends ChildrenAppender<Org
 
     private final LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore;
 
-    private OrganisationUnitDataSetChildrenAppender(LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore) {
+    private OrganisationUnitDataSetChildrenAppender(
+            LinkModelChildStore<OrganisationUnit, DataSet> linkModelChildStore) {
         this.linkModelChildStore = linkModelChildStore;
     }
 

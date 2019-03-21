@@ -38,7 +38,8 @@ final class OrganisationUnitProgramChildrenAppender extends ChildrenAppender<Org
 
     private final LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore;
 
-    private OrganisationUnitProgramChildrenAppender(LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore) {
+    private OrganisationUnitProgramChildrenAppender(
+            LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore) {
         this.linkModelChildStore = linkModelChildStore;
     }
 

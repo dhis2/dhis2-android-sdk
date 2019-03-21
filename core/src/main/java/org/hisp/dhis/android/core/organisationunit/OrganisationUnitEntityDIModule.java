@@ -64,6 +64,7 @@ public final class OrganisationUnitEntityDIModule implements IdentifiableStorePr
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<OrganisationUnit>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<OrganisationUnit>>() {{
             put(OrganisationUnitFields.PROGRAMS, OrganisationUnitProgramChildrenAppender.create(databaseAdapter));

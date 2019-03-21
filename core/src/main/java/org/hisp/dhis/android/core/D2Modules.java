@@ -49,6 +49,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
+@SuppressWarnings({"PMD.TooManyFields"})
 @Reusable
 final class D2Modules {
 

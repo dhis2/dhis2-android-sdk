@@ -50,7 +50,7 @@ public final class TrackedEntityAttributeFields {
     public static final String ORG_UNIT_SCOPE = "orgunitScope";
     public static final String UNIQUE = "unique";
     public static final String INHERIT = "inherit";
-    private static final String STYLE = "style";
+    public static final String STYLE = "style";
     private static final String ACCESS = "access";
     public static final String FORM_NAME = "formName";
 

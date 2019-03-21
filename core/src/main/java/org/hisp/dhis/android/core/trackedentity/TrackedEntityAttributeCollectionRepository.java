@@ -114,4 +114,8 @@ public final class TrackedEntityAttributeCollectionRepository
     public StringFilterConnector<TrackedEntityAttributeCollectionRepository> byFormName() {
         return cf.string(TrackedEntityAttributeFields.FORM_NAME);
     }
+
+    public TrackedEntityAttributeCollectionRepository withObjectStyle() {
+        return cf.withChild(TrackedEntityAttributeFields.STYLE);
+    }
 }

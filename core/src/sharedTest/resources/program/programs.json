@@ -178,6 +178,10 @@
               "delete": true,
               "write": true,
               "manage": false
+            },
+            "style": {
+              "color": "#556",
+              "icon": "attribute-icon"
             }
           }
         }

@@ -25,39 +25,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyNameableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class TrackedEntityAttributeEntityDIModule {
+@Reusable
+public final class TrackedEntityAttributeCollectionRepository
+        extends ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityAttribute,
+        TrackedEntityAttributeCollectionRepository> {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<TrackedEntityAttribute> store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityAttributeStore.create(databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    public SyncHandler<TrackedEntityAttribute> handler(TrackedEntityAttributeHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityAttribute>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Inject
+    TrackedEntityAttributeCollectionRepository(final IdentifiableObjectStore<TrackedEntityAttribute> store,
+                                               final Map<String, ChildrenAppender<TrackedEntityAttribute>>
+                                                       childrenAppenders,
+                                               final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new TrackedEntityAttributeCollectionRepository(store, childrenAppenders, s)));
     }
 }

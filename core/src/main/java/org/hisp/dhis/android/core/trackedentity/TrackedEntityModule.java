@@ -48,6 +48,7 @@ public final class TrackedEntityModule {
     public final TrackedEntityTypeCollectionRepository trackedEntityTypes;
     public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
     public final TrackedEntityDataValueCollectionRepository trackedEntityDataValues;
+    public final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
 
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
 
@@ -60,6 +61,7 @@ public final class TrackedEntityModule {
             TrackedEntityTypeCollectionRepository trackedEntityTypes,
             TrackedEntityInstanceCollectionRepository trackedEntityInstances,
             TrackedEntityDataValueCollectionRepository trackedEntityDataValues,
+            TrackedEntityAttributeCollectionRepository trackedEntityAttributes,
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,
             TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
@@ -67,6 +69,7 @@ public final class TrackedEntityModule {
         this.trackedEntityTypes = trackedEntityTypes;
         this.trackedEntityInstances = trackedEntityInstances;
         this.trackedEntityDataValues = trackedEntityDataValues;
+        this.trackedEntityAttributes = trackedEntityAttributes;
         this.reservedValueManager = reservedValueManager;
         this.withLimitCallFactory = withLimitCallFactory;
         this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;

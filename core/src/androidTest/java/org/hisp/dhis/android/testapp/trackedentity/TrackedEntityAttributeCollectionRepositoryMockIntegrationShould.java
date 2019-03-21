@@ -26,38 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.testapp.trackedentity;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.test.runner.AndroidJUnit4;
 
-@Module
-public final class TrackedEntityAttributeEntityDIModule {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<TrackedEntityAttribute> store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityAttributeStore.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<TrackedEntityAttribute> trackedEntityAttributes =
+                d2.trackedEntityModule().trackedEntityAttributes
+                        .get();
+
+        assertThat(trackedEntityAttributes.size(), is(2));
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<TrackedEntityAttribute> handler(TrackedEntityAttributeHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityAttribute>> childrenAppenders() {
-        return Collections.emptyMap();
-    }
 }

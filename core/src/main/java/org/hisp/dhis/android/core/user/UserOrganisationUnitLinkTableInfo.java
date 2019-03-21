@@ -57,12 +57,12 @@ public final class UserOrganisationUnitLinkTableInfo {
     private UserOrganisationUnitLinkTableInfo() {
     }
 
-    static class Columns extends BaseModel.Columns {
+    public static class Columns extends BaseModel.Columns {
 
         static final String USER = "user";
-        static final String ORGANISATION_UNIT = "organisationUnit";
-        static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
-        static final String ROOT = "root";
+        public static final String ORGANISATION_UNIT = "organisationUnit";
+        public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
+        public static final String ROOT = "root";
 
         @Override
         public String[] all() {

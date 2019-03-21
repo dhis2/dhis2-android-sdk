@@ -34,8 +34,11 @@ import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFacto
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -76,6 +79,22 @@ public final class OrganisationUnitCollectionRepository
 
     public StringFilterConnector<OrganisationUnitCollectionRepository> byDisplayNamePath() {
         return cf.string(OrganisationUnitTableInfo.Columns.DISPLAY_NAME_PATH);
+    }
+
+    public OrganisationUnitCollectionRepository byOrganisationUnitScope(OrganisationUnit.Scope scope) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+                Collections.singletonList(scope.name()));
+    }
+
+    public OrganisationUnitCollectionRepository byRootOrganisationUnit(Boolean isRoot) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTable(
+                UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
+                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitLinkTableInfo.Columns.ROOT,
+                Collections.singletonList(isRoot ? "1" : "0"));
     }
 
     public OrganisationUnitCollectionRepository withPrograms() {

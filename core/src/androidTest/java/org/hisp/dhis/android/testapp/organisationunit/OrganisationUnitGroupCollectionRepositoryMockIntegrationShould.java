@@ -26,42 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.testapp.organisationunit;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.test.runner.AndroidJUnit4;
 
-@Module
-public final class OrganisationUnitGroupEntityDIModule implements IdentifiableEntityDIModule<OrganisationUnitGroup> {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<OrganisationUnitGroup> store(DatabaseAdapter databaseAdapter) {
-        return OrganisationUnitGroupStore.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitGroupCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups.get();
+        assertThat(organisationUnitGroups.size(), is(1));
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<OrganisationUnitGroup> handler(IdentifiableObjectStore<OrganisationUnitGroup> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    @Test
+    public void filter_by_short_name() {
+        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups
+                .byShortName().eq("CHC short").get();
+        assertThat(organisationUnitGroups.size(), is(1));
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<OrganisationUnitGroup>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Test
+    public void filter_by_display_short_name() {
+        List<OrganisationUnitGroup> organisationUnitGroups = d2.organisationUnitModule().organisationUnitGroups
+                .byDisplayShortName().eq("CHC display short").get();
+        assertThat(organisationUnitGroups.size(), is(1));
     }
 }

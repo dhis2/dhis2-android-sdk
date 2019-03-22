@@ -25,43 +25,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class OrganisationUnitGroupEntityDIModule implements IdentifiableEntityDIModule<OrganisationUnitGroup> {
+@Reusable
+public final class OrganisationUnitGroupCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<
+        OrganisationUnitGroup, OrganisationUnitGroupCollectionRepository> {
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<OrganisationUnitGroup> store(DatabaseAdapter databaseAdapter) {
-        return OrganisationUnitGroupStore.create(databaseAdapter);
+    @Inject
+    OrganisationUnitGroupCollectionRepository(
+            final IdentifiableObjectStore<OrganisationUnitGroup> store,
+            final Map<String, ChildrenAppender<OrganisationUnitGroup>> childrenAppenders,
+            final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new OrganisationUnitGroupCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<OrganisationUnitGroup> handler(IdentifiableObjectStore<OrganisationUnitGroup> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public StringFilterConnector<OrganisationUnitGroupCollectionRepository> byShortName() {
+        return cf.string(BaseNameableObject.SHORT_NAME);
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<OrganisationUnitGroup>> childrenAppenders() {
-        return Collections.emptyMap();
+    public StringFilterConnector<OrganisationUnitGroupCollectionRepository> byDisplayShortName() {
+        return cf.string(BaseNameableObject.DISPLAY_SHORT_NAME);
     }
 }

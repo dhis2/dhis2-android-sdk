@@ -47,7 +47,6 @@ import java.util.Map;
 import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithConstraints;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
@@ -94,7 +93,7 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreT
 
         for (RelationshipType targetType: types) {
             RelationshipType referenceType = typeMap.get(targetType.uid());
-            assertTypesWithConstraints(targetType, referenceType);
+            assertThat(targetType).isEqualTo(referenceType);
         }
     }
 

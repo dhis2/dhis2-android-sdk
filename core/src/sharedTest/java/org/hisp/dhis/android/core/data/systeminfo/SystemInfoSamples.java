@@ -49,6 +49,7 @@ public class SystemInfoSamples {
 
     public static SystemInfo get2() {
         return SystemInfo.builder()
+                .id(1L)
                 .serverDate(getDate("2018-04-29T11:27:46.935"))
                 .dateFormat("yyyy-DD-mm")
                 .version("2.29")

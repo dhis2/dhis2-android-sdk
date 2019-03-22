@@ -43,7 +43,6 @@ import static com.google.common.truth.Truth.assertThat;
 public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
 
     final M object;
-    final M objectWithId;
     private final ObjectStore<M> store;
     private final TableInfo tableInfo;
     private final DatabaseAdapter databaseAdapter;
@@ -53,13 +52,11 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
                                                 DatabaseAdapter databaseAdapter) {
         this.store = store;
         this.object = buildObject();
-        this.objectWithId = buildObjectWithId();
         this.tableInfo = tableInfo;
         this.databaseAdapter = databaseAdapter;
     }
 
     protected abstract M buildObject();
-    protected abstract M buildObjectWithId();
 
     @Before
     public void setUp() throws IOException {
@@ -96,8 +93,8 @@ public abstract class ObjectStoreAbstractIntegrationShould<M extends Model> {
 
     @Test
     public void delete_inserted_object_by_id() {
-        store.insert(objectWithId);
-        store.deleteById(objectWithId);
+        store.insert(object);
+        store.deleteById(object);
         assertThat(store.selectFirst()).isEqualTo(null);
     }
 

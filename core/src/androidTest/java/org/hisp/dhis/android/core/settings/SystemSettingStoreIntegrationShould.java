@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
@@ -52,13 +52,6 @@ public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAb
     protected SystemSetting buildObjectToUpdate() {
         return SystemSettingSamples.getSystemSetting().toBuilder()
                 .value("new_value")
-                .build();
-    }
-
-    @Override
-    protected SystemSetting buildObjectWithId() {
-        return SystemSettingSamples.getSystemSetting().toBuilder()
-                .id(1L)
                 .build();
     }
 }

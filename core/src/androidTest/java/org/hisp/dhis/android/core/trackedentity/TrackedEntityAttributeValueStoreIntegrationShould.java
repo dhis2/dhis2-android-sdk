@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValueSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeValueStoreIntegrationShould
@@ -47,13 +47,6 @@ public class TrackedEntityAttributeValueStoreIntegrationShould
     @Override
     protected TrackedEntityAttributeValue buildObject() {
         return TrackedEntityAttributeValueSamples.get();
-    }
-
-    @Override
-    protected TrackedEntityAttributeValue buildObjectWithId() {
-        return TrackedEntityAttributeValueSamples.get().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

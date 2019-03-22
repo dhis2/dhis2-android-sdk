@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.DataSetOrganisationUnitLinkSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class DataSetOrganisationUnitLinkStoreIntegrationShould
@@ -58,13 +58,6 @@ public class DataSetOrganisationUnitLinkStoreIntegrationShould
     protected DataSetOrganisationUnitLink buildObjectWithOtherMasterUid() {
         return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().toBuilder()
                 .organisationUnit("new_organisation_unit")
-                .build();
-    }
-
-    @Override
-    protected DataSetOrganisationUnitLink buildObjectWithId() {
-        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().toBuilder()
-                .id(1L)
                 .build();
     }
 }

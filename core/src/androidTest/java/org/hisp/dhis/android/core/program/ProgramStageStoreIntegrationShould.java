@@ -28,30 +28,24 @@
 
 package org.hisp.dhis.android.core.program;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageSamples;
 import org.junit.runner.RunWith;
 
+import androidx.test.runner.AndroidJUnit4;
+
 @RunWith(AndroidJUnit4.class)
 public class ProgramStageStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStage> {
 
     public ProgramStageStoreIntegrationShould() {
-        super(ProgramStageStore.create(DatabaseAdapterFactory.get(false)), ProgramStageTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
+        super(ProgramStageStore.create(DatabaseAdapterFactory.get(false)),
+                ProgramStageTableInfo.TABLE_INFO, DatabaseAdapterFactory.get(false));
     }
 
     @Override
     protected ProgramStage buildObject() {
         return ProgramStageSamples.getProgramStage();
-    }
-
-    @Override
-    protected ProgramStage buildObjectWithId() {
-        return ProgramStageSamples.getProgramStage().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

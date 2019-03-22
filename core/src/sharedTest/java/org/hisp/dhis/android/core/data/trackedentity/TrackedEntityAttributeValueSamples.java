@@ -38,6 +38,7 @@ public class TrackedEntityAttributeValueSamples {
 
     public static TrackedEntityAttributeValue get() {
         return TrackedEntityAttributeValue.builder()
+                .id(1L)
                 .value("value")
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))

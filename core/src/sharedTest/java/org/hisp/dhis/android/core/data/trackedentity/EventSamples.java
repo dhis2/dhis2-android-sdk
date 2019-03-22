@@ -41,6 +41,7 @@ public class EventSamples {
 
     public static Event get() {
         return Event.builder()
+                .id(1L)
                 .uid("event_uid")
                 .enrollment("enrollment")
                 .created(getDate("2014-08-20T12:28:56.409"))

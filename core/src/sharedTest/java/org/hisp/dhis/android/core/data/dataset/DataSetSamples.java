@@ -42,6 +42,7 @@ public class DataSetSamples {
 
         fillNameableProperties(dataSetBuilder);
         dataSetBuilder
+                .id(1L)
                 .periodType(PeriodType.BiMonthly)
                 .categoryCombo(ObjectWithUid.create("comboUid"))
                 .mobile(false)

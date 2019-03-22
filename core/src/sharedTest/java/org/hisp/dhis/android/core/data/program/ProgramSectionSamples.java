@@ -40,6 +40,7 @@ public class ProgramSectionSamples {
 
         fillIdentifiableProperties(builder);
         return builder
+                .id(1L)
                 .description("description")
                 .program(ObjectWithUid.create("program_uid"))
                 .sortOrder(3)

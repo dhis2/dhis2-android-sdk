@@ -40,6 +40,7 @@ public class OptionGroupSamples {
 
         fillIdentifiableProperties(OptionGroupBuilder);
         return OptionGroupBuilder
+                .id(1L)
                 .optionSet(OptionSet.builder().uid("option_set").build())
                 .build();
     }

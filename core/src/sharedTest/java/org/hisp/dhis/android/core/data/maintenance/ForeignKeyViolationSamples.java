@@ -38,6 +38,7 @@ public class ForeignKeyViolationSamples {
 
     public static ForeignKeyViolation get() {
         return ForeignKeyViolation.builder()
+                .id(1L)
                 .fromTable("from_table")
                 .fromColumn("from_column")
                 .toTable("to_table")

@@ -39,6 +39,7 @@ public class OrganisationUnitGroupSamples {
 
         fillIdentifiableProperties(builder);
         return builder
+                .id(1L)
                 .shortName("short_name")
                 .displayShortName("display_short_name")
                 .build();

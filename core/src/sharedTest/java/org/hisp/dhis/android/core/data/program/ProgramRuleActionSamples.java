@@ -47,6 +47,7 @@ public class ProgramRuleActionSamples {
 
         fillIdentifiableProperties(builder);
         builder
+                .id(1L)
                 .data("data")
                 .content("content")
                 .location("location")

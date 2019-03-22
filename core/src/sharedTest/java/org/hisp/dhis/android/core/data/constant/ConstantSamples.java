@@ -38,6 +38,7 @@ public class ConstantSamples {
         Constant.Builder builder = Constant.builder();
         fillIdentifiableProperties(builder);
         return builder
+                .id(1L)
                 .value(20.05).build();
     }
 }

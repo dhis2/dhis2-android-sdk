@@ -34,6 +34,7 @@ public class ProgramIndicatorLegendSetLinkSamples {
 
     public static ProgramIndicatorLegendSetLink getProgramIndicatorLegendSetLink() {
         return ProgramIndicatorLegendSetLink.builder()
+                .id(1L)
                 .legendSet("legend_set")
                 .programIndicator("program_indicator")
                 .build();

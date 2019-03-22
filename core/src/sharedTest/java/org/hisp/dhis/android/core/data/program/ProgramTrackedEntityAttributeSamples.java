@@ -40,6 +40,7 @@ public class ProgramTrackedEntityAttributeSamples {
         ProgramTrackedEntityAttribute.Builder builder = ProgramTrackedEntityAttribute.builder();
         fillNameableProperties(builder);
         return builder
+                .id(1L)
                 .mandatory(Boolean.TRUE)
                 .trackedEntityAttribute(TrackedEntityAttribute.builder().uid("tracked_entity_attribute").build())
                 .allowFutureDate(Boolean.FALSE)

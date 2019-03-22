@@ -39,6 +39,7 @@ public class LegendSetSamples {
 
         fillIdentifiableProperties(legendSetBuilder);
         legendSetBuilder
+                .id(1L)
                 .symbolizer("color")
                 .legends(null);
         return legendSetBuilder.build();

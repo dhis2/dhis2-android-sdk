@@ -38,6 +38,7 @@ public class RelationshipItemSamples {
 
     public static RelationshipItem getRelationshipItem() {
         return RelationshipItem.builder()
+                .id(1L)
                 .relationship(Relationship.builder().uid("relationship").build())
                 .relationshipItemType(RelationshipConstraintType.FROM)
                 .event(RelationshipItemEvent.builder().event("event").build())

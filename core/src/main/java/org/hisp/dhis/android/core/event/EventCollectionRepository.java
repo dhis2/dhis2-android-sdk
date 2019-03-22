@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
@@ -36,7 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -147,12 +145,6 @@ public final class EventCollectionRepository
     }
 
     public int countTrackedEntityInstances() {
-        if (scope.hasFilters()) {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.countTeisWhereEvents(whereClauseBuilder.getWhereClause(scope));
-        } else {
-            return store.countTeisWhereEvents(null);
-        }
+        return store.countTeisWhereEvents(getWhereClause());
     }
-
 }

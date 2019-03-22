@@ -66,12 +66,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     private List<M> getWithoutChildren() {
-        if (scope.hasFilters()) {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectWhere(whereClauseBuilder.getWhereClause(scope));
-        } else {
-            return store.selectAll();
-        }
+        return store.selectWhere(getWhereClause());
     }
 
     @Override
@@ -103,14 +98,10 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     @Override
     public int count() {
-        if (scope.hasFilters()) {
-            return store.countWhere(getWhereClause());
-        } else {
-            return store.count();
-        }
+        return store.countWhere(getWhereClause());
     }
 
-    private String getWhereClause() {
+    protected String getWhereClause() {
         return new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
     }
 

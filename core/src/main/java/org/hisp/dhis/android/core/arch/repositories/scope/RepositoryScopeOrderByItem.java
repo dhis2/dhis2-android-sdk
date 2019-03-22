@@ -26,29 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.repositories.di;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import com.google.auto.value.AutoValue;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
+@AutoValue
+public abstract class RepositoryScopeOrderByItem {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    public abstract String column();
 
-@Module()
-public final class RepositoriesDIModule {
+    public abstract RepositoryScope.OrderByDirection direction();
 
-    @Provides
-    @Reusable
-    RepositoryScope emptyScope() {
-        return RepositoryScope.builder()
-                .children(ChildrenSelection.empty())
-                .filters(Collections.emptyList())
-                .complexFilters(Collections.emptyList())
-                .orderBy(new LinkedHashSet<>())
-                .build();
+    public static Builder builder() {
+        return new AutoValue_RepositoryScopeOrderByItem.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+
+        public abstract Builder column(String column);
+
+        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
+
+        public abstract RepositoryScopeOrderByItem build();
     }
 }

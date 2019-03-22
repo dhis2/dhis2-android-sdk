@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public final class RepositoryScopeHelper {
@@ -54,5 +55,11 @@ public final class RepositoryScopeHelper {
 
     public static RepositoryScope withChild(RepositoryScope scope, String child) {
         return scope.toBuilder().children(scope.children().withChild(child)).build();
+    }
+
+    public static RepositoryScope withOrderBy(RepositoryScope scope, RepositoryScopeOrderByItem item) {
+        LinkedHashSet<RepositoryScopeOrderByItem> newHashedSet = new LinkedHashSet<>(scope.orderBy());
+        newHashedSet.add(item);
+        return scope.toBuilder().orderBy(newHashedSet).build();
     }
 }

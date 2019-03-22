@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -79,5 +80,10 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
     @Override
     public DateFilterConnector<R> byLastUpdated() {
         return cf.date(Columns.LAST_UPDATED);
+    }
+
+    public R orderByDisplayName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderByItem(RepositoryScopeOrderByItem.builder().column(Columns.DISPLAY_NAME)
+                .direction(direction).build());
     }
 }

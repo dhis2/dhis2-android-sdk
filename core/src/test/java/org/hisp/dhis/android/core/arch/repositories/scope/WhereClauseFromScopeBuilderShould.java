@@ -39,6 +39,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import static org.mockito.Mockito.verify;
@@ -94,6 +95,7 @@ public class WhereClauseFromScopeBuilderShould {
         return RepositoryScope.builder().filters(items)
                 .complexFilters(Collections.emptyList())
                 .children(ChildrenSelection.empty())
+                .orderBy(new LinkedHashSet<>())
                 .build();
     }
 }

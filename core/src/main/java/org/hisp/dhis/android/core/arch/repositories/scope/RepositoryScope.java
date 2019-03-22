@@ -28,17 +28,21 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class RepositoryScope {
+
+    public enum OrderByDirection {
+        ASC, DESC
+    }
 
     @NonNull
     public abstract List<RepositoryScopeFilterItem> filters();
@@ -47,10 +51,10 @@ public abstract class RepositoryScope {
     public abstract List<RepositoryScopeComplexFilterItem> complexFilters();
 
     @NonNull
-    public abstract ChildrenSelection children();
+    public abstract LinkedHashSet<RepositoryScopeOrderByItem> orderBy();
 
-    @Nullable
-    public abstract Integer limit();
+    @NonNull
+    public abstract ChildrenSelection children();
 
     public boolean hasFilters() {
         return !filters().isEmpty() || !complexFilters().isEmpty();
@@ -71,7 +75,7 @@ public abstract class RepositoryScope {
 
         public abstract Builder children(ChildrenSelection children);
 
-        public abstract Builder limit(Integer limit);
+        public abstract Builder orderBy(LinkedHashSet<RepositoryScopeOrderByItem> orderBy);
 
         public abstract RepositoryScope build();
     }

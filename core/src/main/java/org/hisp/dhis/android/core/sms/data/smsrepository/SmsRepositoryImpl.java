@@ -18,6 +18,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.schedulers.Schedulers;
 
 public class SmsRepositoryImpl implements SmsRepository {
 
@@ -25,17 +26,17 @@ public class SmsRepositoryImpl implements SmsRepository {
     static final String SMS_KEY = "sms_key";
     private final Context context;
     private final String sendSmsAction;
-    private boolean totalConfirmed;
+    private Boolean smsCountAccepted;
 
     public SmsRepositoryImpl(Context context) {
         this.context = context;
         sendSmsAction = context.getPackageName() + ".SEND_SMS";
-        totalConfirmed = false;
+        smsCountAccepted = null;
     }
 
     @Override
-    public void confirmTotalCount() {
-        totalConfirmed = true;
+    public void acceptSMSCount(boolean accept) {
+        smsCountAccepted = accept;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class SmsRepositoryImpl implements SmsRepository {
                         executeSmsSending(e, number, contents, sendingTimeoutSeconds)
         ).doOnError(throwable ->
                 Log.e(TAG, throwable.getClass().getSimpleName(), throwable)
-        );
+        ).subscribeOn(Schedulers.newThread());
     }
 
     @Override
@@ -65,7 +66,8 @@ public class SmsRepositoryImpl implements SmsRepository {
                                    String contents, int timeoutSeconds) {
         List<String> parts = generateSmsParts(contents);
         int totalMessages = parts.size();
-        if (!askForTotalCountConfirmation(e, totalMessages)) {
+        if (!askSMSCountAcceptance(e, totalMessages)) {
+            e.onError(new SMSCountException(totalMessages));
             return;
         }
 
@@ -116,19 +118,18 @@ public class SmsRepositoryImpl implements SmsRepository {
     /**
      * @return true if should continue execution
      */
-    private boolean askForTotalCountConfirmation(ObservableEmitter<SmsSendingState> e,
-                                                 int totalMessages) {
-        e.onNext(new SmsSendingState(SmsRepository.State.WAITING_TOTAL_CONFIRMATION,
+    private boolean askSMSCountAcceptance(ObservableEmitter<SmsSendingState> e,
+                                          int totalMessages) {
+        e.onNext(new SmsSendingState(State.WAITING_SMS_COUNT_ACCEPT,
                 0, totalMessages));
-        while (!totalConfirmed && !e.isDisposed()) {
+        while (smsCountAccepted == null && !e.isDisposed()) {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ie) {
-                e.onError(ie);
                 return false;
             }
         }
-        return totalConfirmed;
+        return smsCountAccepted != null && smsCountAccepted;
     }
 
     /**

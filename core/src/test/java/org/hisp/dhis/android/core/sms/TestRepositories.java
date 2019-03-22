@@ -31,20 +31,52 @@ package org.hisp.dhis.android.core.sms;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.smscompression.models.Metadata;
+
+import java.util.Date;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public class TestRepositories {
 
+    public static class TestWebApiRepository implements WebApiRepository {
+        public Metadata metadata;
+
+        public TestWebApiRepository() {
+            this(new Metadata());
+        }
+
+        public TestWebApiRepository(Metadata metadata) {
+            this.metadata = metadata;
+        }
+
+        @Override
+        public Single<Metadata> getMetadataIds(GetMetadataIdsConfig config) {
+            return Single.fromCallable(() -> metadata);
+        }
+    }
+
     public static class TestLocalDbRepository implements LocalDbRepository {
+        public static String userId = "AIK2aQOJIbj";
         private String gatewayNumber = null;
         private String confirmationSenderNumber = null;
         private Integer resultWaitingTimeout = 120;
+        public Metadata metadata;
+
+        public TestLocalDbRepository() {
+            this(new Metadata());
+        }
+
+        public TestLocalDbRepository(Metadata metadata) {
+            this.metadata = metadata;
+            metadata.lastSyncDate = new Date();
+        }
 
         @Override
         public Single<String> getUserName() {
-            return Single.just("testCategoryOptionCombo");
+            return Single.fromCallable(() -> userId);
         }
 
         @Override
@@ -79,6 +111,16 @@ public class TestRepositories {
 
         @Override
         public Completable updateSubmissionState(BaseDataModel event, State sentViaSms) {
+            return Completable.complete();
+        }
+
+        @Override
+        public Single<Metadata> getMetadataIds() {
+            return Single.fromCallable(() -> metadata);
+        }
+
+        @Override
+        public Completable setMetadataIds(Metadata metadata) {
             return Completable.complete();
         }
     }

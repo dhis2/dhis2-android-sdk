@@ -26,53 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.program.Program;
 
-public final class UserOrganisationUnitLinkTableInfo {
+final class OrganisationUnitProgramChildrenAppender extends ChildrenAppender<OrganisationUnit> {
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+    private final LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore;
 
-        @Override
-        public String name() {
-            return "UserOrganisationUnit";
-        }
-
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            OrganisationUnitTableInfo.TABLE_INFO,
-            Columns.USER,
-            Columns.ORGANISATION_UNIT);
-
-    private UserOrganisationUnitLinkTableInfo() {
+    private OrganisationUnitProgramChildrenAppender(
+            LinkModelChildStore<OrganisationUnit, Program> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    public static class Columns extends BaseModel.Columns {
+    @Override
+    protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
+        OrganisationUnit.Builder builder = organisationUnit.toBuilder();
+        builder.programs(linkModelChildStore.getChildren(organisationUnit));
+        return builder.build();
+    }
 
-        static final String USER = "user";
-        public static final String ORGANISATION_UNIT = "organisationUnit";
-        public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
-        public static final String ROOT = "root";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
+    static ChildrenAppender<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
+        return new OrganisationUnitProgramChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
+                        OrganisationUnitProgramLinkTableInfo.CHILD_PROJECTION,
+                        Program::create
+                )
+        );
     }
 }

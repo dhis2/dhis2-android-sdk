@@ -79,4 +79,17 @@ public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstrac
         assertThat(lastUpdated).isEqualTo(BaseIdentifiableObject.DATE_FORMAT
                 .format(ResourceSamples.getResource().lastSynced()));
     }
+
+    @Test
+    public void delete_resource() {
+        store.insert(ResourceSamples.getResource());
+
+        String lastUpdatedBefore = store.getLastUpdated(Resource.Type.PROGRAM);
+        assertThat(lastUpdatedBefore).isNotNull();
+
+        store.deleteResource(Resource.Type.PROGRAM);
+
+        String lastUpdatedAfter = store.getLastUpdated(Resource.Type.PROGRAM);
+        assertThat(lastUpdatedAfter).isNull();
+    }
 }

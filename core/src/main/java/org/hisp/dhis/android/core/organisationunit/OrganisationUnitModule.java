@@ -39,11 +39,14 @@ public final class OrganisationUnitModule {
 
     public final OrganisationUnitCollectionRepository organisationUnits;
     public final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
+    public final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
 
     @Inject
     OrganisationUnitModule(OrganisationUnitCollectionRepository organisationUnits,
-                           OrganisationUnitGroupCollectionRepository organisationUnitGroups) {
+                           OrganisationUnitGroupCollectionRepository organisationUnitGroups,
+                           OrganisationUnitLevelCollectionRepository organisationUnitLevels) {
         this.organisationUnits = organisationUnits;
         this.organisationUnitGroups = organisationUnitGroups;
+        this.organisationUnitLevels = organisationUnitLevels;
     }
 }

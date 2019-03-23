@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
@@ -169,6 +170,10 @@ public final class D2 {
 
     public ProgramModule programModule() {
         return this.modules.program;
+    }
+
+    public OrganisationUnitModule organisationUnitModule() {
+        return this.modules.organisationUnit;
     }
 
     public TrackedEntityModule trackedEntityModule() {

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -46,11 +44,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithConstraints;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_1;
 
 @RunWith(AndroidJUnit4.class)
 public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
@@ -95,5 +96,19 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreT
             RelationshipType referenceType = typeMap.get(targetType.uid());
             assertTypesWithConstraints(targetType, referenceType);
         }
+    }
+
+    @Test
+    public void get_count_with_unrestricted_scope() {
+        int count = relationshipTypeCollectionRepository.count();
+
+        assertThat(count).isEqualTo(2);
+    }
+
+    @Test
+    public void get_count_with_restricted_scope() {
+        int count = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).count();
+
+        assertThat(count).isEqualTo(1);
     }
 }

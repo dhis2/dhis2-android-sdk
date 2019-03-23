@@ -79,6 +79,16 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
                 childrenAppenders, scope.children());
     }
 
+    @Override
+    public int count() {
+        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
+            return store.count();
+        } else {
+            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
+            return store.countWhere(whereClauseBuilder.getWhereClause(scope));
+        }
+    }
+
     public R withAllChildren() {
         return cf.repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }

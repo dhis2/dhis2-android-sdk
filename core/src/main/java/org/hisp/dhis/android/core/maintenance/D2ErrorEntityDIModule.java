@@ -26,53 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.maintenance;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
-import org.hisp.dhis.android.core.utils.Utils;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class UserOrganisationUnitLinkTableInfo {
+import java.util.Collections;
+import java.util.Map;
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-        @Override
-        public String name() {
-            return "UserOrganisationUnit";
-        }
+@Module
+public final class D2ErrorEntityDIModule {
 
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            OrganisationUnitTableInfo.TABLE_INFO,
-            Columns.USER,
-            Columns.ORGANISATION_UNIT);
-
-    private UserOrganisationUnitLinkTableInfo() {
+    @Provides
+    @Reusable
+    public ObjectStore<D2Error> store(DatabaseAdapter databaseAdapter) {
+        return D2ErrorStore.create(databaseAdapter);
     }
 
-    public static class Columns extends BaseModel.Columns {
-
-        static final String USER = "user";
-        public static final String ORGANISATION_UNIT = "organisationUnit";
-        public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
-        public static final String ROOT = "root";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<D2Error>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

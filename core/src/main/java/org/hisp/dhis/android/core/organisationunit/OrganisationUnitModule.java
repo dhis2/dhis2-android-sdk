@@ -26,53 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.db.TableInfo;
-import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
-import org.hisp.dhis.android.core.common.BaseModel;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
-import org.hisp.dhis.android.core.utils.Utils;
+import javax.inject.Inject;
 
-public final class UserOrganisationUnitLinkTableInfo {
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    public static final TableInfo TABLE_INFO = new TableInfo() {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class OrganisationUnitModule {
 
-        @Override
-        public String name() {
-            return "UserOrganisationUnit";
-        }
+    public final OrganisationUnitCollectionRepository organisationUnits;
 
-        @Override
-        public Columns columns() {
-            return new Columns();
-        }
-    };
-
-    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            OrganisationUnitTableInfo.TABLE_INFO,
-            Columns.USER,
-            Columns.ORGANISATION_UNIT);
-
-    private UserOrganisationUnitLinkTableInfo() {
-    }
-
-    public static class Columns extends BaseModel.Columns {
-
-        static final String USER = "user";
-        public static final String ORGANISATION_UNIT = "organisationUnit";
-        public static final String ORGANISATION_UNIT_SCOPE = "organisationUnitScope";
-        public static final String ROOT = "root";
-
-        @Override
-        public String[] all() {
-            return Utils.appendInNewArray(super.all(),
-                    USER, ORGANISATION_UNIT, ORGANISATION_UNIT_SCOPE, ROOT);
-        }
-
-        @Override
-        public String[] whereUpdate() {
-            return all();
-        }
+    @Inject
+    OrganisationUnitModule(OrganisationUnitCollectionRepository organisationUnits) {
+        this.organisationUnits = organisationUnits;
     }
 }

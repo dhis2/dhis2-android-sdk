@@ -26,37 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.organisationunit;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
-import java.util.Map;
+final class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender extends ChildrenAppender<OrganisationUnit> {
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+    private final LinkModelChildStore<OrganisationUnit, OrganisationUnitGroup> linkModelChildStore;
 
-@Module
-public final class TrackedEntityDataValueEntityDIModule {
-
-    @Provides
-    @Reusable
-    public TrackedEntityDataValueStore store(DatabaseAdapter databaseAdapter) {
-        return TrackedEntityDataValueStoreImpl.create(databaseAdapter);
+    private OrganisationUnitOrganisationUnitGroupProgramChildrenAppender(
+            LinkModelChildStore<OrganisationUnit, OrganisationUnitGroup> linkModelChildStore) {
+        this.linkModelChildStore = linkModelChildStore;
     }
 
-    @Provides
-    @Reusable
-    public SyncHandlerWithTransformer<TrackedEntityDataValue> handler(TrackedEntityDataValueStore store) {
-        return new TrackedEntityDataValueHandler(store);
+    @Override
+    protected OrganisationUnit appendChildren(OrganisationUnit organisationUnit) {
+        OrganisationUnit.Builder builder = organisationUnit.toBuilder();
+        builder.organisationUnitGroups(linkModelChildStore.getChildren(organisationUnit));
+        return builder.build();
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<TrackedEntityDataValue>> childrenAppenders() {
-        return Collections.emptyMap();
+    static ChildrenAppender<OrganisationUnit> create(DatabaseAdapter databaseAdapter) {
+        return new OrganisationUnitOrganisationUnitGroupProgramChildrenAppender(
+                StoreFactory.linkModelChildStore(
+                        databaseAdapter,
+                        OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
+                        OrganisationUnitOrganisationUnitGroupLinkTableInfo.CHILD_PROJECTION,
+                        OrganisationUnitGroup::create
+                )
+        );
     }
 }

@@ -51,6 +51,8 @@ public final class MaintenanceModuleWiper implements ModuleWiper {
 
     @Override
     public void wipeData() {
-        tableWiper.wipeTable(ForeignKeyViolationTableInfo.TABLE_INFO);
+        tableWiper.wipeTables(
+                D2ErrorTableInfo.TABLE_INFO,
+                ForeignKeyViolationTableInfo.TABLE_INFO);
     }
 }

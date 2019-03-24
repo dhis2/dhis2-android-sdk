@@ -15,7 +15,6 @@ import org.hisp.dhis.android.core.sms.domain.utils.Pair;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -82,7 +81,6 @@ public class SmsSubmitCase {
     public <T extends BaseDataModel> Completable checkConfirmationSms(final boolean searchReceived,
                                                                       final Collection<String> requiredStrings,
                                                                       final T dataModel) {
-
         return Single.zip(
                 localDbRepository.getConfirmationSenderNumber(),
                 localDbRepository.getWaitingResultTimeout(),
@@ -99,22 +97,45 @@ public class SmsSubmitCase {
     }
 
     private Completable checkPreconditions() {
-        ArrayList<Single<Boolean>> checks = new ArrayList<>();
-        checks.add(deviceStateRepository.hasCheckNetworkPermission());
-        checks.add(deviceStateRepository.hasReceiveSMSPermission());
-        checks.add(deviceStateRepository.hasSendSMSPermission());
-        checks.add(deviceStateRepository.isNetworkConnected());
-        checks.add(localDbRepository.getGatewayNumber().map(number -> number.length() > 0));
-        checks.add(localDbRepository.getUserName().map(username -> username.length() > 0));
+        return Completable.mergeArray(
+                mapFail(deviceStateRepository.hasCheckNetworkPermission(),
+                        PreconditionFailed.Type.NO_CHECK_NETWORK_PERMISSION),
+                mapFail(deviceStateRepository.hasReceiveSMSPermission(),
+                        PreconditionFailed.Type.NO_RECEIVE_SMS_PERMISSION),
+                mapFail(deviceStateRepository.hasSendSMSPermission(),
+                        PreconditionFailed.Type.NO_SEND_SMS_PERMISSION),
+                mapFail(deviceStateRepository.isNetworkConnected(),
+                        PreconditionFailed.Type.NO_NETWORK),
+                mapFail(localDbRepository.getGatewayNumber().map(number -> number.length() > 0),
+                        PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET),
+                mapFail(localDbRepository.getUserName().map(username -> username.length() > 0),
+                        PreconditionFailed.Type.NO_USER_LOGGED_IN)
+        );
+    }
 
-        return Single.merge(checks).flatMapCompletable(checkPassed -> {
-            if (!checkPassed) {
-                return Completable.error(new PreconditionFailed());
-            }
-            return Completable.complete();
-        });
+    private Completable mapFail(Single<Boolean> precondition, PreconditionFailed.Type failType) {
+        return precondition.flatMapCompletable(success ->
+                success ? Completable.complete() : Completable.error(new PreconditionFailed(failType)));
     }
 
     public static class PreconditionFailed extends Throwable {
+        private final Type type;
+
+        public PreconditionFailed(Type type) {
+            this.type = type;
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+        public enum Type {
+            NO_NETWORK,
+            NO_CHECK_NETWORK_PERMISSION,
+            NO_RECEIVE_SMS_PERMISSION,
+            NO_SEND_SMS_PERMISSION,
+            NO_GATEWAY_NUMBER_SET,
+            NO_USER_LOGGED_IN
+        }
     }
 }

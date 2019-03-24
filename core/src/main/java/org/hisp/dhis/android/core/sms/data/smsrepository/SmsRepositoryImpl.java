@@ -58,12 +58,12 @@ public class SmsRepositoryImpl implements SmsRepository {
         SmsReader smsReceiver = new SmsReader(context);
         Completable waitForSmsAction = smsReceiver.waitToReceiveConfirmationSms(
                 waitingTimeoutSeconds, requiredSender, requiredStrings);
-        if (!searchReceived) {
-            return waitForSmsAction;
-        } else {
+        if (searchReceived) {
             return smsReceiver.findConfirmationSms(requiredSender, requiredStrings)
                     .flatMapCompletable(
                             found -> found ? Completable.complete() : waitForSmsAction);
+        } else {
+            return waitForSmsAction;
         }
     }
 

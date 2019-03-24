@@ -42,7 +42,6 @@ public class InitTest {
     @Test
     public void allData() {
         String testGateway = "testGateway";
-        String testConfirmationNumber = "testConfirmationNumber";
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
         TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
         WebApiRepository.GetMetadataIdsConfig config = new WebApiRepository.GetMetadataIdsConfig();
@@ -54,7 +53,6 @@ public class InitTest {
                 .assertNoErrors();
 
         testLocalDbRepository.getGatewayNumber().test().assertNoErrors().assertValue(testGateway);
-        testLocalDbRepository.getConfirmationSenderNumber().test().assertNoErrors().assertValue(testConfirmationNumber);
     }
 
     @Test

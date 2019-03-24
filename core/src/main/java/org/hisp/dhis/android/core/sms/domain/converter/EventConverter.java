@@ -6,22 +6,15 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
-import java.util.Collection;
 import java.util.List;
 
 import io.reactivex.Single;
 
-public class EventConverter extends Converter<EventConverter.EventData, Event> {
+public class EventConverter extends Converter<EventConverter.EventData> {
     @Override
     public Single<String> format(@NonNull EventData event) {
         // TODO
         return Single.just(event.event.toString() + event.values.toString());
-    }
-
-    @Override
-    public Single<? extends Collection<String>> getConfirmationRequiredTexts(Event dataObject) {
-        // TODO
-        return null;
     }
 
     public static class EventData implements Converter.DataToConvert {

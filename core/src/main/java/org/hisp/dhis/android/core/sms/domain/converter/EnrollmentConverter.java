@@ -20,7 +20,7 @@ import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter.EnrollmentData;
 
-public class EnrollmentConverter extends Converter<EnrollmentData, Enrollment> {
+public class EnrollmentConverter extends Converter<EnrollmentData> {
     final private Metadata metadata;
 
     public EnrollmentConverter(Metadata metadata) {
@@ -64,12 +64,6 @@ public class EnrollmentConverter extends Converter<EnrollmentData, Enrollment> {
 
     private AttributeValue createAttributeValue(String attribute, String value) {
         return new AttributeValue(attribute, value);
-    }
-
-    @Override
-    public Single<? extends Collection<String>> getConfirmationRequiredTexts(Enrollment enrollmentModel) {
-        // TODO
-        return null;
     }
 
     public static class EnrollmentData implements Converter.DataToConvert {

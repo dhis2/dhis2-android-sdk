@@ -43,8 +43,7 @@ public class SmsSubmitCase {
     public Observable<SmsRepository.SmsSendingState> submit(final Event event,
                                                             final List<TrackedEntityDataValue>
                                                                     values) {
-        return submit(
-                new EventConverter(),
+        return submit(new EventConverter(),
                 new EventConverter.EventData(event, values));
     }
 
@@ -62,18 +61,8 @@ public class SmsSubmitCase {
         ));
     }
 
-    public Completable checkConfirmationSms(Event event) {
-        return checkConfirmationSms(new EventConverter(), event);
-    }
-
-    public Completable checkConfirmationSms(Enrollment enrollment) {
-        return localDbRepository.getMetadataIds().flatMapCompletable(metadata ->
-                checkConfirmationSms(new EnrollmentConverter(metadata), enrollment)
-        );
-    }
-
     public <T extends DataToConvert> Observable<SmsRepository.SmsSendingState>
-    submit(final Converter<T, ?> converter, final T dataItem) {
+    submit(final Converter<T> converter, final T dataItem) {
         return checkPreconditions()
                 .andThen(Single.zip(
                         localDbRepository.getGatewayNumber(),
@@ -90,10 +79,10 @@ public class SmsSubmitCase {
                 });
     }
 
-    public <T extends BaseDataModel> Completable checkConfirmationSms(final Converter<?, T> converter,
+    public <T extends BaseDataModel> Completable checkConfirmationSms(final Collection<String> requiredTexts,
                                                                       final T dataModel) {
         return Single.zip(localDbRepository.getConfirmationSenderNumber(),
-                converter.getConfirmationRequiredTexts(dataModel),
+                Single.just(requiredTexts),
                 localDbRepository.getWaitingResultTimeout(),
                 ResultCheckData::create
         ).flatMapCompletable(config ->

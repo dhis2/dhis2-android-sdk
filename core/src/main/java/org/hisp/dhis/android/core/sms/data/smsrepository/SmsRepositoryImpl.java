@@ -51,14 +51,20 @@ public class SmsRepositoryImpl implements SmsRepository {
     }
 
     @Override
-    public Completable listenToConfirmationSms(int waitingTimeoutSeconds, String requiredSender,
+    public Completable listenToConfirmationSms(boolean searchReceived,
+                                               int waitingTimeoutSeconds,
+                                               String requiredSender,
                                                Collection<String> requiredStrings) {
         SmsReader smsReceiver = new SmsReader(context);
-        return smsReceiver.findConfirmationSms(requiredSender, requiredStrings).flatMapCompletable(
-                found -> found ?
-                        Completable.complete() :
-                        smsReceiver.waitToReceiveConfirmationSms(waitingTimeoutSeconds, requiredSender,
-                                requiredStrings));
+        Completable waitForSmsAction = smsReceiver.waitToReceiveConfirmationSms(
+                waitingTimeoutSeconds, requiredSender, requiredStrings);
+        if (!searchReceived) {
+            return waitForSmsAction;
+        } else {
+            return smsReceiver.findConfirmationSms(requiredSender, requiredStrings)
+                    .flatMapCompletable(
+                            found -> found ? Completable.complete() : waitForSmsAction);
+        }
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops", "PMD.CyclomaticComplexity"})

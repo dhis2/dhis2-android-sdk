@@ -79,16 +79,23 @@ public class SmsSubmitCase {
                 });
     }
 
-    public <T extends BaseDataModel> Completable checkConfirmationSms(final Collection<String> requiredTexts,
+    public <T extends BaseDataModel> Completable checkConfirmationSms(final boolean searchReceived,
+                                                                      final Collection<String> requiredStrings,
                                                                       final T dataModel) {
-        return Single.zip(localDbRepository.getConfirmationSenderNumber(),
-                Single.just(requiredTexts),
+
+        return Single.zip(
+                localDbRepository.getConfirmationSenderNumber(),
                 localDbRepository.getWaitingResultTimeout(),
-                ResultCheckData::create
-        ).flatMapCompletable(config ->
+                Pair::create
+        ).flatMapCompletable(pair ->
                 smsRepository.listenToConfirmationSms(
-                        config.waitingResultTimeout, config.confirmationSenderNumber, config.requiredStrings))
-                .andThen(localDbRepository.updateSubmissionState(dataModel, State.SYNCED_VIA_SMS));
+                        searchReceived,
+                        pair.second,
+                        pair.first,
+                        requiredStrings)
+        ).andThen(
+                localDbRepository.updateSubmissionState(dataModel, State.SYNCED_VIA_SMS)
+        );
     }
 
     private Completable checkPreconditions() {
@@ -106,25 +113,6 @@ public class SmsSubmitCase {
             }
             return Completable.complete();
         });
-    }
-
-    private static class ResultCheckData {
-        String confirmationSenderNumber;
-        Collection<String> requiredStrings;
-        int waitingResultTimeout;
-
-        private ResultCheckData() {
-        }
-
-        static ResultCheckData create(String confirmationSenderNumber,
-                                      Collection<String> requiredStrings,
-                                      int waitingResultTimeout) {
-            ResultCheckData data = new ResultCheckData();
-            data.confirmationSenderNumber = confirmationSenderNumber;
-            data.requiredStrings = requiredStrings;
-            data.waitingResultTimeout = waitingResultTimeout;
-            return data;
-        }
     }
 
     public static class PreconditionFailed extends Throwable {

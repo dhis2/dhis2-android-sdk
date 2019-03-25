@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.constant;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Constant.Builder.class)
+@JsonDeserialize(builder = $$AutoValue_Constant.Builder.class)
 public abstract class Constant extends BaseIdentifiableObject implements Model {
 
     @Nullable
@@ -48,7 +48,7 @@ public abstract class Constant extends BaseIdentifiableObject implements Model {
     public abstract Double value();
 
     public static Builder builder() {
-        return new AutoValue_Constant.Builder();
+        return new $$AutoValue_Constant.Builder();
     }
 
     public static Constant create(Cursor cursor) {

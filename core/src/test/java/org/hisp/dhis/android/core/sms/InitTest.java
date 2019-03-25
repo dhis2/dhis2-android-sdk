@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.sms;
 
 import org.hisp.dhis.android.core.sms.domain.interactor.InitCase;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -44,9 +45,11 @@ public class InitTest {
         String testGateway = "testGateway";
         String testConfirmationNumber = "testConfirmationNumber";
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
+        TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
+        WebApiRepository.GetMetadataIdsConfig config = new WebApiRepository.GetMetadataIdsConfig();
 
-        new InitCase(testLocalDbRepository)
-                .initSMSModule(testGateway, testConfirmationNumber)
+        new InitCase(testWebApiRepository, testLocalDbRepository)
+                .initSMSModule(testGateway, testConfirmationNumber, config)
                 .test()
                 .awaitDone(3, TimeUnit.SECONDS)
                 .assertNoErrors();
@@ -58,9 +61,10 @@ public class InitTest {
     @Test
     public void emptyData() {
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
+        TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
 
-        new InitCase(testLocalDbRepository)
-                .initSMSModule(null, null)
+        new InitCase(testWebApiRepository, testLocalDbRepository)
+                .initSMSModule(null, null, null)
                 .test()
                 .awaitDone(3, TimeUnit.SECONDS)
                 .assertError(IllegalArgumentException.class);
@@ -70,9 +74,11 @@ public class InitTest {
     public void onlyGateway() {
         String testGateway = "testGateway";
         TestRepositories.TestLocalDbRepository testLocalDbRepository = new TestRepositories.TestLocalDbRepository();
+        TestRepositories.TestWebApiRepository testWebApiRepository = new TestRepositories.TestWebApiRepository();
+        WebApiRepository.GetMetadataIdsConfig config = new WebApiRepository.GetMetadataIdsConfig();
 
-        new InitCase(testLocalDbRepository)
-                .initSMSModule(testGateway, null)
+        new InitCase(testWebApiRepository, testLocalDbRepository)
+                .initSMSModule(testGateway, null, config)
                 .test()
                 .awaitDone(3, TimeUnit.SECONDS)
                 .assertNoErrors();

@@ -31,13 +31,15 @@ package org.hisp.dhis.android.core.event;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.CoordinateHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.event.EventModel.Columns;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,7 +117,7 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         String byEnrollmentAndProgramStageQuery = "SELECT Event.* FROM Event " +
                 "WHERE Event.enrollment = '" + enrollmentUid + "' " +
                 "AND Event.programStage = '" + programStageUid + "' " +
-                "ORDER BY Event." + Columns.EVENT_DATE + ", Event." + Columns.LAST_UPDATED;
+                "ORDER BY Event." + EventFields.EVENT_DATE + ", Event." + EventFields.LAST_UPDATED;
 
         return eventListFromQuery(byEnrollmentAndProgramStageQuery);
     }
@@ -127,6 +129,19 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
 
         List<Event> events = eventListFromQuery(countByEnrollment);
         return events.size();
+    }
+
+    @Override
+    public int countTeisWhereEvents(String whereClause) {
+        String whereStatement = whereClause == null ? "" : " WHERE " + whereClause;
+        String query = "SELECT COUNT(DISTINCT a." + EnrollmentFields.TRACKED_ENTITY_INSTANCE + ") " +
+                "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
+                "INNER JOIN " +
+                "(SELECT DISTINCT " + EventFields.ENROLLMENT +
+                    " FROM " + EventTableInfo.TABLE_INFO.name() + whereStatement + ") b " +
+                "ON a." + BaseIdentifiableObjectModel.Columns.UID + " = b." + EventFields.ENROLLMENT;
+
+        return processCount(databaseAdapter.query(query));
     }
 
     private List<Event> eventListFromQuery(String query) {

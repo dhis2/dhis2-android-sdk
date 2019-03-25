@@ -25,15 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +47,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,15 +59,14 @@ public class ProgramSectionHandlerShould {
     private IdentifiableObjectStore<ProgramSection> programSectionStore;
 
     @Mock
-    private LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel> programSectionAttributeLinkHandler;
+    private LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
+            programSectionAttributeLinkHandler;
 
     @Mock
     private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Mock
     private ProgramSection programSection;
-
-    private List<ProgramTrackedEntityAttribute> attributes;
 
     private String SECTION_UID = "section_uid";
 
@@ -77,7 +80,8 @@ public class ProgramSectionHandlerShould {
         programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler,
                 styleHandler);
 
-        attributes = Lists.newArrayList(ProgramTrackedEntityAttribute.builder().uid("attribute_uid").build());
+        List<TrackedEntityAttribute> attributes = Lists.newArrayList(
+                TrackedEntityAttribute.builder().uid("attribute_uid").build());
         when(programSection.attributes()).thenReturn(attributes);
         when(programSection.uid()).thenReturn(SECTION_UID);
     }
@@ -85,14 +89,14 @@ public class ProgramSectionHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         programSectionHandler.handle(programSection);
-        verify(styleHandler).handle(same(programSection.style()), any(ObjectStyleModelBuilder.class));
+        verify(styleHandler).handle(same(programSection.style()), any(ObjectStyleTransformer.class));
     }
 
     @Test
     public void save_program_section_attribute_links() throws Exception {
         programSectionHandler.handle(programSection);
-        verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID), same(attributes),
-                any(ProgramSectionAttributeLinkModelBuilder.class));
+        verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID),
+                anyListOf(TrackedEntityAttribute.class), any(Transformer.class));
     }
 
     @Test

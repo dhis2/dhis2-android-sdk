@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.legendset.LegendSet;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkStore;
 
@@ -50,7 +51,8 @@ public final class ProgramIndicatorLegendSetEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkSyncHandler<ProgramIndicatorLegendSetLink> handler(LinkModelStore<ProgramIndicatorLegendSetLink> store) {
+    public LinkSyncHandler<LegendSet, ProgramIndicatorLegendSetLink> handler(
+            LinkModelStore<ProgramIndicatorLegendSetLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }
 }

@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,9 +47,26 @@ public final class ProgramSectionCollectionRepository
 
     @Inject
     ProgramSectionCollectionRepository(final IdentifiableObjectStore<ProgramSection> store,
-                                       final Collection<ChildrenAppender<ProgramSection>> childrenAppenders,
-                                       List<RepositoryScopeItem> scope) {
+                                       final Map<String, ChildrenAppender<ProgramSection>> childrenAppenders,
+                                       final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramSectionCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramSectionCollectionRepository(store, childrenAppenders, s)));
+    }
+
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byDescription() {
+        return cf.string(ProgramSectionFields.DESCRIPTION);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byProgramUid() {
+        return cf.string(ProgramSectionFields.PROGRAM);
+    }
+
+    public IntegerFilterConnector<ProgramSectionCollectionRepository> bySortOrder() {
+        return cf.integer(ProgramSectionFields.SORT_ORDER);
+    }
+
+    public StringFilterConnector<ProgramSectionCollectionRepository> byFormName() {
+        return cf.string(ProgramSectionFields.FORM_NAME);
     }
 }

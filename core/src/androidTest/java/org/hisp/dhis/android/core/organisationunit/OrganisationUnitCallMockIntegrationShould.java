@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -46,13 +46,13 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
-import org.hisp.dhis.android.core.program.ProgramModel;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceTableInfo;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreImpl;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
 import org.junit.Before;
@@ -127,8 +127,8 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
 
     private void insertProgramWithUid(String uid) {
         ContentValues program = new ContentValues();
-        program.put(ProgramModel.Columns.UID, uid);
-        database().insert(ProgramModel.TABLE, null, program);
+        program.put(BaseIdentifiableObjectModel.Columns.UID, uid);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
     }
 
     @Test
@@ -147,13 +147,13 @@ public class OrganisationUnitCallMockIntegrationShould extends AbsStoreTestCase 
     public void persist_organisation_unit_user_links() throws Exception {
         organisationUnitCall.call();
 
-        UserOrganisationUnitLinkStoreInterface userOrganisationUnitStore = UserOrganisationUnitLinkStore.create(databaseAdapter());
-        List<UserOrganisationUnitLinkModel> linkList = userOrganisationUnitStore.selectAll();
+        UserOrganisationUnitLinkStore userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl.create(databaseAdapter());
+        List<UserOrganisationUnitLink> userOrganisationUnitLinks = userOrganisationUnitStore.selectAll();
 
         Set<String> linkOrganisationUnits = new HashSet<>(2);
-        for (UserOrganisationUnitLinkModel linkModel: linkList) {
-            assertThat(linkModel.user()).isEqualTo("user_uid");
-            linkOrganisationUnits.add(linkModel.organisationUnit());
+        for (UserOrganisationUnitLink userOrganisationUnitLink: userOrganisationUnitLinks) {
+            assertThat(userOrganisationUnitLink.user()).isEqualTo("user_uid");
+            linkOrganisationUnits.add(userOrganisationUnitLink.organisationUnit());
         }
 
         assertThat(linkOrganisationUnits.contains(expectedAfroArabicClinic.uid())).isTrue();

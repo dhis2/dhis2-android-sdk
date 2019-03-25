@@ -38,6 +38,7 @@ public class RelationshipConstraintSamples {
 
     public static RelationshipConstraint getRelationshipConstraint() {
         return RelationshipConstraint.builder()
+                .id(1L)
                 .relationshipType(ObjectWithUid.create("relationship_type_uid"))
                 .constraintType(RelationshipConstraintType.FROM)
                 .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)

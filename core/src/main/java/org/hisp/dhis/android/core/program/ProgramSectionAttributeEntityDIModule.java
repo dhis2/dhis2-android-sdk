@@ -28,10 +28,11 @@
 
 package org.hisp.dhis.android.core.program;
 
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.LinkModelHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,14 +43,14 @@ public final class ProgramSectionAttributeEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelStore<ProgramSectionAttributeLinkModel> store(DatabaseAdapter databaseAdapter) {
+    public LinkModelStore<ProgramSectionAttributeLink> store(DatabaseAdapter databaseAdapter) {
         return ProgramSectionAttributeLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel> handler(
-            LinkModelStore<ProgramSectionAttributeLinkModel> store) {
-        return new LinkModelHandlerImpl<>(store);
+    public LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink> handler(
+            LinkModelStore<ProgramSectionAttributeLink> store) {
+        return new LinkSyncHandlerImpl<>(store);
     }
 }

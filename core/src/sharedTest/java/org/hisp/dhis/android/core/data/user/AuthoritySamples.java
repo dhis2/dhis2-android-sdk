@@ -34,6 +34,7 @@ public class AuthoritySamples {
 
     public static Authority getAuthority() {
         return Authority.builder()
+                .id(1L)
                 .name("F_ENROLLMENT_CASCADE_DELETE")
                 .build();
     }

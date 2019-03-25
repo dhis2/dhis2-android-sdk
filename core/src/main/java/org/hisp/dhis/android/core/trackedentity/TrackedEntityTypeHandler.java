@@ -32,9 +32,8 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
-import org.hisp.dhis.android.core.common.OrderedLinkModelBuilder;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 
 import javax.inject.Inject;
 
@@ -44,12 +43,12 @@ import dagger.Reusable;
 final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityType> {
 
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
-    private final OrderedLinkModelHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
+    private final OrderedLinkSyncHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> attributeHandler;
 
     @Inject
     TrackedEntityTypeHandler(IdentifiableObjectStore<TrackedEntityType> trackedEntityTypeStore,
                              SyncHandlerWithTransformer<ObjectStyle> styleHandler,
-                             OrderedLinkModelHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
+                             OrderedLinkSyncHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>
                                      attributeHandler) {
         super(trackedEntityTypeStore);
         this.styleHandler = styleHandler;
@@ -58,15 +57,11 @@ final class TrackedEntityTypeHandler extends IdentifiableSyncHandlerImpl<Tracked
 
     @Override
     protected void afterObjectHandled(TrackedEntityType trackedEntityType, HandleAction action) {
-        styleHandler.handle(trackedEntityType.style(), new ObjectStyleModelBuilder(trackedEntityType.uid(),
+        styleHandler.handle(trackedEntityType.style(), new ObjectStyleTransformer(trackedEntityType.uid(),
                 TrackedEntityTypeTableInfo.TABLE_INFO.name()));
 
         attributeHandler.handleMany(trackedEntityType.uid(), trackedEntityType.trackedEntityTypeAttributes(),
-                new OrderedLinkModelBuilder<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute>() {
-                    @Override
-                    public TrackedEntityTypeAttribute buildModel(TrackedEntityTypeAttribute attr, Integer sortOrder) {
-                        return attr.toBuilder().sortOrder(sortOrder).build();
-                    }
-                });
+                (trackedEntityTypeAttribute, sortOrder) ->
+                        trackedEntityTypeAttribute.toBuilder().sortOrder(sortOrder).build());
     }
 }

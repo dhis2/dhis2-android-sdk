@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.category;
 
-
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,14 +47,13 @@ import dagger.Reusable;
 final class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
 
     private final SyncHandler<CategoryOption> categoryOptionHandler;
-    private final OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
-            categoryCategoryOptionLinkHandler;
+    private final OrderedLinkSyncHandler<CategoryOption, CategoryCategoryOptionLink> categoryCategoryOptionLinkHandler;
 
     @Inject
     CategoryHandler(
             @NonNull IdentifiableObjectStore<Category> categoryStore,
             @NonNull SyncHandler<CategoryOption> categoryOptionHandler,
-            @NonNull OrderedLinkModelHandler<CategoryOption, CategoryCategoryOptionLinkModel>
+            @NonNull OrderedLinkSyncHandler<CategoryOption, CategoryCategoryOptionLink>
                     categoryCategoryOptionLinkHandler) {
         super(categoryStore);
         this.categoryOptionHandler = categoryOptionHandler;
@@ -67,14 +65,20 @@ final class CategoryHandler extends IdentifiableSyncHandlerImpl<Category> {
         List<CategoryOption> categoryOptions = category.categoryOptions();
         if (categoryOptions != null) {
             List<CategoryOption> categoryOptionsWithAccess = new ArrayList<>();
-            for (CategoryOption categoryOption: categoryOptions) {
+            for (CategoryOption categoryOption : categoryOptions) {
                 if (categoryOption.access().data().read()) {
                     categoryOptionsWithAccess.add(categoryOption);
                 }
             }
+
             categoryOptionHandler.handleMany(categoryOptionsWithAccess);
-            categoryCategoryOptionLinkHandler.handleMany(category.uid(), categoryOptionsWithAccess,
-                    new CategoryCategoryOptionLinkModelBuilder(category));
+            categoryCategoryOptionLinkHandler.handleMany(category.uid(),
+                    categoryOptionsWithAccess,
+                    (categoryOption, sortOrder) -> CategoryCategoryOptionLink.builder()
+                            .category(category.uid())
+                            .categoryOption(categoryOption.uid())
+                            .sortOrder(sortOrder)
+                            .build());
         }
     }
 }

@@ -29,7 +29,10 @@
 package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
+import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 
 public class CreateProgramUtils {
     /**
@@ -84,47 +87,47 @@ public class CreateProgramUtils {
                                        String relatedProgram, @Nullable String trackedEntityUid) {
 
         ContentValues program = new ContentValues();
-        program.put(ProgramModel.Columns.ID, id);
-        program.put(ProgramModel.Columns.UID, uid);
-        program.put(ProgramModel.Columns.CODE, CODE);
-        program.put(ProgramModel.Columns.NAME, NAME);
-        program.put(ProgramModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        program.put(ProgramModel.Columns.CREATED, DATE);
-        program.put(ProgramModel.Columns.LAST_UPDATED, DATE);
-        program.put(ProgramModel.Columns.SHORT_NAME, SHORT_NAME);
-        program.put(ProgramModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        program.put(ProgramModel.Columns.DESCRIPTION, DESCRIPTION);
-        program.put(ProgramModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        program.put(ProgramModel.Columns.VERSION, VERSION);
-        program.put(ProgramModel.Columns.ONLY_ENROLL_ONCE, ONLY_ENROLL_ONCE);
-        program.put(ProgramModel.Columns.ENROLLMENT_DATE_LABEL, ENROLLMENT_DATE_LABEL);
-        program.put(ProgramModel.Columns.DISPLAY_INCIDENT_DATE, DISPLAY_INCIDENT_DATE);
-        program.put(ProgramModel.Columns.INCIDENT_DATE_LABEL, INCIDENT_DATE_LABEL);
-        program.put(ProgramModel.Columns.REGISTRATION, REGISTRATION);
-        program.put(ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE, SELECT_ENROLLMENT_DATES_IN_FUTURE);
-        program.put(ProgramModel.Columns.DATA_ENTRY_METHOD, DATA_ENTRY_METHOD);
-        program.put(ProgramModel.Columns.IGNORE_OVERDUE_EVENTS, IGNORE_OVERDUE_EVENTS);
-        program.put(ProgramModel.Columns.RELATIONSHIP_FROM_A, RELATIONSHIP_FROM_A);
-        program.put(ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE, SELECT_INCIDENT_DATES_IN_FUTURE);
-        program.put(ProgramModel.Columns.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
-        program.put(ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
-        program.put(ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
-        program.put(ProgramModel.Columns.PROGRAM_TYPE, PROGRAM_TYPE.name());
+        program.put(BaseIdentifiableObjectModel.Columns.ID, id);
+        program.put(BaseIdentifiableObjectModel.Columns.UID, uid);
+        program.put(BaseIdentifiableObjectModel.Columns.CODE, CODE);
+        program.put(BaseIdentifiableObjectModel.Columns.NAME, NAME);
+        program.put(BaseIdentifiableObjectModel.Columns.DISPLAY_NAME, DISPLAY_NAME);
+        program.put(BaseIdentifiableObjectModel.Columns.CREATED, DATE);
+        program.put(BaseIdentifiableObjectModel.Columns.LAST_UPDATED, DATE);
+        program.put(BaseNameableObjectModel.Columns.SHORT_NAME, SHORT_NAME);
+        program.put(BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
+        program.put(BaseNameableObjectModel.Columns.DESCRIPTION, DESCRIPTION);
+        program.put(BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
+        program.put(ProgramFields.VERSION, VERSION);
+        program.put(ProgramFields.ONLY_ENROLL_ONCE, ONLY_ENROLL_ONCE);
+        program.put(ProgramFields.ENROLLMENT_DATE_LABEL, ENROLLMENT_DATE_LABEL);
+        program.put(ProgramFields.DISPLAY_INCIDENT_DATE, DISPLAY_INCIDENT_DATE);
+        program.put(ProgramFields.INCIDENT_DATE_LABEL, INCIDENT_DATE_LABEL);
+        program.put(ProgramFields.REGISTRATION, REGISTRATION);
+        program.put(ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE, SELECT_ENROLLMENT_DATES_IN_FUTURE);
+        program.put(ProgramFields.DATA_ENTRY_METHOD, DATA_ENTRY_METHOD);
+        program.put(ProgramFields.IGNORE_OVERDUE_EVENTS, IGNORE_OVERDUE_EVENTS);
+        program.put(ProgramFields.RELATIONSHIP_FROM_A, RELATIONSHIP_FROM_A);
+        program.put(ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE, SELECT_INCIDENT_DATES_IN_FUTURE);
+        program.put(ProgramFields.CAPTURE_COORDINATES, CAPTURE_COORDINATES);
+        program.put(ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION, USE_FIRST_STAGE_DURING_REGISTRATION);
+        program.put(ProgramFields.DISPLAY_FRONT_PAGE_LIST, DISPLAY_FRONT_PAGE_LIST);
+        program.put(ProgramFields.PROGRAM_TYPE, PROGRAM_TYPE.name());
         if(relationshipTypeUid == null) {
-            program.putNull(ProgramModel.Columns.RELATIONSHIP_TYPE);
+            program.putNull(ProgramFields.RELATIONSHIP_TYPE);
         } else {
-            program.put(ProgramModel.Columns.RELATIONSHIP_TYPE, relationshipTypeUid);
+            program.put(ProgramFields.RELATIONSHIP_TYPE, relationshipTypeUid);
         }
-        program.put(ProgramModel.Columns.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
+        program.put(ProgramFields.RELATIONSHIP_TEXT, RELATIONSHIP_TEXT);
         if (relatedProgram == null) {
-            program.putNull(ProgramModel.Columns.RELATED_PROGRAM);
+            program.putNull(ProgramFields.RELATED_PROGRAM);
         } else {
-            program.put(ProgramModel.Columns.RELATED_PROGRAM, RELATED_PROGRAM);
+            program.put(ProgramFields.RELATED_PROGRAM, RELATED_PROGRAM);
         }
         if(trackedEntityUid == null) {
-            program.putNull(ProgramModel.Columns.TRACKED_ENTITY_TYPE);
+            program.putNull(ProgramFields.TRACKED_ENTITY_TYPE);
         } else {
-            program.put(ProgramModel.Columns.TRACKED_ENTITY_TYPE, trackedEntityUid);
+            program.put(ProgramFields.TRACKED_ENTITY_TYPE, trackedEntityUid);
         }
         return program;
     }

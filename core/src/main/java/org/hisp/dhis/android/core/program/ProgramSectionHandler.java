@@ -25,15 +25,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import javax.inject.Inject;
 
@@ -41,13 +43,13 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
-    private final LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
+    private final LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkModelHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLinkModel>
+                          LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
                                   programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(programSectionStore);
@@ -57,9 +59,12 @@ final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSec
 
     @Override
     protected void afterObjectHandled(ProgramSection programSection, HandleAction action) {
-        programSectionAttributeLinkHandler.handleMany(programSection.uid(),
-                programSection.attributes(), new ProgramSectionAttributeLinkModelBuilder(programSection));
-        styleHandler.handle(programSection.style(), new ObjectStyleModelBuilder(programSection.uid(),
+
+        programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSection.attributes(),
+                trackedEntityAttribute -> ProgramSectionAttributeLink.builder()
+                        .programSection(programSection.uid()).attribute(trackedEntityAttribute.uid()).build());
+
+        styleHandler.handle(programSection.style(), new ObjectStyleTransformer(programSection.uid(),
                 ProgramSectionTableInfo.TABLE_INFO.name()));
     }
 }

@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.core.utils.services;
 
 import android.content.ContentValues;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.Access;
@@ -130,7 +130,7 @@ public class ProgramIndicatorEngineIntegrationShould extends AbsStoreTestCase {
 
         teiStore.insert(trackedEntityInstance);
 
-        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryComboModel.DEFAULT_UID);
+        ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID);
         database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
         Access access = Access.create(true, null, null, null, null, null,

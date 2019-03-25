@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.handlers;
 
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ModelBuilder;
+import org.hisp.dhis.android.core.common.Transformer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,24 +47,24 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     }
 
     @Override
-    public final void handle(O o, ModelBuilder<O, O> modelBuilder) {
+    public final void handle(O o, Transformer<O, O> transformer) {
         if (o == null) {
             return;
         }
-        handleInternal(o, modelBuilder);
+        handleInternal(o, transformer);
     }
 
-    private void handle(O o, ModelBuilder<O, O> modelBuilder, List<O> oTransformedCollection) {
+    private void handle(O o, Transformer<O, O> transformer, List<O> oTransformedCollection) {
         if (o == null) {
             return;
         }
-        O oTransformed = handleInternal(o, modelBuilder);
+        O oTransformed = handleInternal(o, transformer);
         oTransformedCollection.add(oTransformed);
     }
 
-    private O handleInternal(O o, ModelBuilder<O, O> modelBuilder) {
+    private O handleInternal(O o, Transformer<O, O> transformer) {
         O object = beforeObjectHandled(o);
-        O oTransformed = modelBuilder.buildModel(object);
+        O oTransformed = transformer.transform(object);
         HandleAction action = deleteOrPersist(oTransformed);
         afterObjectHandled(oTransformed, action);
         return oTransformed;
@@ -73,7 +73,7 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     @Override
     public final void handleMany(Collection<O> oCollection) {
         if (oCollection != null) {
-            for(O o : oCollection) {
+            for (O o : oCollection) {
                 handle(o);
             }
             afterCollectionHandled(oCollection);
@@ -81,11 +81,11 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     }
 
     @Override
-    public final void handleMany(Collection<O> oCollection, ModelBuilder<O, O> modelBuilder) {
+    public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer) {
         if (oCollection != null) {
             List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
-            for(O o : oCollection) {
-                handle(o, modelBuilder, oTransformedCollection);
+            for (O o : oCollection) {
+                handle(o, transformer, oTransformedCollection);
             }
             afterCollectionHandled(oTransformedCollection);
         }

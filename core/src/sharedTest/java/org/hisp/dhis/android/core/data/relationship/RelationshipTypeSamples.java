@@ -44,30 +44,35 @@ public class RelationshipTypeSamples {
 
     public static RelationshipConstraint FROM_CONSTRAINT_1 = RelationshipConstraint
             .builder()
+            .id(1L)
             .constraintType(RelationshipConstraintType.FROM)
             .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_1))
             .build();
 
     public static RelationshipConstraint TO_CONSTRAINT_1 = RelationshipConstraint
             .builder()
+            .id(2L)
             .constraintType(RelationshipConstraintType.TO)
             .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_1))
             .build();
 
     public static RelationshipConstraint FROM_CONSTRAINT_2 = RelationshipConstraint
             .builder()
+            .id(3L)
             .constraintType(RelationshipConstraintType.FROM)
             .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
             .build();
 
     public static RelationshipConstraint TO_CONSTRAINT_2 = RelationshipConstraint
             .builder()
+            .id(4L)
             .constraintType(RelationshipConstraintType.TO)
             .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
             .build();
 
     public static RelationshipType RELATIONSHIP_TYPE_1 = RelationshipType
             .builder()
+            .id(1L)
             .uid(RELATIONSHIP_TYPE_UID_1)
             .fromConstraint(FROM_CONSTRAINT_1)
             .toConstraint(TO_CONSTRAINT_1)
@@ -75,6 +80,7 @@ public class RelationshipTypeSamples {
 
     public static RelationshipType RELATIONSHIP_TYPE_2 = RelationshipType
             .builder()
+            .id(2L)
             .uid(RELATIONSHIP_TYPE_UID_2)
             .fromConstraint(FROM_CONSTRAINT_2)
             .toConstraint(TO_CONSTRAINT_2)

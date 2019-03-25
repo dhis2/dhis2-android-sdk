@@ -29,10 +29,11 @@
 package org.hisp.dhis.android.core.user;
 
 import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
@@ -58,15 +59,15 @@ import static org.hisp.dhis.android.core.utils.UserUtils.base64;
 public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase {
 
     private static final String[] USER_CREDENTIALS_PROJECTION = {
-            UserCredentialsModel.Columns.ID,
-            UserCredentialsModel.Columns.UID,
-            UserCredentialsModel.Columns.CODE,
-            UserCredentialsModel.Columns.NAME,
-            UserCredentialsModel.Columns.DISPLAY_NAME,
-            UserCredentialsModel.Columns.CREATED,
-            UserCredentialsModel.Columns.LAST_UPDATED,
-            UserCredentialsModel.Columns.USERNAME,
-            UserCredentialsModel.Columns.USER,
+            BaseIdentifiableObjectModel.Columns.ID,
+            BaseIdentifiableObjectModel.Columns.UID,
+            BaseIdentifiableObjectModel.Columns.CODE,
+            BaseIdentifiableObjectModel.Columns.NAME,
+            BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+            BaseIdentifiableObjectModel.Columns.CREATED,
+            BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+            UserCredentialsFields.USERNAME,
+            UserCredentialsTableInfo.Columns.USER,
     };
 
     private static final String[] AUTHENTICATED_USERS_PROJECTION = {
@@ -106,7 +107,7 @@ public class UserAuthenticateCallMockIntegrationShould extends AbsStoreTestCase 
         // verify that user is persisted in database with corresponding data
         Cursor userCursor = database().query(UserTableInfo.TABLE_INFO.name(),
                 UserTableInfo.TABLE_INFO.columns().all(), null, null, null, null, null);
-        Cursor userCredentialsCursor = database().query(UserCredentialsModel.TABLE,
+        Cursor userCredentialsCursor = database().query(UserCredentialsTableInfo.TABLE_INFO.name(),
                 USER_CREDENTIALS_PROJECTION, null, null, null, null, null);
         Cursor authenticatedUsersCursor = database().query(AuthenticatedUserTableInfo.TABLE_INFO.name(),
                 AUTHENTICATED_USERS_PROJECTION, null, null, null, null, null);

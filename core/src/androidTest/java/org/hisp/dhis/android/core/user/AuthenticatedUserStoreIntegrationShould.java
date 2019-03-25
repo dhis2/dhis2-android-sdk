@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.AuthenticatedUserSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class AuthenticatedUserStoreIntegrationShould
@@ -53,13 +53,6 @@ public class AuthenticatedUserStoreIntegrationShould
     protected AuthenticatedUser buildObjectToUpdate() {
         return AuthenticatedUserSamples.getAuthenticatedUser().toBuilder()
                 .hash("new_hash")
-                .build();
-    }
-
-    @Override
-    protected AuthenticatedUser buildObjectWithId() {
-        return AuthenticatedUserSamples.getAuthenticatedUser().toBuilder()
-                .id(1L)
                 .build();
     }
 }

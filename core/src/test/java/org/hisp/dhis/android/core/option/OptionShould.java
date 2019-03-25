@@ -37,9 +37,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.text.ParseException;
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
-
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class OptionShould extends BaseObjectShould implements ObjectShould {
@@ -64,12 +61,5 @@ public class OptionShould extends BaseObjectShould implements ObjectShould {
         assertThat(option.sortOrder()).isEqualTo(1);
         assertThat(option.optionSet().uid()).isEqualTo("VQ2lai3OfVG");
         assertThat(option.style()).isEqualTo(ObjectStyle.builder().color("#000").icon("my-icon-name").build());
-    }
-
-    @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(OptionModel.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
     }
 }

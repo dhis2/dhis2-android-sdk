@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -43,7 +39,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-@RunWith(AndroidJUnit4.class)
 public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
@@ -81,9 +76,5 @@ public class DataElementEndpointCallRealIntegrationShould extends AbsStoreTestCa
             uncomment the @Test tag */
 
         dataElementCall.call();
-    }
-
-    @Test
-    public void stub() {
     }
 }

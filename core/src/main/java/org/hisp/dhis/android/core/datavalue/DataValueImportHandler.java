@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;

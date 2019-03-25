@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
@@ -34,13 +35,13 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -54,13 +55,16 @@ public final class EventCollectionRepository
 
     private final EventPostCall postCall;
 
+    private final EventStore store;
+
     @Inject
     EventCollectionRepository(final EventStore store,
-                              final Collection<ChildrenAppender<Event>> childrenAppenders,
-                              final List<RepositoryScopeItem> scope,
+                              final Map<String, ChildrenAppender<Event>> childrenAppenders,
+                              final RepositoryScope scope,
                               final EventPostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new EventCollectionRepository(store, childrenAppenders, updatedScope, postCall)));
+                s -> new EventCollectionRepository(store, childrenAppenders, s, postCall)));
+        this.store = store;
         this.postCall = postCall;
     }
 
@@ -142,5 +146,13 @@ public final class EventCollectionRepository
         return cf.string(EventTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
     }
 
+    public int countTrackedEntityInstances() {
+        if (scope.hasFilters()) {
+            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
+            return store.countTeisWhereEvents(whereClauseBuilder.getWhereClause(scope));
+        } else {
+            return store.countTeisWhereEvents(null);
+        }
+    }
 
 }

@@ -29,15 +29,15 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
-
+@Deprecated
 @AutoValue
 public abstract class CategoryCategoryComboLinkModel extends BaseModel {
     public static final String TABLE = "CategoryCategoryComboLink";

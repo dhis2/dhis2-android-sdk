@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.core.data.database.migrations;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.DbOpenHelper;
 import org.hisp.dhis.android.core.data.database.SqLiteDatabaseAdapter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
 import org.hisp.dhis.android.core.user.UserTableInfo;
 import org.junit.After;
 import org.junit.Before;
@@ -83,13 +83,13 @@ public class DataBaseMigrationShould {
     @Test
     public void not_have_tracked_entity_attribute_reserved_value_table_after_migration_1() {
         initCoreDataBase(1);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueModel.TABLE, databaseAdapter), is(false));
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter), is(false));
     }
 
     @Test
     public void have_tracked_entity_attribute_reserved_value_table_after_first_migration_2() {
         initCoreDataBase(2);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueModel.TABLE, databaseAdapter), is(true));
+        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter), is(true));
     }
 
     public DatabaseAdapter initCoreDataBase(int databaseVersion) {

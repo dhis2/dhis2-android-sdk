@@ -73,8 +73,8 @@ public class ValueTypeRenderingHandlerShould {
     @Test
     public void call_device_handler_when_render_type_not_null() throws Exception {
         renderTypeHandler.handle(renderType, UID, TABLE);
-        verify(deviceRenderingHandler).handle(eq(desktopRenderType), any(ModelBuilder.class));
-        verify(deviceRenderingHandler).handle(eq(mobileRenderType), any(ModelBuilder.class));
+        verify(deviceRenderingHandler).handle(eq(desktopRenderType), any(Transformer.class));
+        verify(deviceRenderingHandler).handle(eq(mobileRenderType), any(Transformer.class));
         verifyNoMoreInteractions(deviceRenderingHandler);
     }
 

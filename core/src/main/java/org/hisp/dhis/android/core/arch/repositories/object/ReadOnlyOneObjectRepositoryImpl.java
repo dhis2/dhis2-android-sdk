@@ -29,33 +29,32 @@ package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model> extends ReadOnlyObjectRepositoryImpl<M> {
+public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
+        extends ReadOnlyObjectRepositoryImpl<M, R> {
 
     private final ObjectStore<M> store;
-    private final List<RepositoryScopeItem> scope;
 
     public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                    Collection<ChildrenAppender<M>> childrenAppenders,
-                                    List<RepositoryScopeItem> scope) {
-        super(childrenAppenders);
+                                           Map<String, ChildrenAppender<M>> childrenAppenders,
+                                           RepositoryScope scope,
+                                           ObjectRepositoryFactory<R> repositoryFactory) {
+        super(childrenAppenders, scope, repositoryFactory);
         this.store = store;
-        this.scope = scope;
     }
 
-    public M get() {
-        if (scope.isEmpty()) {
-            return store.selectFirst();
-        } else {
+    public M getWithoutChildren() {
+        if (scope.hasFilters()) {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
             return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
+        } else {
+            return store.selectFirst();
         }
     }
 }

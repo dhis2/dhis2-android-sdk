@@ -30,13 +30,14 @@ package org.hisp.dhis.android.core.user;
 
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
+@Deprecated
 @AutoValue
 public abstract class UserCredentialsModel extends BaseIdentifiableObjectModel {
     public static final String TABLE = "UserCredentials";

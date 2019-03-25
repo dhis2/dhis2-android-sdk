@@ -69,12 +69,12 @@ class CategoryComboUidsSeeker {
         Cursor cursor = databaseAdapter.query(query);
         Set<String> categoryCombos = new HashSet<>();
         try {
-            if(cursor.getCount() > 0) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 do {
                     categoryCombos.add(cursor.getString(0));
                 }
-                while(cursor.moveToNext());
+                while (cursor.moveToNext());
             }
         } finally {
             cursor.close();

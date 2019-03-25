@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.testapp.user;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.user.User;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,12 +42,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class UserObjectRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class UserObjectRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_user() {
@@ -59,7 +53,7 @@ public class UserObjectRepositoryMockIntegrationShould extends MockIntegrationSh
 
     @Test
     public void return_user_credentials_as_children() {
-        User user = d2.userModule().user.getWithAllChildren();
+        User user = d2.userModule().user.withAllChildren().get();
         assertThat(user.userCredentials().user().uid(), is(user.uid()));
         assertThat(user.userCredentials().username(), is("android"));
         assertThat(user.userCredentials().name(), is("John Barnes"));
@@ -67,7 +61,7 @@ public class UserObjectRepositoryMockIntegrationShould extends MockIntegrationSh
 
     @Test
     public void return_organisation_units_as_children() {
-        User user = d2.userModule().user.getWithAllChildren();
+        User user = d2.userModule().user.withAllChildren().get();
         List<OrganisationUnit> organisationUnits = user.organisationUnits();
         assertThat(organisationUnits.size(), is(1));
         assertThat(organisationUnits.get(0).name(), is("Ngelehun CHC"));

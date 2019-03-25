@@ -31,13 +31,13 @@ package org.hisp.dhis.android.core.enrollment;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ModelBuilder;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
 import org.hisp.dhis.android.core.enrollment.note.Note;
+import org.hisp.dhis.android.core.enrollment.note.NoteDHISVersionManager;
+import org.hisp.dhis.android.core.enrollment.note.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +68,7 @@ public class EnrollmentHandlerShould {
     private SyncHandler<Note> noteHandler;
 
     @Mock
-    private ObjectWithoutUidStore<Note> noteStore;
+    private NoteUniquenessManager noteUniquenessManager;
 
     @Mock
     private Enrollment enrollment;
@@ -80,7 +80,7 @@ public class EnrollmentHandlerShould {
     private Note note;
 
     @Mock
-    private DHISVersionManager versionManager;
+    private NoteDHISVersionManager noteVersionManager;
 
     @Mock
     private OrphanCleaner<Enrollment, Event> eventCleaner;
@@ -96,8 +96,8 @@ public class EnrollmentHandlerShould {
         when(enrollment.notes()).thenReturn(Collections.singletonList(note));
         when(note.storedDate()).thenReturn(FillPropertiesTestUtils.LAST_UPDATED_STR);
 
-        enrollmentHandler = new EnrollmentHandler(versionManager, enrollmentStore, eventHandler,
-                eventCleaner, noteHandler, noteStore);
+        enrollmentHandler = new EnrollmentHandler(noteVersionManager, enrollmentStore, eventHandler,
+                eventCleaner, noteHandler, noteUniquenessManager);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class EnrollmentHandlerShould {
 
         // event handler should not be invoked
         verify(eventHandler, never()).handle(any(Event.class));
-        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
+        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollectionOf(Event.class));
         verify(noteHandler, never()).handleMany(anyCollectionOf(Note.class));
     }
 
@@ -144,8 +144,8 @@ public class EnrollmentHandlerShould {
         verify(enrollmentStore, never()).deleteIfExists(anyString());
 
         // event handler should be invoked once
-        verify(eventHandler, times(1)).handleMany(any(ArrayList.class), any(ModelBuilder.class));
-        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), any(ArrayList.class));
+        verify(eventHandler, times(1)).handleMany(anyCollectionOf(Event.class), any(Transformer.class));
+        verify(eventCleaner, times(1)).deleteOrphan(any(Enrollment.class), anyCollectionOf(Event.class));
         verify(noteHandler, times(1)).handleMany(anyCollectionOf(Note.class));
     }
 }

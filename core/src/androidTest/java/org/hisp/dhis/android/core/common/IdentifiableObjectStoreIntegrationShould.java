@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.option.OptionSet;

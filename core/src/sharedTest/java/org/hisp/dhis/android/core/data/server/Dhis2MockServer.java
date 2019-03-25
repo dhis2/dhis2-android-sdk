@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.data.server;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.data.file.IFileReader;
 import org.hisp.dhis.android.core.utils.HeaderUtils;
@@ -135,6 +135,7 @@ public class Dhis2MockServer {
         enqueueMockResponse("category/categories.json");
         enqueueMockResponse(orgUnitPath);
         enqueueMockResponse("organisationunit/organisation_unit_levels.json");
+        enqueueMockResponse("constant/constants.json");
     }
 
     @NonNull

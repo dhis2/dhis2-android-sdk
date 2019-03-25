@@ -28,11 +28,9 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
@@ -45,7 +43,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkModel;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkStore;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
@@ -53,8 +51,6 @@ import org.hisp.dhis.android.core.program.ProgramStore;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeStore;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -73,7 +69,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould extends AbsStoreTestCase {
 
     private TrackedEntityAttributeReservedValueStoreInterface store;
@@ -116,8 +111,7 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
 
         manager = d2.trackedEntityModule().reservedValueManager;
 
-        SyncHandlerWithTransformer<TrackedEntityAttributeReservedValue> handler =
-                new ObjectWithoutUidSyncHandlerImpl<>(store);
+        SyncHandler<TrackedEntityAttributeReservedValue> handler = new ObjectWithoutUidSyncHandlerImpl<>(store);
 
         List<TrackedEntityAttributeReservedValue> trackedEntityAttributeReservedValues = new ArrayList<>();
 
@@ -127,7 +121,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                         .ownerUid(ownerUid)
                         .key("key")
                         .created(CREATED)
-                        .expiryDate(FUTURE_DATE);
+                        .expiryDate(FUTURE_DATE)
+                        .organisationUnit(organisationUnitUid);
 
         TrackedEntityAttributeReservedValue reservedValue1 = reservedValueBuilder.value("value1").build();
         TrackedEntityAttributeReservedValue reservedValue2 = reservedValueBuilder.value("value2").build();
@@ -160,9 +155,9 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                         .build();
         ProgramTrackedEntityAttributeStore.create(databaseAdapter()).insert(programTrackedEntityAttribute);
 
-        OrganisationUnitProgramLinkModel organisationUnitProgramLinkModel =
-                OrganisationUnitProgramLinkModel.builder().organisationUnit(organisationUnitUid).program(programUid).build();
-        OrganisationUnitProgramLinkStore.create(databaseAdapter()).insert(organisationUnitProgramLinkModel);
+        OrganisationUnitProgramLink organisationUnitProgramLink =
+                OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid).program(programUid).build();
+        OrganisationUnitProgramLinkStore.create(databaseAdapter()).insert(organisationUnitProgramLink);
 
 
         when(trackedEntityAttributeReservedValueQueryCallFactory.create(
@@ -170,12 +165,8 @@ public class TrackedEntityAttributeReservedValueManagerRealIntegrationShould ext
                 .thenReturn(trackedEntityAttributeReservedValueCall);
 
 
-        handler.handleMany(trackedEntityAttributeReservedValues,
-                new TrackedEntityAttributeReservedValueModelBuilder(organisationUnit, ""));
+        handler.handleMany(trackedEntityAttributeReservedValues);
     }
-
-    @Test
-    public void stub() {}
 
 //    @Test
     public void get_one_reserved_value() throws D2Error {

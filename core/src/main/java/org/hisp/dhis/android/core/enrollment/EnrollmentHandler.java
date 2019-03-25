@@ -28,23 +28,22 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.note.Note;
-import org.hisp.dhis.android.core.enrollment.note.NoteToStoreTransformer;
+import org.hisp.dhis.android.core.enrollment.note.NoteDHISVersionManager;
 import org.hisp.dhis.android.core.enrollment.note.NoteUniquenessManager;
 import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -52,24 +51,24 @@ import dagger.Reusable;
 
 @Reusable
 final class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
-    private final DHISVersionManager versionManager;
+    private final NoteDHISVersionManager noteVersionManager;
     private final SyncHandlerWithTransformer<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;
-    private final ObjectWithoutUidStore<Note> noteStore;
+    private final NoteUniquenessManager noteUniquenessManager;
     private final OrphanCleaner<Enrollment, Event> eventOrphanCleaner;
 
     @Inject
-    EnrollmentHandler(@NonNull DHISVersionManager versionManager,
+    EnrollmentHandler(@NonNull NoteDHISVersionManager noteVersionManager,
                       @NonNull EnrollmentStore enrollmentStore,
                       @NonNull SyncHandlerWithTransformer<Event> eventHandler,
                       @NonNull OrphanCleaner<Enrollment, Event> eventOrphanCleaner,
                       @NonNull SyncHandler<Note> noteHandler,
-                      @NonNull ObjectWithoutUidStore<Note> noteStore) {
+                      @NonNull NoteUniquenessManager noteUniquenessManager) {
         super(enrollmentStore);
-        this.versionManager = versionManager;
+        this.noteVersionManager = noteVersionManager;
         this.eventHandler = eventHandler;
         this.noteHandler = noteHandler;
-        this.noteStore = noteStore;
+        this.noteUniquenessManager = noteUniquenessManager;
         this.eventOrphanCleaner = eventOrphanCleaner;
     }
 
@@ -82,13 +81,13 @@ final class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
                             .build());
 
             Collection<Note> notes = new ArrayList<>();
-            NoteToStoreTransformer transformer = new NoteToStoreTransformer(enrollment, versionManager);
             if (enrollment.notes() != null) {
                 for (Note note : enrollment.notes()) {
-                    notes.add(transformer.transform(note));
+                    notes.add(noteVersionManager.transform(enrollment, note));
                 }
             }
-            noteHandler.handleMany(NoteUniquenessManager.buildUniqueCollection(notes, enrollment.uid(), noteStore));
+            Set<Note> notesToSync = noteUniquenessManager.buildUniqueCollection(notes, enrollment.uid());
+            noteHandler.handleMany(notesToSync);
         }
 
         eventOrphanCleaner.deleteOrphan(enrollment, enrollment.events());

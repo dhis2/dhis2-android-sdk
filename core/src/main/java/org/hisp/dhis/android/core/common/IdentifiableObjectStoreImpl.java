@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -71,7 +71,7 @@ public class IdentifiableObjectStoreImpl<M extends Model & ObjectWithUidInterfac
         try {
             delete(uid);
         } catch(RuntimeException e) {
-            if(!e.getMessage().equals("No rows affected")) {
+            if (!e.getMessage().equals("No rows affected")) {
                 throw e;
             }
         }

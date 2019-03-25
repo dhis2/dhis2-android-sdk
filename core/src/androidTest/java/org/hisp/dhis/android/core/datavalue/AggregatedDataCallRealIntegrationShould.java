@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -88,9 +87,5 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
         d2.aggregatedModule().data().download().call();
-    }
-
-    @Test
-    public void stub() {
     }
 }

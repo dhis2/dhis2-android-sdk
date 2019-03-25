@@ -30,25 +30,19 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-
-import java.util.List;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public final class StringFilterConnector<R extends ReadOnlyCollectionRepository<?>>
         extends BaseFilterConnector<R, String> {
 
     StringFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                          List<RepositoryScopeItem> scope,
+                          RepositoryScope scope,
                           String key) {
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(String value) {
-        return newWithScope("=", value);
-    }
-
     public R like(String value) {
-        return newWithScope("LIKE", value);
+        return newWithWrappedScope("LIKE", value);
     }
 
     String wrapValue(String value) {

@@ -28,14 +28,12 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.dataelement.DataElement;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,17 +42,17 @@ import dagger.Reusable;
 @Reusable
 final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<ProgramStageSection> {
     private final SyncHandler<ProgramIndicator> programIndicatorHandler;
-    private final LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
+    private final LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
             programStageSectionProgramIndicatorLinkHandler;
-    private final OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel>
+    private final OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
             programStageSectionDataElementLinkHandler;
 
     @Inject
     ProgramStageSectionHandler(IdentifiableObjectStore<ProgramStageSection> programStageSectionStore,
                                SyncHandler<ProgramIndicator> programIndicatorHandler,
-                               LinkModelHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLinkModel>
+                               LinkSyncHandler<ProgramIndicator, ProgramStageSectionProgramIndicatorLink>
                                        programStageSectionProgramIndicatorLinkHandler,
-                               OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel>
+                               OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink>
                                        programStageSectionDataElementLinkHandler) {
         super(programStageSectionStore);
         this.programIndicatorHandler = programIndicatorHandler;
@@ -64,20 +62,22 @@ final class ProgramStageSectionHandler extends IdentifiableSyncHandlerImpl<Progr
 
     @Override
     protected void afterObjectHandled(ProgramStageSection programStageSection, HandleAction action) {
-        List<DataElement> dataElements = programStageSection.dataElements();
-        if (dataElements != null) {
-            ProgramStageSectionDataElementLinkModelBuilder programStageSectionDataElementLinkModelBuilder =
-                    new ProgramStageSectionDataElementLinkModelBuilder(programStageSection);
-
-            programStageSectionDataElementLinkHandler.handleMany(programStageSection.uid(),
-                    dataElements, programStageSectionDataElementLinkModelBuilder);
-        }
-
-        ProgramStageSectionProgramIndicatorLinkModelBuilder programStageSectionProgramIndicatorLinkModelBuilder =
-                new ProgramStageSectionProgramIndicatorLinkModelBuilder(programStageSection);
+        programStageSectionDataElementLinkHandler.handleMany(
+                programStageSection.uid(),
+                programStageSection.dataElements(),
+                (dataElement, sortOrder) -> ProgramStageSectionDataElementLink.builder()
+                        .programStageSection(programStageSection.uid())
+                        .dataElement(dataElement.uid())
+                        .sortOrder(sortOrder)
+                        .build());
 
         programIndicatorHandler.handleMany(programStageSection.programIndicators());
+
         programStageSectionProgramIndicatorLinkHandler.handleMany(programStageSection.uid(),
-                programStageSection.programIndicators(), programStageSectionProgramIndicatorLinkModelBuilder);
+                programStageSection.programIndicators(),
+                programIndicator -> ProgramStageSectionProgramIndicatorLink.builder()
+                        .programStageSection(programStageSection.uid())
+                        .programIndicator(programIndicator.uid())
+                        .build());
     }
 }

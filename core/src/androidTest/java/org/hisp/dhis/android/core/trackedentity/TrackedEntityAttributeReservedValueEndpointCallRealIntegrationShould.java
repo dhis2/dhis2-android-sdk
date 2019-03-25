@@ -28,22 +28,17 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(AndroidJUnit4.class)
 public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShould extends AbsStoreTestCase {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
@@ -84,9 +79,5 @@ public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShoul
         if (!d2.userModule().isLogged().call()) {
             d2.userModule().logIn(RealServerMother.user, RealServerMother.password).call();
         }
-    }
-
-    @Test
-    public void stub() {
     }
 }

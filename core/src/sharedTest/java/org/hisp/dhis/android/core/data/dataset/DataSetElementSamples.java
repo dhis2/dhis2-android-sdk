@@ -35,6 +35,7 @@ public class DataSetElementSamples {
 
     public static DataSetElement getDataSetElement() {
         return DataSetElement.builder()
+                .id(1L)
                 .dataSet(ObjectWithUid.create("data_set_uid"))
                 .dataElement(ObjectWithUid.create("data_element_uid"))
                 .categoryCombo(ObjectWithUid.create("category_combo"))

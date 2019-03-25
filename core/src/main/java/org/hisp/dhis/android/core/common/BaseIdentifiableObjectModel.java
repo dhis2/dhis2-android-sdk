@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;

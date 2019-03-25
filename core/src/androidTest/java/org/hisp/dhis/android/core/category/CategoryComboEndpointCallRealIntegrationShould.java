@@ -102,8 +102,8 @@ public class CategoryComboEndpointCallRealIntegrationShould extends AbsStoreTest
         assertTrue(categoryCombos.size() > 0);
     }
 
-    private List<CategoryCategoryComboLinkModel> getCategoryCategoryComboLinkModels() {
-        LinkModelStore<CategoryCategoryComboLinkModel>
+    private List<CategoryCategoryComboLink> getCategoryCategoryComboLinkModels() {
+        LinkModelStore<CategoryCategoryComboLink>
                 categoryCategoryComboLinkStore = CategoryCategoryComboLinkStore.create(databaseAdapter());
         return categoryCategoryComboLinkStore.selectAll();
     }

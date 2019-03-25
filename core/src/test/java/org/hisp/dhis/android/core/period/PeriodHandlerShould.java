@@ -25,10 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.period;
 
 import org.assertj.core.util.Lists;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 public class PeriodHandlerShould {
 
     @Mock
-    private ObjectWithoutUidStore<Period> store;
+    private PeriodStore store;
 
     @Mock
     private ParentPeriodGenerator generator;

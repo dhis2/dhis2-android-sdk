@@ -41,6 +41,7 @@ public class ProgramRuleVariableSamples {
 
         fillIdentifiableProperties(builder);
         builder
+                .id(1L)
                 .useCodeForOptionSet(true)
                 .program(ObjectWithUid.create("program"))
                 .programStage(ObjectWithUid.create("program_stage"))

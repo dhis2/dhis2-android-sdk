@@ -40,6 +40,7 @@ public class IndicatorSamples {
 
         fillNameableProperties(indicatorBuilder);
         indicatorBuilder
+                .id(1L)
                 .annualized(false)
                 .indicatorType(ObjectWithUid.create("bWuNrMHEoZ0"))
                 .numerator("#{a.b}")

@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.common;
 
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.category.CategoryTableInfo;
-import org.hisp.dhis.android.core.dataset.DataSetModel;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo;
-import org.hisp.dhis.android.core.legendset.LegendModel;
-import org.hisp.dhis.android.core.legendset.LegendSetModel;
+import org.hisp.dhis.android.core.dataset.DataSetTableInfo;
+import org.hisp.dhis.android.core.legendset.LegendSetTableInfo;
+import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -153,7 +153,7 @@ public class SQLStatementBuilderShould {
                         DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + " TEXT NOT NULL," +
                                 DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + " TEXT NOT NULL," +
                                 " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET + ") " +
-                                " REFERENCES " + DataSetModel.TABLE + " (" + DataSetModel.Columns.UID + ")" +
+                                " REFERENCES " + DataSetTableInfo.TABLE_INFO.name() + " (" + BaseIdentifiableObjectModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED," +
                                 " FOREIGN KEY (" + DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT + ") " +
                                 " REFERENCES " + OrganisationUnitTableInfo.TABLE_INFO.name() + " (" +
@@ -168,14 +168,20 @@ public class SQLStatementBuilderShould {
 
     @Test
     public void generate_create_legend_table_statement() {
+        String LEGEND_SET = "legendSet";
+        String START_VALUE = "startValue";
+        String END_VALUE = "endValue";
+        String COLOR = "color";
+
         String createLegendTable =
-                SQLStatementBuilder.createIdentifiableModelTable(LegendModel.TABLE,
-                        LegendModel.Columns.START_VALUE + " REAL," +
-                                LegendModel.Columns.END_VALUE + " REAL," +
-                                LegendModel.Columns.COLOR + " TEXT," +
-                                LegendModel.Columns.LEGEND_SET + " TEXT," +
-                                " FOREIGN KEY ( " + LegendModel.Columns.LEGEND_SET + ")" +
-                                " REFERENCES " + LegendSetModel.TABLE + " (" + LegendSetModel.Columns.UID + ")" +
+                SQLStatementBuilder.createIdentifiableModelTable(LegendTableInfo.TABLE_INFO.name(),
+                        START_VALUE + " REAL," +
+                                END_VALUE + " REAL," +
+                                COLOR + " TEXT," +
+                                LEGEND_SET + " TEXT," +
+                                " FOREIGN KEY ( " + LEGEND_SET + ")" +
+                                " REFERENCES " + LegendSetTableInfo.TABLE_INFO.name() +
+                                " (" + BaseIdentifiableObjectModel.Columns.UID + ")" +
                                 " ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED"
                 );
 

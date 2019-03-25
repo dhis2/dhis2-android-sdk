@@ -27,14 +27,15 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModelBuilder;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkHelper;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import javax.inject.Inject;
 
@@ -44,13 +45,12 @@ import dagger.Reusable;
 class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<OrganisationUnit>
     implements SearchOrganisationUnitHandler {
 
-    private final UserOrganisationUnitLinkStoreInterface userOrganisationUnitLinkStore;
+    private final UserOrganisationUnitLinkStore userOrganisationUnitLinkStore;
     private User user;
 
     @Inject
     SearchOrganisationUnitHandlerImpl(@NonNull IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                                      @NonNull UserOrganisationUnitLinkStoreInterface
-                                          userOrganisationUnitLinkStore) {
+                                      @NonNull UserOrganisationUnitLinkStore userOrganisationUnitLinkStore) {
         super(organisationUnitStore);
         this.userOrganisationUnitLinkStore = userOrganisationUnitLinkStore;
     }
@@ -63,10 +63,13 @@ class SearchOrganisationUnitHandlerImpl extends IdentifiableSyncHandlerImpl<Orga
     @Override
     protected void afterObjectHandled(OrganisationUnit organisationUnit, HandleAction action) {
 
-        UserOrganisationUnitLinkModelBuilder modelBuilder = new UserOrganisationUnitLinkModelBuilder(
-                OrganisationUnit.Scope.SCOPE_TEI_SEARCH, user);
+        OrganisationUnit.Scope scope = OrganisationUnit.Scope.SCOPE_TEI_SEARCH;
+        UserOrganisationUnitLink.Builder builder = UserOrganisationUnitLink.builder()
+                .organisationUnitScope(scope.name()).user(user.uid());
 
-        userOrganisationUnitLinkStore.insert(modelBuilder.buildModel(organisationUnit));
-
+        userOrganisationUnitLinkStore.insert(builder
+                .organisationUnit(organisationUnit.uid())
+                .root(UserOrganisationUnitLinkHelper.isRoot(scope, user, organisationUnit))
+                .build());
     }
 }

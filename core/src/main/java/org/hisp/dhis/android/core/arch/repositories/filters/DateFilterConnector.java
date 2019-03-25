@@ -30,30 +30,44 @@ package org.hisp.dhis.android.core.arch.repositories.filters;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.CollectionRepositoryFactory;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.period.DatePeriod;
+import org.hisp.dhis.android.core.period.InPeriodQueryHelper;
+import org.hisp.dhis.android.core.period.Period;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public final class DateFilterConnector<R extends ReadOnlyCollectionRepository<?>> extends BaseFilterConnector<R, Date> {
 
     DateFilterConnector(CollectionRepositoryFactory<R> repositoryFactory,
-                        List<RepositoryScopeItem> scope,
+                        RepositoryScope scope,
                         String key) {
         super(repositoryFactory, scope, key);
     }
 
-    public R eq(Date value) {
-        return newWithScope("=", value);
-    }
-
     public R before(Date value) {
-        return newWithScope("<", value);
+        return newWithWrappedScope("<", value);
     }
 
     public R after(Date value) {
-        return newWithScope(">", value);
+        return newWithWrappedScope(">", value);
+    }
+
+    public R inDatePeriods(@NonNull List<DatePeriod> datePeriods) {
+        return newWithWrappedScope(InPeriodQueryHelper.buildInPeriodsQuery(key, datePeriods));
+    }
+
+    public R inPeriods(@NonNull List<Period> periods) {
+        List<DatePeriod> datePeriods = new ArrayList<>();
+        for (Period period : periods) {
+            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build());
+        }
+        return inDatePeriods(datePeriods);
     }
 
     protected String wrapValue(Date value) {

@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkTransformer;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
 import org.junit.Before;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -57,23 +60,20 @@ public class SectionHandlerShould {
     private IdentifiableObjectStore<Section> sectionStore;
 
     @Mock
-    private OrderedLinkModelHandler<DataElement, SectionDataElementLinkModel> sectionDataElementLinkHandler;
+    private OrderedLinkSyncHandler<DataElement, SectionDataElementLink> sectionDataElementLinkHandler;
 
     @Mock
     private SyncHandler<DataElementOperand> greyedFieldsHandler;
 
     @Mock
-    private LinkModelHandler<DataElementOperand, SectionGreyedFieldsLinkModel> sectionGreyedFieldsLinkHandler;
+    private LinkSyncHandler<DataElementOperand, SectionGreyedFieldsLink> sectionGreyedFieldsLinkHandler;
 
     @Mock
     private Section section;
 
     // object to test
     private SectionHandler sectionHandler;
-
     private List<DataElement> dataElements;
-
-    private List<DataElementOperand> greyedFields;
 
     @Before
     public void setUp() throws Exception {
@@ -89,13 +89,12 @@ public class SectionHandlerShould {
         dataElements.add(DataElement.builder().uid("dataElement_uid").build());
         when(section.dataElements()).thenReturn(dataElements);
 
-        greyedFields = new ArrayList<>();
+        List<DataElementOperand> greyedFields = new ArrayList<>();
         when(section.greyedFields()).thenReturn(greyedFields);
     }
 
     @Test
     public void passingNullArguments_shouldNotPerformAnyAction() {
-
        sectionHandler.handle(null);
 
         verify(sectionStore, never()).delete(anyString());
@@ -107,9 +106,10 @@ public class SectionHandlerShould {
 
     @Test
     public void handlingSection_shouldHandleLinkedDataElements() {
-      
         sectionHandler.handle(section);
-        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any(SectionDataElementLinkModelBuilder.class));
-        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), eq(greyedFields), any(SectionGreyedFieldsLinkModelBuilder.class));
+        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements),
+                any(OrderedLinkTransformer.class));
+        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), anyListOf(DataElementOperand.class),
+                any(Transformer.class));
     }
 }

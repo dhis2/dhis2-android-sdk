@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.configuration;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -42,6 +40,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.List;
 
+import androidx.test.runner.AndroidJUnit4;
 import okhttp3.HttpUrl;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -50,7 +49,6 @@ import static com.google.common.truth.Truth.assertThat;
 public class ConfigurationStoreIntegrationShould {
 
     private final Configuration configuration;
-    private final Configuration configurationWithId;
     private final ConfigurationStore store;
     private final TableInfo tableInfo;
     private final DatabaseAdapter databaseAdapter;
@@ -58,7 +56,6 @@ public class ConfigurationStoreIntegrationShould {
     public ConfigurationStoreIntegrationShould() {
         this.store = ConfigurationStoreImpl.create(DatabaseAdapterFactory.get(false));
         this.configuration = buildObject();
-        this.configurationWithId = buildObjectWithId();
         this.tableInfo = ConfigurationTableInfo.TABLE_INFO;
         this.databaseAdapter = DatabaseAdapterFactory.get(false);
     }
@@ -98,8 +95,8 @@ public class ConfigurationStoreIntegrationShould {
 
     @Test
     public void delete_inserted_object_by_id() {
-        store.insert(configurationWithId);
-        store.deleteById(configurationWithId);
+        store.insert(configuration);
+        store.deleteById(configuration);
         assertThat(store.selectFirst()).isEqualTo(null);
     }
 
@@ -120,11 +117,5 @@ public class ConfigurationStoreIntegrationShould {
 
     protected Configuration buildObject() {
         return ConfigurationSamples.getConfiguration();
-    }
-
-    protected Configuration buildObjectWithId() {
-        return ConfigurationSamples.getConfiguration().toBuilder()
-                .id(1L)
-                .build();
     }
 }

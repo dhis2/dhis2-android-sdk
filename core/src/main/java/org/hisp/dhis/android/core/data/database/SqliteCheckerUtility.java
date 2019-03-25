@@ -55,7 +55,7 @@ final public class SqliteCheckerUtility {
             while (cursor.moveToNext()){
                 String tableName = cursor.getString(value);
                 Cursor resTable = databaseAdapter.query(
-                        "SELECT * from " + tableName , null);
+                        "SELECT * from " + tableName, null);
                 if (resTable.getCount() > 0) {
                     isDatabaseEmpty = false;
                     break;

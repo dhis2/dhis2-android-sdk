@@ -66,6 +66,14 @@ public final class ResourceStoreImpl extends ObjectWithoutUidStoreImpl<Resource>
                 null : BaseIdentifiableObject.DATE_FORMAT.format(resourceList.get(0).lastSynced());
     }
 
+    @Override
+    public boolean deleteResource(Resource.Type type) {
+        String whereClause = new WhereClauseBuilder()
+                .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name()).build();
+
+        return deleteWhere(whereClause);
+    }
+
     public static ResourceStore create(DatabaseAdapter databaseAdapter) {
 
         SQLStatementBuilder statementBuilder = new SQLStatementBuilder(ResourceTableInfo.TABLE_INFO.name(),

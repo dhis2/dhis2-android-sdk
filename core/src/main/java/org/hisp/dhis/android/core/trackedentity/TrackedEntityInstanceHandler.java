@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.relationship.Relationship;
 import org.hisp.dhis.android.core.relationship.Relationship229Compatible;
@@ -111,7 +111,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<Tra
 
     private void handleRelationship(TrackedEntityInstance relativeTEI, Relationship229Compatible relationship229) {
         if (!trackedEntityInstanceStore.exists(relativeTEI.uid())) {
-            handle(relativeTEI, relationshipModelBuilder());
+            handle(relativeTEI, relationshipTransformer());
         }
 
         Relationship relationship = relationshipVersionManager.from229Compatible(relationship229);
@@ -120,7 +120,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<Tra
 
     public void handleMany(final Collection<TrackedEntityInstance> trackedEntityInstances, boolean asRelationship) {
         if (asRelationship) {
-            handleMany(trackedEntityInstances, relationshipModelBuilder());
+            handleMany(trackedEntityInstances, relationshipTransformer());
         } else {
             handleMany(trackedEntityInstances,
                     trackedEntityInstance -> trackedEntityInstance.toBuilder()
@@ -129,7 +129,7 @@ final class TrackedEntityInstanceHandler extends IdentifiableSyncHandlerImpl<Tra
         }
     }
 
-    private ModelBuilder<TrackedEntityInstance, TrackedEntityInstance> relationshipModelBuilder() {
+    private Transformer<TrackedEntityInstance, TrackedEntityInstance> relationshipTransformer() {
         return trackedEntityInstance -> {
             State currentState = trackedEntityInstanceStore.getState(trackedEntityInstance.uid());
             if (currentState == State.RELATIONSHIP || currentState == null) {

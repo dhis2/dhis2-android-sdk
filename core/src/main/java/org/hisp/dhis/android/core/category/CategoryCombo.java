@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -47,6 +47,8 @@ import java.util.List;
 @AutoValue
 @JsonDeserialize(builder = AutoValue_CategoryCombo.Builder.class)
 public abstract class CategoryCombo extends BaseIdentifiableObject implements Model {
+
+    public static final String DEFAULT_UID = "p0KPaWEg3cf";
 
     @Nullable
     @JsonProperty()

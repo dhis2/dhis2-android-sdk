@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -62,16 +62,18 @@ public final class CategoryComboEntityDIModule implements IdentifiableStoreProvi
     @Provides
     @Reusable
     OrphanCleaner<CategoryCombo, CategoryOptionCombo> orphanCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(CategoryOptionComboModel.TABLE,
-                CategoryOptionComboModel.Columns.CATEGORY_COMBO, databaseAdapter);
+        return new OrphanCleanerImpl<>(CategoryOptionComboTableInfo.TABLE_INFO.name(),
+                CategoryOptionComboFields.CATEGORY_COMBO, databaseAdapter);
     }
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Arrays.asList(
-                CategoryCategoryComboChildrenAppender.create(databaseAdapter),
-                CategoryOptionComboChildrenAppender.create(databaseAdapter)
-        );
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<CategoryCombo>>() {{
+            put(CategoryComboFields.CATEGORIES, CategoryCategoryComboChildrenAppender.create(databaseAdapter));
+            put(CategoryComboFields.CATEGORY_OPTION_COMBOS,
+                    CategoryOptionComboChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

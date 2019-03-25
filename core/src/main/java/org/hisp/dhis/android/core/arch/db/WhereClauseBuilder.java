@@ -33,9 +33,12 @@ import java.util.List;
 
 public class WhereClauseBuilder {
 
+    private static final String GREATER_OR_EQ_STR = " >= '";
+    private static final String LESS_THAN_OR_EQ_STR = " <= '";
     private static final String EQ_STR = " = '";
     private static final String LIKE_STR = " LIKE '";
     private static final String END_STR = "'";
+    private static final String PARENTHESES_START = "(";
     private static final String PARENTHESES_END = ")";
 
     private static final String EQ_NUMBER = " = ";
@@ -49,10 +52,18 @@ public class WhereClauseBuilder {
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
     private final StringBuilder whereClause = new StringBuilder();
-    private boolean isFirst = true;
+    private boolean addOperator;
 
     public WhereClauseBuilder appendKeyStringValue(String column, Object value) {
         return appendKeyValue(column, value, AND, EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendKeyGreaterOrEqStringValue(String column, Object value) {
+        return appendKeyValue(column, value, AND, GREATER_OR_EQ_STR, END_STR);
+    }
+
+    public WhereClauseBuilder appendKeyLessThanOrEqStringValue(String column, Object value) {
+        return appendKeyValue(column, value, AND, LESS_THAN_OR_EQ_STR, END_STR);
     }
 
     public WhereClauseBuilder appendOrKeyStringValue(String column, Object value) {
@@ -90,9 +101,22 @@ public class WhereClauseBuilder {
     }
 
     private WhereClauseBuilder appendKeyValue(String column, Object value, String logicGate, String eq, String end) {
-        String andOpt = isFirst ? "" : logicGate;
-        isFirst = false;
+        String andOpt = addOperator ? logicGate : "";
+        addOperator = true;
         whereClause.append(andOpt).append(column).append(eq).append(value).append(end);
+        return this;
+    }
+
+    public WhereClauseBuilder appendComplexQuery(String complexQuery) {
+        String andOpt = addOperator ? AND : "";
+        addOperator = true;
+        whereClause.append(andOpt).append(PARENTHESES_START).append(complexQuery).append(PARENTHESES_END);
+        return this;
+    }
+
+    public WhereClauseBuilder appendOperator(String operator) {
+        whereClause.append(operator);
+        addOperator = false;
         return this;
     }
 

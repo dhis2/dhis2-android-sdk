@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.common;
 import java.util.Collection;
 
 public interface LinkModelHandler<S, M extends Model> {
-    void handleMany(String masterUid, Collection<S> slaveCollection, ModelBuilder<S, M> modelBuilder);
+    void handleMany(String masterUid, Collection<S> slaveCollection, Transformer<S, M> transformer);
 }

@@ -28,54 +28,11 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.sqlite.SQLiteStatement;
-
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.common.LinkModelStoreImpl;
-import org.hisp.dhis.android.core.common.SQLStatementBuilder;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo.Columns;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+public interface UserOrganisationUnitLinkStore extends LinkModelStore<UserOrganisationUnitLink> {
 
-public final class UserOrganisationUnitLinkStore extends LinkModelStoreImpl<UserOrganisationUnitLinkModel>
-        implements UserOrganisationUnitLinkStoreInterface {
-
-    private static final StatementBinder<UserOrganisationUnitLinkModel> BINDER
-            = (o, sqLiteStatement) -> {
-        sqLiteBind(sqLiteStatement, 1, o.user());
-        sqLiteBind(sqLiteStatement, 2, o.organisationUnit());
-        sqLiteBind(sqLiteStatement, 3, o.organisationUnitScope());
-        sqLiteBind(sqLiteStatement, 4, o.root());
-    };
-
-    private UserOrganisationUnitLinkStore(DatabaseAdapter databaseAdapter,
-                                          SQLiteStatement insertStatement,
-                                          String masterColumn,
-                                          SQLStatementBuilder builder,
-                                          StatementBinder<UserOrganisationUnitLinkModel> binder) {
-        super(databaseAdapter, insertStatement, builder, masterColumn, binder, UserOrganisationUnitLinkModel::create);
-    }
-
-    public static UserOrganisationUnitLinkStoreInterface create(DatabaseAdapter databaseAdapter) {
-        SQLStatementBuilder statementBuilder = new SQLStatementBuilder(UserOrganisationUnitLinkTableInfo.TABLE_INFO);
-
-        return new UserOrganisationUnitLinkStore(
-                databaseAdapter,
-                databaseAdapter.compileStatement(statementBuilder.insert()),
-                UserOrganisationUnitLinkTableInfo.Columns.USER,
-                statementBuilder,
-                BINDER);
-    }
-
-    @Override
-    public List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException {
-        return selectStringColumnsWhereClause(Columns.ORGANISATION_UNIT,
-                        Columns.ROOT + " = 1 " + "AND "
-                                + Columns.ORGANISATION_UNIT_SCOPE + " = '"
-                                + OrganisationUnit.Scope.SCOPE_DATA_CAPTURE + "'");
-    }
+    List<String> queryRootCaptureOrganisationUnitUids() throws RuntimeException;
 }

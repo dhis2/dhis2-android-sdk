@@ -57,15 +57,28 @@
           "created": "2019-01-10T13:40:28.322",
           "orgUnit": "DiszpKrYNg8",
           "program": "lxAQ7Zs9VYR",
-          "enrollment": "JILLTkO4LKQ",
+          "enrollment": "enroll1",
           "trackedEntityInstance": "nWrB0TfWlvh",
           "lastUpdated": "2019-01-10T13:40:28.718",
           "enrollmentDate": "2019-01-10T00:00:00.000",
-          "followup": false,
+          "followup": true,
           "deleted": false,
           "incidentDate": "2019-01-10T00:00:00.000",
           "status": "ACTIVE",
-          "notes": [],
+          "notes": [
+            {
+              "note": "noteUid1",
+              "storedDate": "2018-03-19T15:20:55.058",
+              "storedBy": "android",
+              "value": "Note 1"
+            },
+            {
+              "note": "noteUid2",
+              "storedDate": "2018-03-19T15:20:55.058",
+              "storedBy": "android",
+              "value": "Note 2"
+            }
+          ],
           "events": [
             {
               "programStage": "dBwrot7S420",
@@ -74,7 +87,7 @@
               "dueDate": "2015-05-01T00:00:00.000",
               "program": "lxAQ7Zs9VYR",
               "href": "https://play.dhis2.org/demo/api/events/hnaWBxMw5j3",
-              "event": "hnaWBxMw5j3",
+              "event": "event1",
               "status": "COMPLETED",
               "eventDate": "2015-05-01T00:00:00.000",
               "orgUnitName": "Ngelehun CHC",
@@ -82,7 +95,7 @@
               "completedDate": "2015-11-15T00:00:00.000",
               "lastUpdated": "2015-11-15T14:55:22.995",
               "completedBy": "system",
-              "enrollment": "JILLTkO4LKQ",
+              "enrollment": "enroll1",
               "coordinate": {
                 "latitude": 0.0,
                 "longitude": 0.0
@@ -119,15 +132,34 @@
           "created": "2018-01-10T13:40:28.322",
           "orgUnit": "DiszpKrYNg8",
           "program": "lxAQ7Zs9VYR",
-          "enrollment": "JILLTkO4LKZ",
+          "enrollment": "enroll2",
           "trackedEntityInstance": "nWrB0TfWlvD",
           "lastUpdated": "2018-01-10T13:40:28.718",
+          "createdAtClient": "2019-01-08T13:40:28.718",
+          "lastUpdatedAtClient": "2018-01-11T13:40:28.718",
           "enrollmentDate": "2018-01-10T00:00:00.000",
           "followup": false,
           "deleted": false,
           "incidentDate": "2018-01-10T00:00:00.000",
           "status": "ACTIVE",
-          "notes": [],
+          "notes": [
+            {
+              "note": "noteUid3",
+              "storedDate": "2018-03-19T15:20:55.058",
+              "storedBy": "android",
+              "value": "Note 3"
+            },
+            {
+              "note": "noteUid4",
+              "storedDate": "2018-03-19T15:20:55.058",
+              "storedBy": "android",
+              "value": "Note 4"
+            }
+          ],
+          "coordinate": {
+            "latitude": 2.6,
+            "longitude": 4.1
+          },
           "events": [
             {
               "programStage": "dBwrot7S420",
@@ -136,7 +168,7 @@
               "dueDate": "2016-05-01T00:00:00.000",
               "program": "lxAQ7Zs9VYR",
               "href": "https://play.dhis2.org/demo/api/events/hnaWBxMw5j3",
-              "event": "hnaWBxMw5j3",
+              "event": "event2",
               "status": "COMPLETED",
               "eventDate": "2016-05-01T00:00:00.000",
               "orgUnitName": "Ngelehun CHC",
@@ -144,7 +176,7 @@
               "completedDate": "2015-11-15T00:00:00.000",
               "lastUpdated": "2016-11-15T14:55:22.995",
               "completedBy": "system",
-              "enrollment": "JILLTkO4LKZ",
+              "enrollment": "enroll2",
               "coordinate": {
                 "latitude": 0.0,
                 "longitude": 0.0

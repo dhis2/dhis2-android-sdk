@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.core.category;
 
-
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.Date;
 
+@Deprecated
 @AutoValue
 public abstract class CategoryOptionModel extends BaseNameableObjectModel {
     public static final String TABLE = "CategoryOption";

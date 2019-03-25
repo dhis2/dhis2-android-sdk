@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.NonNull;
-
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public interface ObjectStore<M> extends DeletableStore {
 
@@ -39,6 +39,12 @@ public interface ObjectStore<M> extends DeletableStore {
     List<M> selectAll();
 
     List<M> selectWhere(String whereClause);
+
+    List<M> selectInitialPaging(String filterWhereClause, int pageSize);
+
+    List<M> selectAfterPaging(String filterWhereClause, long last, int pageSize);
+
+    List<M> selectBeforePaging(String filterWhereClause, long last, int pageSize);
 
     M selectOneWhere(String whereClause);
 
@@ -51,4 +57,6 @@ public interface ObjectStore<M> extends DeletableStore {
     boolean deleteWhere(String whereClause);
 
     int count();
+
+    int countWhere(String whereClause);
 }

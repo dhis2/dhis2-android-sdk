@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface Transformer<O> {
-    O transform(O object);
+public interface Transformer<O, T> {
+    T transform(O object);
 }

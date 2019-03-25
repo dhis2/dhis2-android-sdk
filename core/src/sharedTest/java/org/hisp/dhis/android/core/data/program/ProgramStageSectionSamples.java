@@ -44,6 +44,7 @@ public class ProgramStageSectionSamples {
 
         fillIdentifiableProperties(builder);
         builder
+                .id(1L)
                 .sortOrder(1)
                 .renderType(ProgramStageSectionRendering.create(
                         ProgramStageSectionDeviceRendering.create(

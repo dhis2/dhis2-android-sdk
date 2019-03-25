@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.AuthoritySamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class AuthorityStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<Authority> {
@@ -46,12 +46,5 @@ public class AuthorityStoreIntegrationShould extends ObjectStoreAbstractIntegrat
     @Override
     protected Authority buildObject() {
         return AuthoritySamples.getAuthority();
-    }
-
-    @Override
-    protected Authority buildObjectWithId() {
-        return AuthoritySamples.getAuthority().toBuilder()
-                .id(1L)
-                .build();
     }
 }

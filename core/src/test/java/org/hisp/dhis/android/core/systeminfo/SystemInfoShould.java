@@ -48,7 +48,7 @@ public class SystemInfoShould extends BaseObjectShould implements ObjectShould {
     @Test
     public void map_from_json_string() throws IOException, ParseException {
         SystemInfo jsonSystemInfo = objectMapper.readValue(jsonStream, SystemInfo.class);
-        SystemInfo expectedSystemInfo = SystemInfoSamples.get1();
+        SystemInfo expectedSystemInfo = SystemInfoSamples.get1().toBuilder().id(null).build();
         assertThat(jsonSystemInfo).isEqualTo(expectedSystemInfo);
     }
 }

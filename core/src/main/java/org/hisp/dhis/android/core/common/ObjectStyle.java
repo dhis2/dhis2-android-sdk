@@ -29,14 +29,13 @@
 package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -53,7 +52,6 @@ public abstract class ObjectStyle extends BaseModel {
 
 
     @Nullable
-    @ColumnName(ObjectStyleModel.Columns.UID)
     @JsonIgnore()
     public abstract String uid();
 

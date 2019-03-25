@@ -45,20 +45,31 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class TrackedEntityModule {
 
+    public final TrackedEntityTypeCollectionRepository trackedEntityTypes;
     public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
+    public final TrackedEntityDataValueCollectionRepository trackedEntityDataValues;
+    public final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
+
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
+
     private final TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory;
     private final TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory;
     private final TrackedEntityInstanceQueryCallFactory queryCallFactory;
 
     @Inject
     TrackedEntityModule(
+            TrackedEntityTypeCollectionRepository trackedEntityTypes,
             TrackedEntityInstanceCollectionRepository trackedEntityInstances,
+            TrackedEntityDataValueCollectionRepository trackedEntityDataValues,
+            TrackedEntityAttributeCollectionRepository trackedEntityAttributes,
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,
             TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
             TrackedEntityInstanceQueryCallFactory queryCallFactory) {
+        this.trackedEntityTypes = trackedEntityTypes;
         this.trackedEntityInstances = trackedEntityInstances;
+        this.trackedEntityDataValues = trackedEntityDataValues;
+        this.trackedEntityAttributes = trackedEntityAttributes;
         this.reservedValueManager = reservedValueManager;
         this.withLimitCallFactory = withLimitCallFactory;
         this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;

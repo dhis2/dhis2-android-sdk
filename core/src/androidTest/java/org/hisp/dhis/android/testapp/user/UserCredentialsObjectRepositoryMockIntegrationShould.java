@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.testapp.user;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.user.UserCredentials;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,12 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class UserCredentialsObjectRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class UserCredentialsObjectRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_user() {
@@ -56,7 +50,7 @@ public class UserCredentialsObjectRepositoryMockIntegrationShould extends MockIn
 
     @Test
     public void return_user_roles_as_children() {
-        UserCredentials userCredentials = d2.userModule().userCredentials.getWithAllChildren();
+        UserCredentials userCredentials = d2.userModule().userCredentials.withAllChildren().get();
         assertThat(userCredentials.userRoles().size(), is(1));
         assertThat(userCredentials.userRoles().get(0).name(), is("Superuser"));
     }

@@ -35,8 +35,11 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
+import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
 import org.hisp.dhis.android.core.relationship.RelationshipModule;
+import org.hisp.dhis.android.core.settings.SystemSettingModule;
 import org.hisp.dhis.android.core.sms.SmsModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
@@ -46,6 +49,7 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 
+@SuppressWarnings({"PMD.TooManyFields"})
 @Reusable
 final class D2Modules {
 
@@ -57,7 +61,10 @@ final class D2Modules {
     final EventModule events;
     final MaintenanceModule maintenance;
     final ProgramModule program;
+    final OrganisationUnitModule organisationUnit;
     final SystemInfoModule systemInfo;
+    final SystemSettingModule systemSetting;
+    final PeriodModule periodModule;
     final RelationshipModule relationship;
     final TrackedEntityModule trackedEntity;
     final UserModule user;
@@ -72,7 +79,10 @@ final class D2Modules {
               EventModule events,
               MaintenanceModule maintenance,
               ProgramModule program,
+              OrganisationUnitModule organisationUnit,
               SystemInfoModule systemInfo,
+              SystemSettingModule systemSetting,
+              PeriodModule periodModule,
               RelationshipModule relationship,
               TrackedEntityModule trackedEntity,
               UserModule user,
@@ -85,7 +95,10 @@ final class D2Modules {
         this.events = events;
         this.maintenance = maintenance;
         this.program = program;
+        this.organisationUnit = organisationUnit;
         this.systemInfo = systemInfo;
+        this.systemSetting = systemSetting;
+        this.periodModule = periodModule;
         this.relationship = relationship;
         this.trackedEntity = trackedEntity;
         this.user = user;

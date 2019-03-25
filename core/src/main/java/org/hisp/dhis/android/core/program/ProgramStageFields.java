@@ -49,7 +49,7 @@ final class ProgramStageFields {
     static final String VALID_COMPLETE_ONLY = "validCompleteOnly";
     static final String REPORT_DATE_TO_USE = "reportDateToUse";
     static final String OPEN_AFTER_ENROLLMENT = "openAfterEnrollment";
-    private static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
+    static final String PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements";
     static final String REPEATABLE = "repeatable";
     /**
      * @deprecated since 2.29, replaced by {@link #FEATURE_TYPE}
@@ -66,8 +66,8 @@ final class ProgramStageFields {
     static final String BLOCK_ENTRY_FORM = "blockEntryForm";
     static final String MIN_DAYS_FROM_START = "minDaysFromStart";
     static final String STANDARD_INTERVAL = "standardInterval";
-    private static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
-    private static final String STYLE = "style";
+    static final String PROGRAM_STAGE_SECTIONS = "programStageSections";
+    static final String STYLE = "style";
     static final String PERIOD_TYPE = "periodType";
     static final String PROGRAM = "program";
     private final static String ACCESS = "access";

@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.dataelement.DataElementFields;
 public final class ProgramStageSectionFields {
 
     static final String SORT_ORDER = "sortOrder";
-    private static final String PROGRAM_INDICATORS = "programIndicators";
-    private static final String DATA_ELEMENTS = "dataElements";
+    static final String PROGRAM_INDICATORS = "programIndicators";
+    static final String DATA_ELEMENTS = "dataElements";
     private static final String RENDER_TYPE = "renderType";
 
     private static final FieldsHelper<ProgramStageSection> fh = new FieldsHelper<>();

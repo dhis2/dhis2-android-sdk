@@ -29,9 +29,10 @@
 package org.hisp.dhis.android.core.event;
 
 import android.content.ContentValues;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 
 public class CreateEventUtils {
@@ -50,25 +51,25 @@ public class CreateEventUtils {
                                        @NonNull String orgUnit,
                                        @Nullable String enrollmentUid) {
         ContentValues event = new ContentValues();
-        event.put(EventModel.Columns.UID, uid);
+        event.put(EventTableInfo.Columns.UID, uid);
 
         if (enrollmentUid == null) {
-            event.putNull(EventModel.Columns.ENROLLMENT);
+            event.putNull(EventFields.ENROLLMENT);
         }
 
-        event.put(EventModel.Columns.ENROLLMENT, enrollmentUid);
-        event.put(EventModel.Columns.CREATED, DATE);
-        event.put(EventModel.Columns.LAST_UPDATED, DATE);
-        event.put(EventModel.Columns.STATUS, STATUS.name());
-        event.put(EventModel.Columns.LATITUDE, LATITUDE);
-        event.put(EventModel.Columns.LONGITUDE, LONGITUDE);
-        event.put(EventModel.Columns.PROGRAM, program);
-        event.put(EventModel.Columns.PROGRAM_STAGE, programStage);
-        event.put(EventModel.Columns.ORGANISATION_UNIT, orgUnit);
-        event.put(EventModel.Columns.EVENT_DATE, DATE);
-        event.put(EventModel.Columns.COMPLETE_DATE, DATE);
-        event.put(EventModel.Columns.DUE_DATE, DATE);
-        event.put(EventModel.Columns.STATE, State.TO_POST.name());
+        event.put(EventFields.ENROLLMENT, enrollmentUid);
+        event.put(EventFields.CREATED, DATE);
+        event.put(EventFields.LAST_UPDATED, DATE);
+        event.put(EventFields.STATUS, STATUS.name());
+        event.put(EventTableInfo.Columns.LATITUDE, LATITUDE);
+        event.put(EventTableInfo.Columns.LONGITUDE, LONGITUDE);
+        event.put(EventFields.PROGRAM, program);
+        event.put(EventFields.PROGRAM_STAGE, programStage);
+        event.put(EventTableInfo.Columns.ORGANISATION_UNIT, orgUnit);
+        event.put(EventFields.EVENT_DATE, DATE);
+        event.put(EventFields.COMPLETE_DATE, DATE);
+        event.put(EventFields.DUE_DATE, DATE);
+        event.put(BaseDataModel.Columns.STATE, State.TO_POST.name());
         return event;
     }
 }

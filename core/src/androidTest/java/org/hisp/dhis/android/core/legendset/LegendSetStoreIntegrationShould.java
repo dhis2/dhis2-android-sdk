@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<LegendSet> {
@@ -45,13 +45,6 @@ public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbst
     @Override
     protected LegendSet buildObject() {
         return LegendSetSamples.getLegendSet();
-    }
-
-    @Override
-    protected LegendSet buildObjectWithId() {
-        return LegendSetSamples.getLegendSet().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

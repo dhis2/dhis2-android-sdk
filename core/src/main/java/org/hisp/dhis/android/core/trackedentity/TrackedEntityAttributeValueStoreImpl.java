@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -62,6 +63,10 @@ public final class TrackedEntityAttributeValueStoreImpl
         sqLiteBind(sqLiteStatement, 6, o.trackedEntityAttribute());
         sqLiteBind(sqLiteStatement, 7, o.trackedEntityInstance());
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            TrackedEntityAttributeValueTableInfo.TABLE_INFO,
+            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
 
     private TrackedEntityAttributeValueStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementBuilder builder) {

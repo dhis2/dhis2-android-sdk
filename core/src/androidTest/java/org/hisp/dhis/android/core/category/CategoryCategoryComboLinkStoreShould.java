@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.LinkModelStore;
@@ -47,10 +47,10 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
 
-    private LinkModelStore<CategoryCategoryComboLinkModel> store;
+    private LinkModelStore<CategoryCategoryComboLink> store;
     private Category newCategory;
     private CategoryCombo newCategoryCombo;
-    private CategoryCategoryComboLinkModel newCategoryCategoryComboLinkModel;
+    private CategoryCategoryComboLink newCategoryCategoryComboLink;
     private long lastInsertedID;
 
     @Override
@@ -103,7 +103,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void givenACategoryComboLinkModel(){
-        newCategoryCategoryComboLinkModel = CategoryCategoryComboLinkModel.builder()
+        newCategoryCategoryComboLink = CategoryCategoryComboLink.builder()
                 .category("KfdsGBcoiCa")
                 .categoryCombo("m2jTvAj5kkm")
                 .build();
@@ -120,7 +120,7 @@ public class CategoryCategoryComboLinkStoreShould extends AbsStoreTestCase {
     }
 
     private void whenInsertNewCategoryComboLink() {
-        lastInsertedID = store.insert(newCategoryCategoryComboLinkModel);
+        lastInsertedID = store.insert(newCategoryCategoryComboLink);
     }
 
     private List<Category> generateAListOfCategories() {

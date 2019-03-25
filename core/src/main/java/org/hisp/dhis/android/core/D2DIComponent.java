@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeDIModule;
+import org.hisp.dhis.android.core.arch.repositories.di.RepositoriesDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
@@ -63,6 +63,7 @@ import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -81,7 +82,7 @@ import dagger.Component;
         APIClientDIModule.class,
         DatabaseDIModule.class,
         WipeDIModule.class,
-        RepositoryScopeDIModule.class,
+        RepositoriesDIModule.class,
 
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
@@ -129,6 +130,8 @@ public interface D2DIComponent {
     SyncHandler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    @VisibleForTesting
+    TrackedEntityDataValueStore trackedEntityDataValueStore();
 
     @Component.Builder
     interface Builder {
@@ -136,7 +139,7 @@ public interface D2DIComponent {
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
-        Builder repositoryScopeDIModule(RepositoryScopeDIModule repositoryScopeDIModule);
+        Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);

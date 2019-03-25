@@ -46,11 +46,31 @@
           "lastUpdated": "2017-05-23T00:29:24.455",
           "id": "hwgyO59SSxu",
           "programRuleActionType": "HIDEFIELD",
+          "data": "data",
+          "trackedEntityAttribute": {
+            "id": "cejWyOfXge6"
+          },
+          "programIndicator": {
+            "id": "GSae40Fyppf"
+          },
+          "programStage" : {
+            "id": "dBwrot7S420"
+          },
+          "programStageSection": {
+            "id": "bbjzL5gp0NZ"
+          },
           "dataElement": {
             "id": "Ok9OQpitjQr"
           },
           "programRule": {
             "id": "xOe5qCzRS0Y"
+          },
+          "option": {
+            "id": "egT1YqFWsVk"
+          },
+          "optionGroup":
+          {
+            "id": "j3JYGVCIEdz"
           }
         }
       ]

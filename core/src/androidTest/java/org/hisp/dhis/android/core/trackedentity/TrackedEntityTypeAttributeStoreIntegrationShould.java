@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeAttributeSamples;
-import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class TrackedEntityTypeAttributeStoreIntegrationShould
@@ -52,13 +51,6 @@ public class TrackedEntityTypeAttributeStoreIntegrationShould
     }
 
     @Override
-    protected TrackedEntityTypeAttribute buildObjectWithId() {
-        return TrackedEntityTypeAttributeSamples.get().toBuilder()
-                .id(1L)
-                .build();
-    }
-
-    @Override
     protected TrackedEntityTypeAttribute buildObjectWithOtherMasterUid() {
         return TrackedEntityTypeAttributeSamples.get().toBuilder()
                 .trackedEntityType(ObjectWithUid.create("new_tei_type_uid"))
@@ -68,9 +60,5 @@ public class TrackedEntityTypeAttributeStoreIntegrationShould
     @Override
     protected String addMasterUid() {
         return TrackedEntityTypeAttributeSamples.get().trackedEntityType().uid();
-    }
-
-    @Test
-    public void stub() {
     }
 }

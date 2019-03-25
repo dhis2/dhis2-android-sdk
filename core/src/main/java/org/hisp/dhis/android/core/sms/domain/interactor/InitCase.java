@@ -1,6 +1,9 @@
 package org.hisp.dhis.android.core.sms.domain.interactor;
 
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+
+import java.util.ArrayList;
 
 import io.reactivex.Completable;
 
@@ -9,19 +12,33 @@ import io.reactivex.Completable;
  */
 public class InitCase {
     private final LocalDbRepository localDbRepository;
+    private final WebApiRepository webApiRepository;
 
-    public InitCase(LocalDbRepository localDbRepository) {
+    public InitCase(WebApiRepository webApiRepository, LocalDbRepository localDbRepository) {
         this.localDbRepository = localDbRepository;
+        this.webApiRepository = webApiRepository;
     }
 
-    public Completable initSMSModule(String gatewayNumber, String confirmationSenderNumber) {
+    public Completable initSMSModule(String gatewayNumber,
+                                     String confirmationSenderNumber,
+                                     WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {
         if (gatewayNumber == null || gatewayNumber.isEmpty()) {
             return Completable.error(new IllegalArgumentException("Gateway number can't be empty"));
         }
-        return localDbRepository.setGatewayNumber(gatewayNumber)
-                .andThen(confirmationSenderNumber == null ?
-                        Completable.complete() :
-                        localDbRepository.setConfirmationSenderNumber(confirmationSenderNumber)
-                );
+        ArrayList<Completable> tasks = new ArrayList<>();
+        tasks.add(refreshMetadataIds(metadataIdsConfig));
+        tasks.add(localDbRepository.setGatewayNumber(gatewayNumber));
+        if (confirmationSenderNumber != null && !confirmationSenderNumber.isEmpty()) {
+            tasks.add(localDbRepository.setConfirmationSenderNumber(confirmationSenderNumber));
+        }
+        return Completable.merge(tasks);
+    }
+
+    public Completable refreshMetadataIds(WebApiRepository.GetMetadataIdsConfig metadataIdsConfig) {
+        if (metadataIdsConfig == null) {
+            return Completable.error(new IllegalArgumentException("Metadata ids downloading config can't be null"));
+        }
+        return webApiRepository.getMetadataIds(metadataIdsConfig)
+                .flatMapCompletable(localDbRepository::setMetadataIds);
     }
 }

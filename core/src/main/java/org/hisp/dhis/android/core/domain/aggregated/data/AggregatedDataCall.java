@@ -27,13 +27,12 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
@@ -42,8 +41,9 @@ import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.datavalue.DataValueQuery;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStoreInterface;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -64,8 +64,8 @@ final class AggregatedDataCall implements Callable<Unit> {
     private final QueryCallFactory<DataSetCompleteRegistration,
             DataSetCompleteRegistrationQuery> dataSetCompleteRegistrationCallFactory;
     private final IdentifiableObjectStore<DataSet> dataSetStore;
-    private final ObjectWithoutUidStore<Period> periodStore;
-    private final UserOrganisationUnitLinkStoreInterface organisationUnitStore;
+    private final PeriodStore periodStore;
+    private final UserOrganisationUnitLinkStore organisationUnitStore;
     private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
@@ -75,8 +75,8 @@ final class AggregatedDataCall implements Callable<Unit> {
                        @NonNull QueryCallFactory<DataSetCompleteRegistration, DataSetCompleteRegistrationQuery>
                                dataSetCompleteRegistrationCallFactory,
                        @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
-                       @NonNull ObjectWithoutUidStore<Period> periodStore,
-                       @NonNull UserOrganisationUnitLinkStoreInterface organisationUnitStore,
+                       @NonNull PeriodStore periodStore,
+                       @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
                        @NonNull ForeignKeyCleaner foreignKeyCleaner) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoRepository = systemInfoRepository;

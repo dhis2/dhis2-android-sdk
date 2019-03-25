@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.testapp.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,12 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class SectionCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class SectionCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all_objects() {
@@ -99,7 +93,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends MockIntegr
     @Test
     public void return_greyed_fields_as_children() {
         Section section = d2.dataSetModule().sections
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(section.greyedFields().size(), is(1));
         assertThat(section.greyedFields().get(0).uid(), is("ca8lfO062zg.Prlt0C1RF0s"));
     }
@@ -107,7 +101,7 @@ public class SectionCollectionRepositoryMockIntegrationShould extends MockIntegr
     @Test
     public void return_data_element_as_children() {
         Section section = d2.dataSetModule().sections
-                .one().getWithAllChildren();
+                .one().withAllChildren().get();
         assertThat(section.dataElements().size(), is(1));
         assertThat(section.dataElements().get(0).uid(), is("g9eOBujte1U"));
         assertThat(section.dataElements().get(0).code(), is("DE_2005735"));

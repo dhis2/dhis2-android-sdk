@@ -27,14 +27,61 @@
  */
 
 apply plugin: "com.android.library"
-apply plugin: "me.tatarka.retrolambda"
-apply from: rootProject.file("plugins/android-checkstyle.gradle")
-apply from: rootProject.file("plugins/android-findbugs.gradle")
-apply from: rootProject.file("plugins/android-dexcount.gradle")
-apply from: rootProject.file("plugins/android-pmd.gradle")
+apply from: project.file("plugins/android-checkstyle.gradle")
+apply from: project.file("plugins/android-findbugs.gradle")
+apply from: project.file("plugins/android-pmd.gradle")
 
-def configuration = rootProject.ext.configuration
-def libraries = rootProject.ext.libraries
+ext {
+    configuration = [
+            buildToolsVersion: "28.0.3",
+            minSdkVersion    : 19,
+            targetSdkVersion : 28,
+            versionCode      : 125,
+            versionName      : "0.15.0-SNAPSHOT"
+    ]
+
+    libraries = [
+            // android
+            support         : '1.0.0-beta01',
+            paging          : '2.1.0',
+
+            // java
+            jackson         : "2.8.5",
+            autovalue       : "1.3",
+            autovaluecursor : "1.0.1",
+            retrofit        : "2.1.0",
+            okhttp          : "3.5.0",
+            duktape         : "1.1.0",
+            dagger          : "2.14.1",
+
+            // code checks
+            findbugs        : "3.0.0",
+
+            // test dependencies
+            coretesting     : "1.1.1",
+            junit           : "4.12",
+            assertj         : "3.11.1",
+            mockito         : "2.24.5",
+            dexmaker        : "2.21.0",
+            truth           : "0.31",
+            testrunner      : '1.1.0-alpha4',
+            equalsverifier  : "2.1.8",
+            stetho          : "1.5.0",
+            livedatatesting : "1.1.0",
+
+            // plugins
+            errorpronecore  : "2.0.15",
+
+            //database
+            sqlbritemigrations  : "v1.0.1",
+
+            // google
+            safetynet  : "16.0.0",
+    ]
+}
+
+def configuration = project.ext.configuration
+def libraries = project.ext.libraries
 
 android {
     compileSdkVersion configuration.targetSdkVersion
@@ -45,7 +92,7 @@ android {
         targetSdkVersion configuration.targetSdkVersion
         versionCode configuration.versionCode
         versionName configuration.versionName
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -76,9 +123,6 @@ android {
         debug {
             // a fix for the debugger not being able to find local scope variables
             testCoverageEnabled = false
-            jackOptions {
-                enabled false
-            }
         }
     }
 
@@ -102,67 +146,81 @@ android {
 
 
 dependencies {
+
     // sqlbrite-migrations library
-    compile "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
+    api "com.github.lykmapipo:sqlbrite-migrations:${libraries.sqlbritemigrations}"
+
     // Support libraries
-    compile "com.android.support:support-annotations:${libraries.support}"
+    api "androidx.annotation:annotation:${libraries.support}"
+
+    api "android.arch.paging:runtime:${libraries.paging}"
 
     // Google's auto-value. Annotations are used only during compilation time, as well as
+
     // annotation processor which hoops up into compilation process
-    provided "com.google.auto.value:auto-value:${libraries.autovalue}"
+    compileOnly "com.google.auto.value:auto-value:${libraries.autovalue}"
     annotationProcessor "com.google.auto.value:auto-value:${libraries.autovalue}"
 
     // Dagger
-    compile "com.google.dagger:dagger:${libraries.dagger}"
+    api "com.google.dagger:dagger:${libraries.dagger}"
     annotationProcessor "com.google.dagger:dagger-compiler:${libraries.dagger}"
 
     // Jackson
-    compile "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
+    api "com.fasterxml.jackson.core:jackson-databind:${libraries.jackson}"
 
     // Google's play services
-    compile "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
+    api "com.google.android.gms:play-services-safetynet:${libraries.safetynet}"
 
     // Square libraries
-    compile "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
-    compile "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
-    compile "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
+    api "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
+    api "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
+    api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
 
     // Apache libraries
-    compile group: 'org.apache.commons', name: 'commons-jexl', version: '2.1.1'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    api "org.apache.commons:commons-lang3:3.7"
+    api("org.apache.commons:commons-jexl:2.1.1") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+    testImplementation "commons-logging:commons-logging:1.2"
 
     // Joda time
-    compile group: 'joda-time', name: 'joda-time', version: '2.9.9'
+    api "joda-time:joda-time:2.9.9"
+
+    // sms compression library
+    compile 'com.github.eHealthAfrica:dhis2-sms-compression:0.0.9'
 
     // Extension which generates mappers for work with cursor and content values
-    compile "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
+    api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"
     annotationProcessor "com.gabrielittner.auto.value:auto-value-cursor:${libraries.autovaluecursor}"
 
+    api "com.google.code.findbugs:annotations:${libraries.findbugs}"
+
     // Java test dependencies
-    testCompile "junit:junit:${libraries.junit}"
-    testCompile "org.mockito:mockito-core:${libraries.mockito}"
-    testCompile "org.assertj:assertj-core:${libraries.assertj}"
-    testCompile "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
-    testCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    testCompile 'com.google.code.findbugs:annotations:3.0.0'
-    testCompile "com.android.support.test:runner:${libraries.testrunner}"
+    testImplementation "junit:junit:${libraries.junit}"
+    testImplementation "org.mockito:mockito-core:${libraries.mockito}"
+    testImplementation "org.assertj:assertj-core:${libraries.assertj}"
+    testImplementation "nl.jqno.equalsverifier:equalsverifier:${libraries.equalsverifier}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    testImplementation "com.google.code.findbugs:annotations:${libraries.findbugs}"
+    testImplementation "androidx.test:runner:${libraries.testrunner}"
 
     // Android test dependencies
-    androidTestCompile "com.linkedin.dexmaker:dexmaker-mockito:${libraries.dexmaker}"
-    androidTestCompile "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
-    androidTestCompile "com.android.support.test:runner:${libraries.testrunner}"
-    androidTestCompile "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
-    androidTestCompile("com.google.truth:truth:${libraries.truth}") {
+    androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
+    androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"
+    androidTestImplementation "androidx.test:runner:${libraries.testrunner}"
+    androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
+    androidTestImplementation("com.google.truth:truth:${libraries.truth}") {
         exclude group: 'junit' // Android has JUnit built in.
     }
-    androidTestCompile ('com.facebook.stetho:stetho:1.5.0') {
+    androidTestImplementation("com.facebook.stetho:stetho:${libraries.stetho}") {
         exclude module: 'jsr305'
     }
-    androidTestCompile('com.facebook.stetho:stetho-okhttp3:1.5.0') {
+    androidTestImplementation("com.facebook.stetho:stetho-okhttp3:${libraries.stetho}") {
         exclude module: 'okhttp'
         exclude module: 'jsr305'
     }
-    compile 'com.google.code.findbugs:annotations:3.0.0'
 }
 
-apply from: rootProject.file("plugins/gradle-mvn-push.gradle")
+apply from: project.file("plugins/gradle-mvn-push.gradle")

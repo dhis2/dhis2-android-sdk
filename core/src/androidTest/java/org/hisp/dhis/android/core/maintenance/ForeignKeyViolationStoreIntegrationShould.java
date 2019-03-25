@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ForeignKeyViolationStoreIntegrationShould
@@ -47,12 +47,5 @@ public class ForeignKeyViolationStoreIntegrationShould
     @Override
     protected ForeignKeyViolation buildObject() {
         return ForeignKeyViolationSamples.get();
-    }
-
-    @Override
-    protected ForeignKeyViolation buildObjectWithId() {
-        return ForeignKeyViolationSamples.get().toBuilder()
-                .id(1L)
-                .build();
     }
 }

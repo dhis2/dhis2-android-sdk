@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +57,7 @@ public final class DataValueEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<DataValue>> childrenAppenders() {
-        return Collections.emptyList();
+    Map<String, ChildrenAppender<DataValue>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

@@ -31,23 +31,24 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples;
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils;
-import org.hisp.dhis.android.core.dataelement.DataElementModel;
+import org.hisp.dhis.android.core.dataelement.DataElementTableInfo;
 import org.hisp.dhis.android.core.enrollment.CreateEnrollmentUtils;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.event.CreateEventUtils;
-import org.hisp.dhis.android.core.event.EventModel;
+import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils;
 import org.hisp.dhis.android.core.program.CreateProgramUtils;
-import org.hisp.dhis.android.core.program.ProgramModel;
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
+import org.hisp.dhis.android.core.program.ProgramTableInfo;
 import org.hisp.dhis.android.core.relationship.CreateRelationshipTypeUtils;
 import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns;
@@ -138,19 +139,19 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
         ContentValues dataElement1 = CreateDataElementUtils.create(1L, DATA_ELEMENT_1, null);
         ContentValues dataElement2 = CreateDataElementUtils.create(2L, DATA_ELEMENT_2, null);
 
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
+        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
         database().insert(RelationshipTypeTableInfo.TABLE_INFO.name(), null,
                 relationshipType);
-        database().insert(ProgramModel.TABLE, null, program);
+        database().insert(ProgramTableInfo.TABLE_INFO.name(), null, program);
         database().insert(OrganisationUnitTableInfo.TABLE_INFO.name(), null, organisationUnit.toContentValues());
         database().insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage);
-        database().insert(DataElementModel.TABLE, null, dataElement1);
-        database().insert(DataElementModel.TABLE, null, dataElement2);
-        database().insert(TrackedEntityInstanceModel.TABLE, null,
+        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1);
+        database().insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2);
+        database().insert(TrackedEntityInstanceTableInfo.TABLE_INFO.name(), null,
                 trackedEntityInstance);
         database().insert(EnrollmentTableInfo.TABLE_INFO.name(), null, enrollment);
-        database().insert(EventModel.TABLE, null, event1);
-        database().insert(EventModel.TABLE, null, event2);
+        database().insert(EventTableInfo.TABLE_INFO.name(), null, event1);
+        database().insert(EventTableInfo.TABLE_INFO.name(), null, event2);
 
         trackedEntityDataValue = TrackedEntityDataValue.builder()
                 .event(EVENT_1)
@@ -203,7 +204,8 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_data_value_when_delete_event_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(EventModel.TABLE, EventModel.Columns.UID + "=?", new String[]{EVENT_1});
+        database().delete(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.UID + "=?",
+                new String[]{EVENT_1});
 
         Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),
                 PROJECTION, null, null, null, null, null);
@@ -216,7 +218,8 @@ public class TrackedEntityDataValueStoreShould extends AbsStoreTestCase {
     public void delete_tracked_entity_data_value_when_delete_data_element_foreign_key() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue);
 
-        database().delete(DataElementModel.TABLE, DataElementModel.Columns.UID + "=?",
+        database().delete(DataElementTableInfo.TABLE_INFO.name(),
+                BaseIdentifiableObjectModel.Columns.UID + "=?",
                 new String[]{DATA_ELEMENT_1});
 
         Cursor cursor = database().query(TrackedEntityDataValueTableInfo.TABLE_INFO.name(),

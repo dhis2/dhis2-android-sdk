@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.enrollment;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.CoordinateHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
@@ -65,6 +66,10 @@ public final class EnrollmentStoreImpl
         sqLiteBind(sqLiteStatement, 14, CoordinateHelper.getLongitude(o.coordinate()));
         sqLiteBind(sqLiteStatement, 15, o.state());
     };
+
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            EnrollmentTableInfo.TABLE_INFO, EnrollmentFields.TRACKED_ENTITY_INSTANCE);
 
     private EnrollmentStoreImpl(DatabaseAdapter databaseAdapter,
                                 SQLStatementWrapper statementWrapper,

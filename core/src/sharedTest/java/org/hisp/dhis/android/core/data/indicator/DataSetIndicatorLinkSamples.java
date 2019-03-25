@@ -34,6 +34,7 @@ public class DataSetIndicatorLinkSamples {
 
     public static DataSetIndicatorLink getDataSetIndicatorLink() {
         return DataSetIndicatorLink.builder()
+                .id(1L)
                 .dataSet("data_set")
                 .indicator("indicator")
                 .build();

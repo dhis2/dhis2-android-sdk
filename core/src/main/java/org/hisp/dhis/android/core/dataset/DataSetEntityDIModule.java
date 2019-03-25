@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorChildrenAppender;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -71,25 +71,27 @@ public final class DataSetEntityDIModule {
     @Provides
     @Reusable
     CollectionCleaner<DataSet> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(DataSetModel.TABLE, databaseAdapter);
+        return new CollectionCleanerImpl<>(DataSetTableInfo.TABLE_INFO.name(), databaseAdapter);
     }
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<DataSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<DataSet> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         DataSetTableInfo.TABLE_INFO
                 );
 
-        return Arrays.asList(
-                objectStyleChildrenAppender,
-                SectionChildrenAppender.create(databaseAdapter),
-                DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter),
-                DataInputPeriodChildrenAppender.create(databaseAdapter),
-                DataSetElementChildrenAppender.create(databaseAdapter),
-                DataSetIndicatorChildrenAppender.create(databaseAdapter)
-        );
+        return new HashMap<String, ChildrenAppender<DataSet>>() {{
+            put(DataSetFields.STYLE, objectStyleChildrenAppender);
+            put(DataSetFields.SECTIONS, SectionChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS,
+                    DataSetCompulsoryDataElementOperandChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.DATA_INPUT_PERIODS, DataInputPeriodChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.DATA_SET_ELEMENTS, DataSetElementChildrenAppender.create(databaseAdapter));
+            put(DataSetFields.INDICATORS, DataSetIndicatorChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

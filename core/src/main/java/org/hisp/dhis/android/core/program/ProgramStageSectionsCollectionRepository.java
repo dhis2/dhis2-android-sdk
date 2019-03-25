@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,9 +47,26 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
 
     @Inject
     ProgramStageSectionsCollectionRepository(final IdentifiableObjectStore<ProgramStageSection> store,
-                                             final Collection<ChildrenAppender<ProgramStageSection>> childrenAppenders,
-                                             List<RepositoryScopeItem> scope) {
+                                             final Map<String, ChildrenAppender<ProgramStageSection>> childrenAppenders,
+                                             final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramStageSectionsCollectionRepository(store, childrenAppenders, s)));
+    }
+
+
+    public IntegerFilterConnector<ProgramStageSectionsCollectionRepository> bySortOrder() {
+        return cf.integer(ProgramStageSectionFields.SORT_ORDER);
+    }
+
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byProgramStageUid() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.PROGRAM_STAGE);
+    }
+
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byDesktopRenderType() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.DESKTOP_RENDER_TYPE);
+    }
+
+    public StringFilterConnector<ProgramStageSectionsCollectionRepository> byMobileRenderType() {
+        return cf.string(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
     }
 }

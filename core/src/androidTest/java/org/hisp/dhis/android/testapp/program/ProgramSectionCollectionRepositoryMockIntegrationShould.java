@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.testapp.program;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
-import org.hisp.dhis.android.core.data.database.MockIntegrationShould;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.program.ProgramSection;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,25 +41,70 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class ProgramSectionCollectionRepositoryMockIntegrationShould extends MockIntegrationShould {
-
-    @BeforeClass
-    public static void setUpAll() throws Exception {
-        downloadMetadata();
-    }
+public class ProgramSectionCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all() {
-        List<ProgramSection> sections = d2.programModule().programSections
-                .get();
-        assertThat(sections.size(), is(1));
+        List<ProgramSection> programSections =
+                d2.programModule().programSections
+                        .get();
+
+        assertThat(programSections.size(), is(2));
     }
 
     @Test
     public void include_object_style_as_children() {
-        ProgramSection section = d2.programModule().programSections
-                .one().getWithAllChildren();
-        assertThat(section.style().icon(), is("section-icon"));
-        assertThat(section.style().color(), is("#555"));
+        ProgramSection programSection =
+                d2.programModule().programSections
+                        .one()
+                        .withAllChildren().get();
+
+        assertThat(programSection.style().icon(), is("section-icon"));
+        assertThat(programSection.style().color(), is("#555"));
     }
+
+    @Test
+    public void filter_by_description() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections
+                        .byDescription()
+                        .eq("Description")
+                        .get();
+
+        assertThat(programSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_program() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections
+                        .byProgramUid()
+                        .eq("lxAQ7Zs9VYR")
+                        .get();
+
+        assertThat(programSections.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_sort_order() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections
+                        .bySortOrder()
+                        .eq(1)
+                        .get();
+
+        assertThat(programSections.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_form_name() {
+        List<ProgramSection> programSections =
+                d2.programModule().programSections
+                        .byFormName()
+                        .eq("formName")
+                        .get();
+
+        assertThat(programSections.size(), is(1));
+    }
+
 }

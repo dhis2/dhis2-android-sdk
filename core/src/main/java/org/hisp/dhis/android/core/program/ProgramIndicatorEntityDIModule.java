@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,7 +57,8 @@ public final class ProgramIndicatorEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramIndicator>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter));
+    Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(ProgramIndicatorFields.LEGEND_SETS,
+                ProgramIndicatorLegendSetChildrenAppender.create(databaseAdapter));
     }
 }

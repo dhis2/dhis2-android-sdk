@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.indicator;
 
 import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.NameableModelAbstractShould;
 import org.hisp.dhis.android.core.indicator.IndicatorModel.Columns;

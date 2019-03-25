@@ -54,6 +54,34 @@ public class WhereClauseBuilderShould {
     }
 
     @Test
+    public void build_where_statement_for_one_key_value_pair_with_greater_or_eq_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyGreaterOrEqStringValue("COL", "VAL")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL >= 'VAL'");
+    }
+
+    @Test
+    public void build_where_statement_for_one_key_value_pair_with_less_than_or_eq_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyLessThanOrEqStringValue("COL", "VAL")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL <= 'VAL'");
+    }
+
+    @Test
+    public void build_where_statement_for_one_key_value_pair_with_greater_or_eq_and_less_than_or_eq_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyGreaterOrEqStringValue("COL1", "VAL1")
+                .appendKeyLessThanOrEqStringValue("COL2", "VAL2")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 >= 'VAL1' AND COL2 <= 'VAL2'");
+    }
+
+    @Test
     public void build_where_statement_for_one_key_value_pair_with_like_string_value() {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         String whereStatement = builder
@@ -107,6 +135,37 @@ public class WhereClauseBuilderShould {
                 .appendIsNullValue("COL1")
                 .build();
         assertThat(whereStatement).isEqualTo("COL1 IS NULL");
+    }
+
+    @Test
+    public void build_where_statement_for_complex_queries() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendComplexQuery("COL1 = 'VAL1' OR COL2 = 'VAL2'")
+                .build();
+        assertThat(whereStatement).isEqualTo("(COL1 = 'VAL1' OR COL2 = 'VAL2')");
+    }
+
+    @Test
+    public void build_where_statement_appending_complex_queries_between_others() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendIsNullValue("COL1")
+                .appendComplexQuery("COL2 = 'VAL2' OR COL3 = 'VAL3'")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 IS NULL AND (COL2 = 'VAL2' OR COL3 = 'VAL3')");
+    }
+
+    @Test
+    public void build_where_statement_appending_operator() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendKeyGreaterOrEqStringValue("COL1", "VAL1")
+                .appendOperator(" OR ")
+                .appendKeyLessThanOrEqStringValue("COL2", "VAL2")
+                .build();
+
+        assertThat(whereStatement).isEqualTo("COL1 >= 'VAL1' OR COL2 <= 'VAL2'");
     }
 
     @Test(expected = RuntimeException.class)

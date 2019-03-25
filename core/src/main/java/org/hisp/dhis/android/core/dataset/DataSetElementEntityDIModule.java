@@ -48,7 +48,7 @@ public final class DataSetElementEntityDIModule {
 
     @Provides
     @Reusable
-    LinkSyncHandler<DataSetElement> handler(LinkModelStore<DataSetElement> store) {
+    LinkSyncHandler<DataSetElement, DataSetElement> handler(LinkModelStore<DataSetElement> store) {
         return new LinkSyncHandlerImpl<>(store);
     }
 }

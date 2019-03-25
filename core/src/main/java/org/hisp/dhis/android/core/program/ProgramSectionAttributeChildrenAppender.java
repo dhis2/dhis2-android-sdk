@@ -31,13 +31,14 @@ import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 final class ProgramSectionAttributeChildrenAppender extends ChildrenAppender<ProgramSection> {
 
-    private final LinkModelChildStore<ProgramSection, ProgramTrackedEntityAttribute> linkModelChildStore;
+    private final LinkModelChildStore<ProgramSection, TrackedEntityAttribute> linkModelChildStore;
 
     private ProgramSectionAttributeChildrenAppender(
-            LinkModelChildStore<ProgramSection, ProgramTrackedEntityAttribute> linkModelChildStore) {
+            LinkModelChildStore<ProgramSection, TrackedEntityAttribute> linkModelChildStore) {
         this.linkModelChildStore = linkModelChildStore;
     }
 
@@ -54,7 +55,7 @@ final class ProgramSectionAttributeChildrenAppender extends ChildrenAppender<Pro
                         databaseAdapter,
                         ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
                         ProgramSectionAttributeLinkTableInfo.CHILD_PROJECTION,
-                        ProgramTrackedEntityAttribute::create
+                        TrackedEntityAttribute::create
                 )
         );
     }

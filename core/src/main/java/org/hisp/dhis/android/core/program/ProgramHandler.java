@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 
 import java.util.Collection;
@@ -90,7 +90,7 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
         programRuleHandler.handleMany(program.programRules());
         programRuleVariableHandler.handleMany(program.programRuleVariables());
         programSectionHandler.handleMany(program.programSections());
-        styleHandler.handle(program.style(), new ObjectStyleModelBuilder(program.uid(),
+        styleHandler.handle(program.style(), new ObjectStyleTransformer(program.uid(),
                 ProgramTableInfo.TABLE_INFO.name()));
 
         if (action == HandleAction.Update) {

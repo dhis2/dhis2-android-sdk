@@ -45,21 +45,11 @@ public final class TableWiper {
         this.databaseAdapter = databaseAdapter;
     }
 
-    public void wipeTable(String tableName) {
-        databaseAdapter.delete(tableName);
-    }
-
-    public void wipeTables(String ...tableNames) {
-        for (String tableName: tableNames) {
-            wipeTable(tableName);
-        }
-    }
-
     public void wipeTable(TableInfo tableInfo) {
-        wipeTable(tableInfo.name());
+        databaseAdapter.delete(tableInfo.name());
     }
 
-    public void wipeTables(TableInfo ...tableInfos) {
+    public void wipeTables(TableInfo... tableInfos) {
         for (TableInfo tableInfo: tableInfos) {
             wipeTable(tableInfo);
         }

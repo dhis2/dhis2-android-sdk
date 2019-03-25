@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.utils;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 
@@ -90,17 +90,21 @@ public final class Utils {
         return withBrackets.substring(1, withBrackets.length() - 1);
     }
 
+    public static String commaAndSpaceSeparatedCollectionValues(Collection<String> values) {
+        return commaAndSpaceSeparatedArrayValues(values.toArray(new String[values.size()]));
+    }
+
     public static String[] withSingleQuotationMarksArray(Collection<String> objects) {
         String[] withSingleQuotationMarksArray = new String[objects.size()];
         int i = 0;
         for (String o: objects) {
-            withSingleQuotationMarksArray [i++] = "'" + o + "'";
+            withSingleQuotationMarksArray[i++] = "'" + o + "'";
         }
         return withSingleQuotationMarksArray;
     }
 
     private static String commaSeparatedArrayValues(String... values) {
-        return commaAndSpaceSeparatedArrayValues(values).replace(" ", "");
+        return commaAndSpaceSeparatedArrayValues(values).replace(", ", ",");
     }
 
     public static String commaSeparatedCollectionValues(Collection<String> values) {

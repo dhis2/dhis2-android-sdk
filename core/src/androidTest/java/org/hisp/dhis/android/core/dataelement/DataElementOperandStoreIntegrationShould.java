@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataelement.DataElementOperandSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class DataElementOperandStoreIntegrationShould
@@ -48,13 +48,6 @@ public class DataElementOperandStoreIntegrationShould
     @Override
     protected DataElementOperand buildObject() {
         return DataElementOperandSamples.getDataElementOperand();
-    }
-
-    @Override
-    protected DataElementOperand buildObjectWithId() {
-        return DataElementOperandSamples.getDataElementOperand().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

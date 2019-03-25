@@ -27,10 +27,10 @@ public interface SmsRepository {
                                         Collection<String> requiredStrings);
 
     /**
-     * Sending status Observable may emit WAITING_TOTAL_CONFIRMATION, as a protection for sending too
+     * Sending status Observable may emit WAITING_SMS_COUNT_ACCEPT, as a protection for sending too
      * many messages. Then this method has to be called to resume sms sending.
      */
-    void confirmTotalCount();
+    void acceptSMSCount(boolean accept);
 
     /**
      * Returned when sms sending error is returned from OS.
@@ -51,6 +51,21 @@ public interface SmsRepository {
      * Returned when timeout occurs
      */
     class TimeoutException extends Exception {
+    }
+
+    /**
+     * Returned when not accepted SMS count
+     */
+    class SMSCountException extends Exception {
+        private final int count;
+
+        public SMSCountException(int count) {
+            this.count = count;
+        }
+
+        public int getCount() {
+            return count;
+        }
     }
 
     /**
@@ -91,7 +106,7 @@ public interface SmsRepository {
 
     enum State {
         SENDING,
-        WAITING_TOTAL_CONFIRMATION,
+        WAITING_SMS_COUNT_ACCEPT,
         ALL_SENT
     }
 }

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.event;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -42,8 +40,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStoreImpl;
 import org.hisp.dhis.android.core.utils.CodeGenerator;
 import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.Date;
@@ -53,7 +49,6 @@ import java.util.concurrent.Callable;
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.Assert.assertTrue;
 
-@RunWith(AndroidJUnit4.class)
 public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
     private D2 d2;
@@ -91,13 +86,8 @@ public class EventPostCallRealIntegrationShould extends AbsStoreTestCase {
 
         eventUid1 = codeGenerator.generate();
         eventUid2 = codeGenerator.generate();
-
     }
 
-    @Test
-    public void stub() throws Exception {
-
-    }
     // commented out since it is a flaky test that works against a real server.
     //@Test
     public void successful_response_after_sync_events() throws Exception {

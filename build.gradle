@@ -2,17 +2,15 @@ apply plugin: "com.gradle.build-scan"
 
 buildscript {
     repositories {
+        google()
+        mavenLocal()
         jcenter()
-
-        // Required by build-scan and error-prone plugins.
-        maven {
-            url("https://plugins.gradle.org/m2/")
-        }
+        maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     dependencies {
         // android gradle plugin
-        classpath "com.android.tools.build:gradle:2.3.3"
+        classpath "com.android.tools.build:gradle:3.3.1"
 
         // method count plugin
         classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.6.1"
@@ -21,8 +19,7 @@ buildscript {
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.9"
 
         // enables cloud features of gradle plugin
-        classpath "com.gradle:build-scan-plugin:1.3"
-        classpath "me.tatarka:gradle-retrolambda:3.7.0"
+        classpath "com.gradle:build-scan-plugin:2.0.2"
     }
 }
 
@@ -30,6 +27,7 @@ allprojects {
     repositories {
         maven { url "https://maven.google.com" }
         jcenter()
+        google()
         maven { url "https://jitpack.io" }
     }
 }
@@ -39,57 +37,11 @@ task clean(type: Delete) {
 }
 
 buildScan {
-    licenseAgreementUrl = "https://gradle.com/terms-of-service"
-    licenseAgree = "yes"
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
 }
 
 subprojects { project ->
     group = GROUP
     version = VERSION_NAME
-}
-
-ext {
-    configuration = [
-            buildToolsVersion: "28.0.3",
-            minSdkVersion    : 19,
-            targetSdkVersion : 28,
-            versionCode      : 124,
-            versionName      : "0.14.5-SNAPSHOT"
-    ]
-
-    libraries = [
-            // android
-            support         : "25.1.1",
-
-            // java
-            jackson         : "2.8.5",
-            autovalue       : "1.3",
-            autovaluecursor : "1.0.1",
-            retrofit        : "2.1.0",
-            okhttp          : "3.5.0",
-            duktape         : "1.1.0",
-            dagger          : "2.14.1",
-
-            // @NonNull, @Nullable
-            // annotations for java modules
-            jsr305          : "3.0.1",
-
-            // test dependencies
-            junit           : "4.12",
-            assertj         : "3.5.2",
-            mockito         : "1.10.19",
-            dexmaker        : "2.21.0",
-            truth           : "0.31",
-            testrunner      : "0.5",
-            equalsverifier  : "2.1.8",
-
-            // plugins
-            errorpronecore  : "2.0.15",
-
-            //database
-            sqlbritemigrations  : "v1.0.1",
-
-            // google
-            safetynet  : "15.0.1",
-    ]
 }

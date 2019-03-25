@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ModelBuilder;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleModelBuilder;
+import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
+import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
 import org.junit.Before;
@@ -154,13 +154,13 @@ public class ProgramStageHandlerShould {
     @Test
     public void call_program_stage_section_handler() throws Exception {
         programStageHandler.handle(programStage);
-        verify(programStageSectionHandler).handleMany(eq(programStageSections), any(ModelBuilder.class));
+        verify(programStageSectionHandler).handleMany(eq(programStageSections), any(Transformer.class));
     }
 
     @Test
     public void call_style_handler() throws Exception {
         programStageHandler.handle(programStage);
-        verify(styleHandler).handle(eq(objectStyle), any(ObjectStyleModelBuilder.class));
+        verify(styleHandler).handle(eq(objectStyle), any(ObjectStyleTransformer.class));
     }
 
     @Test

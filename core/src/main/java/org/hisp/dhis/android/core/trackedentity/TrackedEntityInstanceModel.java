@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.data.database.DbFeatureTypeColumnAdapter;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.utils.Utils;
 
+@Deprecated
 @AutoValue
 public abstract class TrackedEntityInstanceModel extends BaseIdentifiableDataModel  {
     public static final String TABLE = "TrackedEntityInstance";

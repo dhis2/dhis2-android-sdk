@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.common.LinkModelStore;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandler;
-import org.hisp.dhis.android.core.common.OrderedLinkModelHandlerImpl;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
+import org.hisp.dhis.android.core.common.OrderedLinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
@@ -43,14 +43,14 @@ public final class ProgramStageSectionDataElementEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkModelStore<ProgramStageSectionDataElementLinkModel> store(DatabaseAdapter databaseAdapter) {
+    public LinkModelStore<ProgramStageSectionDataElementLink> store(DatabaseAdapter databaseAdapter) {
         return ProgramStageSectionDataElementLinkStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    public OrderedLinkModelHandler<DataElement, ProgramStageSectionDataElementLinkModel> handler(
-            LinkModelStore<ProgramStageSectionDataElementLinkModel> store) {
-        return new OrderedLinkModelHandlerImpl<>(store);
+    public OrderedLinkSyncHandler<DataElement, ProgramStageSectionDataElementLink> handler(
+            LinkModelStore<ProgramStageSectionDataElementLink> store) {
+        return new OrderedLinkSyncHandlerImpl<>(store);
     }
 }

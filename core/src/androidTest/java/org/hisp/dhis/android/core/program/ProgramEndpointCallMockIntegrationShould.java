@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.program;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis.android.core.D2;
-import org.hisp.dhis.android.core.category.CategoryComboModel;
+import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
 import org.hisp.dhis.android.core.category.CreateCategoryComboUtils;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
@@ -51,7 +51,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo;
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,38 +66,39 @@ import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCu
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
+    private static String ACCESS_DATA_WRITE = "accessDataWrite";
     private static String[] PROGRAM_PROJECTION = {
             UID,
-            ProgramModel.Columns.CODE,
-            ProgramModel.Columns.NAME,
-            ProgramModel.Columns.DISPLAY_NAME,
-            ProgramModel.Columns.CREATED,
-            ProgramModel.Columns.LAST_UPDATED,
-            ProgramModel.Columns.SHORT_NAME,
-            ProgramModel.Columns.DISPLAY_SHORT_NAME,
-            ProgramModel.Columns.DESCRIPTION,
-            ProgramModel.Columns.DISPLAY_DESCRIPTION,
-            ProgramModel.Columns.VERSION,
-            ProgramModel.Columns.ONLY_ENROLL_ONCE,
-            ProgramModel.Columns.ENROLLMENT_DATE_LABEL,
-            ProgramModel.Columns.DISPLAY_INCIDENT_DATE,
-            ProgramModel.Columns.INCIDENT_DATE_LABEL,
-            ProgramModel.Columns.REGISTRATION,
-            ProgramModel.Columns.SELECT_ENROLLMENT_DATES_IN_FUTURE,
-            ProgramModel.Columns.DATA_ENTRY_METHOD,
-            ProgramModel.Columns.IGNORE_OVERDUE_EVENTS,
-            ProgramModel.Columns.RELATIONSHIP_FROM_A,
-            ProgramModel.Columns.SELECT_INCIDENT_DATES_IN_FUTURE,
-            ProgramModel.Columns.CAPTURE_COORDINATES,
-            ProgramModel.Columns.USE_FIRST_STAGE_DURING_REGISTRATION,
-            ProgramModel.Columns.DISPLAY_FRONT_PAGE_LIST,
-            ProgramModel.Columns.PROGRAM_TYPE,
-            ProgramModel.Columns.RELATIONSHIP_TYPE,
-            ProgramModel.Columns.RELATIONSHIP_TEXT,
-            ProgramModel.Columns.RELATED_PROGRAM,
-            ProgramModel.Columns.TRACKED_ENTITY_TYPE,
-            ProgramModel.Columns.CATEGORY_COMBO,
-            ProgramModel.Columns.ACCESS_DATA_WRITE
+            BaseIdentifiableObjectModel.Columns.CODE,
+            BaseIdentifiableObjectModel.Columns.NAME,
+            BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+            BaseIdentifiableObjectModel.Columns.CREATED,
+            BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+            BaseNameableObjectModel.Columns.SHORT_NAME,
+            BaseNameableObjectModel.Columns.DISPLAY_SHORT_NAME,
+            BaseNameableObjectModel.Columns.DESCRIPTION,
+            BaseNameableObjectModel.Columns.DISPLAY_DESCRIPTION,
+            ProgramFields.VERSION,
+            ProgramFields.ONLY_ENROLL_ONCE,
+            ProgramFields.ENROLLMENT_DATE_LABEL,
+            ProgramFields.DISPLAY_INCIDENT_DATE,
+            ProgramFields.INCIDENT_DATE_LABEL,
+            ProgramFields.REGISTRATION,
+            ProgramFields.SELECT_ENROLLMENT_DATES_IN_FUTURE,
+            ProgramFields.DATA_ENTRY_METHOD,
+            ProgramFields.IGNORE_OVERDUE_EVENTS,
+            ProgramFields.RELATIONSHIP_FROM_A,
+            ProgramFields.SELECT_INCIDENT_DATES_IN_FUTURE,
+            ProgramFields.CAPTURE_COORDINATES,
+            ProgramFields.USE_FIRST_STAGE_DURING_REGISTRATION,
+            ProgramFields.DISPLAY_FRONT_PAGE_LIST,
+            ProgramFields.PROGRAM_TYPE,
+            ProgramFields.RELATIONSHIP_TYPE,
+            ProgramFields.RELATIONSHIP_TEXT,
+            ProgramFields.RELATED_PROGRAM,
+            ProgramFields.TRACKED_ENTITY_TYPE,
+            ProgramFields.CATEGORY_COMBO,
+            ACCESS_DATA_WRITE
     };
 
     private Dhis2MockServer dhis2MockServer;
@@ -119,14 +120,14 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         ContentValues categoryCombo = CreateCategoryComboUtils.create(1L, "nM3u9s5a52V");
-        database().insert(CategoryComboModel.TABLE, null, categoryCombo);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo);
 
         ContentValues categoryCombo2 = CreateCategoryComboUtils.create(2L, "x31y45jvIQL");
-        database().insert(CategoryComboModel.TABLE, null, categoryCombo2);
+        database().insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo2);
 
         // inserting tracked entity
         ContentValues trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp");
-        database().insert(TrackedEntityTypeModel.TABLE, null, trackedEntityType);
+        database().insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType);
 
         programEndpointCall = getD2DIComponent(d2).programCallFactory().create();
     }
@@ -136,7 +137,8 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         // Fake call to api
         programEndpointCall.call();
 
-        Cursor programCursor = database().query(ProgramModel.TABLE, PROGRAM_PROJECTION, null, null, null, null, null);
+        Cursor programCursor = database().query(ProgramTableInfo.TABLE_INFO.name(), PROGRAM_PROJECTION,
+                null, null, null, null, null);
 
         assertThatCursor(programCursor).hasRow(
                 "IpHINAT79UW",
@@ -178,20 +180,20 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
         programEndpointCall.call();
         String[] projection = {
                 UID,
-                ProgramRuleVariableModel.Columns.CODE,
-                ProgramRuleVariableModel.Columns.NAME,
-                ProgramRuleVariableModel.Columns.DISPLAY_NAME,
-                ProgramRuleVariableModel.Columns.CREATED,
-                ProgramRuleVariableModel.Columns.LAST_UPDATED,
-                ProgramRuleVariableModel.Columns.USE_CODE_FOR_OPTION_SET,
-                ProgramRuleVariableModel.Columns.PROGRAM,
-                ProgramRuleVariableModel.Columns.PROGRAM_STAGE,
-                ProgramRuleVariableModel.Columns.DATA_ELEMENT,
-                ProgramRuleVariableModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleVariableModel.Columns.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
+                BaseIdentifiableObjectModel.Columns.CODE,
+                BaseIdentifiableObjectModel.Columns.NAME,
+                BaseIdentifiableObjectModel.Columns.DISPLAY_NAME,
+                BaseIdentifiableObjectModel.Columns.CREATED,
+                BaseIdentifiableObjectModel.Columns.LAST_UPDATED,
+                ProgramRuleVariableFields.USE_CODE_FOR_OPTION_SET,
+                ProgramRuleVariableFields.PROGRAM,
+                ProgramRuleVariableFields.PROGRAM_STAGE,
+                ProgramRuleVariableFields.DATA_ELEMENT,
+                ProgramRuleVariableFields.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleVariableFields.PROGRAM_RULE_VARIABLE_SOURCE_TYPE
         };
 
-        Cursor programRuleVariableCursor = database().query(ProgramRuleVariableModel.TABLE, projection,
+        Cursor programRuleVariableCursor = database().query(ProgramRuleVariableTableInfo.TABLE_INFO.name(), projection,
                 UID + "=?", new String[]{"g2GooOydipB"}, null, null, null);
 
         assertThatCursor(programRuleVariableCursor).hasRow(
@@ -430,24 +432,24 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         String[] projection = {
                 UID,
-                ProgramRuleActionModel.Columns.CODE,
-                ProgramRuleActionModel.Columns.NAME,
-                ProgramRuleActionModel.Columns.DISPLAY_NAME,
-                ProgramRuleActionModel.Columns.CREATED,
-                ProgramRuleActionModel.Columns.LAST_UPDATED,
-                ProgramRuleActionModel.Columns.DATA,
-                ProgramRuleActionModel.Columns.CONTENT,
-                ProgramRuleActionModel.Columns.LOCATION,
-                ProgramRuleActionModel.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                ProgramRuleActionModel.Columns.PROGRAM_INDICATOR,
-                ProgramRuleActionModel.Columns.PROGRAM_STAGE_SECTION,
-                ProgramRuleActionModel.Columns.PROGRAM_RULE_ACTION_TYPE,
-                ProgramRuleActionModel.Columns.PROGRAM_STAGE,
-                ProgramRuleActionModel.Columns.DATA_ELEMENT,
-                ProgramRuleActionModel.Columns.PROGRAM_RULE
+                ProgramRuleActionTableInfo.Columns.CODE,
+                ProgramRuleActionTableInfo.Columns.NAME,
+                ProgramRuleActionTableInfo.Columns.DISPLAY_NAME,
+                ProgramRuleActionTableInfo.Columns.CREATED,
+                ProgramRuleActionTableInfo.Columns.LAST_UPDATED,
+                ProgramRuleActionFields.DATA,
+                ProgramRuleActionFields.CONTENT,
+                ProgramRuleActionFields.LOCATION,
+                ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE,
+                ProgramRuleActionFields.PROGRAM_INDICATOR,
+                ProgramRuleActionFields.PROGRAM_STAGE_SECTION,
+                ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE,
+                ProgramRuleActionFields.PROGRAM_STAGE,
+                ProgramRuleActionFields.DATA_ELEMENT,
+                ProgramRuleActionFields.PROGRAM_RULE
         };
 
-        Cursor programRuleActionCursor = database().query(ProgramRuleActionModel.TABLE, projection,
+        Cursor programRuleActionCursor = database().query(ProgramRuleActionTableInfo.TABLE_INFO.name(), projection,
                 UID + "=?", new String[]{"v434s5YPDcP"}, null, null, null);
 
         assertThatCursor(programRuleActionCursor).hasRow(

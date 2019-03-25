@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.support.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
+
+import androidx.annotation.VisibleForTesting;
 
 public final class DataSetOrganisationUnitLinkTableInfo {
 
@@ -48,6 +49,11 @@ public final class DataSetOrganisationUnitLinkTableInfo {
             return new Columns();
         }
     };
+
+    public static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            DataSetTableInfo.TABLE_INFO,
+            Columns.ORGANISATION_UNIT,
+            Columns.DATA_SET);
 
     private DataSetOrganisationUnitLinkTableInfo() {
     }

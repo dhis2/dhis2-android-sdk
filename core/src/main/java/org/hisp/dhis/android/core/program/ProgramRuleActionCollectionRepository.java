@@ -29,12 +29,13 @@ package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,9 +47,59 @@ public final class ProgramRuleActionCollectionRepository
 
     @Inject
     ProgramRuleActionCollectionRepository(final IdentifiableObjectStore<ProgramRuleAction> store,
-                                          final Collection<ChildrenAppender<ProgramRuleAction>> childrenAppenders,
-                                          List<RepositoryScopeItem> scope) {
+                                          final Map<String, ChildrenAppender<ProgramRuleAction>> childrenAppenders,
+                                          final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramRuleActionCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramRuleActionCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byData() {
+        return cf.string(ProgramRuleActionFields.DATA);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byContent() {
+        return cf.string(ProgramRuleActionFields.CONTENT);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byLocation() {
+        return cf.string(ProgramRuleActionFields.LOCATION);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byTrackedEntityAttributeUid() {
+        return cf.string(ProgramRuleActionFields.TRACKED_ENTITY_ATTRIBUTE);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramIndicatorUid() {
+        return cf.string(ProgramRuleActionFields.PROGRAM_INDICATOR);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramStageSectionUid() {
+        return cf.string(ProgramRuleActionFields.PROGRAM_STAGE_SECTION);
+    }
+
+    public EnumFilterConnector<ProgramRuleActionCollectionRepository,
+            ProgramRuleActionType> byProgramRuleActionType() {
+
+        return cf.enumC(ProgramRuleActionFields.PROGRAM_RULE_ACTION_TYPE);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramStageUid() {
+        return cf.string(ProgramRuleActionFields.PROGRAM_STAGE);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byDataElementUid() {
+        return cf.string(ProgramRuleActionFields.DATA_ELEMENT);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byProgramRuleUid() {
+        return cf.string(ProgramRuleActionFields.PROGRAM_RULE);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byOptionUid() {
+        return cf.string(ProgramRuleActionFields.OPTION);
+    }
+
+    public StringFilterConnector<ProgramRuleActionCollectionRepository> byOptionGroupUid() {
+        return cf.string(ProgramRuleActionFields.OPTION_GROUP);
     }
 }

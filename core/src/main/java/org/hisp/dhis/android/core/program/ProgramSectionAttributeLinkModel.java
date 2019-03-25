@@ -28,13 +28,14 @@
 package org.hisp.dhis.android.core.program;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
+@Deprecated
 @AutoValue
 public abstract class ProgramSectionAttributeLinkModel extends BaseModel {
     public static final String TABLE = "ProgramSectionAttributeLink";

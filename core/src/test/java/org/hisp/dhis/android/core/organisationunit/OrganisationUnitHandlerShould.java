@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.LinkModelHandler;
+import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.dataset.DataSet;
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkModel;
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -61,27 +63,28 @@ import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class OrganisationUnitHandlerShould {
+
     @Mock
     private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     @Mock
-    private ObjectWithoutUidStore<OrganisationUnitProgramLinkModel> organisationUnitProgramLinkStore;
+    private LinkModelStore<OrganisationUnitProgramLink> organisationUnitProgramLinkStore;
 
     @Mock
-    private LinkModelHandler<Program, OrganisationUnitProgramLinkModel> organisationUnitProgramLinkHandler;
+    private LinkSyncHandler<Program, OrganisationUnitProgramLink> organisationUnitProgramLinkHandler;
 
     @Mock
-    private LinkSyncHandler<DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
+    private LinkSyncHandler<DataSet, DataSetOrganisationUnitLink> dataSetDataSetOrganisationUnitLinkHandler;
 
     @Mock
-    private LinkModelHandler<OrganisationUnit, UserOrganisationUnitLinkModel> userOrganisationUnitLinkHandler;
+    private LinkSyncHandler<OrganisationUnit, UserOrganisationUnitLink> userOrganisationUnitLinkHandler;
 
     @Mock
     private SyncHandler<OrganisationUnitGroup> organisationUnitGroupHandler;
 
     @Mock
-    private LinkModelHandler<ObjectWithUid,
-            OrganisationUnitOrganisationUnitGroupLinkModel> organisationUnitGroupLinkHandler;
+    private LinkSyncHandler<OrganisationUnitGroup, OrganisationUnitOrganisationUnitGroupLink>
+            organisationUnitGroupLinkHandler;
 
     @Mock
     private CollectionCleaner<ObjectWithUid> programCollectionCleaner;
@@ -93,8 +96,6 @@ public class OrganisationUnitHandlerShould {
     private CollectionCleaner<ObjectWithUid> organisationUnitGroupCollectionCleaner;
 
     private OrganisationUnit organisationUnitWithoutGroups;
-
-    private OrganisationUnit organisationUnitWithGroups;
 
     @Mock
     private OrganisationUnitGroup organisationUnitGroup;
@@ -113,12 +114,9 @@ public class OrganisationUnitHandlerShould {
 
     private List<OrganisationUnit> organisationUnits;
 
-    private OrganisationUnit.Scope scope;
-
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        scope = OrganisationUnit.Scope.SCOPE_DATA_CAPTURE;
         String programUid = "test_program_uid";
         programUids = Sets.newHashSet(Lists.newArrayList(programUid));
         String dataSetUid = "test_data_set_uid";
@@ -142,7 +140,7 @@ public class OrganisationUnitHandlerShould {
         organisationUnitWithoutGroups = builder
                 .build();
 
-        organisationUnitWithGroups = builder
+        OrganisationUnit organisationUnitWithGroups = builder
                 .organisationUnitGroups(organisationUnitGroups)
                 .build();
 
@@ -160,7 +158,7 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.setData(programUids, dataSetUids, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
         verify(organisationUnitProgramLinkHandler).handleMany(anyString(), anyListOf(Program.class),
-                any(OrganisationUnitProgramLinkModelBuilder.class));
+                any(Transformer.class));
     }
 
     @Test
@@ -184,8 +182,8 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.setData(programUids, dataSetUids, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
-        verify(organisationUnitGroupLinkHandler).handleMany(anyString(), anyListOf(ObjectWithUid.class),
-                any(OrganisationUnitOrganisationUnitGroupLinkModelBuilder.class));
+        verify(organisationUnitGroupLinkHandler).handleMany(anyString(), anyListOf(OrganisationUnitGroup.class),
+                any(Transformer.class));
     }
 
     @Test
@@ -194,8 +192,8 @@ public class OrganisationUnitHandlerShould {
 
         organisationUnitHandler.handleMany(Lists.newArrayList(organisationUnitWithoutGroups), new OrganisationUnitDisplayPathTransformer());
 
-        verify(organisationUnitGroupLinkHandler, never()).handleMany(anyString(), anyListOf(ObjectWithUid.class),
-                any(OrganisationUnitOrganisationUnitGroupLinkModelBuilder.class));
+        verify(organisationUnitGroupLinkHandler, never()).handleMany(anyString(),
+                anyListOf(OrganisationUnitGroup.class), any(Transformer.class));
     }
 
     @Test
@@ -203,8 +201,8 @@ public class OrganisationUnitHandlerShould {
         organisationUnitHandler.setData(programUids, dataSetUids, user);
         organisationUnitHandler.handleMany(organisationUnits, new OrganisationUnitDisplayPathTransformer());
 
-        verify(programCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));
-        verify(dataSetCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));
-        verify(organisationUnitGroupCollectionCleaner).deleteNotPresent(anyListOf(ObjectWithUid.class));
+        verify(programCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
+        verify(dataSetCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
+        verify(organisationUnitGroupCollectionCleaner).deleteNotPresent(anyCollectionOf(ObjectWithUid.class));
     }
 }

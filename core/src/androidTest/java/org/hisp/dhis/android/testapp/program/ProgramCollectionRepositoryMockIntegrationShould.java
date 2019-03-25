@@ -364,7 +364,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     public void include_program_tracked_entity_attributes_as_children() {
         Program program = d2.programModule().programs
                 .withProgramTrackedEntityAttributes().one().get();
-        assertThat(program.programTrackedEntityAttributes().size(), is(1));
+        assertThat(program.programTrackedEntityAttributes().size(), is(2));
         assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
     }
 

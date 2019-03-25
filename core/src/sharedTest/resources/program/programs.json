@@ -91,7 +91,6 @@
         {
           "lastUpdated": "2016-10-11T10:41:40.401",
           "id": "YhqgQ6Iy4c4",
-          "href": "https://play.dhis2.org/dev/api/programTrackedEntityAttributes/YhqgQ6Iy4c4",
           "created": "2016-10-11T10:41:40.401",
           "name": "Child Programme Gender",
           "shortName": "Child Programme Gender",
@@ -111,13 +110,17 @@
           "trackedEntityAttribute": {
             "id": "cejWyOfXge6",
             "lastUpdated": "2016-08-04T11:48:56.928",
-            "href": "https://play.dhis2.org/dev/api/trackedEntityAttributes/ruQQnf6rswq",
             "created": "2014-01-09T19:12:46.551",
             "name": "TB number",
             "shortName": "TB number",
+            "valueType": "NUMBER",
             "programScope": false,
+            "orgunitScope": false,
             "displayInListNoProgram": false,
             "displayName": "TB number",
+            "pattern": "RANDOM(XXX######)",
+            "unique": false,
+            "inherit": false,
             "access": {
               "read": true,
               "updateWithSection": true,
@@ -126,10 +129,61 @@
               "write": true,
               "manage": false
             }
+          }
+        },
+        {
+          "lastUpdated": "2016-10-11T10:41:40.401",
+          "id": "QhqgQ6Iy4c4",
+          "created": "2016-10-11T10:41:40.401",
+          "name": "Child Programme Age",
+          "shortName": "Child Programme Age",
+          "displayName": "Child Programme Age",
+          "mandatory": false,
+          "displayShortName": "Child Programme Age",
+          "externalAccess": false,
+          "valueType": "TEXT",
+          "allowFutureDate": false,
+          "dimensionItem": "IpHINAT79UW.cejWyOfXge6",
+          "displayInList": false,
+          "sortOrder": 2,
+          "dimensionItemType": "PROGRAM_ATTRIBUTE",
+          "program": {
+            "id": "lxAQ7Zs9VYR"
           },
-          "translations": [],
-          "userGroupAccesses": [],
-          "attributeValues": []
+          "trackedEntityAttribute": {
+            "id": "aejWyOfXge6",
+            "lastUpdated": "2016-08-04T11:48:56.928",
+            "created": "2014-01-09T19:12:46.551",
+            "name": "Age",
+            "shortName": "Age",
+            "formName": "formname",
+            "valueType": "TEXT",
+            "programScope": true,
+            "orgunitScope": true,
+            "displayInListNoProgram": true,
+            "displayOnVisitSchedule": true,
+            "sortOrderInListNoProgram": 0,
+            "displayName": "Age",
+            "expression": "expression",
+            "generated": true,
+            "unique": true,
+            "inherit": true,
+            "optionSet": {
+              "id": "VQ2lai3OfVG"
+            },
+            "access": {
+              "read": true,
+              "updateWithSection": true,
+              "externalize": false,
+              "delete": true,
+              "write": true,
+              "manage": false
+            },
+            "style": {
+              "color": "#556",
+              "icon": "attribute-icon"
+            }
+          }
         }
       ],
       "programIndicators": [

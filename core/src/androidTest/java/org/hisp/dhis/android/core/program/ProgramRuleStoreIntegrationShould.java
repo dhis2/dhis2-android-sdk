@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.program;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramRuleSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramRuleStoreIntegrationShould
@@ -47,13 +47,6 @@ public class ProgramRuleStoreIntegrationShould
     @Override
     protected ProgramRule buildObject() {
         return ProgramRuleSamples.getProgramRule();
-    }
-
-    @Override
-    protected ProgramRule buildObjectWithId() {
-        return ProgramRuleSamples.getProgramRule().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

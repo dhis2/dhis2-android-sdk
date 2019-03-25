@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipItemStoreIntegrationShould extends
@@ -53,13 +53,6 @@ public class RelationshipItemStoreIntegrationShould extends
     protected RelationshipItem buildObjectToUpdate() {
         return RelationshipItemSamples.getRelationshipItem().toBuilder()
                 .event(RelationshipItemEvent.builder().event("new_event").build())
-                .build();
-    }
-
-    @Override
-    protected RelationshipItem buildObjectWithId() {
-        return RelationshipItemSamples.getRelationshipItem().toBuilder()
-                .id(1L)
                 .build();
     }
 }

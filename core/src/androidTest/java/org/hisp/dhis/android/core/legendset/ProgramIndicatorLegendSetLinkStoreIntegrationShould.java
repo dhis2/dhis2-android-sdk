@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
@@ -58,13 +58,6 @@ public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
     protected ProgramIndicatorLegendSetLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
                 .programIndicator("new_program_indicator")
-                .build();
-    }
-
-    @Override
-    protected ProgramIndicatorLegendSetLink buildObjectWithId() {
-        return buildObject().toBuilder()
-                .id(1L)
                 .build();
     }
 }

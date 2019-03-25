@@ -34,6 +34,7 @@ public class ProgramStageSectionDataElementLinkSamples {
 
     public static ProgramStageSectionDataElementLink getProgramStageSectionDataElementLink() {
         return ProgramStageSectionDataElementLink.builder()
+                .id(1L)
                 .programStageSection("program_stage_section")
                 .dataElement("data_element")
                 .sortOrder(5)

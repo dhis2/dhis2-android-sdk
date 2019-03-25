@@ -40,9 +40,4 @@ class RelationshipTypeAsserts extends AbsStoreTestCase {
         assertThat(target.fromConstraint()).isNull();
         assertThat(target.toConstraint()).isNull();
     }
-
-    static void assertTypesWithConstraints(RelationshipType targetWithId, RelationshipType reference) {
-        RelationshipType targetWithoutId = targetWithId.toBuilder().id(null).build();
-        assertThat(targetWithoutId).isEqualTo(reference);
-    }
 }

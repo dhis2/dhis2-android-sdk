@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.period;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
@@ -39,6 +37,8 @@ import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -62,13 +62,6 @@ public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractI
     protected Period buildObjectToUpdate() {
         return PeriodSamples.getPeriod().toBuilder()
                 .startDate(new Date())
-                .build();
-    }
-
-    @Override
-    protected Period buildObjectWithId() {
-        return PeriodSamples.getPeriod().toBuilder()
-                .id(1L)
                 .build();
     }
 

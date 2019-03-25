@@ -155,7 +155,7 @@ public class SQLStatementBuilder {
     }
 
     String selectAll() {
-        return  SELECT + commaSeparatedColumns() + FROM + tableName;
+        return  SELECT + "*" + FROM + tableName;
     }
 
     String count() {

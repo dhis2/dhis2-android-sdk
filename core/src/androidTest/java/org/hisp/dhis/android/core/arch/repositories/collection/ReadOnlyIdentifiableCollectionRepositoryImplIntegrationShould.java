@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
@@ -44,7 +42,9 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithConstraints;
+import androidx.test.runner.AndroidJUnit4;
+
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
@@ -92,7 +92,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
         ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
         RelationshipType typeFromRepository = type1Repository.withAllChildren().get();
-        assertTypesWithConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
+        assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_1);
     }
 
     @Test
@@ -100,6 +100,6 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
         ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
         RelationshipType typeFromRepository = type1Repository.withAllChildren().get();
-        assertTypesWithConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);
+        assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_2);
     }
 }

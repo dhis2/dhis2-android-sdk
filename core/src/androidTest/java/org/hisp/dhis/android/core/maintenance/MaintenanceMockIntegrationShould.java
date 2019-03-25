@@ -77,7 +77,7 @@ public class MaintenanceMockIntegrationShould extends SyncedDatabaseMockIntegrat
 
         List<ForeignKeyViolation> violationsToCompare = new ArrayList<>();
         for (ForeignKeyViolation violation : violations) {
-            violationsToCompare.add(violation.toBuilder().created(null).fromObjectRow(null).build());
+            violationsToCompare.add(violation.toBuilder().id(null).created(null).fromObjectRow(null).build());
         }
 
         assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));

@@ -52,11 +52,4 @@ public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstr
     protected SystemInfo buildObjectToUpdate() {
         return SystemInfoSamples.get2();
     }
-
-    @Override
-    protected SystemInfo buildObjectWithId() {
-        return SystemInfoSamples.get1().toBuilder()
-                .id(1L)
-                .build();
-    }
 }

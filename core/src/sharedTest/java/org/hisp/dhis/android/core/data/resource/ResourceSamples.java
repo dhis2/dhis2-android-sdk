@@ -38,6 +38,7 @@ public class ResourceSamples {
 
     public static Resource getResource() {
         return Resource.builder()
+                .id(1L)
                 .lastSynced(getDate("2017-11-29T11:27:46.935"))
                 .resourceType(Resource.Type.PROGRAM)
                 .build();

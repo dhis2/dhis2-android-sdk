@@ -36,6 +36,7 @@ public class DataInputPeriodSamples {
 
     public static DataInputPeriod getDataInputPeriod() {
         return DataInputPeriod.builder()
+                .id(1L)
                 .dataSet(ObjectWithUid.create("data_set_uid"))
                 .period(ObjectWithUid.create("period_uid"))
                 .openingDate(FillPropertiesTestUtils.parseDate("2012-10-20T18:20:27.132"))

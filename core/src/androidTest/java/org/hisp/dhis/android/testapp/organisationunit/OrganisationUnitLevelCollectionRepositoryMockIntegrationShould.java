@@ -26,27 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.testapp.organisationunit;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.List;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
-@Reusable
-public final class OrganisationUnitModule {
+import androidx.test.runner.AndroidJUnit4;
 
-    public final OrganisationUnitCollectionRepository organisationUnits;
-    public final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
-    public final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Inject
-    OrganisationUnitModule(OrganisationUnitCollectionRepository organisationUnits,
-                           OrganisationUnitGroupCollectionRepository organisationUnitGroups,
-                           OrganisationUnitLevelCollectionRepository organisationUnitLevels) {
-        this.organisationUnits = organisationUnits;
-        this.organisationUnitGroups = organisationUnitGroups;
-        this.organisationUnitLevels = organisationUnitLevels;
+@RunWith(AndroidJUnit4.class)
+public class OrganisationUnitLevelCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels.get();
+        assertThat(organisationUnitLevels.size(), is(4));
+    }
+
+    @Test
+    public void filter_by_short_name() {
+        List<OrganisationUnitLevel> organisationUnitLevels = d2.organisationUnitModule().organisationUnitLevels
+                .byLevel().eq(4).get();
+        assertThat(organisationUnitLevels.size(), is(1));
     }
 }

@@ -25,28 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.organisationunit;
+
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class OrganisationUnitModule {
-
-    public final OrganisationUnitCollectionRepository organisationUnits;
-    public final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
-    public final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
+public final class OrganisationUnitLevelCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<
+        OrganisationUnitLevel, OrganisationUnitLevelCollectionRepository> {
 
     @Inject
-    OrganisationUnitModule(OrganisationUnitCollectionRepository organisationUnits,
-                           OrganisationUnitGroupCollectionRepository organisationUnitGroups,
-                           OrganisationUnitLevelCollectionRepository organisationUnitLevels) {
-        this.organisationUnits = organisationUnits;
-        this.organisationUnitGroups = organisationUnitGroups;
-        this.organisationUnitLevels = organisationUnitLevels;
+    OrganisationUnitLevelCollectionRepository(
+            final IdentifiableObjectStore<OrganisationUnitLevel> store,
+            final Map<String, ChildrenAppender<OrganisationUnitLevel>> childrenAppenders,
+            final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new OrganisationUnitLevelCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public IntegerFilterConnector<OrganisationUnitLevelCollectionRepository> byLevel() {
+        return cf.integer(OrganisationUnitLevelFields.LEVEL);
     }
 }

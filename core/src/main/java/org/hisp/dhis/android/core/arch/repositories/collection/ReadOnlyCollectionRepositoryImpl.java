@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
@@ -40,6 +41,11 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.List;
 import java.util.Map;
+
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
         implements ReadOnlyCollectionRepository<M> {
@@ -60,11 +66,11 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     private List<M> getWithoutChildren() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.selectAll();
-        } else {
+        if (scope.hasFilters()) {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
             return store.selectWhere(whereClauseBuilder.getWhereClause(scope));
+        } else {
+            return store.selectAll();
         }
     }
 
@@ -80,13 +86,32 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
+    public LiveData<PagedList<M>> getPaged(int pageSize) {
+        DataSource.Factory<Long, M> factory = new DataSource.Factory<Long, M>() {
+            @Override
+            public DataSource<Long, M> create() {
+                return getDataSource();
+            }
+        };
+
+        return new LivePagedListBuilder<>(factory, pageSize).build();
+    }
+
+    public DataSource<Long, M> getDataSource() {
+        return new RepositoryDataSource<>(store, getWhereClause());
+    }
+
+    @Override
     public int count() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.count();
+        if (scope.hasFilters()) {
+            return store.countWhere(getWhereClause());
         } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.countWhere(whereClauseBuilder.getWhereClause(scope));
+            return store.count();
         }
+    }
+
+    private String getWhereClause() {
+        return new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
     }
 
     public R withAllChildren() {

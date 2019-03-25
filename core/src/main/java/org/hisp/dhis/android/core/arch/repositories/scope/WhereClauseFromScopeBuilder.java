@@ -39,6 +39,10 @@ public class WhereClauseFromScopeBuilder {
     }
 
     public String getWhereClause(RepositoryScope scope) {
+        if (!scope.hasFilters()) {
+            return "1";
+        }
+
         for (RepositoryScopeFilterItem item: scope.filters()) {
             builder.appendKeyOperatorValue(item.key(), item.operator(), item.value());
         }

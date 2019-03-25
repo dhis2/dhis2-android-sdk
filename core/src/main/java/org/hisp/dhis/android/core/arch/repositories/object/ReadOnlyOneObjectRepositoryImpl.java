@@ -50,11 +50,11 @@ public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnly
     }
 
     public M getWithoutChildren() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.selectFirst();
-        } else {
+        if (scope.hasFilters()) {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
             return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
+        } else {
+            return store.selectFirst();
         }
     }
 }

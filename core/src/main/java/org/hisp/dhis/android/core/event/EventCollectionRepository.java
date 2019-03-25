@@ -147,11 +147,11 @@ public final class EventCollectionRepository
     }
 
     public int countTrackedEntityInstances() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.countTeisWhereEvents(null);
-        } else {
+        if (scope.hasFilters()) {
             WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
             return store.countTeisWhereEvents(whereClauseBuilder.getWhereClause(scope));
+        } else {
+            return store.countTeisWhereEvents(null);
         }
     }
 

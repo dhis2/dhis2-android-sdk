@@ -52,7 +52,7 @@ public class ResourceHandler {
         }
 
         Resource resource = Resource.builder()
-                .resourceType(resourceType.name())
+                .resourceType(resourceType)
                 .lastSynced(serverDate)
                 .build();
 

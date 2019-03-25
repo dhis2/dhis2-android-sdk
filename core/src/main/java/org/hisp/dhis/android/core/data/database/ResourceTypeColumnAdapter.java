@@ -25,13 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource;
 
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.data.database;
 
-public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
+import org.hisp.dhis.android.core.resource.Resource;
 
-    String getLastUpdated(Resource.Type type);
-
-    boolean deleteResource(Resource.Type type);
+public class ResourceTypeColumnAdapter extends EnumColumnAdapter<Resource.Type> {
+    @Override
+    protected Class<Resource.Type> getEnumClass() {
+        return Resource.Type.class;
+    }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
@@ -54,6 +55,7 @@ import dagger.Reusable;
 final class D2Modules {
 
     final CategoryModule category;
+    final ConstantModule constant;
     final DataElementModule dataElement;
     final DataSetModule dataSet;
     final DataValueModule dataValue;
@@ -72,6 +74,7 @@ final class D2Modules {
 
     @Inject
     D2Modules(CategoryModule category,
+              ConstantModule constant,
               DataElementModule dataElement,
               DataSetModule dataSet,
               DataValueModule dataValue,
@@ -88,6 +91,7 @@ final class D2Modules {
               UserModule user,
               SmsModule sms) {
         this.category = category;
+        this.constant = constant;
         this.dataElement = dataElement;
         this.dataSet = dataSet;
         this.dataValue = dataValue;

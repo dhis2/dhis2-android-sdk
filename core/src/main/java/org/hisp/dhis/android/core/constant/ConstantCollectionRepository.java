@@ -25,61 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.DoubleFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
-import retrofit2.Retrofit;
 
-@Module()
-public final class ConstantPackageDIModule {
+@Reusable
+public final class ConstantCollectionRepository extends ReadOnlyIdentifiableCollectionRepositoryImpl<
+        Constant, ConstantCollectionRepository> {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Constant> store(DatabaseAdapter databaseAdapter) {
-        return ConstantStore.create(databaseAdapter);
+    @Inject
+    ConstantCollectionRepository(
+            final IdentifiableObjectStore<Constant> store,
+            final Map<String, ChildrenAppender<Constant>> childrenAppenders,
+            final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new ConstantCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<Constant> handler(ConstantHandler impl) {
-        return impl;
+    public DoubleFilterConnector<ConstantCollectionRepository> byValue() {
+        return cf.doubleC(ConstantFields.VALUE);
     }
 
-    @Provides
-    @Reusable
-    ListCallFactory<Constant> constantCallFactory(ConstantCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ConstantService service(Retrofit retrofit) {
-        return retrofit.create(ConstantService.class);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Constant>> childrenAppenders() {
-        return Collections.emptyMap();
-    }
-
-    @Provides
-    @Reusable
-    CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
-    }
 }

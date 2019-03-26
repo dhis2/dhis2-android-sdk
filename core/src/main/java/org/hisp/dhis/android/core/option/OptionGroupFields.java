@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 public final class OptionGroupFields {
 
     public final static String OPTION_SET = "optionSet";
-    private final static String OPTIONS = "options";
+    final static String OPTIONS = "options";
 
     private static final FieldsHelper<OptionGroup> fh = new FieldsHelper<>();
 

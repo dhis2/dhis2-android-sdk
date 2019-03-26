@@ -26,47 +26,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.testapp.option;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.option.OptionGroup;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.test.runner.AndroidJUnit4;
 
-@Module
-public final class OptionGroupEntityDIModule {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<OptionGroup> store(DatabaseAdapter databaseAdapter) {
-        return OptionGroupStore.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class OptionGroupCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<OptionGroup> optionGroups =
+                d2.optionModule().optionGroups
+                        .get();
+
+        assertThat(optionGroups.size(), is(1));
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<OptionGroup> handler(OptionGroupHandler impl) {
-        return impl;
+    @Test
+    public void filter_by_option_set() {
+        List<OptionGroup> optionGroups =
+                d2.optionModule().optionGroups
+                        .byOptionSetUid()
+                        .eq("VQ2lai3OfVG")
+                        .get();
+
+        assertThat(optionGroups.size(), is(1));
     }
 
-    @Provides
-    @Reusable
-    CollectionCleaner<OptionGroup> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
-    }
+    @Test
+    public void add_options_as_children() {
+        OptionGroup optionGroup =
+                d2.optionModule().optionGroups
+                        .withOptions()
+                        .one().get();
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<OptionGroup>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(OptionGroupFields.OPTIONS,
-                OptionGroupOptionChildrenAppender.create(databaseAdapter));
+        assertThat(optionGroup.options().size(), is(2));
+        assertThat(optionGroup.options().get(0).uid(), is("Y1ILwhy5VDY"));
+        assertThat(optionGroup.options().get(1).uid(), is("egT1YqFWsVk"));
     }
 }

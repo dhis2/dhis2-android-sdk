@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.arch.db.executors.CursorExecutorImpl;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.LinkModelChildStoreImpl;
+import org.hisp.dhis.android.core.arch.db.stores.ObjectWithUidChildStore;
+import org.hisp.dhis.android.core.arch.db.stores.ObjectWithUidChildStoreImpl;
 import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
 import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStoreImpl;
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
@@ -105,5 +107,15 @@ public final class StoreFactory {
                 databaseAdapter,
                 new SQLStatementBuilder(childProjection.childTableInfo),
                 new CursorExecutorImpl<>(childFactory));
+    }
+
+    public static <P extends ObjectWithUidInterface> ObjectWithUidChildStore<P> objectWithUidChildStore(
+                    DatabaseAdapter databaseAdapter,
+                    TableInfo linkTableInfo,
+                    LinkTableChildProjection childProjection) {
+        return new ObjectWithUidChildStoreImpl<>(
+                childProjection,
+                databaseAdapter,
+                new SQLStatementBuilder(linkTableInfo));
     }
 }

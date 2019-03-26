@@ -25,48 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class OptionGroupEntityDIModule {
+@Reusable
+public final class OptionGroupCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<OptionGroup, OptionGroupCollectionRepository> {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<OptionGroup> store(DatabaseAdapter databaseAdapter) {
-        return OptionGroupStore.create(databaseAdapter);
+    @Inject
+    OptionGroupCollectionRepository(final IdentifiableObjectStore<OptionGroup> store,
+                                    final Map<String, ChildrenAppender<OptionGroup>> childrenAppenders,
+                                    final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new OptionGroupCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Provides
-    @Reusable
-    SyncHandler<OptionGroup> handler(OptionGroupHandler impl) {
-        return impl;
+    public StringFilterConnector<OptionGroupCollectionRepository> byOptionSetUid() {
+        return cf.string(OptionGroupFields.OPTION_SET);
     }
 
-    @Provides
-    @Reusable
-    CollectionCleaner<OptionGroup> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<OptionGroup>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(OptionGroupFields.OPTIONS,
-                OptionGroupOptionChildrenAppender.create(databaseAdapter));
+    public OptionGroupCollectionRepository withOptions() {
+        return cf.withChild(OptionGroupFields.OPTIONS);
     }
 }

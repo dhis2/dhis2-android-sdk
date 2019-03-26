@@ -37,10 +37,13 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class OptionModule {
 
+    public final OptionGroupCollectionRepository optionGroups;
     public final OptionSetCollectionRepository optionSets;
 
     @Inject
-    OptionModule(OptionSetCollectionRepository optionSets) {
+    OptionModule(OptionGroupCollectionRepository optionGroups,
+                 OptionSetCollectionRepository optionSets) {
+        this.optionGroups = optionGroups;
         this.optionSets = optionSets;
     }
 }

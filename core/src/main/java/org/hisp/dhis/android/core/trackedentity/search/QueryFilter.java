@@ -47,6 +47,14 @@ public abstract class QueryFilter {
                 .operator(QueryOperator.EQ);
     }
 
+    public static QueryFilter create(QueryOperator operator, String filter) {
+        return builder().operator(operator).filter(filter).build();
+    }
+
+    public static QueryFilter create(String filter) {
+        return builder().filter(filter).build();
+    }
+
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder operator(QueryOperator operator);

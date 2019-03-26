@@ -50,6 +50,14 @@ public abstract class QueryItem {
                 .filters(Collections.emptyList());
     }
 
+    public static QueryItem create(String item, List<QueryFilter> filters) {
+        return builder().item(item).filters(filters).build();
+    }
+
+    public static QueryItem create(String item) {
+        return builder().item(item).build();
+    }
+
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder item(String item);

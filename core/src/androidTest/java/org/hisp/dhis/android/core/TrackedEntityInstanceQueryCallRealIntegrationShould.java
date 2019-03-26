@@ -83,7 +83,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
     public void query_tracked_entity_instances_filter_name() throws Exception {
         login();
 
-        TrackedEntityInstanceQuery query = queryBuilder.query(QueryFilter.builder().filter("jorge").build()).build();
+        TrackedEntityInstanceQuery query = queryBuilder.query(QueryFilter.create("jorge")).build();
         List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
         assertThat(queryResponse).isNotEmpty();
     }
@@ -114,10 +114,9 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         login();
 
         List<QueryItem> attributeList = new ArrayList<>(1);
-        attributeList.add(QueryItem.builder()
-                .item("w75KJ2mc4zz")
-                .filters(Collections.singletonList(QueryFilter.builder().operator(QueryOperator.LIKE).filter("jorge").build()))
-                .build());
+        attributeList.add(QueryItem.create(
+                "w75KJ2mc4zz",
+                Collections.singletonList(QueryFilter.create(QueryOperator.LIKE, "jorge"))));
 
         TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
         List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
@@ -130,14 +129,12 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
 
         List<QueryItem> attributeList = new ArrayList<>(2);
 
-        attributeList.add(QueryItem.builder()
-                .item("w75KJ2mc4zz")
-                .filters(Collections.singletonList(QueryFilter.builder().operator(QueryOperator.LIKE).filter("Filona").build()))
-                .build());
-        attributeList.add(QueryItem.builder()
-                .item("zDhUuAYrxNC")
-                .filters(Collections.singletonList(QueryFilter.builder().operator(QueryOperator.LIKE).filter("Ryder").build()))
-                .build());
+        attributeList.add(QueryItem.create(
+                "w75KJ2mc4zz",
+                Collections.singletonList(QueryFilter.create(QueryOperator.LIKE, "Filona"))));
+        attributeList.add(QueryItem.create(
+                "zDhUuAYrxNC",
+                Collections.singletonList(QueryFilter.create(QueryOperator.LIKE, "Ryder"))));
 
         TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
         List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
@@ -149,9 +146,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         login();
 
         List<QueryItem> attributeList = new ArrayList<>(1);
-        attributeList.add(QueryItem.builder()
-                .item("w75KJ2mc4zz")
-                .build());
+        attributeList.add(QueryItem.create("w75KJ2mc4zz"));
 
         TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
         List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
@@ -163,10 +158,9 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         login();
 
         List<QueryItem> filterList = new ArrayList<>(1);
-        filterList.add(QueryItem.builder()
-                .item("w75KJ2mc4zz")
-                .filters(Collections.singletonList(QueryFilter.builder().operator(QueryOperator.LIKE).filter("jorge").build()))
-                .build());
+        filterList.add(QueryItem.create(
+                "w75KJ2mc4zz",
+                Collections.singletonList(QueryFilter.create(QueryOperator.LIKE, "jorge"))));
 
         TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
         List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
@@ -178,14 +172,12 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         login();
 
         List<QueryItem> filterList = new ArrayList<>(2);
-        filterList.add(QueryItem.builder()
-                .item("w75KJ2mc4zz")
-                .filters(Collections.singletonList(QueryFilter.builder().operator(QueryOperator.LIKE).filter("Filona").build()))
-                .build());
-        filterList.add(QueryItem.builder()
-                .item("zDhUuAYrxNC")
-                .filters(Collections.singletonList(QueryFilter.builder().operator(QueryOperator.LIKE).filter("Ryder").build()))
-                .build());
+        filterList.add(QueryItem.create(
+                "w75KJ2mc4zz",
+                Collections.singletonList(QueryFilter.create(QueryOperator.LIKE, "Filona"))));
+        filterList.add(QueryItem.create(
+                "zDhUuAYrxNC",
+                Collections.singletonList(QueryFilter.create(QueryOperator.LIKE, "Ryder"))));
 
         TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
         List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();

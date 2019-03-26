@@ -54,9 +54,7 @@ public class TrackedEntityInstanceQueryOnlineShould {
     @Test
     public void parse_query_in_api_format() {
         TrackedEntityInstanceQuery query = queryBuilder
-                .query(QueryFilter.builder()
-                        .operator(QueryOperator.LIKE)
-                        .filter("filter").build())
+                .query(QueryFilter.create(QueryOperator.LIKE, "filter"))
                 .build();
 
         TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);
@@ -68,17 +66,13 @@ public class TrackedEntityInstanceQueryOnlineShould {
     public void parse_attributes_in_api_format() {
         TrackedEntityInstanceQuery query = queryBuilder
                 .attribute(Arrays.asList(
-                        QueryItem.builder().item("attribute1").build(),
-                        QueryItem.builder()
-                                .item("attribute2")
-                                .filters(Collections.singletonList(QueryFilter.builder().filter("filter21").build()))
-                                .build(),
-                        QueryItem.builder()
-                                .item("attribute3")
-                                .filters(Arrays.asList(
-                                        QueryFilter.builder().filter("filter31").build(),
-                                        QueryFilter.builder().operator(QueryOperator.EQ).filter("filter32").build()))
-                                .build()
+                        QueryItem.create("attribute1"),
+                        QueryItem.create("attribute2",
+                                Collections.singletonList(QueryFilter.create("filter21"))),
+                        QueryItem.create("attribute3",
+                                Arrays.asList(
+                                        QueryFilter.create("filter31"),
+                                        QueryFilter.create(QueryOperator.EQ, "filter32")))
                 )).build();
 
         TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);
@@ -93,17 +87,13 @@ public class TrackedEntityInstanceQueryOnlineShould {
     public void parse_filters_in_api_format() {
         TrackedEntityInstanceQuery query = queryBuilder
                 .filter(Arrays.asList(
-                        QueryItem.builder().item("filterItem1").build(),
-                        QueryItem.builder()
-                                .item("filterItem2")
-                                .filters(Collections.singletonList(QueryFilter.builder().filter("filter21").build()))
-                                .build(),
-                        QueryItem.builder()
-                                .item("filterItem3")
-                                .filters(Arrays.asList(
-                                        QueryFilter.builder().filter("filter31").build(),
-                                        QueryFilter.builder().operator(QueryOperator.EQ).filter("filter32").build()))
-                                .build()
+                        QueryItem.create("filterItem1"),
+                        QueryItem.create("filterItem2",
+                                Collections.singletonList(QueryFilter.create("filter21"))),
+                        QueryItem.create("filterItem3",
+                                Arrays.asList(
+                                        QueryFilter.create("filter31"),
+                                        QueryFilter.create(QueryOperator.EQ, "filter32")))
                 )).build();
 
         TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);

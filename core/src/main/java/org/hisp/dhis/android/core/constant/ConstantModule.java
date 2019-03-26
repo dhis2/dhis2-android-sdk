@@ -28,58 +28,19 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
-import org.hisp.dhis.android.core.common.CollectionCleaner;
-import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
-import retrofit2.Retrofit;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Module()
-public final class ConstantPackageDIModule {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class ConstantModule {
 
-    @Provides
-    @Reusable
-    IdentifiableObjectStore<Constant> store(DatabaseAdapter databaseAdapter) {
-        return ConstantStore.create(databaseAdapter);
-    }
+    public final ConstantCollectionRepository constants;
 
-    @Provides
-    @Reusable
-    SyncHandler<Constant> handler(ConstantHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ListCallFactory<Constant> constantCallFactory(ConstantCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    ConstantService service(Retrofit retrofit) {
-        return retrofit.create(ConstantService.class);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Constant>> childrenAppenders() {
-        return Collections.emptyMap();
-    }
-
-    @Provides
-    @Reusable
-    CollectionCleaner<Constant> collectionCleaner(DatabaseAdapter databaseAdapter) {
-        return new CollectionCleanerImpl<>(ConstantTableInfo.TABLE_INFO.name(), databaseAdapter);
+    @Inject
+    ConstantModule(ConstantCollectionRepository constantsRepository) {
+        this.constants = constantsRepository;
     }
 }

@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.category.CategoryModule;
 import org.hisp.dhis.android.core.common.SSLContextInitializer;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.configuration.Configuration;
+import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.data.api.FieldsConverterFactory;
 import org.hisp.dhis.android.core.data.api.FilterConverterFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -142,6 +143,10 @@ public final class D2 {
 
     public CategoryModule categoryModule() {
         return this.modules.category;
+    }
+
+    public ConstantModule constantModule() {
+        return this.modules.constant;
     }
 
     public DataElementModule dataElementModule() {

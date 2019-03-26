@@ -29,14 +29,16 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.sqlite.SQLiteStatement;
-import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
@@ -52,6 +54,9 @@ final class OptionStore {
             sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.optionSet()));
         }
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            OptionTableInfo.TABLE_INFO, OptionFields.OPTION_SET);
 
     public static IdentifiableObjectStore<Option> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, OptionTableInfo.TABLE_INFO, BINDER, Option::create);

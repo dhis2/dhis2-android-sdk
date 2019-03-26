@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -46,6 +44,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.net.ssl.HttpsURLConnection;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import retrofit2.Call;
 
@@ -68,18 +67,24 @@ public final class TrackedEntityInstanceQueryCallFactory {
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQuery query) {
+        return getCall(TrackedEntityInstanceQueryOnline.create(query));
+    }
+
+    Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQueryOnline query) {
         return () -> queryTrackedEntityInstances(query);
     }
 
-    private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQuery query) throws D2Error {
+    private List<TrackedEntityInstance> queryTrackedEntityInstances(TrackedEntityInstanceQueryOnline query)
+            throws D2Error {
 
         OuMode mode = query.orgUnitMode();
         String orgUnitModeStr = mode == null ? null : mode.toString();
 
         String orgUnits = Utils.joinCollectionWithSeparator(query.orgUnits(), ";");
         Call<SearchGrid> searchGridCall = service.query(orgUnits,
-                orgUnitModeStr, query.program(), query.formattedProgramStartDate(), query.formattedProgramEndDate(),
-                query.query(), query.attribute(), query.filter(), query.paging(), query.page(), query.pageSize());
+                orgUnitModeStr, query.program(), query.formattedProgramStartDate(),
+                query.formattedProgramEndDate(), query.query(), query.attribute(),
+                query.filter(), query.paging(), query.page(), query.pageSize());
 
         SearchGrid searchGrid;
 

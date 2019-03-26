@@ -92,7 +92,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
     @Mock
     private List<String> filter;
 
-    private TrackedEntityInstanceQuery query;
+    private TrackedEntityInstanceQueryOnline query;
 
     // object to test
     private Callable<List<TrackedEntityInstance>> call;
@@ -105,7 +105,7 @@ public class TrackedEntityInstanceQueryCallShould extends BaseCallShould {
         orgUnits.add("ou1");
         orgUnits.add("ou2");
 
-        query = TrackedEntityInstanceQuery.builder().
+        query = TrackedEntityInstanceQueryOnline.builder().
                 orgUnits(orgUnits).orgUnitMode(OuMode.ACCESSIBLE).program("program")
                 .programStartDate(new Date()).programEndDate(new Date())
                 .query("queryStr").attribute(attribute).filter(filter)

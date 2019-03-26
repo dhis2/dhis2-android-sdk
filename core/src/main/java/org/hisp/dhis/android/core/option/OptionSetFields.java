@@ -37,7 +37,7 @@ final class OptionSetFields {
 
     final static String VERSION = "version";
     final static String VALUE_TYPE = "valueType";
-    private final static String OPTIONS = "options";
+    final static String OPTIONS = "options";
 
     private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
 

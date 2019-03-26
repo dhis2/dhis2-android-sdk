@@ -28,37 +28,33 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.sqlite.SQLiteStatement;
-
-import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
-import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
-import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.StoreFactory;
-import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import androidx.annotation.NonNull;
+final class OptionSetOptionChildrenAppender extends ChildrenAppender<OptionSet> {
 
-import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
+    private final SingleParentChildStore<OptionSet, Option> childStore;
 
-final class OptionStore {
+    private OptionSetOptionChildrenAppender(SingleParentChildStore<OptionSet, Option> childStore) {
+        this.childStore = childStore;
+    }
 
-    static final SingleParentChildProjection CHILD_PROJECTION =
-            new SingleParentChildProjection(OptionTableInfo.TABLE_INFO, OptionFields.OPTION_SET);
+    @Override
+    protected OptionSet appendChildren(OptionSet optionSet) {
+        OptionSet.Builder builder = optionSet.toBuilder();
+        builder.options(childStore.getChildren(optionSet));
+        return builder.build();
+    }
 
-    private OptionStore() {}
-
-    private static StatementBinder<Option> BINDER = new IdentifiableStatementBinder<Option>() {
-        @Override
-        public void bindToStatement(@NonNull Option o, @NonNull SQLiteStatement sqLiteStatement) {
-            super.bindToStatement(o, sqLiteStatement);
-            sqLiteBind(sqLiteStatement, 7, o.sortOrder());
-            sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.optionSet()));
-        }
-    };
-
-    public static IdentifiableObjectStore<Option> create(DatabaseAdapter databaseAdapter) {
-        return StoreFactory.objectWithUidStore(databaseAdapter, OptionTableInfo.TABLE_INFO, BINDER, Option::create);
+    static ChildrenAppender<OptionSet> create(DatabaseAdapter databaseAdapter) {
+        return new OptionSetOptionChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        OptionStore.CHILD_PROJECTION,
+                        Option::create
+                )
+        );
     }
 }

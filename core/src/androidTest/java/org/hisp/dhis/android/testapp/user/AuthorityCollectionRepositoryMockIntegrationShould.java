@@ -26,42 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.testapp.user;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.user.Authority;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.test.runner.AndroidJUnit4;
 
-@Module
-public final class AuthorityEntityDIModule implements ObjectWithoutUidEntityDIModule<Authority> {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<Authority> store(DatabaseAdapter databaseAdapter) {
-        return AuthorityStore.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class AuthorityCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<Authority> authorities = d2.userModule().authorities.get();
+        assertThat(authorities.size(), is(2));
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<Authority> handler(ObjectWithoutUidStore<Authority> store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Authority>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Test
+    public void filter_by_name() {
+        List<Authority> authorities = d2.userModule().authorities
+                .byName().eq("F_ENROLLMENT_CASCADE_DELETE").get();
+        assertThat(authorities.size(), is(1));
     }
 }

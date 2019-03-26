@@ -28,40 +28,32 @@
 
 package org.hisp.dhis.android.core.user;
 
-import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class AuthorityEntityDIModule implements ObjectWithoutUidEntityDIModule<Authority> {
+@Reusable
+public final class AuthorityCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<Authority, AuthorityCollectionRepository> {
 
-    @Override
-    @Provides
-    @Reusable
-    public ObjectWithoutUidStore<Authority> store(DatabaseAdapter databaseAdapter) {
-        return AuthorityStore.create(databaseAdapter);
+    @Inject
+    AuthorityCollectionRepository(final ObjectWithoutUidStore<Authority> store,
+                                  final Map<String, ChildrenAppender<Authority>> childrenAppenders,
+                                  final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new AuthorityCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<Authority> handler(ObjectWithoutUidStore<Authority> store) {
-        return new ObjectWithoutUidSyncHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Authority>> childrenAppenders() {
-        return Collections.emptyMap();
+    public StringFilterConnector<AuthorityCollectionRepository> byName() {
+        return cf.string(AuthorityTableInfo.Columns.NAME);
     }
 }

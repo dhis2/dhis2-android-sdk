@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.testapp.category;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -63,5 +63,26 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
                 .byCategoryComboUid().eq("p0KPaWEg3cf")
                 .get();
         assertThat(categoryOptionCombos.size(), is(2));
+    }
+
+    @Test
+    public void include_category_options_as_children() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
+                .withCategoryOptions().one().get();
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
+    }
+
+    @Test
+    public void include_category_options_as_children_in_collection_repository_when_all_selected() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
+                .withAllChildren().get().get(0);
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
+    }
+
+    @Test
+    public void include_category_options_as_children_in_object_repository_when_all_selected() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
+                .one().withAllChildren().get();
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
     }
 }

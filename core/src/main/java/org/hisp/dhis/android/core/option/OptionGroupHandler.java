@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.Collection;
 
@@ -43,12 +44,12 @@ import dagger.Reusable;
 @Reusable
 final class OptionGroupHandler extends IdentifiableSyncHandlerImpl<OptionGroup> {
 
-    private final LinkSyncHandler<Option, OptionGroupOptionLink> optionGroupOptionLinkHandler;
+    private final LinkSyncHandler<ObjectWithUid, OptionGroupOptionLink> optionGroupOptionLinkHandler;
     private final CollectionCleaner<OptionGroup> collectionCleaner;
 
     @Inject
     OptionGroupHandler(IdentifiableObjectStore<OptionGroup> optionStore,
-                       LinkSyncHandler<Option, OptionGroupOptionLink> optionGroupOptionLinkHandler,
+                       LinkSyncHandler<ObjectWithUid, OptionGroupOptionLink> optionGroupOptionLinkHandler,
                        CollectionCleaner<OptionGroup> collectionCleaner) {
         super(optionStore);
         this.optionGroupOptionLinkHandler = optionGroupOptionLinkHandler;

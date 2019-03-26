@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.option;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.common.LinkModelStore;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import dagger.Module;
@@ -48,7 +49,7 @@ public final class OptionGroupOptionEntityDIModule {
 
     @Provides
     @Reusable
-    public LinkSyncHandler<Option, OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
+    public LinkSyncHandler<ObjectWithUid, OptionGroupOptionLink> handler(LinkModelStore<OptionGroupOptionLink> store) {
         return new LinkSyncHandlerImpl<>(store);
     }
 }

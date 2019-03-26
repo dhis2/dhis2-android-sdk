@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.data.option;
 
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.option.OptionGroup;
-import org.hisp.dhis.android.core.option.OptionSet;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
@@ -41,7 +41,7 @@ public class OptionGroupSamples {
         fillIdentifiableProperties(OptionGroupBuilder);
         return OptionGroupBuilder
                 .id(1L)
-                .optionSet(OptionSet.builder().uid("option_set").build())
+                .optionSet(ObjectWithUid.create("option_set"))
                 .build();
     }
 }

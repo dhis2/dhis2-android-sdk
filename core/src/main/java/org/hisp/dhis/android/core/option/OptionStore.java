@@ -44,6 +44,9 @@ import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class OptionStore {
 
+    static final SingleParentChildProjection CHILD_PROJECTION =
+            new SingleParentChildProjection(OptionTableInfo.TABLE_INFO, OptionFields.OPTION_SET);
+
     private OptionStore() {}
 
     private static StatementBinder<Option> BINDER = new IdentifiableStatementBinder<Option>() {
@@ -54,9 +57,6 @@ final class OptionStore {
             sqLiteBind(sqLiteStatement, 8, UidsHelper.getUidOrNull(o.optionSet()));
         }
     };
-
-    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
-            OptionTableInfo.TABLE_INFO, OptionFields.OPTION_SET);
 
     public static IdentifiableObjectStore<Option> create(DatabaseAdapter databaseAdapter) {
         return StoreFactory.objectWithUidStore(databaseAdapter, OptionTableInfo.TABLE_INFO, BINDER, Option::create);

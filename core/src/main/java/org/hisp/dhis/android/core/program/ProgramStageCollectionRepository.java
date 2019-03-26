@@ -67,7 +67,7 @@ public final class ProgramStageCollectionRepository
         return cf.string(ProgramStageFields.DISPLAY_DESCRIPTION);
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byExectuionDateLabel() {
+    public StringFilterConnector<ProgramStageCollectionRepository> byExecutionDateLabel() {
         return cf.string(ProgramStageFields.EXECUTION_DATE_LABEL);
     }
 

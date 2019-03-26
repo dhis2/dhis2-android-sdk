@@ -81,7 +81,8 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQuery.Builder()
                 .attribute(Collections.emptyList())
-                .filter(Collections.emptyList());
+                .filter(Collections.emptyList())
+                .orgUnits(Collections.emptyList());
     }
 
     @AutoValue.Builder

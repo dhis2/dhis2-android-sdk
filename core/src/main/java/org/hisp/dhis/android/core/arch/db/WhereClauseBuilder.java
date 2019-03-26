@@ -74,6 +74,10 @@ public class WhereClauseBuilder {
         return appendKeyValue(column, value, AND, LIKE_STR, END_STR);
     }
 
+    public WhereClauseBuilder appendOrKeyLikeStringValue(String column, Object value) {
+        return appendKeyValue(column, value, OR, LIKE_STR, END_STR);
+    }
+
     public WhereClauseBuilder appendKeyNumberValue(String column, double value) {
         return appendKeyValue(column, value, AND, EQ_NUMBER, "");
     }

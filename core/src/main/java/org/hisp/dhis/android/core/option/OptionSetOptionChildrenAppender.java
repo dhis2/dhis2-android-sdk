@@ -28,32 +28,33 @@
 
 package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.data.api.Field;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-final class OptionSetFields {
+final class OptionSetOptionChildrenAppender extends ChildrenAppender<OptionSet> {
 
-    final static String VERSION = "version";
-    final static String VALUE_TYPE = "valueType";
-    final static String OPTIONS = "options";
+    private final SingleParentChildStore<OptionSet, Option> childStore;
 
-    private static final FieldsHelper<OptionSet> fh = new FieldsHelper<>();
+    private OptionSetOptionChildrenAppender(SingleParentChildStore<OptionSet, Option> childStore) {
+        this.childStore = childStore;
+    }
 
-    public static final Field<OptionSet, String> uid = fh.uid();
+    @Override
+    protected OptionSet appendChildren(OptionSet optionSet) {
+        OptionSet.Builder builder = optionSet.toBuilder();
+        builder.options(childStore.getChildren(optionSet));
+        return builder.build();
+    }
 
-    public static final Field<OptionSet, String> version = Field.create(VERSION);
-
-    public static final Fields<OptionSet> allFields = Fields.<OptionSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    version,
-                    fh.<ValueType>field(VALUE_TYPE),
-                    fh.<Option>nestedField(OPTIONS)
-                            .with(OptionFields.allFields)
-            ).build();
-
-    private OptionSetFields() {
+    static ChildrenAppender<OptionSet> create(DatabaseAdapter databaseAdapter) {
+        return new OptionSetOptionChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        OptionStore.CHILD_PROJECTION,
+                        Option::create
+                )
+        );
     }
 }

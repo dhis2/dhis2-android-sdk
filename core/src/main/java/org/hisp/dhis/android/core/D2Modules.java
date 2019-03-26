@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
@@ -56,6 +57,7 @@ final class D2Modules {
     final CategoryModule category;
     final DataElementModule dataElement;
     final DataSetModule dataSet;
+    final OptionModule option;
     final DataValueModule dataValue;
     final EnrollmentModule enrollment;
     final EventModule events;
@@ -74,6 +76,7 @@ final class D2Modules {
     D2Modules(CategoryModule category,
               DataElementModule dataElement,
               DataSetModule dataSet,
+              OptionModule option,
               DataValueModule dataValue,
               EnrollmentModule enrollment,
               EventModule events,
@@ -89,6 +92,7 @@ final class D2Modules {
               SmsModule sms) {
         this.category = category;
         this.dataElement = dataElement;
+        this.option = option;
         this.dataSet = dataSet;
         this.dataValue = dataValue;
         this.enrollment = enrollment;

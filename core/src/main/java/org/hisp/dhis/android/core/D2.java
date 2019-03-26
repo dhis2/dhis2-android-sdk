@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
@@ -150,6 +151,10 @@ public final class D2 {
 
     public DataSetModule dataSetModule() {
         return this.modules.dataSet;
+    }
+
+    public OptionModule optionModule() {
+        return this.modules.option;
     }
 
     public DataValueModule dataValueModule() {

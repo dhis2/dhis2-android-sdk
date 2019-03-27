@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
@@ -32,7 +33,9 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifia
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -55,6 +58,14 @@ public final class CategoryOptionComboCollectionRepository
 
     public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {
         return cf.string(CategoryOptionComboFields.CATEGORY_COMBO);
+    }
+
+    public CategoryOptionComboCollectionRepository byCategoryOptions(List<String> categoryOptionUids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTableAndNoMore(
+                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+                categoryOptionUids);
     }
 
     public CategoryOptionComboCollectionRepository withCategoryOptions() {

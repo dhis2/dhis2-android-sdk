@@ -49,11 +49,25 @@ public final class SubQueryFilterConnector<R extends ReadOnlyCollectionRepositor
     }
 
     public R inLinkTable(String linkTable, String linkParent, String linkChild, List<String> children) {
-        String subQuery = String.format("SELECT DISTINCT %s FROM %s WHERE %s",
-                linkParent,
-                linkTable,
-                new WhereClauseBuilder().appendInKeyStringValues(linkChild, children).build());
+        return newWithWrappedScope("IN", "(" +
+                subQuery(linkTable, linkParent, linkChild, children, Boolean.FALSE) + ")");
+    }
 
-        return newWithWrappedScope("IN", "(" + subQuery + ")");
+    public R inLinkTableAndNoMore(String linkTable, String linkParent, String linkChild, List<String> children) {
+        return newWithWrappedScope("IN", "(" +
+                subQuery(linkTable, linkParent, linkChild, children, Boolean.TRUE) + ")");
+    }
+
+    private String subQuery(String linkTable, String linkParent, String linkChild, List<String> children,
+                            Boolean andNoMore) {
+        WhereClauseBuilder clauseBuilder = new WhereClauseBuilder().appendInKeyStringValues(linkChild, children);
+
+        String clause = andNoMore ?
+                clauseBuilder.appendComplexQuery(children.size() +
+                        " = (SELECT count(*) FROM " + linkTable + " WHERE " + linkParent + " = parent_uid)").build() :
+                clauseBuilder.build();
+
+        return String.format(
+                "SELECT DISTINCT %s AS parent_uid FROM %s WHERE %s", linkParent, linkTable, clause);
     }
 }

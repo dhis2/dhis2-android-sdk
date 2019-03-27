@@ -55,6 +55,27 @@ public abstract class QueryFilter {
         return builder().filter(filter).build();
     }
 
+    String[] getSqlFilters() {
+        String[] tokens = filter().split(" ");
+        if (operator().equals(QueryOperator.LIKE)) {
+            String[] result = new String[tokens.length];
+            for (int i = 0; i < tokens.length; i++) {
+                result[i] = "%" + tokens[i] + "%";
+            }
+            return result;
+        } else {
+            return tokens;
+        }
+    }
+
+    String getSqlFilter() {
+        if (operator().equals(QueryOperator.LIKE)) {
+            return "%" + filter() + "%";
+        } else {
+            return filter();
+        }
+    }
+
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder operator(QueryOperator operator);

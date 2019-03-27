@@ -29,5 +29,15 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 public enum QueryOperator {
-    LIKE, EQ
+    LIKE ("LIKE"), EQ ("=");
+
+    private String sqlOperator;
+
+    QueryOperator(String sqlOperator) {
+        this.sqlOperator = sqlOperator;
+    }
+
+    public String getSqlOperator() {
+        return this.sqlOperator;
+    }
 }

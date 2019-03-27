@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.data.api.OuMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +54,10 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
     @Test
     public void build_sql_query_with_programs() {
         TrackedEntityInstanceQuery query  = queryBuilder
-                .program("programUid")
+                .program("IpHINAT79UW")
+                .orgUnits(Collections.singletonList("DiszpKrYNg8"))
+                .orgUnitMode(OuMode.DESCENDANTS)
+                .query(QueryFilter.create(QueryOperator.LIKE,"female"))
                 .build();
 
         String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query);

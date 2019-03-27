@@ -41,6 +41,8 @@ public class WhereClauseBuilder {
     private static final String PARENTHESES_START = "(";
     private static final String PARENTHESES_END = ")";
 
+    private static final String EXISTS = " EXISTS ";
+
     private static final String EQ_NUMBER = " = ";
 
     private static final String AND = " AND ";
@@ -118,14 +120,25 @@ public class WhereClauseBuilder {
         return this;
     }
 
+    public WhereClauseBuilder appendExistsSubQuery(String subQuery) {
+        String andOpt = addOperator ? AND : "";
+        addOperator = true;
+        whereClause.append(andOpt).append(EXISTS).append(PARENTHESES_START).append(subQuery).append(PARENTHESES_END);
+        return this;
+    }
+
     public WhereClauseBuilder appendOperator(String operator) {
         whereClause.append(operator);
         addOperator = false;
         return this;
     }
 
+    public boolean isEmpty() {
+        return whereClause.length() == 0;
+    }
+
     public String build() {
-        if (whereClause.length() == 0) {
+        if (isEmpty()) {
             throw new RuntimeException("No columns added");
         } else {
             return whereClause.toString();

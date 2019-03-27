@@ -28,11 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.repositories.di;
 
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-import java.util.Collections;
-import java.util.LinkedHashSet;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,11 +40,6 @@ public final class RepositoriesDIModule {
     @Provides
     @Reusable
     RepositoryScope emptyScope() {
-        return RepositoryScope.builder()
-                .children(ChildrenSelection.empty())
-                .filters(Collections.emptyList())
-                .complexFilters(Collections.emptyList())
-                .orderBy(new LinkedHashSet<>())
-                .build();
+        return RepositoryScope.empty();
     }
 }

@@ -27,40 +27,55 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.paging;
 
+import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
 import androidx.annotation.NonNull;
 import androidx.paging.ItemKeyedDataSource;
 
-public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSource<Long, M> {
+public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSource<M, M> {
 
     private final ObjectStore<M> store;
-    private final String whereClause;
+    private final RepositoryScope scope;
 
-    public RepositoryDataSource(ObjectStore<M> store, String whereClause) {
+    public RepositoryDataSource(ObjectStore<M> store, RepositoryScope scope) {
         this.store = store;
-        this.whereClause = whereClause;
+        this.scope = scope;
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams<Long> params, @NonNull LoadInitialCallback<M> callback) {
-        callback.onResult(store.selectInitialPaging(whereClause, params.requestedLoadSize));
+    public void loadInitial(@NonNull LoadInitialParams<M> params, @NonNull LoadInitialCallback<M> callback) {
+        String whereClause = new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
+        callback.onResult(store.selectWhere(whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()), params.requestedLoadSize));
     }
 
     @Override
-    public void loadAfter(@NonNull LoadParams<Long> params, @NonNull LoadCallback<M> callback) {
-        callback.onResult(store.selectAfterPaging(whereClause, params.key, params.requestedLoadSize));
+    public void loadAfter(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback) {
+        loadPages(params, callback, false);
     }
 
     @Override
-    public void loadBefore(@NonNull LoadParams<Long> params, @NonNull LoadCallback<M> callback) {
-        callback.onResult(store.selectBeforePaging(whereClause, params.key, params.requestedLoadSize));
+    public void loadBefore(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback) {
+        loadPages(params, callback, true);
+    }
+
+    private void loadPages(@NonNull LoadParams<M> params, @NonNull LoadCallback<M> callback, boolean reversed) {
+        WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
+        OrderByClauseBuilder.addSortingClauses(whereClauseBuilder, scope.orderBy(),
+                params.key.toContentValues(), reversed);
+        String whereClause = new WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope);
+        callback.onResult(store.selectWhere(whereClause, OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
+                params.requestedLoadSize));
     }
 
     @NonNull
     @Override
-    public Long getKey(@NonNull M item) {
-        return item.id();
+    public M getKey(@NonNull M item) {
+        return item;
     }
 }

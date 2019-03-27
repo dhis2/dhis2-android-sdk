@@ -25,33 +25,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.paging;
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+import org.hisp.dhis.android.core.common.BaseModel;
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class RepositoryScopeOrderByItem {
-
-    public abstract String column();
-
-    public abstract RepositoryScope.OrderByDirection direction();
-
-    public String toSQLString() {
-        return column() + " " + direction();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeOrderByItem.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder column(String column);
-
-        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
-
-        public abstract RepositoryScopeOrderByItem build();
-    }
+public final class RepositoryPagingConfig {
+    public static final String PAGING_KEY = BaseModel.Columns.ID;
 }

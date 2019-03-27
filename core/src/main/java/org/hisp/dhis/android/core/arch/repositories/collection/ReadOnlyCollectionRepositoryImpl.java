@@ -66,6 +66,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     private List<M> getWithoutChildren() {
+        // ADD order by clause
         return store.selectWhere(getWhereClause());
     }
 
@@ -82,9 +83,9 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     @Override
     public LiveData<PagedList<M>> getPaged(int pageSize) {
-        DataSource.Factory<Long, M> factory = new DataSource.Factory<Long, M>() {
+        DataSource.Factory<M, M> factory = new DataSource.Factory<M, M>() {
             @Override
-            public DataSource<Long, M> create() {
+            public DataSource<M, M> create() {
                 return getDataSource();
             }
         };
@@ -92,8 +93,8 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
         return new LivePagedListBuilder<>(factory, pageSize).build();
     }
 
-    public DataSource<Long, M> getDataSource() {
-        return new RepositoryDataSource<>(store, getWhereClause());
+    public DataSource<M, M> getDataSource() {
+        return new RepositoryDataSource<>(store, scope);
     }
 
     @Override

@@ -30,15 +30,18 @@ package org.hisp.dhis.android.core.arch.repositories.collection;
 
 import com.jraska.livedata.TestObserver;
 
+import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
@@ -46,27 +49,25 @@ import androidx.lifecycle.LiveData;
 import androidx.paging.PagedList;
 import androidx.test.runner.AndroidJUnit4;
 
-import static com.google.common.truth.Truth.assertThat;
-
 @RunWith(AndroidJUnit4.class)
 public class PagingMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Rule
     public TestRule rule = new InstantTaskExecutorRule();
 
-    private TrackedEntityDataValueStore store;
-    private List<TrackedEntityDataValue> allValues;
+    private IdentifiableObjectStore<CategoryOption> store;
+    private List<CategoryOption> allValues;
+    private String orderByClause = OrderByClauseBuilder.orderByFromItems(new LinkedHashSet<>());
 
     @Before
     public void setUp() {
-        store = getD2DIComponent().trackedEntityDataValueStore();
-        allValues = store.selectInitialPaging("1", 12);
+        store = getD2DIComponent().categoryOptionStore();
+        allValues = store.selectWhere("1", orderByClause, 8);
     }
 
     @Test
-    public void get_initial_objects_considering_prefetch_distance() throws InterruptedException {
-        LiveData<PagedList<TrackedEntityDataValue>> liveData =
-                d2.trackedEntityModule().trackedEntityDataValues.getPaged(2);
+    public void get_initial_objects_with_default_order_considering_prefetch_distance() throws InterruptedException {
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions.getPaged(2);
         TestObserver.test(liveData)
                 .awaitValue()
                 .assertHasValue()
@@ -80,28 +81,71 @@ public class PagingMockIntegrationShould extends SyncedDatabaseMockIntegrationSh
     }
 
     @Test
-    public void get_initial_page_objects_from_repository() {
-        List<TrackedEntityDataValue> firstPage = store.selectInitialPaging("1", 2);
-        assertThat(firstPage).hasSize(2);
-        assertThat(firstPage.get(0)).isEqualTo(allValues.get(0));
-        assertThat(firstPage.get(1)).isEqualTo(allValues.get(1));
+    public void get_initial_objects_ordered_by_display_name_asc() throws InterruptedException {
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+                .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
+                .getPaged(2);
+        TestObserver.test(liveData)
+                .awaitValue()
+                .assertHasValue()
+                .assertValue(pagedList -> pagedList.size() == 6)
+                .assertValue(pagedList -> pagedList.get(0).displayName().equals("At PHU"))
+                .assertValue(pagedList -> pagedList.get(1).displayName().equals("Female"))
+                .assertValue(pagedList -> pagedList.get(2).displayName().equals("In Community"))
+                .assertValue(pagedList -> pagedList.get(3).displayName().equals("MCH Aides"))
+                .assertValue(pagedList -> pagedList.get(4).displayName().equals("Male"))
+                .assertValue(pagedList -> pagedList.get(5).displayName().equals("SECHN"));
     }
 
     @Test
-    public void get_next_page_objects_from_repository() {
-        List<TrackedEntityDataValue> afterPage = store.selectAfterPaging("1",
-                allValues.get(1).id(), 2);
-        assertThat(afterPage).hasSize(2);
-        assertThat(afterPage.get(0)).isEqualTo(allValues.get(2));
-        assertThat(afterPage.get(1)).isEqualTo(allValues.get(3));
+    public void get_initial_objects_ordered_by_display_name_desc() throws InterruptedException {
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+                .orderByDisplayName(RepositoryScope.OrderByDirection.DESC)
+                .getPaged(2);
+        TestObserver.test(liveData)
+                .awaitValue()
+                .assertHasValue()
+                .assertValue(pagedList -> pagedList.size() == 6)
+                .assertValue(pagedList -> pagedList.get(0).displayName().equals("default display name"))
+                .assertValue(pagedList -> pagedList.get(1).displayName().equals("Trained TBA"))
+                .assertValue(pagedList -> pagedList.get(2).displayName().equals("SECHN"))
+                .assertValue(pagedList -> pagedList.get(3).displayName().equals("Male"))
+                .assertValue(pagedList -> pagedList.get(4).displayName().equals("MCH Aides"))
+                .assertValue(pagedList -> pagedList.get(5).displayName().equals("In Community"));
     }
 
     @Test
-    public void get_previous_page_objects_from_repository() {
-        List<TrackedEntityDataValue> beforePage = store.selectBeforePaging("1",
-                allValues.get(3).id(), 2);
-        assertThat(beforePage).hasSize(2);
-        assertThat(beforePage.get(0)).isEqualTo(allValues.get(2));
-        assertThat(beforePage.get(1)).isEqualTo(allValues.get(1));
+    public void get_initial_objects_ordered_by_description_desc() throws InterruptedException {
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+                .orderByDescription(RepositoryScope.OrderByDirection.DESC)
+                .getPaged(2);
+        TestObserver.test(liveData)
+                .awaitValue()
+                .assertHasValue()
+                .assertValue(pagedList -> pagedList.size() == 6)
+                .assertValue(pagedList -> pagedList.get(0).displayName().equals("default display name"))
+                .assertValue(pagedList -> pagedList.get(1).displayName().equals("Female"))
+                .assertValue(pagedList -> pagedList.get(2).displayName().equals("Male"))
+                .assertValue(pagedList -> pagedList.get(3).displayName().equals("In Community"))
+                .assertValue(pagedList -> pagedList.get(4).displayName().equals("At PHU"))
+                .assertValue(pagedList -> pagedList.get(5).displayName().equals("MCH Aides"));
+    }
+
+    @Test
+    public void get_initial_objects_ordered_by_description_and_display_name_desc() throws InterruptedException {
+        LiveData<PagedList<CategoryOption>> liveData = d2.categoryModule().categoryOptions
+                .orderByDescription(RepositoryScope.OrderByDirection.DESC)
+                .orderByDisplayName(RepositoryScope.OrderByDirection.ASC)
+                .getPaged(2);
+        TestObserver.test(liveData)
+                .awaitValue()
+                .assertHasValue()
+                .assertValue(pagedList -> pagedList.size() == 6)
+                .assertValue(pagedList -> pagedList.get(0).displayName().equals("default display name"))
+                .assertValue(pagedList -> pagedList.get(1).displayName().equals("At PHU"))
+                .assertValue(pagedList -> pagedList.get(2).displayName().equals("Female"))
+                .assertValue(pagedList -> pagedList.get(3).displayName().equals("In Community"))
+                .assertValue(pagedList -> pagedList.get(4).displayName().equals("Male"))
+                .assertValue(pagedList -> pagedList.get(5).displayName().equals("MCH Aides"));
     }
 }

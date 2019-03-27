@@ -40,11 +40,7 @@ public interface ObjectStore<M> extends DeletableStore {
 
     List<M> selectWhere(String whereClause);
 
-    List<M> selectInitialPaging(String filterWhereClause, int pageSize);
-
-    List<M> selectAfterPaging(String filterWhereClause, long last, int pageSize);
-
-    List<M> selectBeforePaging(String filterWhereClause, long last, int pageSize);
+    List<M> selectWhere(String filterWhereClause, String orderByClause, int pageSize);
 
     M selectOneWhere(String whereClause);
 

@@ -149,9 +149,8 @@ public class SQLStatementBuilder {
         return selectWhere(whereClause + LIMIT + limit);
     }
 
-    String selectWhereWithLimit(String whereClause, String orderBy, int limit, boolean asc) {
-        String ascOrDesc = asc ? ASC : DESC;
-        return selectWhere(whereClause + ORDER_BY + orderBy + ascOrDesc + LIMIT + limit);
+    String selectWhereWithLimit(String whereClause, String orderByClause, int limit) {
+        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit);
     }
 
     String selectAll() {

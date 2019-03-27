@@ -67,12 +67,10 @@ public class TrackedEntityInstanceQueryOnlineShould {
         TrackedEntityInstanceQuery query = queryBuilder
                 .attribute(Arrays.asList(
                         QueryItem.create("attribute1"),
-                        QueryItem.create("attribute2",
-                                Collections.singletonList(QueryFilter.create("filter21"))),
+                        QueryItem.create("attribute2", QueryFilter.create("filter21")),
                         QueryItem.create("attribute3",
-                                Arrays.asList(
-                                        QueryFilter.create("filter31"),
-                                        QueryFilter.create(QueryOperator.EQ, "filter32")))
+                                QueryFilter.create("filter31"),
+                                QueryFilter.create(QueryOperator.EQ, "filter32"))
                 )).build();
 
         TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);
@@ -88,12 +86,10 @@ public class TrackedEntityInstanceQueryOnlineShould {
         TrackedEntityInstanceQuery query = queryBuilder
                 .filter(Arrays.asList(
                         QueryItem.create("filterItem1"),
-                        QueryItem.create("filterItem2",
-                                Collections.singletonList(QueryFilter.create("filter21"))),
+                        QueryItem.create("filterItem2", QueryFilter.create("filter21")),
                         QueryItem.create("filterItem3",
-                                Arrays.asList(
-                                        QueryFilter.create("filter31"),
-                                        QueryFilter.create(QueryOperator.EQ, "filter32")))
+                                QueryFilter.create("filter31"),
+                                QueryFilter.create(QueryOperator.EQ, "filter32"))
                 )).build();
 
         TrackedEntityInstanceQueryOnline onlineQuery = TrackedEntityInstanceQueryOnline.create(query);

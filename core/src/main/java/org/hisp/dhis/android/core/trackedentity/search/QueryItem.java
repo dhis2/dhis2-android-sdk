@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,12 +51,8 @@ public abstract class QueryItem {
                 .filters(Collections.emptyList());
     }
 
-    public static QueryItem create(String item, List<QueryFilter> filters) {
-        return builder().item(item).filters(filters).build();
-    }
-
-    public static QueryItem create(String item) {
-        return builder().item(item).build();
+    public static QueryItem create(String item, QueryFilter... filters) {
+        return builder().item(item).filters(Arrays.asList(filters)).build();
     }
 
     @AutoValue.Builder

@@ -49,7 +49,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     public void find_all() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .withCategoryOptions().get();
-        assertThat(categoryOptionCombos.size(), is(3));
+        assertThat(categoryOptionCombos.size(), is(4));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .get();
-        assertThat(categoryOptionCombos.size(), is(1));
+        assertThat(categoryOptionCombos.size(), is(2));
     }
 
     @Test

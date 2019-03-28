@@ -38,7 +38,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.repositories.paging.RepositoryPagingConfig.PAGING_KEY;
 
-public class OrderByClauseBuilder {
+public final class OrderByClauseBuilder {
 
     public static String orderByFromItems(List<RepositoryScopeOrderByItem> orderByItems) {
         List<String> stringList = new ArrayList<>(orderByItems.size());

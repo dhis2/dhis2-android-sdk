@@ -50,8 +50,6 @@ public class SQLStatementBuilder {
     private final static String SELECT = "SELECT ";
     private final static String AND = " AND ";
     private final static String ORDER_BY = " ORDER BY ";
-    private final static String ASC = " ASC";
-    private final static String DESC = " DESC";
 
     @SuppressWarnings("PMD.UseVarargs")
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, boolean hasSortOrder) {

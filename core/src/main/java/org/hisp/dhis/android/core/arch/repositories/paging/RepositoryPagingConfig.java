@@ -31,4 +31,7 @@ import org.hisp.dhis.android.core.common.BaseModel;
 
 public final class RepositoryPagingConfig {
     public static final String PAGING_KEY = BaseModel.Columns.ID;
+
+    private RepositoryPagingConfig() {
+    }
 }

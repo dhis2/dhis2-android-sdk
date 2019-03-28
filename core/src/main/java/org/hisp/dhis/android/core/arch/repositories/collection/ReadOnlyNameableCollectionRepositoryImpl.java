@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeOrderByItem;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
@@ -72,8 +71,19 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
         return cf.string(Columns.DISPLAY_DESCRIPTION);
     }
 
+    public R orderByShortName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.SHORT_NAME, direction);
+    }
+
+    public R orderByShortDisplayName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.DISPLAY_SHORT_NAME, direction);
+    }
+
     public R orderByDescription(RepositoryScope.OrderByDirection direction) {
-        return cf.withOrderByItem(RepositoryScopeOrderByItem.builder().column(Columns.DESCRIPTION)
-                .direction(direction).build());
+        return cf.withOrderBy(Columns.DESCRIPTION, direction);
+    }
+
+    public R orderByDisplayDescription(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.DISPLAY_DESCRIPTION, direction);
     }
 }

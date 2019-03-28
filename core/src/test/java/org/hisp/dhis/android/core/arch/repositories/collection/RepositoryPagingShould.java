@@ -65,9 +65,6 @@ public class RepositoryPagingShould  {
     @Mock
     private ItemKeyedDataSource.LoadInitialCallback<CategoryOption> initialCallback;
 
-    @Mock
-    private ItemKeyedDataSource.LoadCallback<CategoryOption> pageCallback;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -93,7 +90,7 @@ public class RepositoryPagingShould  {
     }
 
     @Test
-    public void get_initial_page_objects_with_forced_oder_by_paging_key_asc() {
+    public void get_initial_page_objects_with_forced_order_by_paging_key_asc() {
         RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
                 RepositoryScopeOrderByItem.builder().column(RepositoryPagingConfig.PAGING_KEY).direction(RepositoryScope.OrderByDirection.ASC).build());
         RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope);
@@ -103,7 +100,7 @@ public class RepositoryPagingShould  {
     }
 
     @Test
-    public void get_initial_page_objects_with_forced_oder_by_paging_key_desc() {
+    public void get_initial_page_objects_with_forced_order_by_paging_key_desc() {
         RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
                 RepositoryScopeOrderByItem.builder().column(RepositoryPagingConfig.PAGING_KEY).direction(RepositoryScope.OrderByDirection.DESC).build());
         RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope);
@@ -112,39 +109,15 @@ public class RepositoryPagingShould  {
         verify(initialCallback).onResult(objects);
     }
 
-    /*@Test
-    public void lalala() {
-        RepositoryScopeHelper.withOrderBy(emptyScope, RepositoryScopeOrderByItem.builder().column("name").direction(RepositoryScope.OrderByDirection.DESC).build());
-        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, emptyScope);
-        dataSource.loadInitial(new ItemKeyedDataSource.LoadParams<>(null, 3, false), initialCallback);
-        verify(store).selectWhere("1", "_id ASC", 3);
+    @Test
+    public void get_initial_page_objects_with_two_order_by() {
+        RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
+                RepositoryScopeOrderByItem.builder().column("c1").direction(RepositoryScope.OrderByDirection.DESC).build());
+        RepositoryScope updatedScope2 = RepositoryScopeHelper.withOrderBy(updatedScope,
+                RepositoryScopeOrderByItem.builder().column("c2").direction(RepositoryScope.OrderByDirection.ASC).build());
+        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope2);
+        dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 3, false), initialCallback);
+        verify(store).selectWhere("1", "c1 DESC, c2 ASC, _id ASC", 3);
         verify(initialCallback).onResult(objects);
     }
-
-    @Test
-    public void get_after_page_objects_from_repository() {
-        RepositoryScopeHelper.withOrderBy(emptyScope, RepositoryScopeOrderByItem.builder().column("name").direction(RepositoryScope.OrderByDirection.DESC).build());
-        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, emptyScope);
-        dataSource.loadInitial(new ItemKeyedDataSource.LoadParams<>(null, 3, false), initialCallback);
-        verify(store).selectWhere("1", "_id ASC", 3);
-        verify(initialCallback).onResult(objects);
-    }
-
-    /*@Test
-    public void get_next_page_objects_from_repository() {
-        List<TrackedEntityDataValue> afterPage = store.selectAfterPaging("1",
-                allValues.get(1).id(), 2);
-        assertThat(afterPage).hasSize(2);
-        assertThat(afterPage.get(0)).isEqualTo(allValues.get(2));
-        assertThat(afterPage.get(1)).isEqualTo(allValues.get(3));
-    }
-
-    @Test
-    public void get_previous_page_objects_from_repository() {
-        List<TrackedEntityDataValue> beforePage = store.selectBeforePaging("1",
-                allValues.get(3).id(), 2);
-        assertThat(beforePage).hasSize(2);
-        assertThat(beforePage.get(0)).isEqualTo(allValues.get(2));
-        assertThat(beforePage.get(1)).isEqualTo(allValues.get(1));
-    }*/
 }

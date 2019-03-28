@@ -77,7 +77,9 @@ public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
         return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child));
     }
 
-    public R withOrderByItem(RepositoryScopeOrderByItem item) {
+    public R withOrderBy(String column, RepositoryScope.OrderByDirection direction) {
+        RepositoryScopeOrderByItem item = RepositoryScopeOrderByItem.builder().column(column)
+                .direction(direction).build();
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item));
     }
 }

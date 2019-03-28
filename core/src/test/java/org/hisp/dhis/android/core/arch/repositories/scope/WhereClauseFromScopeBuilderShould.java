@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +38,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static org.mockito.Mockito.verify;
@@ -92,10 +90,6 @@ public class WhereClauseFromScopeBuilderShould {
     }
 
     private RepositoryScope scopeForItems(List<RepositoryScopeFilterItem> items) {
-        return RepositoryScope.builder().filters(items)
-                .complexFilters(Collections.emptyList())
-                .children(ChildrenSelection.empty())
-                .orderBy(new LinkedHashSet<>())
-                .build();
+        return RepositoryScope.empty().toBuilder().filters(items).build();
     }
 }

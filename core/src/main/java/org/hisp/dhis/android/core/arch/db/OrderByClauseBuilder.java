@@ -34,20 +34,23 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeOrderBy
 import org.hisp.dhis.android.core.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import static org.hisp.dhis.android.core.arch.repositories.paging.RepositoryPagingConfig.PAGING_KEY;
 
 public class OrderByClauseBuilder {
 
-    public static String orderByFromItems(LinkedHashSet<RepositoryScopeOrderByItem> orderByItems) {
+    public static String orderByFromItems(List<RepositoryScopeOrderByItem> orderByItems) {
         List<String> stringList = new ArrayList<>(orderByItems.size());
+        boolean hasPagingKey = false;
         for (RepositoryScopeOrderByItem item: orderByItems) {
             stringList.add(item.toSQLString());
+            if (item.column().equals(PAGING_KEY)) {
+                hasPagingKey = true;
+            }
         }
 
-        if (!orderByItems.contains(PAGING_KEY)) {
+        if (!hasPagingKey) {
             stringList.add(RepositoryScopeOrderByItem.builder()
                     .column(PAGING_KEY)
                     .direction(RepositoryScope.OrderByDirection.ASC)
@@ -58,7 +61,7 @@ public class OrderByClauseBuilder {
     }
 
     public static void addSortingClauses(WhereClauseBuilder whereClauseBuilder,
-                                         LinkedHashSet<RepositoryScopeOrderByItem> orderByItems,
+                                         List<RepositoryScopeOrderByItem> orderByItems,
                                          ContentValues object,
                                          boolean reversed) {
         boolean hasPagingKey = false;

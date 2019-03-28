@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
-import java.util.LinkedHashSet;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
@@ -57,7 +57,7 @@ public class PagingMockIntegrationShould extends SyncedDatabaseMockIntegrationSh
 
     private IdentifiableObjectStore<CategoryOption> store;
     private List<CategoryOption> allValues;
-    private String orderByClause = OrderByClauseBuilder.orderByFromItems(new LinkedHashSet<>());
+    private String orderByClause = OrderByClauseBuilder.orderByFromItems(Collections.emptyList());
 
     @Before
     public void setUp() {

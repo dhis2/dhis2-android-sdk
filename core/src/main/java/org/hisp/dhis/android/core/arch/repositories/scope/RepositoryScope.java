@@ -33,7 +33,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -52,7 +51,7 @@ public abstract class RepositoryScope {
     public abstract List<RepositoryScopeComplexFilterItem> complexFilters();
 
     @NonNull
-    public abstract LinkedHashSet<RepositoryScopeOrderByItem> orderBy();
+    public abstract List<RepositoryScopeOrderByItem> orderBy();
 
     @NonNull
     public abstract ChildrenSelection children();
@@ -66,7 +65,7 @@ public abstract class RepositoryScope {
                 .children(ChildrenSelection.empty())
                 .filters(Collections.emptyList())
                 .complexFilters(Collections.emptyList())
-                .orderBy(new LinkedHashSet<>())
+                .orderBy(Collections.emptyList())
                 .build();
     }
 
@@ -85,7 +84,7 @@ public abstract class RepositoryScope {
 
         public abstract Builder children(ChildrenSelection children);
 
-        public abstract Builder orderBy(LinkedHashSet<RepositoryScopeOrderByItem> orderBy);
+        public abstract Builder orderBy(List<RepositoryScopeOrderByItem> orderBy);
 
         public abstract RepositoryScope build();
     }

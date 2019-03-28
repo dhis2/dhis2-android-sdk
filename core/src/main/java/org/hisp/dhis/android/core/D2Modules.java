@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
+import org.hisp.dhis.android.core.legendset.LegendSetModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
@@ -65,6 +66,7 @@ final class D2Modules {
     final EnrollmentModule enrollment;
     final EventModule event;
     final IndicatorModule indcator;
+    final LegendSetModule legendSet;
     final MaintenanceModule maintenance;
     final ProgramModule program;
     final OrganisationUnitModule organisationUnit;
@@ -86,6 +88,7 @@ final class D2Modules {
               EnrollmentModule enrollment,
               EventModule event,
               IndicatorModule indicator,
+              LegendSetModule legendSet,
               MaintenanceModule maintenance,
               ProgramModule program,
               OrganisationUnitModule organisationUnit,
@@ -105,6 +108,7 @@ final class D2Modules {
         this.enrollment = enrollment;
         this.event = event;
         this.indcator = indicator;
+        this.legendSet = legendSet;
         this.maintenance = maintenance;
         this.program = program;
         this.organisationUnit = organisationUnit;

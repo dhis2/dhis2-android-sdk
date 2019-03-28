@@ -26,47 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.testapp.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.test.runner.AndroidJUnit4;
 
-@Module
-public final class LegendSetEntityDIModule {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<LegendSet> store(DatabaseAdapter databaseAdapter) {
-        return LegendSetStore.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class LegendSetCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<LegendSet> legendSets = d2.legendSetModule().legendSets
+                .get();
+        assertThat(legendSets.size(), is(1));
     }
 
-    @Provides
-    @Reusable
-    public SyncHandler<LegendSet> handler(LegendSetHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(LegendTableInfo.TABLE_INFO.name(), LegendTableInfo.Columns.LEGEND_SET,
-                databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<LegendSet>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Test
+    public void filter_by_symbolizer() {
+        List<LegendSet> legendSets = d2.legendSetModule().legendSets
+                .bySymbolizer().eq("color")
+                .get();
+        assertThat(legendSets.size(), is(1));
     }
 }

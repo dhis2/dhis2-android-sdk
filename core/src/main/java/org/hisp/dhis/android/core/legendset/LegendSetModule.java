@@ -28,45 +28,19 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.OrphanCleaner;
-import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Module
-public final class LegendSetEntityDIModule {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class LegendSetModule {
 
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<LegendSet> store(DatabaseAdapter databaseAdapter) {
-        return LegendSetStore.create(databaseAdapter);
-    }
+    public final LegendSetCollectionRepository legendSets;
 
-    @Provides
-    @Reusable
-    public SyncHandler<LegendSet> handler(LegendSetHandler impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
-        return new OrphanCleanerImpl<>(LegendTableInfo.TABLE_INFO.name(), LegendTableInfo.Columns.LEGEND_SET,
-                databaseAdapter);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<LegendSet>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Inject
+    LegendSetModule(LegendSetCollectionRepository legendSets) {
+        this.legendSets = legendSets;
     }
 }

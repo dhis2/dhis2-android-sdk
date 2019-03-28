@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.indicator.IndicatorModule;
+import org.hisp.dhis.android.core.legendset.LegendSetModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
@@ -177,6 +178,10 @@ public final class D2 {
 
     public IndicatorModule indicatorModule() {
         return this.modules.indcator;
+    }
+
+    public LegendSetModule legendSetModule() {
+        return this.modules.legendSet;
     }
 
     public MaintenanceModule maintenanceModule() {

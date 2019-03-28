@@ -144,6 +144,22 @@ public final class EventCollectionRepository
         return cf.string(EventTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
     }
 
+    public EventCollectionRepository orderByEventDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.EVENT_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByDueDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.DUE_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByCompleteDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.COMPLETE_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.LAST_UPDATED, direction);
+    }
+
     public int countTrackedEntityInstances() {
         return store.countTeisWhereEvents(getWhereClause());
     }

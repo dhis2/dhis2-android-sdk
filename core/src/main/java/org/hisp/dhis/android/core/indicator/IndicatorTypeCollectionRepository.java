@@ -25,43 +25,39 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class IndicatorTypeEntityDIModule implements IdentifiableEntityDIModule<IndicatorType> {
+@Reusable
+public final class IndicatorTypeCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<IndicatorType, IndicatorTypeCollectionRepository> {
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<IndicatorType> store(DatabaseAdapter databaseAdapter) {
-        return IndicatorTypeStore.create(databaseAdapter);
+    @Inject
+    IndicatorTypeCollectionRepository(final IdentifiableObjectStore<IndicatorType> store,
+                                      final Map<String, ChildrenAppender<IndicatorType>> childrenAppenders,
+                                      final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new IndicatorTypeCollectionRepository(store, childrenAppenders, s)));
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<IndicatorType> handler(IdentifiableObjectStore<IndicatorType> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    public BooleanFilterConnector<IndicatorTypeCollectionRepository> byNumber() {
+        return cf.bool(IndicatorTypeFields.NUMBER);
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<IndicatorType>> childrenAppenders() {
-        return Collections.emptyMap();
+    public IntegerFilterConnector<IndicatorTypeCollectionRepository> byFactor() {
+        return cf.integer(IndicatorTypeFields.FACTOR);
     }
 }

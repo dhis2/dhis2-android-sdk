@@ -26,42 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.testapp.indicator;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.indicator.IndicatorType;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
+import androidx.test.runner.AndroidJUnit4;
 
-@Module
-public final class IndicatorTypeEntityDIModule implements IdentifiableEntityDIModule<IndicatorType> {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<IndicatorType> store(DatabaseAdapter databaseAdapter) {
-        return IndicatorTypeStore.create(databaseAdapter);
+@RunWith(AndroidJUnit4.class)
+public class IndicatorTypeCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes
+                .get();
+        assertThat(indicatorTypes.size(), is(1));
     }
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<IndicatorType> handler(IdentifiableObjectStore<IndicatorType> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
+    @Test
+    public void filter_by_number() {
+        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes
+                .byNumber().isFalse()
+                .get();
+        assertThat(indicatorTypes.size(), is(1));
     }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<IndicatorType>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Test
+    public void filter_by_factor() {
+        List<IndicatorType> indicatorTypes = d2.indicatorModule().indicatorTypes
+                .byFactor().eq(100)
+                .get();
+        assertThat(indicatorTypes.size(), is(1));
     }
 }

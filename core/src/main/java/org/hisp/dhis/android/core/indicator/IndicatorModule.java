@@ -38,9 +38,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class IndicatorModule {
 
     public final IndicatorCollectionRepository indicators;
+    public final IndicatorTypeCollectionRepository indicatorTypes;
 
     @Inject
-    IndicatorModule(IndicatorCollectionRepository indicators) {
+    IndicatorModule(IndicatorCollectionRepository indicators,
+                    IndicatorTypeCollectionRepository indicatorTypes) {
         this.indicators = indicators;
+        this.indicatorTypes = indicatorTypes;
     }
 }

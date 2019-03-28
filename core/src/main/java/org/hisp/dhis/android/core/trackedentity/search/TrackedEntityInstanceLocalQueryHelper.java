@@ -74,6 +74,7 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
             queryStr += " WHERE " + where.build();
         }
 
+        // TODO Paging
         // TODO Order by program status if program is present
 
         queryStr += " ORDER BY " + TEI_ALIAS + ".lastUpdated";

@@ -66,7 +66,7 @@ public final class LegendSetEntityDIModule {
 
     @Provides
     @Reusable
-    Map<String, ChildrenAppender<LegendSet>> childrenAppenders() {
-        return Collections.emptyMap();
+    Map<String, ChildrenAppender<LegendSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(LegendSetFields.LEGENDS, LegendChildrenAppender.create(databaseAdapter));
     }
 }

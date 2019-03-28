@@ -57,4 +57,13 @@ public class LegendSetCollectionRepositoryMockIntegrationShould extends SyncedDa
                 .get();
         assertThat(legendSets.size(), is(1));
     }
+
+    @Test
+    public void include_legends_as_children() {
+        LegendSet legendSet = d2.legendSetModule().legendSets
+                .withLegends()
+                .one()
+                .get();
+        assertThat(legendSet.legends().size(), is(2));
+    }
 }

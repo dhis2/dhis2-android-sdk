@@ -55,4 +55,8 @@ public final class LegendSetCollectionRepository
     public StringFilterConnector<LegendSetCollectionRepository> bySymbolizer() {
         return cf.string(LegendSetFields.SYMBOLIZER);
     }
+
+    public LegendSetCollectionRepository withLegends() {
+        return cf.withChild(LegendSetFields.LEGENDS);
+    }
 }

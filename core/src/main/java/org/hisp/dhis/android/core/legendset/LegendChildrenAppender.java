@@ -25,26 +25,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-public final class LegendSetFields {
+final class LegendChildrenAppender extends ChildrenAppender<LegendSet> {
 
-    final static String SYMBOLIZER = "symbolizer";
-    final static String LEGENDS = "legends";
+    private final SingleParentChildStore<LegendSet, Legend> childStore;
 
-    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
+    private LegendChildrenAppender(SingleParentChildStore<LegendSet, Legend> childStore) {
+        this.childStore = childStore;
+    }
 
-    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(SYMBOLIZER),
-                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
-            ).build();
+    @Override
+    protected LegendSet appendChildren(LegendSet legendSet) {
+        LegendSet.Builder builder = legendSet.toBuilder();
+        builder.legends(childStore.getChildren(legendSet));
+        return builder.build();
+    }
 
-    private LegendSetFields() {
+    static ChildrenAppender<LegendSet> create(DatabaseAdapter databaseAdapter) {
+        return new LegendChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        LegendStore.CHILD_PROJECTION,
+                        Legend::create)
+        );
     }
 }

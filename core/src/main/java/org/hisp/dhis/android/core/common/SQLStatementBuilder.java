@@ -145,11 +145,15 @@ public class SQLStatementBuilder {
         return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    String selectWhereWithLimit(String whereClause, int limit) {
+    String selectWhere(String whereClause, int limit) {
         return selectWhere(whereClause + LIMIT + limit);
     }
 
-    String selectWhereWithLimit(String whereClause, String orderByClause, int limit) {
+    String selectWhere(String whereClause, String orderByClause) {
+        return selectWhere(whereClause + ORDER_BY + orderByClause);
+    }
+
+    String selectWhere(String whereClause, String orderByClause, int limit) {
         return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit);
     }
 

@@ -108,8 +108,16 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public List<M> selectWhere(String filterWhereClause, String orderByClause, int pageSize) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(filterWhereClause, orderByClause, pageSize));
+    public List<M> selectWhere(String filterWhereClause, String orderByClause) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause));
+        List<M> list = new ArrayList<>();
+        addObjectsToCollection(cursor, list);
+        return list;
+    }
+
+    @Override
+    public List<M> selectWhere(String filterWhereClause, String orderByClause, int limit) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause, limit));
         List<M> list = new ArrayList<>();
         addObjectsToCollection(cursor, list);
         return list;
@@ -117,7 +125,7 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
 
     @Override
     public M selectOneWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause, 1));
         return getFirstFromCursor(cursor);
     }
 

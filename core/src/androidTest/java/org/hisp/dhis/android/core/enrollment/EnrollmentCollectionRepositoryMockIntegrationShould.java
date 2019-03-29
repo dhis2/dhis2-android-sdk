@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
@@ -38,6 +36,8 @@ import org.junit.runner.RunWith;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -67,9 +67,9 @@ public class EnrollmentCollectionRepositoryMockIntegrationShould extends SyncedD
     @Test
     public void include_notes_as_children() {
         Enrollment enrollment1 = d2.enrollmentModule().enrollments
-                .uid("enroll1").withAllChildren().get();
+                .withNotes().uid("enroll1").get();
         Enrollment enrollment2 = d2.enrollmentModule().enrollments
-                .uid("enroll2").withAllChildren().get();
+                .withNotes().uid("enroll2").get();
         assertThat(enrollment1.notes().size(), is(2));
         assertThat(enrollment2.notes().size(), is(2));
     }

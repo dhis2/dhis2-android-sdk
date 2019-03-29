@@ -46,6 +46,8 @@ public interface ObjectStore<M> extends DeletableStore {
 
     M selectOneWhere(String whereClause);
 
+    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
+
     M selectFirst();
 
     List<String> selectStringColumnsWhereClause(String column, String clause) throws RuntimeException;

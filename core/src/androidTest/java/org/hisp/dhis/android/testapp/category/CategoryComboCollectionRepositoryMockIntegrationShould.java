@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.category;
 
 import androidx.test.runner.AndroidJUnit4;
 
+import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -235,5 +236,23 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Sync
         List<CategoryCombo> combos = repositoryWithUpdatedScope.get();
         assertThat(combos.size(), is(1));
         assertThat(combos.get(0).uid(), is("p0KPaWEg3cf"));
+    }
+
+    @Test
+    public void include_categories_as_children() {
+        CategoryCombo categoryCombo = d2.categoryModule().categoryCombos
+                .withCategories()
+                .uid("m2jTvAj5kkm")
+                .get();
+        assertThat(categoryCombo.categories().size(), is(2));
+    }
+
+    @Test
+    public void include_category_option_combos_as_children() {
+        CategoryCombo categoryCombo = d2.categoryModule().categoryCombos
+                .withCategories()
+                .uid("m2jTvAj5kkm")
+                .get();
+        assertThat(categoryCombo.categories().size(), is(1));
     }
 }

@@ -25,32 +25,27 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.object;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
-import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStore;
+package org.hisp.dhis.android.core.data.category;
 
-import java.util.Map;
+import org.hisp.dhis.android.core.category.CategoryOption;
+import org.hisp.dhis.android.core.common.Access;
 
-public class ReadOnlyOneObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
-        extends ReadOnlyObjectRepositoryImpl<M, R> {
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
-    private final ObjectStore<M> store;
+public class CategoryOptionSamples {
 
-    public ReadOnlyOneObjectRepositoryImpl(ObjectStore<M> store,
-                                           Map<String, ChildrenAppender<M>> childrenAppenders,
-                                           RepositoryScope scope,
-                                           ObjectRepositoryFactory<R> repositoryFactory) {
-        super(childrenAppenders, scope, repositoryFactory);
-        this.store = store;
-    }
+    public static CategoryOption getCategoryOption() {
+        CategoryOption.Builder builder = CategoryOption.builder();
 
-    public M getWithoutChildren() {
-        WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-        return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope));
+        fillNameableProperties(builder);
+        return builder
+                .id(1L)
+                .startDate(CREATED)
+                .endDate(LAST_UPDATED)
+                .access(Access.createForDataWrite(false))
+                .build();
     }
 }

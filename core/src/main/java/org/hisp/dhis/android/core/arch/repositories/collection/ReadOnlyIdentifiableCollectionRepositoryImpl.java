@@ -80,4 +80,28 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
     public DateFilterConnector<R> byLastUpdated() {
         return cf.date(Columns.LAST_UPDATED);
     }
+
+    public R orderByUid(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.UID, direction);
+    }
+
+    public R orderByCode(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CODE, direction);
+    }
+
+    public R orderByName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.NAME, direction);
+    }
+
+    public R orderByDisplayName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.DISPLAY_NAME, direction);
+    }
+
+    public R orderByCreated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED, direction);
+    }
+
+    public R orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
+    }
 }

@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core;
 
-import androidx.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.repositories.di.RepositoriesDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -63,7 +63,6 @@ import org.hisp.dhis.android.core.resource.ResourcePackageDIModule;
 import org.hisp.dhis.android.core.settings.SystemSettingPackageDIModule;
 import org.hisp.dhis.android.core.sms.SmsDIModule;
 import org.hisp.dhis.android.core.systeminfo.SystemInfoPackageDIModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstancePostCall;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityPackageDIModule;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
@@ -73,6 +72,7 @@ import org.hisp.dhis.android.core.wipe.WipeModule;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 
 @SuppressWarnings("PMD.ExcessiveImports")
@@ -131,7 +131,7 @@ public interface D2DIComponent {
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
     @VisibleForTesting
-    TrackedEntityDataValueStore trackedEntityDataValueStore();
+    IdentifiableObjectStore<CategoryOption> categoryOptionStore();
 
     @Component.Builder
     interface Builder {

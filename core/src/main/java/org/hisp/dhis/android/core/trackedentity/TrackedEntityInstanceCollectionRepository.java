@@ -39,8 +39,6 @@ import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
 import org.hisp.dhis.android.core.period.FeatureType;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipFields;
 
 import java.util.Map;
 import java.util.concurrent.Callable;

@@ -119,4 +119,28 @@ public final class DataSetCollectionRepository
     public BooleanFilterConnector<DataSetCollectionRepository> byAccessDataWrite() {
         return cf.bool(DataSetFields.ACCESS_DATA_WRITE);
     }
+
+    public DataSetCollectionRepository withStyle() {
+        return cf.withChild(DataSetFields.STYLE);
+    }
+
+    public DataSetCollectionRepository withSections() {
+        return cf.withChild(DataSetFields.SECTIONS);
+    }
+
+    public DataSetCollectionRepository withCompulsoryDataElementOperands() {
+        return cf.withChild(DataSetFields.COMPULSORY_DATA_ELEMENT_OPERANDS);
+    }
+
+    public DataSetCollectionRepository withDataInputPeriods() {
+        return cf.withChild(DataSetFields.DATA_INPUT_PERIODS);
+    }
+
+    public DataSetCollectionRepository withDataSetElements() {
+        return cf.withChild(DataSetFields.DATA_SET_ELEMENTS);
+    }
+
+    public DataSetCollectionRepository withIndicators() {
+        return cf.withChild(DataSetFields.INDICATORS);
+    }
 }

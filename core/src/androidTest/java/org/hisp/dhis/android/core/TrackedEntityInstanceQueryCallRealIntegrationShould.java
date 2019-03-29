@@ -74,7 +74,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
     //@Test
     public void query_tracked_entity_instances_no_filter() throws Exception {
         login();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(queryBuilder.build()).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -83,7 +84,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         login();
 
         TrackedEntityInstanceQuery query = queryBuilder.query(QueryFilter.create("jorge")).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -94,7 +96,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.YEAR, -1);
         TrackedEntityInstanceQuery query = queryBuilder.programStartDate(cal.getTime()).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -104,7 +107,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
 
         Calendar cal = Calendar.getInstance();
         TrackedEntityInstanceQuery query = queryBuilder.programEndDate(cal.getTime()).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -116,7 +120,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         attributeList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "jorge")));
 
         TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -130,7 +135,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         attributeList.add(QueryItem.create("zDhUuAYrxNC", QueryFilter.create(QueryOperator.LIKE, "Ryder")));
 
         TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -142,7 +148,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         attributeList.add(QueryItem.create("w75KJ2mc4zz"));
 
         TrackedEntityInstanceQuery query = queryBuilder.attribute(attributeList).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -154,7 +161,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         filterList.add(QueryItem.create("w75KJ2mc4zz", QueryFilter.create(QueryOperator.LIKE, "jorge")));
 
         TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -167,7 +175,8 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         filterList.add(QueryItem.create("zDhUuAYrxNC", QueryFilter.create(QueryOperator.LIKE, "Ryder")));
 
         TrackedEntityInstanceQuery query = queryBuilder.filter(filterList).build();
-        List<TrackedEntityInstance> queryResponse = d2.trackedEntityModule().queryTrackedEntityInstances(query).call();
+        List<TrackedEntityInstance> queryResponse =
+                d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(query).getCallable().call();
         assertThat(queryResponse).isNotEmpty();
     }
 
@@ -516,7 +525,7 @@ public class TrackedEntityInstanceQueryCallRealIntegrationShould extends AbsStor
         queryBuilder.orgUnits(orgUnits);
 
         try {
-            d2.trackedEntityModule().queryTrackedEntityInstances(queryBuilder.build()).call();
+            d2.trackedEntityModule().trackedEntityInstanceQuery.online().query(queryBuilder.build()).getCallable().call();
             fail("D2Error was expected but was not thrown");
         } catch (D2Error d2e) {
             assertThat(d2e.errorCode() == D2ErrorCode.TOO_MANY_ORG_UNITS).isTrue();

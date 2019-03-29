@@ -26,46 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        TrackedEntityAttributeEntityDIModule.class,
-        TrackedEntityAttributeReservedValueEntityDIModule.class,
-        TrackedEntityAttributeValueEntityDIModule.class,
-        TrackedEntityDataValueEntityDIModule.class,
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityInstanceQueryEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class,
-        TrackedEntityTypeAttributeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
-
-    @Provides
-    @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
-    }
-
-    @Provides
-    @Reusable
-    QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
-            TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
-        return impl;
-    }
+public enum RepositoryMode {
+        ONLINE, OFFLINE
 }

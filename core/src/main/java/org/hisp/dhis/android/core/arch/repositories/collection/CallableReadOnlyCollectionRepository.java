@@ -25,47 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.collection;
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.common.Model;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
+import java.util.List;
+import java.util.concurrent.Callable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        TrackedEntityAttributeEntityDIModule.class,
-        TrackedEntityAttributeReservedValueEntityDIModule.class,
-        TrackedEntityAttributeValueEntityDIModule.class,
-        TrackedEntityDataValueEntityDIModule.class,
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityInstanceQueryEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class,
-        TrackedEntityTypeAttributeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
-
-    @Provides
-    @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
-    }
-
-    @Provides
-    @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
-    }
-
-    @Provides
-    @Reusable
-    QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
-            TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
-        return impl;
-    }
+public interface CallableReadOnlyCollectionRepository<M extends Model> {
+    Callable<List<M>> getCallable();
 }

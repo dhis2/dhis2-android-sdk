@@ -26,46 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity.search;
 
-import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
-import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryEntityDIModule;
+import com.google.auto.value.AutoValue;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.Reusable;
-import retrofit2.Retrofit;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
 
-@Module(includes = {
-        TrackedEntityAttributeEntityDIModule.class,
-        TrackedEntityAttributeReservedValueEntityDIModule.class,
-        TrackedEntityAttributeValueEntityDIModule.class,
-        TrackedEntityDataValueEntityDIModule.class,
-        TrackedEntityInstanceEntityDIModule.class,
-        TrackedEntityInstanceQueryEntityDIModule.class,
-        TrackedEntityTypeEntityDIModule.class,
-        TrackedEntityTypeAttributeEntityDIModule.class
-})
-public final class TrackedEntityPackageDIModule {
+import androidx.annotation.NonNull;
 
-    @Provides
-    @Reusable
-    UidsCallFactory<TrackedEntityType> trackedEntityTypeCallFactory(TrackedEntityTypeCallFactory impl) {
-        return impl;
+@AutoValue
+public abstract class TrackedEntityInstanceQueryRepositoryScope {
+
+    @NonNull
+    public abstract RepositoryMode mode();
+
+    @NonNull
+    public abstract TrackedEntityInstanceQuery query();
+
+    public abstract Builder toBuilder();
+
+    public static Builder builder() {
+        return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
+                .mode(RepositoryMode.OFFLINE)
+                .query(TrackedEntityInstanceQuery.empty());
     }
 
-    @Provides
-    @Reusable
-    TrackedEntityTypeService trackedEntityTypeService(Retrofit retrofit) {
-        return retrofit.create(TrackedEntityTypeService.class);
-    }
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-    @Provides
-    @Reusable
-    QueryCallFactory<TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery> dataValueCallFactory(
-            TrackedEntityAttributeReservedValueEndpointCallFactory impl) {
-        return impl;
+        public abstract Builder mode(RepositoryMode mode);
+
+        public abstract Builder query(TrackedEntityInstanceQuery query);
+
+        public abstract TrackedEntityInstanceQueryRepositoryScope build();
     }
 }

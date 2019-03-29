@@ -114,7 +114,9 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
 
                 if (d2ErrorCode != null) {
-                    D2Error d2error = errorBuilder.errorCode(d2ErrorCode).errorDescription("").build();
+                    D2Error d2error = responseException(errorBuilder, response).toBuilder()
+                            .errorCode(d2ErrorCode)
+                            .build();
 
                     if (errorCatcher.mustBeStored()) {
                         throw storeAndReturn(d2error);

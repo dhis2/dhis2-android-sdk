@@ -26,38 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.calls.fetchers;
 
-public enum D2ErrorCode {
-    ALREADY_AUTHENTICATED,
-    ALREADY_EXECUTED,
-    API_UNSUCCESSFUL_RESPONSE,
-    API_INVALID_QUERY,
-    API_RESPONSE_PROCESS_ERROR,
-    BAD_CREDENTIALS,
-    CANT_CREATE_EXISTING_OBJECT,
-    CANT_DELETE_NON_EXISTING_OBJECT,
-    COULD_NOT_RESERVE_VALUE_ON_SERVER,
-    LOGIN_USERNAME_NULL,
-    LOGIN_PASSWORD_NULL,
-    MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES,
-    NO_AUTHENTICATED_USER,
-    NO_AUTHENTICATED_USER_OFFLINE,
-    NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER,
-    DIFFERENT_AUTHENTICATED_USER_OFFLINE,
-    DIFFERENT_SERVER_OFFLINE,
-    INVALID_DHIS_VERSION,
-    NO_RESERVED_VALUES,
-    OBJECT_CANT_BE_UPDATED,
-    OWNERSHIP_ACCESS_DENIED,
-    SEARCH_GRID_PARSE,
-    SOCKET_TIMEOUT,
-    TOO_MANY_ORG_UNITS,
-    TOO_MANY_PERIODS,
-    UNEXPECTED,
-    UNKNOWN_HOST,
-    URL_NOT_FOUND,
-    USER_ACCOUNT_DISABLED,
-    USER_ACCOUNT_LOCKED,
-    VALUES_RESERVATION_TOOK_TOO_LONG
+import org.hisp.dhis.android.core.arch.api.executors.APICallErrorCatcher;
+import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.maintenance.D2Error;
+
+import java.util.List;
+
+public abstract class ListNoResourceWithErrorCatcherCallFetcher<P> implements CallFetcher<P> {
+
+    private final APICallExecutor apiCallExecutor;
+    private final APICallErrorCatcher errorCatcher;
+
+    protected ListNoResourceWithErrorCatcherCallFetcher(APICallExecutor apiCallExecutor,
+                                                        APICallErrorCatcher errorCatcher) {
+        this.apiCallExecutor = apiCallExecutor;
+        this.errorCatcher = errorCatcher;
+    }
+
+    protected abstract retrofit2.Call<List<P>> getCall();
+
+    @Override
+    public final List<P> fetch() throws D2Error {
+        return apiCallExecutor.executeObjectCallWithErrorCatcher(getCall(), errorCatcher);
+    }
 }

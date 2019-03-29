@@ -25,26 +25,38 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-public final class LegendSetFields {
+import java.util.Map;
 
-    final static String SYMBOLIZER = "symbolizer";
-    final static String LEGENDS = "legends";
+import javax.inject.Inject;
 
-    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
+import dagger.Reusable;
 
-    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(SYMBOLIZER),
-                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
-            ).build();
+@Reusable
+public final class LegendSetCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<LegendSet, LegendSetCollectionRepository> {
 
-    private LegendSetFields() {
+    @Inject
+    LegendSetCollectionRepository(final IdentifiableObjectStore<LegendSet> store,
+                                  final Map<String, ChildrenAppender<LegendSet>> childrenAppenders,
+                                  final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new LegendSetCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public StringFilterConnector<LegendSetCollectionRepository> bySymbolizer() {
+        return cf.string(LegendSetFields.SYMBOLIZER);
+    }
+
+    public LegendSetCollectionRepository withLegends() {
+        return cf.withChild(LegendSetFields.LEGENDS);
     }
 }

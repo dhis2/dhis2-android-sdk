@@ -26,25 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.testapp.legendset;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.legendset.LegendSet;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public final class LegendSetFields {
+import java.util.List;
 
-    final static String SYMBOLIZER = "symbolizer";
-    final static String LEGENDS = "legends";
+import androidx.test.runner.AndroidJUnit4;
 
-    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
-    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(SYMBOLIZER),
-                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
-            ).build();
+@RunWith(AndroidJUnit4.class)
+public class LegendSetCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
-    private LegendSetFields() {
+    @Test
+    public void find_all() {
+        List<LegendSet> legendSets = d2.legendSetModule().legendSets
+                .get();
+        assertThat(legendSets.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_symbolizer() {
+        List<LegendSet> legendSets = d2.legendSetModule().legendSets
+                .bySymbolizer().eq("color")
+                .get();
+        assertThat(legendSets.size(), is(1));
+    }
+
+    @Test
+    public void include_legends_as_children() {
+        LegendSet legendSet = d2.legendSetModule().legendSets
+                .withLegends()
+                .one()
+                .get();
+        assertThat(legendSet.legends().size(), is(2));
     }
 }

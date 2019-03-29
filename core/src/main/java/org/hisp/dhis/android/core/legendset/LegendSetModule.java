@@ -28,23 +28,19 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
-import org.hisp.dhis.android.core.data.api.Fields;
+import javax.inject.Inject;
 
-public final class LegendSetFields {
+import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-    final static String SYMBOLIZER = "symbolizer";
-    final static String LEGENDS = "legends";
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class LegendSetModule {
 
-    private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
+    public final LegendSetCollectionRepository legendSets;
 
-    public static final Fields<LegendSet> allFields = Fields.<LegendSet>builder()
-            .fields(fh.getIdentifiableFields())
-            .fields(
-                    fh.<String>field(SYMBOLIZER),
-                    fh.<Legend>nestedField(LEGENDS).with(LegendFields.allFields)
-            ).build();
-
-    private LegendSetFields() {
+    @Inject
+    LegendSetModule(LegendSetCollectionRepository legendSets) {
+        this.legendSets = legendSets;
     }
 }

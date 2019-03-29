@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.testapp.program;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.period.FeatureType;
@@ -39,6 +37,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -112,7 +112,7 @@ public class ProgramStageCollectionRepositoryMockIntegrationShould extends Synce
     public void filter_by_execution_date_label() {
         List<ProgramStage> programStages =
                 d2.programModule().programStages
-                        .byExectuionDateLabel()
+                        .byExecutionDateLabel()
                         .eq("Visit date")
                         .get();
 

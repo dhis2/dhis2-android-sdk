@@ -52,7 +52,7 @@ public final class TrackedEntityTypeAttributeTableInfo {
 
     static class Columns extends BaseModel.Columns {
 
-        private static final String SORT_ORDER = "sortOrder";
+        static final String SORT_ORDER = "sortOrder";
 
         @Override
         public String[] all() {

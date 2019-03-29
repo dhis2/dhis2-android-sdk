@@ -50,8 +50,6 @@ public class SQLStatementBuilder {
     private final static String SELECT = "SELECT ";
     private final static String AND = " AND ";
     private final static String ORDER_BY = " ORDER BY ";
-    private final static String ASC = " ASC";
-    private final static String DESC = " DESC";
 
     @SuppressWarnings("PMD.UseVarargs")
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, boolean hasSortOrder) {
@@ -145,13 +143,16 @@ public class SQLStatementBuilder {
         return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    String selectWhereWithLimit(String whereClause, int limit) {
+    String selectWhere(String whereClause, int limit) {
         return selectWhere(whereClause + LIMIT + limit);
     }
 
-    String selectWhereWithLimit(String whereClause, String orderBy, int limit, boolean asc) {
-        String ascOrDesc = asc ? ASC : DESC;
-        return selectWhere(whereClause + ORDER_BY + orderBy + ascOrDesc + LIMIT + limit);
+    String selectWhere(String whereClause, String orderByClause) {
+        return selectWhere(whereClause + ORDER_BY + orderByClause);
+    }
+
+    String selectWhere(String whereClause, String orderByClause, int limit) {
+        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit);
     }
 
     String selectAll() {

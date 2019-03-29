@@ -28,17 +28,21 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 
+import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 @AutoValue
 public abstract class RepositoryScope {
+
+    public enum OrderByDirection {
+        ASC, DESC
+    }
 
     @NonNull
     public abstract List<RepositoryScopeFilterItem> filters();
@@ -47,13 +51,22 @@ public abstract class RepositoryScope {
     public abstract List<RepositoryScopeComplexFilterItem> complexFilters();
 
     @NonNull
-    public abstract ChildrenSelection children();
+    public abstract List<RepositoryScopeOrderByItem> orderBy();
 
-    @Nullable
-    public abstract Integer limit();
+    @NonNull
+    public abstract ChildrenSelection children();
 
     public boolean hasFilters() {
         return !filters().isEmpty() || !complexFilters().isEmpty();
+    }
+
+    public static RepositoryScope empty() {
+        return RepositoryScope.builder()
+                .children(ChildrenSelection.empty())
+                .filters(Collections.emptyList())
+                .complexFilters(Collections.emptyList())
+                .orderBy(Collections.emptyList())
+                .build();
     }
 
     public abstract Builder toBuilder();
@@ -71,7 +84,7 @@ public abstract class RepositoryScope {
 
         public abstract Builder children(ChildrenSelection children);
 
-        public abstract Builder limit(Integer limit);
+        public abstract Builder orderBy(List<RepositoryScopeOrderByItem> orderBy);
 
         public abstract RepositoryScope build();
     }

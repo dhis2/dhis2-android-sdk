@@ -48,7 +48,10 @@ import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.domain.aggregated.AggregatedModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
+import org.hisp.dhis.android.core.indicator.IndicatorModule;
+import org.hisp.dhis.android.core.legendset.LegendSetModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
@@ -157,6 +160,10 @@ public final class D2 {
         return this.modules.dataSet;
     }
 
+    public OptionModule optionModule() {
+        return this.modules.option;
+    }
+
     public DataValueModule dataValueModule() {
         return this.modules.dataValue;
     }
@@ -166,7 +173,15 @@ public final class D2 {
     }
 
     public EventModule eventModule() {
-        return this.modules.events;
+        return this.modules.event;
+    }
+
+    public IndicatorModule indicatorModule() {
+        return this.modules.indcator;
+    }
+
+    public LegendSetModule legendSetModule() {
+        return this.modules.legendSet;
     }
 
     public MaintenanceModule maintenanceModule() {

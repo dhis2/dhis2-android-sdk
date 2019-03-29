@@ -28,10 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.LinkModelStore;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandler;
 import org.hisp.dhis.android.core.common.OrderedLinkSyncHandlerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -51,5 +55,11 @@ public final class TrackedEntityTypeAttributeEntityDIModule {
     public OrderedLinkSyncHandler<TrackedEntityTypeAttribute, TrackedEntityTypeAttribute> handler(
             LinkModelStore<TrackedEntityTypeAttribute> store) {
         return new OrderedLinkSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<TrackedEntityTypeAttribute>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

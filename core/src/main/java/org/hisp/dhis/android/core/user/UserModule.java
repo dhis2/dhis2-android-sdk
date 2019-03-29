@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.concurrent.Callable;
@@ -36,6 +34,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -49,6 +48,7 @@ public final class UserModule {
 
     public final AuthenticatedUserObjectRepository authenticatedUser;
     public final UserRoleCollectionRepository userRoles;
+    public final AuthorityCollectionRepository authorities;
     public final UserCredentialsObjectRepository userCredentials;
     public final UserObjectRepository user;
 
@@ -58,6 +58,7 @@ public final class UserModule {
                UserAuthenticateCallFactory loginCallFactory,
                AuthenticatedUserObjectRepository authenticatedUser,
                UserRoleCollectionRepository userRoles,
+               AuthorityCollectionRepository authorities,
                UserCredentialsObjectRepository userCredentials,
                UserObjectRepository user) {
         this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
@@ -65,6 +66,7 @@ public final class UserModule {
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
         this.userRoles = userRoles;
+        this.authorities = authorities;
         this.userCredentials = userCredentials;
         this.user = user;
     }

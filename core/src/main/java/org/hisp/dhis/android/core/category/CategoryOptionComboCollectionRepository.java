@@ -56,4 +56,8 @@ public final class CategoryOptionComboCollectionRepository
     public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {
         return cf.string(CategoryOptionComboFields.CATEGORY_COMBO);
     }
+
+    public CategoryOptionComboCollectionRepository withCategoryOptions() {
+        return cf.withChild(CategoryOptionComboFields.CATEGORY_OPTIONS);
+    }
 }

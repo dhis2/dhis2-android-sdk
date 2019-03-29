@@ -55,4 +55,15 @@ public final class RepositoryScopeHelper {
     public static RepositoryScope withChild(RepositoryScope scope, String child) {
         return scope.toBuilder().children(scope.children().withChild(child)).build();
     }
+
+    public static RepositoryScope withOrderBy(RepositoryScope scope, RepositoryScopeOrderByItem item) {
+        List<RepositoryScopeOrderByItem> newItems = new ArrayList<>(scope.orderBy().size() + 1);
+        for (RepositoryScopeOrderByItem i: scope.orderBy()) {
+            if (!i.column().equals(item.column())) {
+                newItems.add(i);
+            }
+        }
+        newItems.add(item);
+        return scope.toBuilder().orderBy(newItems).build();
+    }
 }

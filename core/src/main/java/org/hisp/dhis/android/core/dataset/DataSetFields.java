@@ -56,7 +56,7 @@ public final class DataSetFields {
     static final String DATA_ELEMENT_DECORATION = "dataElementDecoration";
     static final String RENDER_AS_TABS = "renderAsTabs";
     static final String RENDER_HORIZONTALLY = "renderHorizontally";
-    static final String WORKFLOW = "workflow";
+    public static final String WORKFLOW = "workflow";
     static final String DATA_SET_ELEMENTS = "dataSetElements";
     static final String INDICATORS = "indicators";
     static final String SECTIONS = "sections";

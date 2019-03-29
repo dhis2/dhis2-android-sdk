@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
+import org.hisp.dhis.android.core.indicator.IndicatorModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
 import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
@@ -62,7 +63,8 @@ final class D2Modules {
     final OptionModule option;
     final DataValueModule dataValue;
     final EnrollmentModule enrollment;
-    final EventModule events;
+    final EventModule event;
+    final IndicatorModule indcator;
     final MaintenanceModule maintenance;
     final ProgramModule program;
     final OrganisationUnitModule organisationUnit;
@@ -82,7 +84,8 @@ final class D2Modules {
               OptionModule option,
               DataValueModule dataValue,
               EnrollmentModule enrollment,
-              EventModule events,
+              EventModule event,
+              IndicatorModule indicator,
               MaintenanceModule maintenance,
               ProgramModule program,
               OrganisationUnitModule organisationUnit,
@@ -100,7 +103,8 @@ final class D2Modules {
         this.dataSet = dataSet;
         this.dataValue = dataValue;
         this.enrollment = enrollment;
-        this.events = events;
+        this.event = event;
+        this.indcator = indicator;
         this.maintenance = maintenance;
         this.program = program;
         this.organisationUnit = organisationUnit;

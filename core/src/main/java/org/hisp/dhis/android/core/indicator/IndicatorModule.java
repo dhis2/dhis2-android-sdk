@@ -28,40 +28,22 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import javax.inject.Inject;
 
-import java.util.Collections;
-import java.util.Map;
-
-import dagger.Module;
-import dagger.Provides;
 import dagger.Reusable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@Module
-public final class IndicatorTypeEntityDIModule implements IdentifiableEntityDIModule<IndicatorType> {
+@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
+@Reusable
+public final class IndicatorModule {
 
-    @Override
-    @Provides
-    @Reusable
-    public IdentifiableObjectStore<IndicatorType> store(DatabaseAdapter databaseAdapter) {
-        return IndicatorTypeStore.create(databaseAdapter);
-    }
+    public final IndicatorCollectionRepository indicators;
+    public final IndicatorTypeCollectionRepository indicatorTypes;
 
-    @Override
-    @Provides
-    @Reusable
-    public SyncHandler<IndicatorType> handler(IdentifiableObjectStore<IndicatorType> store) {
-        return new IdentifiableSyncHandlerImpl<>(store);
-    }
-
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<IndicatorType>> childrenAppenders() {
-        return Collections.emptyMap();
+    @Inject
+    IndicatorModule(IndicatorCollectionRepository indicators,
+                    IndicatorTypeCollectionRepository indicatorTypes) {
+        this.indicators = indicators;
+        this.indicatorTypes = indicatorTypes;
     }
 }

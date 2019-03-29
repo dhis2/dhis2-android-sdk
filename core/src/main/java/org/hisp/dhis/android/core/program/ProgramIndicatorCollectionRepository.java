@@ -83,4 +83,7 @@ public final class ProgramIndicatorCollectionRepository
         return cf.string(ProgramIndicatorFields.PROGRAM);
     }
 
+    public ProgramIndicatorCollectionRepository withLegendSets() {
+        return cf.withChild(ProgramIndicatorFields.LEGEND_SETS);
+    }
 }

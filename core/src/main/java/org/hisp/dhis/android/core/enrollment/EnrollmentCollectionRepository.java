@@ -111,4 +111,8 @@ public final class EnrollmentCollectionRepository
     public DoubleFilterConnector<EnrollmentCollectionRepository> byCoordinateLongitude() {
         return cf.doubleC(EnrollmentTableInfo.Columns.LONGITUDE);
     }
+
+    public EnrollmentCollectionRepository withNotes() {
+        return cf.withChild(EnrollmentFields.NOTES);
+    }
 }

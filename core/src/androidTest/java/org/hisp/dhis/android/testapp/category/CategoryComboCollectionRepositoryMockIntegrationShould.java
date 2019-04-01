@@ -252,6 +252,6 @@ public class CategoryComboCollectionRepositoryMockIntegrationShould extends Sync
                 .withCategoryOptionCombos()
                 .uid("m2jTvAj5kkm")
                 .get();
-        assertThat(categoryCombo.categoryOptionCombos().size(), is(1));
+        assertThat(categoryCombo.categoryOptionCombos().size(), is(2));
     }
 }

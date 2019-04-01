@@ -101,6 +101,14 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
     }
 
     @Test
+    public void not_find_combos_when_no_matching_options() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(0));
+    }
+
+    @Test
     public void include_category_options_as_children() {
         CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
                 .withCategoryOptions().one().get();

@@ -49,25 +49,25 @@ public final class SubQueryFilterConnector<R extends ReadOnlyCollectionRepositor
     }
 
     public R inLinkTable(String linkTable, String linkParent, String linkChild, List<String> children) {
-        return newWithWrappedScope("IN", "(" +
-                subQuery(linkTable, linkParent, linkChild, children, Boolean.FALSE) + ")");
-    }
-
-    public R inLinkTableAndNoMore(String linkTable, String linkParent, String linkChild, List<String> children) {
-        return newWithWrappedScope("IN", "(" +
-                subQuery(linkTable, linkParent, linkChild, children, Boolean.TRUE) + ")");
-    }
-
-    private String subQuery(String linkTable, String linkParent, String linkChild, List<String> children,
-                            Boolean andNoMore) {
         WhereClauseBuilder clauseBuilder = new WhereClauseBuilder().appendInKeyStringValues(linkChild, children);
 
-        String clause = andNoMore ?
-                clauseBuilder.appendComplexQuery(children.size() +
-                        " = (SELECT count(*) FROM " + linkTable + " WHERE " + linkParent + " = parent_uid)").build() :
-                clauseBuilder.build();
+        return newWithWrappedScope("IN", "(" + String.format(
+                "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
+    }
 
-        return String.format(
-                "SELECT DISTINCT %s AS parent_uid FROM %s WHERE %s", linkParent, linkTable, clause);
+    public R withThoseChildrenExactly(String linkTable, String linkParent, String linkChild, List<String> children) {
+        RepositoryScope repositoryScope = null;
+
+        for (String child : children) {
+            String clause = new WhereClauseBuilder().appendKeyStringValue(linkChild, child).build();
+            String value = "(" + String.format("SELECT %s FROM %s WHERE %s ", linkParent, linkTable, clause) + ")";
+
+            repositoryScope = repositoryScope == null ? updatedUnwrappedScope("IN", value) :
+                    updatePassedScope("IN", value, repositoryScope);
+        }
+
+        return newWithPassedScope("IN", "(" + String.format(
+                "SELECT %s FROM %s WHERE 1 GROUP BY %s HAVING COUNT(*) = %s ",
+                linkParent, linkTable, linkParent, children.size()) + ")", repositoryScope);
     }
 }

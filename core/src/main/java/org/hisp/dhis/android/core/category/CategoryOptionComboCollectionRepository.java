@@ -61,7 +61,7 @@ public final class CategoryOptionComboCollectionRepository
     }
 
     public CategoryOptionComboCollectionRepository byCategoryOptions(List<String> categoryOptionUids) {
-        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).inLinkTableAndNoMore(
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).withThoseChildrenExactly(
                 CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
                 CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
                 CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,

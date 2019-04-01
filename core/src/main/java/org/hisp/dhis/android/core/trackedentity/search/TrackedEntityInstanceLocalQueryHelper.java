@@ -30,10 +30,22 @@ package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.data.api.OuMode;
+import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
+
+import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentFields.ENROLLMENT_DATE;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentFields.PROGRAM;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentStatus.ACTIVE;
+import static org.hisp.dhis.android.core.enrollment.EnrollmentStatus.COMPLETED;
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PARENT;
+import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PATH;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields.VALUE;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE;
+import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE;
 
 abstract class TrackedEntityInstanceLocalQueryHelper {
 
@@ -50,19 +62,19 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
         WhereClauseBuilder where = new WhereClauseBuilder();
 
         if (hasProgram(query)) {
-            queryStr += String.format(" JOIN %s %s ON %s.%s = %s.%s",
+            queryStr += String.format(" JOIN %s %s ON %s = %s",
                     EnrollmentTableInfo.TABLE_INFO.name(), ENROLLMENT_ALIAS,
-                    TEI_ALIAS, "uid",
-                    ENROLLMENT_ALIAS, "trackedentityinstance");
+                    dot(TEI_ALIAS, UID),
+                    dot(ENROLLMENT_ALIAS, "trackedentityinstance"));
 
             appendProgramWhere(where, query);
         }
 
         if (hasOrgunits(query)) {
-            queryStr += String.format(" JOIN %s %s ON %s.%s = %s.%s",
+            queryStr += String.format(" JOIN %s %s ON %s = %s",
                     OrganisationUnitTableInfo.TABLE_INFO.name(), ORGUNIT_ALIAS,
-                    TEI_ALIAS, "organisationUnit",
-                    ORGUNIT_ALIAS, "uid");
+                    dot(TEI_ALIAS, "organisationUnit"),
+                    dot(ORGUNIT_ALIAS, UID));
 
             appendOrgunitWhere(where, query);
         }
@@ -75,26 +87,35 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
         }
 
         // TODO Paging
-        // TODO Order by program status if program is present
 
-        queryStr += " ORDER BY " + TEI_ALIAS + ".lastUpdated";
+        if (hasProgram(query)) {
+            String status = dot(ENROLLMENT_ALIAS, EnrollmentFields.STATUS);
+            queryStr += " ORDER BY CASE WHEN " + status + " = '" + ACTIVE + "' THEN 1 " +
+                    "WHEN " + status + " = '" + COMPLETED + "' THEN 2 ELSE 3 END ASC, " +
+                    TEI_ALIAS + ".lastUpdated DESC ";
+        } else {
+            queryStr += " ORDER BY " + TEI_ALIAS + ".lastUpdated DESC";
+        }
+
 
         return queryStr;
     }
 
     private static boolean hasProgram(TrackedEntityInstanceQuery query) {
-        return query.program() != null || query.programStartDate() != null || query.programEndDate() != null;
+        return query.program() != null;
     }
 
     private static void appendProgramWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
         if (query.program() != null) {
-            where.appendKeyStringValue(ENROLLMENT_ALIAS + ".program", query.program());
+            where.appendKeyStringValue(dot(ENROLLMENT_ALIAS, PROGRAM), query.program());
         }
         if (query.programStartDate() != null) {
-            where.appendKeyGreaterOrEqStringValue(ENROLLMENT_ALIAS + ".enrollmentdate", query.formattedProgramStartDate());
+            where.appendKeyGreaterOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
+                    query.formattedProgramStartDate());
         }
         if (query.programEndDate() != null) {
-            where.appendKeyLessThanOrEqStringValue(ENROLLMENT_ALIAS + ".enrollmentdate", query.formattedProgramEndDate());
+            where.appendKeyLessThanOrEqStringValue(dot(ENROLLMENT_ALIAS, ENROLLMENT_DATE),
+                    query.formattedProgramEndDate());
         }
     }
 
@@ -111,20 +132,20 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
         switch (ouMode) {
             case SELECTED:
                 for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyStringValue(ORGUNIT_ALIAS + ".uid", orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
                 }
 
                 break;
             case DESCENDANTS:
                 for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyLikeStringValue(ORGUNIT_ALIAS + ".path", "%" + orgunit + "%");
+                    inner.appendOrKeyLikeStringValue(dot(ORGUNIT_ALIAS, PATH), "%" + orgunit + "%");
                 }
                 break;
             case CHILDREN:
                 for (String orgunit : query.orgUnits()) {
-                    inner.appendOrKeyStringValue(ORGUNIT_ALIAS + ".parent", orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, PARENT), orgunit);
                     // TODO Include orgunit?
-                    inner.appendOrKeyStringValue(ORGUNIT_ALIAS + ".uid", orgunit);
+                    inner.appendOrKeyStringValue(dot(ORGUNIT_ALIAS, UID), orgunit);
                 }
                 break;
         }
@@ -137,10 +158,10 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
     private static void appendQueryWhere(WhereClauseBuilder where, TrackedEntityInstanceQuery query) {
         if (query.query() != null) {
             for (String filterStr : query.query().getSqlFilters()) {
-                String sub = String.format("SELECT 1 FROM %s %s WHERE %s.%s = %s.%s AND %s.%s %s '%s'",
+                String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
                         TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
-                        TEAV_ALIAS, "trackedEntityInstance", TEI_ALIAS, "uid",
-                        TEAV_ALIAS, "value", query.query().operator().getSqlOperator(), filterStr);
+                        dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
+                        dot(TEAV_ALIAS, VALUE), query.query().operator().getSqlOperator(), filterStr);
                 where.appendExistsSubQuery(sub);
             }
         }
@@ -163,12 +184,16 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
 
     private static void appendFilterWhere(WhereClauseBuilder where, QueryItem item) {
         for (QueryFilter filter : item.filters()) {
-            String sub = String.format("SELECT 1 FROM %s %s WHERE %s.%s = %s.%s AND %s.%s = '%s' AND %s.%s %s '%s'",
+            String sub = String.format("SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s '%s'",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), TEAV_ALIAS,
-                    TEAV_ALIAS, "trackedEntityInstance", TEI_ALIAS, "uid",
-                    TEAV_ALIAS, "trackedEntityAttribute", item.item(),
-                    TEAV_ALIAS, "value", filter.operator().getSqlOperator(), filter.getSqlFilter());
+                    dot(TEAV_ALIAS, TRACKED_ENTITY_INSTANCE), dot(TEI_ALIAS, UID),
+                    dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), item.item(),
+                    dot(TEAV_ALIAS, VALUE), filter.operator().getSqlOperator(), filter.getSqlFilter());
             where.appendExistsSubQuery(sub);
         }
+    }
+
+    private static String dot(String item1, String item2) {
+        return item1 + "." + item2;
     }
 }

@@ -55,6 +55,7 @@ public final class SubQueryFilterConnector<R extends ReadOnlyCollectionRepositor
                 "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public R withThoseChildrenExactly(String linkTable, String linkParent, String linkChild, List<String> children) {
         RepositoryScope repositoryScope = null;
 

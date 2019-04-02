@@ -81,6 +81,6 @@ public class CollectionRepositoryOneMethodMockIntegrationShould extends SyncedDa
                 .one().withAllChildren().get();
         assertThat(combo.uid(), is(BIRTH_UID));
         assertThat(combo.categories().size(), is(2));
-        assertThat(combo.categoryOptionCombos().size(), is(1));
+        assertThat(combo.categoryOptionCombos().size(), is(2));
     }
 }

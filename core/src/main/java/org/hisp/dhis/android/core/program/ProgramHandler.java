@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -96,6 +98,17 @@ final class ProgramHandler extends IdentifiableSyncHandlerImpl<Program> {
         if (action == HandleAction.Update) {
             orphanCleaner.deleteOrphan(program);
         }
+    }
+
+    @Override
+    protected Collection<Program> beforeCollectionHandled(Collection<Program> programs) {
+        List<Program> filteredPrograms = new ArrayList<>(programs.size());
+        for (Program p: programs) {
+            if (!(p.programType() == ProgramType.WITH_REGISTRATION && p.trackedEntityType() == null)) {
+                filteredPrograms.add(p);
+            }
+        }
+        return filteredPrograms;
     }
 
     @Override

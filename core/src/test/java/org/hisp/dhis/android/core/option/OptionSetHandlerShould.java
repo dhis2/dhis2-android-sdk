@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
@@ -55,7 +56,7 @@ public class OptionSetHandlerShould {
     private OptionSet optionSet;
 
     @Mock
-    private IdentifiableSyncHandlerImpl<Option> optionHandler;
+    private SyncHandler<Option> optionHandler;
 
     @Mock
     private OrphanCleaner<OptionSet, Option> optionCleaner;

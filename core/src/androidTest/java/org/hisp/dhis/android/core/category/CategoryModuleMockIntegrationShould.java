@@ -90,7 +90,7 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
         assertThat(combo.name(), is("Births"));
         List<CategoryOptionCombo> optionCombos = combo.categoryOptionCombos();
         assertThat(optionCombos == null, is(false));
-        assertThat(optionCombos.size(), is(1));
+        assertThat(optionCombos.size(), is(2));
         assertThat(optionCombos.iterator().next().name(), is("Trained TBA, At PHU"));
     }
 
@@ -176,13 +176,13 @@ public class CategoryModuleMockIntegrationShould extends SyncedDatabaseMockInteg
     @Test
     public void allow_access_to_category_option_combos_without_children() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
-        assertThat(categoryOptionCombos.size(), is(3));
+        assertThat(categoryOptionCombos.size(), is(4));
     }
 
     @Test
     public void allow_access_to_category_option_combos_with_category_options() {
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.withAllChildren().get();
-        assertThat(categoryOptionCombos.size(), is(3));
+        assertThat(categoryOptionCombos.size(), is(4));
         for (CategoryOptionCombo categoryOptionCombo : categoryOptionCombos) {
             assertThat(categoryOptionCombo.categoryOptions() == null, is(false));
         }

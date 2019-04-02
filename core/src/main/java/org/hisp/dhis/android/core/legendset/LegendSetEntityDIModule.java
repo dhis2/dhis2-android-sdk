@@ -29,10 +29,14 @@
 package org.hisp.dhis.android.core.legendset;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -58,5 +62,11 @@ public final class LegendSetEntityDIModule {
     OrphanCleaner<LegendSet, Legend> legendCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(LegendTableInfo.TABLE_INFO.name(), LegendTableInfo.Columns.LEGEND_SET,
                 databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<LegendSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(LegendSetFields.LEGENDS, LegendChildrenAppender.create(databaseAdapter));
     }
 }

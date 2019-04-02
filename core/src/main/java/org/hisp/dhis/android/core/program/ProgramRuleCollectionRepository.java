@@ -70,4 +70,7 @@ public final class ProgramRuleCollectionRepository
         return cf.string(ProgramRuleFields.PROGRAM_STAGE);
     }
 
+    public ProgramRuleCollectionRepository withProgramRuleActions() {
+        return cf.withChild(ProgramRuleFields.PROGRAM_RULE_ACTIONS);
+    }
 }

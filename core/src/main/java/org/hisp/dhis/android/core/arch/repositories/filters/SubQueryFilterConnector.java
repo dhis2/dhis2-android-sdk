@@ -49,11 +49,26 @@ public final class SubQueryFilterConnector<R extends ReadOnlyCollectionRepositor
     }
 
     public R inLinkTable(String linkTable, String linkParent, String linkChild, List<String> children) {
-        String subQuery = String.format("SELECT DISTINCT %s FROM %s WHERE %s",
-                linkParent,
-                linkTable,
-                new WhereClauseBuilder().appendInKeyStringValues(linkChild, children).build());
+        WhereClauseBuilder clauseBuilder = new WhereClauseBuilder().appendInKeyStringValues(linkChild, children);
 
-        return newWithWrappedScope("IN", "(" + subQuery + ")");
+        return newWithWrappedScope("IN", "(" + String.format(
+                "SELECT DISTINCT %s FROM %s WHERE %s", linkParent, linkTable, clauseBuilder.build()) + ")");
+    }
+
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
+    public R withThoseChildrenExactly(String linkTable, String linkParent, String linkChild, List<String> children) {
+        RepositoryScope repositoryScope = null;
+
+        for (String child : children) {
+            String clause = new WhereClauseBuilder().appendKeyStringValue(linkChild, child).build();
+            String value = "(" + String.format("SELECT %s FROM %s WHERE %s ", linkParent, linkTable, clause) + ")";
+
+            repositoryScope = repositoryScope == null ? updatedUnwrappedScope("IN", value) :
+                    updatePassedScope("IN", value, repositoryScope);
+        }
+
+        return newWithPassedScope("IN", "(" + String.format(
+                "SELECT %s FROM %s WHERE 1 GROUP BY %s HAVING COUNT(*) = %s ",
+                linkParent, linkTable, linkParent, children.size()) + ")", repositoryScope);
     }
 }

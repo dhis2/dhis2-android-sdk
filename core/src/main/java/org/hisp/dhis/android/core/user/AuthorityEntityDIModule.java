@@ -31,8 +31,12 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,5 +57,11 @@ public final class AuthorityEntityDIModule implements ObjectWithoutUidEntityDIMo
     @Reusable
     public SyncHandler<Authority> handler(ObjectWithoutUidStore<Authority> store) {
         return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Authority>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

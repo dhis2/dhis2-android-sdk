@@ -51,14 +51,14 @@ public final class ForeignKeyViolationTableInfo {
     };
 
     static class Columns extends BaseModel.Columns {
-        private final static String FROM_TABLE = "fromTable";
-        private final static String FROM_COLUMN = "fromColumn";
-        private final static String TO_TABLE = "toTable";
-        private final static String TO_COLUMN = "toColumn";
-        private final static String NOT_FOUND_VALUE = "notFoundValue";
-        private final static String FROM_OBJECT_UID = "fromObjectUid";
-        private final static String FROM_OBJECT_ROW = "fromObjectRow";
-        private final static String CREATED = "created";
+        final static String FROM_TABLE = "fromTable";
+        final static String FROM_COLUMN = "fromColumn";
+        final static String TO_TABLE = "toTable";
+        final static String TO_COLUMN = "toColumn";
+        final static String NOT_FOUND_VALUE = "notFoundValue";
+        final static String FROM_OBJECT_UID = "fromObjectUid";
+        final static String FROM_OBJECT_ROW = "fromObjectRow";
+        final static String CREATED = "created";
 
         @Override
         public String[] all() {

@@ -29,10 +29,14 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,5 +61,12 @@ public final class OptionGroupEntityDIModule {
     @Reusable
     CollectionCleaner<OptionGroup> collectionCleaner(DatabaseAdapter databaseAdapter) {
         return new CollectionCleanerImpl<>(OptionGroupTableInfo.TABLE_INFO.name(), databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<OptionGroup>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(OptionGroupFields.OPTIONS,
+                OptionGroupOptionChildrenAppender.create(databaseAdapter));
     }
 }

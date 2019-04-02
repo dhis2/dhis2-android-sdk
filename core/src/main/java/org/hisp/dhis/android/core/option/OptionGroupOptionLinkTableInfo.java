@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.utils.Utils;
 
@@ -46,6 +47,11 @@ public final class OptionGroupOptionLinkTableInfo {
             return new Columns();
         }
     };
+
+    static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
+            OptionTableInfo.TABLE_INFO,
+            Columns.OPTION_GROUP,
+            Columns.OPTION);
 
     private OptionGroupOptionLinkTableInfo() {
     }

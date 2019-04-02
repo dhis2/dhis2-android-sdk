@@ -197,7 +197,7 @@ public class SQLStatementBuilderShould {
 
     @Test
     public void generate_select_where_with_limit_statement() {
-        assertThat(builder.selectWhereWithLimit("WH_CLAUSE", 3)).isEqualTo(
+        assertThat(builder.selectWhere("WH_CLAUSE", 3)).isEqualTo(
                 "SELECT * FROM Test_Table WHERE WH_CLAUSE LIMIT 3;"
         );
     }

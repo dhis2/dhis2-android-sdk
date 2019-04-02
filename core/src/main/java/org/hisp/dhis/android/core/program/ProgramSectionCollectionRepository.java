@@ -69,4 +69,12 @@ public final class ProgramSectionCollectionRepository
     public StringFilterConnector<ProgramSectionCollectionRepository> byFormName() {
         return cf.string(ProgramSectionFields.FORM_NAME);
     }
+
+    public ProgramSectionCollectionRepository withStyle() {
+        return cf.withChild(ProgramSectionFields.STYLE);
+    }
+
+    public ProgramSectionCollectionRepository withAttributes() {
+        return cf.withChild(ProgramSectionFields.ATTRIBUTES);
+    }
 }

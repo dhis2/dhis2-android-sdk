@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.common;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -49,8 +48,6 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     protected final SQLStatementBuilder builder;
     final StatementBinder<M> binder;
     final CursorModelFactory<M> modelFactory;
-
-    private static final String PAGING_KEY = BaseModel.Columns.ID;
 
     public ObjectStoreImpl(DatabaseAdapter databaseAdapter, SQLiteStatement insertStatement,
                            SQLStatementBuilder builder, StatementBinder<M> binder, CursorModelFactory<M> modelFactory) {
@@ -111,31 +108,16 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
-    public List<M> selectInitialPaging(String filterWhereClause, int pageSize) {
-        return selectAfterPaging(filterWhereClause, Long.MIN_VALUE, pageSize);
-    }
-
-    @Override
-    public List<M> selectAfterPaging(String filterWhereClause, long last, int pageSize) {
-        WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
-        whereClauseBuilder.appendComplexQuery(filterWhereClause);
-        whereClauseBuilder.appendKeyOperatorValue(PAGING_KEY, ">", Long.toString(last));
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClauseBuilder.build(), PAGING_KEY,
-                pageSize, true));
-
+    public List<M> selectWhere(String filterWhereClause, String orderByClause) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause));
         List<M> list = new ArrayList<>();
         addObjectsToCollection(cursor, list);
         return list;
     }
 
     @Override
-    public List<M> selectBeforePaging(String filterWhereClause, long last, int pageSize) {
-        WhereClauseBuilder whereClauseBuilder = new WhereClauseBuilder();
-        whereClauseBuilder.appendComplexQuery(filterWhereClause);
-        whereClauseBuilder.appendKeyOperatorValue(PAGING_KEY, "<", Long.toString(last));
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClauseBuilder.build(), PAGING_KEY,
-                pageSize, false));
-
+    public List<M> selectWhere(String filterWhereClause, String orderByClause, int limit) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause, limit));
         List<M> list = new ArrayList<>();
         addObjectsToCollection(cursor, list);
         return list;
@@ -143,7 +125,7 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
 
     @Override
     public M selectOneWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause, 1));
         return getFirstFromCursor(cursor);
     }
 

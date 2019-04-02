@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
@@ -66,12 +67,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     private List<M> getWithoutChildren() {
-        if (scope.hasFilters()) {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectWhere(whereClauseBuilder.getWhereClause(scope));
-        } else {
-            return store.selectAll();
-        }
+        return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy()));
     }
 
     @Override
@@ -87,9 +83,9 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
 
     @Override
     public LiveData<PagedList<M>> getPaged(int pageSize) {
-        DataSource.Factory<Long, M> factory = new DataSource.Factory<Long, M>() {
+        DataSource.Factory<M, M> factory = new DataSource.Factory<M, M>() {
             @Override
-            public DataSource<Long, M> create() {
+            public DataSource<M, M> create() {
                 return getDataSource();
             }
         };
@@ -97,20 +93,16 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
         return new LivePagedListBuilder<>(factory, pageSize).build();
     }
 
-    public DataSource<Long, M> getDataSource() {
-        return new RepositoryDataSource<>(store, getWhereClause());
+    public DataSource<M, M> getDataSource() {
+        return new RepositoryDataSource<>(store, scope);
     }
 
     @Override
     public int count() {
-        if (scope.hasFilters()) {
-            return store.countWhere(getWhereClause());
-        } else {
-            return store.count();
-        }
+        return store.countWhere(getWhereClause());
     }
 
-    private String getWhereClause() {
+    protected String getWhereClause() {
         return new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
     }
 

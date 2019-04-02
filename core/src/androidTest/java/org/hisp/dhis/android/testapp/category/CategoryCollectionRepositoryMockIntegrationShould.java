@@ -64,4 +64,13 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends SyncedDat
                 .get();
         assertThat(categories.size(), is(4));
     }
+
+    @Test
+    public void include_category_options_as_children() {
+        Category category = d2.categoryModule().categories
+                .withCategoryOptions()
+                .uid("vGs6omsRekv")
+                .get();
+        assertThat(category.categoryOptions().size(), is(1));
+    }
 }

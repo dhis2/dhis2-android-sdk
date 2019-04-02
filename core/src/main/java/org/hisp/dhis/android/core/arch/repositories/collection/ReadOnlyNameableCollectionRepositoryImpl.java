@@ -70,4 +70,20 @@ public class ReadOnlyNameableCollectionRepositoryImpl<M extends Model & Nameable
     public StringFilterConnector<R> byDisplayDescription() {
         return cf.string(Columns.DISPLAY_DESCRIPTION);
     }
+
+    public R orderByShortName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.SHORT_NAME, direction);
+    }
+
+    public R orderByShortDisplayName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.DISPLAY_SHORT_NAME, direction);
+    }
+
+    public R orderByDescription(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.DESCRIPTION, direction);
+    }
+
+    public R orderByDisplayDescription(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.DISPLAY_DESCRIPTION, direction);
+    }
 }

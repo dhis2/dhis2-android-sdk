@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadWithUidCollectionRepository;
@@ -36,7 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
@@ -146,13 +144,27 @@ public final class EventCollectionRepository
         return cf.string(EventTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
     }
 
-    public int countTrackedEntityInstances() {
-        if (scope.hasFilters()) {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.countTeisWhereEvents(whereClauseBuilder.getWhereClause(scope));
-        } else {
-            return store.countTeisWhereEvents(null);
-        }
+    public EventCollectionRepository withTrackedEntityDataValues() {
+        return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES);
     }
 
+    public EventCollectionRepository orderByEventDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.EVENT_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByDueDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.DUE_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByCompleteDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.COMPLETE_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.LAST_UPDATED, direction);
+    }
+
+    public int countTrackedEntityInstances() {
+        return store.countTeisWhereEvents(getWhereClause());
+    }
 }

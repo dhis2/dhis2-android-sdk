@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.program;
 import org.hisp.dhis.android.core.arch.db.TableInfo;
 import org.hisp.dhis.android.core.arch.db.tableinfos.LinkTableChildProjection;
 import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo;
 import org.hisp.dhis.android.core.utils.Utils;
 
 public final class ProgramSectionAttributeLinkTableInfo {
@@ -49,7 +50,7 @@ public final class ProgramSectionAttributeLinkTableInfo {
     };
 
     static final LinkTableChildProjection CHILD_PROJECTION = new LinkTableChildProjection(
-            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO,
+            TrackedEntityAttributeTableInfo.TABLE_INFO,
             Columns.PROGRAM_SECTION,
             Columns.ATTRIBUTE);
 

@@ -29,12 +29,16 @@
 package org.hisp.dhis.android.core;
 
 import org.hisp.dhis.android.core.category.CategoryModule;
+import org.hisp.dhis.android.core.constant.ConstantModule;
 import org.hisp.dhis.android.core.dataelement.DataElementModule;
 import org.hisp.dhis.android.core.dataset.DataSetModule;
 import org.hisp.dhis.android.core.datavalue.DataValueModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.event.EventModule;
+import org.hisp.dhis.android.core.indicator.IndicatorModule;
+import org.hisp.dhis.android.core.legendset.LegendSetModule;
 import org.hisp.dhis.android.core.maintenance.MaintenanceModule;
+import org.hisp.dhis.android.core.option.OptionModule;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule;
 import org.hisp.dhis.android.core.period.PeriodModule;
 import org.hisp.dhis.android.core.program.ProgramModule;
@@ -54,11 +58,15 @@ import dagger.Reusable;
 final class D2Modules {
 
     final CategoryModule category;
+    final ConstantModule constant;
     final DataElementModule dataElement;
     final DataSetModule dataSet;
+    final OptionModule option;
     final DataValueModule dataValue;
     final EnrollmentModule enrollment;
-    final EventModule events;
+    final EventModule event;
+    final IndicatorModule indcator;
+    final LegendSetModule legendSet;
     final MaintenanceModule maintenance;
     final ProgramModule program;
     final OrganisationUnitModule organisationUnit;
@@ -72,11 +80,15 @@ final class D2Modules {
 
     @Inject
     D2Modules(CategoryModule category,
+              ConstantModule constant,
               DataElementModule dataElement,
               DataSetModule dataSet,
+              OptionModule option,
               DataValueModule dataValue,
               EnrollmentModule enrollment,
-              EventModule events,
+              EventModule event,
+              IndicatorModule indicator,
+              LegendSetModule legendSet,
               MaintenanceModule maintenance,
               ProgramModule program,
               OrganisationUnitModule organisationUnit,
@@ -88,11 +100,15 @@ final class D2Modules {
               UserModule user,
               SmsModule sms) {
         this.category = category;
+        this.constant = constant;
         this.dataElement = dataElement;
+        this.option = option;
         this.dataSet = dataSet;
         this.dataValue = dataValue;
         this.enrollment = enrollment;
-        this.events = events;
+        this.event = event;
+        this.indcator = indicator;
+        this.legendSet = legendSet;
         this.maintenance = maintenance;
         this.program = program;
         this.organisationUnit = organisationUnit;

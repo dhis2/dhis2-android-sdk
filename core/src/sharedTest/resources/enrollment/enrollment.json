@@ -12,5 +12,9 @@
   "incidentDate": "2014-07-21T12:27:50.730",
   "status": "ACTIVE",
   "notes": [],
+  "coordinate": {
+    "latitude": 10.03,
+    "longitude": 11.11
+  },
   "attributes": []
 }

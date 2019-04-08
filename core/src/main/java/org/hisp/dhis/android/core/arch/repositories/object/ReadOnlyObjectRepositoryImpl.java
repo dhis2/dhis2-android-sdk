@@ -39,8 +39,8 @@ public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends Re
         implements ReadOnlyObjectRepository<M> {
 
     private final Map<String, ChildrenAppender<M>> childrenAppenders;
-    final RepositoryScope scope;
-    private final ObjectRepositoryFactory<R> repositoryFactory;
+    protected final RepositoryScope scope;
+    protected final ObjectRepositoryFactory<R> repositoryFactory;
 
     ReadOnlyObjectRepositoryImpl(Map<String, ChildrenAppender<M>> childrenAppenders,
                                  RepositoryScope scope,

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
 import java.util.Map;
@@ -47,5 +48,13 @@ public final class UserObjectRepository extends ReadOnlyOneObjectRepositoryImpl<
                          RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new UserObjectRepository(store, childrenAppenders, s));
+    }
+
+    public UserObjectRepository withUserCredentials() {
+        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserFields.USER_CREDENTIALS));
+    }
+
+    public UserObjectRepository withOrganisationUnits() {
+        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserFields.ORGANISATION_UNITS));
     }
 }

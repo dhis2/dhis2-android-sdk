@@ -67,7 +67,6 @@ public class TrackedEntityAttributeShould extends BaseObjectShould implements Ob
         assertThat(trackedEntityAttribute.inherit()).isFalse();
         assertThat(trackedEntityAttribute.optionSet().uid()).isEqualTo("xjA5E9MimMU");
         assertThat(trackedEntityAttribute.orgUnitScope()).isFalse();
-        assertThat(trackedEntityAttribute.searchScope()).isEqualTo(TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS);
         assertThat(trackedEntityAttribute.programScope()).isFalse();
         assertThat(trackedEntityAttribute.unique()).isFalse();
         assertThat(trackedEntityAttribute.valueType()).isEqualTo(ValueType.TEXT);

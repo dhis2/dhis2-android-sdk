@@ -42,7 +42,6 @@ public final class TrackedEntityAttributeFields {
     public static final String OPTION_SET = "optionSet";
     public static final String VALUE_TYPE = "valueType";
     public static final String EXPRESSION = "expression";
-    public static final String SEARCH_SCOPE = "searchScope";
     public static final String PROGRAM_SCOPE = "programScope";
     public static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
     public static final String GENERATED = "generated";
@@ -63,7 +62,6 @@ public final class TrackedEntityAttributeFields {
                     fh.<String>field(SORT_ORDER_IN_LIST_NO_PROGRAM),
                     fh.<ValueType>field(VALUE_TYPE),
                     fh.<String>field(EXPRESSION),
-                    fh.<TrackedEntityAttributeSearchScope>field(SEARCH_SCOPE),
                     fh.<Boolean>field(PROGRAM_SCOPE),
                     fh.<Boolean>field(DISPLAY_IN_LIST_NO_PROGRAM),
                     fh.<Boolean>field(GENERATED),

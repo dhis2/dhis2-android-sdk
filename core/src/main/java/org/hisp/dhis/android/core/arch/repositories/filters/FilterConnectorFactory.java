@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.CollectionReposit
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeOrderByItem;
 
 public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
@@ -74,5 +75,11 @@ public class FilterConnectorFactory<R extends ReadOnlyCollectionRepository<?>> {
 
     public R withChild(String child) {
         return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, child));
+    }
+
+    public R withOrderBy(String column, RepositoryScope.OrderByDirection direction) {
+        RepositoryScopeOrderByItem item = RepositoryScopeOrderByItem.builder().column(column)
+                .direction(direction).build();
+        return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item));
     }
 }

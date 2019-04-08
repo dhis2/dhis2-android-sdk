@@ -57,13 +57,22 @@ abstract class BaseFilterConnector<R extends ReadOnlyCollectionRepository<?>, V>
 
     abstract String wrapValue(V value);
 
-    private RepositoryScope updatedUnwrappedScope(String operator, String valueStr) {
+    RepositoryScope updatedUnwrappedScope(String operator, String valueStr) {
         return RepositoryScopeHelper.withFilterItem(scope,
                 RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build());
     }
 
     R newWithWrappedScope(String operator, V value) {
         return repositoryFactory.updated(updatedUnwrappedScope(operator, wrapValue(value)));
+    }
+
+    RepositoryScope updatePassedScope(String operator, String valueStr, RepositoryScope scope) {
+        return RepositoryScopeHelper.withFilterItem(scope,
+                RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build());
+    }
+
+    R newWithPassedScope(String operator, V value, RepositoryScope scope) {
+        return repositoryFactory.updated(updatePassedScope(operator, wrapValue(value), scope));
     }
 
     private RepositoryScope updatedUnwrappedScope(String whereClause) {

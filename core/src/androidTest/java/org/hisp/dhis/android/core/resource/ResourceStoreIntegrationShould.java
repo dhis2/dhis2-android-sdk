@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.resource;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
@@ -38,6 +36,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -64,13 +64,6 @@ public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstrac
                 .build();
     }
 
-    @Override
-    protected Resource buildObjectWithId() {
-        return ResourceSamples.getResource().toBuilder()
-                .id(1L)
-                .build();
-    }
-
     @Test
     public void return_last_updated() {
         store.insert(ResourceSamples.getResource());
@@ -78,5 +71,18 @@ public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstrac
 
         assertThat(lastUpdated).isEqualTo(BaseIdentifiableObject.DATE_FORMAT
                 .format(ResourceSamples.getResource().lastSynced()));
+    }
+
+    @Test
+    public void delete_resource() {
+        store.insert(ResourceSamples.getResource());
+
+        String lastUpdatedBefore = store.getLastUpdated(Resource.Type.PROGRAM);
+        assertThat(lastUpdatedBefore).isNotNull();
+
+        store.deleteResource(Resource.Type.PROGRAM);
+
+        String lastUpdatedAfter = store.getLastUpdated(Resource.Type.PROGRAM);
+        assertThat(lastUpdatedAfter).isNull();
     }
 }

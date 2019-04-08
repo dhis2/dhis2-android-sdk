@@ -38,9 +38,15 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class OrganisationUnitModule {
 
     public final OrganisationUnitCollectionRepository organisationUnits;
+    public final OrganisationUnitGroupCollectionRepository organisationUnitGroups;
+    public final OrganisationUnitLevelCollectionRepository organisationUnitLevels;
 
     @Inject
-    OrganisationUnitModule(OrganisationUnitCollectionRepository organisationUnits) {
+    OrganisationUnitModule(OrganisationUnitCollectionRepository organisationUnits,
+                           OrganisationUnitGroupCollectionRepository organisationUnitGroups,
+                           OrganisationUnitLevelCollectionRepository organisationUnitLevels) {
         this.organisationUnits = organisationUnits;
+        this.organisationUnitGroups = organisationUnitGroups;
+        this.organisationUnitLevels = organisationUnitLevels;
     }
 }

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Event> {
@@ -47,13 +47,6 @@ public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbst
     @Override
     protected Event buildObject() {
         return EventSamples.get();
-    }
-
-    @Override
-    protected Event buildObjectWithId() {
-        return EventSamples.get().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

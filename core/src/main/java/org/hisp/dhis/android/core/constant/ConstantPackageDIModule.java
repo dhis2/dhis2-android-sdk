@@ -29,11 +29,15 @@
 package org.hisp.dhis.android.core.constant;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.CollectionCleanerImpl;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,13 +49,13 @@ public final class ConstantPackageDIModule {
 
     @Provides
     @Reusable
-    IdentifiableObjectStore<Constant> constantStore(DatabaseAdapter databaseAdapter) {
+    IdentifiableObjectStore<Constant> store(DatabaseAdapter databaseAdapter) {
         return ConstantStore.create(databaseAdapter);
     }
 
     @Provides
     @Reusable
-    SyncHandler<Constant> constantHandler(ConstantHandler impl) {
+    SyncHandler<Constant> handler(ConstantHandler impl) {
         return impl;
     }
 
@@ -63,8 +67,14 @@ public final class ConstantPackageDIModule {
 
     @Provides
     @Reusable
-    ConstantService relationshipTypeService(Retrofit retrofit) {
+    ConstantService service(Retrofit retrofit) {
         return retrofit.create(ConstantService.class);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Constant>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 
     @Provides

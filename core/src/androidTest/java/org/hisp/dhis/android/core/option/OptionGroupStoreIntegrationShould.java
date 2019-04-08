@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.option;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.option.OptionGroupSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup> {
@@ -46,13 +46,6 @@ public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAb
     @Override
     protected OptionGroup buildObject() {
         return OptionGroupSamples.getOptionGroup();
-    }
-
-    @Override
-    protected OptionGroup buildObjectWithId() {
-        return OptionGroupSamples.getOptionGroup().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

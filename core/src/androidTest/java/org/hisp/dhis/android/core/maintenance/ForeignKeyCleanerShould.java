@@ -136,7 +136,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         List<ForeignKeyViolation> violationsToCompare = new ArrayList<>();
         for (ForeignKeyViolation violation : foreignKeyViolationList) {
-            violationsToCompare.add(violation.toBuilder().created(null).fromObjectRow(null).build());
+            violationsToCompare.add(violation.toBuilder().id(null).created(null).fromObjectRow(null).build());
         }
 
         assertThat(violationsToCompare.contains(categoryOptionComboViolation), is(true));
@@ -207,6 +207,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
             givenAMetadataInDatabase();
             User user = User.builder().uid("no_user_uid").build();
             UserCredentials userCredentials = UserCredentials.builder()
+                    .id(2L)
                     .uid("user_credential_uid1")
                     .user(user)
                     .build();
@@ -215,7 +216,8 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
                     UserCredentialsStoreImpl.create(d2.databaseAdapter());
             userCredentialsStore.insert(userCredentials);
 
-            assertThat(userCredentialsStore.selectAll().contains(userCredentials), is(true));
+            List<UserCredentials> ds = userCredentialsStore.selectAll();
+            assertThat(ds.contains(userCredentials), is(true));
 
             ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
 

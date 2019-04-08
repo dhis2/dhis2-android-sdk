@@ -48,7 +48,7 @@ public class TrackedEntityTypeShould extends BaseObjectShould implements ObjectS
     @Test
     public void map_from_json_string() throws IOException, ParseException {
         TrackedEntityType jsonTrackedEntityType = objectMapper.readValue(jsonStream, TrackedEntityType.class);
-        TrackedEntityType expectedTrackedEntityType = TrackedEntityTypeSamples.get();
+        TrackedEntityType expectedTrackedEntityType = TrackedEntityTypeSamples.get().toBuilder().id(null).build();
         assertThat(jsonTrackedEntityType).isEqualTo(expectedTrackedEntityType);
     }
 }

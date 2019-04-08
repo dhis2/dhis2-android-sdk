@@ -34,6 +34,7 @@ public class CategoryCategoryComboLinkSamples {
 
     public static CategoryCategoryComboLink getCategoryCategoryComboLink() {
         return CategoryCategoryComboLink.builder()
+                .id(1L)
                 .categoryCombo("category_combo")
                 .category("category")
                 .sortOrder(3)

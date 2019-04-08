@@ -56,11 +56,21 @@ public class ProgramSectionCollectionRepositoryMockIntegrationShould extends Syn
     public void include_object_style_as_children() {
         ProgramSection programSection =
                 d2.programModule().programSections
-                        .one()
-                        .withAllChildren().get();
+                        .withStyle()
+                        .one().get();
 
         assertThat(programSection.style().icon(), is("section-icon"));
         assertThat(programSection.style().color(), is("#555"));
+    }
+
+    @Test
+    public void include_attributes_children() {
+        ProgramSection programSection =
+                d2.programModule().programSections
+                        .withAttributes()
+                        .one().get();
+
+        assertThat(programSection.attributes().size(), is(1));
     }
 
     @Test

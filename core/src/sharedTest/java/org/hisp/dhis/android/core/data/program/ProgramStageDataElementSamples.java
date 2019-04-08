@@ -41,6 +41,7 @@ public class ProgramStageDataElementSamples {
 
         fillIdentifiableProperties(builder);
         builder
+                .id(1L)
                 .displayInReports(true)
                 .dataElement(DataElement.builder().uid("data_element").build())
                 .compulsory(false)

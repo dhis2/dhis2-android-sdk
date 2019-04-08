@@ -40,7 +40,13 @@ public interface ObjectStore<M> extends DeletableStore {
 
     List<M> selectWhere(String whereClause);
 
+    List<M> selectWhere(String filterWhereClause, String orderByClause);
+
+    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+
     M selectOneWhere(String whereClause);
+
+    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
 
     M selectFirst();
 

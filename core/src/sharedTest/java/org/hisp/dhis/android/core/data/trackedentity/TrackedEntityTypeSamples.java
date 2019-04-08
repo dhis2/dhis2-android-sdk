@@ -38,6 +38,7 @@ public class TrackedEntityTypeSamples {
 
     public static TrackedEntityType get() {
         return TrackedEntityType.builder()
+                .id(1L)
                 .uid("nEenWmSyUEp")
                 .name("Person")
                 .displayName("Person")

@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.category;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.category.CategoryOptionComboCategoryOptionLinkSamples;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class CategoryOptionComboCategoryOptionLinkStoreIntegrationShould
@@ -61,13 +61,6 @@ public class CategoryOptionComboCategoryOptionLinkStoreIntegrationShould
     protected CategoryOptionComboCategoryOptionLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
                 .categoryOptionCombo("new_category_option_combo")
-                .build();
-    }
-
-    @Override
-    protected CategoryOptionComboCategoryOptionLink buildObjectWithId() {
-        return buildObject().toBuilder()
-                .id(1L)
                 .build();
     }
 }

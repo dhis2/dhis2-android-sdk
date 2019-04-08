@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.testapp.event;
 
-import androidx.test.runner.AndroidJUnit4;
-
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
@@ -40,6 +39,8 @@ import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -90,7 +91,7 @@ public class EventCollectionRepositoryMockIntegrationShould extends SyncedDataba
     public void filter_by_last_updated() throws ParseException {
         List<Event> events =
                 d2.eventModule().events
-                        .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-09-14T22:26:39.094"))
+                        .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-01-01T22:26:39.094"))
                         .get();
 
         assertThat(events.size(), is(1));
@@ -253,7 +254,52 @@ public class EventCollectionRepositoryMockIntegrationShould extends SyncedDataba
     @Test
     public void include_tracked_entity_data_values_as_children() {
         Event event = d2.eventModule().events
-                .uid("single1").withAllChildren().get();
+                .withTrackedEntityDataValues().uid("single1").get();
         assertThat(event.trackedEntityDataValues().size(), is(6));
+    }
+
+    @Test
+    public void order_by_due_date() {
+        List<Event> events = d2.eventModule().events
+                .orderByDueDate(RepositoryScope.OrderByDirection.ASC)
+                .get();
+        assertThat(events.get(0).uid(), is("event1"));
+        assertThat(events.get(1).uid(), is("event2"));
+        assertThat(events.get(2).uid(), is("single1"));
+        assertThat(events.get(3).uid(), is("single2"));
+    }
+
+    @Test
+    public void order_by_last_updated() {
+        List<Event> events = d2.eventModule().events
+                .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
+                .get();
+        assertThat(events.get(0).uid(), is("event1"));
+        assertThat(events.get(1).uid(), is("event2"));
+        assertThat(events.get(2).uid(), is("single2"));
+        assertThat(events.get(3).uid(), is("single1"));
+    }
+
+    @Test
+    public void order_by_event_date_and_last_updated() {
+        List<Event> events = d2.eventModule().events
+                .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
+                .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
+                .get();
+        assertThat(events.get(0).uid(), is("event1"));
+        assertThat(events.get(1).uid(), is("event2"));
+        assertThat(events.get(2).uid(), is("single2"));
+        assertThat(events.get(3).uid(), is("single1"));
+    }
+
+    @Test
+    public void order_by_complete_date() {
+        List<Event> events = d2.eventModule().events
+                .orderByCompleteDate(RepositoryScope.OrderByDirection.ASC)
+                .get();
+        assertThat(events.get(0).uid(), is("event2"));
+        assertThat(events.get(1).uid(), is("single1"));
+        assertThat(events.get(2).uid(), is("single2"));
+        assertThat(events.get(3).uid(), is("event1"));
     }
 }

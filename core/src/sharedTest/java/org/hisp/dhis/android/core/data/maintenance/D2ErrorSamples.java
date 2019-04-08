@@ -36,6 +36,7 @@ public class D2ErrorSamples {
 
     public static D2Error get() {
         return D2Error.builder()
+                .id(1L)
                 .resourceType("Program")
                 .uid("test_uid")
                 .url("http://dhis2.org/api/programs/test_uid")

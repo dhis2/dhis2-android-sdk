@@ -35,6 +35,7 @@ public class UserOrganisationUnitLinkSamples {
 
     public static UserOrganisationUnitLink getUserOrganisationUnitLink() {
         return UserOrganisationUnitLink.builder()
+                .id(1L)
                 .user("user")
                 .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())
                 .organisationUnit("organisation_unit")

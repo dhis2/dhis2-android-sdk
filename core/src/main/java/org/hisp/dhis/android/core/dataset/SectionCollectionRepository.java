@@ -73,4 +73,12 @@ public final class SectionCollectionRepository
     public StringFilterConnector<SectionCollectionRepository> byDataSetUid() {
         return cf.string(SectionFields.DATA_SET);
     }
+
+    public SectionCollectionRepository withDataElements() {
+        return cf.withChild(SectionFields.DATA_ELEMENTS);
+    }
+
+    public SectionCollectionRepository withGreyedFields() {
+        return cf.withChild(SectionFields.GREYED_FIELDS);
+    }
 }

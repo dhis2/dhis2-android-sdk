@@ -290,7 +290,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_object_style_as_children_in_object_repository_when_explicitly_selected() {
         Program program = d2.programModule().programs
-                .withObjectStyle()
+                .withStyle()
                 .one().get();
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
@@ -307,7 +307,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     @Test
     public void include_object_style_as_children_in_collection_repository_when_explicitly_selected() {
         Program program = d2.programModule().programs
-                .withObjectStyle()
+                .withStyle()
                 .get().get(0);
         assertThat(program.style().icon(), is("program-icon"));
         assertThat(program.style().color(), is("#333"));
@@ -364,7 +364,7 @@ public class ProgramCollectionRepositoryMockIntegrationShould extends SyncedData
     public void include_program_tracked_entity_attributes_as_children() {
         Program program = d2.programModule().programs
                 .withProgramTrackedEntityAttributes().one().get();
-        assertThat(program.programTrackedEntityAttributes().size(), is(1));
+        assertThat(program.programTrackedEntityAttributes().size(), is(2));
         assertThat(program.programTrackedEntityAttributes().get(0).name(), is("Child Programme Gender"));
     }
 

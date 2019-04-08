@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.UserRoleSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class UserRoleStoreIntegrationShould extends
@@ -47,13 +47,6 @@ public class UserRoleStoreIntegrationShould extends
     @Override
     protected UserRole buildObject() {
         return UserRoleSamples.getUserRole();
-    }
-
-    @Override
-    protected UserRole buildObjectWithId() {
-        return UserRoleSamples.getUserRole().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

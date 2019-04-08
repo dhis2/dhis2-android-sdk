@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.resource;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
@@ -37,8 +36,11 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ResourceTypeColumnAdapter;
 
 import java.util.Date;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class Resource implements Model {
@@ -66,7 +68,8 @@ public abstract class Resource implements Model {
     }
 
     @Nullable
-    public abstract String resourceType();
+    @ColumnAdapter(ResourceTypeColumnAdapter.class)
+    public abstract Resource.Type resourceType();
 
     @Nullable
     @ColumnAdapter(DbDateColumnAdapter.class)
@@ -86,7 +89,7 @@ public abstract class Resource implements Model {
     public abstract static class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder resourceType(String resourceType);
+        public abstract Builder resourceType(Resource.Type resourceType);
 
         public abstract Builder lastSynced(Date lastSynced);
 

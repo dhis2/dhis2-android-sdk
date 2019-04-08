@@ -35,6 +35,7 @@ public class ValueTypeDeviceRenderingSamples {
 
     public static ValueTypeDeviceRendering getValueTypeDeviceRendering() {
         return ValueTypeDeviceRendering.builder()
+                .id(1L)
                 .uid("uid")
                 .objectTable("object_table")
                 .deviceType("device_type")

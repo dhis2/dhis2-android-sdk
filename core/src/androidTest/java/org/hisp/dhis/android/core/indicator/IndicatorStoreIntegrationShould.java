@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.indicator.IndicatorSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Indicator> {
@@ -46,13 +46,6 @@ public class IndicatorStoreIntegrationShould extends IdentifiableObjectStoreAbst
     @Override
     protected Indicator buildObject() {
         return IndicatorSamples.getIndicator();
-    }
-
-    @Override
-    protected Indicator buildObjectWithId() {
-        return IndicatorSamples.getIndicator().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

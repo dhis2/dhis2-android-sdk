@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.program;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramTrackedEntityAttributeSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramTrackedEntityAttributeStoreIntegrationShould
@@ -47,13 +47,6 @@ public class ProgramTrackedEntityAttributeStoreIntegrationShould
     @Override
     protected ProgramTrackedEntityAttribute buildObject() {
         return ProgramTrackedEntityAttributeSamples.getProgramTrackedEntityAttribute();
-    }
-
-    @Override
-    protected ProgramTrackedEntityAttribute buildObjectWithId() {
-        return ProgramTrackedEntityAttributeSamples.getProgramTrackedEntityAttribute().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

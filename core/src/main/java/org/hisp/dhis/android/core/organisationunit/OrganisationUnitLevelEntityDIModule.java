@@ -31,9 +31,13 @@ package org.hisp.dhis.android.core.organisationunit;
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -68,5 +72,11 @@ public final class OrganisationUnitLevelEntityDIModule implements IdentifiableEn
     ListCallFactory<OrganisationUnitLevel> organisationUnitLevelCallFactory(
             OrganisationUnitLevelEndpointCallFactory impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<OrganisationUnitLevel>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

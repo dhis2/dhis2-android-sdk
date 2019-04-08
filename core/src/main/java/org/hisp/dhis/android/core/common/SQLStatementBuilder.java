@@ -49,7 +49,7 @@ public class SQLStatementBuilder {
     private final static String FROM = " FROM ";
     private final static String SELECT = "SELECT ";
     private final static String AND = " AND ";
-    private final static String ORDER_BY = " ORDER BY " + SORT_ORDER;
+    private final static String ORDER_BY = " ORDER BY ";
 
     @SuppressWarnings("PMD.UseVarargs")
     SQLStatementBuilder(String tableName, String[] columns, String[] updateWhereColumns, boolean hasSortOrder) {
@@ -119,6 +119,14 @@ public class SQLStatementBuilder {
         return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
 
+    public String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
+
+        return SELECT + "*" +
+                FROM + tableName +
+                ORDER_BY + orderingColumName + " " + orderingType.name() +
+                LIMIT + "1;";
+    }
+
     public String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid,
                                               String whereClause) {
         String whereClauseStr = whereClause == null ? "" : AND + whereClause;
@@ -132,7 +140,7 @@ public class SQLStatementBuilder {
     }
 
     private String orderBySortOrderClause() {
-        return hasSortOrder ? ORDER_BY : "";
+        return hasSortOrder ? ORDER_BY + SORT_ORDER : "";
     }
 
     String selectByUid() {
@@ -143,12 +151,20 @@ public class SQLStatementBuilder {
         return SELECT + "*" + FROM + tableName + WHERE + whereClause + ";";
     }
 
-    String selectWhereWithLimit(String whereClause, int limit) {
+    String selectWhere(String whereClause, int limit) {
         return selectWhere(whereClause + LIMIT + limit);
     }
 
+    String selectWhere(String whereClause, String orderByClause) {
+        return selectWhere(whereClause + ORDER_BY + orderByClause);
+    }
+
+    String selectWhere(String whereClause, String orderByClause, int limit) {
+        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit);
+    }
+
     String selectAll() {
-        return  SELECT + commaSeparatedColumns() + FROM + tableName;
+        return  SELECT + "*" + FROM + tableName;
     }
 
     String count() {

@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
@@ -40,6 +42,11 @@ import org.hisp.dhis.android.core.common.ObjectStore;
 
 import java.util.List;
 import java.util.Map;
+
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
         implements ReadOnlyCollectionRepository<M> {
@@ -60,12 +67,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     private List<M> getWithoutChildren() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.selectAll();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectWhere(whereClauseBuilder.getWhereClause(scope));
-        }
+        return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy()));
     }
 
     @Override
@@ -80,13 +82,28 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     @Override
+    public LiveData<PagedList<M>> getPaged(int pageSize) {
+        DataSource.Factory<M, M> factory = new DataSource.Factory<M, M>() {
+            @Override
+            public DataSource<M, M> create() {
+                return getDataSource();
+            }
+        };
+
+        return new LivePagedListBuilder<>(factory, pageSize).build();
+    }
+
+    public DataSource<M, M> getDataSource() {
+        return new RepositoryDataSource<>(store, scope, childrenAppenders);
+    }
+
+    @Override
     public int count() {
-        if (scope.filters().isEmpty() && scope.complexFilters().isEmpty()) {
-            return store.count();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.countWhere(whereClauseBuilder.getWhereClause(scope));
-        }
+        return store.countWhere(getWhereClause());
+    }
+
+    protected String getWhereClause() {
+        return new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
     }
 
     public R withAllChildren() {

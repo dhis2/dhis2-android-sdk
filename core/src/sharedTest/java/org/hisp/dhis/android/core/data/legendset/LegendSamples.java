@@ -40,6 +40,7 @@ public class LegendSamples {
 
         fillIdentifiableProperties(legendBuilder);
         legendBuilder
+                .id(1L)
                 .startValue(30.5)
                 .endValue(40.0)
                 .color("#d9f0a3")

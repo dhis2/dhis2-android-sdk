@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitGroupSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class OrganisationUnitGroupStoreIntegrationShould
@@ -47,13 +47,6 @@ public class OrganisationUnitGroupStoreIntegrationShould
     @Override
     protected OrganisationUnitGroup buildObject() {
         return OrganisationUnitGroupSamples.getOrganisationUnitGroup();
-    }
-
-    @Override
-    protected OrganisationUnitGroup buildObjectWithId() {
-        return buildObject().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

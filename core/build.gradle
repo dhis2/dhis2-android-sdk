@@ -36,13 +36,14 @@ ext {
             buildToolsVersion: "28.0.3",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
-            versionCode      : 124,
-            versionName      : "0.14.5-SNAPSHOT"
+            versionCode      : 126,
+            versionName      : "0.15.1-SNAPSHOT"
     ]
 
     libraries = [
             // android
             support         : '1.0.0-beta01',
+            paging          : '2.1.0',
 
             // java
             jackson         : "2.8.5",
@@ -57,6 +58,7 @@ ext {
             findbugs        : "3.0.0",
 
             // test dependencies
+            coretesting     : "1.1.1",
             junit           : "4.12",
             assertj         : "3.11.1",
             mockito         : "2.24.5",
@@ -65,6 +67,7 @@ ext {
             testrunner      : '1.1.0-alpha4',
             equalsverifier  : "2.1.8",
             stetho          : "1.5.0",
+            livedatatesting : "1.1.0",
 
             // plugins
             errorpronecore  : "2.0.15",
@@ -150,6 +153,8 @@ dependencies {
     // Support libraries
     api "androidx.annotation:annotation:${libraries.support}"
 
+    api "android.arch.paging:runtime:${libraries.paging}"
+
     // Google's auto-value. Annotations are used only during compilation time, as well as
 
     // annotation processor which hoops up into compilation process
@@ -202,6 +207,8 @@ dependencies {
     // Android test dependencies
     androidTestImplementation "org.mockito:mockito-core:${libraries.mockito}"
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:${libraries.okhttp}"
+    androidTestImplementation "android.arch.core:core-testing:${libraries.coretesting}"
+    androidTestImplementation "com.jraska.livedata:testing:${libraries.livedatatesting}"
     androidTestImplementation "androidx.test:runner:${libraries.testrunner}"
     androidTestImplementation "com.squareup.okhttp3:logging-interceptor:${libraries.okhttp}"
     androidTestImplementation("com.google.truth:truth:${libraries.truth}") {

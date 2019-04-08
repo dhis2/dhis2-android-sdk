@@ -56,8 +56,8 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     public void include_program_indicators_as_children() {
         ProgramStageSection stageSections =
                 d2.programModule().programStageSections
-                        .one()
-                        .withAllChildren().get();
+                        .withProgramIndicators()
+                        .one().get();
 
         assertThat(stageSections.programIndicators().size(), is(1));
     }
@@ -66,8 +66,8 @@ public class ProgramStageSectionCollectionRepositoryMockIntegrationShould extend
     public void include_data_elements_as_children() {
         ProgramStageSection stageSections =
                 d2.programModule().programStageSections
-                        .one()
-                        .withAllChildren().get();
+                        .withDataElements()
+                        .one().get();
 
         assertThat(stageSections.dataElements().size(), is(1));
         assertThat(stageSections.dataElements().get(0).name(), is("MCH ANC Visit"));

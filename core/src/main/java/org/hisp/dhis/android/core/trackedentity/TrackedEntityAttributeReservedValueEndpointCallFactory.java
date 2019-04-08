@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactoryImpl;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
-import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceCallFetcher;
+import org.hisp.dhis.android.core.calls.fetchers.ListNoResourceWithErrorCatcherCallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;
 import org.hisp.dhis.android.core.common.GenericCallData;
 
@@ -65,7 +65,8 @@ public final class TrackedEntityAttributeReservedValueEndpointCallFactory
     protected CallFetcher<TrackedEntityAttributeReservedValue> fetcher(
             final TrackedEntityAttributeReservedValueQuery query) {
 
-        return new ListNoResourceCallFetcher<TrackedEntityAttributeReservedValue>(apiCallExecutor) {
+        return new ListNoResourceWithErrorCatcherCallFetcher<TrackedEntityAttributeReservedValue>(
+                apiCallExecutor, new TrackedEntityAttributeReservedValueCallErrorCatcher()) {
             @Override
             protected retrofit2.Call<List<TrackedEntityAttributeReservedValue>> getCall() {
                 if (query.organisationUnit() == null) {

@@ -55,4 +55,12 @@ public final class CategoryComboCollectionRepository
     public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {
         return cf.bool(CategoryComboFields.IS_DEFAULT);
     }
+
+    public CategoryComboCollectionRepository withCategories() {
+        return cf.withChild(CategoryComboFields.CATEGORIES);
+    }
+
+    public CategoryComboCollectionRepository withCategoryOptionCombos() {
+        return cf.withChild(CategoryComboFields.CATEGORY_OPTION_COMBOS);
+    }
 }

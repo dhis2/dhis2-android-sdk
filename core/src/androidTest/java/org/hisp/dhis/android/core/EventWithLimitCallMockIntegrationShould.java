@@ -74,7 +74,7 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 53;
+        int eventLimitByOrgUnit = 1;
 
         givenAMetadataInDatabase();
 

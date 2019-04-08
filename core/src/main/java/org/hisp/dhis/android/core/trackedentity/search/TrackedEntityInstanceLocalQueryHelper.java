@@ -29,18 +29,20 @@
 package org.hisp.dhis.android.core.trackedentity.search;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.data.api.OuMode;
-import org.hisp.dhis.android.core.enrollment.EnrollmentFields;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
+import static org.hisp.dhis.android.core.common.State.SYNCED;
+import static org.hisp.dhis.android.core.common.State.TO_DELETE;
+import static org.hisp.dhis.android.core.common.State.TO_POST;
+import static org.hisp.dhis.android.core.common.State.TO_UPDATE;
 import static org.hisp.dhis.android.core.enrollment.EnrollmentFields.ENROLLMENT_DATE;
 import static org.hisp.dhis.android.core.enrollment.EnrollmentFields.PROGRAM;
-import static org.hisp.dhis.android.core.enrollment.EnrollmentStatus.ACTIVE;
-import static org.hisp.dhis.android.core.enrollment.EnrollmentStatus.COMPLETED;
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PARENT;
 import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitFields.PATH;
 import static org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueFields.VALUE;
@@ -56,7 +58,11 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
 
     static String getSqlQuery(TrackedEntityInstanceQuery query) {
 
-        String queryStr = "SELECT " + TEI_ALIAS + ".uid FROM " +
+        String teiUid = dot(TEI_ALIAS, "uid");
+        String teiState = dot(TEI_ALIAS, BaseDataModel.Columns.STATE);
+        String teiLastUpdated = dot(TEI_ALIAS, "lastUpdated");
+
+        String queryStr = "SELECT " + teiUid + ", " + teiState + ", " + teiLastUpdated + " FROM " +
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name() + " " + TEI_ALIAS;
 
         WhereClauseBuilder where = new WhereClauseBuilder();
@@ -86,17 +92,14 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
             queryStr += " WHERE " + where.build();
         }
 
+        // TODO In case a program uid is provided, the server orders by enrollmentStatus.
+
         // TODO Paging
 
-        if (hasProgram(query)) {
-            String enrollStatus = dot(ENROLLMENT_ALIAS, EnrollmentFields.STATUS);
-            queryStr += " ORDER BY CASE WHEN " + enrollStatus + " = '" + ACTIVE + "' THEN 1 " +
-                    "WHEN " + enrollStatus + " = '" + COMPLETED + "' THEN 2 ELSE 3 END ASC, " +
-                    TEI_ALIAS + ".lastUpdated DESC ";
-        } else {
-            queryStr += " ORDER BY " + TEI_ALIAS + ".lastUpdated DESC";
-        }
-
+        queryStr += " ORDER BY CASE WHEN " + teiState + " IN ('" + TO_POST + "','" + TO_UPDATE + "') THEN 1 " +
+                "WHEN " + teiState + " = '" + TO_DELETE + "' THEN 2 " +
+                "WHEN " + teiState + " = '" + SYNCED + "' THEN 3 ELSE 4 END ASC, " +
+                teiLastUpdated + " DESC ";
 
         return queryStr;
     }

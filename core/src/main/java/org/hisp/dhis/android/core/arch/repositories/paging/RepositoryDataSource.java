@@ -29,10 +29,15 @@ package org.hisp.dhis.android.core.arch.repositories.paging;
 
 import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
+
+import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.paging.ItemKeyedDataSource;
@@ -41,17 +46,22 @@ public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSo
 
     private final ObjectStore<M> store;
     private final RepositoryScope scope;
+    private final Map<String, ChildrenAppender<M>> childrenAppenders;
 
-    public RepositoryDataSource(ObjectStore<M> store, RepositoryScope scope) {
+    public RepositoryDataSource(ObjectStore<M> store,
+                                RepositoryScope scope,
+                                Map<String, ChildrenAppender<M>> childrenAppenders) {
         this.store = store;
         this.scope = scope;
+        this.childrenAppenders = childrenAppenders;
     }
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<M> params, @NonNull LoadInitialCallback<M> callback) {
         String whereClause = new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
-        callback.onResult(store.selectWhere(whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy()), params.requestedLoadSize));
+        List<M> withoutChildren = store.selectWhere(whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()), params.requestedLoadSize);
+        callback.onResult(appendChildren(withoutChildren));
     }
 
     @Override
@@ -69,13 +79,18 @@ public final class RepositoryDataSource<M extends Model> extends ItemKeyedDataSo
         OrderByClauseBuilder.addSortingClauses(whereClauseBuilder, scope.orderBy(),
                 params.key.toContentValues(), reversed);
         String whereClause = new WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope);
-        callback.onResult(store.selectWhere(whereClause, OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
-                params.requestedLoadSize));
+        List<M> withoutChildren = store.selectWhere(whereClause, OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
+                params.requestedLoadSize);
+        callback.onResult(appendChildren(withoutChildren));
     }
 
     @NonNull
     @Override
     public M getKey(@NonNull M item) {
         return item;
+    }
+
+    private List<M> appendChildren(List<M> withoutChildren) {
+        return ChildrenAppenderExecutor.appendInObjectCollection(withoutChildren, childrenAppenders, scope.children());
     }
 }

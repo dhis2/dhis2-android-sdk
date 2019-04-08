@@ -86,4 +86,8 @@ public final class DataElementCollectionRepository
     public StringFilterConnector<DataElementCollectionRepository> byCategoryComboUid() {
         return cf.string(DataElementFields.CATEGORY_COMBO);
     }
+
+    public DataElementCollectionRepository withStyle() {
+        return cf.withChild(DataElementFields.STYLE);
+    }
 }

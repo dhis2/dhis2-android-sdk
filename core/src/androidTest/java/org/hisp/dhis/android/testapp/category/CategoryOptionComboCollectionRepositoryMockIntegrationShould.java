@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.testapp.category;
 
+import com.google.common.collect.Lists;
+
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
@@ -45,8 +47,9 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
 
     @Test
     public void find_all() {
-        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
-        assertThat(categoryOptionCombos.size(), is(3));
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .withCategoryOptions().get();
+        assertThat(categoryOptionCombos.size(), is(4));
     }
 
     @Test
@@ -54,7 +57,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .get();
-        assertThat(categoryOptionCombos.size(), is(1));
+        assertThat(categoryOptionCombos.size(), is(2));
     }
 
     @Test
@@ -63,6 +66,46 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
                 .byCategoryComboUid().eq("p0KPaWEg3cf")
                 .get();
         assertThat(categoryOptionCombos.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_category_option() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_category_option_list() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV", "uZUnebiT5DI"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(1));
+    }
+
+    @Test
+    public void not_find_combos_when_filter_by_less_options_than_they_have() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(0));
+    }
+
+    @Test
+    public void not_find_combos_when_filter_by_more_options_than_they_have() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV", "uZUnebiT5DI"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(0));
+    }
+
+    @Test
+    public void not_find_combos_when_no_matching_options() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(0));
     }
 
     @Test

@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteIdentifiableCollectionRepository;
@@ -54,6 +51,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM;
@@ -224,4 +223,7 @@ public final class RelationshipCollectionRepository
         return cf.string(RelationshipTableInfo.Columns.RELATIONSHIP_TYPE);
     }
 
+    public RelationshipCollectionRepository withItems() {
+        return cf.withChild(RelationshipFields.ITEMS);
+    }
 }

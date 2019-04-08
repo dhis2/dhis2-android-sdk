@@ -112,4 +112,12 @@ public final class TrackedEntityInstanceCollectionRepository
     public EnumFilterConnector<TrackedEntityInstanceCollectionRepository, State> byState() {
         return cf.enumC(BaseDataModel.Columns.STATE);
     }
+
+    public TrackedEntityInstanceCollectionRepository withEnrollments() {
+        return cf.withChild(TrackedEntityInstanceFields.ENROLLMENTS);
+    }
+
+    public TrackedEntityInstanceCollectionRepository withTrackedEntityAttributeValues() {
+        return cf.withChild(TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES);
+    }
 }

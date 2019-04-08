@@ -210,4 +210,52 @@ public class DataSetCollectionRepositoryMockIntegrationShould extends SyncedData
                 .get();
         assertThat(dataSets.size(), is(1));
     }
+
+    @Test
+    public void include_style_as_children() {
+        DataSet dataSet = d2.dataSetModule().dataSets
+                .withStyle()
+                .one().get();
+        assertThat(dataSet.style().icon(), is("my-icon-name"));
+    }
+
+    @Test
+    public void include_sections_as_children() {
+        DataSet dataSet = d2.dataSetModule().dataSets
+                .withSections()
+                .one().get();
+        assertThat(dataSet.sections().size(), is(1));
+    }
+
+    @Test
+    public void include_compulsory_data_element_operands_as_children() {
+        DataSet dataSet = d2.dataSetModule().dataSets
+                .withCompulsoryDataElementOperands()
+                .one().get();
+        assertThat(dataSet.compulsoryDataElementOperands().size(), is(1));
+    }
+
+    @Test
+    public void include_data_input_periods_as_children() {
+        DataSet dataSet = d2.dataSetModule().dataSets
+                .withDataInputPeriods()
+                .one().get();
+        assertThat(dataSet.dataInputPeriods().size(), is(1));
+    }
+
+    @Test
+    public void include_data_set_elements_as_children() {
+        DataSet dataSet = d2.dataSetModule().dataSets
+                .withDataSetElements()
+                .one().get();
+        assertThat(dataSet.dataSetElements().size(), is(1));
+    }
+
+    @Test
+    public void include_indicators_as_children() {
+        DataSet dataSet = d2.dataSetModule().dataSets
+                .withIndicators()
+                .one().get();
+        assertThat(dataSet.indicators().size(), is(1));
+    }
 }

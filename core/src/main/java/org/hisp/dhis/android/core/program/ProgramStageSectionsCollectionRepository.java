@@ -69,4 +69,12 @@ public final class ProgramStageSectionsCollectionRepository extends ReadOnlyIden
     public StringFilterConnector<ProgramStageSectionsCollectionRepository> byMobileRenderType() {
         return cf.string(ProgramStageSectionTableInfo.Columns.MOBILE_RENDER_TYPE);
     }
+
+    public ProgramStageSectionsCollectionRepository withProgramIndicators() {
+        return cf.withChild(ProgramStageSectionFields.PROGRAM_INDICATORS);
+    }
+
+    public ProgramStageSectionsCollectionRepository withDataElements() {
+        return cf.withChild(ProgramStageSectionFields.DATA_ELEMENTS);
+    }
 }

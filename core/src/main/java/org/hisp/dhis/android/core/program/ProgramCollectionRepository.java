@@ -175,7 +175,7 @@ public final class ProgramCollectionRepository
                 uids);
     }
 
-    public ProgramCollectionRepository withObjectStyle() {
+    public ProgramCollectionRepository withStyle() {
         return cf.withChild(ProgramFields.STYLE);
     }
 

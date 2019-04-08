@@ -144,6 +144,10 @@ public final class EventCollectionRepository
         return cf.string(EventTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
     }
 
+    public EventCollectionRepository withTrackedEntityDataValues() {
+        return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES);
+    }
+
     public EventCollectionRepository orderByEventDate(RepositoryScope.OrderByDirection direction) {
         return cf.withOrderBy(EventFields.EVENT_DATE, direction);
     }

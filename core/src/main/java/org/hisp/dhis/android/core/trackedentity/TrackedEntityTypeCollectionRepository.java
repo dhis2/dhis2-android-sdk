@@ -50,4 +50,12 @@ public final class TrackedEntityTypeCollectionRepository
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
                 s -> new TrackedEntityTypeCollectionRepository(store, childrenAppenders, s)));
     }
+
+    public TrackedEntityTypeCollectionRepository withStyle() {
+        return cf.withChild(TrackedEntityTypeFields.STYLE);
+    }
+
+    public TrackedEntityTypeCollectionRepository withTrackedEntityTypeAttributes() {
+        return cf.withChild(TrackedEntityTypeFields.TRACKED_ENTITY_TYPE_ATTRIBUTES);
+    }
 }

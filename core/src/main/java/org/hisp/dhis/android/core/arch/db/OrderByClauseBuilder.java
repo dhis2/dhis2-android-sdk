@@ -83,7 +83,8 @@ public final class OrderByClauseBuilder {
     private static void addItemOperator(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
                                         ContentValues object, boolean reversed) {
         String operator = reversed ? getReversedDirectionOperator(item) : getDirectionOperator(item);
-        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator, object.getAsString(item.column()));
+        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator,
+                "'" + object.getAsString(item.column()) + "'");
     }
 
     private static String getDirectionOperator(RepositoryScopeOrderByItem item) {

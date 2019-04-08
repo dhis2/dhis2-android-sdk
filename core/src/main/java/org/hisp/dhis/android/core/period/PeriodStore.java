@@ -37,4 +37,7 @@ import io.reactivex.annotations.NonNull;
 public interface PeriodStore extends ObjectWithoutUidStore<Period> {
 
     Period selectPeriodByTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date);
+
+    Date getOldestPeriodStartDate();
+
 }

@@ -52,6 +52,7 @@ import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
@@ -239,5 +240,13 @@ public class ProgramHandlerShould {
         List<Program> programs = Collections.singletonList(program);
         programHandler.handleMany(programs);
         verify(collectionCleaner).deleteNotPresent(programs);
+    }
+
+    @Test
+    public void not_store_tracker_program_witout_tracked_entity_type() {
+        when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
+        when(program.trackedEntityType()).thenReturn(null);
+        programHandler.handleMany(Collections.singletonList(program));
+        verifyNoMoreInteractions(programStore);
     }
 }

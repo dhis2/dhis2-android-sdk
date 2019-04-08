@@ -153,5 +153,16 @@ public final class ProgramStageCollectionRepository
     public BooleanFilterConnector<ProgramStageCollectionRepository> byRemindCompleted() {
         return cf.bool(ProgramStageFields.REMIND_COMPLETED);
     }
-    
+
+    public ProgramStageCollectionRepository withStyle() {
+        return cf.withChild(ProgramStageFields.STYLE);
+    }
+
+    public ProgramStageCollectionRepository withProgramStageDataElements() {
+        return cf.withChild(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS);
+    }
+
+    public ProgramStageCollectionRepository withProgramStageSections() {
+        return cf.withChild(ProgramStageFields.PROGRAM_STAGE_SECTIONS);
+    }
 }

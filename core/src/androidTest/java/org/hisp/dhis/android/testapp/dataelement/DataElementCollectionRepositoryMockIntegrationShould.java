@@ -114,4 +114,13 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends Synced
                 .get();
         assertThat(dataElements.size(), is(1));
     }
+
+    @Test
+    public void include_style_as_child() {
+        DataElement dataElement = d2.dataElementModule().dataElements
+                .withStyle()
+                .uid("g9eOBujte1U")
+                .get();
+        assertThat(dataElement.style().icon(), is("data-element-icon"));
+    }
 }

@@ -114,6 +114,7 @@ public abstract class Enrollment extends BaseDataModel implements ObjectWithDele
     public abstract String trackedEntityInstance();
 
     @Nullable
+    @JsonProperty()
     @ColumnAdapter(CoordinatesColumnAdapter.class)
     public abstract Coordinates coordinate();
 

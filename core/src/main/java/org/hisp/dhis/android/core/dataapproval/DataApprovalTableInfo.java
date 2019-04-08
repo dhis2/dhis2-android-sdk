@@ -26,13 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.dataapproval;
 
+import org.hisp.dhis.android.core.arch.db.TableInfo;
+import org.hisp.dhis.android.core.common.BaseModel;
+import org.hisp.dhis.android.core.utils.Utils;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+public class DataApprovalTableInfo {
 
-import java.util.List;
+    private DataApprovalTableInfo() {}
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "DataApproval";
+        }
+
+        @Override
+        public BaseModel.Columns columns() {
+            return new DataApprovalTableInfo.Columns();
+        }
+    };
+
+    static class Columns extends BaseModel.Columns {
+
+        public static String WORKFLOW = "workflow";
+        public static String ORGANISATION_UNIT = "organisationUnit";
+        public static String PERIOD = "period";
+        public static String ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo";
+
+        @Override
+        public String[] all() {
+            return Utils.appendInNewArray(super.all(),
+                    WORKFLOW,
+                    ORGANISATION_UNIT,
+                    PERIOD,
+                    ATTRIBUTE_OPTION_COMBO,
+                    DataApprovalFields.STATE);
+        }
+
+        @Override
+        public String[] whereUpdate() {
+            return new String[]{
+                    WORKFLOW,
+                    ORGANISATION_UNIT,
+                    PERIOD,
+                    ATTRIBUTE_OPTION_COMBO
+            };
+        }
+    }
 }

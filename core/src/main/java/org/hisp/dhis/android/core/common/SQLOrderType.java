@@ -26,13 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.common;
 
-
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-
-import java.util.List;
-
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+public enum SQLOrderType {
+    ASC, DESC
 }

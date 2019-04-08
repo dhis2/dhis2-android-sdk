@@ -119,6 +119,14 @@ public class SQLStatementBuilder {
         return SELECT + column + FROM + tableName + WHERE + whereClause + ";";
     }
 
+    public String selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
+
+        return SELECT + "*" +
+                FROM + tableName +
+                ORDER_BY + orderingColumName + " " + orderingType.name() +
+                LIMIT + "1;";
+    }
+
     public String selectChildrenWithLinkTable(LinkTableChildProjection projection, String parentUid,
                                               String whereClause) {
         String whereClauseStr = whereClause == null ? "" : AND + whereClause;

@@ -26,13 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.dataapproval;
 
+import org.hisp.dhis.android.core.arch.fields.FieldsHelper;
+import org.hisp.dhis.android.core.data.api.Field;
+import org.hisp.dhis.android.core.data.api.Fields;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+final class DataApprovalFields {
 
-import java.util.List;
+    static final String WORKFLOW = "wf";
+    static final String ORGANISATION_UNIT = "ou";
+    static final String PERIOD = "pe";
+    static final String ATTRIBUTE_OPTION_COMBO = "aoc";
+    static final String STATE = "state";
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+    private static FieldsHelper<DataApproval> fieldsHelper = new FieldsHelper<>();
+
+    static final Field<DataApproval, String> lastUpdated = fieldsHelper.lastUpdated();
+
+    static final Fields<DataApproval> allFields = Fields.<DataApproval>builder().fields(
+            fieldsHelper.<String>field(WORKFLOW),
+            fieldsHelper.<String>field(ORGANISATION_UNIT),
+            fieldsHelper.<String>field(PERIOD),
+            fieldsHelper.<String>field(ATTRIBUTE_OPTION_COMBO),
+            fieldsHelper.<DataApprovalState>field(STATE)
+    ).build();
+
+    private DataApprovalFields() {
+    }
+
 }

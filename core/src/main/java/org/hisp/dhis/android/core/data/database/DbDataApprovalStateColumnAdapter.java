@@ -26,13 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.data.database;
 
+import org.hisp.dhis.android.core.dataapproval.DataApprovalState;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+public class DbDataApprovalStateColumnAdapter extends EnumColumnAdapter<DataApprovalState> {
 
-import java.util.List;
+@Override
+protected Class<DataApprovalState> getEnumClass() {
+        return DataApprovalState.class;
+    }
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
 }

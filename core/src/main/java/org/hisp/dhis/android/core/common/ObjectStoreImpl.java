@@ -130,6 +130,12 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
+    public M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
+        Cursor cursor = databaseAdapter.query(builder.selectOneOrderedBy(orderingColumName, orderingType));
+        return getFirstFromCursor(cursor);
+    }
+
+    @Override
     public M selectFirst() {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
         return getFirstFromCursor(cursor);

@@ -26,13 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.dataapproval;
 
-
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.data.api.Fields;
+import org.hisp.dhis.android.core.data.api.Where;
+import org.hisp.dhis.android.core.data.api.Which;
 
 import java.util.List;
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
+interface DataApprovalService {
+
+    @GET("dataApprovals/multiple")
+    Call<List<DataApproval>> getDataApprovals(
+            @Query("fields") @Which Fields<DataApproval> fields,
+            @Query("wf") @Where String workflow,
+            @Query("startDate") @Where String startDate,
+            @Query("endDate") @Where String endDate,
+            @Query("ou") @Where String organisationUnit,
+            @Query("aoc") @Where String attributeOptionCombo
+    );
 }

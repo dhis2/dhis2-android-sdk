@@ -26,18 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.dataapproval;
 
+
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Date;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-import io.reactivex.annotations.NonNull;
+final class DataApprovalStore {
 
-public interface PeriodStore extends ObjectWithoutUidStore<Period> {
+    private static final StatementBinder<DataApproval> BINDER
+            = (dataApproval, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, dataApproval.workflow());
+        sqLiteBind(sqLiteStatement, 2, dataApproval.organisationUnit());
+        sqLiteBind(sqLiteStatement, 3, dataApproval.period());
+        sqLiteBind(sqLiteStatement, 4, dataApproval.attributeOptionCombo());
+        sqLiteBind(sqLiteStatement, 5, dataApproval.state());
+    };
 
-    Period selectPeriodByTypeAndDate(@NonNull PeriodType periodType, @NonNull Date date);
+    private static final WhereStatementBinder<DataApproval> WHERE_UPDATE_BINDER
+            = (dataApproval, sqLiteStatement) -> {
 
-    Date getOldestPeriodStartDate();
+        sqLiteBind(sqLiteStatement, 6, dataApproval.workflow());
+        sqLiteBind(sqLiteStatement, 7, dataApproval.organisationUnit());
+        sqLiteBind(sqLiteStatement, 8, dataApproval.period());
+        sqLiteBind(sqLiteStatement, 9, dataApproval.attributeOptionCombo());
+    };
+
+    public static ObjectWithoutUidStore<DataApproval> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectWithoutUidStore(databaseAdapter, DataApprovalTableInfo.TABLE_INFO,
+                BINDER, WHERE_UPDATE_BINDER, DataApproval::create);
+    }
+
+    private DataApprovalStore() {}
 
 }

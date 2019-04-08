@@ -26,13 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.dataapproval;
 
+import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+import retrofit2.Retrofit;
 
-import java.util.List;
+@Module(includes = {
+        DataApprovalEntityDIModule.class
+})
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+public class DataApprovalPackageDIModule {
+
+    @Provides
+    @Reusable
+    QueryCallFactory<DataApproval, DataApprovalQuery> dataApprovalCallFactory(
+            DataApprovalCallFactory dataApprovalCallFactory) {
+
+        return dataApprovalCallFactory;
+    }
+
+    @Provides
+    @Reusable
+    DataApprovalService dataApprovalService(Retrofit retrofit) {
+        return retrofit.create(DataApprovalService.class);
+    }
+
 }

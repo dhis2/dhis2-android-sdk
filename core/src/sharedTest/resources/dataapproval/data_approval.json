@@ -1,0 +1,14 @@
+{
+  "aoc": "sSeEjeQ0Rgt",
+  "pe": "2019",
+  "ou": "YuQRtpLP10I",
+  "permissions": {
+    "mayApprove": false,
+    "mayUnapprove": false,
+    "mayAccept": false,
+    "mayUnaccept": false,
+    "mayReadData": true
+  },
+  "state": "UNAPPROVED_WAITING",
+  "wf": "SGPwZDBfBDT"
+}

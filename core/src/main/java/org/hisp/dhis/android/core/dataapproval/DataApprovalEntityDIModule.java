@@ -26,13 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.dataapproval;
 
+import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
 
-import java.util.List;
+@Module
+public class DataApprovalEntityDIModule implements ObjectWithoutUidStoreProvider<DataApproval> {
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+    @Override
+    @Provides
+    @Reusable
+    public ObjectWithoutUidStore<DataApproval> store(DatabaseAdapter databaseAdapter) {
+        return DataApprovalStore.create(databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    public SyncHandler<DataApproval> handler(ObjectWithoutUidStore<DataApproval> dataApprovalStore) {
+        return new ObjectWithoutUidSyncHandlerImpl<>(dataApprovalStore);
+    }
+
 }

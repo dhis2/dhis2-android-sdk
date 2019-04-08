@@ -26,13 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.dataapproval;
 
+import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.ObjectShould;
+import org.junit.Test;
 
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import java.io.IOException;
+import java.text.ParseException;
 
-import java.util.List;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public interface CategoryOptionComboStore extends IdentifiableObjectStore<CategoryOptionCombo> {
-    List<CategoryOptionCombo> getForCategoryCombo(String categoryComboUid);
+public class DataApprovalShould extends BaseObjectShould implements ObjectShould {
+
+    public DataApprovalShould() {
+        super("dataapproval/data_approval.json");
+    }
+
+    @Override
+    @Test
+    public void map_from_json_string() throws IOException, ParseException {
+
+        DataApproval dataApproval =
+                objectMapper.readValue(jsonStream, DataApproval.class);
+
+        assertThat(dataApproval.period()).isEqualTo("2019");
+        assertThat(dataApproval.workflow()).isEqualTo("SGPwZDBfBDT");
+        assertThat(dataApproval.organisationUnit()).isEqualTo("YuQRtpLP10I");
+        assertThat(dataApproval.attributeOptionCombo()).isEqualTo("sSeEjeQ0Rgt");
+        assertThat(dataApproval.state()).isEqualTo(DataApprovalState.UNAPPROVED_WAITING);
+    }
 }

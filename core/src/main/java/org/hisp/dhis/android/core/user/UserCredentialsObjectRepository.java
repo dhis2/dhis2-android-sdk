@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 
 import java.util.Map;
 
@@ -47,5 +48,9 @@ public final class UserCredentialsObjectRepository
                                     RepositoryScope scope) {
         super(store, childrenAppenders, scope,
                 s -> new UserCredentialsObjectRepository(store, childrenAppenders, s));
+    }
+
+    public UserCredentialsObjectRepository withUserRoles() {
+        return repositoryFactory.updated(RepositoryScopeHelper.withChild(scope, UserCredentialsFields.USER_ROLES));
     }
 }

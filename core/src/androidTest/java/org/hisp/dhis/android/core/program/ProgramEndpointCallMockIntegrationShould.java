@@ -280,7 +280,6 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                 TrackedEntityAttributeFields.OPTION_SET,
                 TrackedEntityAttributeFields.VALUE_TYPE,
                 TrackedEntityAttributeFields.EXPRESSION,
-                TrackedEntityAttributeFields.SEARCH_SCOPE,
                 TrackedEntityAttributeFields.PROGRAM_SCOPE,
                 TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM,
                 TrackedEntityAttributeFields.GENERATED,
@@ -309,7 +308,6 @@ public class ProgramEndpointCallMockIntegrationShould extends AbsStoreTestCase {
                 null,
                 "TEXT",
                 null,
-                "SEARCH_ORG_UNITS",
                 0, // false
                 1, // true
                 0, // false

@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -40,6 +38,9 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.BaseNameableObjectModel;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @Deprecated
 @AutoValue
@@ -52,7 +53,6 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
         public static final String OPTION_SET = "optionSet";
         public static final String VALUE_TYPE = "valueType";
         public static final String EXPRESSION = "expression";
-        public static final String SEARCH_SCOPE = "searchScope";
         public static final String PROGRAM_SCOPE = "programScope";
         public static final String DISPLAY_IN_LIST_NO_PROGRAM = "displayInListNoProgram";
         public static final String GENERATED = "generated";
@@ -93,11 +93,6 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
     @Nullable
     @ColumnName(Columns.EXPRESSION)
     public abstract String expression();
-
-    @Nullable
-    @ColumnName(Columns.SEARCH_SCOPE)
-    @ColumnAdapter(TrackedEntityAttributeSearchScopeColumnAdapter.class)
-    public abstract TrackedEntityAttributeSearchScope searchScope();
 
     @Nullable
     @ColumnName(Columns.PROGRAM_SCOPE)
@@ -142,8 +137,6 @@ public abstract class TrackedEntityAttributeModel extends BaseNameableObjectMode
         public abstract Builder valueType(@Nullable ValueType valueType);
 
         public abstract Builder expression(@Nullable String expression);
-
-        public abstract Builder searchScope(@Nullable TrackedEntityAttributeSearchScope searchScope);
 
         public abstract Builder programScope(@Nullable Boolean programScope);
 

@@ -60,7 +60,6 @@ public class CreateTrackedEntityAttributeUtils {
     private static final Integer SORT_ORDER_IN_LIST_NO_PROGRAM = 1;
     private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
     private static final String EXPRESSION = "test_expression";
-    private static final TrackedEntityAttributeSearchScope SEARCH_SCOPE = TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS;
     private static final Integer PROGRAM_SCOPE = 0; // false
     private static final Integer DISPLAY_IN_LIST_NO_PROGRAM = 1; // true
     private static final Integer GENERATED = 0; // false
@@ -89,7 +88,6 @@ public class CreateTrackedEntityAttributeUtils {
         values.put(TrackedEntityAttributeFields.OPTION_SET, optionSetUid);
         values.put(TrackedEntityAttributeFields.VALUE_TYPE, VALUE_TYPE.name());
         values.put(TrackedEntityAttributeFields.EXPRESSION, EXPRESSION);
-        values.put(TrackedEntityAttributeFields.SEARCH_SCOPE, SEARCH_SCOPE.name());
         values.put(TrackedEntityAttributeFields.PROGRAM_SCOPE, PROGRAM_SCOPE);
         values.put(TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
         values.put(TrackedEntityAttributeFields.GENERATED, GENERATED);

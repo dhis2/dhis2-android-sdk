@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseObjectShould;
+import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.ObjectShould;
 import org.junit.Test;
 
@@ -60,6 +61,7 @@ public class EnrollmentShould extends BaseObjectShould implements ObjectShould {
         assertThat(enrollment.incidentDate()).isEqualTo("2014-07-21T12:27:50.730");
         assertThat(enrollment.followUp()).isEqualTo(false);
         assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.ACTIVE);
+        assertThat(enrollment.coordinate()).isEqualTo(Coordinates.create(10.03, 11.11));
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ");
     }
 }

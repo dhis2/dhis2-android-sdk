@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.core.arch.repositories.scope;
 
 public enum RepositoryMode {
-        ONLINE, OFFLINE
+        ONLINE_ONLY, OFFLINE_ONLY, ONLINE_FIRST, OFFLINE_FIRST
 }

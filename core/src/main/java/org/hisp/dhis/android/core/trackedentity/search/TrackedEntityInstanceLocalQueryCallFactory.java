@@ -62,10 +62,9 @@ public final class TrackedEntityInstanceLocalQueryCallFactory {
             List<String> uidList = getTrackedEntityInstancesUids(query);
 
             // TODO Filter by program attributes
-            // TODO Append attributes only
             return trackedEntityInstances
                     .byUid().in(uidList)
-                    .withAllChildren().get();
+                    .withTrackedEntityAttributeValues().get();
         };
     }
 

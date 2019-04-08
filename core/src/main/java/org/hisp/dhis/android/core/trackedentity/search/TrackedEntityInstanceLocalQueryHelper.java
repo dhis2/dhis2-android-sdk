@@ -89,9 +89,9 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
         // TODO Paging
 
         if (hasProgram(query)) {
-            String status = dot(ENROLLMENT_ALIAS, EnrollmentFields.STATUS);
-            queryStr += " ORDER BY CASE WHEN " + status + " = '" + ACTIVE + "' THEN 1 " +
-                    "WHEN " + status + " = '" + COMPLETED + "' THEN 2 ELSE 3 END ASC, " +
+            String enrollStatus = dot(ENROLLMENT_ALIAS, EnrollmentFields.STATUS);
+            queryStr += " ORDER BY CASE WHEN " + enrollStatus + " = '" + ACTIVE + "' THEN 1 " +
+                    "WHEN " + enrollStatus + " = '" + COMPLETED + "' THEN 2 ELSE 3 END ASC, " +
                     TEI_ALIAS + ".lastUpdated DESC ";
         } else {
             queryStr += " ORDER BY " + TEI_ALIAS + ".lastUpdated DESC";

@@ -48,7 +48,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
     private TrackedEntityInstanceQueryRepositoryScope scope;
 
     @Inject
-    TrackedEntityInstanceQueryCollectionRepository(TrackedEntityInstanceQueryCallFactory onlineCallFactory,
+    public TrackedEntityInstanceQueryCollectionRepository(TrackedEntityInstanceQueryCallFactory onlineCallFactory,
                                                    TrackedEntityInstanceLocalQueryCallFactory offlineCallFactory,
                                                    TrackedEntityInstanceQueryRepositoryScope scope) {
         this.onlineCallFactory = onlineCallFactory;
@@ -56,14 +56,24 @@ public final class TrackedEntityInstanceQueryCollectionRepository
         this.scope = scope;
     }
 
-    public TrackedEntityInstanceQueryCollectionRepository online() {
+    public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
-                scope.toBuilder().mode(RepositoryMode.ONLINE).build());
+                scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build());
     }
 
-    public TrackedEntityInstanceQueryCollectionRepository offline() {
+    public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
         return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE).build());
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build());
+    }
+
+    public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
+        return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
+                scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build());
+    }
+
+    public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
+        return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
+                scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());
     }
 
     public TrackedEntityInstanceQueryCollectionRepository query(TrackedEntityInstanceQuery query) {
@@ -73,7 +83,7 @@ public final class TrackedEntityInstanceQueryCollectionRepository
 
     @Override
     public Callable<List<TrackedEntityInstance>> getCallable() {
-        if (scope.mode().equals(RepositoryMode.ONLINE)) {
+        if (scope.mode().equals(RepositoryMode.ONLINE_ONLY)) {
             return onlineCallFactory.getCall(scope.query());
         } else {
             return offlineCallFactory.getCall(scope.query());

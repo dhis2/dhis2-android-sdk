@@ -47,7 +47,7 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope {
 
     public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceQueryRepositoryScope.Builder()
-                .mode(RepositoryMode.OFFLINE)
+                .mode(RepositoryMode.OFFLINE_ONLY)
                 .query(TrackedEntityInstanceQuery.empty());
     }
 

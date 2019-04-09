@@ -54,7 +54,7 @@ final class DataSetCompleteRegistrationImportHandler {
             @NonNull List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
             @NonNull List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
         State newState =
-                (dataValueImportSummary.importStatus() == ImportStatus.ERROR &&
+                (dataValueImportSummary.importStatus() == ImportStatus.ERROR ||
                         !withErrorDataSetCompleteRegistrations.isEmpty()) ? State.ERROR : State.SYNCED;
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration :

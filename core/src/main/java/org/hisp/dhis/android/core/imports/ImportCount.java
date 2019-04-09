@@ -41,7 +41,7 @@ public abstract class ImportCount {
     private static final String DELETED = "deleted";
     private static final String IGNORED = "ignored";
 
-    static final ImportCount EMPTY = ImportCount.create(0, 0, 0, 0);
+    public static final ImportCount EMPTY = ImportCount.create(0, 0, 0, 0);
 
     @NonNull
     @JsonProperty(IMPORTED)

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 import android.database.MatrixCursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -39,6 +38,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.AndroidTestUtils.toBoolean;
@@ -59,8 +60,6 @@ public class TrackedEntityAttributeModelShould {
     private static final String OPTION_SET = "test_option_set_uid";
     private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
     private static final String EXPRESSION = "test_expression";
-    private static final TrackedEntityAttributeSearchScope SEARCH_SCOPE =
-            TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS;
     private static final Integer PROGRAM_SCOPE = 0; // false
     private static final Integer DISPLAY_IN_LIST_NO_PROGRAM = 1; // true
     private static final Integer GENERATED = 0; // false
@@ -96,7 +95,6 @@ public class TrackedEntityAttributeModelShould {
                 Columns.OPTION_SET,
                 Columns.VALUE_TYPE,
                 Columns.EXPRESSION,
-                Columns.SEARCH_SCOPE,
                 Columns.PROGRAM_SCOPE,
                 Columns.DISPLAY_IN_LIST_NO_PROGRAM,
                 Columns.GENERATED,
@@ -108,7 +106,7 @@ public class TrackedEntityAttributeModelShould {
         cursor.addRow(new Object[]{
                 ID, UID, CODE, NAME, DISPLAY_NAME, dateString, dateString,
                 SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION, PATTERN,
-                SORT_ORDER_IN_LIST_NO_PROGRAM, OPTION_SET, VALUE_TYPE, EXPRESSION, SEARCH_SCOPE,
+                SORT_ORDER_IN_LIST_NO_PROGRAM, OPTION_SET, VALUE_TYPE, EXPRESSION,
                 PROGRAM_SCOPE, DISPLAY_IN_LIST_NO_PROGRAM, GENERATED, DISPLAY_ON_VISIT_SCHEDULE,
                 ORG_UNIT_SCOPE, UNIQUE, INHERIT
         });
@@ -132,7 +130,6 @@ public class TrackedEntityAttributeModelShould {
         assertThat(model.optionSet()).isEqualTo(OPTION_SET);
         assertThat(model.valueType()).isEqualTo(VALUE_TYPE);
         assertThat(model.expression()).isEqualTo(EXPRESSION);
-        assertThat(model.searchScope()).isEqualTo(SEARCH_SCOPE);
         assertThat(model.programScope()).isEqualTo(toBoolean(PROGRAM_SCOPE));
         assertThat(model.displayInListNoProgram()).isEqualTo(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM));
         assertThat(model.generated()).isEqualTo(toBoolean(GENERATED));
@@ -161,7 +158,6 @@ public class TrackedEntityAttributeModelShould {
                 .optionSet(OPTION_SET)
                 .valueType(VALUE_TYPE)
                 .expression(EXPRESSION)
-                .searchScope(SEARCH_SCOPE)
                 .programScope(toBoolean(PROGRAM_SCOPE))
                 .displayInListNoProgram(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM))
                 .generated(toBoolean(GENERATED))
@@ -189,7 +185,6 @@ public class TrackedEntityAttributeModelShould {
         assertThat(contentValues.getAsString(Columns.OPTION_SET)).isEqualTo(OPTION_SET);
         assertThat(contentValues.getAsString(Columns.VALUE_TYPE)).isEqualTo(VALUE_TYPE.toString());
         assertThat(contentValues.getAsString(Columns.EXPRESSION)).isEqualTo(EXPRESSION);
-        assertThat(contentValues.getAsString(Columns.SEARCH_SCOPE)).isEqualTo(SEARCH_SCOPE.toString());
         assertThat(contentValues.getAsBoolean(Columns.PROGRAM_SCOPE)).isEqualTo(toBoolean(PROGRAM_SCOPE));
         assertThat(contentValues.getAsBoolean(Columns.DISPLAY_IN_LIST_NO_PROGRAM))
                 .isEqualTo(toBoolean(DISPLAY_IN_LIST_NO_PROGRAM));

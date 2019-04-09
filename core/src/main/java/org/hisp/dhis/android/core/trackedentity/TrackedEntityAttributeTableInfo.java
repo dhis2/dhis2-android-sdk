@@ -61,7 +61,6 @@ public final class TrackedEntityAttributeTableInfo {
                     TrackedEntityAttributeFields.OPTION_SET,
                     TrackedEntityAttributeFields.VALUE_TYPE,
                     TrackedEntityAttributeFields.EXPRESSION,
-                    TrackedEntityAttributeFields.SEARCH_SCOPE,
                     TrackedEntityAttributeFields.PROGRAM_SCOPE,
                     TrackedEntityAttributeFields.DISPLAY_IN_LIST_NO_PROGRAM,
                     TrackedEntityAttributeFields.GENERATED,

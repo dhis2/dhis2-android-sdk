@@ -29,28 +29,44 @@
 package org.hisp.dhis.android.core.period;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-import java.util.Collections;
 import java.util.Map;
 
-import dagger.Module;
-import dagger.Provides;
+import javax.inject.Inject;
+
 import dagger.Reusable;
 
-@Module
-public final class PeriodEntityDIModule {
+@Reusable
+public final class PeriodCollectionRepository
+        extends ReadOnlyCollectionRepositoryImpl<Period, PeriodCollectionRepository> {
 
-    @Provides
-    @Reusable
-    PeriodStore store(DatabaseAdapter databaseAdapter) {
-        return PeriodStoreImpl.create(databaseAdapter);
+    @Inject
+    PeriodCollectionRepository(final PeriodStore store,
+                               final Map<String, ChildrenAppender<Period>> childrenAppenders,
+                               final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new PeriodCollectionRepository(store, childrenAppenders, s)));
     }
 
+    public StringFilterConnector<PeriodCollectionRepository> byPeriodId() {
+        return cf.string(PeriodTableInfo.Columns.PERIOD_ID);
+    }
 
-    @Provides
-    @Reusable
-    Map<String, ChildrenAppender<Period>> childrenAppenders() {
-        return Collections.emptyMap();
+    public EnumFilterConnector<PeriodCollectionRepository, PeriodType> byPeriodType() {
+        return cf.enumC(PeriodTableInfo.Columns.PERIOD_TYPE);
+    }
+
+    public DateFilterConnector<PeriodCollectionRepository> byStartDate() {
+        return cf.date(PeriodTableInfo.Columns.START_DATE);
+    }
+
+    public DateFilterConnector<PeriodCollectionRepository> byEndDate() {
+        return cf.date(PeriodTableInfo.Columns.END_DATE);
     }
 }

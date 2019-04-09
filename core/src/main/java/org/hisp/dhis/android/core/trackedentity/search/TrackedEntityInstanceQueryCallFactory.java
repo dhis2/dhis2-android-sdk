@@ -50,7 +50,7 @@ import retrofit2.Call;
 
 @SuppressWarnings({"PMD.PreserveStackTrace"})
 @Reusable
-public final class TrackedEntityInstanceQueryCallFactory {
+public class TrackedEntityInstanceQueryCallFactory {
 
     private final TrackedEntityInstanceService service;
     private final SearchGridMapper mapper;

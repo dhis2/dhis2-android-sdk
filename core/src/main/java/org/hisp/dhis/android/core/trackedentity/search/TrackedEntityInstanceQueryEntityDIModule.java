@@ -38,7 +38,7 @@ public final class TrackedEntityInstanceQueryEntityDIModule {
     @Provides
     @Reusable
     public TrackedEntityInstanceQueryRepositoryScope empty() {
-        return TrackedEntityInstanceQueryRepositoryScope.builder().build();
+        return TrackedEntityInstanceQueryRepositoryScope.empty();
     }
 
 }

@@ -60,7 +60,7 @@ public class TrackedEntityInstanceLocalQueryHelperShould {
                 .query(QueryFilter.create(QueryOperator.LIKE,"female"))
                 .build();
 
-        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query);
+        String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(query, Collections.emptyList(), 50);
         assertThat(sqlQuery).contains("program");
     }
 

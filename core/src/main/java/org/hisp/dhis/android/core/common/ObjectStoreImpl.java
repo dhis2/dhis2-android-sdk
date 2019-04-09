@@ -100,13 +100,13 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
 
     @Override
     public List<M> selectWhere(String filterWhereClause, String orderByClause) {
-        String query = builder.selectWhere(builder.selectWhere(filterWhereClause, orderByClause));
+        String query = builder.selectWhere(filterWhereClause, orderByClause);
         return selectRawQuery(query);
     }
 
     @Override
     public List<M> selectWhere(String filterWhereClause, String orderByClause, int limit) {
-        String query = builder.selectWhere(builder.selectWhere(filterWhereClause, orderByClause, limit));
+        String query = builder.selectWhere(filterWhereClause, orderByClause, limit);
         return selectRawQuery(query);
     }
 

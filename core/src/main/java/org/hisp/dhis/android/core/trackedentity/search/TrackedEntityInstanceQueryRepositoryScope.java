@@ -51,6 +51,10 @@ public abstract class TrackedEntityInstanceQueryRepositoryScope {
                 .query(TrackedEntityInstanceQuery.empty());
     }
 
+    public static TrackedEntityInstanceQueryRepositoryScope empty() {
+        return builder().build();
+    }
+
     @AutoValue.Builder
     public abstract static class Builder {
 

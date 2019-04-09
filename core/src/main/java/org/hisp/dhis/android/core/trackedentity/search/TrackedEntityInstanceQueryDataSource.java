@@ -44,6 +44,7 @@ import androidx.paging.ItemKeyedDataSource;
 
 import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_FIRST;
 import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_ONLY;
+import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.ONLINE_FIRST;
 
 public final class TrackedEntityInstanceQueryDataSource
         extends ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance> {
@@ -53,7 +54,13 @@ public final class TrackedEntityInstanceQueryDataSource
     private final TrackedEntityInstanceQueryRepositoryScope scope;
     private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
 
+    private final int INITIAL_LOAD_SIZE_FACTOR = 3;
+
     private List<String> returnedUids = new ArrayList<>();
+    private int currentOnlinePage = 0;
+
+    private boolean isExhaustedOnline = false;
+    private boolean isExhaustedOffline = false;
 
     public TrackedEntityInstanceQueryDataSource(TrackedEntityInstanceStore store,
                                                 TrackedEntityInstanceQueryCallFactory onlineCallFactory,
@@ -69,40 +76,19 @@ public final class TrackedEntityInstanceQueryDataSource
     @Override
     public void loadInitial(@NonNull LoadInitialParams<TrackedEntityInstance> params,
                             @NonNull LoadInitialCallback<TrackedEntityInstance> callback) {
-        List<TrackedEntityInstance> result = new ArrayList<>();
-        if (scope.mode().equals(OFFLINE_ONLY) || scope.mode().equals(OFFLINE_FIRST)) {
-            List<TrackedEntityInstance> instances = queryOffline(params.requestedLoadSize);
-            result.addAll(appendEnrollments(instances));
-        } else {
-            List<TrackedEntityInstance> instances = queryOnline(params.requestedLoadSize);
-            result.addAll(instances);
-        }
-        callback.onResult(result);
+        callback.onResult(loadPages(params.requestedLoadSize));
     }
 
     @Override
     public void loadAfter(@NonNull LoadParams<TrackedEntityInstance> params,
                           @NonNull LoadCallback<TrackedEntityInstance> callback) {
-        loadPages(params, callback, false);
+        callback.onResult(loadPages(params.requestedLoadSize));
     }
 
     @Override
     public void loadBefore(@NonNull LoadParams<TrackedEntityInstance> params,
                            @NonNull LoadCallback<TrackedEntityInstance> callback) {
-        loadPages(params, callback, true);
-    }
-
-    private void loadPages(@NonNull LoadParams<TrackedEntityInstance> params,
-                           @NonNull LoadCallback<TrackedEntityInstance> callback, boolean reversed) {
-        List<TrackedEntityInstance> result = new ArrayList<>();
-        if (scope.mode().equals(OFFLINE_ONLY) || scope.mode().equals(OFFLINE_FIRST)) {
-            List<TrackedEntityInstance> instances = queryOffline(params.requestedLoadSize);
-            result.addAll(appendEnrollments(instances));
-        } else {
-            List<TrackedEntityInstance> instances = queryOnline(params.requestedLoadSize);
-            result.addAll(instances);
-        }
-        callback.onResult(result);
+        // do nothing
     }
 
     @NonNull
@@ -111,19 +97,52 @@ public final class TrackedEntityInstanceQueryDataSource
         return item;
     }
 
+    private List<TrackedEntityInstance> loadPages(int requestedLoadSize) {
+        List<TrackedEntityInstance> result = new ArrayList<>();
+        if (scope.mode().equals(OFFLINE_ONLY) || scope.mode().equals(OFFLINE_FIRST)) {
+            if (!isExhaustedOffline) {
+                List<TrackedEntityInstance> instances = queryOffline(requestedLoadSize);
+                result.addAll(instances);
+                isExhaustedOffline = instances.size() < requestedLoadSize;
+            }
+
+            if (result.size() < requestedLoadSize && scope.mode().equals(OFFLINE_FIRST)) {
+                List<TrackedEntityInstance> onlineInstances = queryOnlineRecursive(requestedLoadSize);
+                result.addAll(onlineInstances);
+            }
+        } else {
+            if (!isExhaustedOnline) {
+                List<TrackedEntityInstance> instances = queryOnlineRecursive(requestedLoadSize);
+                result.addAll(instances);
+                isExhaustedOnline = instances.size() < requestedLoadSize;
+            }
+
+            if (result.size() < requestedLoadSize && scope.mode().equals(ONLINE_FIRST)) {
+                List<TrackedEntityInstance> onlineInstances = queryOffline(requestedLoadSize);
+                result.addAll(onlineInstances);
+            }
+        }
+        return result;
+    }
+
     private List<TrackedEntityInstance> queryOffline(int requestedLoadSize) {
         String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), returnedUids,
                 requestedLoadSize);
         List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
         addUids(returnedUids, instances);
-        return instances;
+        return appendEnrollments(instances);
     }
 
     private List<TrackedEntityInstance> queryOnline(int requestLoadSize) {
+        // If first page, the requestedSize is three times the original. Increment in three.
         TrackedEntityInstanceQuery onlineQuery = scope.query().toBuilder()
-                .page(1)
+                .page(currentOnlinePage + 1)
                 .pageSize(requestLoadSize)
                 .paging(true).build();
+
+        // If first page, the requestedSize is three times the original. Increment in three.
+        currentOnlinePage = currentOnlinePage == 0 ? INITIAL_LOAD_SIZE_FACTOR + 1 : currentOnlinePage + 1;
+
         try {
             List<TrackedEntityInstance> instances = new ArrayList<>();
             for (TrackedEntityInstance instance : onlineCallFactory.getCall(onlineQuery).call()) {
@@ -135,6 +154,16 @@ public final class TrackedEntityInstanceQueryDataSource
         } catch (Exception e) {
             return Collections.emptyList();
         }
+    }
+
+    private List<TrackedEntityInstance> queryOnlineRecursive(int requestLoadSize) {
+        List<TrackedEntityInstance> result = new ArrayList<>();
+        List<TrackedEntityInstance> lastResult;
+        do {
+            lastResult = queryOnline(requestLoadSize);
+            result.addAll(lastResult);
+        } while (result.size() < requestLoadSize && !lastResult.isEmpty());
+        return result;
     }
 
     private void addUids(List<String> list, List<TrackedEntityInstance> instances) {

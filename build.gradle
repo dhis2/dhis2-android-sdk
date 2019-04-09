@@ -20,8 +20,12 @@ buildscript {
 
         // enables cloud features of gradle plugin
         classpath "com.gradle:build-scan-plugin:2.0.2"
+
+        classpath "com.vanniktech:gradle-dependency-graph-generator-plugin:0.5.0"
     }
 }
+
+apply plugin: "com.vanniktech.dependency.graph.generator"
 
 allprojects {
     repositories {

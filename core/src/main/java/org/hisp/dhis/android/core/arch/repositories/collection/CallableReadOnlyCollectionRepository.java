@@ -32,6 +32,10 @@ import org.hisp.dhis.android.core.common.Model;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+
 public interface CallableReadOnlyCollectionRepository<M extends Model> {
-    Callable<List<M>> getCallable();
+    List<M> get();
+    LiveData<PagedList<M>> getPaged(int pageSize);
 }

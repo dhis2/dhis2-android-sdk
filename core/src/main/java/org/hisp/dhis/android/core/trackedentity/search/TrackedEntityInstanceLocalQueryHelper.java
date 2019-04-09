@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo;
 
+import java.util.List;
+
 import static org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns.UID;
 import static org.hisp.dhis.android.core.common.State.SYNCED;
 import static org.hisp.dhis.android.core.common.State.TO_DELETE;
@@ -56,13 +58,14 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
     private static String ORGUNIT_ALIAS = "ou";
     private static String TEAV_ALIAS = "teav";
 
-    static String getSqlQuery(TrackedEntityInstanceQuery query) {
+    private static String TEI_UID = dot(TEI_ALIAS, "uid");
+    private static String TEI_ALL = dot(TEI_ALIAS, "*");
+    private static String TEI_STATE = dot(TEI_ALIAS, BaseDataModel.Columns.STATE);
+    private static String TEI_LAST_UPDATED = dot(TEI_ALIAS, "lastUpdated");
 
-        String teiUid = dot(TEI_ALIAS, "uid");
-        String teiState = dot(TEI_ALIAS, BaseDataModel.Columns.STATE);
-        String teiLastUpdated = dot(TEI_ALIAS, "lastUpdated");
+    static String getSqlQuery(TrackedEntityInstanceQuery query, List<String> excludeList, int limit) {
 
-        String queryStr = "SELECT " + teiUid + ", " + teiState + ", " + teiLastUpdated + " FROM " +
+        String queryStr = "SELECT " + TEI_ALL + " FROM " +
                 TrackedEntityInstanceTableInfo.TABLE_INFO.name() + " " + TEI_ALIAS;
 
         WhereClauseBuilder where = new WhereClauseBuilder();
@@ -87,6 +90,7 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
 
         appendQueryWhere(where, query);
         appendFiltersWhere(where, query);
+        appendExcludeList(where, excludeList);
 
         if (!where.isEmpty()) {
             queryStr += " WHERE " + where.build();
@@ -94,12 +98,14 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
 
         // TODO In case a program uid is provided, the server orders by enrollmentStatus.
 
-        // TODO Paging
+        queryStr += " ORDER BY CASE WHEN " + TEI_STATE + " IN ('" + TO_POST + "','" + TO_UPDATE + "') THEN 1 " +
+                "WHEN " + TEI_STATE + " = '" + TO_DELETE + "' THEN 2 " +
+                "WHEN " + TEI_STATE + " = '" + SYNCED + "' THEN 3 ELSE 4 END ASC, " +
+                TEI_LAST_UPDATED + " DESC ";
 
-        queryStr += " ORDER BY CASE WHEN " + teiState + " IN ('" + TO_POST + "','" + TO_UPDATE + "') THEN 1 " +
-                "WHEN " + teiState + " = '" + TO_DELETE + "' THEN 2 " +
-                "WHEN " + teiState + " = '" + SYNCED + "' THEN 3 ELSE 4 END ASC, " +
-                teiLastUpdated + " DESC ";
+        if (limit > 0) {
+            queryStr += " LIMIT " + limit;
+        }
 
         return queryStr;
     }
@@ -193,6 +199,12 @@ abstract class TrackedEntityInstanceLocalQueryHelper {
                     dot(TEAV_ALIAS, TRACKED_ENTITY_ATTRIBUTE), item.item(),
                     dot(TEAV_ALIAS, VALUE), filter.operator().getSqlOperator(), filter.getSqlFilter());
             where.appendExistsSubQuery(sub);
+        }
+    }
+
+    private static void appendExcludeList(WhereClauseBuilder where, List<String> excludeList) {
+        if (excludeList != null && !excludeList.isEmpty()) {
+            where.appendNotInKeyStringValues(TEI_UID, excludeList);
         }
     }
 

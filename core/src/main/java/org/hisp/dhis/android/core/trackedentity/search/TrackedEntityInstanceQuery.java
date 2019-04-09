@@ -85,6 +85,8 @@ public abstract class TrackedEntityInstanceQuery extends BaseQuery {
                 .orgUnits(Collections.emptyList());
     }
 
+    public abstract Builder toBuilder();
+
     public static TrackedEntityInstanceQuery empty() {
         return builder().page(1).pageSize(DEFAULT_PAGE_SIZE).paging(true).build();
     }

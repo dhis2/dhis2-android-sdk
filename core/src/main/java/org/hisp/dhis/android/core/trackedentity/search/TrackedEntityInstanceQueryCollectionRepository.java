@@ -27,66 +27,109 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenSelection;
 import org.hisp.dhis.android.core.arch.repositories.collection.CallableReadOnlyCollectionRepository;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFields;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 import dagger.Reusable;
+
+import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_FIRST;
+import static org.hisp.dhis.android.core.arch.repositories.scope.RepositoryMode.OFFLINE_ONLY;
 
 @Reusable
 public final class TrackedEntityInstanceQueryCollectionRepository
         implements CallableReadOnlyCollectionRepository<TrackedEntityInstance> {
 
-    private TrackedEntityInstanceQueryCallFactory onlineCallFactory;
-    private TrackedEntityInstanceLocalQueryCallFactory offlineCallFactory;
+    private final TrackedEntityInstanceStore store;
+    private final TrackedEntityInstanceQueryCallFactory onlineCallFactory;
+    private final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders;
 
     private TrackedEntityInstanceQueryRepositoryScope scope;
 
     @Inject
-    public TrackedEntityInstanceQueryCollectionRepository(TrackedEntityInstanceQueryCallFactory onlineCallFactory,
-                                                   TrackedEntityInstanceLocalQueryCallFactory offlineCallFactory,
-                                                   TrackedEntityInstanceQueryRepositoryScope scope) {
+    public TrackedEntityInstanceQueryCollectionRepository(
+            final TrackedEntityInstanceStore store,
+            final TrackedEntityInstanceQueryCallFactory onlineCallFactory,
+            final Map<String, ChildrenAppender<TrackedEntityInstance>> childrenAppenders,
+            final TrackedEntityInstanceQueryRepositoryScope scope) {
+        this.store = store;
         this.onlineCallFactory = onlineCallFactory;
-        this.offlineCallFactory = offlineCallFactory;
+        this.childrenAppenders = childrenAppenders;
         this.scope = scope;
     }
 
     public TrackedEntityInstanceQueryCollectionRepository onlineOnly() {
-        return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
+        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build());
     }
 
     public TrackedEntityInstanceQueryCollectionRepository offlineOnly() {
-        return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
-                scope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build());
+        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
+                scope.toBuilder().mode(OFFLINE_ONLY).build());
     }
 
     public TrackedEntityInstanceQueryCollectionRepository onlineFirst() {
-        return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
+        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.ONLINE_FIRST).build());
     }
 
     public TrackedEntityInstanceQueryCollectionRepository offlineFirst() {
-        return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
+        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().mode(RepositoryMode.OFFLINE_FIRST).build());
     }
 
     public TrackedEntityInstanceQueryCollectionRepository query(TrackedEntityInstanceQuery query) {
-        return new TrackedEntityInstanceQueryCollectionRepository(onlineCallFactory, offlineCallFactory,
+        return new TrackedEntityInstanceQueryCollectionRepository(store, onlineCallFactory, childrenAppenders,
                 scope.toBuilder().query(query).build());
     }
 
     @Override
-    public Callable<List<TrackedEntityInstance>> getCallable() {
-        if (scope.mode().equals(RepositoryMode.ONLINE_ONLY)) {
-            return onlineCallFactory.getCall(scope.query());
+    public LiveData<PagedList<TrackedEntityInstance>> getPaged(int pageSize) {
+        DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance> factory =
+                new DataSource.Factory<TrackedEntityInstance, TrackedEntityInstance>() {
+                    @Override
+                    public DataSource<TrackedEntityInstance, TrackedEntityInstance> create() {
+                        return getDataSource();
+                    }
+                };
+
+        return new LivePagedListBuilder<>(factory, pageSize).build();
+    }
+
+    private DataSource<TrackedEntityInstance, TrackedEntityInstance> getDataSource() {
+        return new TrackedEntityInstanceQueryDataSource(store, onlineCallFactory, scope, childrenAppenders);
+    }
+
+    @Override
+    public List<TrackedEntityInstance> get() {
+        if (scope.mode().equals(OFFLINE_ONLY) || scope.mode().equals(OFFLINE_FIRST)) {
+            String sqlQuery = TrackedEntityInstanceLocalQueryHelper.getSqlQuery(scope.query(), Collections.emptyList(),
+                    50);
+            List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
+            return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
+                    new ChildrenSelection(Collections.singleton(TrackedEntityInstanceFields.ENROLLMENTS), false));
         } else {
-            return offlineCallFactory.getCall(scope.query());
+            try {
+                return onlineCallFactory.getCall(scope.query()).call();
+            } catch (Exception e) {
+                return Collections.emptyList();
+            }
         }
     }
 }

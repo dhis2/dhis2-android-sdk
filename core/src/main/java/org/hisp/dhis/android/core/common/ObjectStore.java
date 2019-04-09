@@ -44,6 +44,8 @@ public interface ObjectStore<M> extends DeletableStore {
 
     List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
 
+    List<M> selectRawQuery(String sqlRawQuery);
+
     M selectOneWhere(String whereClause);
 
     M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);

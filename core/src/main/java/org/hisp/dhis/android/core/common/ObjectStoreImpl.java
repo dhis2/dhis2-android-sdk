@@ -86,38 +86,33 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         }
     }
 
-    private void addAll(@NonNull Collection<M> collection) {
-        Cursor cursor = databaseAdapter.query(builder.selectAll());
-        addObjectsToCollection(cursor, collection);
-        cursor.close();
-    }
-
     @Override
     public List<M> selectAll() {
-        List<M> list = new ArrayList<>();
-        addAll(list);
-        return list;
+        String query = builder.selectAll();
+        return selectRawQuery(query);
     }
 
     @Override
     public List<M> selectWhere(String whereClause) {
-        List<M> list = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause));
-        addObjectsToCollection(cursor, list);
-        return list;
+        String query = builder.selectWhere(whereClause);
+        return selectRawQuery(query);
     }
 
     @Override
     public List<M> selectWhere(String filterWhereClause, String orderByClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause));
-        List<M> list = new ArrayList<>();
-        addObjectsToCollection(cursor, list);
-        return list;
+        String query = builder.selectWhere(builder.selectWhere(filterWhereClause, orderByClause));
+        return selectRawQuery(query);
     }
 
     @Override
     public List<M> selectWhere(String filterWhereClause, String orderByClause, int limit) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause, limit));
+        String query = builder.selectWhere(builder.selectWhere(filterWhereClause, orderByClause, limit));
+        return selectRawQuery(query);
+    }
+
+    @Override
+    public List<M> selectRawQuery(String sqlRawQuery) {
+        Cursor cursor = databaseAdapter.query(sqlRawQuery);
         List<M> list = new ArrayList<>();
         addObjectsToCollection(cursor, list);
         return list;

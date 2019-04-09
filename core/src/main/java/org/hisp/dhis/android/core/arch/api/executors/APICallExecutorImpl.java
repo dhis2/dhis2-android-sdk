@@ -33,6 +33,7 @@ import android.util.Log;
 import org.hisp.dhis.android.core.ObjectMapperFactory;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.Payload;
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
@@ -82,32 +83,38 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
     @Override
     public <P> P executeObjectCall(Call<P> call) throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<>(), null, null);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, null, false);
     }
 
     @Override
     public <P> P executeObjectCallWithAcceptedErrorCodes(Call<P> call, List<Integer> acceptedErrorCodes,
                                                          Class<P> errorClass) throws D2Error {
-        return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null);
+        return executeObjectCallInternal(call, acceptedErrorCodes, errorClass, null, false);
     }
 
     @Override
     public <P> P executeObjectCallWithErrorCatcher(Call<P> call, APICallErrorCatcher errorCatcher)
             throws D2Error {
-        return executeObjectCallInternal(call, new ArrayList<>(), null, errorCatcher);
+        return executeObjectCallInternal(call, new ArrayList<>(), null, errorCatcher, false);
+    }
+
+    @Override
+    public Unit executeObjectCallWithEmptyResponse(Call<Unit> call) throws D2Error {
+        return executeObjectCallInternal(call, new ArrayList<>(), null, null, true);
     }
 
     private <P> P executeObjectCallInternal(Call<P> call,
                                             List<Integer> acceptedErrorCodes,
                                             Class<P> errorClass,
-                                            APICallErrorCatcher errorCatcher) throws D2Error {
+                                            APICallErrorCatcher errorCatcher,
+                                            boolean emptyBodyExpected) throws D2Error {
 
         D2Error.Builder errorBuilder = getObjectErrorBuilder(call);
 
         try {
             Response<P> response = call.execute();
             if (response.isSuccessful()) {
-                return processSuccessfulResponse(errorBuilder, response);
+                return processSuccessfulResponse(errorBuilder, response, emptyBodyExpected);
             } else if (errorClass != null && acceptedErrorCodes.contains(response.code())) {
                 return ObjectMapperFactory.objectMapper().readValue(response.errorBody().string(), errorClass);
             } else if (errorCatcher != null) {
@@ -135,8 +142,11 @@ public final class APICallExecutorImpl implements APICallExecutor {
         }
     }
 
-    private <P> P processSuccessfulResponse(D2Error.Builder errorBuilder, Response<P> response) throws D2Error {
-        if (response.body() == null) {
+    private <P> P processSuccessfulResponse(D2Error.Builder errorBuilder, Response<P> response,
+                                            boolean emptyBodyExpected) throws D2Error {
+        if (emptyBodyExpected) {
+            return null;
+        } else if (response.body() == null) {
             throw storeAndReturn(responseException(errorBuilder, response));
         } else {
             return response.body();

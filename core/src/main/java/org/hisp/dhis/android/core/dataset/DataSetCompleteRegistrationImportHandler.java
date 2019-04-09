@@ -54,8 +54,8 @@ final class DataSetCompleteRegistrationImportHandler {
             @NonNull List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
             @NonNull List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
         State newState =
-                (dataValueImportSummary.importStatus() == ImportStatus.ERROR ||
-                        !withErrorDataSetCompleteRegistrations.isEmpty()) ? State.ERROR : State.SYNCED;
+                dataValueImportSummary.importStatus() == ImportStatus.ERROR ||
+                        !withErrorDataSetCompleteRegistrations.isEmpty() ? State.ERROR : State.SYNCED;
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration :
                 dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations) {
@@ -78,13 +78,20 @@ final class DataSetCompleteRegistrationImportHandler {
             conflicts = dataValueImportSummary.importConflicts();
         }
 
+        return recreateDataValueImportSummary(dataValueImportSummary, conflicts,
+                deletedDataSetCompleteRegistrations.size());
+    }
+
+    private DataValueImportSummary recreateDataValueImportSummary(DataValueImportSummary dataValueImportSummary,
+                                                                  List<ImportConflict> conflicts,
+                                                                  int deletedDataSetCompleteRegistrationsSize) {
+
         ImportCount ic = dataValueImportSummary.importCount();
-        return DataValueImportSummary.create(
-                ImportCount.create(ic.imported(), ic.updated(),
-                        ic.deleted() + deletedDataSetCompleteRegistrations.size(), ic.ignored()),
+        return DataValueImportSummary.create(ImportCount.create(ic.imported(), ic.updated(),
+                ic.deleted() + deletedDataSetCompleteRegistrationsSize, ic.ignored()),
                 dataValueImportSummary.importStatus(),
                 dataValueImportSummary.responseType(),
                 dataValueImportSummary.reference(),
-                conflicts.size() == 0 ? null : conflicts);
+                conflicts.isEmpty() ? null : conflicts);
     }
 }

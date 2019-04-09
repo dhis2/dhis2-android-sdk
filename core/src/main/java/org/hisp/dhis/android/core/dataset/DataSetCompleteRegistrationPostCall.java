@@ -117,10 +117,11 @@ final class DataSetCompleteRegistrationPostCall implements Callable<DataValueImp
                 dataSetCompleteRegistrationStore.getDataSetCompleteRegistrationsWithState(State.TO_UPDATE));
     }
 
-    private DataValueImportSummary handleImportSummary(DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
-                                     DataValueImportSummary dataValueImportSummary,
-                                     List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
-                                     List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
+    private DataValueImportSummary handleImportSummary(
+            DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
+            DataValueImportSummary dataValueImportSummary,
+            List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
+            List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
 
         DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler =
                 new DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore);

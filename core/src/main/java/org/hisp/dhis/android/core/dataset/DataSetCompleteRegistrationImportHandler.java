@@ -28,11 +28,16 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.imports.ImportConflict;
+import org.hisp.dhis.android.core.imports.ImportCount;
 import org.hisp.dhis.android.core.imports.ImportStatus;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.annotation.NonNull;
 
 final class DataSetCompleteRegistrationImportHandler {
 
@@ -43,20 +48,43 @@ final class DataSetCompleteRegistrationImportHandler {
         this.dataSetCompleteRegistrationStore = dataSetCompleteRegistrationStore;
     }
 
-    void handleImportSummary(@NonNull DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
-                             @NonNull DataValueImportSummary dataValueImportSummary) {
-
-        if (dataValueImportSummary == null || dataSetCompleteRegistrationPayload == null) {
-            return;
-        }
-
+    DataValueImportSummary handleImportSummary(
+            @NonNull DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload,
+            @NonNull DataValueImportSummary dataValueImportSummary,
+            @NonNull List<DataSetCompleteRegistration> deletedDataSetCompleteRegistrations,
+            @NonNull List<DataSetCompleteRegistration> withErrorDataSetCompleteRegistrations) {
         State newState =
-                (dataValueImportSummary.importStatus() == ImportStatus.ERROR) ? State.ERROR : State.SYNCED;
+                (dataValueImportSummary.importStatus() == ImportStatus.ERROR &&
+                        !withErrorDataSetCompleteRegistrations.isEmpty()) ? State.ERROR : State.SYNCED;
 
         for (DataSetCompleteRegistration dataSetCompleteRegistration :
                 dataSetCompleteRegistrationPayload.dataSetCompleteRegistrations) {
             dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState);
         }
-    }
 
+        List<ImportConflict> conflicts = new ArrayList<>();
+        for (DataSetCompleteRegistration dataSetCompleteRegistration : withErrorDataSetCompleteRegistrations) {
+            dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.ERROR);
+            conflicts.add(ImportConflict.create(
+                    dataSetCompleteRegistration.toString(), "Error marking as incomplete"));
+        }
+
+        for (DataSetCompleteRegistration dataSetCompleteRegistration : deletedDataSetCompleteRegistrations) {
+            dataSetCompleteRegistrationStore.deleteById(dataSetCompleteRegistration);
+        }
+
+        if (dataValueImportSummary.importConflicts() != null) {
+            dataValueImportSummary.importConflicts().addAll(conflicts);
+            conflicts = dataValueImportSummary.importConflicts();
+        }
+
+        ImportCount ic = dataValueImportSummary.importCount();
+        return DataValueImportSummary.create(
+                ImportCount.create(ic.imported(), ic.updated(),
+                        ic.deleted() + deletedDataSetCompleteRegistrations.size(), ic.ignored()),
+                dataValueImportSummary.importStatus(),
+                dataValueImportSummary.responseType(),
+                dataValueImportSummary.reference(),
+                conflicts.size() == 0 ? null : conflicts);
+    }
 }

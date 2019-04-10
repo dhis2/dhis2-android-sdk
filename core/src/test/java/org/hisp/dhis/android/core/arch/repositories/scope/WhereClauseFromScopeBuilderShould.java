@@ -99,6 +99,7 @@ public class WhereClauseFromScopeBuilderShould {
         when(builder.isEmpty()).thenReturn(true);
         String result = scopeBuilder.getWhereClause(scopeForItems(Collections.emptyList()));
         assertThat(result).isEqualTo("1");
+        verify(builder).isEmpty();
         verifyNoMoreInteractions(builder);
     }
 

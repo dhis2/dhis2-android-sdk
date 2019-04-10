@@ -108,7 +108,15 @@ public class WhereClauseBuilder {
     }
 
     public WhereClauseBuilder appendComplexQuery(String complexQuery) {
-        String andOpt = addOperator ? AND : "";
+        return appendComplexQueryWithOperator(complexQuery, AND);
+    }
+
+    public WhereClauseBuilder appendOrComplexQuery(String complexQuery) {
+        return appendComplexQueryWithOperator(complexQuery, OR);
+    }
+
+    private WhereClauseBuilder appendComplexQueryWithOperator(String complexQuery, String operator) {
+        String andOpt = addOperator ? operator : "";
         addOperator = true;
         whereClause.append(andOpt).append(PARENTHESES_START).append(complexQuery).append(PARENTHESES_END);
         return this;

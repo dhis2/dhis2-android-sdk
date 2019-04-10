@@ -37,9 +37,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public final class PeriodModule {
 
     public final PeriodHelper periodHelper;
+    public final PeriodCollectionRepository periods;
 
     @Inject
-    PeriodModule(PeriodHelper periodHelper) {
+    PeriodModule(PeriodHelper periodHelper,
+                 PeriodCollectionRepository periods) {
         this.periodHelper = periodHelper;
+        this.periods = periods;
     }
 }

@@ -60,29 +60,53 @@ public final class OrderByClauseBuilder {
         return Utils.commaAndSpaceSeparatedCollectionValues(stringList);
     }
 
+    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
     public static void addSortingClauses(WhereClauseBuilder whereClauseBuilder,
                                          List<RepositoryScopeOrderByItem> orderByItems,
                                          ContentValues object,
                                          boolean reversed) {
         boolean hasPagingKey = false;
+        List<RepositoryScopeOrderByItem> items = new ArrayList<>();
+
         for (RepositoryScopeOrderByItem item: orderByItems) {
-            addItemOperator(whereClauseBuilder, item, object, reversed);
+            items.add(item);
             if (item.column().equals(PAGING_KEY)) {
                 hasPagingKey = true;
             }
         }
-
         if (!hasPagingKey) {
-            RepositoryScopeOrderByItem pagingItem = RepositoryScopeOrderByItem.builder().column(PAGING_KEY)
-                    .direction(RepositoryScope.OrderByDirection.ASC).build();
-            addItemOperator(whereClauseBuilder, pagingItem, object, reversed);
+            items.add(RepositoryScopeOrderByItem.builder().column(PAGING_KEY)
+                    .direction(RepositoryScope.OrderByDirection.ASC).build());
         }
 
+        do {
+            List<RepositoryScopeOrderByItem> nextIterationItems = new ArrayList<>();
+            WhereClauseBuilder subWhereClause = new WhereClauseBuilder();
+            for (int i = 0; i < items.size(); i++) {
+                RepositoryScopeOrderByItem item = items.get(i);
+                if (i == items.size() - 1) {
+                    addItemOperator(subWhereClause, item, object, reversed);
+                } else {
+                    addItemEquality(subWhereClause, item, object);
+                    nextIterationItems.add(item);
+                }
+            }
+            whereClauseBuilder.appendOrComplexQuery(subWhereClause.build());
+            items = nextIterationItems;
+        }
+        while (!items.isEmpty());
     }
 
     private static void addItemOperator(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
                                         ContentValues object, boolean reversed) {
         String operator = reversed ? getReversedDirectionOperator(item) : getDirectionOperator(item);
+        whereClauseBuilder.appendKeyOperatorValue(item.column(), operator,
+                "'" + object.getAsString(item.column()) + "'");
+    }
+
+    private static void addItemEquality(WhereClauseBuilder whereClauseBuilder, RepositoryScopeOrderByItem item,
+                                        ContentValues object) {
+        String operator = "=";
         whereClauseBuilder.appendKeyOperatorValue(item.column(), operator,
                 "'" + object.getAsString(item.column()) + "'");
     }

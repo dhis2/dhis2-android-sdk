@@ -157,6 +157,16 @@ public class WhereClauseBuilderShould {
     }
 
     @Test
+    public void build_where_statement_appending_or_complex_queries_between_others() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendIsNullValue("COL1")
+                .appendOrComplexQuery("COL2 = 'VAL2' OR COL3 = 'VAL3'")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 IS NULL OR (COL2 = 'VAL2' OR COL3 = 'VAL3')");
+    }
+
+    @Test
     public void build_where_statement_appending_operator() {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         String whereStatement = builder

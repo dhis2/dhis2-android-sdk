@@ -26,19 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core;
+package org.hisp.dhis.android.core.trackedentity.search;
 
 import com.google.common.collect.Lists;
 
+import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.search.QueryFilter;
-import org.hisp.dhis.android.core.trackedentity.search.QueryItem;
-import org.hisp.dhis.android.core.trackedentity.search.QueryOperator;
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuery;
 import org.junit.Before;
 
 import java.io.IOException;

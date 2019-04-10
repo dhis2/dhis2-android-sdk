@@ -69,6 +69,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.CouplingBetweenObjects"})
@@ -269,6 +270,7 @@ public final class D2 {
                     .addConverterFactory(JacksonConverterFactory.create(ObjectMapperFactory.objectMapper()))
                     .addConverterFactory(FilterConverterFactory.create())
                     .addConverterFactory(FieldsConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .validateEagerly(true)
                     .build();
 

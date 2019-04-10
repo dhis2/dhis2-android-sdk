@@ -120,8 +120,12 @@ public class WhereClauseBuilder {
         return this;
     }
 
+    public boolean isEmpty() {
+        return whereClause.length() == 0;
+    }
+
     public String build() {
-        if (whereClause.length() == 0) {
+        if (isEmpty()) {
             throw new RuntimeException("No columns added");
         } else {
             return whereClause.toString();

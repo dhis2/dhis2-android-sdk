@@ -39,7 +39,7 @@ public class WhereClauseFromScopeBuilder {
     }
 
     public String getWhereClause(RepositoryScope scope) {
-        if (!scope.hasFilters()) {
+        if (!scope.hasFilters() && builder.isEmpty()) {
             return "1";
         }
 

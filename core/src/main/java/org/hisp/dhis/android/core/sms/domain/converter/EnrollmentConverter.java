@@ -51,7 +51,7 @@ public class EnrollmentConverter extends Converter<EnrollmentData> {
     private String base64(byte[] bytes) {
         String encoded;
         try {
-            encoded = Base64.encodeToString(bytes, Base64.DEFAULT);
+            encoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
         } catch (Throwable t) {
             encoded = null;
             // not android, so will try with pure java

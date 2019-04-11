@@ -46,6 +46,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -169,6 +170,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 .errorComponent(D2ErrorComponent.Server);
     }
 
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
     private String getUrl(Call<?> call) {
         if (call.request() == null || call.request().url() == null) {
             return null;

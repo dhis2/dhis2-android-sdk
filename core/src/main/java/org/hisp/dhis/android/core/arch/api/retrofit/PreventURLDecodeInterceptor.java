@@ -26,28 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.api;
+package org.hisp.dhis.android.core.arch.api.retrofit;
 
-import org.hisp.dhis.android.core.arch.api.retrofit.PreventURLDecodeInterceptor;
+import java.io.IOException;
 
-import okhttp3.OkHttpClient;
-import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Retrofit;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
-public class RetrofitFactory {
+public class PreventURLDecodeInterceptor implements Interceptor {
 
-    public static Retrofit getRetrofit(MockWebServer mockWebServer) {
-        return new Retrofit.Builder()
-                .client(getOkClient())
-                .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .addConverterFactory(FilterConverterFactory.create())
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
+        String encodedUrl = request.url().toString();
+
+        String nonEncodedUrl = encodedUrl
+                .replace("%2C", ",")
+                .replace("%5B", "[")
+                .replace("%5D", "]")
+                .replace("%3A", ":");
+
+        Request newRequest = request.newBuilder()
+                .url(nonEncodedUrl)
                 .build();
-    }
 
-    private static OkHttpClient getOkClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new PreventURLDecodeInterceptor())
-                .build();
+        return chain.proceed(newRequest);
     }
 }

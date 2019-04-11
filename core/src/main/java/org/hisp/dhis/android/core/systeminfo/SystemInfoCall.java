@@ -44,9 +44,10 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-class SystemInfoCall implements Callable<Unit> {
+class SystemInfoCall {
     private final DatabaseAdapter databaseAdapter;
     private final SyncHandler<SystemInfo> systemInfoHandler;
     private final SystemInfoService systemInfoService;
@@ -69,25 +70,27 @@ class SystemInfoCall implements Callable<Unit> {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    @Override
-    public Unit call() throws D2Error {
-        SystemInfo systemInfo = apiCallExecutor.executeObjectCall(
-                systemInfoService.getSystemInfo(SystemInfoFields.allFields));
+    public Callable<Unit> asCall() {
+        return () -> asObservable().blockingGet();
+    }
 
-        if (DHISVersion.isAllowedVersion(systemInfo.version())) {
-            versionManager.setVersion(systemInfo.version());
-        } else {
-            throw D2Error.builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
-                    .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
-                            + "Allowed versions: "
-                            + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
-                    .build();
-        }
+    public Single<Unit> asObservable() {
+        return systemInfoService.getSystemInfo(SystemInfoFields.allFields).map(systemInfo -> {
+            if (DHISVersion.isAllowedVersion(systemInfo.version())) {
+                versionManager.setVersion(systemInfo.version());
+            } else {
+                throw D2Error.builder()
+                        .errorComponent(D2ErrorComponent.SDK)
+                        .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                        .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
+                                + "Allowed versions: "
+                                + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
+                        .build();
+            }
 
-        insertOrUpdateSystemInfo(systemInfo);
-        return new Unit();
+            insertOrUpdateSystemInfo(systemInfo);
+            return new Unit();
+        });
     }
 
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {

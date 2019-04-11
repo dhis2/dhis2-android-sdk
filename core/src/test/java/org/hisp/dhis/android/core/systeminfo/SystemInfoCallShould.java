@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -40,18 +39,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Date;
-import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -79,8 +77,8 @@ public class SystemInfoCallShould {
     @Mock
     private ResourceHandler resourceHandler;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private retrofit2.Call<SystemInfo> systemInfoCall;
+    //@Mock()
+    // private Single<SystemInfo> systemInfoSingle;
 
     @Mock
     private Transaction transaction;
@@ -97,7 +95,7 @@ public class SystemInfoCallShould {
     @Mock
     private Date serverDate;
 
-    private Callable<Unit> systemInfoSyncCall;
+    private SystemInfoCall systemInfoSyncCall;
 
 
     @Before
@@ -112,17 +110,14 @@ public class SystemInfoCallShould {
         when(systemInfo.serverDate()).thenReturn(serverDate);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
-
-        when(systemInfoService.getSystemInfo(any(Fields.class))).thenReturn(systemInfoCall);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void return_correct_fields_after_call() throws Exception {
-        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
-        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(systemInfoCall);
+        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.call();
+        systemInfoSyncCall.asCall().call();
 
         assertThat(filterCaptor.getValue()).isEqualTo(SystemInfoFields.allFields);
 
@@ -131,17 +126,17 @@ public class SystemInfoCallShould {
     @Test(expected = D2Error.class)
     @SuppressWarnings("unchecked")
     public void throw_d2_call_exception_on_call_io_exception() throws Exception {
-        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenThrow(d2Error);
-        systemInfoSyncCall.call();
+        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenThrow(d2Error);
+        systemInfoSyncCall.asCall().call();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void never_invoke_handlers_on_call_exception() throws Exception {
-        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenThrow(d2Error);
+        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenThrow(d2Error);
 
         try {
-            systemInfoSyncCall.call();
+            systemInfoSyncCall.asCall().call();
             fail("Exception was not thrown");
         } catch (D2Error d2Error) {
             verify(databaseAdapter, never()).beginNewTransaction();
@@ -156,9 +151,9 @@ public class SystemInfoCallShould {
 
     @Test
     public void invoke_handler_after_successful_call() throws Exception {
-        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
+        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.call();
+        systemInfoSyncCall.asCall().call();
 
         verify(systemInfoHandler).handle(systemInfo);
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
@@ -168,9 +163,9 @@ public class SystemInfoCallShould {
     @Test(expected = D2Error.class)
     public void throw_d2_call_exception_when_system_version_different_to_2_29() throws Exception {
         when(systemInfo.version()).thenReturn("2.28");
-        when(apiCallExecutor.executeObjectCall(systemInfoCall)).thenReturn(systemInfo);
+        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.call();
+        systemInfoSyncCall.asCall().call();
 
         verify(systemInfoHandler).handle(systemInfo);
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));

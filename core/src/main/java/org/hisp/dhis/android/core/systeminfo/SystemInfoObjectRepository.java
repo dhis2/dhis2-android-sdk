@@ -46,8 +46,8 @@ public final class SystemInfoObjectRepository
     SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
                                Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
                                RepositoryScope scope,
-                               SystemInfoCall downloadCall) {
-        super(store, childrenAppenders, scope, downloadCall,
-                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, downloadCall));
+                               SystemInfoCall systemInfoCall) {
+        super(store, childrenAppenders, scope, systemInfoCall.asCall(),
+                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, systemInfoCall));
     }
 }

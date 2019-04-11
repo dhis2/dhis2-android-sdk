@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
-import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -39,13 +38,16 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.data.database.IgnoreObjectStyleAdapter;
-import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithStyle;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Option.Builder.class)
-public abstract class Option extends BaseIdentifiableObject implements Model {
+@JsonDeserialize(builder = $$AutoValue_Option.Builder.class)
+public abstract class Option extends BaseIdentifiableObject
+        implements Model, ObjectWithStyle<Option, Option.Builder> {
 
     @Nullable
     @JsonProperty()
@@ -53,13 +55,8 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
-    public abstract OptionSet optionSet();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(IgnoreObjectStyleAdapter.class)
-    public abstract ObjectStyle style();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid optionSet();
 
     public static Builder builder() {
         return new $$AutoValue_Option.Builder();
@@ -73,14 +70,14 @@ public abstract class Option extends BaseIdentifiableObject implements Model {
 
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
-    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder>
+            implements ObjectWithStyle.Builder<Option, Option.Builder>{
+
         public abstract Builder id(Long id);
 
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
-        public abstract Builder optionSet(@Nullable OptionSet optionSet);
-
-        public abstract Builder style(@Nullable ObjectStyle style);
+        public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
 
         public abstract Option build();
     }

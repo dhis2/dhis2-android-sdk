@@ -152,53 +152,40 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
 
     private void verifyDownloadedTrackedEntityInstancePayload(String file, String teiUid)
             throws IOException {
-        TrackedEntityInstance expectedEnrollmentResponse = parseTrackedEntityInstanceResponsePayload(file);
+        Payload<TrackedEntityInstance> parsed = parseTrackedEntityInstanceResponse(file,
+                new TypeReference<Payload<TrackedEntityInstance>>() {});
+
+        TrackedEntityInstance expectedEnrollmentResponse = removeDeletedData(parsed.items().get(0));
 
         TrackedEntityInstance downloadedTei = getDownloadedTei(teiUid);
 
-        assertThat(downloadedTei, is(expectedEnrollmentResponse));
+        assertThat(downloadedTei.uid(), is(expectedEnrollmentResponse.uid()));
+        assertThat(downloadedTei.trackedEntityAttributeValues().size(),
+                is(expectedEnrollmentResponse.trackedEntityAttributeValues().size()));
     }
 
     private void verifyDownloadedTrackedEntityInstance(String file, String teiUid)
             throws IOException {
-        TrackedEntityInstance expectedEnrollmentResponse = parseTrackedEntityInstanceResponse(file);
+        TrackedEntityInstance parsed = parseTrackedEntityInstanceResponse(file,
+                new TypeReference<TrackedEntityInstance>() {});
+
+        TrackedEntityInstance expectedEnrollmentResponse = removeDeletedData(parsed);
 
         TrackedEntityInstance downloadedTei = getDownloadedTei(teiUid);
 
-        assertThat(downloadedTei, is(expectedEnrollmentResponse));
+        assertThat(downloadedTei.uid(), is(expectedEnrollmentResponse.uid()));
+        assertThat(downloadedTei.trackedEntityAttributeValues().size(),
+                is(expectedEnrollmentResponse.trackedEntityAttributeValues().size()));
     }
 
-    private TrackedEntityInstance parseTrackedEntityInstanceResponsePayload(String file)
+    private<M> M parseTrackedEntityInstanceResponse(String file, TypeReference<M> reference)
             throws IOException {
         String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
 
         ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
                 BaseIdentifiableObject.DATE_FORMAT.raw());
 
-        Payload<TrackedEntityInstance> trackedEntityInstances = objectMapper.readValue(
-                expectedEventsResponseJson,
-                new TypeReference<Payload<TrackedEntityInstance>>() {
-                });
-
-        TrackedEntityInstance trackedEntityInstance =
-                removeDeletedData(trackedEntityInstances.items().get(0));
-
-
-        return trackedEntityInstance;
-    }
-
-    private TrackedEntityInstance parseTrackedEntityInstanceResponse(String file)
-            throws IOException {
-        String expectedEventsResponseJson = new ResourcesFileReader().getStringFromFile(file);
-
-        ObjectMapper objectMapper = new ObjectMapper().setDateFormat(
-                BaseIdentifiableObject.DATE_FORMAT.raw());
-
-        TrackedEntityInstance trackedEntityInstance = objectMapper.readValue(
-                expectedEventsResponseJson,
-                new TypeReference<TrackedEntityInstance>() {});
-
-        return removeDeletedData(trackedEntityInstance);
+        return objectMapper.readValue(expectedEventsResponseJson, reference);
     }
 
     @NonNull

@@ -49,7 +49,6 @@ import java.util.Date;
 import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.fail;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -114,54 +113,59 @@ public class SystemInfoCallShould {
     }
 
     @Test
-    public void pass_correct_fields_to_service() throws Exception {
+    public void pass_correct_fields_to_service() {
         when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.just(systemInfo));
-        systemInfoSyncCall.asCall().call();
+        systemInfoSyncCall.asObservable();
         assertThat(filterCaptor.getValue()).isEqualTo(SystemInfoFields.allFields);
     }
 
-    @Test(expected = D2Error.class)
-    public void throw_d2_call_exception_on_call_io_exception() throws Exception {
+    @Test
+    public void emit_d2_error_when_api_call_executor_returns_error() {
         when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.error(d2Error));
-        systemInfoSyncCall.asCall().call();
+        systemInfoSyncCall.asObservable().test().assertError(d2Error);
     }
 
     @Test
-    public void never_invoke_handlers_on_call_exception() throws Exception {
+    public void never_invoke_handlers_on_call_exception() {
         when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.error(d2Error));
 
-        try {
-            systemInfoSyncCall.asCall().call();
-            fail("Exception was not thrown");
-        } catch (D2Error d2Error) {
-            verify(databaseAdapter, never()).beginNewTransaction();
-            verify(transaction, never()).begin();
-            verify(transaction, never()).setSuccessful();
-            verify(transaction, never()).end();
+        systemInfoSyncCall.asObservable();
 
-            verifyNoMoreInteractions(systemInfoHandler);
-            verifyNoMoreInteractions(resourceHandler);
-        }
+        verify(databaseAdapter, never()).beginNewTransaction();
+        verify(transaction, never()).begin();
+        verify(transaction, never()).setSuccessful();
+        verify(transaction, never()).end();
+
+        verifyNoMoreInteractions(systemInfoHandler);
+        verifyNoMoreInteractions(resourceHandler);
     }
 
     @Test
-    public void invoke_handler_after_successful_call() throws Exception {
+    public void invoke_handler_after_successful_call() {
         when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.asCall().call();
+        systemInfoSyncCall.asObservable().subscribe();
 
         verify(systemInfoHandler).handle(systemInfo);
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
     }
 
-    @Test(expected = D2Error.class)
-    public void throw_d2_call_exception_when_system_version_different_to_2_29() throws Exception {
+    @Test
+    public void throw_d2_call_exception_when_system_version_not_supported() {
         when(systemInfo.version()).thenReturn("2.28");
         when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.just(systemInfo));
 
-        systemInfoSyncCall.asCall().call();
+        systemInfoSyncCall.asObservable().test().assertError(D2Error.class);
+    }
 
-        verify(systemInfoHandler).handle(systemInfo);
-        verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
+    @Test
+    public void not_call_handler_when_system_version_not_supported() {
+        when(systemInfo.version()).thenReturn("2.28");
+        when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.just(systemInfo));
+
+        systemInfoSyncCall.asObservable().subscribe();
+
+        verify(systemInfoHandler, never()).handle(systemInfo);
+        verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO));
     }
 }

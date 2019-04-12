@@ -39,8 +39,6 @@ import org.hisp.dhis.android.core.resource.Resource;
 import org.hisp.dhis.android.core.resource.ResourceHandler;
 import org.hisp.dhis.android.core.utils.Utils;
 
-import java.util.concurrent.Callable;
-
 import javax.inject.Inject;
 
 import dagger.Reusable;
@@ -68,21 +66,6 @@ class SystemInfoCall {
         this.resourceHandler = resourceHandler;
         this.versionManager = versionManager;
         this.apiCallExecutor = apiCallExecutor;
-    }
-
-    // TODO Move outside
-    Callable<Unit> asCall() {
-        return () -> {
-            try {
-                return asObservable().blockingGet();
-            } catch (Exception e) {
-                if (e.getCause() instanceof Exception) {
-                    throw (Exception) e.getCause();
-                } else {
-                    throw new RuntimeException(e.getCause());
-                }
-            }
-        };
     }
 
     Single<Unit> asObservable() {

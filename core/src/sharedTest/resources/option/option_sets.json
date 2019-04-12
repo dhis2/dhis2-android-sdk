@@ -39,10 +39,37 @@
           "created": "2014-08-18T12:39:16.000",
           "name": "15-19 years",
           "id": "non_existent_option_uid",
-          "sortOrder": 2,
+          "sortOrder": 3,
           "displayName": "15-19 years",
           "optionSet": {
             "id": "non_existent_option_set_uid"
+          }
+        }
+      ]
+    },
+    {
+      "lastUpdated": "2015-08-06T14:23:38.789",
+      "created": "2014-06-22T10:59:26.564",
+      "name": "One option",
+      "id": "TQ2lai3OfVG",
+      "displayName": "One option",
+      "valueType": "NUMBER",
+      "version": 2,
+      "options": [
+        {
+          "lastUpdated": "2014-08-18T12:39:16.000",
+          "code": "First option",
+          "created": "2014-08-18T12:39:16.000",
+          "name": "First option",
+          "id": "Z1ILwhy5VDY",
+          "sortOrder": 1,
+          "displayName": "First option",
+          "optionSet": {
+            "id": "TQ2lai3OfVG"
+          },
+          "style": {
+            "color": "#13f2dd",
+            "icon": "woman_negative"
           }
         }
       ]

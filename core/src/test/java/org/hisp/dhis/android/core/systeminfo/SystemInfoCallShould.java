@@ -129,7 +129,7 @@ public class SystemInfoCallShould {
     public void never_invoke_handlers_on_call_exception() {
         when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.error(d2Error));
 
-        systemInfoSyncCall.asObservable();
+        systemInfoSyncCall.asObservable().subscribe();
 
         verify(databaseAdapter, never()).beginNewTransaction();
         verify(transaction, never()).begin();

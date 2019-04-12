@@ -41,8 +41,6 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +52,7 @@ import retrofit2.Response;
 public final class APICallExecutorImpl implements APICallExecutor {
 
     private final ObjectStore<D2Error> errorStore;
+    private final APIErrorMapper errorMapper = new APIErrorMapper();
 
     public APICallExecutorImpl(ObjectStore<D2Error> errorStore) {
         this.errorStore = errorStore;
@@ -65,20 +64,13 @@ public final class APICallExecutorImpl implements APICallExecutor {
 
         try {
             Response<Payload<P>> response = call.execute();
-            if (response.isSuccessful()) {
-                if (response.body() == null) {
-                    throw storeAndReturn(responseException(errorBuilder, response));
-                } else {
-                    return response.body().items();
-                }
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body().items();
             } else {
                 throw storeAndReturn(responseException(errorBuilder, response));
-
             }
-        } catch (SocketTimeoutException e) {
-            throw storeAndReturn(socketTimeoutException(errorBuilder, e));
-        } catch (IOException e) {
-            throw storeAndReturn(ioException(errorBuilder, e));
+        } catch (Throwable t) {
+            throw storeAndReturn(errorMapper.mapThrownException(t, errorBuilder));
         }
     }
 
@@ -122,9 +114,7 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 D2ErrorCode d2ErrorCode = errorCatcher.catchError(response);
 
                 if (d2ErrorCode != null) {
-                    D2Error d2error = responseException(errorBuilder, response).toBuilder()
-                            .errorCode(d2ErrorCode)
-                            .build();
+                    D2Error d2error = responseException(errorBuilder, response, d2ErrorCode);
 
                     if (errorCatcher.mustBeStored()) {
                         throw storeAndReturn(d2error);
@@ -134,12 +124,8 @@ public final class APICallExecutorImpl implements APICallExecutor {
                 }
             }
             throw storeAndReturn(responseException(errorBuilder, response));
-        } catch (SocketTimeoutException e) {
-            throw storeAndReturn(socketTimeoutException(errorBuilder, e));
-        } catch (UnknownHostException e) {
-            throw storeAndReturn(unknownHostException(errorBuilder, e));
-        } catch (IOException e) {
-            throw storeAndReturn(ioException(errorBuilder, e));
+        } catch (Throwable t) {
+            throw storeAndReturn(errorMapper.mapThrownException(t, errorBuilder));
         }
     }
 
@@ -180,10 +166,14 @@ public final class APICallExecutorImpl implements APICallExecutor {
     }
 
     private D2Error responseException(D2Error.Builder errorBuilder, Response<?> response) {
+        return responseException(errorBuilder, response, D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
+    }
+
+    private D2Error responseException(D2Error.Builder errorBuilder, Response<?> response, D2ErrorCode errorCode) {
         String serverMessage = getServerMessage(response);
         Log.e(this.getClass().getSimpleName(), serverMessage);
         return errorBuilder
-                .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
+                .errorCode(errorCode)
                 .httpErrorCode(response.code())
                 .errorDescription("API call failed, response: " + serverMessage)
                 .build();
@@ -211,33 +201,6 @@ public final class APICallExecutorImpl implements APICallExecutor {
             // IGNORE
         }
         return "No server message";
-    }
-
-    private D2Error socketTimeoutException(D2Error.Builder errorBuilder, SocketTimeoutException e) {
-        Log.e(this.getClass().getSimpleName(), e.toString());
-        return errorBuilder
-                .errorCode(D2ErrorCode.SOCKET_TIMEOUT)
-                .errorDescription("API call failed due to a SocketTimeoutException.")
-                .originalException(e)
-                .build();
-    }
-
-    private D2Error unknownHostException(D2Error.Builder errorBuilder, UnknownHostException e) {
-        Log.e(this.getClass().getSimpleName(), e.toString());
-        return errorBuilder
-                .errorCode(D2ErrorCode.UNKNOWN_HOST)
-                .errorDescription("API call failed due to UnknownHostException")
-                .originalException(e)
-                .build();
-    }
-
-    private D2Error ioException(D2Error.Builder errorBuilder, IOException e) {
-        Log.e(this.getClass().getSimpleName(), e.toString());
-        return errorBuilder
-                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
-                .errorDescription("API call threw IOException")
-                .originalException(e)
-                .build();
     }
 
     private D2Error storeAndReturn(D2Error error) {

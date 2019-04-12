@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.APIErrorMapper;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -54,6 +55,8 @@ class SystemInfoCall {
     private final ResourceHandler resourceHandler;
     private final DHISVersionManager versionManager;
     private final APICallExecutor apiCallExecutor;
+
+    private final APIErrorMapper errorMapper = new APIErrorMapper();
 
     @Inject
     SystemInfoCall(DatabaseAdapter databaseAdapter,
@@ -98,15 +101,16 @@ class SystemInfoCall {
             insertOrUpdateSystemInfo(systemInfo);
             return new Unit();
         }).onErrorResumeNext(throwable ->
-            Single.error(D2Error.builder()
-                    .errorCode(D2ErrorCode.UNEXPECTED)
-                    .resourceType("TODO") // TODO
-                    .uid(null)
-                    .url("dhis.com")
-                    .errorComponent(D2ErrorComponent.Server)
-                    .errorDescription("UnexpectedError.")
-                    .build())
+            Single.error(errorMapper.mapThrownException(throwable, getErrorBuilder()))
         );
+    }
+
+    private D2Error.Builder getErrorBuilder() {
+        return D2Error.builder()
+                .resourceType("TODO") // TODO
+                .uid("TODO") // TODO
+                .url("dhis/system.info")
+                .errorComponent(D2ErrorComponent.Server);
     }
 
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {

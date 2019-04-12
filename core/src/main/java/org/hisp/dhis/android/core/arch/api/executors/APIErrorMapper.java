@@ -42,7 +42,9 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import okhttp3.Request;
 import retrofit2.Call;
+import retrofit2.HttpException;
 import retrofit2.Response;
 
 @Reusable
@@ -57,6 +59,8 @@ final class APIErrorMapper {
             return socketTimeoutException(errorBuilder, (SocketTimeoutException) t);
         } else if (t instanceof UnknownHostException) {
             return unknownHostException(errorBuilder, (UnknownHostException) t);
+        } else if (t instanceof HttpException) {
+            return httpException(errorBuilder, (HttpException) t);
         } else if (t instanceof IOException) {
             return ioException(errorBuilder, (IOException) t);
         } else if (t instanceof Exception) {
@@ -92,6 +96,15 @@ final class APIErrorMapper {
                 .build();
     }
 
+    private D2Error httpException(D2Error.Builder errorBuilder, HttpException e) {
+        return logAndAppendOriginal(errorBuilder, e)
+                .url(getUrl(e.response().raw().request()))
+                .httpErrorCode(e.response().code())
+                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                .errorDescription("API call threw HttpException")
+                .build();
+    }
+
     private D2Error unexpectedException(D2Error.Builder errorBuilder, Exception e) {
         return logAndAppendOriginal(errorBuilder, e)
                 .errorCode(D2ErrorCode.UNEXPECTED)
@@ -112,7 +125,6 @@ final class APIErrorMapper {
     D2Error.Builder getRxObjectErrorBuilder() {
         return D2Error.builder()
                 .resourceType("TODO") // TODO
-                .url("TODO") // TODO this was present for Retrofit calls
                 .errorComponent(D2ErrorComponent.Server);
     }
 
@@ -123,12 +135,16 @@ final class APIErrorMapper {
                 .errorComponent(D2ErrorComponent.Server);
     }
 
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
     private String getUrl(Call<?> call) {
-        if (call.request() == null || call.request().url() == null) {
+        return getUrl(call.request());
+    }
+
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+    private String getUrl(Request request) {
+        if (request == null || request.url() == null) {
             return null;
         } else {
-            return call.request().url().toString();
+            return request.url().toString();
         }
     }
 

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
+import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -50,7 +50,6 @@ import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -67,16 +66,19 @@ public class SystemInfoCallShould {
     private DatabaseAdapter databaseAdapter;
 
     @Mock
-    private APICallExecutor apiCallExecutor;
+    private RxAPICallExecutor apiCallExecutor;
 
     @Mock
-    private Throwable throwable;
+    private D2Error d2Error;
 
     @Mock
     private SyncHandler<SystemInfo> systemInfoHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
+
+    @Mock
+    private Single<SystemInfo> systemInfoSingle;
 
     @Mock
     private Transaction transaction;
@@ -108,30 +110,25 @@ public class SystemInfoCallShould {
         when(systemInfo.serverDate()).thenReturn(serverDate);
 
         when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
+        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(systemInfoSingle);
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void return_correct_fields_after_call() throws Exception {
-        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(Single.just(systemInfo));
-
+    public void pass_correct_fields_to_service() throws Exception {
+        when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.just(systemInfo));
         systemInfoSyncCall.asCall().call();
-
         assertThat(filterCaptor.getValue()).isEqualTo(SystemInfoFields.allFields);
-
     }
 
     @Test(expected = D2Error.class)
-    @SuppressWarnings("unchecked")
     public void throw_d2_call_exception_on_call_io_exception() throws Exception {
-        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.error(throwable));
+        when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.error(d2Error));
         systemInfoSyncCall.asCall().call();
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void never_invoke_handlers_on_call_exception() throws Exception {
-        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.error(throwable));
+        when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.error(d2Error));
 
         try {
             systemInfoSyncCall.asCall().call();
@@ -149,19 +146,18 @@ public class SystemInfoCallShould {
 
     @Test
     public void invoke_handler_after_successful_call() throws Exception {
-        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.just(systemInfo));
+        when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.just(systemInfo));
 
         systemInfoSyncCall.asCall().call();
 
         verify(systemInfoHandler).handle(systemInfo);
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO));
-
     }
 
     @Test(expected = D2Error.class)
     public void throw_d2_call_exception_when_system_version_different_to_2_29() throws Exception {
         when(systemInfo.version()).thenReturn("2.28");
-        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.just(systemInfo));
+        when(apiCallExecutor.executeObjectCall(systemInfoSingle)).thenReturn(Single.just(systemInfo));
 
         systemInfoSyncCall.asCall().call();
 

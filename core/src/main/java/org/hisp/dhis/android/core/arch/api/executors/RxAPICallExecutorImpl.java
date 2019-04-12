@@ -26,27 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.retrofit;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import org.hisp.dhis.android.core.arch.api.executors.APIExecutorsDIModule;
+import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
-import dagger.Module;
-import dagger.Provides;
-import retrofit2.Retrofit;
+import javax.inject.Inject;
 
-@Module(includes = {
-        APIExecutorsDIModule.class
-})
-public class APIClientDIModule {
+import dagger.Reusable;
+import io.reactivex.Single;
 
-    private final Retrofit retrofit;
+@Reusable
+final class RxAPICallExecutorImpl implements RxAPICallExecutor {
 
-    public APIClientDIModule(Retrofit retrofit) {
-        this.retrofit = retrofit;
+    private final ObjectStore<D2Error> errorStore;
+    private final APIErrorMapper errorMapper;
+
+    @Inject
+    RxAPICallExecutorImpl(ObjectStore<D2Error> errorStore, APIErrorMapper errorMapper) {
+        this.errorStore = errorStore;
+        this.errorMapper = errorMapper;
     }
 
-    @Provides
-    Retrofit retrofit() {
-        return retrofit;
+    @Override
+    public <P> Single<P> executeObjectCall(Single<P> single) {
+        return single.onErrorResumeNext(throwable -> {
+            D2Error d2Error = errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
+            errorStore.insert(d2Error);
+            return Single.error(d2Error);
+        });
     }
 }

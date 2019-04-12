@@ -40,14 +40,19 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorStore;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import retrofit2.Call;
 import retrofit2.Response;
 
+@Reusable
 public final class APICallExecutorImpl implements APICallExecutor {
 
     private final ObjectStore<D2Error> errorStore;
     private final APIErrorMapper errorMapper = new APIErrorMapper();
 
+    @Inject
     public APICallExecutorImpl(ObjectStore<D2Error> errorStore) {
         this.errorStore = errorStore;
     }

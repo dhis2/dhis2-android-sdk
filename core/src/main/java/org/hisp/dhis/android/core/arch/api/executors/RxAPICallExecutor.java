@@ -26,27 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.retrofit;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import org.hisp.dhis.android.core.arch.api.executors.APIExecutorsDIModule;
+import io.reactivex.Single;
 
-import dagger.Module;
-import dagger.Provides;
-import retrofit2.Retrofit;
-
-@Module(includes = {
-        APIExecutorsDIModule.class
-})
-public class APIClientDIModule {
-
-    private final Retrofit retrofit;
-
-    public APIClientDIModule(Retrofit retrofit) {
-        this.retrofit = retrofit;
-    }
-
-    @Provides
-    Retrofit retrofit() {
-        return retrofit;
-    }
+public interface RxAPICallExecutor {
+    <P> Single<P> executeObjectCall(Single<P> single);
 }

@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
-import org.hisp.dhis.android.core.arch.api.executors.APIErrorMapper;
+import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -54,9 +53,7 @@ class SystemInfoCall {
     private final SystemInfoService systemInfoService;
     private final ResourceHandler resourceHandler;
     private final DHISVersionManager versionManager;
-    private final APICallExecutor apiCallExecutor;
-
-    private final APIErrorMapper errorMapper = new APIErrorMapper();
+    private final RxAPICallExecutor apiCallExecutor;
 
     @Inject
     SystemInfoCall(DatabaseAdapter databaseAdapter,
@@ -64,7 +61,7 @@ class SystemInfoCall {
                    SystemInfoService systemInfoService,
                    ResourceHandler resourceHandler,
                    DHISVersionManager versionManager,
-                   APICallExecutor apiCallExecutor) {
+                   RxAPICallExecutor apiCallExecutor) {
         this.databaseAdapter = databaseAdapter;
         this.systemInfoHandler = systemInfoHandler;
         this.systemInfoService = systemInfoService;
@@ -73,44 +70,39 @@ class SystemInfoCall {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    public Callable<Unit> asCall() {
+    // TODO Move outside
+    Callable<Unit> asCall() {
         return () -> {
             try {
                 return asObservable().blockingGet();
-            } catch (Exception e){
-                System.out.println(e);
-                throw (Exception) e.getCause();
+            } catch (Exception e) {
+                if (e.getCause() instanceof Exception) {
+                    throw (Exception) e.getCause();
+                } else {
+                    throw new RuntimeException(e.getCause());
+                }
             }
         };
     }
 
-    public Single<Unit> asObservable() {
-        return systemInfoService.getSystemInfo(SystemInfoFields.allFields).map(systemInfo -> {
-            if (DHISVersion.isAllowedVersion(systemInfo.version())) {
-                versionManager.setVersion(systemInfo.version());
-            } else {
-                throw D2Error.builder()
-                        .errorComponent(D2ErrorComponent.SDK)
-                        .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
-                        .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
-                                + "Allowed versions: "
-                                + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
-                        .build();
-            }
+    Single<Unit> asObservable() {
+        return apiCallExecutor.executeObjectCall(systemInfoService.getSystemInfo(SystemInfoFields.allFields))
+                .map(systemInfo -> {
+                    if (DHISVersion.isAllowedVersion(systemInfo.version())) {
+                        versionManager.setVersion(systemInfo.version());
+                    } else {
+                        throw D2Error.builder()
+                                .errorComponent(D2ErrorComponent.SDK)
+                                .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                                .errorDescription("Server DHIS version (" + systemInfo.version() + ") not valid. "
+                                        + "Allowed versions: "
+                                        + Utils.commaAndSpaceSeparatedArrayValues(DHISVersion.allowedVersionsAsStr()))
+                                .build();
+                    }
 
-            insertOrUpdateSystemInfo(systemInfo);
-            return new Unit();
-        }).onErrorResumeNext(throwable ->
-            Single.error(errorMapper.mapRetrofitException(throwable, getErrorBuilder()))
-        );
-    }
-
-    private D2Error.Builder getErrorBuilder() {
-        return D2Error.builder()
-                .resourceType("TODO") // TODO
-                .uid("TODO") // TODO
-                .url("dhis/system.info")
-                .errorComponent(D2ErrorComponent.Server);
+                    insertOrUpdateSystemInfo(systemInfo);
+                    return new Unit();
+                });
     }
 
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {

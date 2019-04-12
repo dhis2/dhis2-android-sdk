@@ -38,13 +38,21 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import javax.inject.Inject;
+
+import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public final class APIErrorMapper {
+@Reusable
+final class APIErrorMapper {
 
-    public D2Error mapRetrofitException(Throwable t, D2Error.Builder errorBuilder) {
+    @Inject
+    APIErrorMapper() {
+    }
+
+    D2Error mapRetrofitException(Throwable t, D2Error.Builder errorBuilder) {
         if (t instanceof SocketTimeoutException) {
             return socketTimeoutException(errorBuilder, (SocketTimeoutException) t);
         } else if (t instanceof UnknownHostException) {
@@ -99,6 +107,13 @@ public final class APIErrorMapper {
     D2Error.Builder getObjectErrorBuilder(Call<?> call) {
         return getBaseErrorBuilder(call)
                 .uid("TODO"); // TODO
+    }
+
+    D2Error.Builder getRxObjectErrorBuilder() {
+        return D2Error.builder()
+                .resourceType("TODO") // TODO
+                .url("TODO") // TODO this was present for Retrofit calls
+                .errorComponent(D2ErrorComponent.Server);
     }
 
     private D2Error.Builder getBaseErrorBuilder(Call<?> call) {

@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import android.content.ContentValues;
+
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryDataSource;
 import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryPagingConfig;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -42,7 +45,9 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import androidx.paging.ItemKeyedDataSource;
 
@@ -60,7 +65,17 @@ public class RepositoryPagingShould  {
     private IdentifiableObjectStore<CategoryOption> store;
 
     @Mock
-    private List<CategoryOption> objects;
+    private CategoryOption object;
+
+    @Mock
+    private CategoryOption key;
+
+    @Mock
+    private ContentValues keyContentValues;
+
+    private List<CategoryOption> objects = Collections.singletonList(object);
+
+    private Map<String, ChildrenAppender<CategoryOption>> childrenAppenders = Collections.emptyMap();
 
     @Mock
     private ItemKeyedDataSource.LoadInitialCallback<CategoryOption> initialCallback;
@@ -73,7 +88,7 @@ public class RepositoryPagingShould  {
 
     @Test
     public void get_initial_page_objects_without_order_by() {
-        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, emptyScope);
+        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, emptyScope, childrenAppenders);
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 3, false), initialCallback);
         verify(store).selectWhere("1", "_id ASC", 3);
         verify(initialCallback).onResult(objects);
@@ -83,7 +98,7 @@ public class RepositoryPagingShould  {
     public void get_initial_page_objects_with_order_by() {
         RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
                 RepositoryScopeOrderByItem.builder().column("name").direction(RepositoryScope.OrderByDirection.DESC).build());
-        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope);
+        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope, childrenAppenders);
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 3, false), initialCallback);
         verify(store).selectWhere("1", "name DESC, _id ASC", 3);
         verify(initialCallback).onResult(objects);
@@ -93,7 +108,7 @@ public class RepositoryPagingShould  {
     public void get_initial_page_objects_with_forced_order_by_paging_key_asc() {
         RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
                 RepositoryScopeOrderByItem.builder().column(RepositoryPagingConfig.PAGING_KEY).direction(RepositoryScope.OrderByDirection.ASC).build());
-        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope);
+        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope, childrenAppenders);
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 3, false), initialCallback);
         verify(store).selectWhere("1", "_id ASC", 3);
         verify(initialCallback).onResult(objects);
@@ -103,7 +118,7 @@ public class RepositoryPagingShould  {
     public void get_initial_page_objects_with_forced_order_by_paging_key_desc() {
         RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
                 RepositoryScopeOrderByItem.builder().column(RepositoryPagingConfig.PAGING_KEY).direction(RepositoryScope.OrderByDirection.DESC).build());
-        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope);
+        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope, childrenAppenders);
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 3, false), initialCallback);
         verify(store).selectWhere("1", "_id DESC", 3);
         verify(initialCallback).onResult(objects);
@@ -115,9 +130,31 @@ public class RepositoryPagingShould  {
                 RepositoryScopeOrderByItem.builder().column("c1").direction(RepositoryScope.OrderByDirection.DESC).build());
         RepositoryScope updatedScope2 = RepositoryScopeHelper.withOrderBy(updatedScope,
                 RepositoryScopeOrderByItem.builder().column("c2").direction(RepositoryScope.OrderByDirection.ASC).build());
-        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope2);
+        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope2, childrenAppenders);
         dataSource.loadInitial(new ItemKeyedDataSource.LoadInitialParams<>(null, 3, false), initialCallback);
         verify(store).selectWhere("1", "c1 DESC, c2 ASC, _id ASC", 3);
+        verify(initialCallback).onResult(objects);
+    }
+
+    @Test
+    public void get_after_page_objects_with_order_by() {
+        when(key.toContentValues()).thenReturn(keyContentValues);
+        when(keyContentValues.getAsString("_id")).thenReturn("5");
+        when(keyContentValues.getAsString("code")).thenReturn("key-code");
+        when(keyContentValues.getAsString("name")).thenReturn("key-name");
+
+        RepositoryScope updatedScope = RepositoryScopeHelper.withOrderBy(emptyScope,
+                RepositoryScopeOrderByItem.builder().column("code").direction(RepositoryScope.OrderByDirection.DESC).build());
+        RepositoryScope updatedScope2 = RepositoryScopeHelper.withOrderBy(updatedScope,
+                RepositoryScopeOrderByItem.builder().column("name").direction(RepositoryScope.OrderByDirection.ASC).build());
+        RepositoryDataSource<CategoryOption> dataSource = new RepositoryDataSource<>(store, updatedScope2, childrenAppenders);
+        dataSource.loadAfter(new ItemKeyedDataSource.LoadParams<>(key, 3), initialCallback);
+        verify(store).selectWhere(
+                "(code = 'key-code' AND name = 'key-name' AND _id > '5') OR " +
+                        "(code = 'key-code' AND name > 'key-name') OR " +
+                        "(code < 'key-code')",
+                "code DESC, name ASC, _id ASC",
+                3);
         verify(initialCallback).onResult(objects);
     }
 }

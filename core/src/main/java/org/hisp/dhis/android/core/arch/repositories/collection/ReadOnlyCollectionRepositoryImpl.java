@@ -94,7 +94,7 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
     }
 
     public DataSource<M, M> getDataSource() {
-        return new RepositoryDataSource<>(store, scope);
+        return new RepositoryDataSource<>(store, scope, childrenAppenders);
     }
 
     @Override

@@ -52,6 +52,7 @@ final class APIErrorMapper {
 
     @Inject
     APIErrorMapper() {
+        // Constructor only to enable injection
     }
 
     D2Error mapRetrofitException(Throwable t, D2Error.Builder errorBuilder) {

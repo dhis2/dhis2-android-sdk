@@ -37,6 +37,7 @@ public final class CallableObservableTransformer {
     private CallableObservableTransformer() {
     }
 
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
     public static <O> Callable<O> toCallable(Single<O> single) {
         return () -> {
             try {

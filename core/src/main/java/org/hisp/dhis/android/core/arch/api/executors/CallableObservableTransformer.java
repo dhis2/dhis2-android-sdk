@@ -34,7 +34,7 @@ import io.reactivex.Single;
 
 public final class CallableObservableTransformer {
 
-    CallableObservableTransformer() {
+    private CallableObservableTransformer() {
     }
 
     public static <O> Callable<O> toCallable(Single<O> single) {

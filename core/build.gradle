@@ -46,11 +46,11 @@ ext {
             paging          : '2.1.0',
 
             // java
-            jackson         : "2.8.5",
+            jackson         : "2.9.8",
             autovalue       : "1.3",
             autovaluecursor : "1.0.1",
-            retrofit        : "2.1.0",
-            okhttp          : "3.5.0",
+            retrofit        : "2.5.0",
+            okhttp          : "3.14.0",
             duktape         : "1.1.0",
             dagger          : "2.14.1",
             rxjava          : "2.2.8",
@@ -192,7 +192,7 @@ dependencies {
     api "joda-time:joda-time:2.9.9"
 
     // sms compression library
-    compile 'com.github.eHealthAfrica:dhis2-sms-compression:0.0.9'
+    api 'com.github.eHealthAfrica:dhis2-sms-compression:0.0.9'
 
     // Extension which generates mappers for work with cursor and content values
     api "com.gabrielittner.auto.value:auto-value-cursor-annotations:${libraries.autovaluecursor}"

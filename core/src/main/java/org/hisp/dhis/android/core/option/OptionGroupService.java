@@ -42,7 +42,7 @@ public interface OptionGroupService {
 
     @GET("optionGroups")
     Call<Payload<OptionGroup>> optionGroups(@Query("fields") @Which Fields<OptionGroup> fields,
-                                            @Query("filter") @Where String dataSetUidsFilter,
+                                            @Query("filter") String dataSetUidsFilter,
                                             @Query("filter") @Where Filter<OptionGroup, String> lastUpdated,
                                             @Query("paging") boolean paging);
 }

@@ -71,7 +71,7 @@ public abstract class Option extends BaseIdentifiableObject
     @AutoValue.Builder
     @JsonPOJOBuilder(withPrefix = "")
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder>
-            implements ObjectWithStyle.Builder<Option, Option.Builder>{
+            implements ObjectWithStyle.Builder<Option, Option.Builder> {
 
         public abstract Builder id(Long id);
 

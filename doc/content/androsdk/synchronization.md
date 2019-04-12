@@ -43,3 +43,21 @@ PROTECTED programs:
 
 ### Upload
 
+## Reserved values
+
+Reserved values for TrackedEntityAttribute are downloaded in advance so they are available when the application operates offline.
+
+When the "sync" process is triggered in the SDK, these actions are taken:
+
+1. Delete expired reserved values.
+2. Count the remaining values. If the count is under a certain threshold (50 by default), the sdk will fetch values up to the defined limit (100 by default).
+
+When a value is requested from the app, these actions are taken:
+
+1. Sync the reserved values for that attribute (which implies filling the table if needed).
+2. Retrieve from the db the first value, remove it from the table and return it to the app.
+
+A value is considered as "expired" when one of the following conditions is true:
+
+- "expiryDate" is overdue. By default, the server sets the expiry period to 2 months.
+- If the attribute pattern is dependent on time, i.e., it contains the segment `CURRENT_DATE(format)`, the sdk calculates an extra expiry date based on that pattern.

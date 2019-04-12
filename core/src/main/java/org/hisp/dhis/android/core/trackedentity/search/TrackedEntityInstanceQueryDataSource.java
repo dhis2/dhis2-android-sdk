@@ -130,7 +130,7 @@ public final class TrackedEntityInstanceQueryDataSource
                 requestedLoadSize);
         List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
         addUids(returnedUids, instances);
-        return appendEnrollments(instances);
+        return appendAttributes(instances);
     }
 
     private List<TrackedEntityInstance> queryOnline(int requestLoadSize) {
@@ -172,8 +172,9 @@ public final class TrackedEntityInstanceQueryDataSource
         }
     }
 
-    private List<TrackedEntityInstance> appendEnrollments(List<TrackedEntityInstance> withoutChildren) {
+    private List<TrackedEntityInstance> appendAttributes(List<TrackedEntityInstance> withoutChildren) {
         return ChildrenAppenderExecutor.appendInObjectCollection(withoutChildren, childrenAppenders,
-                new ChildrenSelection(Collections.singleton(TrackedEntityInstanceFields.ENROLLMENTS), false));
+                new ChildrenSelection(Collections.singleton(
+                        TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
     }
 }

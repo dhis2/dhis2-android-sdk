@@ -123,7 +123,8 @@ public final class TrackedEntityInstanceQueryCollectionRepository
                     50);
             List<TrackedEntityInstance> instances = store.selectRawQuery(sqlQuery);
             return ChildrenAppenderExecutor.appendInObjectCollection(instances, childrenAppenders,
-                    new ChildrenSelection(Collections.singleton(TrackedEntityInstanceFields.ENROLLMENTS), false));
+                    new ChildrenSelection(Collections.singleton(
+                            TrackedEntityInstanceFields.TRACKED_ENTITY_ATTRIBUTE_VALUES), false));
         } else {
             try {
                 return onlineCallFactory.getCall(scope.query()).call();

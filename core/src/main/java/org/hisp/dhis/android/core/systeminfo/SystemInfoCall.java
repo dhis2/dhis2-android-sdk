@@ -71,7 +71,14 @@ class SystemInfoCall {
     }
 
     public Callable<Unit> asCall() {
-        return () -> asObservable().blockingGet();
+        return () -> {
+            try {
+                return asObservable().blockingGet();
+            } catch (Exception e){
+                System.out.println(e);
+                throw (Exception) e.getCause();
+            }
+        };
     }
 
     public Single<Unit> asObservable() {
@@ -90,7 +97,16 @@ class SystemInfoCall {
 
             insertOrUpdateSystemInfo(systemInfo);
             return new Unit();
-        });
+        }).onErrorResumeNext(throwable ->
+            Single.error(D2Error.builder()
+                    .errorCode(D2ErrorCode.UNEXPECTED)
+                    .resourceType("TODO") // TODO
+                    .uid(null)
+                    .url("dhis.com")
+                    .errorComponent(D2ErrorComponent.Server)
+                    .errorDescription("UnexpectedError.")
+                    .build())
+        );
     }
 
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {

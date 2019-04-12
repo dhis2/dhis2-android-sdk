@@ -50,6 +50,7 @@ import io.reactivex.Single;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -69,16 +70,13 @@ public class SystemInfoCallShould {
     private APICallExecutor apiCallExecutor;
 
     @Mock
-    private D2Error d2Error;
+    private Throwable throwable;
 
     @Mock
     private SyncHandler<SystemInfo> systemInfoHandler;
 
     @Mock
     private ResourceHandler resourceHandler;
-
-    //@Mock()
-    // private Single<SystemInfo> systemInfoSingle;
 
     @Mock
     private Transaction transaction;
@@ -126,14 +124,14 @@ public class SystemInfoCallShould {
     @Test(expected = D2Error.class)
     @SuppressWarnings("unchecked")
     public void throw_d2_call_exception_on_call_io_exception() throws Exception {
-        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenThrow(d2Error);
+        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.error(throwable));
         systemInfoSyncCall.asCall().call();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void never_invoke_handlers_on_call_exception() throws Exception {
-        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenThrow(d2Error);
+        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.error(throwable));
 
         try {
             systemInfoSyncCall.asCall().call();
@@ -151,7 +149,7 @@ public class SystemInfoCallShould {
 
     @Test
     public void invoke_handler_after_successful_call() throws Exception {
-        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(Single.just(systemInfo));
+        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.just(systemInfo));
 
         systemInfoSyncCall.asCall().call();
 
@@ -163,7 +161,7 @@ public class SystemInfoCallShould {
     @Test(expected = D2Error.class)
     public void throw_d2_call_exception_when_system_version_different_to_2_29() throws Exception {
         when(systemInfo.version()).thenReturn("2.28");
-        when(systemInfoService.getSystemInfo(filterCaptor.capture())).thenReturn(Single.just(systemInfo));
+        when(systemInfoService.getSystemInfo(any())).thenReturn(Single.just(systemInfo));
 
         systemInfoSyncCall.asCall().call();
 

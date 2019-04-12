@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.testapp.option;
 
-import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.option.Option;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,52 +41,36 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class OptionSetCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class OptionCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets.get();
-        assertThat(optionSets.size(), is(2));
+        List<Option> options = d2.optionModule().options.get();
+        assertThat(options.size(), is(3));
     }
 
     @Test
-    public void filter_by_version() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets
-                .byVersion().eq(1).get();
-        assertThat(optionSets.size(), is(1));
+    public void filter_by_sort_order() {
+        List<Option> options = d2.optionModule().options
+                .bySortOrder().eq(2).get();
+        assertThat(options.size(), is(1));
+        assertThat(options.get(0).uid(), is("egT1YqFWsVk"));
     }
 
     @Test
-    public void filter_by_value_type() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets
-                .byValueType().eq(ValueType.TEXT).get();
-        assertThat(optionSets.size(), is(1));
+    public void filter_by_optionset_uid() {
+        List<Option> options = d2.optionModule().options
+                .byOptionSetUid().eq("VQ2lai3OfVG").get();
+        assertThat(options.size(), is(2));
     }
 
     @Test
-    public void include_options_as_children() {
-        OptionSet optionSet = d2.optionModule().optionSets
-                .withOptions()
-                .uid("VQ2lai3OfVG")
+    public void include_object_style() {
+        Option option = d2.optionModule().options
+                .withStyle()
+                .uid("Z1ILwhy5VDY")
                 .get();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
-    }
-
-    @Test
-    public void include_options_as_children_in_collection_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets
-                .withAllChildren()
-                .uid("VQ2lai3OfVG")
-                .get();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
-    }
-
-    @Test
-    public void include_options_as_children_in_object_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets
-                .withAllChildren()
-                .uid("VQ2lai3OfVG")
-                .get();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
+        assertThat(option.style().icon(), is("woman_negative"));
+        assertThat(option.style().color(), is("#13f2dd"));
     }
 }

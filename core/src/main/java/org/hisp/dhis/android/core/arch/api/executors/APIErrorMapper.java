@@ -32,14 +32,19 @@ import android.util.Log;
 
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import retrofit2.Call;
+import retrofit2.Response;
+
 public final class APIErrorMapper {
 
-    public D2Error mapThrownException(Throwable t, D2Error.Builder errorBuilder) {
+    public D2Error mapRetrofitException(Throwable t, D2Error.Builder errorBuilder) {
         if (t instanceof SocketTimeoutException) {
             return socketTimeoutException(errorBuilder, (SocketTimeoutException) t);
         } else if (t instanceof UnknownHostException) {
@@ -53,39 +58,100 @@ public final class APIErrorMapper {
         }
     }
 
-    private D2Error socketTimeoutException(D2Error.Builder errorBuilder, SocketTimeoutException e) {
+    private D2Error.Builder logAndAppendOriginal(D2Error.Builder errorBuilder, Exception e) {
         Log.e(this.getClass().getSimpleName(), e.toString());
-        return errorBuilder
+        return errorBuilder.originalException(e);
+    }
+
+    private D2Error socketTimeoutException(D2Error.Builder errorBuilder, SocketTimeoutException e) {
+        return logAndAppendOriginal(errorBuilder, e)
                 .errorCode(D2ErrorCode.SOCKET_TIMEOUT)
                 .errorDescription("API call failed due to a SocketTimeoutException.")
-                .originalException(e)
                 .build();
     }
 
     private D2Error unknownHostException(D2Error.Builder errorBuilder, UnknownHostException e) {
-        Log.e(this.getClass().getSimpleName(), e.toString());
-        return errorBuilder
+        return logAndAppendOriginal(errorBuilder, e)
                 .errorCode(D2ErrorCode.UNKNOWN_HOST)
                 .errorDescription("API call failed due to UnknownHostException")
-                .originalException(e)
                 .build();
     }
 
     private D2Error ioException(D2Error.Builder errorBuilder, IOException e) {
-        Log.e(this.getClass().getSimpleName(), e.toString());
-        return errorBuilder
+        return logAndAppendOriginal(errorBuilder, e)
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("API call threw IOException")
-                .originalException(e)
                 .build();
     }
 
     private D2Error unexpectedException(D2Error.Builder errorBuilder, Exception e) {
-        Log.e(this.getClass().getSimpleName(), e.toString());
-        return errorBuilder
+        return logAndAppendOriginal(errorBuilder, e)
                 .errorCode(D2ErrorCode.UNEXPECTED)
                 .errorDescription("Unexpected exception")
-                .originalException(e)
                 .build();
+    }
+
+    D2Error.Builder getCollectionErrorBuilder(Call<?> call) {
+        return getBaseErrorBuilder(call)
+                .uid(null);
+    }
+
+    D2Error.Builder getObjectErrorBuilder(Call<?> call) {
+        return getBaseErrorBuilder(call)
+                .uid("TODO"); // TODO
+    }
+
+    private D2Error.Builder getBaseErrorBuilder(Call<?> call) {
+        return D2Error.builder()
+                .resourceType("TODO") // TODO
+                .url(getUrl(call))
+                .errorComponent(D2ErrorComponent.Server);
+    }
+
+    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+    private String getUrl(Call<?> call) {
+        if (call.request() == null || call.request().url() == null) {
+            return null;
+        } else {
+            return call.request().url().toString();
+        }
+    }
+
+    D2Error responseException(D2Error.Builder errorBuilder, Response<?> response) {
+        return responseException(errorBuilder, response, D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
+    }
+
+    D2Error responseException(D2Error.Builder errorBuilder, Response<?> response, D2ErrorCode errorCode) {
+        String serverMessage = getServerMessage(response);
+        Log.e(this.getClass().getSimpleName(), serverMessage);
+        return errorBuilder
+                .errorCode(errorCode)
+                .httpErrorCode(response.code())
+                .errorDescription("API call failed, response: " + serverMessage)
+                .build();
+    }
+
+    private boolean nonEmptyMessage(String message) {
+        return message != null && message.length() > 0;
+    }
+
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    private String getServerMessage(Response<?> response) {
+        if (nonEmptyMessage(response.message())) {
+            return response.message();
+        }
+
+        try {
+            String errorBodyString = response.errorBody().string();
+            if (nonEmptyMessage(errorBodyString)) {
+                return errorBodyString;
+            }
+            if (nonEmptyMessage(response.errorBody().toString())) {
+                return response.errorBody().toString();
+            }
+        } catch (IOException e) {
+            // IGNORE
+        }
+        return "No server message";
     }
 }

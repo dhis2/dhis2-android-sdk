@@ -101,7 +101,7 @@ class SystemInfoCall {
             insertOrUpdateSystemInfo(systemInfo);
             return new Unit();
         }).onErrorResumeNext(throwable ->
-            Single.error(errorMapper.mapThrownException(throwable, getErrorBuilder()))
+            Single.error(errorMapper.mapRetrofitException(throwable, getErrorBuilder()))
         );
     }
 

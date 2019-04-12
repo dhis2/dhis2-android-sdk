@@ -48,7 +48,7 @@ public class SystemSettingSplitterShould {
     public void build_flag_setting() throws IOException, ParseException {
         List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
         SystemSetting flag = settingList.get(0);
-        assertThat(flag.key()).isEqualTo("flag");
+        assertThat(flag.key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG);
         assertThat(flag.value()).isEqualTo("aFlag");
     }
 
@@ -56,7 +56,7 @@ public class SystemSettingSplitterShould {
     public void build_style_setting() throws IOException, ParseException {
         List<SystemSetting> settingList = systemSettingsSplitter.splitSettings(settingsPojo);
         SystemSetting style = settingList.get(1);
-        assertThat(style.key()).isEqualTo("style");
+        assertThat(style.key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE);
         assertThat(style.value()).isEqualTo("aStyle");
     }
 }

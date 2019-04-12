@@ -33,18 +33,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public final class ChildrenAppenderExecutor {
 
     private ChildrenAppenderExecutor() {
     }
 
-    public static <M extends Model> M appendInObject(M m, Collection<ChildrenAppender<M>> childrenAppenders) {
+    public static <M extends Model> M appendInObject(
+            M m, Map<String, ChildrenAppender<M>> childrenAppenders, ChildrenSelection childrenSelection) {
+
         if (m == null) {
             return null;
         } else {
             M mWithChildren = m;
-            for (ChildrenAppender<M> appender : childrenAppenders) {
+            for (ChildrenAppender<M> appender : getSelectedChildrenAppenders(childrenAppenders, childrenSelection)) {
                 appender.prepareChildren(Collections.singleton(mWithChildren));
                 mWithChildren = appender.appendChildren(mWithChildren);
             }
@@ -53,21 +56,37 @@ public final class ChildrenAppenderExecutor {
     }
 
     public static <M extends Model> List<M> appendInObjectCollection(
-            List<M> list,
-            Collection<ChildrenAppender<M>> childrenAppenders) {
+            List<M> list, Map<String, ChildrenAppender<M>> childrenAppenders, ChildrenSelection childrenSelection) {
 
-        for (ChildrenAppender<M> appender : childrenAppenders) {
+
+        Collection<ChildrenAppender<M>> selectedAppenders
+                = getSelectedChildrenAppenders(childrenAppenders, childrenSelection);
+
+        for (ChildrenAppender<M> appender : selectedAppenders) {
             appender.prepareChildren(list);
         }
 
         List<M> setWithChildren = new ArrayList<>(list.size());
         for (M m : list) {
             M mWithChildren = m;
-            for (ChildrenAppender<M> appender : childrenAppenders) {
+            for (ChildrenAppender<M> appender : selectedAppenders) {
                 mWithChildren = appender.appendChildren(mWithChildren);
             }
             setWithChildren.add(mWithChildren);
         }
         return setWithChildren;
+    }
+
+    private static <M extends Model> Collection<ChildrenAppender<M>> getSelectedChildrenAppenders(
+            Map<String, ChildrenAppender<M>> appendersMap, ChildrenSelection childrenSelection) {
+        if (childrenSelection.areAllChildrenSelected) {
+            return appendersMap.values();
+        } else {
+            List<ChildrenAppender<M>> appendersList = new ArrayList<>(appendersMap.size());
+            for (String key : childrenSelection.children) {
+                appendersList.add(appendersMap.get(key));
+            }
+            return appendersList;
+        }
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
@@ -65,7 +65,7 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
 
     @Test
     public void allow_access_to_all_data_sets_with_children() {
-        List<DataSet> dataSets = d2.dataSetModule().dataSets.getWithAllChildren();
+        List<DataSet> dataSets = d2.dataSetModule().dataSets.withAllChildren().get();
         assertThat(dataSets.size(), is(1));
         for (DataSet dataSet : dataSets) {
             assertThat(dataSet.sections() == null, is(false));
@@ -75,21 +75,21 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
 
     @Test
     public void allow_access_to_one_data_set_with_children() {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         assertThat(dataSet.sections() == null, is(false));
         assertThat(dataSet.style() == null, is(false));
     }
 
     @Test
     public void allow_access_to_object_style() {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         assertThat(dataSet.style().color(), is("#000"));
         assertThat(dataSet.style().icon(), is("my-icon-name"));
     }
 
     @Test
     public void allow_access_to_sections() {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         List<Section> sections = dataSet.sections();
         assertThat(sections.size(), is(1));
 
@@ -100,7 +100,7 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
 
     @Test
     public void allow_access_to_compulsory_data_element_operands() {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         List<DataElementOperand> dataElementOperands = dataSet.compulsoryDataElementOperands();
         assertThat(dataElementOperands.size(), is(1));
 
@@ -112,7 +112,7 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
 
     @Test
     public void allow_access_data_input_periods() throws ParseException {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         List<DataInputPeriod> dataInputPeriods = dataSet.dataInputPeriods();
         assertThat(dataInputPeriods.size(), is(1));
 
@@ -124,7 +124,7 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
 
     @Test
     public void allow_access_data_set_elements() {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         List<DataSetElement> dataSetElements = dataSet.dataSetElements();
         assertThat(dataSetElements.size(), is(1));
 
@@ -136,7 +136,7 @@ public class DataSetModuleMockIntegrationShould extends SyncedDatabaseMockIntegr
 
     @Test
     public void allow_access_indicators() {
-        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").getWithAllChildren();
+        DataSet dataSet = d2.dataSetModule().dataSets.uid("lyLU2wR22tC").withAllChildren().get();
         List<Indicator> indicators = dataSet.indicators();
         assertThat(indicators.size(), is(1));
 

@@ -56,13 +56,14 @@ public final class DataSetFields {
     static final String DATA_ELEMENT_DECORATION = "dataElementDecoration";
     static final String RENDER_AS_TABS = "renderAsTabs";
     static final String RENDER_HORIZONTALLY = "renderHorizontally";
-    private static final String DATA_SET_ELEMENTS = "dataSetElements";
-    private static final String INDICATORS = "indicators";
-    private static final String SECTIONS = "sections";
-    private static final String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
-    private static final String DATA_INPUT_PERIODS = "dataInputPeriods";
+    public static final String WORKFLOW = "workflow";
+    static final String DATA_SET_ELEMENTS = "dataSetElements";
+    static final String INDICATORS = "indicators";
+    static final String SECTIONS = "sections";
+    static final String COMPULSORY_DATA_ELEMENT_OPERANDS = "compulsoryDataElementOperands";
+    static final String DATA_INPUT_PERIODS = "dataInputPeriods";
     private static final String ACCESS = "access";
-    private static final String STYLE = "style";
+    static final String STYLE = "style";
 
     static final String ACCESS_DATA_WRITE = "accessDataWrite";
 
@@ -88,6 +89,7 @@ public final class DataSetFields {
                     fh.<Boolean>field(DATA_ELEMENT_DECORATION),
                     fh.<Boolean>field(RENDER_AS_TABS),
                     fh.<Boolean>field(RENDER_HORIZONTALLY),
+                    fh.nestedFieldWithUid(WORKFLOW),
                     fh.<DataSetElement>nestedField(DATA_SET_ELEMENTS).with(DataSetElementFields.allFields),
                     fh.nestedFieldWithUid(INDICATORS),
                     fh.<Section>nestedField(SECTIONS).with(SectionFields.allFields),

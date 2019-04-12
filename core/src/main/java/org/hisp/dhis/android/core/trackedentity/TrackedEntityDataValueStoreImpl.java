@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;

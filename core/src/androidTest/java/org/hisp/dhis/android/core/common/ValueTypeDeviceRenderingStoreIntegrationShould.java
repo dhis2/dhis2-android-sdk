@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ValueTypeDeviceRenderingStoreIntegrationShould 
@@ -53,13 +53,6 @@ public class ValueTypeDeviceRenderingStoreIntegrationShould
     protected ValueTypeDeviceRendering buildObjectToUpdate() {
         return ValueTypeDeviceRenderingSamples.getValueTypeDeviceRendering().toBuilder()
                 .step(20)
-                .build();
-    }
-
-    @Override
-    protected ValueTypeDeviceRendering buildObjectWithId() {
-        return ValueTypeDeviceRenderingSamples.getValueTypeDeviceRendering().toBuilder()
-                .id(1L)
                 .build();
     }
 }

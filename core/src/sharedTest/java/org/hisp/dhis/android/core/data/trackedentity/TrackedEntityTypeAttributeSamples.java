@@ -35,6 +35,7 @@ public class TrackedEntityTypeAttributeSamples {
 
     public static TrackedEntityTypeAttribute get() {
         return TrackedEntityTypeAttribute.builder()
+                .id(1L)
                 .trackedEntityType(ObjectWithUid.create("nEenWmSyUEp"))
                 .trackedEntityAttribute(ObjectWithUid.create("w75KJ2mc4zz"))
                 .displayInList(true)

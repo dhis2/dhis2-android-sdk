@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.calls;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;
 import org.hisp.dhis.android.core.calls.processors.CallProcessor;

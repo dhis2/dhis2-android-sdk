@@ -33,12 +33,11 @@ import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnect
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ValueType;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,10 +49,10 @@ public final class DataElementCollectionRepository
 
     @Inject
     DataElementCollectionRepository(final IdentifiableObjectStore<DataElement> store,
-                                    final Collection<ChildrenAppender<DataElement>> childrenAppenders,
-                                    List<RepositoryScopeItem> scope) {
+                                    final Map<String, ChildrenAppender<DataElement>> childrenAppenders,
+                                    final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new DataElementCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new DataElementCollectionRepository(store, childrenAppenders, s)));
     }
 
     public EnumFilterConnector<DataElementCollectionRepository, ValueType> byValueType() {
@@ -86,5 +85,9 @@ public final class DataElementCollectionRepository
 
     public StringFilterConnector<DataElementCollectionRepository> byCategoryComboUid() {
         return cf.string(DataElementFields.CATEGORY_COMBO);
+    }
+
+    public DataElementCollectionRepository withStyle() {
+        return cf.withChild(DataElementFields.STYLE);
     }
 }

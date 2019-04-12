@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -86,17 +86,19 @@ public final class ProgramStageEntityDIModule implements IdentifiableStoreProvid
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<ProgramStage>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         ChildrenAppender<ProgramStage> objectStyleChildrenAppender =
                 new ObjectStyleChildrenAppender<>(
                         ObjectStyleStoreImpl.create(databaseAdapter),
                         ProgramStageTableInfo.TABLE_INFO
                 );
 
-        return Arrays.asList(
-                objectStyleChildrenAppender,
-                ProgramStageDataElementChildrenAppender.create(databaseAdapter),
-                ProgramStageSectionChildrenAppender.create(databaseAdapter)
-        );
+        return new HashMap<String, ChildrenAppender<ProgramStage>>() {{
+            put(ProgramStageFields.STYLE, objectStyleChildrenAppender);
+            put(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS,
+                    ProgramStageDataElementChildrenAppender.create(databaseAdapter));
+            put(ProgramStageFields.PROGRAM_STAGE_SECTIONS, ProgramStageSectionChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -266,7 +266,7 @@ public class TrackedEntityInstanceCallMockIntegrationShould extends AbsStoreTest
         List<Event> downloadedEventsWithoutValuesAndDeleteFalse = new ArrayList<>();
         for (Event event : downloadedEventsWithoutValues) {
             downloadedEventsWithoutValuesAndDeleteFalse.add(
-                    event.toBuilder().deleted(false).state(null).build());
+                    event.toBuilder().id(null).deleted(false).state(null).build());
         }
 
         List<TrackedEntityDataValue> dataValueList = TrackedEntityDataValueStoreImpl.create(databaseAdapter()).selectAll();

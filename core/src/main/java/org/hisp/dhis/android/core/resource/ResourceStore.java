@@ -32,4 +32,6 @@ import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 public interface ResourceStore extends ObjectWithoutUidStore<Resource> {
 
     String getLastUpdated(Resource.Type type);
+
+    boolean deleteResource(Resource.Type type);
 }

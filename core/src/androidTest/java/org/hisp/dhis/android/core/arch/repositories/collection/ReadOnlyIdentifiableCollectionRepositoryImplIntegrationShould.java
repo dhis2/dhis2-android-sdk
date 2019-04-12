@@ -28,22 +28,23 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithConstraints;
+import androidx.test.runner.AndroidJUnit4;
+
+import static com.google.common.truth.Truth.assertThat;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
@@ -53,7 +54,7 @@ import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSampl
 @RunWith(AndroidJUnit4.class)
 public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
 
-    private ReadOnlyIdentifiableCollectionRepository<RelationshipType, ?> relationshipTypeCollectionRepository;
+    private RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
 
     @Override
     @Before
@@ -72,7 +73,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
 
     @Test
     public void get_relationship_1_from_object_repository_without_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository
+        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
         RelationshipType typeFromRepository = type1Repository.get();
         assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
@@ -80,7 +81,7 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
 
     @Test
     public void get_relationship_2_from_object_repository_without_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository
+        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
         RelationshipType typeFromRepository = type1Repository.get();
         assertTypesWithoutConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);
@@ -88,17 +89,17 @@ public class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould exten
 
     @Test
     public void get_relationship_1_from_object_repository_with_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository
+        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_1);
-        RelationshipType typeFromRepository = type1Repository.getWithAllChildren();
-        assertTypesWithConstraints(typeFromRepository, RELATIONSHIP_TYPE_1);
+        RelationshipType typeFromRepository = type1Repository.withAllChildren().get();
+        assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_1);
     }
 
     @Test
     public void get_relationship_2_from_object_repository_with_children() {
-        ReadOnlyObjectRepository<RelationshipType> type1Repository
+        ReadOnlyOneObjectRepositoryFinalImpl<RelationshipType> type1Repository
                 = relationshipTypeCollectionRepository.uid(RELATIONSHIP_TYPE_UID_2);
-        RelationshipType typeFromRepository = type1Repository.getWithAllChildren();
-        assertTypesWithConstraints(typeFromRepository, RELATIONSHIP_TYPE_2);
+        RelationshipType typeFromRepository = type1Repository.withAllChildren().get();
+        assertThat(typeFromRepository).isEqualTo(RELATIONSHIP_TYPE_2);
     }
 }

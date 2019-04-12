@@ -29,18 +29,27 @@
 package org.hisp.dhis.android.core.settings;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 
+import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.common.Model;
+import org.hisp.dhis.android.core.data.database.DbSystemSettingKeyColumnAdapter;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class SystemSetting implements Model {
 
+    public enum SystemSettingKey {
+        FLAG,
+        STYLE
+    }
+
     @Nullable
-    public abstract String key();
+    @ColumnAdapter(DbSystemSettingKeyColumnAdapter.class)
+    public abstract SystemSettingKey key();
 
     @Nullable
     public abstract String value();
@@ -59,7 +68,7 @@ public abstract class SystemSetting implements Model {
     public abstract static class Builder extends BaseModel.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder key(String key);
+        public abstract Builder key(SystemSettingKey key);
 
         public abstract Builder value(String value);
 

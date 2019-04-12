@@ -63,7 +63,7 @@ public abstract class IdentifiableObjectStoreAbstractIntegrationShould<M extends
     public void insert_and_select_by_uid() {
         store.insert(object);
         M objectFromDb = store.selectByUid(object.uid());
-        assertThat(objectFromDb).isEqualTo(objectWithId);
+        assertThat(objectFromDb).isEqualTo(object);
     }
 
     @Test

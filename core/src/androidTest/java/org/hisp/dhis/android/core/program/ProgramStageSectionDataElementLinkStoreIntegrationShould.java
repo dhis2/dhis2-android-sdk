@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageSectionDataElementLinkSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ProgramStageSectionDataElementLinkStoreIntegrationShould
@@ -58,13 +58,6 @@ public class ProgramStageSectionDataElementLinkStoreIntegrationShould
     protected ProgramStageSectionDataElementLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
                 .programStageSection("new_program_stage_section")
-                .build();
-    }
-
-    @Override
-    protected ProgramStageSectionDataElementLink buildObjectWithId() {
-        return buildObject().toBuilder()
-                .id(1L)
                 .build();
     }
 }

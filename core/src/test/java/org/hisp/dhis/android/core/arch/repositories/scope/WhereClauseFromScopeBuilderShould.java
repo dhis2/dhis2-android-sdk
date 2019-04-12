@@ -40,8 +40,11 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
 public class WhereClauseFromScopeBuilderShould {
@@ -49,8 +52,8 @@ public class WhereClauseFromScopeBuilderShould {
     @Mock
     private WhereClauseBuilder builder;
 
-    private RepositoryScopeItem eqItem = RepositoryScopeItem.builder().key("k1").operator("=").value("v1").build();
-    private RepositoryScopeItem likeItem = RepositoryScopeItem.builder().key("k2").operator("LIKE").value("v2").build();
+    private RepositoryScopeFilterItem eqItem = RepositoryScopeFilterItem.builder().key("k1").operator("=").value("v1").build();
+    private RepositoryScopeFilterItem likeItem = RepositoryScopeFilterItem.builder().key("k2").operator("LIKE").value("v2").build();
 
 
     @Before
@@ -61,8 +64,8 @@ public class WhereClauseFromScopeBuilderShould {
     @Test
     public void build_where_statement_for_equals_key_value() {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
-        List<RepositoryScopeItem> scope = Collections.singletonList(eqItem);
-        scopeBuilder.getWhereClause(scope);
+        List<RepositoryScopeFilterItem> filterItems = Collections.singletonList(eqItem);
+        scopeBuilder.getWhereClause(scopeForItems(filterItems));
         verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator(), eqItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
@@ -71,8 +74,8 @@ public class WhereClauseFromScopeBuilderShould {
     @Test
     public void build_where_statement_for_like_key_value() {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
-        List<RepositoryScopeItem> scope = Collections.singletonList(likeItem);
-        scopeBuilder.getWhereClause(scope);
+        List<RepositoryScopeFilterItem> filterItems = Collections.singletonList(likeItem);
+        scopeBuilder.getWhereClause(scopeForItems(filterItems));
         verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator(), likeItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
@@ -81,11 +84,36 @@ public class WhereClauseFromScopeBuilderShould {
     @Test
     public void build_where_statement_for_eq_and_like_key_value() {
         WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
-        List<RepositoryScopeItem> scope = Lists.newArrayList(eqItem, likeItem);
-        scopeBuilder.getWhereClause(scope);
+        List<RepositoryScopeFilterItem> filterItems = Lists.newArrayList(eqItem, likeItem);
+        scopeBuilder.getWhereClause(scopeForItems(filterItems));
         verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator(), eqItem.value());
         verify(builder).appendKeyOperatorValue(likeItem.key(), likeItem.operator(), likeItem.value());
         verify(builder).build();
         verifyNoMoreInteractions(builder);
+    }
+
+
+    @Test
+    public void build_where_statement_when_no_filters_on_empty_builder() {
+        WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
+        when(builder.isEmpty()).thenReturn(true);
+        String result = scopeBuilder.getWhereClause(scopeForItems(Collections.emptyList()));
+        assertThat(result).isEqualTo("1");
+        verify(builder).isEmpty();
+        verifyNoMoreInteractions(builder);
+    }
+
+    @Test
+    public void build_where_statement_when_no_filters_on_non_empty_builder() {
+        WhereClauseFromScopeBuilder scopeBuilder = new WhereClauseFromScopeBuilder(builder);
+        when(builder.isEmpty()).thenReturn(false);
+        scopeBuilder.getWhereClause(scopeForItems(Collections.emptyList()));
+        verify(builder).isEmpty();
+        verify(builder).build();
+        verifyNoMoreInteractions(builder);
+    }
+
+    private RepositoryScope scopeForItems(List<RepositoryScopeFilterItem> items) {
+        return RepositoryScope.empty().toBuilder().filters(items).build();
     }
 }

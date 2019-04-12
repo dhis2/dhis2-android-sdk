@@ -39,6 +39,7 @@ public class PeriodSamples {
 
     public static Period getPeriod() {
         return Period.builder()
+                .id(1L)
                 .periodId("20171231")
                 .periodType(PeriodType.Daily)
                 .startDate(getDate("2017-12-31T00:00:00.000"))

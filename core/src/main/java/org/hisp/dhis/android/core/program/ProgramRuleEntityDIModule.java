@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -66,7 +66,8 @@ public final class ProgramRuleEntityDIModule {
 
     @Provides
     @Reusable
-    Collection<ChildrenAppender<ProgramRule>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singleton(ProgramRuleActionChildrenAppender.create(databaseAdapter));
+    Map<String, ChildrenAppender<ProgramRule>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return Collections.singletonMap(ProgramRuleFields.PROGRAM_RULE_ACTIONS,
+                ProgramRuleActionChildrenAppender.create(databaseAdapter));
     }
 }

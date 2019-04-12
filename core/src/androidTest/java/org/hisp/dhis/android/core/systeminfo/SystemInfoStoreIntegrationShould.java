@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
@@ -51,12 +51,5 @@ public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstr
     @Override
     protected SystemInfo buildObjectToUpdate() {
         return SystemInfoSamples.get2();
-    }
-
-    @Override
-    protected SystemInfo buildObjectWithId() {
-        return SystemInfoSamples.get1().toBuilder()
-                .id(1L)
-                .build();
     }
 }

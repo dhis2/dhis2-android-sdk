@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<D2Error> {
@@ -46,12 +46,5 @@ public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegratio
     @Override
     protected D2Error buildObject() {
         return D2ErrorSamples.get();
-    }
-
-    @Override
-    protected D2Error buildObjectWithId() {
-        return D2ErrorSamples.get().toBuilder()
-                .id(1L)
-                .build();
     }
 }

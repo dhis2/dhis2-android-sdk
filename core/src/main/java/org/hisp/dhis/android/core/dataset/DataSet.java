@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -124,6 +124,11 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
     public abstract Boolean renderHorizontally();
 
     @Nullable
+    @JsonProperty
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid workflow();
+
+    @Nullable
     @JsonProperty()
     @ColumnAdapter(DataSetElementListAdapter.class)
     public abstract List<DataSetElement> dataSetElements();
@@ -198,6 +203,8 @@ public abstract class DataSet extends BaseNameableObject implements Model, Objec
         public abstract Builder renderAsTabs(Boolean renderAsTabs);
 
         public abstract Builder renderHorizontally(Boolean renderHorizontally);
+
+        public abstract Builder workflow(ObjectWithUid workflow);
 
         public abstract Builder dataSetElements(List<DataSetElement> dataSetElements);
 

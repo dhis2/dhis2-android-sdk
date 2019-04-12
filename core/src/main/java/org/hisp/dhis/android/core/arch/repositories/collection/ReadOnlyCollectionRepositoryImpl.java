@@ -27,31 +27,38 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
+import org.hisp.dhis.android.core.arch.db.OrderByClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyOneObjectRepositoryFinalImpl;
+import org.hisp.dhis.android.core.arch.repositories.paging.RepositoryDataSource;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.WhereClauseFromScopeBuilder;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import androidx.lifecycle.LiveData;
+import androidx.paging.DataSource;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnlyCollectionRepository<M>>
         implements ReadOnlyCollectionRepository<M> {
 
     private final ObjectStore<M> store;
-    protected final Collection<ChildrenAppender<M>> childrenAppenders;
-    protected final List<RepositoryScopeItem> scope;
+    protected final Map<String, ChildrenAppender<M>> childrenAppenders;
+    protected final RepositoryScope scope;
     protected final FilterConnectorFactory<R> cf;
 
     public ReadOnlyCollectionRepositoryImpl(ObjectStore<M> store,
-                                            Collection<ChildrenAppender<M>> childrenAppenders,
-                                            List<RepositoryScopeItem> scope,
+                                            Map<String, ChildrenAppender<M>> childrenAppenders,
+                                            RepositoryScope scope,
                                             FilterConnectorFactory<R> cf) {
         this.store = store;
         this.childrenAppenders = childrenAppenders;
@@ -59,23 +66,47 @@ public class ReadOnlyCollectionRepositoryImpl<M extends Model, R extends ReadOnl
         this.cf = cf;
     }
 
+    private List<M> getWithoutChildren() {
+        return store.selectWhere(getWhereClause(), OrderByClauseBuilder.orderByFromItems(scope.orderBy()));
+    }
+
+    @Override
+    public ReadOnlyOneObjectRepositoryFinalImpl<M> one() {
+        return new ReadOnlyOneObjectRepositoryFinalImpl<>(store, childrenAppenders, scope);
+    }
+
     @Override
     public List<M> get() {
-        if (scope.isEmpty()) {
-            return store.selectAll();
-        } else {
-            WhereClauseFromScopeBuilder whereClauseBuilder = new WhereClauseFromScopeBuilder(new WhereClauseBuilder());
-            return store.selectWhere(whereClauseBuilder.getWhereClause(scope));
-        }
+        return ChildrenAppenderExecutor.appendInObjectCollection(getWithoutChildren(),
+                childrenAppenders, scope.children());
     }
 
     @Override
-    public ReadOnlyObjectRepository<M> one() {
-        return new ReadOnlyOneObjectRepositoryImpl<>(store, childrenAppenders, scope);
+    public LiveData<PagedList<M>> getPaged(int pageSize) {
+        DataSource.Factory<M, M> factory = new DataSource.Factory<M, M>() {
+            @Override
+            public DataSource<M, M> create() {
+                return getDataSource();
+            }
+        };
+
+        return new LivePagedListBuilder<>(factory, pageSize).build();
+    }
+
+    public DataSource<M, M> getDataSource() {
+        return new RepositoryDataSource<>(store, scope, childrenAppenders);
     }
 
     @Override
-    public List<M> getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObjectCollection(get(), childrenAppenders);
+    public int count() {
+        return store.countWhere(getWhereClause());
+    }
+
+    protected String getWhereClause() {
+        return new WhereClauseFromScopeBuilder(new WhereClauseBuilder()).getWhereClause(scope);
+    }
+
+    public R withAllChildren() {
+        return cf.repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }
 }

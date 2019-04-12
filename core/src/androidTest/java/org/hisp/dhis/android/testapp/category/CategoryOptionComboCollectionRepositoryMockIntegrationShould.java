@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.category;
 
-import android.support.test.runner.AndroidJUnit4;
+import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.category.CategoryOptionCombo;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
@@ -36,6 +36,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -45,8 +47,9 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
 
     @Test
     public void find_all() {
-        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos.get();
-        assertThat(categoryOptionCombos.size(), is(3));
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .withCategoryOptions().get();
+        assertThat(categoryOptionCombos.size(), is(4));
     }
 
     @Test
@@ -54,7 +57,7 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
         List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .get();
-        assertThat(categoryOptionCombos.size(), is(1));
+        assertThat(categoryOptionCombos.size(), is(2));
     }
 
     @Test
@@ -63,5 +66,66 @@ public class CategoryOptionComboCollectionRepositoryMockIntegrationShould extend
                 .byCategoryComboUid().eq("p0KPaWEg3cf")
                 .get();
         assertThat(categoryOptionCombos.size(), is(2));
+    }
+
+    @Test
+    public void filter_by_category_option() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(1));
+    }
+
+    @Test
+    public void filter_by_category_option_list() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV", "uZUnebiT5DI"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(1));
+    }
+
+    @Test
+    public void not_find_combos_when_filter_by_less_options_than_they_have() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("Fp4gVHbRvEV"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(0));
+    }
+
+    @Test
+    public void not_find_combos_when_filter_by_more_options_than_they_have() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV", "uZUnebiT5DI"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(0));
+    }
+
+    @Test
+    public void not_find_combos_when_no_matching_options() {
+        List<CategoryOptionCombo> categoryOptionCombos = d2.categoryModule().categoryOptionCombos
+                .byCategoryOptions(Lists.newArrayList("as6ygGvUGNg", "Fp4gVHbRvEV"))
+                .get();
+        assertThat(categoryOptionCombos.size(), is(0));
+    }
+
+    @Test
+    public void include_category_options_as_children() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
+                .withCategoryOptions().one().get();
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
+    }
+
+    @Test
+    public void include_category_options_as_children_in_collection_repository_when_all_selected() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
+                .withAllChildren().get().get(0);
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
+    }
+
+    @Test
+    public void include_category_options_as_children_in_object_repository_when_all_selected() {
+        CategoryOptionCombo categoryOptionCombo = d2.categoryModule().categoryOptionCombos
+                .one().withAllChildren().get();
+        assertThat(categoryOptionCombo.categoryOptions().get(0).name(), is("At PHU"));
     }
 }

@@ -41,6 +41,25 @@
               "id": "Fp4gVHbRvEV"
             }
           ]
+        },
+        {
+          "lastUpdated": "2011-12-24T12:24:25.319",
+          "code": "COC_359668",
+          "created": "2011-12-24T12:24:25.319",
+          "name": "Trained TBB, At PHU",
+          "id": "DwrQJzeChWp",
+          "displayName": "Trained TBB, At PHU",
+          "categoryCombo": {
+            "id": "m2jTvAj5kkm"
+          },
+          "categoryOptions": [
+            {
+              "id": "uZUnebiT5DI"
+            },
+            {
+              "id": "as6ygGvUGNg"
+            }
+          ]
         }
       ]
     },

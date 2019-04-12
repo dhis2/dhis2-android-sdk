@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;

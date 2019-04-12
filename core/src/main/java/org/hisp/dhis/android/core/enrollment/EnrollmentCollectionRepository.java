@@ -29,11 +29,15 @@ package org.hisp.dhis.android.core.enrollment;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.DoubleFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -46,9 +50,69 @@ public final class EnrollmentCollectionRepository
     @Inject
     EnrollmentCollectionRepository(
             final EnrollmentStore store,
-            final Collection<ChildrenAppender<Enrollment>> childrenAppenders,
-            final List<RepositoryScopeItem> scope) {
+            final Map<String, ChildrenAppender<Enrollment>> childrenAppenders,
+            final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new EnrollmentCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new EnrollmentCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public StringFilterConnector<EnrollmentCollectionRepository> byUid() {
+        return cf.string(EnrollmentTableInfo.Columns.UID);
+    }
+
+    public DateFilterConnector<EnrollmentCollectionRepository> byCreated() {
+        return cf.date(EnrollmentFields.CREATED);
+    }
+
+    public DateFilterConnector<EnrollmentCollectionRepository> byLastUpdated() {
+        return cf.date(EnrollmentFields.LAST_UPDATED);
+    }
+
+    public StringFilterConnector<EnrollmentCollectionRepository> byCreatedAtClient() {
+        return cf.string(EnrollmentTableInfo.Columns.CREATED_AT_CLIENT);
+    }
+
+    public StringFilterConnector<EnrollmentCollectionRepository> byLastUpdatedAtClient() {
+        return cf.string(EnrollmentTableInfo.Columns.LAST_UPDATED_AT_CLIENT);
+    }
+
+    public StringFilterConnector<EnrollmentCollectionRepository> byOrganisationUnit() {
+        return cf.string(EnrollmentTableInfo.Columns.ORGANISATION_UNIT);
+    }
+
+    public StringFilterConnector<EnrollmentCollectionRepository> byProgram() {
+        return cf.string(EnrollmentFields.PROGRAM);
+    }
+
+    public DateFilterConnector<EnrollmentCollectionRepository> byEnrollmentDate() {
+        return cf.date(EnrollmentFields.ENROLLMENT_DATE);
+    }
+
+    public DateFilterConnector<EnrollmentCollectionRepository> byIncidentDate() {
+        return cf.date(EnrollmentFields.INCIDENT_DATE);
+    }
+
+    public BooleanFilterConnector<EnrollmentCollectionRepository> byFollowUp() {
+        return cf.bool(EnrollmentFields.FOLLOW_UP);
+    }
+
+    public EnumFilterConnector<EnrollmentCollectionRepository, EnrollmentStatus> byStatus() {
+        return cf.enumC(EnrollmentFields.STATUS);
+    }
+
+    public StringFilterConnector<EnrollmentCollectionRepository> byTrackedEntityInstance() {
+        return cf.string(EnrollmentFields.TRACKED_ENTITY_INSTANCE);
+    }
+
+    public DoubleFilterConnector<EnrollmentCollectionRepository> byCoordinateLatitude() {
+        return cf.doubleC(EnrollmentTableInfo.Columns.LATITUDE);
+    }
+
+    public DoubleFilterConnector<EnrollmentCollectionRepository> byCoordinateLongitude() {
+        return cf.doubleC(EnrollmentTableInfo.Columns.LONGITUDE);
+    }
+
+    public EnrollmentCollectionRepository withNotes() {
+        return cf.withChild(EnrollmentFields.NOTES);
     }
 }

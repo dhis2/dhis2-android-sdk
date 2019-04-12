@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.category;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.category.Category;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
@@ -63,5 +63,14 @@ public class CategoryCollectionRepositoryMockIntegrationShould extends SyncedDat
                 .byDataDimensionType().eq("DISAGGREGATION")
                 .get();
         assertThat(categories.size(), is(4));
+    }
+
+    @Test
+    public void include_category_options_as_children() {
+        Category category = d2.categoryModule().categories
+                .withCategoryOptions()
+                .uid("vGs6omsRekv")
+                .get();
+        assertThat(category.categoryOptions().size(), is(1));
     }
 }

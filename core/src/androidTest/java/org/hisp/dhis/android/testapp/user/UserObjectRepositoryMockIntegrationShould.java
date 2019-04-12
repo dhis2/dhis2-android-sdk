@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.user;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -53,7 +53,7 @@ public class UserObjectRepositoryMockIntegrationShould extends SyncedDatabaseMoc
 
     @Test
     public void return_user_credentials_as_children() {
-        User user = d2.userModule().user.getWithAllChildren();
+        User user = d2.userModule().user.withUserCredentials().get();
         assertThat(user.userCredentials().user().uid(), is(user.uid()));
         assertThat(user.userCredentials().username(), is("android"));
         assertThat(user.userCredentials().name(), is("John Barnes"));
@@ -61,7 +61,7 @@ public class UserObjectRepositoryMockIntegrationShould extends SyncedDatabaseMoc
 
     @Test
     public void return_organisation_units_as_children() {
-        User user = d2.userModule().user.getWithAllChildren();
+        User user = d2.userModule().user.withOrganisationUnits().get();
         List<OrganisationUnit> organisationUnits = user.organisationUnits();
         assertThat(organisationUnits.size(), is(1));
         assertThat(organisationUnits.get(0).name(), is("Ngelehun CHC"));

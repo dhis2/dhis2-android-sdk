@@ -42,6 +42,7 @@ public class ProgramIndicatorSamples {
 
         fillNameableProperties(builder);
         builder
+                .id(1L)
                 .uid("test_program_indicator")
                 .displayInForm(true)
                 .expression("test_expression")

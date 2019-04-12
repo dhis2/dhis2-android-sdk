@@ -29,26 +29,40 @@ package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppenderExecutor;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeHelper;
 import org.hisp.dhis.android.core.common.Model;
 
-import java.util.Collection;
+import java.util.Map;
 
-public abstract class ReadOnlyObjectRepositoryImpl<M extends Model>
+public abstract class ReadOnlyObjectRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
         implements ReadOnlyObjectRepository<M> {
 
-    private final Collection<ChildrenAppender<M>> childrenAppenders;
+    private final Map<String, ChildrenAppender<M>> childrenAppenders;
+    protected final RepositoryScope scope;
+    protected final ObjectRepositoryFactory<R> repositoryFactory;
 
-    ReadOnlyObjectRepositoryImpl(Collection<ChildrenAppender<M>> childrenAppenders) {
+    ReadOnlyObjectRepositoryImpl(Map<String, ChildrenAppender<M>> childrenAppenders,
+                                 RepositoryScope scope,
+                                 ObjectRepositoryFactory<R> repositoryFactory) {
         this.childrenAppenders = childrenAppenders;
+        this.scope = scope;
+        this.repositoryFactory = repositoryFactory;
     }
 
+    abstract M getWithoutChildren();
+
     @Override
-    public M getWithAllChildren() {
-        return ChildrenAppenderExecutor.appendInObject(get(), childrenAppenders);
+    public final M get() {
+        return ChildrenAppenderExecutor.appendInObject(getWithoutChildren(), childrenAppenders, scope.children());
     }
 
     @Override
     public boolean exists() {
-        return get() != null;
+        return getWithoutChildren() != null;
+    }
+
+    public R withAllChildren() {
+        return repositoryFactory.updated(RepositoryScopeHelper.withAllChildren(scope));
     }
 }

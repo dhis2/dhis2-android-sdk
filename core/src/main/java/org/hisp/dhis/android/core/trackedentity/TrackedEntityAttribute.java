@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -48,6 +47,8 @@ import org.hisp.dhis.android.core.data.database.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.data.database.IgnoreAccessAdapter;
 import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
 import org.hisp.dhis.android.core.option.OptionSet;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = $$AutoValue_TrackedEntityAttribute.Builder.class)
@@ -75,11 +76,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @Nullable
     @JsonProperty()
     public abstract String expression();
-
-    @Nullable
-    @JsonProperty()
-    @ColumnAdapter(TrackedEntityAttributeSearchScopeColumnAdapter.class)
-    public abstract TrackedEntityAttributeSearchScope searchScope();
 
     @Nullable
     @JsonProperty()
@@ -146,8 +142,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder valueType(ValueType valueType);
 
         public abstract Builder expression(String expression);
-
-        public abstract Builder searchScope(TrackedEntityAttributeSearchScope searchScope);
 
         public abstract Builder programScope(Boolean programScope);
 

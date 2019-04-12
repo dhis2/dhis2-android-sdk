@@ -36,6 +36,7 @@ import dagger.Provides;
 import dagger.Reusable;
 
 @Module(includes = {
+        D2ErrorEntityDIModule.class,
         ForeignKeyViolationEntityDIModule.class
 })
 public final class MaintenancePackageDIModule {

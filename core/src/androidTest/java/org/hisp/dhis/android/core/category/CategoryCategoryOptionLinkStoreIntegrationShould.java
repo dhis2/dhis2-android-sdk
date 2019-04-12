@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.category.CategoryCategoryOptionLinkSamples;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class CategoryCategoryOptionLinkStoreIntegrationShould
@@ -58,13 +58,6 @@ public class CategoryCategoryOptionLinkStoreIntegrationShould
     protected CategoryCategoryOptionLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
                 .category("new_category")
-                .build();
-    }
-
-    @Override
-    protected CategoryCategoryOptionLink buildObjectWithId() {
-        return buildObject().toBuilder()
-                .id(1L)
                 .build();
     }
 }

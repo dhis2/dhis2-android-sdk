@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.scope;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 
-import java.util.List;
-
 public class WhereClauseFromScopeBuilder {
 
     private final WhereClauseBuilder builder;
@@ -40,10 +38,19 @@ public class WhereClauseFromScopeBuilder {
         this.builder = builder;
     }
 
-    public String getWhereClause(List<RepositoryScopeItem> scope) {
-        for (RepositoryScopeItem item: scope) {
+    public String getWhereClause(RepositoryScope scope) {
+        if (!scope.hasFilters() && builder.isEmpty()) {
+            return "1";
+        }
+
+        for (RepositoryScopeFilterItem item: scope.filters()) {
             builder.appendKeyOperatorValue(item.key(), item.operator(), item.value());
         }
+
+        for (RepositoryScopeComplexFilterItem item: scope.complexFilters()) {
+            builder.appendComplexQuery(item.whereQuery());
+        }
+
         return builder.build();
     }
 }

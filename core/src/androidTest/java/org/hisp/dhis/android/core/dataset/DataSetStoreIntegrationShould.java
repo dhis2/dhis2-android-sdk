@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.DataSetSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class DataSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<DataSet> {
@@ -46,13 +46,6 @@ public class DataSetStoreIntegrationShould extends IdentifiableObjectStoreAbstra
     @Override
     protected DataSet buildObject() {
         return DataSetSamples.getDataSet();
-    }
-
-    @Override
-    protected DataSet buildObjectWithId() {
-        return DataSetSamples.getDataSet().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

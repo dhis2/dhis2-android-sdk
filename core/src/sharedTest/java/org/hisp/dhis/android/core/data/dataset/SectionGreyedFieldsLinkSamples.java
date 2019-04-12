@@ -34,6 +34,7 @@ public class SectionGreyedFieldsLinkSamples {
 
     public static SectionGreyedFieldsLink getSectionGreyedFieldsLink() {
         return SectionGreyedFieldsLink.builder()
+                .id(1L)
                 .section("section")
                 .dataElementOperand("data_element_operand")
                 .build();

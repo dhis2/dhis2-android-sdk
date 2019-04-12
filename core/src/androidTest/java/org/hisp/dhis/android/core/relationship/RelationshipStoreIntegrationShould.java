@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Relationship> {
@@ -52,13 +52,6 @@ public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreA
     protected Relationship buildObjectToUpdate() {
         return RelationshipSamples.getRelationshipToInsertOnDB().toBuilder()
                 .name("new_name")
-                .build();
-    }
-
-    @Override
-    protected Relationship buildObjectWithId() {
-        return RelationshipSamples.getRelationshipToInsertOnDB().toBuilder()
-                .id(1L)
                 .build();
     }
 }

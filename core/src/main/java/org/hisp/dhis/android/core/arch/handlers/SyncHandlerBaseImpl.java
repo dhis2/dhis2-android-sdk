@@ -73,18 +73,20 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
     @Override
     public final void handleMany(Collection<O> oCollection) {
         if (oCollection != null) {
-            for (O o : oCollection) {
+            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection);
+            for (O o : preHandledCollection) {
                 handle(o);
             }
-            afterCollectionHandled(oCollection);
+            afterCollectionHandled(preHandledCollection);
         }
     }
 
     @Override
     public final void handleMany(Collection<O> oCollection, Transformer<O, O> transformer) {
         if (oCollection != null) {
+            Collection<O> preHandledCollection = beforeCollectionHandled(oCollection);
             List<O> oTransformedCollection = new ArrayList<>(oCollection.size());
-            for (O o : oCollection) {
+            for (O o : preHandledCollection) {
                 handle(o, transformer, oTransformedCollection);
             }
             afterCollectionHandled(oTransformedCollection);
@@ -102,6 +104,10 @@ abstract class SyncHandlerBaseImpl<O> implements SyncHandlerWithTransformer<O> {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */
+    }
+
+    protected Collection<O> beforeCollectionHandled(Collection<O> oCollection) {
+        return oCollection;
     }
 
     @SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")

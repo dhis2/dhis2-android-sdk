@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.testapp.dataelement;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
@@ -113,5 +113,14 @@ public class DataElementCollectionRepositoryMockIntegrationShould extends Synced
                 .byCategoryComboUid().eq("m2jTvAj5kkm")
                 .get();
         assertThat(dataElements.size(), is(1));
+    }
+
+    @Test
+    public void include_style_as_child() {
+        DataElement dataElement = d2.dataElementModule().dataElements
+                .withStyle()
+                .uid("g9eOBujte1U")
+                .get();
+        assertThat(dataElement.style().icon(), is("data-element-icon"));
     }
 }

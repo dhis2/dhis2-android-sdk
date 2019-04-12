@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
@@ -74,13 +74,12 @@ public class EventWithLimitCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void download_events() throws Exception {
-        int eventLimitByOrgUnit = 53;
+        int eventLimitByOrgUnit = 1;
 
         givenAMetadataInDatabase();
 
         dhis2MockServer.enqueueMockResponse("systeminfo/system_info.json");
         dhis2MockServer.enqueueMockResponse("event/events_1.json");
-        dhis2MockServer.enqueueMockResponse("event/events_2.json");
 
         d2.eventModule().downloadSingleEvents(eventLimitByOrgUnit, false).call();
 

@@ -29,18 +29,23 @@
 package org.hisp.dhis.android.core.legendset;
 
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 public final class LegendStore {
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            LegendTableInfo.TABLE_INFO, LegendTableInfo.Columns.LEGEND_SET);
 
     private LegendStore() {}
 

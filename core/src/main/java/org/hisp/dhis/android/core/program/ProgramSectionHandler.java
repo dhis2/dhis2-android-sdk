@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import javax.inject.Inject;
 
@@ -42,13 +43,13 @@ import dagger.Reusable;
 
 @Reusable
 final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSection> {
-    private final LinkSyncHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLink>
+    private final LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
             programSectionAttributeLinkHandler;
     private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
 
     @Inject
     ProgramSectionHandler(IdentifiableObjectStore<ProgramSection> programSectionStore,
-                          LinkSyncHandler<ProgramTrackedEntityAttribute, ProgramSectionAttributeLink>
+                          LinkSyncHandler<TrackedEntityAttribute, ProgramSectionAttributeLink>
                                   programSectionAttributeLinkHandler,
                           SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
         super(programSectionStore);
@@ -60,8 +61,8 @@ final class ProgramSectionHandler extends IdentifiableSyncHandlerImpl<ProgramSec
     protected void afterObjectHandled(ProgramSection programSection, HandleAction action) {
 
         programSectionAttributeLinkHandler.handleMany(programSection.uid(), programSection.attributes(),
-                programTrackedEntityAttribute -> ProgramSectionAttributeLink.builder()
-                        .programSection(programSection.uid()).attribute(programTrackedEntityAttribute.uid()).build());
+                trackedEntityAttribute -> ProgramSectionAttributeLink.builder()
+                        .programSection(programSection.uid()).attribute(trackedEntityAttribute.uid()).build());
 
         styleHandler.handle(programSection.style(), new ObjectStyleTransformer(programSection.uid(),
                 ProgramSectionTableInfo.TABLE_INFO.name()));

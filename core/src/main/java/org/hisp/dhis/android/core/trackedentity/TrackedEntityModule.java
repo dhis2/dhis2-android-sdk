@@ -45,8 +45,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Reusable
 public final class TrackedEntityModule {
 
-    public final TrackedEntityTypCollectionRepository trackedEntityTypes;
+    public final TrackedEntityTypeCollectionRepository trackedEntityTypes;
     public final TrackedEntityInstanceCollectionRepository trackedEntityInstances;
+    public final TrackedEntityDataValueCollectionRepository trackedEntityDataValues;
+    public final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues;
+    public final TrackedEntityAttributeCollectionRepository trackedEntityAttributes;
+    public final TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes;
 
     public final TrackedEntityAttributeReservedValueManager reservedValueManager;
 
@@ -56,14 +60,22 @@ public final class TrackedEntityModule {
 
     @Inject
     TrackedEntityModule(
-            TrackedEntityTypCollectionRepository trackedEntityTypes,
+            TrackedEntityTypeCollectionRepository trackedEntityTypes,
             TrackedEntityInstanceCollectionRepository trackedEntityInstances,
+            TrackedEntityDataValueCollectionRepository trackedEntityDataValues,
+            TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValues,
+            TrackedEntityAttributeCollectionRepository trackedEntityAttributes,
+            TrackedEntityTypeAttributeCollectionRepository trackedEntityTypeAttributes,
             TrackedEntityAttributeReservedValueManager reservedValueManager,
             TrackedEntityInstanceWithLimitCallFactory withLimitCallFactory,
             TrackedEntityInstanceListDownloadAndPersistCallFactory downloadAndPersistCallFactory,
             TrackedEntityInstanceQueryCallFactory queryCallFactory) {
         this.trackedEntityTypes = trackedEntityTypes;
         this.trackedEntityInstances = trackedEntityInstances;
+        this.trackedEntityDataValues = trackedEntityDataValues;
+        this.trackedEntityAttributeValues = trackedEntityAttributeValues;
+        this.trackedEntityAttributes = trackedEntityAttributes;
+        this.trackedEntityTypeAttributes =trackedEntityTypeAttributes;
         this.reservedValueManager = reservedValueManager;
         this.withLimitCallFactory = withLimitCallFactory;
         this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;

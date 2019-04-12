@@ -31,14 +31,13 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel.Columns;
 import org.hisp.dhis.android.core.common.IdentifiableObject;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.Model;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & IdentifiableObject,
         R extends ReadOnlyCollectionRepository<M>>
@@ -46,9 +45,9 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
         implements ReadOnlyIdentifiableCollectionRepository<M, R> {
 
     public ReadOnlyIdentifiableCollectionRepositoryImpl(final IdentifiableObjectStore<M> store,
-                                                        final Collection<ChildrenAppender<M>> childrenAppenders,
-                                                        List<RepositoryScopeItem> scope,
-                                                        FilterConnectorFactory<R> cf) {
+                                                        final Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                        final RepositoryScope scope,
+                                                        final FilterConnectorFactory<R> cf) {
         super(store, childrenAppenders, scope, cf);
     }
 
@@ -80,5 +79,29 @@ public class ReadOnlyIdentifiableCollectionRepositoryImpl<M extends Model & Iden
     @Override
     public DateFilterConnector<R> byLastUpdated() {
         return cf.date(Columns.LAST_UPDATED);
+    }
+
+    public R orderByUid(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.UID, direction);
+    }
+
+    public R orderByCode(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CODE, direction);
+    }
+
+    public R orderByName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.NAME, direction);
+    }
+
+    public R orderByDisplayName(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.DISPLAY_NAME, direction);
+    }
+
+    public R orderByCreated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.CREATED, direction);
+    }
+
+    public R orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(Columns.LAST_UPDATED, direction);
     }
 }

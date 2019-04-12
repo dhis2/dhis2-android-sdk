@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.data.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
 
@@ -43,7 +43,7 @@ import java.util.Map;
 
 public class DbOpenHelper extends SQLBriteOpenHelper {
 
-    public static final int VERSION = 44;
+    public static final int VERSION = 47;
 
     public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
         super(context, databaseName, null, VERSION);

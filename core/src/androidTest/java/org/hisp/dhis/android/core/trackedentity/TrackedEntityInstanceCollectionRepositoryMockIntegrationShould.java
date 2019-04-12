@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void include_enrollments_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .uid("nWrB0TfWlvh").getWithAllChildren();
+                .withEnrollments().uid("nWrB0TfWlvh").get();
         assertThat(tei.enrollments().size(), is(1));
         assertThat(tei.enrollments().get(0).uid(), is("enroll1"));
     }
@@ -73,7 +73,7 @@ public class TrackedEntityInstanceCollectionRepositoryMockIntegrationShould exte
     @Test
     public void include_tracked_entity_attribute_values_as_children() {
         TrackedEntityInstance tei = d2.trackedEntityModule().trackedEntityInstances
-                .uid("nWrB0TfWlvh").getWithAllChildren();
+                .withTrackedEntityAttributeValues().uid("nWrB0TfWlvh").get();
         assertThat(tei.trackedEntityAttributeValues().size(), is(1));
         assertThat(tei.trackedEntityAttributeValues().get(0).trackedEntityAttribute(), is("lZGmxYbs97q"));
         assertThat(tei.trackedEntityAttributeValues().get(0).value(), is("4081507"));

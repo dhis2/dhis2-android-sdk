@@ -25,16 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.category;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -48,13 +50,25 @@ public final class CategoryOptionComboCollectionRepository
     @Inject
     CategoryOptionComboCollectionRepository(
             final CategoryOptionComboStore store,
-            final Collection<ChildrenAppender<CategoryOptionCombo>> childrenAppenders,
-            List<RepositoryScopeItem> scope) {
+            final Map<String, ChildrenAppender<CategoryOptionCombo>> childrenAppenders,
+            final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new CategoryOptionComboCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new CategoryOptionComboCollectionRepository(store, childrenAppenders, s)));
     }
 
     public StringFilterConnector<CategoryOptionComboCollectionRepository> byCategoryComboUid() {
         return cf.string(CategoryOptionComboFields.CATEGORY_COMBO);
+    }
+
+    public CategoryOptionComboCollectionRepository byCategoryOptions(List<String> categoryOptionUids) {
+        return cf.subQuery(BaseIdentifiableObjectModel.Columns.UID).withThoseChildrenExactly(
+                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+                categoryOptionUids);
+    }
+
+    public CategoryOptionComboCollectionRepository withCategoryOptions() {
+        return cf.withChild(CategoryOptionComboFields.CATEGORY_OPTIONS);
     }
 }

@@ -1,0 +1,46 @@
+apply plugin: "pmd"
+
+pmd {
+    toolVersion = "5.5.3"
+}
+
+afterEvaluate {
+    android.libraryVariants.each { variant ->
+
+        def compileTask
+
+        if (variant.hasProperty('javaCompileProvider')) {
+            // Android 3.3.0+
+            compileTask = variant.javaCompileProvider.get()
+        } else {
+            compileTask = variant.javaCompile
+        }
+
+        def pmdTask = tasks.register("pmd${variant.name.capitalize()}", Pmd) {
+
+            group = "verification"
+            description = "Run PMD for the ${variant.name}"
+
+            ignoreFailures = false
+
+            reports {
+                html.enabled = true
+                xml.enabled = false
+            }
+
+            ruleSetFiles = project.files(
+                    "plugins/pmd-rules.xml"
+            )
+
+            ruleSets = []
+
+            source = 'src/main/java'
+        }
+
+        pmdTask.get().dependsOn(compileTask)
+
+        if (tasks.named("check")) {
+            check.dependsOn(pmdTask)
+        }
+    }
+}

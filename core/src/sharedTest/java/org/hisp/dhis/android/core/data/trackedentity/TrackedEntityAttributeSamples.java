@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.data.trackedentity;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.option.OptionSet;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeSearchScope;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
@@ -43,12 +42,12 @@ public class TrackedEntityAttributeSamples {
         fillNameableProperties(builder);
 
         return builder
+                .id(1L)
                 .pattern("pattern")
                 .sortOrderInListNoProgram(1)
                 .optionSet(OptionSet.builder().uid("option_set_uid").build())
                 .valueType(ValueType.BOOLEAN)
                 .expression("expression")
-                .searchScope(TrackedEntityAttributeSearchScope.SEARCH_ORG_UNITS)
                 .programScope(Boolean.TRUE)
                 .displayInListNoProgram(Boolean.TRUE)
                 .generated(Boolean.TRUE)

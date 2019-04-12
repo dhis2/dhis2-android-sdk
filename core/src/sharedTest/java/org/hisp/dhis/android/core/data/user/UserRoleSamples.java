@@ -38,6 +38,8 @@ public class UserRoleSamples {
         UserRole.Builder builder = UserRole.builder();
 
         fillIdentifiableProperties(builder);
-        return builder.build();
+        return builder
+                .id(1L)
+                .build();
     }
 }

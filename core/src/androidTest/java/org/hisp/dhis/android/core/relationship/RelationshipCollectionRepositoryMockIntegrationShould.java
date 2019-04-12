@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
 import org.junit.Test;
@@ -37,6 +35,8 @@ import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;

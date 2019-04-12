@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.DataSetCompulsoryDataElementOperandLinkSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould
@@ -58,13 +58,6 @@ public class DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould
     protected DataSetCompulsoryDataElementOperandLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
                 .dataSet("new_data_set_uid")
-                .build();
-    }
-
-    @Override
-    protected DataSetCompulsoryDataElementOperandLink buildObjectWithId() {
-        return buildObject().toBuilder()
-                .id(1L)
                 .build();
     }
 }

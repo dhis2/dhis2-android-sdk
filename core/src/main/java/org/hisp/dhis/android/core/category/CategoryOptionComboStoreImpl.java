@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.category;
 
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
@@ -44,7 +44,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreImpl<CategoryOptionCombo>
+public final class CategoryOptionComboStoreImpl extends IdentifiableObjectStoreImpl<CategoryOptionCombo>
         implements CategoryOptionComboStore {
 
     private CategoryOptionComboStoreImpl(DatabaseAdapter databaseAdapter,

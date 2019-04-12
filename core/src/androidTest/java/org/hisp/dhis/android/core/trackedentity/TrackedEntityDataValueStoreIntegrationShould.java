@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.State;
@@ -49,6 +47,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -66,13 +66,6 @@ public class TrackedEntityDataValueStoreIntegrationShould
     @Override
     protected TrackedEntityDataValue buildObject() {
         return TrackedEntityDataValueSamples.get();
-    }
-
-    @Override
-    protected TrackedEntityDataValue buildObjectWithId() {
-        return TrackedEntityDataValueSamples.get().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

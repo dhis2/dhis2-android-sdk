@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
-import android.support.annotation.Nullable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -39,10 +38,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.Model;
-import org.hisp.dhis.android.core.data.database.IgnoreOptionListAdapter;
-import org.hisp.dhis.android.core.data.database.OptionSetWithUidColumnAdapter;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
+import org.hisp.dhis.android.core.data.database.IgnoreObjectWithUidListColumnAdapter;
+import org.hisp.dhis.android.core.data.database.ObjectWithUidColumnAdapter;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @AutoValue
 @JsonDeserialize(builder = AutoValue_OptionGroup.Builder.class)
@@ -50,13 +52,13 @@ public abstract class OptionGroup extends BaseIdentifiableObject implements Mode
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(OptionSetWithUidColumnAdapter.class)
-    public abstract OptionSet optionSet();
+    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
+    public abstract ObjectWithUid optionSet();
 
     @Nullable
     @JsonProperty()
-    @ColumnAdapter(IgnoreOptionListAdapter.class)
-    public abstract List<Option> options();
+    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
+    public abstract List<ObjectWithUid> options();
 
     public static Builder builder() {
         return new $$AutoValue_OptionGroup.Builder();
@@ -73,9 +75,9 @@ public abstract class OptionGroup extends BaseIdentifiableObject implements Mode
     public static abstract class Builder extends BaseIdentifiableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        public abstract Builder optionSet(@Nullable OptionSet optionSet);
+        public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
 
-        public abstract Builder options(@Nullable List<Option> options);
+        public abstract Builder options(@Nullable List<ObjectWithUid> options);
 
         public abstract OptionGroup build();
     }

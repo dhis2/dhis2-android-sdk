@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
@@ -38,6 +37,8 @@ import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static org.hisp.dhis.android.core.utils.Utils.isNull;
 
@@ -107,8 +108,30 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
+    public List<M> selectWhere(String filterWhereClause, String orderByClause) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause));
+        List<M> list = new ArrayList<>();
+        addObjectsToCollection(cursor, list);
+        return list;
+    }
+
+    @Override
+    public List<M> selectWhere(String filterWhereClause, String orderByClause, int limit) {
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(filterWhereClause, orderByClause, limit));
+        List<M> list = new ArrayList<>();
+        addObjectsToCollection(cursor, list);
+        return list;
+    }
+
+    @Override
     public M selectOneWhere(@NonNull String whereClause) {
-        Cursor cursor = databaseAdapter.query(builder.selectWhereWithLimit(whereClause, 1));
+        Cursor cursor = databaseAdapter.query(builder.selectWhere(whereClause, 1));
+        return getFirstFromCursor(cursor);
+    }
+
+    @Override
+    public M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
+        Cursor cursor = databaseAdapter.query(builder.selectOneOrderedBy(orderingColumName, orderingType));
         return getFirstFromCursor(cursor);
     }
 
@@ -149,11 +172,12 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
         return processCount(databaseAdapter.query(builder.count()));
     }
 
-    protected int countWhere(@NonNull String whereClause) {
+    @Override
+    public int countWhere(@NonNull String whereClause) {
         return processCount(databaseAdapter.query(builder.countWhere(whereClause)));
     }
 
-    private int processCount(Cursor cursor) {
+    protected int processCount(Cursor cursor) {
         try {
             cursor.moveToFirst();
             return cursor.getInt(0);

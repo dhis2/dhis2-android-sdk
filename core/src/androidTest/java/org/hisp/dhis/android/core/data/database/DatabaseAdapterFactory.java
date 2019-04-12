@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import com.facebook.stetho.Stetho;
 

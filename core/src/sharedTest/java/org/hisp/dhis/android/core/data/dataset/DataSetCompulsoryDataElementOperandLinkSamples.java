@@ -34,6 +34,7 @@ public class DataSetCompulsoryDataElementOperandLinkSamples {
 
     public static DataSetCompulsoryDataElementOperandLink getDataSetCompulsoryDataElementOperandLink() {
         return DataSetCompulsoryDataElementOperandLink.builder()
+                .id(1L)
                 .dataSet("data_set")
                 .dataElementOperand("data_element_operand")
                 .build();

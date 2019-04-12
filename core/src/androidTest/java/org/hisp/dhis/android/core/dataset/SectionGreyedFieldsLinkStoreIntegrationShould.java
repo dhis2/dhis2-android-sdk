@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionGreyedFieldsLinkSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class SectionGreyedFieldsLinkStoreIntegrationShould
@@ -58,13 +58,6 @@ public class SectionGreyedFieldsLinkStoreIntegrationShould
     protected SectionGreyedFieldsLink buildObjectWithOtherMasterUid() {
         return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink().toBuilder()
                 .section("new_section")
-                .build();
-    }
-
-    @Override
-    protected SectionGreyedFieldsLink buildObjectWithId() {
-        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink().toBuilder()
-                .id(1L)
                 .build();
     }
 }

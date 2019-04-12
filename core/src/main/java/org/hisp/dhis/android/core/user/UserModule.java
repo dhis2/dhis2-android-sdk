@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyObjectRepository;
 import org.hisp.dhis.android.core.common.Unit;
 
 import java.util.concurrent.Callable;
@@ -37,6 +34,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -48,24 +46,27 @@ public final class UserModule {
     private final Provider<LogOutUserCallable> logoutCallCallProvider;
     private final UserAuthenticateCallFactory loginCallFactory;
 
-    public final ReadOnlyObjectRepository<AuthenticatedUser> authenticatedUser;
+    public final AuthenticatedUserObjectRepository authenticatedUser;
     public final UserRoleCollectionRepository userRoles;
-    public final ReadOnlyObjectRepository<UserCredentials> userCredentials;
-    public final ReadOnlyObjectRepository<User> user;
+    public final AuthorityCollectionRepository authorities;
+    public final UserCredentialsObjectRepository userCredentials;
+    public final UserObjectRepository user;
 
     @Inject
     UserModule(Provider<IsUserLoggedInCallable> isUserLoggedInCallProvider,
                Provider<LogOutUserCallable> logoutCallCallProvider,
                UserAuthenticateCallFactory loginCallFactory,
-               ReadOnlyObjectRepository<AuthenticatedUser> authenticatedUser,
+               AuthenticatedUserObjectRepository authenticatedUser,
                UserRoleCollectionRepository userRoles,
-               ReadOnlyObjectRepository<UserCredentials> userCredentials,
-               ReadOnlyObjectRepository<User> user) {
+               AuthorityCollectionRepository authorities,
+               UserCredentialsObjectRepository userCredentials,
+               UserObjectRepository user) {
         this.isUserLoggedInCallProvider = isUserLoggedInCallProvider;
         this.logoutCallCallProvider = logoutCallCallProvider;
         this.loginCallFactory = loginCallFactory;
         this.authenticatedUser = authenticatedUser;
         this.userRoles = userRoles;
+        this.authorities = authorities;
         this.userCredentials = userCredentials;
         this.user = user;
     }

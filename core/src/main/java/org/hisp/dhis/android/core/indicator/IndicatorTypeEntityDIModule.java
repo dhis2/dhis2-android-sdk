@@ -31,8 +31,12 @@ package org.hisp.dhis.android.core.indicator;
 import org.hisp.dhis.android.core.arch.di.IdentifiableEntityDIModule;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,5 +57,11 @@ public final class IndicatorTypeEntityDIModule implements IdentifiableEntityDIMo
     @Reusable
     public SyncHandler<IndicatorType> handler(IdentifiableObjectStore<IndicatorType> store) {
         return new IdentifiableSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<IndicatorType>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

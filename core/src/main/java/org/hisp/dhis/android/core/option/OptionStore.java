@@ -29,18 +29,23 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.IdentifiableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.StoreFactory;
 import org.hisp.dhis.android.core.common.UidsHelper;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
+import androidx.annotation.NonNull;
+
 import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
 final class OptionStore {
+
+    static final SingleParentChildProjection CHILD_PROJECTION =
+            new SingleParentChildProjection(OptionTableInfo.TABLE_INFO, OptionFields.OPTION_SET);
 
     private OptionStore() {}
 

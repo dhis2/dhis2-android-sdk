@@ -71,7 +71,8 @@ public final class DataSetTableInfo {
                     DataSetFields.DATA_ELEMENT_DECORATION,
                     DataSetFields.RENDER_AS_TABS,
                     DataSetFields.RENDER_HORIZONTALLY,
-                    DataSetFields.ACCESS_DATA_WRITE
+                    DataSetFields.ACCESS_DATA_WRITE,
+                    DataSetFields.WORKFLOW
             );
         }
     }

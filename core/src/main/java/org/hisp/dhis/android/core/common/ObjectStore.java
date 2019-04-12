@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.support.annotation.NonNull;
-
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public interface ObjectStore<M> extends DeletableStore {
 
@@ -40,7 +40,13 @@ public interface ObjectStore<M> extends DeletableStore {
 
     List<M> selectWhere(String whereClause);
 
+    List<M> selectWhere(String filterWhereClause, String orderByClause);
+
+    List<M> selectWhere(String filterWhereClause, String orderByClause, int limit);
+
     M selectOneWhere(String whereClause);
+
+    M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType);
 
     M selectFirst();
 
@@ -51,4 +57,6 @@ public interface ObjectStore<M> extends DeletableStore {
     boolean deleteWhere(String whereClause);
 
     int count();
+
+    int countWhere(String whereClause);
 }

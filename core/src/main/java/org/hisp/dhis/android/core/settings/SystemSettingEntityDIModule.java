@@ -31,8 +31,12 @@ package org.hisp.dhis.android.core.settings;
 import org.hisp.dhis.android.core.arch.di.ObjectWithoutUidStoreProvider;
 import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -52,5 +56,11 @@ public final class SystemSettingEntityDIModule implements ObjectWithoutUidStoreP
     @Reusable
     SyncHandler<SystemSetting> handler(ObjectWithoutUidStore<SystemSetting> store) {
         return new ObjectWithoutUidSyncHandlerImpl<>(store);
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<SystemSetting>> childrenAppenders() {
+        return Collections.emptyMap();
     }
 }

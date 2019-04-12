@@ -28,18 +28,19 @@
 
 package org.hisp.dhis.android.core;
 
-import android.support.annotation.VisibleForTesting;
-
 import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeDIModule;
+import org.hisp.dhis.android.core.arch.repositories.di.RepositoriesDIModule;
 import org.hisp.dhis.android.core.calls.MetadataCall;
 import org.hisp.dhis.android.core.calls.factories.ListCallFactory;
 import org.hisp.dhis.android.core.calls.factories.UidsCallFactory;
+import org.hisp.dhis.android.core.category.CategoryOption;
 import org.hisp.dhis.android.core.category.CategoryPackageDIModule;
 import org.hisp.dhis.android.core.common.CommonPackageDIModule;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.constant.ConstantPackageDIModule;
 import org.hisp.dhis.android.core.data.database.DatabaseDIModule;
+import org.hisp.dhis.android.core.dataapproval.DataApprovalPackageDIModule;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementPackageDIModule;
 import org.hisp.dhis.android.core.dataset.DataSet;
@@ -72,6 +73,7 @@ import org.hisp.dhis.android.core.wipe.WipeModule;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.VisibleForTesting;
 import dagger.Component;
 
 @SuppressWarnings("PMD.ExcessiveImports")
@@ -81,13 +83,14 @@ import dagger.Component;
         APIClientDIModule.class,
         DatabaseDIModule.class,
         WipeDIModule.class,
-        RepositoryScopeDIModule.class,
+        RepositoriesDIModule.class,
 
         CategoryPackageDIModule.class,
         CommonPackageDIModule.class,
         ConstantPackageDIModule.class,
         DataElementPackageDIModule.class,
         DataSetPackageDIModule.class,
+        DataApprovalPackageDIModule.class,
         DataValuePackageDIModule.class,
         EnrollmentPackageDIModule.class,
         EventPackageDIModule.class,
@@ -129,6 +132,8 @@ public interface D2DIComponent {
     SyncHandler<RelationshipType> relationshipTypeHandler();
     @VisibleForTesting
     TrackedEntityInstancePostCall trackedEntityInstancePostCall();
+    @VisibleForTesting
+    IdentifiableObjectStore<CategoryOption> categoryOptionStore();
 
     @Component.Builder
     interface Builder {
@@ -136,13 +141,14 @@ public interface D2DIComponent {
         Builder apiClientDIModule(APIClientDIModule apiClientDIModule);
         Builder databaseDIModule(DatabaseDIModule databaseDIModule);
         Builder wipeDIModule(WipeDIModule wipeDIModule);
-        Builder repositoryScopeDIModule(RepositoryScopeDIModule repositoryScopeDIModule);
+        Builder repositoriesDIModule(RepositoriesDIModule repositoriesDIModule);
 
         Builder categoryPackageDIModule(CategoryPackageDIModule categoryPackageDIModule);
         Builder commonPackageDIModule(CommonPackageDIModule commonPackageDIModule);
         Builder constantPackageDIModule(ConstantPackageDIModule constantPackageDIModule);
         Builder dataElementPackageDIModule(DataElementPackageDIModule dataElementPackageDIModule);
         Builder dataSetPackageDIModule(DataSetPackageDIModule dataSetPackageDIModule);
+        Builder dataApprovalPackageDIModule(DataApprovalPackageDIModule dataApprovalPackageDIModule);
         Builder dataValuePackageDIModule(DataValuePackageDIModule dataValuePackageDIModule);
         Builder enrollmentPackageDIModule(EnrollmentPackageDIModule enrollmentPackageDIModule);
         Builder eventPackageDIModule(EventPackageDIModule eventPackageDIModule);

@@ -45,6 +45,9 @@ public final class RelationshipFields {
     private static final String FROM = "from";
     private static final String TO = "to";
 
+    // Used only for children appending, can't be used in query
+    static final String ITEMS = "items";
+
     private static FieldsHelper<Relationship229Compatible> fh = new FieldsHelper<>();
 
     public static final Fields<Relationship229Compatible> allFields

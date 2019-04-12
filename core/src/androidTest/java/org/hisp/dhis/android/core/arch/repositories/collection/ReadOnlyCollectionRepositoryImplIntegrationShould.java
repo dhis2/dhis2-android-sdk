@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -37,6 +35,7 @@ import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples;
 import org.hisp.dhis.android.core.data.server.RealServerMother;
 import org.hisp.dhis.android.core.relationship.RelationshipType;
+import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,17 +44,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithConstraints;
 import static org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_1;
 import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_2;
+import static org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.RELATIONSHIP_TYPE_UID_1;
 
 @RunWith(AndroidJUnit4.class)
 public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreTestCase {
 
     private Map<String, RelationshipType> typeMap;
-    private ReadOnlyCollectionRepository<RelationshipType> relationshipTypeCollectionRepository;
+    private RelationshipTypeCollectionRepository relationshipTypeCollectionRepository;
 
     @Override
     @Before
@@ -87,12 +88,26 @@ public class ReadOnlyCollectionRepositoryImplIntegrationShould extends AbsStoreT
 
     @Test
     public void get_all_relationship_types_with_children_when_calling_get_set_with_children() {
-        List<RelationshipType> types = relationshipTypeCollectionRepository.getWithAllChildren();
+        List<RelationshipType> types = relationshipTypeCollectionRepository.withAllChildren().get();
         assertThat(types.size()).isEqualTo(2);
 
         for (RelationshipType targetType: types) {
             RelationshipType referenceType = typeMap.get(targetType.uid());
-            assertTypesWithConstraints(targetType, referenceType);
+            assertThat(targetType).isEqualTo(referenceType);
         }
+    }
+
+    @Test
+    public void get_count_with_unrestricted_scope() {
+        int count = relationshipTypeCollectionRepository.count();
+
+        assertThat(count).isEqualTo(2);
+    }
+
+    @Test
+    public void get_count_with_restricted_scope() {
+        int count = relationshipTypeCollectionRepository.byUid().eq(RELATIONSHIP_TYPE_UID_1).count();
+
+        assertThat(count).isEqualTo(1);
     }
 }

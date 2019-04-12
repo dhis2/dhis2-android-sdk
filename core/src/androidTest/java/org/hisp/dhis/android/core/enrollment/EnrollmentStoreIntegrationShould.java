@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Enrollment> {
@@ -47,13 +47,6 @@ public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStor
     @Override
     protected Enrollment buildObject() {
         return EnrollmentSamples.get();
-    }
-
-    @Override
-    protected Enrollment buildObjectWithId() {
-        return EnrollmentSamples.get().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

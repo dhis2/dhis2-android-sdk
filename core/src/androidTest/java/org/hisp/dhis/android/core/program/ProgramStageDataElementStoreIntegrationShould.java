@@ -45,13 +45,6 @@ public class ProgramStageDataElementStoreIntegrationShould extends IdentifiableO
     }
 
     @Override
-    protected ProgramStageDataElement buildObjectWithId() {
-        return ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
-                .id(1L)
-                .build();
-    }
-
-    @Override
     protected ProgramStageDataElement buildObjectToUpdate() {
         return ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
                 .allowFutureDate(true)

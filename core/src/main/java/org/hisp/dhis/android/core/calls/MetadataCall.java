@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.calls;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;

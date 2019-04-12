@@ -12,7 +12,7 @@
       "denominatorDescription": "Total 1st ANC visits",
       "numeratorDescription": "ANC1-ANC3",
       "displayDescription": "Indicates the percentage of clients dropping out between the 1st and the 3rd ANC visit. Calculated as the difference between ANC1 and ANC3 by the ANC 1 visits.",
-      "url": "",
+      "url": "url",
       "numerator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}-#{Jtf34kNZhzP.pq2XI5kz2BY}-#{Jtf34kNZhzP.PT59n8BQbqM}",
       "denominator": "#{fbfJHSPpUQD.pq2XI5kz2BY}+#{fbfJHSPpUQD.PT59n8BQbqM}",
       "annualized": false,

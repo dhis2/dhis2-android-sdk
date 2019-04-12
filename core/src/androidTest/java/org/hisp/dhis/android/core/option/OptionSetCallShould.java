@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option;
 
 import android.database.Cursor;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

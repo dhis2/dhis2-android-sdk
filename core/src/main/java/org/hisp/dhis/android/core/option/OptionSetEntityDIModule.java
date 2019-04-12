@@ -29,10 +29,14 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.OrphanCleanerImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -57,5 +61,14 @@ public final class OptionSetEntityDIModule {
     @Reusable
     OrphanCleaner<OptionSet, Option> optionCleaner(DatabaseAdapter databaseAdapter) {
         return new OrphanCleanerImpl<>(OptionTableInfo.TABLE_INFO.name(), OptionFields.OPTION_SET, databaseAdapter);
+    }
+
+    @Provides
+    @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
+    Map<String, ChildrenAppender<OptionSet>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        return new HashMap<String, ChildrenAppender<OptionSet>>() {{
+            put(OptionSetFields.OPTIONS, OptionSetOptionChildrenAppender.create(databaseAdapter));
+        }};
     }
 }

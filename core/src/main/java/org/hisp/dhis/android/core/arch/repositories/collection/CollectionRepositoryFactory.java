@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.repositories.collection;
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
-
-import java.util.List;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 
 public interface CollectionRepositoryFactory<R extends ReadOnlyCollectionRepository<?>> {
-    R newWithScope(List<RepositoryScopeItem> updatedScope);
+    R updated(RepositoryScope updatedScope);
 }

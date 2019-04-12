@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.maintenance;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.ObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,9 +48,41 @@ public final class ForeignKeyViolationCollectionRepository
 
     @Inject
     ForeignKeyViolationCollectionRepository(final ObjectStore<ForeignKeyViolation> store,
-                                            final Collection<ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
-                                            final List<RepositoryScopeItem> scope) {
+                                            final Map<String, ChildrenAppender<ForeignKeyViolation>> childrenAppenders,
+                                            final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ForeignKeyViolationCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromTable() {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_TABLE);
+    }
+
+    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromColumn() {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_COLUMN);
+    }
+
+    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byToTable() {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.TO_TABLE);
+    }
+
+    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byToColumn() {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.TO_COLUMN);
+    }
+
+    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byNotFoundValue() {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.NOT_FOUND_VALUE);
+    }
+
+    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromObjectUid() {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_OBJECT_UID);
+    }
+
+    public StringFilterConnector<ForeignKeyViolationCollectionRepository> byFromObjectRow() {
+        return cf.string(ForeignKeyViolationTableInfo.Columns.FROM_OBJECT_ROW);
+    }
+
+    public DateFilterConnector<ForeignKeyViolationCollectionRepository> byCreated() {
+        return cf.date(ForeignKeyViolationTableInfo.Columns.CREATED);
     }
 }

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
@@ -56,15 +56,14 @@ public final class TrackedEntityAttributeStore {
             sqLiteBind(sqLiteStatement, 13, UidsHelper.getUidOrNull(o.optionSet()));
             sqLiteBind(sqLiteStatement, 14, o.valueType());
             sqLiteBind(sqLiteStatement, 15, o.expression());
-            sqLiteBind(sqLiteStatement, 16, o.searchScope());
-            sqLiteBind(sqLiteStatement, 17, o.programScope());
-            sqLiteBind(sqLiteStatement, 18, o.displayInListNoProgram());
-            sqLiteBind(sqLiteStatement, 19, o.generated());
-            sqLiteBind(sqLiteStatement, 20, o.displayOnVisitSchedule());
-            sqLiteBind(sqLiteStatement, 21, o.orgUnitScope());
-            sqLiteBind(sqLiteStatement, 22, o.unique());
-            sqLiteBind(sqLiteStatement, 23, o.inherit());
-            sqLiteBind(sqLiteStatement, 24, o.formName());
+            sqLiteBind(sqLiteStatement, 16, o.programScope());
+            sqLiteBind(sqLiteStatement, 17, o.displayInListNoProgram());
+            sqLiteBind(sqLiteStatement, 18, o.generated());
+            sqLiteBind(sqLiteStatement, 19, o.displayOnVisitSchedule());
+            sqLiteBind(sqLiteStatement, 20, o.orgUnitScope());
+            sqLiteBind(sqLiteStatement, 21, o.unique());
+            sqLiteBind(sqLiteStatement, 22, o.inherit());
+            sqLiteBind(sqLiteStatement, 23, o.formName());
         }
     };
 

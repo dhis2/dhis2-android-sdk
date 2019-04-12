@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset;
 
 import android.database.sqlite.SQLiteStatement;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.db.binders.NameableStatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
@@ -65,6 +65,7 @@ final class DataSetStore {
             sqLiteBind(sqLiteStatement, 24, o.renderAsTabs());
             sqLiteBind(sqLiteStatement, 25, o.renderHorizontally());
             sqLiteBind(sqLiteStatement, 26, AccessHelper.getAccessDataWrite(o.access()));
+            sqLiteBind(sqLiteStatement, 27, UidsHelper.getUidOrNull(o.workflow()));
         }
     };
 

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.data.api.Fields;
 public final class LegendSetFields {
 
     final static String SYMBOLIZER = "symbolizer";
-    private final static String LEGENDS = "legends";
+    final static String LEGENDS = "legends";
 
     private static final FieldsHelper<LegendSet> fh = new FieldsHelper<>();
 

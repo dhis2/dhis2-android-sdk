@@ -29,28 +29,26 @@ package org.hisp.dhis.android.core.arch.repositories.object;
 
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.Model;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.Unit;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
-public final class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model>
-        extends ReadOnlyFirstObjectRepositoryImpl<M> implements ReadOnlyWithDownloadObjectRepository<M> {
+public class ReadOnlyFirstObjectWithDownloadRepositoryImpl<M extends Model, R extends ReadOnlyObjectRepository<M>>
+        extends ReadOnlyOneObjectRepositoryImpl<M, R> implements ReadOnlyWithDownloadObjectRepository<M> {
 
     private final Callable<Unit> downloadCall;
 
-    private ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
-                                                          Collection<ChildrenAppender<M>> childrenAppenders,
-                                                          Callable<Unit> downloadCall) {
-        super(store, childrenAppenders);
+    public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store,
+                                                         Map<String, ChildrenAppender<M>> childrenAppenders,
+                                                         RepositoryScope scope,
+                                                         Callable<Unit> downloadCall,
+                                                         ObjectRepositoryFactory<R> repositoryFactory) {
+        super(store, childrenAppenders, scope, repositoryFactory);
         this.downloadCall = downloadCall;
-    }
-
-    public ReadOnlyFirstObjectWithDownloadRepositoryImpl(ObjectStore<M> store, Callable<Unit> downloadCall) {
-        this(store, Collections.emptyList(), downloadCall);
     }
 
     @Override

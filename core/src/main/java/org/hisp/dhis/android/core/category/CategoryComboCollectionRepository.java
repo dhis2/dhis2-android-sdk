@@ -31,11 +31,10 @@ import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,13 +46,21 @@ public final class CategoryComboCollectionRepository
 
     @Inject
     CategoryComboCollectionRepository(final IdentifiableObjectStore<CategoryCombo> store,
-                                      final Collection<ChildrenAppender<CategoryCombo>> childrenAppenders,
-                                      List<RepositoryScopeItem> scope) {
+                                      final Map<String, ChildrenAppender<CategoryCombo>> childrenAppenders,
+                                      final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new CategoryComboCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new CategoryComboCollectionRepository(store, childrenAppenders, s)));
     }
 
     public BooleanFilterConnector<CategoryComboCollectionRepository> byIsDefault() {
         return cf.bool(CategoryComboFields.IS_DEFAULT);
+    }
+
+    public CategoryComboCollectionRepository withCategories() {
+        return cf.withChild(CategoryComboFields.CATEGORIES);
+    }
+
+    public CategoryComboCollectionRepository withCategoryOptionCombos() {
+        return cf.withChild(CategoryComboFields.CATEGORY_OPTION_COMBOS);
     }
 }

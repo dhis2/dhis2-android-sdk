@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.arch.api.executors.APICallExecutor;
 import org.hisp.dhis.android.core.calls.fetchers.CallFetcher;

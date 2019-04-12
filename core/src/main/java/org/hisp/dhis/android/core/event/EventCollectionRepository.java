@@ -34,13 +34,12 @@ import org.hisp.dhis.android.core.arch.repositories.filters.DateFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.WebResponse;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -54,13 +53,16 @@ public final class EventCollectionRepository
 
     private final EventPostCall postCall;
 
+    private final EventStore store;
+
     @Inject
     EventCollectionRepository(final EventStore store,
-                              final Collection<ChildrenAppender<Event>> childrenAppenders,
-                              final List<RepositoryScopeItem> scope,
+                              final Map<String, ChildrenAppender<Event>> childrenAppenders,
+                              final RepositoryScope scope,
                               final EventPostCall postCall) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new EventCollectionRepository(store, childrenAppenders, updatedScope, postCall)));
+                s -> new EventCollectionRepository(store, childrenAppenders, s, postCall)));
+        this.store = store;
         this.postCall = postCall;
     }
 
@@ -142,5 +144,27 @@ public final class EventCollectionRepository
         return cf.string(EventTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
     }
 
+    public EventCollectionRepository withTrackedEntityDataValues() {
+        return cf.withChild(EventFields.TRACKED_ENTITY_DATA_VALUES);
+    }
 
+    public EventCollectionRepository orderByEventDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.EVENT_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByDueDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.DUE_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByCompleteDate(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.COMPLETE_DATE, direction);
+    }
+
+    public EventCollectionRepository orderByLastUpdated(RepositoryScope.OrderByDirection direction) {
+        return cf.withOrderBy(EventFields.LAST_UPDATED, direction);
+    }
+
+    public int countTrackedEntityInstances() {
+        return store.countTeisWhereEvents(getWhereClause());
+    }
 }

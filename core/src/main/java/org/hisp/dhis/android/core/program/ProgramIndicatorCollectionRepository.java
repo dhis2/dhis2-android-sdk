@@ -33,11 +33,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.BooleanFilterConnect
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -49,10 +48,10 @@ public final class ProgramIndicatorCollectionRepository
 
     @Inject
     ProgramIndicatorCollectionRepository(final IdentifiableObjectStore<ProgramIndicator> store,
-                                         final Collection<ChildrenAppender<ProgramIndicator>> childrenAppenders,
-                                         List<RepositoryScopeItem> scope) {
+                                         final Map<String, ChildrenAppender<ProgramIndicator>> childrenAppenders,
+                                         final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramIndicatorCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramIndicatorCollectionRepository(store, childrenAppenders, s)));
     }
 
 
@@ -84,4 +83,7 @@ public final class ProgramIndicatorCollectionRepository
         return cf.string(ProgramIndicatorFields.PROGRAM);
     }
 
+    public ProgramIndicatorCollectionRepository withLegendSets() {
+        return cf.withChild(ProgramIndicatorFields.LEGEND_SETS);
+    }
 }

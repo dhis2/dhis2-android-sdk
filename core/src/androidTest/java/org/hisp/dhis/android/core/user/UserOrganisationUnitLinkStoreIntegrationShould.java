@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.LinkModelStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class UserOrganisationUnitLinkStoreIntegrationShould
@@ -58,13 +58,6 @@ public class UserOrganisationUnitLinkStoreIntegrationShould
     protected UserOrganisationUnitLink buildObjectWithOtherMasterUid() {
         return buildObject().toBuilder()
                 .user("new_user")
-                .build();
-    }
-
-    @Override
-    protected UserOrganisationUnitLink buildObjectWithId() {
-        return buildObject().toBuilder()
-                .id(1L)
                 .build();
     }
 }

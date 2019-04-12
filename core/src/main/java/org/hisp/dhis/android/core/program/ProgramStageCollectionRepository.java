@@ -34,14 +34,13 @@ import org.hisp.dhis.android.core.arch.repositories.filters.EnumFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
 import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
 import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScopeItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.period.FeatureType;
 import org.hisp.dhis.android.core.period.PeriodType;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -53,10 +52,10 @@ public final class ProgramStageCollectionRepository
 
     @Inject
     ProgramStageCollectionRepository(final IdentifiableObjectStore<ProgramStage> store,
-                                     final Collection<ChildrenAppender<ProgramStage>> childrenAppenders,
-                                     List<RepositoryScopeItem> scope) {
+                                     final Map<String, ChildrenAppender<ProgramStage>> childrenAppenders,
+                                     final RepositoryScope scope) {
         super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
-                updatedScope -> new ProgramStageCollectionRepository(store, childrenAppenders, updatedScope)));
+                s -> new ProgramStageCollectionRepository(store, childrenAppenders, s)));
     }
 
 
@@ -68,7 +67,7 @@ public final class ProgramStageCollectionRepository
         return cf.string(ProgramStageFields.DISPLAY_DESCRIPTION);
     }
 
-    public StringFilterConnector<ProgramStageCollectionRepository> byExectuionDateLabel() {
+    public StringFilterConnector<ProgramStageCollectionRepository> byExecutionDateLabel() {
         return cf.string(ProgramStageFields.EXECUTION_DATE_LABEL);
     }
 
@@ -154,5 +153,16 @@ public final class ProgramStageCollectionRepository
     public BooleanFilterConnector<ProgramStageCollectionRepository> byRemindCompleted() {
         return cf.bool(ProgramStageFields.REMIND_COMPLETED);
     }
-    
+
+    public ProgramStageCollectionRepository withStyle() {
+        return cf.withChild(ProgramStageFields.STYLE);
+    }
+
+    public ProgramStageCollectionRepository withProgramStageDataElements() {
+        return cf.withChild(ProgramStageFields.PROGRAM_STAGE_DATA_ELEMENTS);
+    }
+
+    public ProgramStageCollectionRepository withProgramStageSections() {
+        return cf.withChild(ProgramStageFields.PROGRAM_STAGE_SECTIONS);
+    }
 }

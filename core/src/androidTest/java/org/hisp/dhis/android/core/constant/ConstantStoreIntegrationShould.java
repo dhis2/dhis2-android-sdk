@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.data.constant.ConstantSamples;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class ConstantStoreIntegrationShould
@@ -47,13 +47,6 @@ public class ConstantStoreIntegrationShould
     @Override
     protected Constant buildObject() {
         return ConstantSamples.getConstant();
-    }
-
-    @Override
-    protected Constant buildObjectWithId() {
-        return ConstantSamples.getConstant().toBuilder()
-                .id(1L)
-                .build();
     }
 
     @Override

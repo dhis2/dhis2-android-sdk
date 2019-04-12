@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.period;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapterFactory;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
@@ -39,6 +37,8 @@ import org.junit.runner.RunWith;
 
 import java.text.ParseException;
 import java.util.Date;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -65,20 +65,14 @@ public class PeriodStoreIntegrationShould extends ObjectWithoutUidStoreAbstractI
                 .build();
     }
 
-    @Override
-    protected Period buildObjectWithId() {
-        return PeriodSamples.getPeriod().toBuilder()
-                .id(1L)
-                .build();
-    }
-
     @Test
     public void select_correct_period_passing_period_type_and_a_date() throws ParseException {
+        // Update date and periodId if they are outdated
         new PeriodHandler(periodStore, ParentPeriodGeneratorImpl.create()).generateAndPersist();
 
-        Period period = periodStore.selectPeriodByTypeAndDate(PeriodType.WeeklySaturday,
-                BaseIdentifiableObject.DATE_FORMAT.parse("2018-12-24T12:24:25.319"));
+        Period period = periodStore.selectPeriodByTypeAndDate(PeriodType.SixMonthly,
+                BaseIdentifiableObject.DATE_FORMAT.parse("2019-03-02T12:24:25.319"));
 
-        assertThat(period.periodId()).isEqualTo("2018SatW52");
+        assertThat(period.periodId()).isEqualTo("2019S1");
     }
 }

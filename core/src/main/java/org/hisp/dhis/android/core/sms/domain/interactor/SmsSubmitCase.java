@@ -11,12 +11,11 @@ import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
+import org.hisp.dhis.android.core.sms.domain.utils.Common;
 import org.hisp.dhis.android.core.sms.domain.utils.Pair;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
 
 import java.util.Collection;
-import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -39,24 +38,20 @@ public class SmsSubmitCase {
         smsRepository.acceptSMSCount(accept);
     }
 
-    public Observable<SmsRepository.SmsSendingState> submit(final Event event,
-                                                            final List<TrackedEntityDataValue>
-                                                                    values) {
-        return submit(new EventConverter(),
-                new EventConverter.EventData(event, values));
+    public Observable<SmsRepository.SmsSendingState> submit(final Event event) {
+        return Common.getCompressionData(localDbRepository).flatMapObservable(data -> submit(
+                new EventConverter(data.metadata),
+                new EventConverter.EventData(event, data.user)
+        ));
     }
 
     public Observable<SmsRepository.SmsSendingState> submit(final Enrollment enrollment,
                                                             final String trackedEntityType,
                                                             final Collection<TrackedEntityAttributeValue>
                                                                     attributes) {
-        return Single.zip(
-                localDbRepository.getMetadataIds(),
-                localDbRepository.getUserName(),
-                Pair::create
-        ).flatMapObservable(pair -> submit(
-                new EnrollmentConverter(pair.first),
-                new EnrollmentConverter.EnrollmentData(enrollment, trackedEntityType, attributes, pair.second)
+        return Common.getCompressionData(localDbRepository).flatMapObservable(data -> submit(
+                new EnrollmentConverter(data.metadata),
+                new EnrollmentConverter.EnrollmentData(enrollment, trackedEntityType, attributes, data.user)
         ));
     }
 

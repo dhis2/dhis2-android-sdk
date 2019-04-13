@@ -1,10 +1,5 @@
 package org.hisp.dhis.android.core.sms.domain.converter;
 
-import android.annotation.SuppressLint;
-import android.util.Base64;
-
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
@@ -16,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
 import io.reactivex.Single;
 
 import static org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter.EnrollmentData;
@@ -45,21 +41,6 @@ public class EnrollmentConverter extends Converter<EnrollmentData> {
             subm.setValues(values);
             return base64(smsSubmissionWriter.compress(subm));
         });
-    }
-
-    @SuppressLint("NewApi")
-    private String base64(byte[] bytes) {
-        String encoded;
-        try {
-            encoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
-        } catch (Throwable t) {
-            encoded = null;
-            // not android, so will try with pure java
-        }
-        if (encoded == null) {
-            encoded = java.util.Base64.getEncoder().encodeToString(bytes);
-        }
-        return encoded;
     }
 
     private AttributeValue createAttributeValue(String attribute, String value) {

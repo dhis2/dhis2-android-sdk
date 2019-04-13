@@ -29,8 +29,14 @@
 package org.hisp.dhis.android.core.option;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+import org.hisp.dhis.android.core.common.ObjectStyleChildrenAppender;
+import org.hisp.dhis.android.core.common.ObjectStyleStoreImpl;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+
+import java.util.Collections;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -49,5 +55,16 @@ public final class OptionEntityDIModule {
     @Reusable
     SyncHandler<Option> handler(OptionHandler impl) {
         return impl;
+    }
+
+    @Provides
+    @Reusable
+    Map<String, ChildrenAppender<Option>> childrenAppenders(DatabaseAdapter databaseAdapter) {
+        ChildrenAppender<Option> childrenAppender = new ObjectStyleChildrenAppender<>(
+                ObjectStyleStoreImpl.create(databaseAdapter),
+                OptionTableInfo.TABLE_INFO
+        );
+
+        return Collections.singletonMap(OptionFields.STYLE, childrenAppender);
     }
 }

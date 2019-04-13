@@ -25,24 +25,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.option;
+
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyIdentifiableCollectionRepositoryImpl;
+import org.hisp.dhis.android.core.arch.repositories.filters.FilterConnectorFactory;
+import org.hisp.dhis.android.core.arch.repositories.filters.IntegerFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.filters.StringFilterConnector;
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressFBWarnings("URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD")
 @Reusable
-public final class PeriodModule {
-
-    public final PeriodHelper periodHelper;
-    public final PeriodCollectionRepository periods;
+public final class OptionCollectionRepository
+        extends ReadOnlyIdentifiableCollectionRepositoryImpl<Option, OptionCollectionRepository> {
 
     @Inject
-    PeriodModule(PeriodHelper periodHelper,
-                 PeriodCollectionRepository periods) {
-        this.periodHelper = periodHelper;
-        this.periods = periods;
+    OptionCollectionRepository(final IdentifiableObjectStore<Option> store,
+                               final Map<String, ChildrenAppender<Option>> childrenAppenders,
+                               final RepositoryScope scope) {
+        super(store, childrenAppenders, scope, new FilterConnectorFactory<>(scope,
+                s -> new OptionCollectionRepository(store, childrenAppenders, s)));
+    }
+
+    public IntegerFilterConnector<OptionCollectionRepository> bySortOrder() {
+        return cf.integer(OptionFields.SORT_ORDER);
+    }
+
+    public StringFilterConnector<OptionCollectionRepository> byOptionSetUid() {
+        return cf.string(OptionFields.OPTION_SET);
+    }
+
+    public OptionCollectionRepository withStyle() {
+        return cf.withChild(OptionFields.STYLE);
     }
 }

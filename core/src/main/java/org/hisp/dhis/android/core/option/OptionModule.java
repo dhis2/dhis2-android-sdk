@@ -39,11 +39,14 @@ public final class OptionModule {
 
     public final OptionGroupCollectionRepository optionGroups;
     public final OptionSetCollectionRepository optionSets;
+    public final OptionCollectionRepository options;
 
     @Inject
     OptionModule(OptionGroupCollectionRepository optionGroups,
-                 OptionSetCollectionRepository optionSets) {
+                 OptionSetCollectionRepository optionSets,
+                 OptionCollectionRepository options) {
         this.optionGroups = optionGroups;
         this.optionSets = optionSets;
+        this.options = options;
     }
 }

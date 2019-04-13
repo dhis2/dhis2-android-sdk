@@ -26,14 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.testapp.option;
+package org.hisp.dhis.android.testapp.period;
 
-import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
-import org.hisp.dhis.android.core.option.OptionSet;
+import org.hisp.dhis.android.core.period.Period;
+import org.hisp.dhis.android.core.period.PeriodType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.ParseException;
 import java.util.List;
 
 import androidx.test.runner.AndroidJUnit4;
@@ -42,52 +44,37 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
-public class OptionSetCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+public class PeriodCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
 
     @Test
     public void find_all() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets.get();
-        assertThat(optionSets.size(), is(2));
+        List<Period> periods = d2.periodModule().periods.get();
+        assertThat(periods.size(), is(191));
     }
 
     @Test
-    public void filter_by_version() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets
-                .byVersion().eq(1).get();
-        assertThat(optionSets.size(), is(1));
+    public void filter_by_period_id() {
+        List<Period> periods = d2.periodModule().periods
+                .byPeriodId()
+                .eq("2018").get();
+        assertThat(periods.size(), is(1));
     }
 
     @Test
-    public void filter_by_value_type() {
-        List<OptionSet> optionSets = d2.optionModule().optionSets
-                .byValueType().eq(ValueType.TEXT).get();
-        assertThat(optionSets.size(), is(1));
+    public void filter_by_period_type() {
+        List<Period> periods = d2.periodModule().periods
+                .byPeriodType()
+                .eq(PeriodType.Quarterly).get();
+        assertThat(periods.size(), is(5));
     }
 
     @Test
-    public void include_options_as_children() {
-        OptionSet optionSet = d2.optionModule().optionSets
-                .withOptions()
-                .uid("VQ2lai3OfVG")
-                .get();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
-    }
-
-    @Test
-    public void include_options_as_children_in_collection_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets
-                .withAllChildren()
-                .uid("VQ2lai3OfVG")
-                .get();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
-    }
-
-    @Test
-    public void include_options_as_children_in_object_repository_when_all_selected() {
-        OptionSet optionSet = d2.optionModule().optionSets
-                .withAllChildren()
-                .uid("VQ2lai3OfVG")
-                .get();
-        assertThat(optionSet.options().get(0).name(), is("0-14 years"));
+    public void filter_by_start_and_end_date() throws ParseException {
+        List<Period> periods = d2.periodModule().periods
+                .byStartDate()
+                .eq(BaseIdentifiableObject.parseDate("2018-10-01T00:00:00.000"))
+                .byEndDate()
+                .eq(BaseIdentifiableObject.parseDate("2019-09-30T23:59:59.999")).get();
+        assertThat(periods.size(), is(1));
     }
 }

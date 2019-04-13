@@ -108,7 +108,15 @@ public class WhereClauseBuilder {
     }
 
     public WhereClauseBuilder appendComplexQuery(String complexQuery) {
-        String andOpt = addOperator ? AND : "";
+        return appendComplexQueryWithOperator(complexQuery, AND);
+    }
+
+    public WhereClauseBuilder appendOrComplexQuery(String complexQuery) {
+        return appendComplexQueryWithOperator(complexQuery, OR);
+    }
+
+    private WhereClauseBuilder appendComplexQueryWithOperator(String complexQuery, String operator) {
+        String andOpt = addOperator ? operator : "";
         addOperator = true;
         whereClause.append(andOpt).append(PARENTHESES_START).append(complexQuery).append(PARENTHESES_END);
         return this;
@@ -120,8 +128,12 @@ public class WhereClauseBuilder {
         return this;
     }
 
+    public boolean isEmpty() {
+        return whereClause.length() == 0;
+    }
+
     public String build() {
-        if (whereClause.length() == 0) {
+        if (isEmpty()) {
             throw new RuntimeException("No columns added");
         } else {
             return whereClause.toString();

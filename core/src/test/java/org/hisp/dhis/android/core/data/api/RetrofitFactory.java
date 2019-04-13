@@ -25,19 +25,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Which;
+package org.hisp.dhis.android.core.data.api;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.arch.api.retrofit.PreventURLDecodeInterceptor;
 
-interface DataSetService {
-    @GET("dataSets")
-    Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
-                                       @Query("filter") String accessDataReadFilter,
-                                       @Query("paging") Boolean paging);
+import okhttp3.OkHttpClient;
+import okhttp3.mockwebserver.MockWebServer;
+import retrofit2.Retrofit;
+
+public class RetrofitFactory {
+
+    public static Retrofit getRetrofit(MockWebServer mockWebServer) {
+        return new Retrofit.Builder()
+                .client(getOkClient())
+                .baseUrl(mockWebServer.url("/"))
+                .addConverterFactory(FieldsConverterFactory.create())
+                .addConverterFactory(FilterConverterFactory.create())
+                .build();
+    }
+
+    private static OkHttpClient getOkClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new PreventURLDecodeInterceptor())
+                .build();
+    }
 }

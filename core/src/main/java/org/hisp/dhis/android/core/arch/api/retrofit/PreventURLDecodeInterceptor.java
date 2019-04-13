@@ -25,19 +25,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Which;
+package org.hisp.dhis.android.core.arch.api.retrofit;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import java.io.IOException;
 
-interface DataSetService {
-    @GET("dataSets")
-    Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
-                                       @Query("filter") String accessDataReadFilter,
-                                       @Query("paging") Boolean paging);
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class PreventURLDecodeInterceptor implements Interceptor {
+
+    @Override
+    public Response intercept(Chain chain) throws IOException {
+        Request request = chain.request();
+        String encodedUrl = request.url().toString();
+
+        String nonEncodedUrl = encodedUrl
+                .replace("%2C", ",")
+                .replace("%5B", "[")
+                .replace("%5D", "]")
+                .replace("%3A", ":");
+
+        Request newRequest = request.newBuilder()
+                .url(nonEncodedUrl)
+                .build();
+
+        return chain.proceed(newRequest);
+    }
 }

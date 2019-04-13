@@ -25,19 +25,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import org.hisp.dhis.android.core.common.Payload;
-import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Which;
+package org.hisp.dhis.android.testapp.option;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
+import org.hisp.dhis.android.core.data.database.SyncedDatabaseMockIntegrationShould;
+import org.hisp.dhis.android.core.option.Option;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-interface DataSetService {
-    @GET("dataSets")
-    Call<Payload<DataSet>> getDataSets(@Query("fields") @Which Fields<DataSet> fields,
-                                       @Query("filter") String accessDataReadFilter,
-                                       @Query("paging") Boolean paging);
+import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+@RunWith(AndroidJUnit4.class)
+public class OptionCollectionRepositoryMockIntegrationShould extends SyncedDatabaseMockIntegrationShould {
+
+    @Test
+    public void find_all() {
+        List<Option> options = d2.optionModule().options.get();
+        assertThat(options.size(), is(3));
+    }
+
+    @Test
+    public void filter_by_sort_order() {
+        List<Option> options = d2.optionModule().options
+                .bySortOrder().eq(2).get();
+        assertThat(options.size(), is(1));
+        assertThat(options.get(0).uid(), is("egT1YqFWsVk"));
+    }
+
+    @Test
+    public void filter_by_optionset_uid() {
+        List<Option> options = d2.optionModule().options
+                .byOptionSetUid().eq("VQ2lai3OfVG").get();
+        assertThat(options.size(), is(2));
+    }
+
+    @Test
+    public void include_object_style() {
+        Option option = d2.optionModule().options
+                .withStyle()
+                .uid("Z1ILwhy5VDY")
+                .get();
+        assertThat(option.style().icon(), is("woman_negative"));
+        assertThat(option.style().color(), is("#13f2dd"));
+    }
 }

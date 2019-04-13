@@ -33,7 +33,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 
 import static org.junit.Assert.fail;
 
-@RunWith(AndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
 public class QrGenerationTest {
     private static String URL = "";
     private static String LOGIN = "";

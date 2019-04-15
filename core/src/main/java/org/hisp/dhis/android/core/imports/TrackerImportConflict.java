@@ -35,6 +35,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseModel;
 import org.hisp.dhis.android.core.data.database.DbDateColumnAdapter;
+import org.hisp.dhis.android.core.data.database.DbImportStatusColumnAdapter;
 
 import java.util.Date;
 
@@ -66,6 +67,7 @@ public abstract class TrackerImportConflict extends BaseModel {
     public abstract String errorCode();
 
     @Nullable
+    @ColumnAdapter(DbImportStatusColumnAdapter.class)
     public abstract ImportStatus status();
 
     @Nullable

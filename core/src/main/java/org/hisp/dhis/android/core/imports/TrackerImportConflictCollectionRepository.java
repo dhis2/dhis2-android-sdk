@@ -64,15 +64,15 @@ public final class TrackerImportConflictCollectionRepository
         return cf.string(TrackerImportConflictTableInfo.Columns.VALUE);
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byTrackedEntityInstance() {
+    public StringFilterConnector<TrackerImportConflictCollectionRepository> byTrackedEntityInstanceUid() {
         return cf.string(TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE);
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byEnrollment() {
+    public StringFilterConnector<TrackerImportConflictCollectionRepository> byEnrollmentUid() {
         return cf.string(TrackerImportConflictTableInfo.Columns.ENROLLMENT);
     }
 
-    public StringFilterConnector<TrackerImportConflictCollectionRepository> byEvent() {
+    public StringFilterConnector<TrackerImportConflictCollectionRepository> byEventUid() {
         return cf.string(TrackerImportConflictTableInfo.Columns.EVENT);
     }
 

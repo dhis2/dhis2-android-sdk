@@ -55,7 +55,7 @@ public class SmsSubmitCase {
         ));
     }
 
-    public <T extends DataToConvert> Observable<SmsRepository.SmsSendingState>
+    private <T extends DataToConvert> Observable<SmsRepository.SmsSendingState>
     submit(final Converter<T> converter, final T dataItem) {
         return checkPreconditions()
                 .andThen(Single.zip(

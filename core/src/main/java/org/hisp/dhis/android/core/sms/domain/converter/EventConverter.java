@@ -31,7 +31,7 @@ public class EventConverter extends Converter<EventConverter.EventData> {
             subm.setProgramStage(e.programStage());
             subm.setTimestamp(e.lastUpdated());
             subm.setTrackedEntityInstance(e.trackedEntityInstance());
-            subm.setValues(convertDataValues(e.trackedEntityDataValues()));
+            subm.setValues(convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
             subm.setOrgUnit(e.organisationUnit());
             subm.setUserID(event.user);
             return base64(smsSubmissionWriter.compress(subm));
@@ -39,13 +39,13 @@ public class EventConverter extends Converter<EventConverter.EventData> {
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    private List<DataValue> convertDataValues(List<TrackedEntityDataValue> trackedEntityDataValues) {
+    private List<DataValue> convertDataValues(String catOptionCombo, List<TrackedEntityDataValue> trackedEntityDataValues) {
         ArrayList<DataValue> dataValues = new ArrayList<>();
         if (trackedEntityDataValues == null) {
             return dataValues;
         }
         for (TrackedEntityDataValue tedv : trackedEntityDataValues) {
-            dataValues.add(new DataValue(null, tedv.dataElement(), tedv.value()));
+            dataValues.add(new DataValue(catOptionCombo, tedv.dataElement(), tedv.value()));
         }
         return dataValues;
     }

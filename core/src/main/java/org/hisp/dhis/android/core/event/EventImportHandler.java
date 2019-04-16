@@ -28,41 +28,79 @@
 
 package org.hisp.dhis.android.core.event;
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.EventImportSummary;
-import org.hisp.dhis.android.core.imports.ImportStatus;
+import org.hisp.dhis.android.core.imports.ImportConflict;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import dagger.Reusable;
 
 import static org.hisp.dhis.android.core.utils.StoreUtils.getState;
 
+@Reusable
 public class EventImportHandler {
     private final EventStore eventStore;
+    private final ObjectStore<TrackerImportConflict> trackerImportConflictStore;
 
-    public EventImportHandler(@NonNull EventStore eventStore) {
+    @Inject
+    public EventImportHandler(@NonNull EventStore eventStore,
+                              @NonNull ObjectStore<TrackerImportConflict> trackerImportConflictStore) {
         this.eventStore = eventStore;
+        this.trackerImportConflictStore = trackerImportConflictStore;
     }
 
-    public void handleEventImportSummaries(@NonNull List<EventImportSummary> importSummaries) {
-        if (importSummaries == null) {
-            return;
-        }
-
-        int size = importSummaries.size();
-
-        for (int i = 0; i < size; i++) {
-            EventImportSummary importSummary = importSummaries.get(i);
-
-            if (importSummary == null) {
+    public void handleEventImportSummaries(@NonNull List<EventImportSummary> eventImportSummaries,
+                                           @NonNull TrackerImportConflict.Builder trackerImportConflictBuilder) {
+        for (EventImportSummary eventImportSummary : eventImportSummaries) {
+            if (eventImportSummary == null) {
                 break;
             }
 
-            ImportStatus importStatus = importSummary.status();
-            State state = getState(importStatus);
+            if (eventImportSummary.reference() != null) {
+                State state = getState(eventImportSummary.status());
+                eventStore.setState(eventImportSummary.reference(), state);
+            }
 
-            eventStore.setState(importSummary.reference(), state);
+            storeEventImportConflicts(eventImportSummary, trackerImportConflictBuilder);
+        }
+    }
+
+    private void storeEventImportConflicts(EventImportSummary eventImportSummary,
+                                           TrackerImportConflict.Builder trackerImportConflictBuilder) {
+        trackerImportConflictBuilder
+                .event(eventImportSummary.reference())
+                .tableReference(EventTableInfo.TABLE_INFO.name())
+                .status(eventImportSummary.status())
+                .created(new Date());
+
+        List<TrackerImportConflict> trackerImportConflicts = new ArrayList<>();
+        if (eventImportSummary.description() != null) {
+            trackerImportConflicts.add(trackerImportConflictBuilder
+                    .conflict(eventImportSummary.description())
+                    .value(eventImportSummary.reference())
+                    .build());
+        }
+
+        if (eventImportSummary.conflicts() != null) {
+            for (ImportConflict importConflict : eventImportSummary.conflicts()) {
+                trackerImportConflicts.add(trackerImportConflictBuilder
+                        .conflict(importConflict.value())
+                        .value(importConflict.object())
+                        .build());
+            }
+
+        }
+
+        for (TrackerImportConflict trackerImportConflict : trackerImportConflicts) {
+            trackerImportConflictStore.insert(trackerImportConflict);
         }
     }
 }

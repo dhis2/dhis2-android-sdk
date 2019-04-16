@@ -76,13 +76,13 @@ public final class TrackedEntityInstanceQueryDataSource
     @Override
     public void loadInitial(@NonNull LoadInitialParams<TrackedEntityInstance> params,
                             @NonNull LoadInitialCallback<TrackedEntityInstance> callback) {
-        callback.onResult(loadPages(params.requestedLoadSize));
+        callback.onResult(loadPages(params.requestedLoadSize, true));
     }
 
     @Override
     public void loadAfter(@NonNull LoadParams<TrackedEntityInstance> params,
                           @NonNull LoadCallback<TrackedEntityInstance> callback) {
-        callback.onResult(loadPages(params.requestedLoadSize));
+        callback.onResult(loadPages(params.requestedLoadSize, false));
     }
 
     @Override
@@ -97,7 +97,7 @@ public final class TrackedEntityInstanceQueryDataSource
         return item;
     }
 
-    private List<TrackedEntityInstance> loadPages(int requestedLoadSize) {
+    private List<TrackedEntityInstance> loadPages(int requestedLoadSize, boolean isInitial) {
         List<TrackedEntityInstance> result = new ArrayList<>();
         if (scope.mode().equals(OFFLINE_ONLY) || scope.mode().equals(OFFLINE_FIRST)) {
             if (!isExhaustedOffline) {
@@ -107,12 +107,12 @@ public final class TrackedEntityInstanceQueryDataSource
             }
 
             if (result.size() < requestedLoadSize && scope.mode().equals(OFFLINE_FIRST)) {
-                List<TrackedEntityInstance> onlineInstances = queryOnlineRecursive(requestedLoadSize);
+                List<TrackedEntityInstance> onlineInstances = queryOnlineRecursive(requestedLoadSize, isInitial);
                 result.addAll(onlineInstances);
             }
         } else {
             if (!isExhaustedOnline) {
-                List<TrackedEntityInstance> instances = queryOnlineRecursive(requestedLoadSize);
+                List<TrackedEntityInstance> instances = queryOnlineRecursive(requestedLoadSize, isInitial);
                 result.addAll(instances);
                 isExhaustedOnline = instances.size() < requestedLoadSize;
             }
@@ -133,15 +133,14 @@ public final class TrackedEntityInstanceQueryDataSource
         return appendAttributes(instances);
     }
 
-    private List<TrackedEntityInstance> queryOnline(int requestLoadSize) {
-        // If first page, the requestedSize is three times the original. Increment in three.
+    private List<TrackedEntityInstance> queryOnline(int requestLoadSize, boolean isInitial) {
         TrackedEntityInstanceQuery onlineQuery = scope.query().toBuilder()
                 .page(currentOnlinePage + 1)
                 .pageSize(requestLoadSize)
                 .paging(true).build();
 
         // If first page, the requestedSize is three times the original. Increment in three.
-        currentOnlinePage = currentOnlinePage == 0 ? INITIAL_LOAD_SIZE_FACTOR + 1 : currentOnlinePage + 1;
+        currentOnlinePage += isInitial ? INITIAL_LOAD_SIZE_FACTOR : 1;
 
         try {
             List<TrackedEntityInstance> instances = new ArrayList<>();
@@ -156,11 +155,11 @@ public final class TrackedEntityInstanceQueryDataSource
         }
     }
 
-    private List<TrackedEntityInstance> queryOnlineRecursive(int requestLoadSize) {
+    private List<TrackedEntityInstance> queryOnlineRecursive(int requestLoadSize, boolean isInitial) {
         List<TrackedEntityInstance> result = new ArrayList<>();
         List<TrackedEntityInstance> lastResult;
         do {
-            lastResult = queryOnline(requestLoadSize);
+            lastResult = queryOnline(requestLoadSize, isInitial);
             result.addAll(lastResult);
         } while (result.size() < requestLoadSize && !lastResult.isEmpty());
         return result;

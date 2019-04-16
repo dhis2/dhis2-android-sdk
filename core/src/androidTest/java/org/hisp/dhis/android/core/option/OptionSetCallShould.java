@@ -109,6 +109,16 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "2015-08-06T14:23:38.789", // lastUpdated
                         1, // version
                         "TEXT" // valueType
+                ).hasRow(
+                        2L, // id
+                        "TQ2lai3OfVG", // uid
+                        null, // code
+                        "One option", // name
+                        "One option", // displayName
+                        "2014-06-22T10:59:26.564", // created
+                        "2015-08-06T14:23:38.789", // lastUpdated
+                        2, // version
+                        "NUMBER" // valueType
                 ).isExhausted();
 
         assertThatCursor(optionCursor)
@@ -122,10 +132,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "2014-08-18T12:39:16.000", // lastUpdated
                         1, // sortOrder
                         "VQ2lai3OfVG"  // optionSet
-                );
-
-        assertThatCursor(optionCursor)
-                .hasRow(
+                ).hasRow(
                         2L, // id
                         "egT1YqFWsVk", // uid
                         "15-19 years", // code
@@ -135,6 +142,16 @@ public class OptionSetCallShould extends AbsStoreTestCase {
                         "2014-08-18T12:39:16.000", // lastUpdated
                         2, // sortOrder
                         "VQ2lai3OfVG"  // optionSet
+                ).hasRow(
+                        4L, // id
+                        "Z1ILwhy5VDY", // uid
+                        "First option", // code
+                        "First option", // name
+                        "First option", // displayName
+                        "2014-08-18T12:39:16.000", // created
+                        "2014-08-18T12:39:16.000", // lastUpdated
+                        1, // sortOrder
+                        "TQ2lai3OfVG"  // optionSet
                 ).isExhausted();
 
     }
@@ -143,7 +160,7 @@ public class OptionSetCallShould extends AbsStoreTestCase {
     public void return_option_set_after_call() throws Exception {
         List<OptionSet> optionSetList = executeOptionSetCall();
 
-        assertThat(optionSetList.size()).isEqualTo(1);
+        assertThat(optionSetList.size()).isEqualTo(2);
 
         OptionSet optionSet = optionSetList.get(0);
 

@@ -47,7 +47,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends SyncedDa
     @Test
     public void find_all() {
         List<OptionSet> optionSets = d2.optionModule().optionSets.get();
-        assertThat(optionSets.size(), is(1));
+        assertThat(optionSets.size(), is(2));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends SyncedDa
     }
 
     @Test
-    public void filter_by_path() {
+    public void filter_by_value_type() {
         List<OptionSet> optionSets = d2.optionModule().optionSets
                 .byValueType().eq(ValueType.TEXT).get();
         assertThat(optionSets.size(), is(1));
@@ -67,21 +67,27 @@ public class OptionSetCollectionRepositoryMockIntegrationShould extends SyncedDa
     @Test
     public void include_options_as_children() {
         OptionSet optionSet = d2.optionModule().optionSets
-                .withOptions().one().get();
+                .withOptions()
+                .uid("VQ2lai3OfVG")
+                .get();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));
     }
 
     @Test
     public void include_options_as_children_in_collection_repository_when_all_selected() {
         OptionSet optionSet = d2.optionModule().optionSets
-                .withAllChildren().get().get(0);
+                .withAllChildren()
+                .uid("VQ2lai3OfVG")
+                .get();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));
     }
 
     @Test
     public void include_options_as_children_in_object_repository_when_all_selected() {
         OptionSet optionSet = d2.optionModule().optionSets
-                .one().withAllChildren().get();
+                .withAllChildren()
+                .uid("VQ2lai3OfVG")
+                .get();
         assertThat(optionSet.options().get(0).name(), is("0-14 years"));
     }
 }

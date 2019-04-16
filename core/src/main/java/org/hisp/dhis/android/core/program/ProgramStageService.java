@@ -41,6 +41,6 @@ public interface ProgramStageService {
     @GET("programStages")
     Call<Payload<ProgramStage>> getProgramStages(@Query("fields") @Which Fields<ProgramStage> fields,
                                                  @Query("filter") @Where Filter<ProgramStage, String> uids,
-                                                 @Query("filter") @Where String accessDataReadFilter,
+                                                 @Query("filter") String accessDataReadFilter,
                                                  @Query("paging") Boolean paging);
 }

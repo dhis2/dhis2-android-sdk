@@ -35,7 +35,6 @@ import javax.inject.Inject;
 
 import dagger.Reusable;
 import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 
 @Reusable
 final class RxAPICallExecutorImpl implements RxAPICallExecutor {
@@ -52,7 +51,6 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     @Override
     public <P> Single<P> executeObjectCall(Single<P> single) {
         return single
-                .subscribeOn(Schedulers.io())
                 .onErrorResumeNext(throwable -> {
             D2Error d2Error = errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
             errorStore.insert(d2Error);

@@ -70,8 +70,12 @@ public class EnrollmentImportHandler {
         this.trackerImportConflictStore = trackerImportConflictStore;
     }
 
-    public void handleEnrollmentImportSummary(@NonNull List<EnrollmentImportSummary> enrollmentImportSummaries,
-                                              @NonNull TrackerImportConflict.Builder trackerImportConflictBuilder) {
+    public void handleEnrollmentImportSummary(List<EnrollmentImportSummary> enrollmentImportSummaries,
+                                              TrackerImportConflict.Builder trackerImportConflictBuilder) {
+        if (enrollmentImportSummaries == null) {
+            return;
+        }
+
         for (EnrollmentImportSummary enrollmentImportSummary : enrollmentImportSummaries) {
             if (enrollmentImportSummary == null) {
                 break;

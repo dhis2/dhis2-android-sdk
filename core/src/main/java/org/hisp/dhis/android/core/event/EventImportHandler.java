@@ -57,8 +57,12 @@ public class EventImportHandler {
         this.trackerImportConflictStore = trackerImportConflictStore;
     }
 
-    public void handleEventImportSummaries(@NonNull List<EventImportSummary> eventImportSummaries,
-                                           @NonNull TrackerImportConflict.Builder trackerImportConflictBuilder) {
+    public void handleEventImportSummaries(List<EventImportSummary> eventImportSummaries,
+                                           TrackerImportConflict.Builder trackerImportConflictBuilder) {
+        if (eventImportSummaries == null) {
+            return;
+        }
+
         for (EventImportSummary eventImportSummary : eventImportSummaries) {
             if (eventImportSummary == null) {
                 break;

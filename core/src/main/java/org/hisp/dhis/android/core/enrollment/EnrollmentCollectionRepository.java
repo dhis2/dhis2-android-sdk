@@ -112,6 +112,10 @@ public final class EnrollmentCollectionRepository
         return cf.doubleC(EnrollmentTableInfo.Columns.LONGITUDE);
     }
 
+    public EnrollmentCollectionRepository withEvents() {
+        return cf.withChild(EnrollmentFields.EVENTS);
+    }
+
     public EnrollmentCollectionRepository withNotes() {
         return cf.withChild(EnrollmentFields.NOTES);
     }

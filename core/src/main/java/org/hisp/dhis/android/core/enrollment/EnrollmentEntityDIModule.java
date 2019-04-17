@@ -64,6 +64,7 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
         return new HashMap<String, ChildrenAppender<Enrollment>>() {{
             put(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));

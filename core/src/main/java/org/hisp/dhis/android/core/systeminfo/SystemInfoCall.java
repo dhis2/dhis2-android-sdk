@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.systeminfo;
 
 import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.call.CompletableProvider;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
@@ -42,10 +42,10 @@ import org.hisp.dhis.android.core.utils.Utils;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Single;
+import io.reactivex.Completable;
 
 @Reusable
-class SystemInfoCall {
+class SystemInfoCall implements CompletableProvider {
     private final DatabaseAdapter databaseAdapter;
     private final SyncHandler<SystemInfo> systemInfoHandler;
     private final SystemInfoService systemInfoService;
@@ -68,9 +68,10 @@ class SystemInfoCall {
         this.apiCallExecutor = apiCallExecutor;
     }
 
-    Single<Unit> asObservable() {
-        return apiCallExecutor.executeObjectCall(systemInfoService.getSystemInfo(SystemInfoFields.allFields))
-                .map(systemInfo -> {
+    @Override
+    public Completable getCompletable() {
+        return apiCallExecutor.wrapSingle(systemInfoService.getSystemInfo(SystemInfoFields.allFields))
+                .doOnSuccess(systemInfo -> {
                     if (DHISVersion.isAllowedVersion(systemInfo.version())) {
                         versionManager.setVersion(systemInfo.version());
                     } else {
@@ -84,8 +85,7 @@ class SystemInfoCall {
                     }
 
                     insertOrUpdateSystemInfo(systemInfo);
-                    return new Unit();
-                });
+                }).ignoreElement();
     }
 
     private void insertOrUpdateSystemInfo(SystemInfo systemInfo) {

@@ -111,7 +111,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
             teiQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-            systemInfoRepository.download().call();
+            systemInfoRepository.download().blockingAwait();
 
             if (limitByOrgUnit) {
                 organisationUnitUids = getOrgUnitUids();

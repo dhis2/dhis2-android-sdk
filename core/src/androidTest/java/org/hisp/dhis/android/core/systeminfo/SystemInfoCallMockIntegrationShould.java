@@ -75,7 +75,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
 
     @Test
     public void persist_system_info_when_call() throws Exception {
-        systemInfoRepository.download().call();
+        systemInfoRepository.download().subscribe();
         Cursor systemInfoCursor = getCursor();
         assertSystemInfoInCursor(systemInfoCursor, systemInfoFromAPI);
     }
@@ -86,7 +86,7 @@ public class SystemInfoCallMockIntegrationShould extends AbsStoreTestCase {
         Cursor cursorPreCall = getCursor();
         assertSystemInfoInCursor(cursorPreCall, systemInfoFromDB);
 
-        systemInfoRepository.download().call();
+        systemInfoRepository.download().subscribe();
         Cursor cursorPostCall = getCursor();
         assertSystemInfoInCursor(cursorPostCall, systemInfoFromAPI);
     }

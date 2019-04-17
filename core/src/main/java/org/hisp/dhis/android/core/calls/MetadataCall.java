@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.calls;
 
-import androidx.annotation.NonNull;
-
 import org.hisp.dhis.android.core.category.CategoryModuleDownloader;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.Unit;
@@ -49,6 +47,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
@@ -93,7 +92,7 @@ public class MetadataCall implements Callable<Unit> {
     public Unit call() throws Exception {
 
         return d2CallExecutor.executeD2CallTransactionally(() -> {
-            systemInfoDownloader.downloadMetadata().call();
+            systemInfoDownloader.downloadMetadata().blockingAwait();
 
             systemSettingDownloader.downloadMetadata().call();
 

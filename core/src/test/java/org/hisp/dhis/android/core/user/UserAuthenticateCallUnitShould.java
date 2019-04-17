@@ -57,6 +57,8 @@ import org.mockito.stubbing.OngoingStubbing;
 
 import java.util.concurrent.Callable;
 
+import io.reactivex.Completable;
+
 import static okhttp3.Credentials.basic;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.hisp.dhis.android.core.utils.UserUtils.base64;
@@ -159,7 +161,7 @@ public class UserAuthenticateCallUnitShould extends BaseCallShould {
 
         when(userService.authenticate(any(String.class), any(Fields.class))).thenReturn(authenticateAPICall);
 
-        when(systemInfoRepository.download()).thenReturn(systemInfoEndpointCall);
+        when(systemInfoRepository.download()).thenReturn(Completable.complete());
         whenAPICall().thenReturn(user);
 
         when(userStore.selectFirst()).thenReturn(loggedUser);

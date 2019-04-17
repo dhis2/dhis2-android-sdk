@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.core.event;
 
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,6 +57,9 @@ public class EventImportHandlerShould {
     @Mock
     private EventStore eventStore;
 
+    @Mock
+    private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+
     // object to test
     private EventImportHandler eventImportHandler;
 
@@ -64,13 +69,13 @@ public class EventImportHandlerShould {
 
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
 
-        eventImportHandler = new EventImportHandler(eventStore);
+        eventImportHandler = new EventImportHandler(eventStore, trackerImportConflictStore);
 
     }
 
     @Test
     public void do_nothing_when_passing_null_argument() throws Exception {
-        eventImportHandler.handleEventImportSummaries(null);
+        eventImportHandler.handleEventImportSummaries(null, null);
 
         verify(eventStore, never()).setState(anyString(), any(State.class));
     }
@@ -80,7 +85,8 @@ public class EventImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.SUCCESS);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
-        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary));
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
+                TrackerImportConflict.builder());
 
         verify(eventStore, times(1)).setState("test_event_uid", State.SYNCED);
     }
@@ -90,7 +96,8 @@ public class EventImportHandlerShould {
         when(importSummary.status()).thenReturn(ImportStatus.ERROR);
         when(importSummary.reference()).thenReturn("test_event_uid");
 
-        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary));
+        eventImportHandler.handleEventImportSummaries(Collections.singletonList(importSummary),
+                TrackerImportConflict.builder());
 
         verify(eventStore, times(1)).setState("test_event_uid", State.ERROR);
     }

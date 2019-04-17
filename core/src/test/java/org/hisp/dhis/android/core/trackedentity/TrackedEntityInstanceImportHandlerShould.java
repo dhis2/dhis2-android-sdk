@@ -28,12 +28,14 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
+import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentImportHandler;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummaries;
 import org.hisp.dhis.android.core.imports.EnrollmentImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TEIImportSummary;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +46,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -69,6 +72,9 @@ public class TrackedEntityInstanceImportHandlerShould {
     @Mock
     private EnrollmentImportSummaries importEnrollment;
 
+    @Mock
+    private ObjectStore<TrackerImportConflict> trackerImportConflictStore;
+
     // object to test
     private TrackedEntityInstanceImportHandler trackedEntityInstanceImportHandler;
 
@@ -78,7 +84,8 @@ public class TrackedEntityInstanceImportHandlerShould {
         MockitoAnnotations.initMocks(this);
 
         trackedEntityInstanceImportHandler =
-                new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler);
+                new TrackedEntityInstanceImportHandler(trackedEntityInstanceStore, enrollmentImportHandler,
+                        trackerImportConflictStore);
     }
 
     @Test
@@ -125,6 +132,7 @@ public class TrackedEntityInstanceImportHandlerShould {
         );
 
         verify(trackedEntityInstanceStore, times(1)).setState("test_tei_uid", State.SYNCED);
-        verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(enrollmentSummaries);
+        verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
+                eq(enrollmentSummaries), any(TrackerImportConflict.Builder.class));
     }
 }

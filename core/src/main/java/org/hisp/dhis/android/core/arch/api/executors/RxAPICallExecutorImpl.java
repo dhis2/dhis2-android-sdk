@@ -28,23 +28,32 @@
 
 package org.hisp.dhis.android.core.arch.api.executors;
 
+import org.hisp.dhis.android.core.arch.call.D2Completable;
+import org.hisp.dhis.android.core.arch.call.D2CompletableImpl;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 @Reusable
 final class RxAPICallExecutorImpl implements RxAPICallExecutor {
 
+    private final DatabaseAdapter databaseAdapter;
     private final ObjectStore<D2Error> errorStore;
     private final APIErrorMapper errorMapper;
 
     @Inject
-    RxAPICallExecutorImpl(ObjectStore<D2Error> errorStore,
+    RxAPICallExecutorImpl(DatabaseAdapter databaseAdapter,
+                          ObjectStore<D2Error> errorStore,
                           APIErrorMapper errorMapper) {
+        this.databaseAdapter = databaseAdapter;
         this.errorStore = errorStore;
         this.errorMapper = errorMapper;
     }
@@ -52,6 +61,31 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     @Override
     public <P> Single<P> wrapSingle(Single<P> single) {
         return single.onErrorResumeNext(throwable -> Single.error(mapAndStore(throwable)));
+    }
+
+    @Override
+    public D2Completable wrapCompletable(Completable completable) {
+        return new D2CompletableImpl(
+                completable
+                        .subscribeOn(Schedulers.io())
+                        .onErrorResumeNext(throwable -> Completable.error(mapAndStore(throwable)))
+        );
+    }
+
+    @Override
+    public D2Completable wrapCompletableTransactionally(Completable completable) {
+        Transaction transaction = databaseAdapter.beginNewTransaction();
+        return new D2CompletableImpl(
+                completable
+                        .subscribeOn(Schedulers.io())
+                        .doOnComplete(() -> {
+                            transaction.setSuccessful();
+                            transaction.end();
+                        }).onErrorResumeNext(throwable -> {
+                            transaction.end();
+                            return Completable.error(mapAndStore(throwable));
+                        })
+        );
     }
 
     private D2Error mapAndStore(Throwable throwable) {

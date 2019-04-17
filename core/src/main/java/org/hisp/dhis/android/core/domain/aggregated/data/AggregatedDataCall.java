@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import androidx.annotation.NonNull;
-
+import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
+import org.hisp.dhis.android.core.arch.call.D2Completable;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
@@ -54,8 +54,11 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import io.reactivex.Completable;
+
 @SuppressWarnings("PMD.ExcessiveImports")
-final class AggregatedDataCall implements Callable<Unit> {
+final class AggregatedDataCall {
 
     private final D2CallExecutor d2CallExecutor;
 
@@ -67,6 +70,7 @@ final class AggregatedDataCall implements Callable<Unit> {
     private final PeriodStore periodStore;
     private final UserOrganisationUnitLinkStore organisationUnitStore;
     private final ForeignKeyCleaner foreignKeyCleaner;
+    private final RxAPICallExecutor rxCallExecutor;
 
     @Inject
     AggregatedDataCall(@NonNull D2CallExecutor d2CallExecutor,
@@ -77,7 +81,8 @@ final class AggregatedDataCall implements Callable<Unit> {
                        @NonNull IdentifiableObjectStore<DataSet> dataSetStore,
                        @NonNull PeriodStore periodStore,
                        @NonNull UserOrganisationUnitLinkStore organisationUnitStore,
-                       @NonNull ForeignKeyCleaner foreignKeyCleaner) {
+                       @NonNull ForeignKeyCleaner foreignKeyCleaner,
+                       @NonNull RxAPICallExecutor rxCallExecutor) {
         this.d2CallExecutor = d2CallExecutor;
         this.systemInfoRepository = systemInfoRepository;
         this.dataValueCallFactory = dataValueCallFactory;
@@ -86,36 +91,41 @@ final class AggregatedDataCall implements Callable<Unit> {
         this.periodStore = periodStore;
         this.organisationUnitStore = organisationUnitStore;
         this.foreignKeyCleaner = foreignKeyCleaner;
+        this.rxCallExecutor = rxCallExecutor;
     }
 
-    @Override
-    public Unit call() throws Exception {
-        return d2CallExecutor.executeD2CallTransactionally(() -> {
-            systemInfoRepository.download().blockingAwait();
+    D2Completable asCompletable() {
+        Completable completable = Completable.create(emitter ->
 
-            List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
-            Set<String> periodIds = Collections.unmodifiableSet(
-                    selectPeriodIds(periodStore.selectAll()));
-            List<String> organisationUnitUids = Collections.unmodifiableList(
-                    organisationUnitStore.queryRootCaptureOrganisationUnitUids());
+                d2CallExecutor.executeD2CallTransactionally(() -> {
+                    systemInfoRepository.download().blockingAwait();
 
-            DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
+                    List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
+                    Set<String> periodIds = Collections.unmodifiableSet(
+                            selectPeriodIds(periodStore.selectAll()));
+                    List<String> organisationUnitUids = Collections.unmodifiableList(
+                            organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 
-            dataValueCallFactory.create(dataValueQuery).call();
+                    DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-            DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
-                    DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
+                    dataValueCallFactory.create(dataValueQuery).call();
 
-            Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
-                    dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
+                    DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
+                            DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-            dataSetCompleteRegistrationCall.call();
+                    Callable<List<DataSetCompleteRegistration>> dataSetCompleteRegistrationCall =
+                            dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery);
 
-            foreignKeyCleaner.cleanForeignKeyErrors();
+                    dataSetCompleteRegistrationCall.call();
 
-            return new Unit();
-        });
+                    foreignKeyCleaner.cleanForeignKeyErrors();
 
+                    emitter.onComplete();
+
+                    return new Unit();
+                }));
+
+        return rxCallExecutor.wrapCompletable(completable);
     }
 
     private Set<String> selectPeriodIds(Collection<Period> periods) {

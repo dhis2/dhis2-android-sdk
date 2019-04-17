@@ -27,26 +27,23 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.common.Unit;
-
-import java.util.concurrent.Callable;
+import org.hisp.dhis.android.core.arch.call.D2Completable;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 
 import dagger.Reusable;
 
 @Reusable
 public final class AggregatedDataModule {
 
-    private final Provider<AggregatedDataCall> aggregatedDataCallProvider;
+    private final AggregatedDataCall aggregatedDataCall;
 
     @Inject
-    AggregatedDataModule(Provider<AggregatedDataCall> aggregatedDataCallProvider) {
-        this.aggregatedDataCallProvider = aggregatedDataCallProvider;
+    AggregatedDataModule(AggregatedDataCall aggregatedDataCall) {
+        this.aggregatedDataCall = aggregatedDataCall;
     }
 
-    public Callable<Unit> download() {
-        return aggregatedDataCallProvider.get();
+    public D2Completable download() {
+        return aggregatedDataCall.asCompletable();
     }
 }

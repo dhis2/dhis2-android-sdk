@@ -39,7 +39,8 @@ public class EventConverter extends Converter<EventConverter.EventData> {
     }
 
     @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    private List<DataValue> convertDataValues(String catOptionCombo, List<TrackedEntityDataValue> trackedEntityDataValues) {
+    private List<DataValue> convertDataValues(String catOptionCombo,
+                                              List<TrackedEntityDataValue> trackedEntityDataValues) {
         ArrayList<DataValue> dataValues = new ArrayList<>();
         if (trackedEntityDataValues == null) {
             return dataValues;

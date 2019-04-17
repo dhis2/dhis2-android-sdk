@@ -25,30 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.api.executors.CallableObservableTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import java.util.Map;
+import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.maintenance.D2Error;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Single;
 
 @Reusable
-public final class SystemInfoObjectRepository
-        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
+final class RxAPICallExecutorImpl implements RxAPICallExecutor {
+
+    private final ObjectStore<D2Error> errorStore;
+    private final APIErrorMapper errorMapper;
 
     @Inject
-    SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
-                               Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
-                               RepositoryScope scope,
-                               SystemInfoCall systemInfoCall) {
-        super(store, childrenAppenders, scope, CallableObservableTransformer.toCallable(systemInfoCall.asObservable()),
-                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, systemInfoCall));
+    RxAPICallExecutorImpl(ObjectStore<D2Error> errorStore, APIErrorMapper errorMapper) {
+        this.errorStore = errorStore;
+        this.errorMapper = errorMapper;
+    }
+
+    @Override
+    public <P> Single<P> executeObjectCall(Single<P> single) {
+        return single
+                .onErrorResumeNext(throwable -> {
+            D2Error d2Error = errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
+            errorStore.insert(d2Error);
+            return Single.error(d2Error);
+        });
     }
 }

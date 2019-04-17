@@ -25,30 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.api.executors.CallableObservableTransformer;
-import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
-import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.common.ObjectWithoutUidStore;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import java.util.Map;
-
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-public final class SystemInfoObjectRepository
-        extends ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository> {
+@Module
+public class APIExecutorsDIModule {
 
-    @Inject
-    SystemInfoObjectRepository(ObjectWithoutUidStore<SystemInfo> store,
-                               Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
-                               RepositoryScope scope,
-                               SystemInfoCall systemInfoCall) {
-        super(store, childrenAppenders, scope, CallableObservableTransformer.toCallable(systemInfoCall.asObservable()),
-                cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, systemInfoCall));
+    @Provides
+    @Reusable
+    APICallExecutor apiCallExecutor(APICallExecutorImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
+        return impl;
     }
 }

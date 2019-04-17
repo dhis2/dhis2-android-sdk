@@ -25,55 +25,33 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports;
 
-package org.hisp.dhis.android.core.data.database;
+import org.hisp.dhis.android.core.wipe.ModuleWiper;
+import org.hisp.dhis.android.core.wipe.TableWiper;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import javax.inject.Inject;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+import dagger.Reusable;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+@Reusable
+public final class ImportModuleWiper implements ModuleWiper {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    private final TableWiper tableWiper;
 
-public class DbOpenHelper extends SQLBriteOpenHelper {
-
-    public static final int VERSION = 49;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    @Inject
+    ImportModuleWiper(TableWiper tableWiper) {
+        this.tableWiper = tableWiper;
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        db.enableWriteAheadLogging();
+    public void wipeMetadata() {
+        // No metadata to wipe
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
     @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<>());
-        }
-        return versionMigrations;
+    public void wipeData() {
+        tableWiper.wipeTables(
+                TrackerImportConflictTableInfo.TABLE_INFO);
     }
 }

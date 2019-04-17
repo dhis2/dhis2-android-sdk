@@ -26,54 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.testapp.imports;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.testapp.arch.BasePublicAccessShould;
+import org.mockito.Mock;
 
-import com.github.lykmapipo.sqlbrite.migrations.SQLBriteOpenHelper;
+public class TrackerImportConflictPublicAccessShould extends BasePublicAccessShould<TrackerImportConflict> {
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+    @Mock
+    private TrackerImportConflict object;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-public class DbOpenHelper extends SQLBriteOpenHelper {
-
-    public static final int VERSION = 49;
-
-    public DbOpenHelper(@NonNull Context context, @Nullable String databaseName) {
-        super(context, databaseName, null, VERSION);
-    }
-
-    public DbOpenHelper(Context context, String databaseName, int testVersion) {
-        super(context, databaseName, null, testVersion);
+    @Override
+    public TrackerImportConflict object() {
+        return object;
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // enable foreign key support in database only for lollipop and newer versions
-            db.setForeignKeyConstraintsEnabled(true);
-        }
-
-        db.enableWriteAheadLogging();
+    public void has_public_create_method() {
+        TrackerImportConflict.create(null);
     }
 
-    // This fixes the bug in SQLBriteOpenHelper, which doesn't let seeds to be optional
     @Override
-    public Map<String, List<String>> parse(int newVersion) throws IOException {
-        Map<String, List<String>> versionMigrations = super.parse(newVersion);
-        List<String> seeds = versionMigrations.get("seeds");
-        if (seeds == null || seeds.size() == 1 && seeds.get(0) == null) {
-            versionMigrations.put("seeds", new ArrayList<>());
-        }
-        return versionMigrations;
+    public void has_public_builder_method() {
+        TrackerImportConflict.builder();
+    }
+
+    @Override
+    public void has_public_to_builder_method() {
+        object().toBuilder();
     }
 }

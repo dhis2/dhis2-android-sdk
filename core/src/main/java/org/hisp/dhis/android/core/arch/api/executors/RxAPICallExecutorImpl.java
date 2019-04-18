@@ -40,7 +40,6 @@ import javax.inject.Inject;
 import dagger.Reusable;
 import io.reactivex.Completable;
 import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 
 @Reusable
 final class RxAPICallExecutorImpl implements RxAPICallExecutor {
@@ -67,7 +66,6 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     public D2Completable wrapCompletable(Completable completable) {
         return new D2CompletableImpl(
                 completable
-                        .subscribeOn(Schedulers.io())
                         .onErrorResumeNext(throwable -> Completable.error(mapAndStore(throwable)))
         );
     }
@@ -77,7 +75,6 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         return new D2CompletableImpl(
                 completable
-                        .subscribeOn(Schedulers.io())
                         .doOnComplete(() -> {
                             transaction.setSuccessful();
                             transaction.end();

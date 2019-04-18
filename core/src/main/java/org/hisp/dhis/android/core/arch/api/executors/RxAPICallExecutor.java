@@ -38,5 +38,5 @@ public interface RxAPICallExecutor {
 
     D2Completable wrapCompletable(Completable completable);
 
-    D2Completable wrapCompletableTransactionally(Completable completable);
+    D2Completable wrapCompletableTransactionally(Completable completable, boolean cleanForeignKeys);
 }

@@ -47,6 +47,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
@@ -95,6 +96,9 @@ public class EnrollmentHandlerShould {
         when(enrollment.events()).thenReturn(Collections.singletonList(event));
         when(enrollment.notes()).thenReturn(Collections.singletonList(note));
         when(note.storedDate()).thenReturn(FillPropertiesTestUtils.LAST_UPDATED_STR);
+
+        List<String> emptyList = Collections.emptyList();
+        when(enrollmentStore.selectUidsWhere(anyString())).thenReturn(emptyList);
 
         enrollmentHandler = new EnrollmentHandler(noteVersionManager, enrollmentStore, eventHandler,
                 eventCleaner, noteHandler, noteUniquenessManager);

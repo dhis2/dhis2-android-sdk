@@ -48,7 +48,6 @@ import static okhttp3.internal.Util.UTC;
 public class Dhis2MockServer {
     private static final int OK_CODE = 200;
 
-    private static final String LOGIN_JSON = "user/login.json";
     private static final String AUTHORITIES_JSON = "user/authorities.json";
     private static final String SYSTEM_INFO_JSON = "systeminfo/system_info.json";
     private static final String SYSTEM_SETTINGS_JSON = "settings/system_settings.json";
@@ -107,11 +106,6 @@ public class Dhis2MockServer {
         server.enqueue(response);
     }
 
-    public void enqueueLoginResponses() {
-        enqueueMockResponse(LOGIN_JSON);
-        enqueueMockResponse(SYSTEM_INFO_JSON);
-    }
-
     public void setRequestDispatcher() {
         final Dispatcher dispatcher = new Dispatcher() {
 
@@ -120,7 +114,7 @@ public class Dhis2MockServer {
 
                 String path = request.getPath();
                 if (path.startsWith("/me?")) {
-                    return createMockResponse(LOGIN_JSON); // TODO how to switch form login to userCall, if required
+                    return createMockResponse(USER_JSON);
                 } else if (path.equals("/me/authorization")) {
                     return createMockResponse(AUTHORITIES_JSON);
                 } else if (path.startsWith("/system/info?")) {

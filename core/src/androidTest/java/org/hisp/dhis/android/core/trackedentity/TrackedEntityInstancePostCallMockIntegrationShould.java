@@ -163,7 +163,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
+        dhis2MockServer.setRequestDispatcher();
         d2.syncMetaData().call();
     }
 }

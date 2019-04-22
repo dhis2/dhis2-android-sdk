@@ -158,7 +158,7 @@ public class ExpressionFunctions {
 
     public static Integer yearsBetween(String start, String end) {
         if(isEmpty(start) || isEmpty(end)) {
-            return 0;
+            return null;
         }
         DateTime startDate = new DateTime(start);
         DateTime endDate = new DateTime(end);

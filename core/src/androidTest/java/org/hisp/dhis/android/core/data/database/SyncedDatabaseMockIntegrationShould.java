@@ -81,6 +81,8 @@ public abstract class SyncedDatabaseMockIntegrationShould {
 
             d2.wipeModule().wipeEverything();
 
+            dhis2MockServer.setRequestDispatcher();
+
             login();
             downloadMetadata();
             downloadTrackedEntityInstances();
@@ -98,27 +100,22 @@ public abstract class SyncedDatabaseMockIntegrationShould {
     }
 
     private static void login() throws Exception {
-        dhis2MockServer.enqueueLoginResponses();
         d2.userModule().logIn("android", "Android123").call();
     }
 
     private static void downloadMetadata() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
     }
 
     private static void downloadTrackedEntityInstances() throws Exception {
-        dhis2MockServer.enqueueTrackedEntityInstanceResponses();
         d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).call();
     }
 
     private static void downloadEvents() throws Exception {
-        dhis2MockServer.enqueueEventResponses();
         d2.eventModule().downloadSingleEvents(2, false).call();
     }
 
     private static void downloadAggregatedData() throws Exception {
-        dhis2MockServer.enqueueAggregatedDataResponses();
         d2.aggregatedModule().data().download().call();
     }
 

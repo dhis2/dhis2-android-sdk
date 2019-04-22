@@ -36,10 +36,11 @@ import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.enrollment.note.NoteChildrenAppender;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventChildrenAppender;
 import org.hisp.dhis.android.core.event.EventFields;
 import org.hisp.dhis.android.core.event.EventTableInfo;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import dagger.Module;
@@ -63,8 +64,12 @@ public final class EnrollmentEntityDIModule {
 
     @Provides
     @Reusable
+    @SuppressWarnings("PMD.NonStaticInitializer")
     Map<String, ChildrenAppender<Enrollment>> childrenAppenders(DatabaseAdapter databaseAdapter) {
-        return Collections.singletonMap(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));
+        return new HashMap<String, ChildrenAppender<Enrollment>>() {{
+            put(EnrollmentFields.NOTES, NoteChildrenAppender.create(databaseAdapter));
+            put(EnrollmentFields.EVENTS, EventChildrenAppender.create(databaseAdapter));
+        }};
     }
 
     @Provides

@@ -51,6 +51,7 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
         super.setUp();
 
         dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer.setRequestDispatcher();
 
         d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
     }
@@ -92,17 +93,14 @@ public class WipeDBCallMockIntegrationShould extends AbsStoreTestCase {
     }
 
     private void givenALoginInDatabase() throws Exception {
-        dhis2MockServer.enqueueLoginResponses();
         d2.userModule().logIn("user", "password").call();
     }
 
     private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
     }
 
-    private void givenAEventInDatabase() throws Exception {
-        dhis2MockServer.enqueueMockResponse("event/events.json");
+    private void givenAEventInDatabase() {
         d2.eventModule().downloadSingleEvents(1, false);
     }
 }

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataapproval;
 
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 
 import java.util.List;
@@ -43,10 +42,10 @@ interface DataApprovalService {
     @GET("dataApprovals/multiple")
     Call<List<DataApproval>> getDataApprovals(
             @Query("fields") @Which Fields<DataApproval> fields,
-            @Query("wf") @Where String workflow,
-            @Query("startDate") @Where String startDate,
-            @Query("endDate") @Where String endDate,
-            @Query("ou") @Where String organisationUnit,
-            @Query("aoc") @Where String attributeOptionCombo
+            @Query("wf") String workflow,
+            @Query("startDate") String startDate,
+            @Query("endDate") String endDate,
+            @Query("ou") String organisationUnit,
+            @Query("aoc") String attributeOptionCombo
     );
 }

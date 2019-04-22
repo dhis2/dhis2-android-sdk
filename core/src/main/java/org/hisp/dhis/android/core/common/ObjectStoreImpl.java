@@ -206,6 +206,17 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
+    public void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException {
+        try {
+            deleteWhere(whereClause);
+        } catch(RuntimeException e) {
+            if (!e.getMessage().equals("No rows affected")) {
+                throw e;
+            }
+        }
+    }
+
+    @Override
     public List<String> selectStringColumnsWhereClause(String column, String clause) {
         Cursor cursor = databaseAdapter.query(builder.selectColumnWhere(column, clause));
         return mapStringColumnSetFromCursor(cursor);

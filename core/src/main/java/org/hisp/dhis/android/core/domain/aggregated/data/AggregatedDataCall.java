@@ -84,14 +84,13 @@ final class AggregatedDataCall {
     }
 
     D2Completable asCompletable() {
-        Completable completable = systemInfoRepository.download().andThen(downloadInternal());
-        return rxCallExecutor.wrapCompletableTransactionally(completable, true);
+        return rxCallExecutor.wrapCompletableTransactionally(
+                systemInfoRepository.download().andThen(downloadInternal()), true);
     }
 
     private Completable downloadInternal() {
         List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
-        Set<String> periodIds = Collections.unmodifiableSet(
-                selectPeriodIds(periodStore.selectAll()));
+        Set<String> periodIds = Collections.unmodifiableSet(selectPeriodIds(periodStore.selectAll()));
         List<String> organisationUnitUids = Collections.unmodifiableList(
                 organisationUnitStore.queryRootCaptureOrganisationUnitUids());
 

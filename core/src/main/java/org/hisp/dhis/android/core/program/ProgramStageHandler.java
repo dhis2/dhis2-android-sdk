@@ -33,8 +33,7 @@ import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.period.FeatureType;
@@ -50,7 +49,7 @@ import dagger.Reusable;
 final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage> {
     private final SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler;
     private final SyncHandler<ProgramStageDataElement> programStageDataElementHandler;
-    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final ObjectStyleHandler styleHandler;
     private final OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
     private final OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner;
     private final CollectionCleaner<ProgramStage> collectionCleaner;
@@ -60,7 +59,7 @@ final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage
     ProgramStageHandler(IdentifiableObjectStore<ProgramStage> programStageStore,
                         SyncHandlerWithTransformer<ProgramStageSection> programStageSectionHandler,
                         SyncHandler<ProgramStageDataElement> programStageDataElementHandler,
-                        SyncHandlerWithTransformer<ObjectStyle> styleHandler,
+                        ObjectStyleHandler styleHandler,
                         OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner,
                         OrphanCleaner<ProgramStage, ProgramStageSection> programStageSectionCleaner,
                         CollectionCleaner<ProgramStage> collectionCleaner,
@@ -103,8 +102,7 @@ final class ProgramStageHandler extends IdentifiableSyncHandlerImpl<ProgramStage
                         .programStage(ObjectWithUid.create(programStage.uid()))
                         .build());
 
-        styleHandler.handle(programStage.style(),
-                new ObjectStyleTransformer(programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name()));
+        styleHandler.handle(programStage.style(), programStage.uid(), ProgramStageTableInfo.TABLE_INFO.name());
 
         if (action == HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(programStage, programStage.programStageDataElements());

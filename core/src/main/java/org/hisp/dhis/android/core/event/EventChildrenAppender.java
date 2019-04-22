@@ -25,30 +25,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.event;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+import org.hisp.dhis.android.core.arch.db.stores.SingleParentChildStore;
+import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.enrollment.Enrollment;
 
-import javax.inject.Inject;
+public final class EventChildrenAppender extends ChildrenAppender<Enrollment> {
 
-import dagger.Reusable;
+    private final SingleParentChildStore<Enrollment, Event> childStore;
 
-@Reusable
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
-
-    @Inject
-    OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          ObjectStyleHandler styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
+    private EventChildrenAppender(SingleParentChildStore<Enrollment, Event> childStore) {
+        this.childStore = childStore;
     }
 
     @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
+    protected Enrollment appendChildren(Enrollment tei) {
+        Enrollment.Builder builder = tei.toBuilder();
+        builder.events(childStore.getChildren(tei));
+        return builder.build();
+    }
+
+    public static ChildrenAppender<Enrollment> create(DatabaseAdapter databaseAdapter) {
+        return new EventChildrenAppender(
+                StoreFactory.singleParentChildStore(
+                        databaseAdapter,
+                        EventStoreImpl.CHILD_PROJECTION,
+                        Event::create)
+        );
     }
 }

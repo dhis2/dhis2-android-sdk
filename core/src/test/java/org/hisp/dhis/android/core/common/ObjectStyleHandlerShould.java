@@ -26,12 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,45 +36,51 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JUnit4.class)
-public class DataElementHandlerShould {
+public class ObjectStyleHandlerShould {
+
+    private static final String ELEMENT_UID = "element_uid";
+    private static final String OBJECT_TABLE = "ObjectTable";
 
     @Mock
-    private IdentifiableObjectStore<DataElement> dataElementStore;
+    private ObjectWithoutUidStore<ObjectStyle> store;
 
     @Mock
-    private ObjectStyleHandler styleHandler;
-
-    @Mock
-    private DataElement dataElement;
-
-    @Mock
-    private ObjectWithUid categoryCombo;
+    private ObjectStyle objectStyle;
 
     // object to test
-    private DataElementHandler dataElementHandler;
+    private ObjectStyleHandler objectStyleHandler;
 
     @Before
     public void setUp() throws Exception {
+
         MockitoAnnotations.initMocks(this);
-        dataElementHandler = new DataElementHandler(dataElementStore, styleHandler);
-        when(dataElement.uid()).thenReturn("test_data_element_uid");
-        when(dataElement.categoryCombo()).thenReturn(categoryCombo);
+
+        objectStyleHandler = new ObjectStyleHandlerImpl(store);
+
+        when(objectStyle.color()).thenReturn("#ffffff");
+        when(objectStyle.icon()).thenReturn("icon");
     }
 
     @Test
-    public void call_style_handler() throws Exception {
-        dataElementHandler.handle(dataElement);
-        verify(styleHandler).handle(eq(dataElement.style()), anyString(), anyString());
+    public void try_to_delete_style_passing_null_arguments() {
+        objectStyleHandler.handle(null, ELEMENT_UID, OBJECT_TABLE);
+
+        verify(store, times(1)).deleteWhereIfExists("uid = '" + ELEMENT_UID + "'");
+        verify(store, never()).updateOrInsertWhere(any(ObjectStyle.class));
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableSyncHandlerImpl<DataElement> genericHandler =
-                new DataElementHandler(null, null);
+    public void handle_style() {
+        objectStyleHandler.handle(objectStyle, ELEMENT_UID, OBJECT_TABLE);
+
+        verify(store, never()).deleteWhereIfExists(anyString());
+        verify(store, times(1)).updateOrInsertWhere(any(ObjectStyle.class));
     }
 }

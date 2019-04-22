@@ -180,6 +180,7 @@ dependencies {
     api "com.squareup.okhttp3:okhttp:${libraries.okhttp}"
     api "com.squareup.retrofit2:retrofit:${libraries.retrofit}"
     api "com.squareup.retrofit2:converter-jackson:${libraries.retrofit}"
+    api "com.squareup.retrofit2:adapter-rxjava2:${libraries.retrofit}"
 
     // Apache libraries
     api "org.apache.commons:commons-lang3:3.7"

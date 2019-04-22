@@ -25,30 +25,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import javax.inject.Inject;
-
+import dagger.Module;
+import dagger.Provides;
 import dagger.Reusable;
 
-@Reusable
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
+@Module
+public class APIExecutorsDIModule {
 
-    @Inject
-    OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          ObjectStyleHandler styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
+    @Provides
+    @Reusable
+    APICallExecutor apiCallExecutor(APICallExecutorImpl impl) {
+        return impl;
     }
 
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
+    @Provides
+    @Reusable
+    RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
+        return impl;
     }
 }

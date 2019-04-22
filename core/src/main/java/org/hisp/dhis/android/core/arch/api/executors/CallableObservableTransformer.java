@@ -25,30 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-import javax.inject.Inject;
+import java.util.concurrent.Callable;
 
-import dagger.Reusable;
+import io.reactivex.Single;
 
-@Reusable
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
+public final class CallableObservableTransformer {
 
-    @Inject
-    OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          ObjectStyleHandler styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
+    private CallableObservableTransformer() {
     }
 
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
+    @SuppressWarnings({"PMD.PreserveStackTrace"})
+    public static <O> Callable<O> toCallable(Single<O> single) {
+        return () -> {
+            try {
+                return single.blockingGet();
+            } catch (Exception e) {
+                if (e.getCause() instanceof Exception) {
+                    throw (Exception) e.getCause();
+                } else {
+                    throw new RuntimeException(e.getCause());
+                }
+            }
+        };
     }
 }

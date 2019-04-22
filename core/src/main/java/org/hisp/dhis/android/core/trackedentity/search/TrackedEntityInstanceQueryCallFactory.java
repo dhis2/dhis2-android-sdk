@@ -67,10 +67,10 @@ public class TrackedEntityInstanceQueryCallFactory {
     }
 
     public Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQuery query) {
-        return getCall(TrackedEntityInstanceQueryOnline.create(query));
+        return getCallInternal(TrackedEntityInstanceQueryOnline.create(query));
     }
 
-    Callable<List<TrackedEntityInstance>> getCall(final TrackedEntityInstanceQueryOnline query) {
+    Callable<List<TrackedEntityInstance>> getCallInternal(final TrackedEntityInstanceQueryOnline query) {
         return () -> queryTrackedEntityInstances(query);
     }
 

@@ -25,30 +25,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+package org.hisp.dhis.android.core.common;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
+import org.hisp.dhis.android.core.arch.handlers.ObjectWithoutUidSyncHandlerImpl;
 
-import dagger.Reusable;
+public class ObjectStyleHandlerImpl extends ObjectWithoutUidSyncHandlerImpl<ObjectStyle> implements ObjectStyleHandler {
 
-@Reusable
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
+    private final ObjectWithoutUidStore<ObjectStyle> store;
 
-    @Inject
-    OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          ObjectStyleHandler styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
+    ObjectStyleHandlerImpl(ObjectWithoutUidStore<ObjectStyle> store) {
+        super(store);
+        this.store = store;
     }
 
     @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
+    public void handle(ObjectStyle objectStyle, String uid, String objectTable) {
+        if (objectStyle == null) {
+            String whereClause = new WhereClauseBuilder()
+                    .appendKeyStringValue(ObjectStyleTableInfo.Columns.UID, uid).build();
+            store.deleteWhereIfExists(whereClause);
+        } else {
+            Transformer<ObjectStyle, ObjectStyle> transformer = new ObjectStyleTransformer(uid, objectTable);
+            super.handle(objectStyle, transformer);
+        }
     }
 }

@@ -25,16 +25,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ParentOrphanCleaner;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import org.junit.Before;
@@ -47,6 +46,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
@@ -77,7 +77,7 @@ public class ProgramHandlerShould {
     private SyncHandler<ProgramSection> programSectionHandler;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private ObjectStyleHandler styleHandler;
 
     @Mock
     private ParentOrphanCleaner<Program> orphanCleaner;
@@ -212,7 +212,7 @@ public class ProgramHandlerShould {
     @Test
     public void call_style_handler() {
         programHandler.handle(program);
-        verify(styleHandler).handle(same(program.style()), any(ObjectStyleTransformer.class));
+        verify(styleHandler).handle(same(program.style()), anyString(), anyString());
     }
 
     @Test

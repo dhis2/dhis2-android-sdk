@@ -25,13 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.Transformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +42,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,7 +57,7 @@ public class TrackedEntityAttributeHandlerShould {
     private TrackedEntityAttribute trackedEntityAttribute;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private ObjectStyleHandler styleHandler;
 
     @Mock
     private ObjectStyle objectStyle;
@@ -87,6 +88,6 @@ public class TrackedEntityAttributeHandlerShould {
     @Test
     public void call_object_style_handler() throws Exception {
         trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
-        verify(styleHandler).handle(any(ObjectStyle.class), any(Transformer.class));
+        verify(styleHandler).handle(any(ObjectStyle.class), anyString(), anyString());
     }
 }

@@ -25,30 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.option;
 
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.common.HandleAction;
-import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyleHandler;
+package org.hisp.dhis.android.core.common;
 
-import javax.inject.Inject;
+import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 
-import dagger.Reusable;
+public interface ObjectStyleHandler extends SyncHandlerWithTransformer<ObjectStyle> {
 
-@Reusable
-final class OptionHandler extends IdentifiableSyncHandlerImpl<Option> {
-    private final ObjectStyleHandler styleHandler;
-
-    @Inject
-    OptionHandler(IdentifiableObjectStore<Option> optionStore,
-                          ObjectStyleHandler styleHandler) {
-        super(optionStore);
-        this.styleHandler = styleHandler;
-    }
-
-    @Override
-    protected void afterObjectHandled(Option option, HandleAction action) {
-        styleHandler.handle(option.style(), option.uid(), OptionTableInfo.TABLE_INFO.name());
-    }
+    void handle(ObjectStyle objectStyle, String uid, String objectTable);
 }

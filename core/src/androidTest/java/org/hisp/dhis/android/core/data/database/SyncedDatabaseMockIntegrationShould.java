@@ -116,7 +116,7 @@ public abstract class SyncedDatabaseMockIntegrationShould {
     }
 
     private static void downloadAggregatedData() {
-        d2.aggregatedModule().data().download().asCompletable().subscribe();
+        d2.aggregatedModule().data().download().asObservable().subscribe();
     }
 
     private static void storeSomeD2Errors() {

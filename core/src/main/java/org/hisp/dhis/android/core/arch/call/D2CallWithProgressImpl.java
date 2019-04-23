@@ -28,8 +28,18 @@
 
 package org.hisp.dhis.android.core.arch.call;
 
-import io.reactivex.Completable;
+import io.reactivex.Observable;
 
-public interface D2Completable {
-    Completable asCompletable();
+public class D2CallWithProgressImpl implements D2CallWithProgress {
+
+    private final Observable<D2Progress> observable;
+
+    public D2CallWithProgressImpl(Observable<D2Progress> observable) {
+        this.observable = observable;
+    }
+
+    @Override
+    public Observable<D2Progress> asObservable() {
+        return observable;
+    }
 }

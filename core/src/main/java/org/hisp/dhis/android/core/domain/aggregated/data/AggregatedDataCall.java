@@ -27,8 +27,12 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.call.D2Completable;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -52,6 +56,8 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 final class AggregatedDataCall {
@@ -83,12 +89,17 @@ final class AggregatedDataCall {
         this.rxCallExecutor = rxCallExecutor;
     }
 
-    D2Completable asCompletable() {
-        return rxCallExecutor.wrapCompletableTransactionally(
-                systemInfoRepository.download().andThen(downloadInternal()), true);
+    D2CallWithProgress asCompletable() {
+        D2ProgressManager progressManager = new D2ProgressManager(3);
+        Observable<D2Progress> observable = Observable.create(emitter ->
+                systemInfoRepository.download().subscribe(() -> downloadInternal(progressManager, emitter))
+        );
+        return rxCallExecutor.wrapObservableTransactionally(observable, true);
     }
 
-    private Completable downloadInternal() {
+    private void downloadInternal(D2ProgressManager progressManager, ObservableEmitter<D2Progress> emitter) {
+        emitProgress(emitter, progressManager, SystemInfo.class);
+
         List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
         Set<String> periodIds = Collections.unmodifiableSet(selectPeriodIds(periodStore.selectAll()));
         List<String> organisationUnitUids = Collections.unmodifiableList(
@@ -96,15 +107,26 @@ final class AggregatedDataCall {
 
         DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Completable dataValueCompletable = Completable.fromCallable(dataValueCallFactory.create(dataValueQuery));
+        Completable.fromCallable(dataValueCallFactory.create(dataValueQuery))
+                .doOnComplete(() -> emitProgress(emitter, progressManager, DataValue.class))
+                .subscribe();
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Completable dataSerCompleteRegistrationCompletable = Completable.fromCallable(
-                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery));
+        Completable.fromCallable(
+                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery))
+                .doOnComplete(() -> emitProgress(emitter, progressManager, DataSetCompleteRegistration.class))
+                .subscribe();
+    }
 
-        return dataValueCompletable.mergeWith(dataSerCompleteRegistrationCompletable);
+    private <R> void emitProgress(ObservableEmitter<D2Progress> emitter, D2ProgressManager progressManager, Class<R> resourceClass) {
+        D2Progress progress = progressManager.increaseProgressAndCompleteWithCount(resourceClass);
+        Log.w("PROG", progress.toString());
+        emitter.onNext(progress);
+        if (progress.isComplete()) {
+            emitter.onComplete();
+        }
     }
 
     private Set<String> selectPeriodIds(Collection<Period> periods) {

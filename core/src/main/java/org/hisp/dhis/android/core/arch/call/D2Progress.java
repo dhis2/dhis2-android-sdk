@@ -25,25 +25,63 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+package org.hisp.dhis.android.core.arch.call;
 
-import javax.inject.Inject;
+import com.google.auto.value.AutoValue;
 
-import dagger.Reusable;
+import java.util.Collections;
+import java.util.List;
 
-@Reusable
-public final class AggregatedDataModule {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-    private final AggregatedDataCall aggregatedDataCall;
+@AutoValue
+public abstract class D2Progress {
 
-    @Inject
-    AggregatedDataModule(AggregatedDataCall aggregatedDataCall) {
-        this.aggregatedDataCall = aggregatedDataCall;
+    @NonNull
+    public abstract Boolean isComplete();
+
+    @Nullable
+    public abstract Integer totalCalls();
+
+    @NonNull
+    public abstract List<String> doneCalls();
+
+    @Nullable
+    public String lastCall() {
+        if (this.doneCalls().size() == 0) {
+            return null;
+        } else {
+            return this.doneCalls().get(this.doneCalls().size() - 1);
+        }
     }
 
-    public D2CallWithProgress download() {
-        return aggregatedDataCall.asCompletable();
+    public static Builder builder() {
+        return new AutoValue_D2Progress.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    public static D2Progress empty(int totalCalls) {
+        if (totalCalls < 0) {
+            throw new IllegalArgumentException("Negative total calls");
+        }
+        return D2Progress.builder()
+            .isComplete(totalCalls == 0)
+            .totalCalls(totalCalls)
+            .doneCalls(Collections.emptyList())
+            .build();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder isComplete(Boolean isComplete);
+
+        public abstract Builder totalCalls(Integer totalCalls);
+
+        public abstract Builder doneCalls(List<String> doneCalls);
+
+        public abstract D2Progress build();
     }
 }

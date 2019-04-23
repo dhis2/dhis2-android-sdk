@@ -75,7 +75,7 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.userModule().logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asCompletable().subscribe();
+        d2.aggregatedModule().data().download().asObservable().subscribe();
     }
 
     //@Test
@@ -83,9 +83,9 @@ public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
         d2.userModule().logIn("android", "Android123").call();
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asCompletable().subscribe();
+        d2.aggregatedModule().data().download().asObservable().subscribe();
 
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asCompletable().subscribe();
+        d2.aggregatedModule().data().download().asObservable().subscribe();
     }
 }

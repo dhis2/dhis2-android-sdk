@@ -25,25 +25,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+package org.hisp.dhis.android.core.arch.call;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-import dagger.Reusable;
+public class D2ProgressManager {
 
-@Reusable
-public final class AggregatedDataModule {
+    private D2Progress progress;
 
-    private final AggregatedDataCall aggregatedDataCall;
-
-    @Inject
-    AggregatedDataModule(AggregatedDataCall aggregatedDataCall) {
-        this.aggregatedDataCall = aggregatedDataCall;
+    public D2ProgressManager(int totalCalls) {
+        this.progress = D2Progress.empty(totalCalls);
     }
 
-    public D2CallWithProgress download() {
-        return aggregatedDataCall.asCompletable();
+    public D2Progress getProgress() {
+        return progress;
+    }
+
+    public <T> D2Progress increaseProgress(Class<T> resourceClass, boolean isComplete) {
+        List<String> doneCalls = new ArrayList<>(progress.doneCalls());
+        doneCalls.add(resourceClass.getSimpleName());
+        progress = progress.toBuilder()
+                .doneCalls(doneCalls)
+                .isComplete(isComplete)
+                .build();
+        return progress;
+
+    }
+
+    public <T> D2Progress increaseProgressAndCompleteWithCount(Class<T> resourceClass) {
+        Integer totalCalls = progress.totalCalls();
+        if (totalCalls == null) {
+            throw new IllegalStateException("Can't determine progress, total calls is not set");
+        } else {
+            return increaseProgress(resourceClass, progress.doneCalls().size() +  1 == totalCalls);
+        }
     }
 }

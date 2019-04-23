@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
@@ -116,6 +117,59 @@ public class EventEndpointCallMockIntegrationShould extends AbsStoreTestCase {
 
         assertThat(d2.eventModule().events.count(), is(0));
         assertThat(d2.trackedEntityModule().trackedEntityDataValues.count(), is(0));
+    }
+
+    @Test
+    public void not_overwrite_events_marked_as_to_post_to_update_or_error() throws Exception {
+        givenAMetadataInDatabase();
+
+        int pageSize = 1;
+
+        Callable<List<Event>> eventEndpointCall = EventCallFactory.create(d2.retrofit(), d2.databaseAdapter(), "DiszpKrYNg8", pageSize);
+        dhis2MockServer.enqueueMockResponse("event/events_1.json");
+
+        List<Event> events = eventEndpointCall.call();
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
+
+        Event event = events.get(0);
+        assertThat(event.uid(), is("V1CerIi3sdL"));
+        assertThat(d2.eventModule().events.count(), is(pageSize));
+
+        EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
+                .state(State.SYNCED).status(EventStatus.SKIPPED).build());
+
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
+
+        Event event1 = d2.eventModule().events.one().get();
+        assertThat(event1.uid(), is("V1CerIi3sdL"));
+        assertThat(event1.status(), is(EventStatus.COMPLETED)); // Because in Synced state should overwrite.
+
+        EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
+                .state(State.TO_UPDATE).status(EventStatus.SKIPPED).build());
+
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
+
+        Event event2 = d2.eventModule().events.one().get();
+        assertThat(event2.uid(), is("V1CerIi3sdL"));
+        assertThat(event2.status(), is(EventStatus.SKIPPED));
+
+        EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
+                .state(State.ERROR).status(EventStatus.SKIPPED).build());
+
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
+
+        Event event3 = d2.eventModule().events.one().get();
+        assertThat(event3.uid(), is("V1CerIi3sdL"));
+        assertThat(event3.status(), is(EventStatus.SKIPPED));
+
+        EventStoreImpl.create(d2.databaseAdapter()).update(event.toBuilder()
+                .state(State.TO_POST).status(EventStatus.SKIPPED).build());
+
+        d2.eventModule().eventPersistenceCallFactory.getCall(events).call();
+
+        Event event4 = d2.eventModule().events.one().get();
+        assertThat(event4.uid(), is("V1CerIi3sdL"));
+        assertThat(event4.status(), is(EventStatus.SKIPPED));
     }
 
     private void givenAMetadataInDatabase() throws Exception {

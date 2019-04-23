@@ -37,7 +37,7 @@ import static org.hisp.dhis.android.core.utils.Utils.isDeleted;
 public class IdentifiableSyncHandlerImpl<O extends ObjectWithUidInterface & ObjectWithDeleteInterface>
         extends SyncHandlerBaseImpl<O> {
 
-    private final IdentifiableObjectStore<O> store;
+    final IdentifiableObjectStore<O> store;
 
     public IdentifiableSyncHandlerImpl(IdentifiableObjectStore<O> store) {
         this.store = store;

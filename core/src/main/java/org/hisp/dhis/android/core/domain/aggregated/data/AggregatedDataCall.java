@@ -55,9 +55,8 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
+import io.reactivex.Single;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 final class AggregatedDataCall {
@@ -91,15 +90,15 @@ final class AggregatedDataCall {
 
     D2CallWithProgress asCompletable() {
         D2ProgressManager progressManager = new D2ProgressManager(3);
-        Observable<D2Progress> observable = Observable.create(emitter ->
-                systemInfoRepository.download().subscribe(() -> downloadInternal(progressManager, emitter))
-        );
+
+        Observable<D2Progress> observable = systemInfoRepository.download()
+                .toSingle(() -> increaseProgress(progressManager, SystemInfo.class))
+                .toObservable()
+                .flatMap(progress -> downloadInternal(progressManager, systemInfoProgresss));
         return rxCallExecutor.wrapObservableTransactionally(observable, true);
     }
 
-    private void downloadInternal(D2ProgressManager progressManager, ObservableEmitter<D2Progress> emitter) {
-        emitProgress(emitter, progressManager, SystemInfo.class);
-
+    private Observable<D2Progress> downloadInternal(D2ProgressManager progressManager, D2Progress systemInfoProgress) {
         List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
         Set<String> periodIds = Collections.unmodifiableSet(selectPeriodIds(periodStore.selectAll()));
         List<String> organisationUnitUids = Collections.unmodifiableList(
@@ -107,26 +106,23 @@ final class AggregatedDataCall {
 
         DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Completable.fromCallable(dataValueCallFactory.create(dataValueQuery))
-                .doOnComplete(() -> emitProgress(emitter, progressManager, DataValue.class))
-                .subscribe();
+        Single<D2Progress> dataValueObservable = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
+                .map(dataValues -> increaseProgress(progressManager, DataValue.class));
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Completable.fromCallable(
+        Single<D2Progress> dataSetCompleteRegistrationObservable = Single.fromCallable(
                 dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery))
-                .doOnComplete(() -> emitProgress(emitter, progressManager, DataSetCompleteRegistration.class))
-                .subscribe();
+                .map(dataValues -> increaseProgress(progressManager, DataSetCompleteRegistration.class));
+
+        return Single.just(systemInfoProgress).mergeWith(dataValueObservable.mergeWith(dataSetCompleteRegistrationObservable).toObservable());
     }
 
-    private <R> void emitProgress(ObservableEmitter<D2Progress> emitter, D2ProgressManager progressManager, Class<R> resourceClass) {
+    private <R> D2Progress increaseProgress(D2ProgressManager progressManager, Class<R> resourceClass) {
         D2Progress progress = progressManager.increaseProgressAndCompleteWithCount(resourceClass);
         Log.w("PROG", progress.toString());
-        emitter.onNext(progress);
-        if (progress.isComplete()) {
-            emitter.onComplete();
-        }
+        return progress;
     }
 
     private Set<String> selectPeriodIds(Collection<Period> periods) {

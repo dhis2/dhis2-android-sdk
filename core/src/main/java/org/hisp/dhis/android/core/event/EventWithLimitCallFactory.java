@@ -105,7 +105,7 @@ final class EventWithLimitCallFactory {
         String lastUpdatedStartDate = resourceHandler.getLastUpdated(resourceType);
         eventQueryBuilder.lastUpdatedStartDate(lastUpdatedStartDate);
 
-        systemInfoRepository.download().call();
+        systemInfoRepository.download().blockingAwait();
 
         if (limitByOrgUnit) {
             organisationUnitUids = getOrgUnitUids();

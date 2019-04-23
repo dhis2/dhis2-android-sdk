@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.api.executors.CallableObservableTransformer;
 import org.hisp.dhis.android.core.arch.repositories.children.ChildrenAppender;
 import org.hisp.dhis.android.core.arch.repositories.object.ReadOnlyFirstObjectWithDownloadRepositoryImpl;
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -48,7 +47,7 @@ public final class SystemInfoObjectRepository
                                Map<String, ChildrenAppender<SystemInfo>> childrenAppenders,
                                RepositoryScope scope,
                                SystemInfoCall systemInfoCall) {
-        super(store, childrenAppenders, scope, CallableObservableTransformer.toCallable(systemInfoCall.asObservable()),
+        super(store, childrenAppenders, scope, systemInfoCall,
                 cs -> new SystemInfoObjectRepository(store, childrenAppenders, cs, systemInfoCall));
     }
 }

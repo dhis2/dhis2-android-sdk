@@ -25,28 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo;
 
-import org.hisp.dhis.android.core.arch.modules.RxMetadataModuleDownloader;
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
+package org.hisp.dhis.android.core.arch.call;
 
-import javax.inject.Inject;
-
-import dagger.Reusable;
 import io.reactivex.Completable;
 
-@Reusable
-public class SystemInfoModuleDownloader implements RxMetadataModuleDownloader {
-
-    private final ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository;
-
-    @Inject
-    SystemInfoModuleDownloader(ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository) {
-        this.systemInfoRepository = systemInfoRepository;
-    }
-
-    @Override
-    public Completable downloadMetadata() {
-        return systemInfoRepository.download();
-    }
+public interface CompletableProvider {
+    Completable getCompletable();
 }

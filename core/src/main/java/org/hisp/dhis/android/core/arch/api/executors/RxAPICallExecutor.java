@@ -31,5 +31,5 @@ package org.hisp.dhis.android.core.arch.api.executors;
 import io.reactivex.Single;
 
 public interface RxAPICallExecutor {
-    <P> Single<P> executeObjectCall(Single<P> single);
+    <P> Single<P> wrapSingle(Single<P> single);
 }

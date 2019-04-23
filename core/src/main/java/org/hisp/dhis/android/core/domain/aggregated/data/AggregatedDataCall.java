@@ -91,7 +91,7 @@ final class AggregatedDataCall implements Callable<Unit> {
     @Override
     public Unit call() throws Exception {
         return d2CallExecutor.executeD2CallTransactionally(() -> {
-            systemInfoRepository.download().call();
+            systemInfoRepository.download().blockingAwait();
 
             List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
             Set<String> periodIds = Collections.unmodifiableSet(

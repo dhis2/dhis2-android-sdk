@@ -43,18 +43,20 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     private final APIErrorMapper errorMapper;
 
     @Inject
-    RxAPICallExecutorImpl(ObjectStore<D2Error> errorStore, APIErrorMapper errorMapper) {
+    RxAPICallExecutorImpl(ObjectStore<D2Error> errorStore,
+                          APIErrorMapper errorMapper) {
         this.errorStore = errorStore;
         this.errorMapper = errorMapper;
     }
 
     @Override
-    public <P> Single<P> executeObjectCall(Single<P> single) {
-        return single
-                .onErrorResumeNext(throwable -> {
-            D2Error d2Error = errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
-            errorStore.insert(d2Error);
-            return Single.error(d2Error);
-        });
+    public <P> Single<P> wrapSingle(Single<P> single) {
+        return single.onErrorResumeNext(throwable -> Single.error(mapAndStore(throwable)));
+    }
+
+    private D2Error mapAndStore(Throwable throwable) {
+        D2Error d2Error = errorMapper.mapRetrofitException(throwable, errorMapper.getRxObjectErrorBuilder());
+        errorStore.insert(d2Error);
+        return d2Error;
     }
 }

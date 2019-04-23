@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.imports.EventImportSummaries;
 import org.hisp.dhis.android.core.imports.EventImportSummary;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,6 +62,9 @@ public class EnrollmentImportHandlerShould {
 
     @Mock
     private EnrollmentStore enrollmentStore;
+
+    @Mock
+    private TrackedEntityInstanceStore trackedEntityInstanceStore;
 
     @Mock
     private ObjectWithoutUidStore<Note> noteStore;
@@ -87,14 +91,13 @@ public class EnrollmentImportHandlerShould {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-
-        enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, noteStore, eventImportHandler,
-                trackerImportConflictStore);
+        enrollmentImportHandler = new EnrollmentImportHandler(enrollmentStore, trackedEntityInstanceStore, noteStore,
+                eventImportHandler, trackerImportConflictStore);
     }
 
     @Test
     public void do_nothing_when_passing_null_arguments() throws Exception {
-        enrollmentImportHandler.handleEnrollmentImportSummary(null, null);
+        enrollmentImportHandler.handleEnrollmentImportSummary(null, null, null);
 
         verify(enrollmentStore, never()).setState(anyString(), any(State.class));
     }
@@ -105,7 +108,7 @@ public class EnrollmentImportHandlerShould {
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary)
-                , TrackerImportConflict.builder());
+                , TrackerImportConflict.builder(), "test_tei_uid");
 
         verify(enrollmentStore, times(1)).setState("test_enrollment_uid", State.SYNCED);
     }
@@ -116,7 +119,7 @@ public class EnrollmentImportHandlerShould {
         when(importSummary.reference()).thenReturn("test_enrollment_uid");
 
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary)
-                , TrackerImportConflict.builder());
+                , TrackerImportConflict.builder(), "test_tei_uid");
 
         verify(enrollmentStore, times(1)).setState("test_enrollment_uid", State.ERROR);
     }
@@ -132,11 +135,11 @@ public class EnrollmentImportHandlerShould {
 
 
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary)
-                , TrackerImportConflict.builder());
+                , TrackerImportConflict.builder(), "test_tei_uid");
 
         verify(enrollmentStore, times(1)).setState("test_enrollment_uid", State.SYNCED);
         verify(eventImportHandler, times(1)).handleEventImportSummaries(
-                eq(eventSummaries), any(TrackerImportConflict.Builder.class)
+                eq(eventSummaries), any(TrackerImportConflict.Builder.class), anyString(), anyString()
         );
     }
 }

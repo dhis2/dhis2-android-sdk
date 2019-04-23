@@ -239,7 +239,7 @@
     <string name="copied_text">Copied text to clipboard.</string>
     <string name="network_error">Network error</string>
     <string name="error_description">Error description</string>
-
+    <string name="error_sync">There was an error during sync. Checking your internet connection.</string>
     <!--  Error log storage on device -->
     <string name="text_written_to_sd_card">Text written to SD Card</string>
     <string name="sd_card_error_message">Error! Is SD Card inserted?</string>

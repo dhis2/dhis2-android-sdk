@@ -44,6 +44,7 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
+
 /**
  * @author Simen Skogly Russnes on 25.08.15.
  */
@@ -106,13 +107,17 @@ public final class LoadingController {
                 LoadingMessageEvent.EventType.STARTUP);
         if (!MetaDataController.isDataLoaded(context)) {
             Log.d(CLASS_TAG, "loading initial metadata");
-            loadMetaData(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
-            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.INITIAL_SYNCING_END));
-            String message = "";
-            message = context.getString(R.string.finishing_up);
-            UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
-            loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
-            Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.INITIAL_SYNCING_END));
+            if(loadMetaData(context, SyncStrategy.DOWNLOAD_ALL, dhisApi)) {
+                Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.INITIAL_SYNCING_END));
+                String message = "";
+                message = context.getString(R.string.finishing_up);
+                UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
+                loadDataValues(context, SyncStrategy.DOWNLOAD_ALL, dhisApi);
+                Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.INITIAL_SYNCING_END));
+            }else{
+                String message = context.getString(R.string.error_sync);
+                UiUtils.postProgressMessage(message, LoadingMessageEvent.EventType.STARTUP);
+            }
         } else if (!TrackerController.isDataLoaded(context)) {
             Log.d(CLASS_TAG, "loading initial datavalues");
             String message = "";
@@ -128,23 +133,30 @@ public final class LoadingController {
      *
      * @param context
      */
-    static void loadMetaData(Context context, SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
+    static boolean loadMetaData(Context context, SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {
 
         if (context == null) {
             Log.i(CLASS_TAG, "Unable to load metadata. We have no valid context.");
-            return;
+            return false;
         }
 
         Log.d(CLASS_TAG, "loading metadata!");
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            MetaDataController.loadMetaData(context, dhisApi, syncStrategy);
-        } catch (APIException e) {
+            if(!MetaDataController.loadMetaData(context, dhisApi, syncStrategy)){
+                Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+                return false;
+            }
+
+        }
+        catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
             throw e;
         }
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));
+
+        return true;
     }
 
     static void loadDataValues(Context context, SyncStrategy syncStrategy, DhisApi dhisApi) throws APIException {

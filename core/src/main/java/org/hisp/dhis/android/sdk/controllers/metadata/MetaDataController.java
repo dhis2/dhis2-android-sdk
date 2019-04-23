@@ -643,11 +643,11 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads metaData from the server and stores it in local persistence.
      */
-    public static void loadMetaData(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
+    public static boolean loadMetaData(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         Log.d(CLASS_TAG, "loadMetaData");
         UiUtils.postProgressMessage(context.getString(R.string.loading_metadata),
                 LoadingMessageEvent.EventType.METADATA);
-        updateMetaDataItems(context, dhisApi, syncStrategy);
+        return updateMetaDataItems(context, dhisApi, syncStrategy);
     }
 
     private static void updateTrackedDataItems(Context context, DhisApi dhisApi, DateTime serverDateTime) {
@@ -665,85 +665,93 @@ public final class MetaDataController extends ResourceController {
     /**
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
-    private static void updateMetaDataItems(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
+    private static boolean updateMetaDataItems(Context context, DhisApi dhisApi, SyncStrategy syncStrategy) throws APIException {
         if (dhisApi == null) {
             dhisApi = DhisController.getInstance().getDhisApi();
             if (dhisApi == null) {
-                return;
+                return false;
             }
 
         }
         SystemInfo serverSystemInfo = null;
         try {
             serverSystemInfo = dhisApi.getSystemInfo().execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        serverSystemInfo.save();
-        AppPreferencesImpl appPreferences = new AppPreferencesImpl(context);
-        appPreferences.setApiVersion(serverSystemInfo.getVersion());
-        DateTime serverDateTime = serverSystemInfo.getServerDate();
-        //some items depend on each other. Programs depend on AssignedPrograms because we need
-        //the ids of programs to load.
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ASSIGNEDPROGRAMS)) {
-            if (shouldLoad(serverDateTime, ResourceType.ASSIGNEDPROGRAMS)) {
-                getAssignedProgramsDataFromServer(dhisApi, serverDateTime);
+            if(serverSystemInfo == null)
+                return false;
+
+            serverSystemInfo.save();
+
+            AppPreferencesImpl appPreferences = new AppPreferencesImpl(context);
+            appPreferences.setApiVersion(serverSystemInfo.getVersion());
+            DateTime serverDateTime = serverSystemInfo.getServerDate();
+            //some items depend on each other. Programs depend on AssignedPrograms because we need
+            //the ids of programs to load.
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.ASSIGNEDPROGRAMS)) {
+                if (shouldLoad(serverDateTime, ResourceType.ASSIGNEDPROGRAMS)) {
+                    getAssignedProgramsDataFromServer(dhisApi, serverDateTime);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMS)) {
-            List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
-            if (assignedPrograms != null) {
-                for (String program : assignedPrograms) {
-                    if (shouldLoad(serverDateTime, ResourceType.PROGRAMS, program)) {
-                        getProgramDataFromServer(dhisApi, program, serverDateTime, syncStrategy);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMS)) {
+                List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
+                if (assignedPrograms != null) {
+                    for (String program : assignedPrograms) {
+                        if (shouldLoad(serverDateTime, ResourceType.PROGRAMS, program)) {
+                            getProgramDataFromServer(dhisApi, program, serverDateTime, syncStrategy);
+                        }
                     }
                 }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
-            if (shouldLoad(serverDateTime, ResourceType.OPTIONSETS)) {
-                getOptionSetDataFromServer(dhisApi, serverDateTime, syncStrategy);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
+                if (shouldLoad(serverDateTime, ResourceType.OPTIONSETS)) {
+                    getOptionSetDataFromServer(dhisApi, serverDateTime, syncStrategy);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
-            if (shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTES)) {
-                getTrackedEntityAttributeDataFromServer(dhisApi, serverDateTime);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
+                if (shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTES)) {
+                    getTrackedEntityAttributeDataFromServer(dhisApi, serverDateTime);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTEGROUPS)) {
-            if (shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTEGROUPS)) {
-                getTrackedEntityAttributeGroupDataFromServer(dhisApi, serverDateTime);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTEGROUPS)) {
+                if (shouldLoad(serverDateTime, ResourceType.TRACKEDENTITYATTRIBUTEGROUPS)) {
+                    getTrackedEntityAttributeGroupDataFromServer(dhisApi, serverDateTime);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.CONSTANTS)) {
-            if (shouldLoad(serverDateTime, ResourceType.CONSTANTS)) {
-                getConstantsDataFromServer(dhisApi, serverDateTime);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.CONSTANTS)) {
+                if (shouldLoad(serverDateTime, ResourceType.CONSTANTS)) {
+                    getConstantsDataFromServer(dhisApi, serverDateTime);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULES)) {
-            if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULES)) {
-                getProgramRulesDataFromServer(dhisApi, serverDateTime);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULES)) {
+                if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULES)) {
+                    getProgramRulesDataFromServer(dhisApi, serverDateTime);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEVARIABLES)) {
-            if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULEVARIABLES)) {
-                getProgramRuleVariablesDataFromServer(dhisApi, serverDateTime);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEVARIABLES)) {
+                if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULEVARIABLES)) {
+                    getProgramRuleVariablesDataFromServer(dhisApi, serverDateTime);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEACTIONS)) {
-            if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULEACTIONS)) {
-                getProgramRuleActionsDataFromServer(dhisApi, serverDateTime);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEACTIONS)) {
+                if (shouldLoad(serverDateTime, ResourceType.PROGRAMRULEACTIONS)) {
+                    getProgramRuleActionsDataFromServer(dhisApi, serverDateTime);
+                }
             }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
-            if (shouldLoad(serverDateTime, ResourceType.RELATIONSHIPTYPES)) {
-                getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
+            if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
+                if (shouldLoad(serverDateTime, ResourceType.RELATIONSHIPTYPES)) {
+                    getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
+                }
             }
+            List<TrackedEntityAttribute> trackedEntityAttributes = getTrackedEntityAttributes();
+            if (trackedEntityAttributes != null && !trackedEntityAttributes.isEmpty()) {
+                getTrackedEntityAttributeGeneratedValuesFromServer(dhisApi, getTrackedEntityAttributes(), serverDateTime);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        List<TrackedEntityAttribute> trackedEntityAttributes = getTrackedEntityAttributes();
-        if (trackedEntityAttributes != null && !trackedEntityAttributes.isEmpty()) {
-            getTrackedEntityAttributeGeneratedValuesFromServer(dhisApi, getTrackedEntityAttributes(), serverDateTime);
-        }
+
+        return true;
     }
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {

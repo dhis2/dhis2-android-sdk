@@ -118,7 +118,9 @@ public final class EventPostCall implements Callable<WebResponse> {
         }
         eventImportHandler.handleEventImportSummaries(
                 webResponse.response().importSummaries(),
-                TrackerImportConflict.builder()
+                TrackerImportConflict.builder(),
+                null,
+                null
         );
     }
 }

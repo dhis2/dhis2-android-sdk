@@ -57,6 +57,16 @@ public abstract class D2Progress {
         }
     }
 
+    @Nullable
+    public Double progressPercentage() {
+        Integer totalCalls = this.totalCalls();
+        if (totalCalls == null) {
+            return null;
+        } else {
+            return 100.0 * this.doneCalls().size() / totalCalls;
+        }
+    }
+
     public static Builder builder() {
         return new AutoValue_D2Progress.Builder();
     }

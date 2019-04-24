@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
 import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
@@ -46,6 +44,7 @@ import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -92,9 +91,8 @@ final class AggregatedDataCall {
         D2ProgressManager progressManager = new D2ProgressManager(3);
 
         Observable<D2Progress> observable = systemInfoRepository.download()
-                .toSingle(() -> increaseProgress(progressManager, SystemInfo.class))
-                .toObservable()
-                .flatMap(progress -> downloadInternal(progressManager, systemInfoProgresss));
+                .toSingle(() -> progressManager.increaseProgressAndCompleteWithCount(SystemInfo.class))
+                .flatMapObservable(progress -> downloadInternal(progressManager, progress));
         return rxCallExecutor.wrapObservableTransactionally(observable, true);
     }
 
@@ -106,23 +104,23 @@ final class AggregatedDataCall {
 
         DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Single<D2Progress> dataValueObservable = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
-                .map(dataValues -> increaseProgress(progressManager, DataValue.class));
+        Single<D2Progress> dataValueSingle = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
+                .map(dataValues -> progressManager.increaseProgressAndCompleteWithCount(DataValue.class));
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Single<D2Progress> dataSetCompleteRegistrationObservable = Single.fromCallable(
-                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery))
-                .map(dataValues -> increaseProgress(progressManager, DataSetCompleteRegistration.class));
+        Single<D2Progress> dataSetCompleteRegistrationSingle = Single.fromCallable(
+                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dataValues ->
+                        progressManager.increaseProgressAndCompleteWithCount(DataSetCompleteRegistration.class));
 
-        return Single.just(systemInfoProgress).mergeWith(dataValueObservable.mergeWith(dataSetCompleteRegistrationObservable).toObservable());
-    }
+        ArrayList<Single<D2Progress>> list = new ArrayList<Single<D2Progress>>() {{
+            add(Single.just(systemInfoProgress));
+            add(dataValueSingle);
+            add(dataSetCompleteRegistrationSingle);
+        }};
 
-    private <R> D2Progress increaseProgress(D2ProgressManager progressManager, Class<R> resourceClass) {
-        D2Progress progress = progressManager.increaseProgressAndCompleteWithCount(resourceClass);
-        Log.w("PROG", progress.toString());
-        return progress;
+        return Single.merge(list).toObservable();
     }
 
     private Set<String> selectPeriodIds(Collection<Period> periods) {

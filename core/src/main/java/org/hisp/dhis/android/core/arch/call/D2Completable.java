@@ -25,25 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.domain.aggregated.data;
 
-import org.hisp.dhis.android.core.arch.call.D2Completable;
+package org.hisp.dhis.android.core.arch.call;
 
-import javax.inject.Inject;
+import io.reactivex.Completable;
 
-import dagger.Reusable;
-
-@Reusable
-public final class AggregatedDataModule {
-
-    private final AggregatedDataCall aggregatedDataCall;
-
-    @Inject
-    AggregatedDataModule(AggregatedDataCall aggregatedDataCall) {
-        this.aggregatedDataCall = aggregatedDataCall;
-    }
-
-    public D2Completable download() {
-        return aggregatedDataCall.asCompletable();
-    }
+public interface D2Completable {
+    Completable asCompletable();
 }

@@ -26,29 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors;
+package org.hisp.dhis.android.core.arch.call;
 
-import java.util.concurrent.Callable;
+import io.reactivex.Completable;
 
-import io.reactivex.Single;
+public class D2CompletableImpl implements D2Completable {
 
-public final class CallableObservableTransformer {
+    private final Completable rawCompletable;
 
-    private CallableObservableTransformer() {
+    public D2CompletableImpl(Completable rawCompletable) {
+        this.rawCompletable = rawCompletable;
     }
 
-    @SuppressWarnings({"PMD.PreserveStackTrace"})
-    public static <O> Callable<O> toCallable(Single<O> single) {
-        return () -> {
-            try {
-                return single.blockingGet();
-            } catch (Exception e) {
-                if (e.getCause() instanceof Exception) {
-                    throw (Exception) e.getCause();
-                } else {
-                    throw new RuntimeException(e.getCause());
-                }
-            }
-        };
+    @Override
+    public Completable asCompletable() {
+        return rawCompletable;
     }
 }

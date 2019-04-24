@@ -28,8 +28,15 @@
 
 package org.hisp.dhis.android.core.arch.api.executors;
 
+import org.hisp.dhis.android.core.arch.call.D2Completable;
+
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public interface RxAPICallExecutor {
     <P> Single<P> wrapSingle(Single<P> single);
+
+    D2Completable wrapCompletable(Completable completable);
+
+    D2Completable wrapCompletableTransactionally(Completable completable, boolean cleanForeignKeys);
 }

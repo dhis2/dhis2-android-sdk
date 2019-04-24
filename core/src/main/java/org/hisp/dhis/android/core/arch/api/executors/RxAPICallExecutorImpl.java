@@ -28,30 +28,68 @@
 
 package org.hisp.dhis.android.core.arch.api.executors;
 
+import org.hisp.dhis.android.core.arch.call.D2Completable;
+import org.hisp.dhis.android.core.arch.call.D2CompletableImpl;
 import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
+import org.hisp.dhis.android.core.data.database.Transaction;
 import org.hisp.dhis.android.core.maintenance.D2Error;
+import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 
 import javax.inject.Inject;
 
 import dagger.Reusable;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 @Reusable
 final class RxAPICallExecutorImpl implements RxAPICallExecutor {
 
+    private final DatabaseAdapter databaseAdapter;
     private final ObjectStore<D2Error> errorStore;
     private final APIErrorMapper errorMapper;
+    private final ForeignKeyCleaner foreignKeyCleaner;
 
     @Inject
-    RxAPICallExecutorImpl(ObjectStore<D2Error> errorStore,
-                          APIErrorMapper errorMapper) {
+    RxAPICallExecutorImpl(DatabaseAdapter databaseAdapter,
+                          ObjectStore<D2Error> errorStore,
+                          APIErrorMapper errorMapper,
+                          ForeignKeyCleaner foreignKeyCleaner) {
+        this.databaseAdapter = databaseAdapter;
         this.errorStore = errorStore;
         this.errorMapper = errorMapper;
+        this.foreignKeyCleaner = foreignKeyCleaner;
     }
 
     @Override
     public <P> Single<P> wrapSingle(Single<P> single) {
         return single.onErrorResumeNext(throwable -> Single.error(mapAndStore(throwable)));
+    }
+
+    @Override
+    public D2Completable wrapCompletable(Completable completable) {
+        return new D2CompletableImpl(
+                completable
+                        .onErrorResumeNext(throwable -> Completable.error(mapAndStore(throwable)))
+        );
+    }
+
+    @Override
+    public D2Completable wrapCompletableTransactionally(Completable completable, boolean cleanForeignKeys) {
+        Transaction transaction = databaseAdapter.beginNewTransaction();
+        return new D2CompletableImpl(
+                completable
+                        .doOnComplete(() -> {
+                            if (cleanForeignKeys) {
+                                foreignKeyCleaner.cleanForeignKeyErrors();
+                            }
+                            transaction.setSuccessful();
+                            transaction.end();
+                        }).onErrorResumeNext(throwable -> {
+                            transaction.end();
+                            return Completable.error(mapAndStore(throwable));
+                        })
+        );
     }
 
     private D2Error mapAndStore(Throwable throwable) {

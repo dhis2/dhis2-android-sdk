@@ -65,7 +65,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
         d2.userModule().logIn("android", "Android123").call();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().call();
+        d2.aggregatedModule().data().download().asCompletable().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_POST, "2018");
@@ -88,7 +88,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
         d2.userModule().logIn("android", "Android123").call();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().call();
+        d2.aggregatedModule().data().download().asCompletable().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
@@ -108,7 +108,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     public void update_and_delete_different_data_set_complete_registrations() throws Exception {
         d2.userModule().logIn("android", "Android123").call();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().call();
+        d2.aggregatedModule().data().download().asCompletable().subscribe();
 
         DataSetCompleteRegistration toDeleteDataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2019");
@@ -135,7 +135,7 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ab
     public void delete_data_set_complete_registrations_with_to_delete_state() throws Exception {
         d2.userModule().logIn("android", "Android123").call();
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().call();
+        d2.aggregatedModule().data().download().asCompletable().subscribe();
 
         DataSetCompleteRegistration dataSetCompleteRegistration
                 = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");

@@ -100,21 +100,28 @@ public class EnrollmentImportHandler {
 
             storeEnrollmentImportConflicts(enrollmentImportSummary, trackerImportConflictBuilder);
 
-            if (enrollmentImportSummary.events() != null) {
-                EventImportSummaries eventImportSummaries = enrollmentImportSummary.events();
-
-                if (eventImportSummaries.importSummaries() != null) {
-                    eventImportHandler.handleEventImportSummaries(
-                            eventImportSummaries.importSummaries(),
-                            trackerImportConflictBuilder.enrollment(enrollmentImportSummary.reference()),
-                            enrollmentImportSummary.reference(),
-                            teiUid);
-
-                }
-            }
+            handleEventImportSummaries(enrollmentImportSummary, trackerImportConflictBuilder, teiUid);
         }
 
         updateParentState(parentState, teiUid);
+    }
+
+    private void handleEventImportSummaries(EnrollmentImportSummary enrollmentImportSummary,
+                                            TrackerImportConflict.Builder trackerImportConflictBuilder,
+                                            String teiUid) {
+
+        if (enrollmentImportSummary.events() != null) {
+            EventImportSummaries eventImportSummaries = enrollmentImportSummary.events();
+
+            if (eventImportSummaries.importSummaries() != null) {
+                eventImportHandler.handleEventImportSummaries(
+                        eventImportSummaries.importSummaries(),
+                        trackerImportConflictBuilder.enrollment(enrollmentImportSummary.reference()),
+                        enrollmentImportSummary.reference(),
+                        teiUid);
+
+            }
+        }
     }
 
     private void handleNoteImportSummary(String enrollmentUid, State state) {

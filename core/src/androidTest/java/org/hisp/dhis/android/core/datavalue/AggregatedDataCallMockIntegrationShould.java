@@ -68,9 +68,9 @@ public class AggregatedDataCallMockIntegrationShould extends AbsStoreTestCase {
         TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().asObservable().test();
         testObserver.assertValueCount(3);
 
-        testObserver.assertValueAt(0, v -> assertDouble(v.progressPercentage(), 33.33) && v.lastCall().equals("SystemInfo"));
-        testObserver.assertValueAt(1, v -> assertDouble(v.progressPercentage(), 66.66));
-        testObserver.assertValueAt(2, v -> assertDouble(v.progressPercentage(), 100));
+        testObserver.assertValueAt(0, v -> assertDouble(v.percentage(), 33.33) && v.lastCall().equals("SystemInfo"));
+        testObserver.assertValueAt(1, v -> assertDouble(v.percentage(), 66.66));
+        testObserver.assertValueAt(2, v -> assertDouble(v.percentage(), 100));
         testObserver.dispose();
     }
 

@@ -114,6 +114,7 @@ final class AggregatedDataCall {
                 dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dataValues ->
                         progressManager.increaseProgressAndCompleteWithCount(DataSetCompleteRegistration.class));
 
+        @SuppressWarnings("PMD.NonStaticInitializer")
         ArrayList<Single<D2Progress>> list = new ArrayList<Single<D2Progress>>() {{
             add(Single.just(systemInfoProgress));
             add(dataValueSingle);

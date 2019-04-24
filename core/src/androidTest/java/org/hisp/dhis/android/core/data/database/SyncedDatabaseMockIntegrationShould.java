@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.facebook.stetho.Stetho;
 
@@ -117,9 +116,7 @@ public abstract class SyncedDatabaseMockIntegrationShould {
     }
 
     private static void downloadAggregatedData() {
-        d2.aggregatedModule().data().download().asObservable().doOnNext(d2Progress -> {
-            Log.e("PRO", d2Progress.toString());
-        }).subscribe();
+        d2.aggregatedModule().data().download().asObservable().subscribe();
     }
 
     private static void storeSomeD2Errors() {

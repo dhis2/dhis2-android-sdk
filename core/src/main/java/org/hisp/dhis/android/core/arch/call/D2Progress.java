@@ -58,7 +58,7 @@ public abstract class D2Progress {
     }
 
     @Nullable
-    public Double progressPercentage() {
+    public Double percentage() {
         Integer totalCalls = this.totalCalls();
         if (totalCalls == null) {
             return null;

@@ -68,7 +68,8 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     }
 
     @Override
-    public D2CallWithProgress wrapObservableTransactionally(Observable<D2Progress> observable, boolean cleanForeignKeys) {
+    public D2CallWithProgress wrapObservableTransactionally(Observable<D2Progress> observable,
+                                                            boolean cleanForeignKeys) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
         return new D2CallWithProgressImpl(
                 observable

@@ -43,6 +43,45 @@ PROTECTED programs:
 
 ### Upload
 
+The sdk can be used to upload data to the server.
+
+#### Strategies
+
+- **Tracked entity instances**. The SDK uses `CREATE_AND_UPDATE` for 2.29 and `SYNC` for later versions.
+
+- **Single events**. The `CREATE_AND_UPDATE` strategy is used to synchronize single events.
+
+
+For data upload, the SDK collects the stored data which is set to be uploaded and creates a payload which will be sent to the server. The **state** property of each element is used to store the synchronization status of each instance.
+
+#### States
+
+###### TO_POST
+
+This state is set each time an element is created. When the upload method is executed all the data set to `TO_POST` is collected and added to the payload for the upload.
+
+###### TO_UPDATE
+
+The `TO_UPDATE` state is set when an existing element is retrofitted. All the elements with this state will be collected to generate the payload for the upload.
+
+###### TO_DELETE
+
+`TO_DELETE` state is set for delete an element from the server. The different instances set with the *to delete* state will be deleted from the server when the upload method is executed.
+
+###### SYNCED
+
+After the upload all the elements correctly uploaded will be set as `SYNCED`. The elements *synced* won't be collected to form the payload for uploads.
+
+###### ERROR
+
+If one element had an error syncing it will be set as `ERROR` after the upload.
+
+The SDK reads the import summary of each upload call and check if there are elements with errors. If a *tracker event* had an error, the `ERROR` state will be propagated to the enrollment and the tracked entity instance associated.
+
+###### WARNING
+
+As with the state `ERROR`, if one element 
+
 ## Reserved values
 
 Reserved values for TrackedEntityAttribute are downloaded in advance so they are available when the application operates offline.

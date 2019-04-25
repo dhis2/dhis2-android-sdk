@@ -41,9 +41,18 @@ PROTECTED programs:
 
 - 
 
+#### Elements handling
+
+For tracked entity instances, enrollments and events the SDK will check that the property **state** of each element is set to `SYNCED` after overwriting the element with the downloaded data.
+This step ensures that no updated data or data with errors or warnings is lost in the download process.
+
 ### Upload
 
-The sdk can be used to upload data to the server.
+The SDK can be used to upload data to the server.
+
+For data upload, the SDK collects the elements which are set to be uploaded and creates a payload which will be sent to the server.
+The **state** property of each element is used to store the synchronization status of each instance.
+After an upload, the SDK will analyze the import summaries and update the **state** property of each element synced.
 
 #### Strategies
 
@@ -52,35 +61,46 @@ The sdk can be used to upload data to the server.
 - **Single events**. The `CREATE_AND_UPDATE` strategy is used to synchronize single events.
 
 
-For data upload, the SDK collects the stored data which is set to be uploaded and creates a payload which will be sent to the server. The **state** property of each element is used to store the synchronization status of each instance.
-
 #### States
 
 ###### TO_POST
 
-This state is set each time an element is created. When the upload method is executed all the data set to `TO_POST` is collected and added to the payload for the upload.
+This state is set each time an element is created.
+When the upload method is executed all the data set to `TO_POST` is collected and added to the payload for the upload.
 
 ###### TO_UPDATE
 
-The `TO_UPDATE` state is set when an existing element is retrofitted. All the elements with this state will be collected to generate the payload for the upload.
+The `TO_UPDATE` state is set when an existing element is retrofitted.
+All the elements with this state will be collected to generate the payload for the upload.
 
 ###### TO_DELETE
 
-`TO_DELETE` state is set for delete an element from the server. The different instances set with the *to delete* state will be deleted from the server when the upload method is executed.
+`TO_DELETE` state is set to delete an element from the server.
+The different instances set with the *to delete* state will be deleted from the server when the upload method is executed.
 
 ###### SYNCED
 
-After the upload all the elements correctly uploaded will be set as `SYNCED`. The elements *synced* won't be collected to form the payload for uploads.
+After the upload all the elements correctly uploaded will be set automatically as `SYNCED`.
+The elements *synced* won't be collected to form the payload for uploads.
 
 ###### ERROR
 
-If one element had an error syncing it will be set as `ERROR` after the upload.
+If one element displays an error while syncing it will be set automatically as `ERROR` after the upload.
 
-The SDK reads the import summary of each upload call and check if there are elements with errors. If a *tracker event* had an error, the `ERROR` state will be propagated to the enrollment and the tracked entity instance associated.
+The SDK reads the import summary of each upload call and checks if there are elements with errors.
+If a *tracker event* displays an error, the `ERROR` state will be propagated automatically to the enrollment and the tracked entity instance associated.
+Also, if a *tracker enrollment* displays an error, it will be propagated automatically to its tracked entity instance.
 
 ###### WARNING
 
-As with the state `ERROR`, if one element 
+As with the state `ERROR`, if one element displays a warning, the state will be set automatically as `WARNING`. 
+The state will be propagated to the enrollment and tracked entity instance or just the tracked entity instance if the tracker element requires it.
+
+#### Errors and warnings propagation
+
+The SDK will propagate errors and warnings in enrollments and events until the tracked entity instance.
+- A warning will be propagated if a child displays a warning but there are no errors among children after the upload.
+- An error will be propagated whenever at least one child displays an error after the upload.
 
 ## Reserved values
 

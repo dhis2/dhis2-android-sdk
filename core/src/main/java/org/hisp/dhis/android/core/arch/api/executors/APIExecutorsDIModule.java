@@ -26,9 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.arch.api.executors;
 
-// TODO: Tests
-public enum TrackedEntityAttributeSearchScope {
-    NOT_SEARCHABLE, DATA_CAPTURE_ORG_UNITS, SEARCH_ORG_UNITS, ALL_ORG_UNITS
+import dagger.Module;
+import dagger.Provides;
+import dagger.Reusable;
+
+@Module
+public class APIExecutorsDIModule {
+
+    @Provides
+    @Reusable
+    APICallExecutor apiCallExecutor(APICallExecutorImpl impl) {
+        return impl;
+    }
+
+    @Provides
+    @Reusable
+    RxAPICallExecutor rxApiCallExecutor(RxAPICallExecutorImpl impl) {
+        return impl;
+    }
 }

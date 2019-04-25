@@ -228,7 +228,7 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
     private void givenAMetadataInDatabase() {
         try {
-            dhis2MockServer.enqueueMetadataResponses();
+            dhis2MockServer.setRequestDispatcher();
             d2.syncMetaData().call();
         } catch (Exception ignore) {
         }

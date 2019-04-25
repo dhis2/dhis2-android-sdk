@@ -54,7 +54,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.mockito.ArgumentMatchers.anyCollectionOf;
+import io.reactivex.Completable;
+
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -73,9 +75,6 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Mock
     private Constant constant;
-
-    @Mock
-    private Callable<Unit> systemInfoDownloadCall;
 
     @Mock
     private Callable<Unit> systemSettingDownloadCall;
@@ -134,18 +133,17 @@ public class MetadataCallShould extends BaseCallShould {
         super.setUp();
 
         // Call factories
-        when(systemInfoDownloader.downloadMetadata()).thenReturn(systemInfoDownloadCall);
+        when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.complete());
         when(systemSettingDownloader.downloadMetadata()).thenReturn(systemSettingDownloadCall);
         when(userDownloader.downloadMetadata()).thenReturn(userCall);
         when(programDownloader.downloadMetadata()).thenReturn(programDownloadCall);
         when(categoryDownloader.downloadMetadata()).thenReturn(categoryDownloadCall);
-        when(organisationUnitDownloader.downloadMetadata(same(user), anyCollectionOf(Program.class),
-                anyCollectionOf(DataSet.class))).thenReturn(organisationUnitDownloadCall);
+        when(organisationUnitDownloader.downloadMetadata(same(user), anyCollection(),
+                anyCollection())).thenReturn(organisationUnitDownloadCall);
         when(dataSetDownloader.downloadMetadata()).thenReturn(dataSetDownloadCall);
         when(constantDownloader.downloadMetadata()).thenReturn(constantCall);
 
         // Calls
-        when(systemInfoDownloadCall.call()).thenReturn(new Unit());
         when(systemSettingDownloadCall.call()).thenReturn(new Unit());
         when(userCall.call()).thenReturn(user);
         when(categoryDownloadCall.call()).thenReturn(new Unit());
@@ -180,7 +178,7 @@ public class MetadataCallShould extends BaseCallShould {
 
     @Test(expected = D2Error.class)
     public void fail_when_system_info_call_fail() throws Exception {
-        when(systemInfoDownloadCall.call()).thenThrow(d2Error);
+        when(systemInfoDownloader.downloadMetadata()).thenReturn(Completable.error(d2Error));
         metadataCall.call();
     }
 

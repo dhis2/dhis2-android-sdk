@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.hisp.dhis.android.core.D2;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.State;
@@ -45,8 +43,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageStore;
-import org.hisp.dhis.android.core.utils.CodeGenerator;
-import org.hisp.dhis.android.core.utils.CodeGeneratorImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +53,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.test.runner.AndroidJUnit4;
+
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(AndroidJUnit4.class)
@@ -64,8 +62,6 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
 
     private Dhis2MockServer dhis2MockServer;
     private D2 d2;
-
-    private CodeGenerator codeGenerator = new CodeGeneratorImpl();
 
     private TrackedEntityInstancePostCall trackedEntityInstancePostCall;
 
@@ -92,9 +88,43 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
     public void build_payload_with_different_enrollments() throws Exception {
         givenAMetadataInDatabase();
 
-        String teiId = codeGenerator.generate();
-        String enrollment1Id = codeGenerator.generate();
-        String enrollment2Id = codeGenerator.generate();
+        storeTrackedEntityInstance();
+
+        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync();
+
+        assertThat(instances.size()).isEqualTo(1);
+        for (TrackedEntityInstance instance : instances) {
+            assertThat(instance.enrollments().size()).isEqualTo(2);
+            for (Enrollment enrollment : instance.enrollments()) {
+                assertThat(enrollment.events().size()).isEqualTo(1);
+            }
+        }
+    }
+
+    @Test
+    public void handleImportConflictsCorrectly() throws Exception {
+        givenAMetadataInDatabase();
+
+        storeTrackedEntityInstance();
+
+        dhis2MockServer.enqueueMockResponse("imports/web_response_with_import_conflicts_2.json");
+
+        d2.trackedEntityModule().trackedEntityInstances.upload().call();
+
+        assertThat(d2.importModule().trackerImportConflicts.count()).isEqualTo(3);
+    }
+
+    private void givenAMetadataInDatabase() throws Exception {
+        dhis2MockServer.enqueueMetadataResponses();
+        d2.syncMetaData().call();
+    }
+
+    private void storeTrackedEntityInstance() {
+        String teiId = "teiId";
+        String enrollment1Id = "enrollment1Id";
+        String enrollment2Id = "enrollment2Id";
+        String event1Id = "event1Id";
+        String event2Id = "event2Id";
 
         OrganisationUnit orgUnit = OrganisationUnitStore.create(databaseAdapter()).selectFirst();
         TrackedEntityType teiType = TrackedEntityTypeStore.create(databaseAdapter()).selectFirst();
@@ -102,7 +132,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         ProgramStage programStage = ProgramStageStore.create(databaseAdapter()).selectFirst();
 
         Event event1 = Event.builder()
-                .uid(codeGenerator.generate())
+                .uid(event1Id)
                 .enrollment(enrollment1Id)
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
@@ -120,7 +150,7 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
                 .build();
 
         Event event2 = Event.builder()
-                .uid(codeGenerator.generate())
+                .uid(event2Id)
                 .enrollment(enrollment2Id)
                 .organisationUnit(orgUnit.uid())
                 .program(program.uid())
@@ -150,20 +180,5 @@ public class TrackedEntityInstancePostCallMockIntegrationShould extends AbsStore
         EnrollmentStoreImpl.create(databaseAdapter()).insert(enrollment2);
         EventStoreImpl.create(databaseAdapter()).insert(event1);
         EventStoreImpl.create(databaseAdapter()).insert(event2);
-
-        List<TrackedEntityInstance> instances = trackedEntityInstancePostCall.queryDataToSync();
-
-        assertThat(instances.size()).isEqualTo(1);
-        for (TrackedEntityInstance instance : instances) {
-            assertThat(instance.enrollments().size()).isEqualTo(2);
-            for (Enrollment enrollment : instance.enrollments()) {
-                assertThat(enrollment.events().size()).isEqualTo(1);
-            }
-        }
-    }
-
-    private void givenAMetadataInDatabase() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
-        d2.syncMetaData().call();
     }
 }

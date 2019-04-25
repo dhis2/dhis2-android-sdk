@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.android.core.common;
 
-import androidx.test.InstrumentationRegistry;
-
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.api.retrofit.PreventURLDecodeInterceptor;
 import org.hisp.dhis.android.core.configuration.Configuration;
 import org.hisp.dhis.android.core.data.api.BasicAuthenticatorFactory;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.concurrent.TimeUnit;
 
+import androidx.test.InstrumentationRegistry;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -49,21 +49,23 @@ public class D2Factory {
                 .serverUrl(HttpUrl.parse(url))
                 .build();
 
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-
         return new D2.Builder()
                 .configuration(config)
                 .databaseAdapter(databaseAdapter)
-                .okHttpClient(
-                        new OkHttpClient.Builder()
-                                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
-                                .addInterceptor(loggingInterceptor)
-                                .addNetworkInterceptor(new StethoInterceptor())
-                                .readTimeout(30, TimeUnit.SECONDS)
-                                .build()
-                )
+                .okHttpClient(okHttpClient(databaseAdapter))
                 .context(InstrumentationRegistry.getTargetContext().getApplicationContext())
+                .build();
+    }
+
+    private static OkHttpClient okHttpClient(DatabaseAdapter databaseAdapter) {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        return new OkHttpClient.Builder()
+                .addInterceptor(new PreventURLDecodeInterceptor())
+                .addInterceptor(BasicAuthenticatorFactory.create(databaseAdapter))
+                .addInterceptor(loggingInterceptor)
+                .addNetworkInterceptor(new StethoInterceptor())
+                .readTimeout(30, TimeUnit.SECONDS)
                 .build();
     }
 }

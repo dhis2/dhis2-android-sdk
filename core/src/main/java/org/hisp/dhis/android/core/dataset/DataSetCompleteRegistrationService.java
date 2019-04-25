@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.Fields;
-import org.hisp.dhis.android.core.data.api.Where;
 import org.hisp.dhis.android.core.data.api.Which;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -44,9 +45,9 @@ interface DataSetCompleteRegistrationService {
     @GET("completeDataSetRegistrations")
     Call<DataSetCompleteRegistrationPayload> getDataSetCompleteRegistrations(
             @Query("fields") @Which Fields<DataSetCompleteRegistration> fields,
-            @Query("dataSet") @Where String dataSetUids,
-            @Query("period") @Where String periodIds,
-            @Query("orgUnit") @Where String organisationUnitIds,
+            @Query("dataSet") String dataSetUids,
+            @Query("period") String periodIds,
+            @Query("orgUnit") String organisationUnitIds,
             @Query("children") Boolean children,
             @Query("paging") Boolean paging
     );
@@ -54,4 +55,11 @@ interface DataSetCompleteRegistrationService {
     @POST("completeDataSetRegistrations")
     Call<DataValueImportSummary> postDataSetCompleteRegistrations(
             @Body DataSetCompleteRegistrationPayload dataSetCompleteRegistrationPayload);
+
+    @DELETE("completeDataSetRegistrations")
+    Call<Unit> deleteDataSetCompleteRegistration(
+            @Query("ds") String dataSet,
+            @Query("pe") String periodId,
+            @Query("ou") String orgUnit,
+            @Query("multiOu") Boolean multiOrganisationUnit);
 }

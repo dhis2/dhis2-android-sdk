@@ -53,7 +53,7 @@ public class UserObjectRepositoryMockIntegrationShould extends SyncedDatabaseMoc
 
     @Test
     public void return_user_credentials_as_children() {
-        User user = d2.userModule().user.withAllChildren().get();
+        User user = d2.userModule().user.withUserCredentials().get();
         assertThat(user.userCredentials().user().uid(), is(user.uid()));
         assertThat(user.userCredentials().username(), is("android"));
         assertThat(user.userCredentials().name(), is("John Barnes"));
@@ -61,7 +61,7 @@ public class UserObjectRepositoryMockIntegrationShould extends SyncedDatabaseMoc
 
     @Test
     public void return_organisation_units_as_children() {
-        User user = d2.userModule().user.withAllChildren().get();
+        User user = d2.userModule().user.withOrganisationUnits().get();
         List<OrganisationUnit> organisationUnits = user.organisationUnits();
         assertThat(organisationUnits.size(), is(1));
         assertThat(organisationUnits.get(0).name(), is("Ngelehun CHC"));

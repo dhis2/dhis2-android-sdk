@@ -26,40 +26,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.imports;
 
-import android.content.ContentValues;
-import android.database.Cursor;
+import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.common.ObjectStore;
+import org.hisp.dhis.android.core.common.StoreFactory;
+import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter;
+import static org.hisp.dhis.android.core.utils.StoreUtils.sqLiteBind;
 
-public class TrackedEntityAttributeSearchScopeColumnAdapter
-        implements ColumnTypeAdapter<TrackedEntityAttributeSearchScope> {
+public final class TrackerImportConflictStore {
 
-    @Override
-    public TrackedEntityAttributeSearchScope fromCursor(Cursor cursor, String columnName) {
+    private static final StatementBinder<TrackerImportConflict> BINDER = (o, sqLiteStatement) -> {
+        sqLiteBind(sqLiteStatement, 1, o.conflict());
+        sqLiteBind(sqLiteStatement, 2, o.value());
+        sqLiteBind(sqLiteStatement, 3, o.trackedEntityInstance());
+        sqLiteBind(sqLiteStatement, 4, o.enrollment());
+        sqLiteBind(sqLiteStatement, 5, o.event());
+        sqLiteBind(sqLiteStatement, 6, o.tableReference());
+        sqLiteBind(sqLiteStatement, 7, o.errorCode());
+        sqLiteBind(sqLiteStatement, 8, o.status());
+        sqLiteBind(sqLiteStatement, 9, o.created());
+    };
 
-        int columnIndex = cursor.getColumnIndex(columnName);
-        String sourceValue = cursor.getString(columnIndex);
-
-        TrackedEntityAttributeSearchScope trackedEntityAttributeSearchScope = null;
-        if (sourceValue != null) {
-            try {
-                trackedEntityAttributeSearchScope = TrackedEntityAttributeSearchScope.valueOf(sourceValue);
-            } catch (Exception exception) {
-                throw new RuntimeException("Unknown TrackedEntityAttributeSearchScope type", exception);
-            }
-        }
-
-
-        return trackedEntityAttributeSearchScope;
+    private TrackerImportConflictStore() {
     }
 
-    @Override
-    public void toContentValues(ContentValues contentValues, String columnName,
-            TrackedEntityAttributeSearchScope searchScope) {
-        if (searchScope != null) {
-            contentValues.put(columnName, searchScope.name());
-        }
+    public static ObjectStore<TrackerImportConflict> create(DatabaseAdapter databaseAdapter) {
+        return StoreFactory.objectStore(databaseAdapter, TrackerImportConflictTableInfo.TABLE_INFO, BINDER,
+                TrackerImportConflict::create);
     }
 }

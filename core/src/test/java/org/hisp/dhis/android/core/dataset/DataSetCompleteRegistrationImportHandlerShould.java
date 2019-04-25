@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset;
 
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.imports.DataValueImportSummary;
+import org.hisp.dhis.android.core.imports.ImportCount;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,29 +71,24 @@ public class DataSetCompleteRegistrationImportHandlerShould {
 
         dataSetCompleteRegistrationImportHandler
                 = new DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore);
+        when(dataValueImportSummary.importCount()).thenReturn(ImportCount.EMPTY);
+        when(dataValueImportSummary.responseType()).thenReturn("ImportSummary");
     }
 
     @Test
-    public void passingNullDataValueSet_shouldNotPerformAnyAction() {
+    public void not_perform_any_action_passing_empty_data_value_set() {
 
-        dataSetCompleteRegistrationImportHandler.handleImportSummary(null, dataValueImportSummary);
-
-        verify(dataSetCompleteRegistrationStore, never()).setState(
-                any(DataSetCompleteRegistration.class), any(State.class));
-    }
-
-    @Test
-    public void passingNullImportSummary_shouldNotPerformAnyAction() {
-
+        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                dataSetCompleteRegistrationPayload, null);
+                new DataSetCompleteRegistrationPayload(new ArrayList<>()),
+                dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
 
         verify(dataSetCompleteRegistrationStore, never()).setState(
                 any(DataSetCompleteRegistration.class), any(State.class));
     }
 
     @Test
-    public void successfullyImportedDataValues_shouldBeMarkedAsSynced() {
+    public void mark_as_synced_when_successfully_imported_data_values() {
 
         List<DataSetCompleteRegistration> dataSetCompleteRegistrations = new ArrayList<>();
         dataSetCompleteRegistrations.add(dataSetCompleteRegistration);
@@ -101,13 +97,14 @@ public class DataSetCompleteRegistrationImportHandlerShould {
 
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
 
-        dataSetCompleteRegistrationImportHandler.handleImportSummary(dataSetCompleteRegistrationPayload, dataValueImportSummary);
+        dataSetCompleteRegistrationImportHandler.handleImportSummary(dataSetCompleteRegistrationPayload,
+                dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
 
         verify(dataSetCompleteRegistrationStore, times(1)).setState(dataSetCompleteRegistration, State.SYNCED);
     }
 
     @Test
-    public void unsuccessfullyImportedDataValues_shouldBeMarkedAsError() {
+    public void mark_as_error_when_unsuccessfully_imported_data_values() {
 
         List<DataSetCompleteRegistration> dataValueCollection = new ArrayList<>();
         dataValueCollection.add(dataSetCompleteRegistration);
@@ -117,10 +114,8 @@ public class DataSetCompleteRegistrationImportHandlerShould {
         when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                dataSetCompleteRegistrationPayload, dataValueImportSummary);
+                dataSetCompleteRegistrationPayload, dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
 
         verify(dataSetCompleteRegistrationStore, times(1)).setState(dataSetCompleteRegistration, State.ERROR);
     }
-
-
 }

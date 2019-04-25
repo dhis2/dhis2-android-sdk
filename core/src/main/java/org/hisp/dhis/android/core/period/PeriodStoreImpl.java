@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.binders.WhereStatementBinder;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.ObjectWithoutUidStoreImpl;
+import org.hisp.dhis.android.core.common.SQLOrderType;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
@@ -75,6 +76,14 @@ public final class PeriodStoreImpl extends ObjectWithoutUidStoreImpl<Period> imp
                 .build();
 
         return selectOneWhere(whereClause);
+    }
+
+    @Override
+    public Date getOldestPeriodStartDate() {
+
+        Period period = selectOneOrderedBy(PeriodTableInfo.Columns.START_DATE, SQLOrderType.ASC);
+
+        return period.startDate();
     }
 
     public static PeriodStore create(DatabaseAdapter databaseAdapter) {

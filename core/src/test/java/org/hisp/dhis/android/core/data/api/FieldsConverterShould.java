@@ -41,7 +41,6 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Converter;
-import retrofit2.Retrofit;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -65,15 +64,10 @@ public class FieldsConverterShould {
     public void have_correct_retrofit_request_format() throws IOException, InterruptedException {
         MockWebServer mockWebServer = new MockWebServer();
         mockWebServer.start();
-
         mockWebServer.enqueue(new MockResponse());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(mockWebServer.url("/"))
-                .addConverterFactory(FieldsConverterFactory.create())
-                .build();
+        TestService testService = testService(mockWebServer);
 
-        TestService testService = retrofit.create(TestService.class);
         testService.test(Fields.<String>builder()
                 .fields(
                         Field.<String, String>create("property_one"),
@@ -88,6 +82,10 @@ public class FieldsConverterShould {
                 "/api/?fields=property_one,property_two,nested_property[nested_property_one]");
 
         mockWebServer.shutdown();
+    }
+
+    private TestService testService(MockWebServer mockWebServer) {
+        return RetrofitFactory.getRetrofit(mockWebServer).create(TestService.class);
     }
 
     @Test

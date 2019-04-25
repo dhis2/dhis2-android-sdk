@@ -50,7 +50,7 @@ public class UserCredentialsObjectRepositoryMockIntegrationShould extends Synced
 
     @Test
     public void return_user_roles_as_children() {
-        UserCredentials userCredentials = d2.userModule().userCredentials.withAllChildren().get();
+        UserCredentials userCredentials = d2.userModule().userCredentials.withUserRoles().get();
         assertThat(userCredentials.userRoles().size(), is(1));
         assertThat(userCredentials.userRoles().get(0).name(), is("Superuser"));
     }

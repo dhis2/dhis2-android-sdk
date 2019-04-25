@@ -130,6 +130,12 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     }
 
     @Override
+    public M selectOneOrderedBy(String orderingColumName, SQLOrderType orderingType) {
+        Cursor cursor = databaseAdapter.query(builder.selectOneOrderedBy(orderingColumName, orderingType));
+        return getFirstFromCursor(cursor);
+    }
+
+    @Override
     public M selectFirst() {
         Cursor cursor = databaseAdapter.query(builder.selectAll());
         return getFirstFromCursor(cursor);
@@ -197,6 +203,17 @@ public class ObjectStoreImpl<M extends Model> implements ObjectStore<M> {
     @Override
     public boolean deleteWhere(String clause) {
         return databaseAdapter.database().delete(builder.tableName, clause, null) > 0;
+    }
+
+    @Override
+    public void deleteWhereIfExists(@NonNull String whereClause) throws RuntimeException {
+        try {
+            deleteWhere(whereClause);
+        } catch(RuntimeException e) {
+            if (!e.getMessage().equals("No rows affected")) {
+                throw e;
+            }
+        }
     }
 
     @Override

@@ -25,13 +25,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataelement;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +39,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,7 +51,7 @@ public class DataElementHandlerShould {
     private IdentifiableObjectStore<DataElement> dataElementStore;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private ObjectStyleHandler styleHandler;
 
     @Mock
     private DataElement dataElement;
@@ -74,7 +73,7 @@ public class DataElementHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         dataElementHandler.handle(dataElement);
-        verify(styleHandler).handle(eq(dataElement.style()), any(ObjectStyleTransformer.class));
+        verify(styleHandler).handle(eq(dataElement.style()), anyString(), anyString());
     }
 
     @Test

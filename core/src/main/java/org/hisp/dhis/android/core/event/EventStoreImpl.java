@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.event;
 import android.database.Cursor;
 
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
+import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.CoordinateHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
@@ -72,6 +73,9 @@ public final class EventStoreImpl extends IdentifiableObjectWithStateStoreImpl<E
         sqLiteBind(sqLiteStatement, 17, o.attributeOptionCombo());
         sqLiteBind(sqLiteStatement, 18, o.trackedEntityInstance());
     };
+
+    static final SingleParentChildProjection CHILD_PROJECTION = new SingleParentChildProjection(
+            EventTableInfo.TABLE_INFO, EventFields.ENROLLMENT);
 
     private EventStoreImpl(DatabaseAdapter databaseAdapter,
                            SQLStatementWrapper statementWrapper,

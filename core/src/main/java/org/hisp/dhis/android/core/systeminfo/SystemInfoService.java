@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.systeminfo;
 import org.hisp.dhis.android.core.data.api.Fields;
 import org.hisp.dhis.android.core.data.api.Which;
 
-import retrofit2.Call;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface SystemInfoService {
     @GET("system/info")
-    Call<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields);
+    Single<SystemInfo> getSystemInfo(@Query("fields") @Which Fields<SystemInfo> fields);
 }

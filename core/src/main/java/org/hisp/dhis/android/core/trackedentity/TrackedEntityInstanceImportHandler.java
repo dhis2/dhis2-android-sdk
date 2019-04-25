@@ -84,7 +84,8 @@ public final class TrackedEntityInstanceImportHandler {
 
                 enrollmentImportHandler.handleEnrollmentImportSummary(
                         importEnrollment.importSummaries(),
-                        TrackerImportConflict.builder().trackedEntityInstance(teiImportSummary.reference()));
+                        TrackerImportConflict.builder().trackedEntityInstance(teiImportSummary.reference()),
+                        teiImportSummary.reference());
             }
         }
     }

@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.domain.aggregated.data;
 
 import org.hisp.dhis.android.core.arch.api.executors.RxAPICallExecutor;
-import org.hisp.dhis.android.core.arch.call.D2Completable;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
+import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
 import org.hisp.dhis.android.core.calls.factories.QueryCallFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
@@ -42,6 +44,7 @@ import org.hisp.dhis.android.core.period.PeriodStore;
 import org.hisp.dhis.android.core.systeminfo.SystemInfo;
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkStore;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,7 +54,8 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 final class AggregatedDataCall {
@@ -83,12 +87,16 @@ final class AggregatedDataCall {
         this.rxCallExecutor = rxCallExecutor;
     }
 
-    D2Completable asCompletable() {
-        return rxCallExecutor.wrapCompletableTransactionally(
-                systemInfoRepository.download().andThen(downloadInternal()), true);
+    D2CallWithProgress asCompletable() {
+        D2ProgressManager progressManager = new D2ProgressManager(3);
+
+        Observable<D2Progress> observable = systemInfoRepository.download()
+                .toSingle(() -> progressManager.increaseProgressAndCompleteWithCount(SystemInfo.class))
+                .flatMapObservable(progress -> downloadInternal(progressManager, progress));
+        return rxCallExecutor.wrapObservableTransactionally(observable, true);
     }
 
-    private Completable downloadInternal() {
+    private Observable<D2Progress> downloadInternal(D2ProgressManager progressManager, D2Progress systemInfoProgress) {
         List<String> dataSetUids = Collections.unmodifiableList(dataSetStore.selectUids());
         Set<String> periodIds = Collections.unmodifiableSet(selectPeriodIds(periodStore.selectAll()));
         List<String> organisationUnitUids = Collections.unmodifiableList(
@@ -96,15 +104,24 @@ final class AggregatedDataCall {
 
         DataValueQuery dataValueQuery = DataValueQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Completable dataValueCompletable = Completable.fromCallable(dataValueCallFactory.create(dataValueQuery));
+        Single<D2Progress> dataValueSingle = Single.fromCallable(dataValueCallFactory.create(dataValueQuery))
+                .map(dataValues -> progressManager.increaseProgressAndCompleteWithCount(DataValue.class));
 
         DataSetCompleteRegistrationQuery dataSetCompleteRegistrationQuery =
                 DataSetCompleteRegistrationQuery.create(dataSetUids, periodIds, organisationUnitUids);
 
-        Completable dataSerCompleteRegistrationCompletable = Completable.fromCallable(
-                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery));
+        Single<D2Progress> dataSetCompleteRegistrationSingle = Single.fromCallable(
+                dataSetCompleteRegistrationCallFactory.create(dataSetCompleteRegistrationQuery)).map(dataValues ->
+                        progressManager.increaseProgressAndCompleteWithCount(DataSetCompleteRegistration.class));
 
-        return dataValueCompletable.mergeWith(dataSerCompleteRegistrationCompletable);
+        @SuppressWarnings("PMD.NonStaticInitializer")
+        ArrayList<Single<D2Progress>> list = new ArrayList<Single<D2Progress>>() {{
+            add(Single.just(systemInfoProgress));
+            add(dataValueSingle);
+            add(dataSetCompleteRegistrationSingle);
+        }};
+
+        return Single.merge(list).toObservable();
     }
 
     private Set<String> selectPeriodIds(Collection<Period> periods) {

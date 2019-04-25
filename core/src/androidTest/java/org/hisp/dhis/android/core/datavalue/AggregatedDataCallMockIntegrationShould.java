@@ -29,63 +29,52 @@
 package org.hisp.dhis.android.core.datavalue;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.data.database.AbsStoreTestCase;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 
-public class AggregatedDataCallRealIntegrationShould extends AbsStoreTestCase {
-    /**
-     * A quick integration test that is probably flaky, but will help with finding bugs related to
-     * the
-     * metadataSyncCall. It works against the demo server.
-     */
-    private D2 d2;
+import io.reactivex.observers.TestObserver;
 
-    @Before
+public class AggregatedDataCallMockIntegrationShould extends AbsStoreTestCase {
+
+    private Dhis2MockServer dhis2MockServer;
+
     @Override
+    @Before
     public void setUp() throws IOException {
         super.setUp();
-
-        d2 = D2Factory.create(RealServerMother.url, databaseAdapter());
+        dhis2MockServer = new Dhis2MockServer(new ResourcesFileReader());
+        dhis2MockServer.setRequestDispatcher();
     }
 
-
-   /* How to extract database from tests:
-    edit: AbsStoreTestCase.java (adding database name.)
-    DbOpenHelper dbOpenHelper = new DbOpenHelper(InstrumentationRegistry.getTargetContext()
-    .getApplicationContext(), "test.db");
-    make a debugger break point where desired (after sync complete)
-
-    Then while on the breakpoint :
-    Android/platform-tools/adb pull /data/user/0/org.hisp.dhis.android.test/databases/test.db
-    test.db
-
-    in datagrip:
-    pragma foreign_keys = on;
-    pragma foreign_key_check;*/
-
-    //This test is uncommented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-    //@Test
-    public void response_successful_on_sync_data_once() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
-
-        d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+    @Override
+    @After
+    public void tearDown() throws IOException {
+        super.tearDown();
+        dhis2MockServer.shutdown();
     }
 
-    //@Test
-    public void response_successful_on_sync_data_value_two_times() throws Exception {
-        d2.userModule().logIn("android", "Android123").call();
-
+    @Test
+    public void emit_progress() throws Exception {
+        D2 d2 = D2Factory.create(dhis2MockServer.getBaseEndpoint(), databaseAdapter());
         d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        TestObserver<D2Progress> testObserver = d2.aggregatedModule().data().download().asObservable().test();
+        testObserver.assertValueCount(3);
 
-        d2.syncMetaData().call();
-        d2.aggregatedModule().data().download().asObservable().subscribe();
+        testObserver.assertValueAt(0, v -> assertDouble(v.percentage(), 33.33) && v.lastCall().equals("SystemInfo"));
+        testObserver.assertValueAt(1, v -> assertDouble(v.percentage(), 66.66));
+        testObserver.assertValueAt(2, v -> assertDouble(v.percentage(), 100));
+        testObserver.dispose();
+    }
+
+    private boolean assertDouble(double d1, double d2) {
+        return d2 - d1 < 0.01;
     }
 }

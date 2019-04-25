@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.api.executors;
 
-import org.hisp.dhis.android.core.arch.call.D2Completable;
-import org.hisp.dhis.android.core.arch.call.D2CompletableImpl;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
+import org.hisp.dhis.android.core.arch.call.D2CallWithProgressImpl;
+import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 import org.hisp.dhis.android.core.data.database.Transaction;
@@ -39,7 +40,7 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyCleaner;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Completable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 @Reusable
@@ -67,18 +68,11 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
     }
 
     @Override
-    public D2Completable wrapCompletable(Completable completable) {
-        return new D2CompletableImpl(
-                completable
-                        .onErrorResumeNext(throwable -> Completable.error(mapAndStore(throwable)))
-        );
-    }
-
-    @Override
-    public D2Completable wrapCompletableTransactionally(Completable completable, boolean cleanForeignKeys) {
+    public D2CallWithProgress wrapObservableTransactionally(Observable<D2Progress> observable,
+                                                            boolean cleanForeignKeys) {
         Transaction transaction = databaseAdapter.beginNewTransaction();
-        return new D2CompletableImpl(
-                completable
+        return new D2CallWithProgressImpl(
+                observable
                         .doOnComplete(() -> {
                             if (cleanForeignKeys) {
                                 foreignKeyCleaner.cleanForeignKeyErrors();
@@ -87,7 +81,7 @@ final class RxAPICallExecutorImpl implements RxAPICallExecutor {
                             transaction.end();
                         }).onErrorResumeNext(throwable -> {
                             transaction.end();
-                            return Completable.error(mapAndStore(throwable));
+                            return Observable.error(mapAndStore(throwable));
                         })
         );
     }

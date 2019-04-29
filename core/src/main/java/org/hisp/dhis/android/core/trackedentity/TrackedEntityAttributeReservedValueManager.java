@@ -161,7 +161,7 @@ public final class TrackedEntityAttributeReservedValueManager {
 
         D2CallExecutor executor = new D2CallExecutor(databaseAdapter);
 
-        executor.executeD2Call(systemInfoRepository.download());
+        systemInfoRepository.download().blockingAwait();
 
         String trackedEntityAttributePattern;
         try {

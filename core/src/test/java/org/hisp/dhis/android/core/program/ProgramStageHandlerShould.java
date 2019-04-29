@@ -25,6 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program;
 
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
@@ -35,7 +36,7 @@ import org.hisp.dhis.android.core.common.DataAccess;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
 import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.period.FeatureType;
@@ -52,6 +53,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
@@ -92,7 +94,7 @@ public class ProgramStageHandlerShould {
     private List<ProgramStageSection> programStageSections;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private ObjectStyleHandler styleHandler;
 
     @Mock
     private OrphanCleaner<ProgramStage, ProgramStageDataElement> programStageDataElementCleaner;
@@ -160,7 +162,7 @@ public class ProgramStageHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         programStageHandler.handle(programStage);
-        verify(styleHandler).handle(eq(objectStyle), any(ObjectStyleTransformer.class));
+        verify(styleHandler).handle(eq(objectStyle), anyString(), anyString());
     }
 
     @Test

@@ -40,8 +40,12 @@ import org.hisp.dhis.android.core.arch.api.retrofit.APIClientDIModule;
 import org.hisp.dhis.android.core.common.D2Factory;
 import org.hisp.dhis.android.core.common.ObjectStore;
 import org.hisp.dhis.android.core.data.file.ResourcesFileReader;
+import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
 import org.hisp.dhis.android.core.data.server.Dhis2MockServer;
+import org.hisp.dhis.android.core.imports.ImportStatus;
+import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.imports.TrackerImportConflictStore;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
@@ -77,12 +81,15 @@ public abstract class SyncedDatabaseMockIntegrationShould {
 
             d2.wipeModule().wipeEverything();
 
+            dhis2MockServer.setRequestDispatcher();
+
             login();
             downloadMetadata();
             downloadTrackedEntityInstances();
             downloadEvents();
             downloadAggregatedData();
             storeSomeD2Errors();
+            storeSomeConflicts();
         }
     }
 
@@ -93,28 +100,23 @@ public abstract class SyncedDatabaseMockIntegrationShould {
     }
 
     private static void login() throws Exception {
-        dhis2MockServer.enqueueLoginResponses();
         d2.userModule().logIn("android", "Android123").call();
     }
 
     private static void downloadMetadata() throws Exception {
-        dhis2MockServer.enqueueMetadataResponses();
         d2.syncMetaData().call();
     }
 
     private static void downloadTrackedEntityInstances() throws Exception {
-        dhis2MockServer.enqueueTrackedEntityInstanceResponses();
         d2.trackedEntityModule().downloadTrackedEntityInstances(2, false).call();
     }
 
     private static void downloadEvents() throws Exception {
-        dhis2MockServer.enqueueEventResponses();
         d2.eventModule().downloadSingleEvents(2, false).call();
     }
 
-    private static void downloadAggregatedData() throws Exception {
-        dhis2MockServer.enqueueAggregatedDataResponses();
-        d2.aggregatedModule().data().download().call();
+    private static void downloadAggregatedData() {
+        d2.aggregatedModule().data().download().asObservable().subscribe();
     }
 
     private static void storeSomeD2Errors() {
@@ -128,6 +130,28 @@ public abstract class SyncedDatabaseMockIntegrationShould {
                 .url("http://dhis2.org/api/programs/uid")
                 .errorDescription("Different server offline")
                 .httpErrorCode(402)
+                .build()
+        );
+    }
+
+    private static void storeSomeConflicts() {
+        ObjectStore<TrackerImportConflict> trackerImportConflictStore =
+                TrackerImportConflictStore.create(databaseAdapter);
+        trackerImportConflictStore.insert(TrackerImportConflictSamples.get().toBuilder()
+                .trackedEntityInstance(null)
+                .enrollment(null)
+                .event(null)
+                .build());
+
+        trackerImportConflictStore.insert(TrackerImportConflictSamples.get().toBuilder()
+                .conflict("conflict_2")
+                .value("value_2")
+                .trackedEntityInstance("nWrB0TfWlvh")
+                .enrollment("enroll2")
+                .event("event2")
+                .tableReference("table_reference_2")
+                .errorCode("error_code_2")
+                .status(ImportStatus.ERROR)
                 .build()
         );
     }

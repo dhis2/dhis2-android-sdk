@@ -25,14 +25,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.trackedentity;
 
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 
 import javax.inject.Inject;
 
@@ -40,11 +39,11 @@ import dagger.Reusable;
 
 @Reusable
 final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<TrackedEntityAttribute> {
-    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final ObjectStyleHandler styleHandler;
 
     @Inject
     TrackedEntityAttributeHandler(IdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
-                                  SyncHandlerWithTransformer<ObjectStyle> styleHandler) {
+                                  ObjectStyleHandler styleHandler) {
         super(trackedEntityAttributeStore);
         this.styleHandler = styleHandler;
     }
@@ -57,9 +56,8 @@ final class TrackedEntityAttributeHandler extends IdentifiableSyncHandlerImpl<Tr
     @Override
     protected void afterObjectHandled(TrackedEntityAttribute trackedEntityAttribute, HandleAction action) {
         if (action != HandleAction.Delete) {
-            styleHandler.handle(trackedEntityAttribute.style(),
-                    new ObjectStyleTransformer(trackedEntityAttribute.uid(),
-                            TrackedEntityAttributeTableInfo.TABLE_INFO.name()));
+            styleHandler.handle(trackedEntityAttribute.style(), trackedEntityAttribute.uid(),
+                    TrackedEntityAttributeTableInfo.TABLE_INFO.name());
         }
     }
 }

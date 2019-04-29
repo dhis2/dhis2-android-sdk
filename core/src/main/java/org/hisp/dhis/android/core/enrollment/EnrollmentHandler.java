@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
+import org.hisp.dhis.android.core.arch.handlers.IdentifiableDataSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.HandleAction;
@@ -47,10 +45,11 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import dagger.Reusable;
 
 @Reusable
-final class EnrollmentHandler extends IdentifiableSyncHandlerImpl<Enrollment> {
+final class EnrollmentHandler extends IdentifiableDataSyncHandlerImpl<Enrollment> {
     private final NoteDHISVersionManager noteVersionManager;
     private final SyncHandlerWithTransformer<Event> eventHandler;
     private final SyncHandler<Note> noteHandler;

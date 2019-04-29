@@ -28,18 +28,20 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import android.database.Cursor;
-
+import org.hisp.dhis.android.core.arch.db.WhereClauseBuilder;
 import org.hisp.dhis.android.core.arch.db.binders.StatementBinder;
 import org.hisp.dhis.android.core.arch.db.tableinfos.SingleParentChildProjection;
+import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.CoordinateHelper;
 import org.hisp.dhis.android.core.common.CursorModelFactory;
 import org.hisp.dhis.android.core.common.IdentifiableObjectWithStateStoreImpl;
 import org.hisp.dhis.android.core.common.SQLStatementBuilder;
 import org.hisp.dhis.android.core.common.SQLStatementWrapper;
+import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.DatabaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,17 +83,13 @@ public final class EnrollmentStoreImpl
 
     @Override
     public Map<String, List<Enrollment>> queryEnrollmentsToPost() {
-        String enrollmentsToPostQuery = "SELECT Enrollment.* FROM " +
-                "(Enrollment INNER JOIN TrackedEntityInstance " +
-                "ON Enrollment.trackedEntityInstance = TrackedEntityInstance.uid) " +
-                "WHERE TrackedEntityInstance.state = 'TO_POST' " +
-                "OR TrackedEntityInstance.state = 'TO_UPDATE' " +
-                "OR TrackedEntityInstance.state = 'TO_DELETE' " +
-                "OR Enrollment.state = 'TO_POST' " +
-                "OR Enrollment.state = 'TO_UPDATE' " +
-                "OR Enrollment.state = 'TO_DELETE';";
+        String enrollmentsToPostQuery = new WhereClauseBuilder()
+                .appendInKeyStringValues(BaseDataModel.Columns.STATE, Arrays.asList(
+                        State.TO_POST.name(),
+                        State.TO_UPDATE.name(),
+                        State.TO_DELETE.name())).build();
 
-        List<Enrollment> enrollmentList = enrollmentListFromQuery(enrollmentsToPostQuery);
+        List<Enrollment> enrollmentList = selectWhere(enrollmentsToPostQuery);
 
         Map<String, List<Enrollment>> enrollmentMap = new HashMap<>();
         for (Enrollment enrollment : enrollmentList) {
@@ -99,13 +97,6 @@ public final class EnrollmentStoreImpl
         }
 
         return enrollmentMap;
-    }
-
-    private List<Enrollment> enrollmentListFromQuery(String query) {
-        List<Enrollment> enrollmentList = new ArrayList<>();
-        Cursor cursor = databaseAdapter.query(query);
-        addObjectsToCollection(cursor, enrollmentList);
-        return enrollmentList;
     }
 
     private void addEnrollmentToMap(Map<String, List<Enrollment>> enrollmentMap, Enrollment enrollment) {

@@ -31,10 +31,8 @@ package org.hisp.dhis.android.core.program;
 import org.assertj.core.util.Lists;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.Transformer;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import org.junit.Before;
@@ -46,6 +44,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.same;
@@ -63,7 +62,7 @@ public class ProgramSectionHandlerShould {
             programSectionAttributeLinkHandler;
 
     @Mock
-    private SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private ObjectStyleHandler styleHandler;
 
     @Mock
     private ProgramSection programSection;
@@ -89,7 +88,7 @@ public class ProgramSectionHandlerShould {
     @Test
     public void call_style_handler() throws Exception {
         programSectionHandler.handle(programSection);
-        verify(styleHandler).handle(same(programSection.style()), any(ObjectStyleTransformer.class));
+        verify(styleHandler).handle(same(programSection.style()), anyString(), anyString());
     }
 
     @Test

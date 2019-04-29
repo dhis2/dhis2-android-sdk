@@ -30,12 +30,10 @@ package org.hisp.dhis.android.core.dataset;
 import org.hisp.dhis.android.core.arch.handlers.IdentifiableSyncHandlerImpl;
 import org.hisp.dhis.android.core.arch.handlers.LinkSyncHandler;
 import org.hisp.dhis.android.core.arch.handlers.SyncHandler;
-import org.hisp.dhis.android.core.arch.handlers.SyncHandlerWithTransformer;
 import org.hisp.dhis.android.core.common.CollectionCleaner;
 import org.hisp.dhis.android.core.common.HandleAction;
 import org.hisp.dhis.android.core.common.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectStyleTransformer;
+import org.hisp.dhis.android.core.common.ObjectStyleHandler;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.OrphanCleaner;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
@@ -51,7 +49,7 @@ import dagger.Reusable;
 @Reusable
 final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
-    private final SyncHandlerWithTransformer<ObjectStyle> styleHandler;
+    private final ObjectStyleHandler styleHandler;
 
     private final SyncHandler<Section> sectionHandler;
     private final OrphanCleaner<DataSet, Section> sectionOrphanCleaner;
@@ -67,7 +65,7 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
 
     @Inject
     DataSetHandler(IdentifiableObjectStore<DataSet> dataSetStore,
-                   SyncHandlerWithTransformer<ObjectStyle> styleHandler,
+                   ObjectStyleHandler styleHandler,
                    SyncHandler<Section> sectionHandler,
                    OrphanCleaner<DataSet, Section> sectionOrphanCleaner,
                    SyncHandler<DataElementOperand> compulsoryDataElementOperandHandler,
@@ -93,8 +91,7 @@ final class DataSetHandler extends IdentifiableSyncHandlerImpl<DataSet> {
     @Override
     protected void afterObjectHandled(final DataSet dataSet, HandleAction action) {
 
-        styleHandler.handle(dataSet.style(),
-                new ObjectStyleTransformer(dataSet.uid(), DataSetTableInfo.TABLE_INFO.name()));
+        styleHandler.handle(dataSet.style(), dataSet.uid(), DataSetTableInfo.TABLE_INFO.name());
 
         sectionHandler.handleMany(dataSet.sections());
 

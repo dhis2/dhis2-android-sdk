@@ -2,7 +2,9 @@ package org.hisp.dhis.android.core.sms;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
+import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.data.DeviceStateRepositoryImpl;
 import org.hisp.dhis.android.core.sms.data.LocalDbRepositoryImpl;
@@ -12,6 +14,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 
 import dagger.Module;
@@ -27,11 +30,20 @@ public class SmsDIModule {
     }
 
     @Provides
-    LocalDbRepository localDbRepository(Context context,
+    LocalDbRepository localDbRepository(Context ctx,
                                         UserModule userModule,
+                                        TrackedEntityModule trackedEntityModule,
+                                        EventModule eventModule,
+                                        EnrollmentModule enrollmentModule,
                                         EventStore eventStore,
                                         EnrollmentStore enrollmentStore) {
-        return new LocalDbRepositoryImpl(context, userModule, eventStore, enrollmentStore);
+        return new LocalDbRepositoryImpl(ctx,
+                userModule,
+                trackedEntityModule,
+                eventModule,
+                enrollmentModule,
+                eventStore,
+                enrollmentStore);
     }
 
     @Provides

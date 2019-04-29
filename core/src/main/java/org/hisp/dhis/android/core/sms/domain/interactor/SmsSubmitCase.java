@@ -1,19 +1,15 @@
 package org.hisp.dhis.android.core.sms.domain.interactor;
 
+import androidx.core.util.Pair;
+
 import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.sms.domain.converter.Converter;
-import org.hisp.dhis.android.core.sms.domain.converter.Converter.DataToConvert;
 import org.hisp.dhis.android.core.sms.domain.converter.EnrollmentConverter;
 import org.hisp.dhis.android.core.sms.domain.converter.EventConverter;
 import org.hisp.dhis.android.core.sms.domain.repository.DeviceStateRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
-import org.hisp.dhis.android.core.sms.domain.utils.Common;
-import org.hisp.dhis.android.core.sms.domain.utils.Pair;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
 
 import java.util.Collection;
 
@@ -38,35 +34,27 @@ public class SmsSubmitCase {
         smsRepository.acceptSMSCount(accept);
     }
 
-    public Observable<SmsRepository.SmsSendingState> submit(final Event event) {
-        return Common.getCompressionData(localDbRepository).flatMapObservable(data -> submit(
-                new EventConverter(data.metadata),
-                new EventConverter.EventData(event, data.user)
-        ));
+    public Observable<SmsRepository.SmsSendingState> submitEvent(final String eventUid,
+                                                                 final String teiUid) {
+        return submit(new EventConverter(localDbRepository, eventUid, teiUid));
     }
 
-    public Observable<SmsRepository.SmsSendingState> submit(final Enrollment enrollment,
-                                                            final String trackedEntityType,
-                                                            final Collection<TrackedEntityAttributeValue>
-                                                                    attributes) {
-        return Common.getCompressionData(localDbRepository).flatMapObservable(data -> submit(
-                new EnrollmentConverter(data.metadata),
-                new EnrollmentConverter.EnrollmentData(enrollment, trackedEntityType, attributes, data.user)
-        ));
+    public Observable<SmsRepository.SmsSendingState> submitEnrollment(String enrollmentUid,
+                                                                      String teiUid) {
+        return submit(new EnrollmentConverter(localDbRepository, enrollmentUid, teiUid));
     }
 
-    private <T extends DataToConvert> Observable<SmsRepository.SmsSendingState>
-    submit(final Converter<T> converter, final T dataItem) {
+    private <T> Observable<SmsRepository.SmsSendingState> submit(final Converter<T> converter) {
         return checkPreconditions()
                 .andThen(Single.zip(
                         localDbRepository.getGatewayNumber(),
-                        converter.format(dataItem),
+                        converter.readAndConvert(),
                         Pair::create)
                 ).flatMapObservable(numAndContents ->
                         smsRepository.sendSms(numAndContents.first, numAndContents.second, SENDING_TIMEOUT))
                 .flatMap(smsSendingState -> {
                     if (SmsRepository.State.ALL_SENT.equals(smsSendingState.getState())) {
-                        return localDbRepository.updateSubmissionState(dataItem.getDataModel(), State.SENT_VIA_SMS)
+                        return converter.updateSubmissionState(State.SENT_VIA_SMS)
                                 .andThen(Observable.just(smsSendingState));
                     }
                     return Observable.just(smsSendingState);
@@ -86,8 +74,6 @@ public class SmsSubmitCase {
                         pair.second,
                         pair.first,
                         requiredStrings)
-        ).andThen(
-                localDbRepository.updateSubmissionState(dataModel, State.SYNCED_VIA_SMS)
         );
     }
 

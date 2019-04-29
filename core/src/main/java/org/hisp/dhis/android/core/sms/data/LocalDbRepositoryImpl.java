@@ -3,17 +3,23 @@ package org.hisp.dhis.android.core.sms.data;
 import android.content.Context;
 
 import org.hisp.dhis.android.core.ObjectMapperFactory;
-import org.hisp.dhis.android.core.common.BaseDataModel;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
+import org.hisp.dhis.android.core.enrollment.EnrollmentModule;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.core.event.Event;
+import org.hisp.dhis.android.core.event.EventModule;
 import org.hisp.dhis.android.core.event.EventStore;
 import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
 import org.hisp.dhis.android.core.user.UserModule;
 import org.hisp.dhis.smscompression.models.Metadata;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -22,6 +28,9 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     private final Context context;
     private final UserModule userModule;
+    private final TrackedEntityModule trackedEntityModule;
+    private final EventModule eventModule;
+    private final EnrollmentModule enrollmentModule;
     private final EventStore eventStore;
     private final EnrollmentStore enrollmentStore;
     private final static String METADATA_FILE = "metadata_ids";
@@ -32,10 +41,16 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
 
     public LocalDbRepositoryImpl(Context ctx,
                                  UserModule userModule,
+                                 TrackedEntityModule trackedEntityModule,
+                                 EventModule eventModule,
+                                 EnrollmentModule enrollmentModule,
                                  EventStore eventStore,
                                  EnrollmentStore enrollmentStore) {
         this.context = ctx;
         this.userModule = userModule;
+        this.trackedEntityModule = trackedEntityModule;
+        this.eventModule = eventModule;
+        this.enrollmentModule = enrollmentModule;
         this.eventStore = eventStore;
         this.enrollmentStore = enrollmentStore;
     }
@@ -104,18 +119,6 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
     }
 
     @Override
-    public Completable updateSubmissionState(BaseDataModel item, State state) {
-        if (item instanceof Event) {
-            String uid = ((Event) item).uid();
-            return Completable.fromAction(() -> eventStore.setState(uid, state));
-        } else if (item instanceof Enrollment) {
-            String uid = ((Enrollment) item).uid();
-            return Completable.fromAction(() -> enrollmentStore.setState(uid, state));
-        }
-        return Completable.error(new IllegalArgumentException("Not supported data type"));
-    }
-
-    @Override
     public Single<Metadata> getMetadataIds() {
         return Single.fromCallable(() ->
                 ObjectMapperFactory.objectMapper().readValue(
@@ -129,5 +132,42 @@ public class LocalDbRepositoryImpl implements LocalDbRepository {
                 ObjectMapperFactory.objectMapper().writeValue(
                         context.openFileOutput(METADATA_FILE, Context.MODE_PRIVATE), metadata
                 ));
+    }
+
+    @Override
+    public Single<Event> getEventToSubmit(String eventUid, String teiUid) {
+        return Single.fromCallable(() ->
+                trackedEntityModule.trackedEntityDataValues.byEvent().eq(eventUid).get()
+        ).map(values ->
+                eventModule.events.byUid().eq(eventUid).one().get().toBuilder()
+                        .trackedEntityInstance(teiUid)
+                        .trackedEntityDataValues(values)
+                        .build()
+        );
+    }
+
+    @Override
+    public Single<TrackedEntityInstance> getTeiEnrollmentToSubmit(String enrollmentUid, String teiUid) {
+        return Single.fromCallable(() ->
+                trackedEntityModule.trackedEntityInstances.byUid().eq(teiUid).one().get()
+        ).map(tei -> {
+            Enrollment enrollment = enrollmentModule.enrollments.byUid().eq(enrollmentUid).one().get();
+            List<TrackedEntityAttributeValue> attributes =
+                    trackedEntityModule.trackedEntityAttributeValues.byTrackedEntityInstance().eq(teiUid).get();
+            return tei.toBuilder()
+                    .trackedEntityAttributeValues(attributes)
+                    .enrollments(Collections.singletonList(enrollment))
+                    .build();
+        });
+    }
+
+    @Override
+    public Completable updateEventSubmissionState(String eventUid, State state) {
+        return Completable.fromAction(() -> eventStore.setState(eventUid, state));
+    }
+
+    @Override
+    public Completable updateEnrollmentSubmissionState(String enrollmentUid, State state) {
+        return Completable.fromAction(() -> enrollmentStore.setState(enrollmentUid, state));
     }
 }

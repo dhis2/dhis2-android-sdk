@@ -5,19 +5,46 @@ import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
-import org.hisp.dhis.android.core.common.BaseDataModel;
+import org.hisp.dhis.android.core.common.State;
+import org.hisp.dhis.android.core.sms.domain.repository.LocalDbRepository;
 import org.hisp.dhis.smscompression.SMSSubmissionWriter;
 import org.hisp.dhis.smscompression.models.Metadata;
+import org.hisp.dhis.smscompression.models.SMSSubmission;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
-public abstract class Converter<P extends Converter.DataToConvert> {
-    public Single<SMSSubmissionWriter> getSmsSubmissionWriter(Metadata metadata) {
-        return Single.just(new SMSSubmissionWriter(metadata));
+public abstract class Converter<P> {
+    final private LocalDbRepository localDbRepository;
+
+    public Converter(LocalDbRepository localDbRepository) {
+        this.localDbRepository = localDbRepository;
+    }
+
+    public Single<String> readAndConvert() {
+        return Single.zip(
+                localDbRepository.getMetadataIds(),
+                localDbRepository.getUserName(),
+                readItemFromDb(),
+                CompressionData::new
+        ).flatMap(
+                d -> convert(d.item, d.metadata, d.user)
+        );
+    }
+
+    /**
+     * @param dataItem object to convert
+     * @return text ready to be sent by sms
+     */
+    private Single<String> convert(@NonNull P dataItem, Metadata metadata, String user) {
+        return convert(dataItem, user).map(submission -> {
+            SMSSubmissionWriter writer = new SMSSubmissionWriter(metadata);
+            return base64(writer.compress(submission));
+        });
     }
 
     @SuppressLint("NewApi")
-    String base64(byte[] bytes) {
+    private String base64(byte[] bytes) {
         String encoded;
         try {
             encoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
@@ -31,13 +58,25 @@ public abstract class Converter<P extends Converter.DataToConvert> {
         return encoded;
     }
 
-    /**
-     * @param dataItem object to convert
-     * @return text ready to be sent by sms
-     */
-    public abstract Single<String> format(@NonNull P dataItem);
+    LocalDbRepository getLocalDbRepository() {
+        return localDbRepository;
+    }
 
-    public interface DataToConvert {
-        BaseDataModel getDataModel();
+    abstract Single<? extends SMSSubmission> convert(@NonNull P dataItem, String user);
+
+    public abstract Completable updateSubmissionState(State state);
+
+    abstract Single<P> readItemFromDb();
+
+    private class CompressionData {
+        final String user;
+        final Metadata metadata;
+        final P item;
+
+        CompressionData(Metadata metadata, String user, P item) {
+            this.user = user;
+            this.metadata = metadata;
+            this.item = item;
+        }
     }
 }

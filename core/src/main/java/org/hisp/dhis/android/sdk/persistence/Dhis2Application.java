@@ -45,7 +45,10 @@ import com.squareup.otto.ThreadEnforcer;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.persistence.migrations.MigrationUtil;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.utils.MainThreadBus;
+
+import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -57,6 +60,7 @@ public abstract class Dhis2Application extends Application {
     public static Bus bus;
     public static DhisController dhisController;
     private static Context context;
+    public static List<TrackedEntityInstance> trackedEntityInstancesQueryResult;
 
     public static Context getContext(){
         return context;
@@ -118,4 +122,5 @@ public abstract class Dhis2Application extends Application {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
 }

@@ -49,6 +49,7 @@ public class WhereClauseBuilder {
     private static final String NOT_IN = " NOT IN (";
 
     private static final String IS_NULL = " IS NULL";
+    private static final String IS_NOT_NULL = " IS NOT NULL";
 
     @SuppressWarnings("PMD.AvoidStringBufferField")
     private final StringBuilder whereClause = new StringBuilder();
@@ -98,6 +99,10 @@ public class WhereClauseBuilder {
 
     public WhereClauseBuilder appendIsNullValue(String column) {
         return appendKeyValue(column, "", AND, IS_NULL, "");
+    }
+
+    public WhereClauseBuilder appendIsNotNullValue(String column) {
+        return appendKeyValue(column, "", AND, IS_NOT_NULL, "");
     }
 
     private WhereClauseBuilder appendKeyValue(String column, Object value, String logicGate, String eq, String end) {

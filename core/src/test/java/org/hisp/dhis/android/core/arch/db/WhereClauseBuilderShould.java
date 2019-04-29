@@ -138,6 +138,15 @@ public class WhereClauseBuilderShould {
     }
 
     @Test
+    public void build_where_statement_for_is_not_null_value() {
+        WhereClauseBuilder builder = new WhereClauseBuilder();
+        String whereStatement = builder
+                .appendIsNotNullValue("COL1")
+                .build();
+        assertThat(whereStatement).isEqualTo("COL1 IS NOT NULL");
+    }
+
+    @Test
     public void build_where_statement_for_complex_queries() {
         WhereClauseBuilder builder = new WhereClauseBuilder();
         String whereStatement = builder

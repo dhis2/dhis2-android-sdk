@@ -51,6 +51,7 @@ public class QrTrackerEventTest {
             {"", ""}
     };
 
+    // TODO needs a fix
     // uncomment to be able to run
     //@Test
     public void convertEventTest() {
@@ -72,7 +73,7 @@ public class QrTrackerEventTest {
         ).doOnComplete(() ->
                 System.out.println("Initiated")
         ).andThen(
-                qrCase.generateTextCode(getTestEvent())
+                qrCase.generateEventCode(EVENT_ID, TEI_ID)
         ).subscribeOn(Schedulers.newThread()
         ).observeOn(AndroidSchedulers.mainThread()
         ).subscribeWith(new DisposableSingleObserver<String>() {

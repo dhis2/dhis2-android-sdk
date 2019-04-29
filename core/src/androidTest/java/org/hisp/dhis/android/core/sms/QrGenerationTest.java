@@ -49,6 +49,7 @@ public class QrGenerationTest {
             {"", ""}
     };
 
+    // TODO needs a fix
     // uncomment to be able to run
     //@Test
     public void convertEnrollmentTest() {
@@ -70,7 +71,7 @@ public class QrGenerationTest {
         ).doOnComplete(() ->
                 System.out.println("Initiated")
         ).andThen(
-                qrCase.generateTextCode(getTestEnrollment(), TRACKED_ENTITY_TYPE, getTestValues())
+                qrCase.generateEnrollmentCode(ENROLLMENT_ID, TEI_ID)
         ).subscribeOn(Schedulers.newThread()
         ).observeOn(AndroidSchedulers.mainThread()
         ).subscribeWith(new DisposableSingleObserver<String>() {

@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.maintenance;
 
 import android.database.Cursor;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.google.common.truth.Truth;
 
 import org.hisp.dhis.android.core.D2;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectModel;
 import org.hisp.dhis.android.core.common.D2CallExecutor;
 import org.hisp.dhis.android.core.common.D2Factory;
@@ -62,6 +63,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -116,6 +119,33 @@ public class ForeignKeyCleanerShould extends AbsStoreTestCase {
 
         assertThatCursor(cursor).isExhausted();
         cursor.close();
+    }
+
+    @Test
+    public void not_cause_null_records_on_fk_table() throws Exception {
+        final D2CallExecutor executor = new D2CallExecutor(d2.databaseAdapter());
+
+        executor.executeD2CallTransactionally(() -> {
+            givenAMetadataInDatabase();
+
+            CategoryCategoryComboLink categoryCategoryComboLink = CategoryCategoryComboLink.builder()
+                    .category("no_category")
+                    .categoryCombo("no_category_combo")
+                    .sortOrder(2)
+                    .build();
+
+            d2.databaseAdapter().database().insert(CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
+                    null, categoryCategoryComboLink.toContentValues());
+
+            ForeignKeyCleanerImpl.create(d2.databaseAdapter()).cleanForeignKeyErrors();
+
+            return null;
+        });
+
+        List<ForeignKeyViolation> foreignKeyViolationList =
+                ForeignKeyViolationStore.create(d2.databaseAdapter()).selectAll();
+
+        Truth.assertThat(foreignKeyViolationList.size()).isEqualTo(3);
     }
 
     @Test

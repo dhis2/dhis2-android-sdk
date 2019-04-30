@@ -82,7 +82,7 @@ After an upload, the SDK will analyze the import summaries and take the next act
     - Set the **state** property of each element to `SYNCED`.
 - If there are conflicts:
     - Set the **state** property to `ERROR` or `WARNING` for the element with the conflict.
-    - Propagate errors and warnings from enrollments and events until the tracked entity instance giving errors higher priority than warnings.
+    - Propagate errors and warnings from enrollments and events up to tracked entity instance level giving errors higher priority than warnings.
     - Store the import conflicts.
 
 ## Reserved values

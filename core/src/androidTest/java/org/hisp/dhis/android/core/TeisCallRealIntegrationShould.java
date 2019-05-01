@@ -56,7 +56,7 @@ public class TeisCallRealIntegrationShould extends AbsStoreTestCase {
 
         d2.syncMetaData().call();
 
-        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false).call();
+        d2.trackedEntityModule().downloadTrackedEntityInstances(5,  false).asObservable().subscribe();
 
         assertThat(TrackedEntityInstanceStoreImpl.create(databaseAdapter()).count() >= 5).isTrue();
     }

@@ -49,7 +49,7 @@ import org.hisp.dhis.android.core.utils.services.ApiPagingEngine;
 import org.hisp.dhis.android.core.utils.services.Paging;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,7 +75,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private final DHISVersionManager versionManager;
 
 
-    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory downloadAndPersistCallFactory;
+    private final TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory;
     private final TrackedEntityInstancePersistenceCallFactory persistenceCallFactory;
     private final TrackedEntityInstancesEndpointCallFactory endpointCallFactory;
 
@@ -87,7 +87,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
             ResourceHandler resourceHandler,
             UserOrganisationUnitLinkStore userOrganisationUnitLinkStore,
             ReadOnlyWithDownloadObjectRepository<SystemInfo> systemInfoRepository,
-            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory downloadAndPersistCallFactory,
+            TrackedEntityInstanceRelationshipDownloadAndPersistCallFactory relationshipDownloadCallFactory,
             TrackedEntityInstancePersistenceCallFactory persistenceCallFactory,
             DHISVersionManager versionManager, TrackedEntityInstancesEndpointCallFactory endpointCallFactory) {
         this.apiCallExecutor = apiCallExecutor;
@@ -98,7 +98,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         this.systemInfoRepository = systemInfoRepository;
         this.versionManager = versionManager;
 
-        this.downloadAndPersistCallFactory = downloadAndPersistCallFactory;
+        this.relationshipDownloadCallFactory = relationshipDownloadCallFactory;
         this.persistenceCallFactory = persistenceCallFactory;
         this.endpointCallFactory = endpointCallFactory;
     }
@@ -129,7 +129,7 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
 
         return teisDownloadObservable.doOnComplete(() -> {
             if (!versionManager.is2_29()) {
-                d2CallExecutor.executeD2Call(downloadAndPersistCallFactory.getCall());
+                d2CallExecutor.executeD2Call(relationshipDownloadCallFactory.getCall());
             }
         });
     }
@@ -137,14 +137,10 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
     private Observable<D2Progress> getTrackedEntityInstancesWithLimitByOrgUnit(D2ProgressManager progressManager,
                                                                                TeiQuery.Builder teiQueryBuilder,
                                                                                List<Paging> pagingList) {
-        Collection<String> organisationUnitUids = getOrgUnitUids();
-        Set<String> orgUnitWrapper = new HashSet<>();
         List<Completable> completables = new ArrayList<>();
-        for (String orgUnitUid : organisationUnitUids) {
-            orgUnitWrapper.clear();
-            orgUnitWrapper.add(orgUnitUid);
-            teiQueryBuilder.orgUnits(orgUnitWrapper);
+        for (String orgUnitUid : getOrgUnitUids()) {
             Completable completable = Completable.fromCallable(() -> {
+                teiQueryBuilder.orgUnits(Collections.singleton(orgUnitUid));
                 getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
                 return new Unit();
             });

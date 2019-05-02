@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.call.D2CallWithProgress;
 import org.hisp.dhis.android.core.arch.call.D2Progress;
 import org.hisp.dhis.android.core.arch.call.D2ProgressManager;
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository;
-import org.hisp.dhis.android.core.common.Unit;
 import org.hisp.dhis.android.core.data.api.OuMode;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -56,7 +55,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import dagger.Reusable;
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -135,23 +133,23 @@ public final class TrackedEntityInstanceWithLimitCallFactory {
         return versionManager.is2_29()
                 ? Observable.empty()
                 : relationshipDownloadCallFactory.getCall().map(
-                trackedEntityInstances -> progressManager.increaseProgress(String.class, true))
+                trackedEntityInstances -> progressManager.increaseProgress(TrackedEntityInstance.class, true))
                 .toObservable();
     }
 
     private Observable<D2Progress> getTrackedEntityInstancesWithLimitByOrgUnit(D2ProgressManager progressManager,
                                                                                TeiQuery.Builder teiQueryBuilder,
                                                                                List<Paging> pagingList) {
-        List<Completable> completables = new ArrayList<>();
+        List<Single<D2Progress>> singles = new ArrayList<>();
         for (String orgUnitUid : getOrgUnitUids()) {
-            Completable completable = Completable.fromCallable(() -> {
+            Single<D2Progress> single = Single.fromCallable(() -> {
                 teiQueryBuilder.orgUnits(Collections.singleton(orgUnitUid));
                 getTrackedEntityInstancesWithPaging(teiQueryBuilder, pagingList);
-                return new Unit();
+                return progressManager.increaseProgress(TrackedEntityInstance.class, false);
             });
-            completables.add(completable);
+            singles.add(single);
         }
-        return Completable.merge(completables).toSingle(progressManager::getProgress).toObservable();
+        return Single.merge(singles).toObservable();
     }
 
     private Observable<D2Progress> getTrackedEntityInstancesWithoutLimits(D2ProgressManager progressManager,

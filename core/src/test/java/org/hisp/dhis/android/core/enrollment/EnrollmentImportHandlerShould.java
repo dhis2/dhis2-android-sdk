@@ -99,7 +99,7 @@ public class EnrollmentImportHandlerShould {
     public void do_nothing_when_passing_null_arguments() throws Exception {
         enrollmentImportHandler.handleEnrollmentImportSummary(null, null, null);
 
-        verify(enrollmentStore, never()).setState(anyString(), any(State.class));
+        verify(enrollmentStore, never()).setStateOrDelete(anyString(), any(State.class));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class EnrollmentImportHandlerShould {
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary)
                 , TrackerImportConflict.builder(), "test_tei_uid");
 
-        verify(enrollmentStore, times(1)).setState("test_enrollment_uid", State.SYNCED);
+        verify(enrollmentStore, times(1)).setStateOrDelete("test_enrollment_uid", State.SYNCED);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class EnrollmentImportHandlerShould {
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary)
                 , TrackerImportConflict.builder(), "test_tei_uid");
 
-        verify(enrollmentStore, times(1)).setState("test_enrollment_uid", State.ERROR);
+        verify(enrollmentStore, times(1)).setStateOrDelete("test_enrollment_uid", State.ERROR);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class EnrollmentImportHandlerShould {
         enrollmentImportHandler.handleEnrollmentImportSummary(Collections.singletonList(importSummary)
                 , TrackerImportConflict.builder(), "test_tei_uid");
 
-        verify(enrollmentStore, times(1)).setState("test_enrollment_uid", State.SYNCED);
+        verify(enrollmentStore, times(1)).setStateOrDelete("test_enrollment_uid", State.SYNCED);
         verify(eventImportHandler, times(1)).handleEventImportSummaries(
                 eq(eventSummaries), any(TrackerImportConflict.Builder.class), anyString(), anyString()
         );
